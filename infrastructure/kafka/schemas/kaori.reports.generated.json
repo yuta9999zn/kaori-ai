@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaori.io/kafka-schemas/kaori.reports.generated.json",
+  "title": "kaori.reports.generated",
+  "description": "F-038 Reports — fired by ai-orchestrator when a report run reaches a terminal state. Consumers (future): notification dispatcher fan-out, analytics rollup. Producer: services/ai-orchestrator/reports/service.py.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["report_id", "enterprise_id", "template_id", "status"],
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "description": "reports.report_id — UUID string. Joins back to the row for full content."
+    },
+    "enterprise_id": {
+      "type": "string",
+      "description": "Tenant scope."
+    },
+    "template_id": {
+      "type": "string",
+      "description": "report_templates.template_id — built-in or per-tenant."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["ready", "failed"],
+      "description": "Terminal status only — queued / running rows do NOT emit. 'failed' carries last_error in the row, not in this event."
+    },
+    "title": {
+      "type": "string",
+      "description": "Optional — convenience copy of reports.title for consumers that don't want to re-query the row."
+    },
+    "owner_email": {
+      "type": "string",
+      "description": "Optional — convenience copy for the notification dispatcher."
+    }
+  }
+}

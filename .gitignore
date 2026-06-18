@@ -1,0 +1,107 @@
+# ─── Secrets — never commit ─────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+credentials*
+**/service-account*.json
+
+# ─── Node / Next.js ─────────────────────────────────────────────────
+node_modules/
+.next/
+out/
+.turbo/
+.pnpm-store/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── Python ─────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+venv/
+.venv/
+env/
+
+# ─── Java / Maven ───────────────────────────────────────────────────
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+dependency-reduced-pom.xml
+
+# ─── Editors ────────────────────────────────────────────────────────
+.vscode/
+.idea/
+.claude/
+*.iml
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ─── Local scratch / test artifacts ─────────────────────────────────
+dirs\ created/
+echo/
+*.local
+tmp/
+.tmp/
+tmp-*/
+scratch/
+
+# ─── Logs ───────────────────────────────────────────────────────────
+logs/
+*.log
+log/
+
+# ─── Database dumps ─────────────────────────────────────────────────
+*.sql.gz
+*.dump
+pg_backup_*/
+
+# ─── Docker local state ─────────────────────────────────────────────
+.docker/
+volumes/
+
+# ─── OS files ───────────────────────────────────────────────────────
+desktop.ini
+$RECYCLE.BIN/
+
+# Generated extracts from product docs (regenerate via scripts/extract_product_docs.py)
+docs/product/_extracted/
+
+# Kaggle / external reference datasets — pull via scripts/, not source of truth
+data/kaggle/
+data/anphu/
+
+# CodeGraph MCP index — local-per-machine knowledge graph (~55MB SQLite + WAL).
+# Rebuild via `codegraph init`. Never commit; the index lags writes and is
+# machine-specific. (.codegraph/ ships its own .gitignore for the .db files,
+# but ignoring the dir at root keeps it out of `git status` entirely.)
+.codegraph/

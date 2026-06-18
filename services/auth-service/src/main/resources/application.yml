@@ -1,0 +1,176 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: kaori-auth-service
+
+  # K-14: Spring Boot 3 RFC 7807 problem-details responses.
+  # Default error pipeline emits {"type","title","status","detail",
+  # "instance"} with Content-Type: application/problem+json.
+  mvc:
+    problemdetails:
+      enabled: true
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/kaori}
+    username: ${SPRING_DATASOURCE_USERNAME:kaori}
+    password: ${SPRING_DATASOURCE_PASSWORD:kaori_dev_password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: public
+
+  # 3.2.a — Flyway migration runner.
+  #
+  # SQL files live in infrastructure/postgres/migrations/ (canonical) and are
+  # copied to classpath:db/migration/ by Maven at build time (see pom.xml
+  # <resources>). Flyway here is BACKWARD-COMPATIBLE with the existing dual-
+  # runner setup: docker-compose still mounts the same directory into Postgres's
+  # docker-entrypoint-initdb.d so a fresh container has 001-014 already
+  # applied; Flyway then baselines at v14 and only NEW migrations (015+) flow
+  # through the JVM-side runner.
+  #
+  # Why baseline-version=14 instead of 0:
+  #   - Production / dev / IT environments today have 001-014 applied via the
+  #     docker-entrypoint init mount (or by hand for local-DB IT mode).
+  #   - Flyway running 001-014 a second time would conflict with grant/role
+  #     side effects in 005/008 (CREATE ROLE is non-idempotent without DO
+  #     guards). Baseline avoids the rerun.
+  #   - The next migration we add (015+) will pick up flyway_schema_history
+  #     and be applied automatically on app startup — the goal of 3.2.a.
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    sql-migration-prefix: ""           # files use NNN_*.sql, not V*.sql
+    sql-migration-separator: "_"
+    sql-migration-suffixes: ".sql"
+    baseline-on-migrate: true
+    baseline-version: 14
+    baseline-description: "Pre-Flyway baseline (migrations 001-014 already applied via docker-entrypoint init)"
+    validate-on-migrate: true
+    clean-disabled: true               # never let app code wipe the schema
+    fail-on-missing-locations: true
+    table: flyway_schema_history
+
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST:localhost}
+      port: ${SPRING_REDIS_PORT:6379}
+      timeout: 3000ms
+
+  mail:
+    host: ${SMTP_HOST:smtp.gmail.com}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USER:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+jwt:
+  private-key: ${JWT_PRIVATE_KEY:}
+  public-key: ${JWT_PUBLIC_KEY:}
+  access-token-ttl-minutes: ${JWT_ACCESS_TOKEN_TTL_MINUTES:15}
+  refresh-token-ttl-days: ${JWT_REFRESH_TOKEN_TTL_DAYS:7}
+
+kaori:
+  frontend-url: ${FRONTEND_URL:http://localhost:3000}
+  login-lockout-attempts: 5
+  login-lockout-duration-seconds: 900   # 15 minutes
+  password-reset-token-ttl-seconds: 3600  # 1 hour
+
+# Phase 2 #7 (B3 PR #6) — Resilience4j circuit breaker for the
+# notification-service hop. Tunables match the spec recipe (5 failures
+# in 30s window → open 60s → half-open 1 probe). State transitions
+# surface as actuator /circuitbreakers + Micrometer metrics so the
+# Phase 2 #6 Grafana dashboard can graph open-rate per breaker.
+resilience4j:
+  circuitbreaker:
+    instances:
+      notification-service:
+        register-health-indicator: true
+        sliding-window-type: count_based
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50              # %
+        wait-duration-in-open-state: 60s
+        permitted-number-of-calls-in-half-open-state: 1
+        automatic-transition-from-open-to-half-open-enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: never
+
+  # B3 PR #9 — disable the SMTP health probe.
+  #
+  # Spring Boot's auto-configured Mail Health Indicator pings the SMTP host
+  # on every /actuator/health call (and on every Kubernetes liveness probe).
+  # In dev / pilot, SMTP_USER + SMTP_PASSWORD are intentionally blank so
+  # JavaMailSender can't even authenticate — every probe surfaces as DOWN.
+  # That cascades into:
+  #   * /health returning 503 even though every business endpoint is fine
+  #   * Docker healthchecks marking the container unhealthy → cascade restarts
+  #   * Notification flooding the logs with auth failures every 30 s
+  # Notification delivery has its own circuit breaker (resilience4j above)
+  # and audit trail; we don't need /actuator/health to also probe SMTP.
+  health:
+    mail:
+      enabled: false
+
+  # Phase 2 #6 (B2 PR #5) — HikariCP pool metrics. Spring Boot publishes
+  # them automatically when actuator + prometheus modules are present;
+  # this stanza makes the contract explicit so future services that
+  # disable metrics by default still pick up pool gauges. Exposed names
+  # on /actuator/prometheus:
+  #   hikaricp_connections_active     (in-use)
+  #   hikaricp_connections_idle       (idle)
+  #   hikaricp_connections_pending    (queue depth)
+  #   hikaricp_connections_max        (pool ceiling)
+  metrics:
+    enable:
+      hikaricp: true
+    distribution:
+      # Latency histograms with explicit buckets — the SLO percentiles
+      # come out cleanly in Grafana without client-side approximation.
+      percentiles-histogram:
+        http.server.requests: true
+      sla:
+        http.server.requests: 50ms,100ms,200ms,500ms,1s,2s
+
+  # Phase 2 #2/#5 — Spring Boot Micrometer Tracing → OpenTelemetry → Tempo.
+  # 100% sampling for the pilot so we never drop spans during UAT; production
+  # will tune this down (probably to 0.1) once the trace volume justifies it.
+  # OTLP_ENDPOINT defaults to the Tempo container in docker-compose.
+  tracing:
+    sampling:
+      probability: ${TRACING_SAMPLE_RATE:1.0}
+    enabled: ${TRACING_ENABLED:true}
+  otlp:
+    tracing:
+      endpoint: ${OTLP_ENDPOINT:http://tempo:4318/v1/traces}
+
+logging:
+  # Phase 2 #5 — include trace_id + span_id in every log line so operators
+  # can pivot from a Tempo span to the matching log row. %X{...} reads the
+  # MDC keys Spring Boot Tracing populates automatically.
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+  level:
+    com.kaorisystem: ${LOG_LEVEL:INFO}
+    org.springframework.security: WARN

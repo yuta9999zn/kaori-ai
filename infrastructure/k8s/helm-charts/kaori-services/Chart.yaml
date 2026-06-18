@@ -1,0 +1,37 @@
+apiVersion: v2
+name: kaori-services
+description: |
+  Kaori AI — application layer Helm umbrella chart.
+  Phase 1.5 P15-S9 D1 — covers 6 application services (no infra).
+  Infra (Postgres, Redis, Kafka, Vault, Temporal, ClickHouse) deploys
+  via separate Helm charts in infrastructure/k8s/helm-charts/kaori-infra/
+  and the dedicated charts under infrastructure/{vault,temporal,clickhouse}/helm/.
+
+  Services covered:
+    - api-gateway        Java 21 / Spring Cloud Gateway      port 8080
+    - auth-service       Java 21 / Spring Boot + Flyway       port 8091
+    - data-pipeline      Python 3.11 / FastAPI                port 8092
+    - ai-orchestrator    Python 3.11 / FastAPI                port 8093
+    - llm-gateway        Python 3.11 / FastAPI                port 8095
+    - notification-service Python 3.11 / FastAPI              port 8094
+
+  Each service uses the same generic templates (deployment, service,
+  configmap, ingress); per-service config lives in values.yaml under
+  the matching key. Add a new service = add a values entry, no template
+  change needed.
+
+type: application
+version: 0.1.0
+appVersion: "v4.0-phase1-complete"
+
+home: https://github.com/yuta9999zn/kaori-system
+sources:
+  - https://github.com/yuta9999zn/kaori-system
+
+maintainers:
+  - name: Nguyen Truong An
+    url: https://github.com/yuta9999zn
+
+annotations:
+  category: SaaS
+  licenses: Proprietary

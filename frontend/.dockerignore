@@ -1,0 +1,32 @@
+# Dependencies — reinstalled fresh by npm ci in the build stage
+node_modules
+
+# Previous build output — rebuilt inside Docker
+.next
+
+# Git history — not needed in image
+.git
+.gitignore
+
+# Local env files — secrets must come from docker-compose environment, never baked in
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode
+.idea
+
+# Test output
+coverage
+__tests__
+
+# Docker files themselves (no need to copy into the image)
+Dockerfile
+.dockerignore

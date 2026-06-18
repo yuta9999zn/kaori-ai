@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaori AI — Workflow Builder UX mockup (SME-facing · post-bootstrap builder-only)</title>
+<link rel="stylesheet" href="kaori-shared-tokens.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  /* Per-file vars only (common tokens loaded from kaori-shared-tokens.css) */
+  --accent-2: #4ECDC4;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  font-size: 14px;
+}
+.app { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+/* (file-meta CSS class loaded from kaori-shared-tokens.css) */
+
+/* ─── Top banner — for internal audience to know what this file is. */
+.spec-banner {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffeaea 100%);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: var(--text-soft);
+}
+.spec-banner b { color: var(--accent); }
+.spec-banner .scope-row { margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(214, 69, 69, 0.3); }
+
+/* ─── Wizard step nav ─── */
+.wizard-nav {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 6px;
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+.wizard-step {
+  flex: 1;
+  min-width: 140px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: background .15s;
+  background: transparent;
+  border: none;
+  color: var(--text-soft);
+  font-family: inherit;
+}
+.wizard-step:hover { background: var(--bg-soft); }
+.wizard-step.active {
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+}
+.wizard-step .num {
+  font-size: 11px;
+  opacity: .7;
+}
+.wizard-step.done { background: var(--ok-bg); color: var(--ok); }
+.wizard-step.done .num::after { content: " ✓"; }
+
+/* ─── Step panel ─── */
+.step-panel { display: none; }
+.step-panel.active { display: block; }
+
+.step-header {
+  margin-bottom: 18px;
+}
+.step-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+.step-header .sub {
+  color: var(--text-soft);
+  font-size: 13.5px;
+  margin-top: 4px;
+}
+
+/* ─── Step 1: Workflow library ─── */
+.dept-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 14px;
+  overflow-x: auto;
+}
+.dept-tab {
+  padding: 8px 14px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-size: 13.5px;
+  font-family: inherit;
+  color: var(--text-soft);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+}
+.dept-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+.workflow-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.workflow-tile {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.workflow-tile:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+.workflow-tile.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.workflow-tile h4 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.workflow-tile .desc { font-size: 12px; color: var(--text-soft); margin-bottom: 8px; }
+.workflow-tile .meta {
+  font-size: 11px;
+  color: var(--text-mute);
+  display: flex;
+  gap: 8px;
+}
+.rec-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.rec-core { background: var(--ok-bg); color: var(--ok); }
+.rec-suggested { background: var(--info-bg); color: var(--info); }
+.rec-advanced { background: var(--bg-soft); color: var(--text-mute); }
+
+/* ─── Step 2: Template Detail ─── */
+.detail-shell {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 26px;
+}
+.detail-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+}
+.detail-header h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.detail-header .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+.detail-header .badges span {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.detail-header .badge-dept { background: var(--ok-bg); color: var(--ok); }
+.detail-header .badge-industry { background: var(--accent-soft); color: var(--accent); }
+.detail-header .badge-rec { background: var(--info-bg); color: var(--info); }
+.detail-header .badge-sla { background: var(--warn-bg); color: var(--warn); }
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.detail-cell {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+.detail-cell h5 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  color: var(--text-soft);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+.detail-cell .val { font-size: 13.5px; color: var(--text); }
+.detail-cell .val.chip-row { display: flex; flex-wrap: wrap; gap: 5px; }
+.detail-cell .val .chip {
+  background: var(--bg-card);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+}
+.detail-cell .val .chip.req { background: var(--warn-bg); color: var(--warn); border-color: transparent; }
+.detail-footer {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+/* ─── Step 3: Workflow card list ─── */
+.workflow-header {
+  background: linear-gradient(135deg, var(--accent-soft) 0%, #fff 100%);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+}
+.workflow-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.workflow-header .desc { font-size: 13px; color: var(--text-soft); }
+.workflow-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mode-toggle {
+  display: inline-flex;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px;
+  font-size: 12px;
+}
+.mode-toggle button {
+  border: none;
+  background: transparent;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--text-soft);
+}
+.mode-toggle button.active { background: var(--ok); color: white; }
+.mode-toggle button.active.adv { background: var(--info); }
+.mode-toggle button.active.dev { background: var(--warn); }
+.mode-toggle button:disabled { opacity: .5; cursor: not-allowed; }
+
+.btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--text);
+  transition: all .15s;
+}
+.btn:hover { background: var(--bg-soft); }
+.btn.primary {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.btn.primary:hover { background: #b73838; }
+.btn.success { background: var(--ok); color: white; border-color: var(--ok); }
+.btn.outline-info {
+  background: var(--bg-card);
+  color: var(--info);
+  border: 1px solid var(--info);
+}
+.btn.outline-info:hover { background: var(--info-bg); }
+
+/* ─── Cards ─── */
+.card-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+}
+.card-stack::before {
+  content: "";
+  position: absolute;
+  left: 19px;
+  top: 30px;
+  bottom: 30px;
+  width: 2px;
+  background: var(--border-strong);
+  z-index: 0;
+}
+.wfcard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  transition: all .15s;
+}
+.wfcard:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-hover);
+}
+.wfcard-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.wfcard-num {
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.wfcard-title {
+  flex: 1;
+  font-weight: 700;
+  font-size: 15px;
+}
+.wfcard-sla {
+  background: var(--info-bg);
+  color: var(--info);
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.wfcard-edit {
+  padding: 4px 10px;
+  font-size: 12px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--text-soft);
+}
+.wfcard-edit:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+.wfcard-body {
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 8px 12px;
+  font-size: 13px;
+}
+.wfcard-body .lbl {
+  color: var(--text-soft);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  padding-top: 1px;
+}
+.wfcard-body .val {
+  color: var(--text);
+}
+.wfcard-body .val code {
+  background: var(--bg-soft);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+.docs-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.doc-chip {
+  background: var(--warn-bg);
+  color: var(--warn);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+.ai-chip {
+  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+  color: #5b21b6;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.branch-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.branch-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--bg-soft);
+  border-radius: 4px;
+  font-size: 12.5px;
+}
+.branch-cond {
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  background: var(--bg-card);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 11.5px;
+  color: var(--accent);
+}
+.branch-arrow { color: var(--text-mute); }
+.branch-target { color: var(--ok); font-weight: 600; }
+.branch-target.warn { color: var(--warn); }
+.branch-target.crit { color: var(--accent); }
+
+/* ── Visual branch diagram (n8n-style diverging branches) ───────────── */
+/* Decision node on the left → curved labelled wires fan out to each
+   branch target on the right, so a user can trace every path by eye. */
+.branch-diagram { display: flex; align-items: center; gap: 0; margin: 6px 0 2px; flex-wrap: nowrap; }
+.bd-src {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg); border: 1.5px solid var(--text); border-radius: 8px;
+  padding: 8px 12px; white-space: nowrap; box-shadow: var(--shadow);
+}
+.bd-src-ico { font-size: 17px; line-height: 1; }
+.bd-src-txt { font-weight: 700; font-size: 13px; line-height: 1.15; }
+.bd-src-txt small { display: block; font-weight: 400; color: var(--text-mute); font-size: 10.5px; }
+.bd-wire { flex: 0 0 88px; height: 142px; }
+.bd-wire path { fill: none; stroke-width: 2; }
+.bd-wire .w-ok   { stroke: var(--ok); }
+.bd-wire .w-warn { stroke: var(--warn); }
+.bd-wire .w-crit { stroke: var(--accent); }
+.bd-wire marker path { fill: var(--text-mute); stroke: none; }
+.bd-outs { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.bd-out {
+  display: flex; align-items: center; gap: 10px; height: 38px;
+  border: 1px solid var(--border); border-left-width: 3px; border-radius: 6px;
+  padding: 0 12px; background: var(--bg); text-decoration: none;
+}
+.bd-out.ok   { border-left-color: var(--ok); }
+.bd-out.warn { border-left-color: var(--warn); }
+.bd-out.crit { border-left-color: var(--accent); }
+.bd-cond {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; font-weight: 700;
+  padding: 1px 7px; border-radius: 4px; background: rgba(0,0,0,.04); white-space: nowrap;
+}
+.bd-out.ok   .bd-cond { color: var(--ok); }
+.bd-out.warn .bd-cond { color: var(--warn); }
+.bd-out.crit .bd-cond { color: var(--accent); }
+.bd-to { font-size: 12.5px; color: var(--text); white-space: nowrap; }
+.bd-add {
+  align-self: flex-start; border: 1px dashed var(--border); background: none;
+  color: var(--text-mute); border-radius: 6px; padding: 4px 11px; font-size: 12px; cursor: pointer;
+}
+.bd-add:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ─── Step 4: Card editor modal-like ─── */
+.editor-shell {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+}
+.editor-shell h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.editor-shell .sub { font-size: 13px; color: var(--text-soft); margin-bottom: 16px; }
+.editor-form { display: flex; flex-direction: column; gap: 14px; }
+.form-row {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 10px;
+  align-items: flex-start;
+}
+.form-row label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-soft);
+  padding-top: 7px;
+}
+.form-row .control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.form-row input[type="text"],
+.form-row select,
+.form-row textarea {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  font-size: 13px;
+  font-family: inherit;
+  background: var(--bg-card);
+}
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.form-row .hint { font-size: 11.5px; color: var(--text-mute); }
+.branch-editor {
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 10px;
+  background: var(--bg-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.branch-edit-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+.branch-edit-row input { padding: 4px 8px; font-size: 12px; border: 1px solid var(--border); border-radius: 4px; }
+.branch-edit-row select { padding: 4px 8px; font-size: 12px; border: 1px solid var(--border); border-radius: 4px; }
+.btn-remove {
+  padding: 4px 8px;
+  font-size: 11px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-mute);
+}
+.btn-remove:hover { color: var(--accent); border-color: var(--accent); }
+.btn-add-branch {
+  padding: 4px 10px;
+  font-size: 12px;
+  background: var(--bg-card);
+  border: 1px dashed var(--border-strong);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-soft);
+  font-family: inherit;
+}
+.btn-add-branch:hover { border-color: var(--accent); color: var(--accent); }
+.mode-badge {
+  background: var(--ok-bg);
+  color: var(--ok);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+.mode-badge.adv { background: var(--info-bg); color: var(--info); }
+.mode-badge.dev { background: var(--warn-bg); color: var(--warn); }
+
+.editor-footer {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* ─── Branch action row (Simple mode 2-button row, Issue 8) ─── */
+.branch-action-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+.branch-action-row .btn { font-size: 12px; padding: 5px 12px; }
+
+/* ─── Advanced mode reference section (Issue 14) ─── */
+.advanced-ref {
+  margin-top: 28px;
+  background: var(--bg-soft);
+  border: 1px dashed var(--info);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+}
+.advanced-ref h4 {
+  font-size: 14px;
+  color: var(--info);
+  margin-bottom: 8px;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.advanced-ref h4::before { content: "▶"; font-size: 10px; transition: transform .15s; }
+.advanced-ref.open h4::before { transform: rotate(90deg); }
+.advanced-ref-body { display: none; padding-top: 12px; border-top: 1px solid var(--border); }
+.advanced-ref.open .advanced-ref-body { display: block; }
+.advanced-ref-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.advanced-ref-col {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+.advanced-ref-col h5 {
+  font-size: 12px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.advanced-ref-col.simple h5 { color: var(--ok); }
+.advanced-ref-col.adv h5 { color: var(--info); }
+.advanced-ref-col ul { padding-left: 18px; font-size: 12.5px; color: var(--text-soft); }
+.advanced-ref-col li { margin-bottom: 3px; }
+.advanced-ref-col li code { background: var(--bg-soft); padding: 0 4px; border-radius: 3px; font-size: 11.5px; }
+
+/* ─── Footer note ─── */
+.footnote {
+  margin-top: 30px;
+  padding: 14px 18px;
+  background: var(--bg-soft);
+  border-radius: var(--radius);
+  font-size: 12px;
+  color: var(--text-mute);
+  border-left: 3px solid var(--border-strong);
+}
+.footnote code { background: var(--bg-card); padding: 1px 5px; border-radius: 3px; }
+
+/* ─── Mobile ─── */
+@media (max-width: 720px) {
+  .detail-grid { grid-template-columns: 1fr; }
+  .wfcard-body { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .form-row label { padding-top: 0; }
+  .advanced-ref-cols { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="file-meta">
+    <h1>Kaori AI — Workflow Builder UX mockup</h1>
+    <dl>
+      <dt>File</dt><dd><code>docs/sprint/workflow-builder-ux.html</code></dd>
+      <dt>Version</dt><dd>2.0 (Round 2 polish 2026-05-20 EOD3)</dd>
+      <dt>Phase</dt><dd>Phase 2.8 — Industry Template 3-tier Bootstrap</dd>
+      <dt>Audience</dt><dd>FE engineers (SME-facing UI implementation post-bootstrap)</dd>
+      <dt>Depends on</dt><dd><code>feature-screens.html § P2-02 / P2-26 / P2-31 / P2-32</code> · <code>feature-workflows.html</code> (internal catalog) · <code>ADR-0026</code> · mig 101-103</dd>
+      <dt>Last review</dt><dd>2026-05-20 EOD3 — anh's review round 2 (9.5+/10 target)</dd>
+      <dt>Impl status</dt><dd><b>P0 shipped 2026-05-29</b> — builder thật (<code>60-workflow-detail.tsx</code>) giờ nối nhánh tới node đích bằng <b>edge thật</b> (selector "→ đi tới bước" trên mỗi if/else branch + switch case) và vẽ <b>fork thật kèm tên node đích</b>. Hết kẹt kích hoạt node Quyết định. Lane view (P1) + canvas (P2) theo <a href="../specs/WORKFLOW_BUILDER_REDESIGN.md"><code>WORKFLOW_BUILDER_REDESIGN.md</code></a>.</dd>
+    </dl>
+  </header>
+
+  <div class="matrix-mapping" id="matrix-mapping-builder">
+    <h3 onclick="document.getElementById('matrix-mapping-builder').classList.toggle('open')">Matrix mapping 3 chiều — Builder mockup step ↔ Screens ↔ Workflows</h3>
+    <div class="matrix-mapping-body">
+      <p style="font-size: 12px; color: var(--text-soft); margin-bottom: 8px;">Mỗi mockup step ánh xạ vào screen P2-XX nào trong production + serves workflow nào.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Mockup step</th>
+            <th>Production screen</th>
+            <th>Workflows served</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Step 1 Template Library</td><td><a href="feature-screens.html#P2-26">P2-26 Builder</a> initial state + <a href="feature-screens.html#P2-04">P2-04 Org View 1</a> "Suggested workflow"</td><td>All 25 mig 069 templates grouped by dept</td></tr>
+          <tr><td>Step 2 Template Detail (NEW)</td><td>Modal/drawer trong <a href="feature-screens.html#P2-26">P2-26</a> sau click template tile</td><td>Single template selected (e.g. C.4 Discount Approval)</td></tr>
+          <tr><td>Step 3 Card Stack</td><td><a href="feature-screens.html#P2-26">P2-26 Builder</a> Simple mode default view</td><td>Single workflow (5 cards average)</td></tr>
+          <tr><td>Step 4 Card Editor</td><td>Drawer trong P2-26 khi click "Chỉnh" 1 card</td><td>Single card (Simple/Advanced/Developer mode)</td></tr>
+          <tr><td>Advanced mode reference (collapsible)</td><td><a href="feature-screens.html#P2-26">P2-26</a> Advanced mode pane + Branch Inspector</td><td>Same card, edit-able layout</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 11.5px; color: var(--text-mute); margin-top: 8px;">Internal catalog: <a href="feature-workflows.html"><code>feature-workflows.html</code></a>. Shared glossary: <a href="kaori-shared-glossary.html"><code>kaori-shared-glossary.html</code></a>. FE Impl spec: <a href="PHASE_2_8_FE_IMPL_SPEC.md"><code>PHASE_2_8_FE_IMPL_SPEC.md</code></a>.</p>
+    </div>
+  </div>
+
+  <div class="spec-banner">
+    <b>📐 UX Mockup — Workflow Builder (SME-facing, post-bootstrap, builder-only)</b><br>
+    Đây là <b>spec UX</b> cho FE team, không phải UI production. Phân biệt với
+    <code>feature-workflows.html</code> (internal catalog cho dev/AI agent, KHÔNG dành cho khách).
+    <div class="scope-row">
+      <b>Phạm vi mockup này:</b> Giả định khách <em>ĐÃ bootstrap industry</em> (xem
+      <code>feature-screens.html § P2-02 Onboarding</code> cho luồng bootstrap 7-step trước đó).
+      File này demo luồng <em>builder-only sau bootstrap</em>: 4 bước —
+      <b>Template Library → Template Detail → Card Stack → Card Editor</b>.
+    </div>
+    <div class="scope-row">
+      <b>Concrete demo</b>: Retail → Sales → "Discount Approval" workflow → "Manager Approval" card.
+      <em>Đây là 1 ví dụ; Finance / Generic SME / các industry khác render hoàn toàn tương tự với
+      cùng card format chuẩn anh chốt 2026-05-20:</em> Owner / Input / Required docs / AI action /
+      Branch / Output / SLA.
+    </div>
+    <div class="scope-row">
+      <b>3-Mode UI tham chiếu</b>: <code>SIMPLE</code> (SME default) ·
+      <code>ADVANCED</code> (analyst / CSM, plan-gated ENT_BASIC+) ·
+      <code>DEVELOPER</code> (platform admin, plan-gated Custom Implementation). Mockup này demo
+      Simple mode đầy đủ + 1 collapsible "Advanced reference" ở cuối Step 4 để FE so sánh.
+    </div>
+    <div class="scope-row" style="margin-bottom: 0;">
+      BE đã sẵn (mig 101-103 + router <code>industry_bootstrap</code> + mig 053/054 workflow + mig 069
+      production templates). Khi FE restructure resume, React component implement theo mockup này.
+      <b>Đổi industry sau bootstrap</b> = open Change Request (BA 4.2) hoặc gọi
+      <code>force=true</code> trên <code>/bootstrap-from-industry</code> — destructive, xoá toàn bộ
+      config hiện tại + redo. Không có "Settings → Change Industry" toggle.
+    </div>
+  </div>
+
+  <!-- ─── Wizard step navigation (4 steps — builder-only) ─── -->
+  <nav class="wizard-nav" role="tablist">
+    <button class="wizard-step active" data-step="1" role="tab">
+      <span class="num">Bước 1</span>
+      <span>Template Library</span>
+    </button>
+    <button class="wizard-step" data-step="2" role="tab">
+      <span class="num">Bước 2</span>
+      <span>Template Detail</span>
+    </button>
+    <button class="wizard-step" data-step="3" role="tab">
+      <span class="num">Bước 3</span>
+      <span>Card Stack</span>
+    </button>
+    <button class="wizard-step" data-step="4" role="tab">
+      <span class="num">Bước 4</span>
+      <span>Card Editor</span>
+    </button>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- STEP 1: Workflow library per dept -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="step-panel active" data-step="1">
+    <div class="step-header">
+      <h2>Workflow trong phòng ban của bạn</h2>
+      <p class="sub">Click vào tab phòng ban để xem các workflow mà Kaori đã clone sẵn từ industry template lúc bootstrap. Chọn 1 workflow để xem chi tiết trước khi mở card stack.</p>
+    </div>
+
+    <div class="dept-tabs">
+      <button class="dept-tab active" data-dept="sales">Sales (3)</button>
+      <button class="dept-tab" data-dept="marketing">Marketing (3)</button>
+      <button class="dept-tab" data-dept="warehouse">Warehouse (3)</button>
+      <button class="dept-tab" data-dept="finance">Finance (3)</button>
+      <button class="dept-tab" data-dept="cs">CS (3)</button>
+    </div>
+
+    <div class="workflow-list">
+      <div class="workflow-tile selected" onclick="goStep(2)">
+        <h4>Discount Approval</h4>
+        <div class="desc">Duyệt giảm giá theo % chiết khấu và margin.</div>
+        <div class="meta">
+          <span class="rec-badge rec-core">CORE</span>
+          <span>5 cards</span>
+          <span>SLA 4-24h</span>
+        </div>
+      </div>
+      <div class="workflow-tile">
+        <h4>Lead Qualification</h4>
+        <div class="desc">BANT scoring → SQL/MQL split → handoff.</div>
+        <div class="meta">
+          <span class="rec-badge rec-core">CORE</span>
+          <span>5 cards</span>
+          <span>SLA 24h</span>
+        </div>
+      </div>
+      <div class="workflow-tile">
+        <h4>Quote-to-Cash</h4>
+        <div class="desc">Quote → approval → contract → invoice → payment.</div>
+        <div class="meta">
+          <span class="rec-badge rec-suggested">SUGGESTED</span>
+          <span>5 cards</span>
+          <span>SLA 7-14d</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 18px; display: flex; justify-content: flex-end;">
+      <button class="btn primary" onclick="goStep(2)">Xem chi tiết template →</button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- STEP 2: Template Detail (NEW — Issue 7) -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="step-panel" data-step="2">
+    <div class="step-header">
+      <h2>Chi tiết template "Discount Approval"</h2>
+      <p class="sub">Xem mục đích, dữ liệu cần, KPI ảnh hưởng, ai phê duyệt — trước khi bắt đầu chỉnh card. Bước này giúp khách hiểu workflow trước khi mở canvas.</p>
+    </div>
+
+    <div class="detail-shell">
+      <div class="detail-header">
+        <h3>📋 Discount Approval</h3>
+        <div class="badges">
+          <span class="badge-industry">🛍 Retail</span>
+          <span class="badge-dept">🏢 Sales</span>
+          <span class="badge-rec">⭐ CORE recommendation</span>
+          <span class="badge-sla">⏱ SLA tổng: 4-24h</span>
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-cell" style="grid-column: 1 / -1;">
+          <h5>📌 Mục đích workflow</h5>
+          <div class="val">
+            Duyệt đề xuất chiết khấu của Sales theo % chiết khấu và margin còn lại.
+            Phân tầng: ≤10% auto duyệt · 10-25% Manager duyệt · &gt;25% CFO duyệt.
+            Áp dụng cho khách hàng B2B; tự động ghi sổ + thông báo khách sau khi duyệt.
+          </div>
+        </div>
+
+        <div class="detail-cell">
+          <h5>🏢 Phòng ban dùng</h5>
+          <div class="val">
+            <b>Sales</b> (chính) — Sales Rep tạo đề xuất, Sales Manager duyệt.<br>
+            <b>Finance</b> (cross-dept) — CFO duyệt khi &gt;25%, Finance ghi sổ sau approve.
+          </div>
+        </div>
+
+        <div class="detail-cell">
+          <h5>📥 Dữ liệu cần có</h5>
+          <div class="val">
+            <b>Trong Silver layer:</b> <code>customers</code>, <code>orders</code>,
+            <code>products</code>, <code>deals</code>.<br>
+            <b>Từ Gold view:</b> <code>v_customer_360</code> (LTV, lịch sử mua hàng).
+          </div>
+        </div>
+
+        <div class="detail-cell">
+          <h5>📎 Tài liệu cần upload (per run)</h5>
+          <div class="val chip-row">
+            <span class="chip req">Proposal (PDF) BẮT BUỘC</span>
+            <span class="chip req">Quote (XLSX) BẮT BUỘC</span>
+            <span class="chip">Customer LTV report (PDF) tuỳ chọn — chỉ khi &gt;25%</span>
+            <span class="chip">Margin analysis (XLSX) tuỳ chọn</span>
+          </div>
+        </div>
+
+        <div class="detail-cell">
+          <h5>📊 KPI ảnh hưởng</h5>
+          <div class="val chip-row">
+            <span class="chip">Gross Margin %</span>
+            <span class="chip">Average Deal Size</span>
+            <span class="chip">Win Rate by Discount Band</span>
+            <span class="chip">Time-to-Close</span>
+          </div>
+        </div>
+
+        <div class="detail-cell">
+          <h5>📈 Số bước (card)</h5>
+          <div class="val">
+            <b>5 cards</b>: Tiếp nhận → Quyết định tự động (branch) → Manager duyệt → CFO duyệt → Áp dụng + ghi sổ.<br>
+            <span style="font-size: 12px; color: var(--text-mute);">2 nhánh approval song song; 1 nhánh auto-approve cho discount thấp.</span>
+          </div>
+        </div>
+
+        <div class="detail-cell">
+          <h5>✍ Ai phê duyệt</h5>
+          <div class="val">
+            <b>Sales Manager</b> — discount 10-25% (SLA 4h).<br>
+            <b>CFO</b> — discount &gt;25% hoặc deal &gt;500M VND (SLA 24h).<br>
+            <span style="font-size: 12px; color: var(--text-mute);">Timeout escalate tự động.</span>
+          </div>
+        </div>
+
+        <div class="detail-cell" style="grid-column: 1 / -1;">
+          <h5>🔁 Workflow liên quan (cross-link)</h5>
+          <div class="val">
+            <b>Trigger by:</b> <code>Quote-to-Cash</code> (khi quote có discount &gt;0%).<br>
+            <b>Triggers:</b> <code>Áp dụng giảm giá + ghi sổ</code> (Finance dept) sau khi approve.<br>
+            <span style="font-size: 12px; color: var(--text-mute);">Cross-link map: mig 057 workflow_cross_links.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-footer">
+        <button class="btn" onclick="goStep(1)">← Quay lại library</button>
+        <button class="btn primary" onclick="goStep(3)">Bắt đầu từ template →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- STEP 3: Workflow card stack (REPLACES MERMAID) -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="step-panel" data-step="3">
+    <div class="workflow-header">
+      <h3>Workflow: Discount Approval (Retail / Sales)</h3>
+      <div class="desc">Duyệt giảm giá theo % chiết khấu. Discount ≤10% auto duyệt; 10-25% manager duyệt; &gt;25% CFO duyệt.</div>
+      <div class="workflow-actions">
+        <span class="mode-toggle" role="group" aria-label="Workflow mode">
+          <button class="active" data-mode="simple">Simple</button>
+          <button data-mode="advanced" disabled title="Plan-gated ENT_BASIC+ — demo collapsible reference ở Step 4">Advanced</button>
+          <button class="dev" data-mode="developer" disabled title="Plan-gated Custom Implementation">Developer</button>
+        </span>
+        <button class="btn">📋 Xem phiên bản trước (v2)</button>
+        <button class="btn">🧪 Test với dữ liệu mẫu</button>
+        <button class="btn">📨 Gửi Change Request</button>
+        <button class="btn success">✓ Publish</button>
+      </div>
+    </div>
+
+    <div class="card-stack">
+
+      <!-- Card 1 -->
+      <article class="wfcard">
+        <header class="wfcard-header">
+          <div class="wfcard-num">1</div>
+          <div class="wfcard-title">Tiếp nhận đề xuất chiết khấu</div>
+          <span class="wfcard-sla">SLA 30 phút</span>
+          <button class="wfcard-edit">Chỉnh</button>
+        </header>
+        <div class="wfcard-body">
+          <div class="lbl">Owner</div>
+          <div class="val">Sales Rep</div>
+          <div class="lbl">Input</div>
+          <div class="val"><code>deal_amount</code>, <code>discount_pct</code>, <code>customer_id</code></div>
+          <div class="lbl">Required docs</div>
+          <div class="val docs-chip-row">
+            <span class="doc-chip">Proposal (PDF)</span>
+            <span class="doc-chip">Quote (XLSX)</span>
+          </div>
+          <div class="lbl">AI action</div>
+          <div class="val"><span class="ai-chip">🤖 Tính margin còn lại + flag rủi ro</span></div>
+          <div class="lbl">Output</div>
+          <div class="val"><code>margin_pct</code>, <code>risk_flag</code></div>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="wfcard">
+        <header class="wfcard-header">
+          <div class="wfcard-num">2</div>
+          <div class="wfcard-title">Quyết định tự động theo ngưỡng</div>
+          <span class="wfcard-sla">SLA tức thì</span>
+          <button class="wfcard-edit">Chỉnh</button>
+        </header>
+        <div class="wfcard-body">
+          <div class="lbl">Owner</div>
+          <div class="val">Hệ thống (auto)</div>
+          <div class="lbl">Input</div>
+          <div class="val"><code>discount_pct</code>, <code>margin_pct</code></div>
+          <div class="lbl">Branch</div>
+          <div class="val">
+            <div class="branch-diagram" role="img" aria-label="Phân nhánh tự động theo % chiết khấu">
+              <div class="bd-src">
+                <span class="bd-src-ico">◈</span>
+                <span class="bd-src-txt">IF<small>discount_pct</small></span>
+              </div>
+              <svg class="bd-wire" viewBox="0 0 88 142" aria-hidden="true">
+                <defs>
+                  <marker id="bd-arrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto">
+                    <path d="M0,0 L6,3 L0,6 Z"/>
+                  </marker>
+                </defs>
+                <path class="w-ok"   d="M0,71 C44,71 44,19  88,19"  marker-end="url(#bd-arrow)"/>
+                <path class="w-warn" d="M0,71 C44,71 44,71  88,71"  marker-end="url(#bd-arrow)"/>
+                <path class="w-crit" d="M0,71 C44,71 44,123 88,123" marker-end="url(#bd-arrow)"/>
+              </svg>
+              <div class="bd-outs">
+                <a class="bd-out ok"   href="#card-5"><span class="bd-cond">≤ 10%</span><span class="bd-to">Card 5 · Auto approve</span></a>
+                <a class="bd-out warn" href="#card-3"><span class="bd-cond">10–25%</span><span class="bd-to">Card 3 · Manager duyệt</span></a>
+                <a class="bd-out crit" href="#card-4"><span class="bd-cond">&gt; 25%</span><span class="bd-to">Card 4 · CFO duyệt</span></a>
+                <button class="bd-add" type="button">+ nhánh</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3: Manager Approval — anh's chuẩn-hoá format -->
+      <article class="wfcard" id="card-3" style="border-color: var(--accent); box-shadow: var(--shadow-hover);">
+        <header class="wfcard-header">
+          <div class="wfcard-num">3</div>
+          <div class="wfcard-title">Manager Approval</div>
+          <span class="wfcard-sla">SLA 4 giờ</span>
+          <button class="wfcard-edit" onclick="goStep(4)">Chỉnh</button>
+        </header>
+        <div class="wfcard-body">
+          <div class="lbl">Owner</div>
+          <div class="val">Sales Manager</div>
+          <div class="lbl">Input</div>
+          <div class="val"><code>deal_amount</code>, <code>discount_pct</code>, <code>margin_pct</code>, <code>risk_flag</code></div>
+          <div class="lbl">Required docs</div>
+          <div class="val docs-chip-row">
+            <span class="doc-chip">Proposal (PDF)</span>
+            <span class="doc-chip">Quote (XLSX)</span>
+          </div>
+          <div class="lbl">AI action</div>
+          <div class="val"><span class="ai-chip">🤖 Check margin risk vs lịch sử deal cùng customer</span></div>
+          <div class="lbl">Branch</div>
+          <div class="val">
+            <div class="branch-diagram" role="img" aria-label="Phân nhánh theo quyết định duyệt">
+              <div class="bd-src">
+                <span class="bd-src-ico">⛉</span>
+                <span class="bd-src-txt">GATE<small>approval</small></span>
+              </div>
+              <svg class="bd-wire" viewBox="0 0 88 142" aria-hidden="true">
+                <defs>
+                  <marker id="bd-arrow-b" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto">
+                    <path d="M0,0 L6,3 L0,6 Z"/>
+                  </marker>
+                </defs>
+                <path class="w-ok"   d="M0,71 C44,71 44,19  88,19"  marker-end="url(#bd-arrow-b)"/>
+                <path class="w-crit" d="M0,71 C44,71 44,71  88,71"  marker-end="url(#bd-arrow-b)"/>
+                <path class="w-warn" d="M0,71 C44,71 44,123 88,123" marker-end="url(#bd-arrow-b)"/>
+              </svg>
+              <div class="bd-outs">
+                <a class="bd-out ok"   href="#card-5"><span class="bd-cond">approve</span><span class="bd-to">Card 5 · Áp dụng + ghi sổ</span></a>
+                <a class="bd-out crit"             ><span class="bd-cond">reject</span><span class="bd-to">Thông báo Sales + đóng</span></a>
+                <a class="bd-out warn" href="#card-4"><span class="bd-cond">timeout 4h</span><span class="bd-to">Escalate Card 4 · CFO</span></a>
+                <button class="bd-add" type="button">+ nhánh</button>
+              </div>
+            </div>
+          </div>
+          <div class="lbl">Output</div>
+          <div class="val"><code>approval_decision</code>, <code>approved_by</code>, <code>approved_at</code></div>
+        </div>
+      </article>
+
+      <!-- Card 4 -->
+      <article class="wfcard">
+        <header class="wfcard-header">
+          <div class="wfcard-num">4</div>
+          <div class="wfcard-title">CFO Approval</div>
+          <span class="wfcard-sla">SLA 24 giờ</span>
+          <button class="wfcard-edit">Chỉnh</button>
+        </header>
+        <div class="wfcard-body">
+          <div class="lbl">Owner</div>
+          <div class="val">CFO</div>
+          <div class="lbl">Input</div>
+          <div class="val"><code>deal_amount</code>, <code>discount_pct</code>, <code>margin_pct</code>, <code>annual_revenue_attributed</code></div>
+          <div class="lbl">Required docs</div>
+          <div class="val docs-chip-row">
+            <span class="doc-chip">Proposal (PDF)</span>
+            <span class="doc-chip">Customer LTV report</span>
+            <span class="doc-chip">Margin analysis</span>
+          </div>
+          <div class="lbl">AI action</div>
+          <div class="val"><span class="ai-chip">🤖 Estimate ROI nếu approve vs lost-deal cost nếu reject</span></div>
+          <div class="lbl">Output</div>
+          <div class="val"><code>approval_decision</code>, <code>cfo_note</code></div>
+        </div>
+      </article>
+
+      <!-- Card 5 -->
+      <article class="wfcard">
+        <header class="wfcard-header">
+          <div class="wfcard-num">5</div>
+          <div class="wfcard-title">Áp dụng + ghi sổ + thông báo khách</div>
+          <span class="wfcard-sla">SLA tức thì</span>
+          <button class="wfcard-edit">Chỉnh</button>
+        </header>
+        <div class="wfcard-body">
+          <div class="lbl">Owner</div>
+          <div class="val">Hệ thống (auto)</div>
+          <div class="lbl">Input</div>
+          <div class="val"><code>approval_decision</code>, <code>customer_id</code>, <code>deal_amount</code></div>
+          <div class="lbl">AI action</div>
+          <div class="val"><span class="ai-chip">🤖 Soạn email báo khách với tone phù hợp ngữ cảnh</span></div>
+          <div class="lbl">Output</div>
+          <div class="val"><code>email_sent</code>, <code>deal_status='approved'</code>, <code>discount_applied</code></div>
+        </div>
+      </article>
+
+    </div>
+
+    <div style="margin-top: 18px; display: flex; justify-content: space-between;">
+      <button class="btn" onclick="goStep(2)">← Quay lại Template Detail</button>
+      <button class="btn primary" onclick="goStep(4)">Chỉnh Card "Manager Approval" →</button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- STEP 4: Card editor — anh's format chuẩn + 2 buttons Issue 8 + Advanced ref Issue 14 -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="step-panel" data-step="4">
+    <div class="step-header">
+      <h2>Chỉnh card "Manager Approval"
+        <span class="mode-badge">SIMPLE MODE</span>
+      </h2>
+      <p class="sub">SIMPLE mode chỉ cho chỉnh: Owner, SLA, threshold, document bắt buộc. Để thêm/sửa branch hoặc AI action → chuyển sang ADVANCED mode (cần quyền analyst).</p>
+    </div>
+
+    <div class="editor-shell">
+      <h3>Card #3: Manager Approval</h3>
+      <p class="sub">Workflow: Discount Approval &nbsp;|&nbsp; Phòng ban: Sales &nbsp;|&nbsp; Ngành: Retail</p>
+
+      <form class="editor-form" onsubmit="event.preventDefault(); alert('Demo: POST /workflows/{id}/customize\n{operation: edit_node, edit_mode: simple, diff: {...}}\n\nLog vào workflow_customizations + snapshot mới vào customer_workflow_versions.');">
+
+        <div class="form-row">
+          <label>Tên card</label>
+          <div class="control">
+            <input type="text" value="Manager Approval">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Owner</label>
+          <div class="control">
+            <select>
+              <option selected>Sales Manager</option>
+              <option>Sales Director</option>
+              <option>Regional Manager</option>
+              <option>(Tự động chọn theo phân vùng)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>SLA</label>
+          <div class="control" style="display:grid; grid-template-columns: 80px 100px; gap: 6px; align-items:center;">
+            <input type="text" value="4">
+            <select>
+              <option selected>giờ</option>
+              <option>phút</option>
+              <option>ngày làm việc</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Input từ card trước</label>
+          <div class="control">
+            <input type="text" value="deal_amount, discount_pct, margin_pct, risk_flag" disabled>
+            <span class="hint">Để thêm/sửa input — chuyển ADVANCED mode (cần thay đổi schema dữ liệu liên quan).</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Required docs</label>
+          <div class="control">
+            <div class="docs-chip-row" style="margin-bottom: 4px;">
+              <span class="doc-chip">Proposal (PDF) <span style="cursor:pointer; opacity:.6;">✕</span></span>
+              <span class="doc-chip">Quote (XLSX) <span style="cursor:pointer; opacity:.6;">✕</span></span>
+            </div>
+            <button type="button" class="btn-add-branch" style="align-self: flex-start;">+ Thêm document</button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>AI action <span class="mode-badge adv">ADV</span></label>
+          <div class="control">
+            <input type="text" value="Check margin risk vs lịch sử deal cùng customer" disabled>
+            <span class="hint">Sửa AI prompt → cần ADVANCED mode + tự test với dữ liệu mẫu trước publish.</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Branch (rẽ nhánh) <span class="mode-badge adv">ADV</span></label>
+          <div class="control">
+            <div class="branch-editor">
+              <div class="branch-edit-row">
+                <input type="text" value="approve = true" disabled>
+                <span style="color:var(--text-mute);">→</span>
+                <input type="text" value="Card 5: Áp dụng + ghi sổ" disabled>
+                <button type="button" class="btn-remove" disabled>✕</button>
+              </div>
+              <div class="branch-edit-row">
+                <input type="text" value="approve = false" disabled>
+                <span style="color:var(--text-mute);">→</span>
+                <input type="text" value="Reject + thông báo Sales" disabled>
+                <button type="button" class="btn-remove" disabled>✕</button>
+              </div>
+              <div class="branch-edit-row">
+                <input type="text" value="timeout 4h" disabled>
+                <span style="color:var(--text-mute);">→</span>
+                <input type="text" value="Escalate Card 4: CFO" disabled>
+                <button type="button" class="btn-remove" disabled>✕</button>
+              </div>
+              <button type="button" class="btn-add-branch" disabled>+ Thêm nhánh (cần ADVANCED)</button>
+            </div>
+            <!-- Issue 8: 2 buttons rõ trong Simple mode -->
+            <div class="branch-action-row">
+              <button type="button" class="btn outline-info"
+                      onclick="alert('Demo: mở modal read-only show full branch decision tree (graph view). SME đọc được logic mà không lo sửa nhầm.')">
+                🔍 Xem logic nhánh (read-only)
+              </button>
+              <button type="button" class="btn"
+                      onclick="alert('Demo: gọi PATCH /enterprises/{id}/workflow-mode {mode: advanced}. Yêu cầu role ANALYST hoặc plan ENT_BASIC+.')">
+                ⚙ Chuyển sang Advanced để sửa
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Output</label>
+          <div class="control">
+            <input type="text" value="approval_decision, approved_by, approved_at" disabled>
+            <span class="hint">Output shape do system định nghĩa, dùng cho card kế. Để đổi → ADVANCED mode + sửa branch của card trước.</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Threshold cảnh báo</label>
+          <div class="control" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; align-items:center;">
+            <div>
+              <span style="font-size:11.5px; color:var(--text-soft);">Warning (manager nhắc):</span>
+              <input type="text" value="2 giờ chưa phản hồi">
+            </div>
+            <div>
+              <span style="font-size:11.5px; color:var(--text-soft);">Critical (escalate):</span>
+              <input type="text" value="4 giờ → CFO">
+            </div>
+          </div>
+        </div>
+
+        <div class="editor-footer">
+          <button type="button" class="btn" onclick="alert('Test run: chạy card với dữ liệu mẫu sample_discount_pct=18, margin_pct=12 → mong đợi approve=manager.')">🧪 Test run với dữ liệu mẫu</button>
+          <button type="button" class="btn" onclick="goStep(3)">Huỷ</button>
+          <button type="submit" class="btn primary">💾 Lưu thay đổi</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Issue 14: Advanced mode reference (collapsible) — FE so sánh layout difference -->
+    <div class="advanced-ref" id="advanced-ref">
+      <h4 onclick="document.getElementById('advanced-ref').classList.toggle('open')">
+        Reference — ADVANCED mode layout (so sánh)
+      </h4>
+      <div class="advanced-ref-body">
+        <p style="font-size: 12.5px; color: var(--text-soft); margin-bottom: 12px;">
+          Khi tenant chuyển sang Advanced mode (qua nút "⚙ Chuyển sang Advanced để sửa" ở trên hoặc
+          <code>PATCH /enterprises/{id}/workflow-mode</code>), cùng card editor này thay đổi:
+        </p>
+        <div class="advanced-ref-cols">
+          <div class="advanced-ref-col simple">
+            <h5>SIMPLE (hiện tại) <span class="mode-badge">SIMPLE</span></h5>
+            <ul>
+              <li>✏ Edit: Tên card / Owner / SLA / Required docs / Threshold cảnh báo</li>
+              <li>🔒 Disabled: Input · AI action · Branch · Output (chỉ xem)</li>
+              <li>Branch row có 2 button rõ: <code>🔍 Xem logic nhánh</code> + <code>⚙ Chuyển sang Advanced</code></li>
+              <li>Save → <code>workflow_customizations</code> với <code>edit_mode='simple'</code> + snapshot <code>customer_workflow_versions</code></li>
+              <li>Role tối thiểu: <b>OPERATOR</b></li>
+            </ul>
+          </div>
+          <div class="advanced-ref-col adv">
+            <h5>ADVANCED (sau khi chuyển) <span class="mode-badge adv">ADVANCED</span></h5>
+            <ul>
+              <li>✏ Unlock: Input schema · AI prompt edit · Branch add/remove/edit · Output shape</li>
+              <li>Branch Inspector panel mở (right pane): xem + sửa <code>if/then/else/fallback</code> với test sample data button</li>
+              <li>Mode badge đổi sang xanh dương; chip <code>ADV</code> trên field nay là edit-icon</li>
+              <li>Sau ≥5 customization HOẶC schema change → system suggest "📨 Mở Change Request chính thức" (BA 4.2)</li>
+              <li>Role tối thiểu: <b>ANALYST</b> hoặc <b>MANAGER+</b>; plan-gated <b>ENT_BASIC trở lên</b></li>
+              <li>Save → <code>workflow_customizations</code> với <code>edit_mode='advanced'</code> + bắt buộc test run trước publish</li>
+            </ul>
+          </div>
+        </div>
+        <p style="font-size: 12px; color: var(--text-mute); margin-top: 10px;">
+          <b>Developer mode</b> không demo ở đây — Developer = canvas drag-drop 45 node-type catalog
+          + YAML export/import + K-17 <code>side_effect_class</code> exposed + Saga compensation +
+          custom node type. Plan-gated qua hợp đồng Custom Implementation. Xem
+          <code>feature-screens.html § P2-26 Workflow Builder</code> cho 3-mode spec đầy đủ.
+        </p>
+      </div>
+    </div>
+
+    <div style="margin-top: 12px;">
+      <button class="btn" onclick="goStep(3)">← Quay lại workflow</button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <div class="footnote">
+    <b>BE mapping (cho dev / AI agent):</b><br>
+    Step 1 (Template Library) → <code>GET /industries/{id}/workflows?recommendation_level=core</code>
+    + per-dept filter từ <code>industry_workflow_links</code> (mig 101) joined với
+    <code>workflow_templates</code> (mig 054). &nbsp;|&nbsp;
+    Step 2 (Template Detail) → <code>GET /workflow-templates/{tid}</code> +
+    <code>GET /industries/{id}/departments</code> +
+    <code>GET /industries/{id}/kpis?dept_key=sales</code> +
+    <code>GET /industries/{id}/data-schemas</code> +
+    <code>GET /workflow-templates/{tid}/cross-links</code> (mig 057). &nbsp;|&nbsp;
+    Step 3 (Card Stack) → <code>POST /workflows/instantiate-from-template</code> (lần đầu mở; clone template thành tenant-owned
+    workflow row mig 053) + <code>GET /workflows/{wf_id}/nodes</code>. &nbsp;|&nbsp;
+    Step 4 (Card Editor) → <code>POST /workflows/{wf_id}/customize</code> với
+    <code>operation=edit_node</code>, <code>edit_mode=simple|advanced</code> →
+    Save → INSERT <code>workflow_customizations</code> + snapshot
+    <code>customer_workflow_versions</code> mới (K-2 immutable trigger).
+    <br><br>
+    <b>K-rule enforcement:</b>
+    <ul style="margin: 4px 0 0 18px;">
+      <li><b>K-1 RLS</b> — mọi <code>customer_workflow_*</code> + <code>workflow_customizations</code> tự động lọc theo <code>tenant_id</code> từ JWT.</li>
+      <li><b>K-2 immutable</b> — snapshot <code>customer_workflow_versions</code> bị trigger refuse UPDATE/DELETE; mỗi save = row mới.</li>
+      <li><b>K-12 anti-IDOR</b> — path <code>{wf_id}</code> phải thuộc tenant trong header <code>X-Enterprise-ID</code>; mismatch → 403 RFC 7807.</li>
+      <li><b>K-13 idempotency</b> — POST customize cần header <code>Idempotency-Key</code> (Redis TTL 24h API + Postgres <code>idempotency_records</code> TTL 7d node).</li>
+      <li><b>K-17 side_effect_class</b> — Simple mode chỉ exposed UI; Advanced mode hiển thị; Developer mode edit-able.</li>
+      <li><b>K-19 OTel</b> — mọi span ghi <code>tenant_id</code> + <code>workflow_id</code> + <code>customize.edit_mode</code> attribute.</li>
+    </ul>
+    <br>
+    <b>Mode gating:</b>
+    SIMPLE = SME inline edit (OPERATOR+); ADVANCED = analyst (ANALYST/MANAGER+, plan ENT_BASIC+); DEVELOPER = platform admin (Custom Implementation contract).
+    Field disabled trong Simple sẽ unlock khi tenant <code>PATCH /enterprises/{id}/workflow-mode</code> sang advanced.
+    Toggle mode trên header workflow (Step 3) chỉ enable button tương ứng với plan + role hiện tại.
+    <br><br>
+    <b>Internal docs reference:</b>
+    Spec đầy đủ ở <code>docs/sprint/feature-workflows.html</code> (catalog kỹ thuật — KHÔNG dành cho khách) ·
+    <code>docs/sprint/feature-screens.html § P2-26</code> (3-mode spec) ·
+    <code>docs/adr/0026-industry-template-3-tier-bootstrap.md</code> ·
+    <code>infrastructure/postgres/migrations/101_industry_templates.sql</code> →
+    <code>103_industry_templates_seed.sql</code> ·
+    <code>services/ai-orchestrator/routers/industry_bootstrap.py</code> ·
+    <code>docs/ba/4.2_Change_Request_Register.md</code> (cho luồng đổi industry destructive).
+  </div>
+
+</div>
+
+<script>
+function goStep(n) {
+  document.querySelectorAll('.wizard-step').forEach(s => {
+    const step = +s.dataset.step;
+    s.classList.toggle('active', step === n);
+    s.classList.toggle('done', step < n);
+  });
+  document.querySelectorAll('.step-panel').forEach(p => {
+    p.classList.toggle('active', +p.dataset.step === n);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Wizard nav click
+document.querySelectorAll('.wizard-step').forEach(s => {
+  s.addEventListener('click', () => goStep(+s.dataset.step));
+});
+
+// Dept tab swap (demo only — content stays as Sales)
+document.querySelectorAll('.dept-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.dept-tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+  });
+});
+
+// Workflow tile pick
+document.querySelectorAll('.workflow-tile').forEach(tile => {
+  tile.addEventListener('click', () => {
+    document.querySelectorAll('.workflow-tile').forEach(x => x.classList.remove('selected'));
+    tile.classList.add('selected');
+  });
+});
+
+// Mode toggle (demo only — Advanced/Developer disabled per plan-gating)
+document.querySelectorAll('.mode-toggle button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.disabled) return;
+    document.querySelectorAll('.mode-toggle button').forEach(x => x.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// Back-to-top button
+const _btt = document.querySelector('.back-to-top');
+if (_btt) {
+  window.addEventListener('scroll', () => {
+    _btt.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+}
+</script>
+
+<button class="back-to-top" aria-label="Scroll to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+</body>
+</html>

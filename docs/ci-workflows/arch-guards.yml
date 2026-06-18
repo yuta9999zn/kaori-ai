@@ -1,0 +1,189 @@
+name: arch-guards
+
+# Regression guards against the P0 defects documented in
+# docs/ARCHITECTURE_REVIEW.md §4. Currently ADVISORY (non-blocking) so
+# the repo can ship while P0s are being worked. Flip each step's
+# continue-on-error to `false` once the corresponding P0 is fixed on
+# main — that locks the regression out for good.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: arch-guards-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  guards:
+    name: architecture regression guards
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      # ─── G1: SecurityConfig must not blanket-deny platform paths ──
+      # FIXED in batch 4 (TrustedGatewayAuthFilter + explicit role matchers).
+      # Hard-fail now: any future commit that re-introduces a blanket deny
+      # without an explicit /api/v1/platform/** matcher breaks CI.
+      - name: G1 - SecurityConfig blanket-deny regression (ARCHITECTURE_REVIEW.md issue #1)
+        run: |
+          FILE=services/auth-service/src/main/java/com/kaorisystem/auth/security/SecurityConfig.java
+          if [ -f "$FILE" ]; then
+            if grep -qE 'anyRequest\(\)\.authenticated\(\)' "$FILE" \
+               && ! grep -qE 'requestMatchers\("/api/v1/platform/\*\*"\)' "$FILE"; then
+              echo "::error file=$FILE::G1 FAIL — anyRequest().authenticated() set but no explicit /api/v1/platform/** matcher. Platform endpoints return 403 in prod. See ARCHITECTURE_REVIEW.md §2.1."
+              exit 1
+            fi
+            echo "G1 PASS — SecurityConfig declares /api/v1/platform/** matcher OR has no blanket deny."
+          fi
+
+      # ─── G2: Kafka topic names must be in kaori.* namespace ───────
+      # FIXED in batch 5 (kafka_topics constants + kaori.* prefix
+      # everywhere). Hard-fail now: any commit that re-introduces a
+      # bare pipeline.X.Y string literal in service code breaks CI.
+      - name: G2 - Kafka topic namespace mismatch (ARCHITECTURE_REVIEW.md issue #2)
+        run: |
+          MATCHES=$(grep -rnE '"(pipeline\.(upload|bronze|silver|analysis)\.[a-z]+)"' \
+                    services/data-pipeline services/ai-orchestrator 2>/dev/null || true)
+          if [ -n "$MATCHES" ]; then
+            echo "::error::G2 FAIL — legacy pipeline.* topic literals still in code. Should migrate to kaori.* per CLAUDE.md §7."
+            echo "$MATCHES"
+            exit 1
+          fi
+          echo "G2 PASS — no legacy pipeline.* topic literals."
+
+      # ─── G3: JwtAuthFilter must not extract role without using it ──
+      # FIXED in batch 4 (gateway-side platform-path RBAC + auth-service
+      # SecurityConfig hasAnyRole). Hard-fail now: any commit that drops
+      # the role check while still extracting the role claim breaks CI.
+      - name: G3 - RBAC not enforced (ARCHITECTURE_REVIEW.md issue #3)
+        run: |
+          FILE=services/api-gateway/src/main/java/com/kaorisystem/gateway/filter/JwtAuthFilter.java
+          if [ -f "$FILE" ]; then
+            # extracts role claim but never checks hasRole / any role logic anywhere in gateway
+            EXTRACTS=$(grep -E 'claims\.get\("role"' "$FILE" | wc -l)
+            CHECKS=$(grep -rE 'hasAnyRole|hasRole|"SUPER_ADMIN"|"ADMIN"' services/api-gateway/src/main/java | wc -l)
+            if [ "$EXTRACTS" -gt 0 ] && [ "$CHECKS" -eq 0 ]; then
+              echo "::error file=$FILE::G3 FAIL — role claim extracted but no role predicates found anywhere in gateway. Privilege escalation risk."
+              exit 1
+            fi
+          fi
+          echo "G3 PASS — gateway enforces role predicates OR doesn't extract role."
+
+      # ─── G4: asyncpg pool must not connect as superuser kaori ──────
+      - name: G4 - RLS bypass via superuser pool (ARCHITECTURE_REVIEW.md issue #4)
+        continue-on-error: true
+        run: |
+          # look for DSN pattern using superuser "kaori" (not "kaori_app")
+          LEAKS=$(grep -rnE 'postgresql://kaori:[^@]+@' services/data-pipeline services/ai-orchestrator 2>/dev/null || true)
+          if [ -n "$LEAKS" ]; then
+            echo "::warning::G4 FAIL — asyncpg pool still uses superuser 'kaori' (not 'kaori_app'); RLS is bypassed."
+            echo "$LEAKS"
+            exit 1
+          fi
+          # also verify SET LOCAL app.enterprise_id is called somewhere
+          if ! grep -rqE "SET LOCAL app\.enterprise_id|set_config.*app\.enterprise_id" services/; then
+            echo "::warning::G4 FAIL — no SET LOCAL app.enterprise_id call found anywhere; RLS policies cannot enforce."
+            exit 1
+          fi
+          echo "G4 PASS — pool uses kaori_app and app.enterprise_id is set."
+
+      # ─── G5: kafka_producer.send_event must not swallow errors ─────
+      - name: G5 - Silent Kafka error swallow (ARCHITECTURE_REVIEW.md issue #5)
+        continue-on-error: true
+        run: |
+          FILE=services/data-pipeline/shared/kafka_producer.py
+          if [ -f "$FILE" ]; then
+            # look for the exact pattern: except X as e: ... log.error(...) <no raise>
+            if grep -Pzo '(?s)except.*?:\s*\n\s*log\.error\([^)]+\)\s*\n(?![^#]*raise)' "$FILE" >/dev/null 2>&1; then
+              echo "::warning file=$FILE::G5 FAIL — send_event still catches and swallows without raising. Need outbox pattern or propagate."
+              exit 1
+            fi
+          fi
+          echo "G5 PASS — kafka_producer.py does not silently swallow errors."
+
+      # ─── G6: Consumer must not use auto_offset_reset=latest + auto_commit ──
+      - name: G6 - Lossy Kafka consumer (ARCHITECTURE_REVIEW.md issue #5 cont.)
+        continue-on-error: true
+        run: |
+          FILE=services/ai-orchestrator/consumers/pipeline_consumer.py
+          if [ -f "$FILE" ]; then
+            if grep -qE 'auto_offset_reset\s*=\s*"latest"' "$FILE" \
+               && grep -qE 'enable_auto_commit\s*=\s*True' "$FILE"; then
+              echo "::warning file=$FILE::G6 FAIL — consumer uses auto_offset_reset=latest AND enable_auto_commit=True. Any downtime = permanent event loss."
+              exit 1
+            fi
+          fi
+          echo "G6 PASS — consumer has safe offset/commit config."
+
+      # ─── G7: LLM router must write decision_audit_log (K-6) ────────
+      # FIXED in batch 5 (shared/audit.py + audit.log_decision call in
+      # llm_router.complete). Hard-fail now: any commit that drops the
+      # audit hook from llm_router breaks CI.
+      - name: G7 - K-6 audit missing in LLM calls (ARCHITECTURE_REVIEW.md issue #6)
+        run: |
+          FILE=services/ai-orchestrator/engine/llm_router.py
+          if [ -f "$FILE" ]; then
+            if ! grep -qE 'decision_audit_log|audit\.log_decision|log_decision\(' "$FILE"; then
+              echo "::error file=$FILE::G7 FAIL — LLM router makes inference calls but writes no audit entry. K-6 invariant broken."
+              exit 1
+            fi
+          fi
+          echo "G7 PASS — LLM router writes audit entries."
+
+      # ─── G8: background parse task must not be fire-and-forget ─────
+      - name: G8 - Durability loss on bronze parse (ARCHITECTURE_REVIEW.md issue #10)
+        continue-on-error: true
+        run: |
+          FILE=services/data-pipeline/bronze/ingestor.py
+          if [ -f "$FILE" ] && grep -qE 'asyncio\.create_task\(_parse_and_land' "$FILE"; then
+            echo "::warning file=$FILE::G8 FAIL — _parse_and_land still spawned via asyncio.create_task (fire-and-forget). Pod restart = stuck pipeline_runs."
+            exit 1
+          fi
+          echo "G8 PASS — bronze parse uses durable queue (not create_task)."
+
+      # ─── G9: .env must never be tracked ────────────────────────────
+      - name: G9 - .env protection
+        continue-on-error: false      # HARD FAIL — this one is absolute
+        run: |
+          if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+            echo "::error file=.env::G9 FAIL — .env is tracked in git. Revert immediately + rotate every secret it contains."
+            exit 1
+          fi
+          if ! grep -qE '^\.env$' .gitignore; then
+            echo "::error file=.gitignore::G9 FAIL — .gitignore does not exclude .env."
+            exit 1
+          fi
+          echo "G9 PASS — .env is ignored and not tracked."
+
+      # ─── G10: Kafka schema additive-only enforcement (Issue #4) ────
+      # Diffs every infrastructure/kafka/schemas/*.json against the PR
+      # base branch and blocks rename / remove / type-narrow / required-
+      # tightening. New schema files are allowed to declare any required
+      # fields (no consumer to break). See infrastructure/kafka/schemas/README.md.
+      - name: G10 - Kafka contract additive-only (Issue #4)
+        continue-on-error: false      # HARD FAIL — additive is the whole point
+        env:
+          # The script auto-detects origin/main when KAORI_KAFKA_BASE_REF
+          # isn't set, but PRs run in detached-HEAD mode where origin/main
+          # may not be the right base. Pin it explicitly to the PR target.
+          KAORI_KAFKA_BASE_REF: ${{ github.event.pull_request.base.sha || 'origin/main' }}
+        run: |
+          python scripts/check-kafka-contracts.py
+
+      # ─── Summary line for PR reviewers ─────────────────────────────
+      - name: Summary
+        if: always()
+        run: |
+          echo "Regression guards are advisory except G9 (.env protection)." >> "$GITHUB_STEP_SUMMARY"
+          echo "Flip individual guards to continue-on-error: false as each P0 lands on main." >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "See docs/ARCHITECTURE_REVIEW.md §4 for full defect list." >> "$GITHUB_STEP_SUMMARY"

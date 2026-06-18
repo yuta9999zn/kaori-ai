@@ -1,0 +1,1653 @@
+{
+  "schema_version": 1,
+  "doc_filename": "876924133-Data-Visualization-and-Storytelling-With-Tableau-Mamta-Mittal.pdf",
+  "source_backend": "pypdf_local_toc",
+  "root": {
+    "title": "876924133-Data-Visualization-and-Storytelling-With-Tableau-Mamta-Mittal",
+    "summary": "Local-TOC extracted index for 876924133-Data-Visualization-and-Storytelling-With-Tableau-Mamta-Mittal.pdf (477 pages).",
+    "page_start": 1,
+    "page_end": 477,
+    "children": [
+      {
+        "title": "Cover",
+        "summary": "Cover (p.1-1)",
+        "page_start": 1,
+        "page_end": 1,
+        "children": []
+      },
+      {
+        "title": "Half Title",
+        "summary": "Half Title (p.2-2)",
+        "page_start": 2,
+        "page_end": 2,
+        "children": []
+      },
+      {
+        "title": "Series Page",
+        "summary": "Series Page (p.3-3)",
+        "page_start": 3,
+        "page_end": 3,
+        "children": []
+      },
+      {
+        "title": "Title Page",
+        "summary": "Title Page (p.4-4)",
+        "page_start": 4,
+        "page_end": 4,
+        "children": []
+      },
+      {
+        "title": "Copyright Page",
+        "summary": "Copyright Page (p.5-5)",
+        "page_start": 5,
+        "page_end": 5,
+        "children": []
+      },
+      {
+        "title": "Table of Contents",
+        "summary": "Table of Contents (p.6-11)",
+        "page_start": 6,
+        "page_end": 11,
+        "children": []
+      },
+      {
+        "title": "Preface",
+        "summary": "Preface (p.12-14)",
+        "page_start": 12,
+        "page_end": 14,
+        "children": []
+      },
+      {
+        "title": "Acknowledgments",
+        "summary": "Acknowledgments (p.15-15)",
+        "page_start": 15,
+        "page_end": 15,
+        "children": []
+      },
+      {
+        "title": "Authors’ Biography",
+        "summary": "Authors’ Biography (p.16-17)",
+        "page_start": 16,
+        "page_end": 17,
+        "children": []
+      },
+      {
+        "title": "Chapter 1 Getting Started with Data Visualization",
+        "summary": "Chapter 1 Getting Started with Data Visualization (p.18-18)",
+        "page_start": 18,
+        "page_end": 18,
+        "children": [
+          {
+            "title": "1.1 Introduction to Data and Its Types",
+            "summary": "1.1 Introduction to Data and Its Types (p.18-18)",
+            "page_start": 18,
+            "page_end": 18,
+            "children": [
+              {
+                "title": "1.1.1 Categories of Data",
+                "summary": "1.1.1 Categories of Data (p.18-19)",
+                "page_start": 18,
+                "page_end": 19,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "1.2 Data Analysis Lifecycle",
+            "summary": "1.2 Data Analysis Lifecycle (p.20-20)",
+            "page_start": 20,
+            "page_end": 20,
+            "children": []
+          },
+          {
+            "title": "1.3 Data Visualization in Data Analysis",
+            "summary": "1.3 Data Visualization in Data Analysis (p.21-21)",
+            "page_start": 21,
+            "page_end": 21,
+            "children": [
+              {
+                "title": "1.3.1 Need for Data Visualization",
+                "summary": "1.3.1 Need for Data Visualization (p.21-23)",
+                "page_start": 21,
+                "page_end": 23,
+                "children": []
+              },
+              {
+                "title": "1.3.2 Pros and Cons of Data Visualization",
+                "summary": "1.3.2 Pros and Cons of Data Visualization (p.24-24)",
+                "page_start": 24,
+                "page_end": 24,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "1.4 Popular Tools for Data Visualization",
+            "summary": "1.4 Popular Tools for Data Visualization (p.24-24)",
+            "page_start": 24,
+            "page_end": 24,
+            "children": []
+          },
+          {
+            "title": "Key Notes",
+            "summary": "Key Notes (p.25-25)",
+            "page_start": 25,
+            "page_end": 25,
+            "children": []
+          },
+          {
+            "title": "Test Your Skills",
+            "summary": "Test Your Skills (p.26-26)",
+            "page_start": 26,
+            "page_end": 26,
+            "children": []
+          },
+          {
+            "title": "References",
+            "summary": "References (p.26-26)",
+            "page_start": 26,
+            "page_end": 26,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Chapter 2 Tableau for Visualization",
+        "summary": "Chapter 2 Tableau for Visualization (p.27-27)",
+        "page_start": 27,
+        "page_end": 27,
+        "children": [
+          {
+            "title": "2.1 Introducing Tableau",
+            "summary": "2.1 Introducing Tableau (p.27-27)",
+            "page_start": 27,
+            "page_end": 27,
+            "children": [
+              {
+                "title": "2.1.1 Characteristic Features of Tableau",
+                "summary": "2.1.1 Characteristic Features of Tableau (p.28-28)",
+                "page_start": 28,
+                "page_end": 28,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "2.2 Different Tableau Products",
+            "summary": "2.2 Different Tableau Products (p.29-29)",
+            "page_start": 29,
+            "page_end": 29,
+            "children": []
+          },
+          {
+            "title": "2.3 Tableau Server Architecture",
+            "summary": "2.3 Tableau Server Architecture (p.30-32)",
+            "page_start": 30,
+            "page_end": 32,
+            "children": []
+          },
+          {
+            "title": "2.4 Tableau Download and Installation",
+            "summary": "2.4 Tableau Download and Installation (p.33-35)",
+            "page_start": 33,
+            "page_end": 35,
+            "children": []
+          },
+          {
+            "title": "2.5 Tableau Data Types",
+            "summary": "2.5 Tableau Data Types (p.36-36)",
+            "page_start": 36,
+            "page_end": 36,
+            "children": []
+          },
+          {
+            "title": "2.6 Tableau File Types",
+            "summary": "2.6 Tableau File Types (p.37-37)",
+            "page_start": 37,
+            "page_end": 37,
+            "children": []
+          },
+          {
+            "title": "2.7 Data Preparation Tasks",
+            "summary": "2.7 Data Preparation Tasks (p.38-38)",
+            "page_start": 38,
+            "page_end": 38,
+            "children": [
+              {
+                "title": "2.7.1 Tableau Prep for Data Preparation",
+                "summary": "2.7.1 Tableau Prep for Data Preparation (p.39-39)",
+                "page_start": 39,
+                "page_end": 39,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "2.8 Publishing in Tableau Public",
+            "summary": "2.8 Publishing in Tableau Public (p.40-43)",
+            "page_start": 40,
+            "page_end": 43,
+            "children": []
+          },
+          {
+            "title": "Key Notes",
+            "summary": "Key Notes (p.44-44)",
+            "page_start": 44,
+            "page_end": 44,
+            "children": []
+          },
+          {
+            "title": "Test Your Skills",
+            "summary": "Test Your Skills (p.44-44)",
+            "page_start": 44,
+            "page_end": 44,
+            "children": []
+          },
+          {
+            "title": "References",
+            "summary": "References (p.44-45)",
+            "page_start": 44,
+            "page_end": 45,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Chapter 3 Connecting Data in Tableau",
+        "summary": "Chapter 3 Connecting Data in Tableau (p.46-46)",
+        "page_start": 46,
+        "page_end": 46,
+        "children": [
+          {
+            "title": "3.1 Different Data Sources in Tableau",
+            "summary": "3.1 Different Data Sources in Tableau (p.46-49)",
+            "page_start": 46,
+            "page_end": 49,
+            "children": []
+          },
+          {
+            "title": "3.2 Extracting Data in Tableau",
+            "summary": "3.2 Extracting Data in Tableau (p.50-50)",
+            "page_start": 50,
+            "page_end": 50,
+            "children": [
+              {
+                "title": "3.2.1 Creating an Extract",
+                "summary": "3.2.1 Creating an Extract (p.50-53)",
+                "page_start": 50,
+                "page_end": 53,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "3.3 RDBMS Basics and Types of Keys",
+            "summary": "3.3 RDBMS Basics and Types of Keys (p.54-54)",
+            "page_start": 54,
+            "page_end": 54,
+            "children": []
+          },
+          {
+            "title": "3.4 Data Joins in Tableau",
+            "summary": "3.4 Data Joins in Tableau (p.55-57)",
+            "page_start": 55,
+            "page_end": 57,
+            "children": []
+          },
+          {
+            "title": "3.5 Data Import and Blending in Tableau",
+            "summary": "3.5 Data Import and Blending in Tableau (p.58-63)",
+            "page_start": 58,
+            "page_end": 63,
+            "children": []
+          },
+          {
+            "title": "3.6 Data Sorting in Tableau",
+            "summary": "3.6 Data Sorting in Tableau (p.64-65)",
+            "page_start": 64,
+            "page_end": 65,
+            "children": []
+          },
+          {
+            "title": "3.7 Data Pre-Processing Using Tableau Prep",
+            "summary": "3.7 Data Pre-Processing Using Tableau Prep (p.66-66)",
+            "page_start": 66,
+            "page_end": 66,
+            "children": [
+              {
+                "title": "3.7.1 Data Cleaning",
+                "summary": "3.7.1 Data Cleaning (p.67-81)",
+                "page_start": 67,
+                "page_end": 81,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "Key Notes",
+            "summary": "Key Notes (p.82-82)",
+            "page_start": 82,
+            "page_end": 82,
+            "children": []
+          },
+          {
+            "title": "Test Your Skills",
+            "summary": "Test Your Skills (p.83-83)",
+            "page_start": 83,
+            "page_end": 83,
+            "children": []
+          },
+          {
+            "title": "References",
+            "summary": "References (p.83-83)",
+            "page_start": 83,
+            "page_end": 83,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Chapter 4 Table Calculations and Level of Detail",
+        "summary": "Chapter 4 Table Calculations and Level of Detail (p.84-84)",
+        "page_start": 84,
+        "page_end": 84,
+        "children": [
+          {
+            "title": "4.1 Introduction to Calculations",
+            "summary": "4.1 Introduction to Calculations (p.84-84)",
+            "page_start": 84,
+            "page_end": 84,
+            "children": []
+          },
+          {
+            "title": "4.2 Tableau Functions",
+            "summary": "4.2 Tableau Functions (p.85-87)",
+            "page_start": 85,
+            "page_end": 87,
+            "children": []
+          },
+          {
+            "title": "4.3 Tableau Operators",
+            "summary": "4.3 Tableau Operators (p.88-88)",
+            "page_start": 88,
+            "page_end": 88,
+            "children": [
+              {
+                "title": "4.3.1 General Operators",
+                "summary": "4.3.1 General Operators (p.88-88)",
+                "page_start": 88,
+                "page_end": 88,
+                "children": []
+              },
+              {
+                "title": "4.3.2 Arithmetic Operators",
+                "summary": "4.3.2 Arithmetic Operators (p.88-88)",
+                "page_start": 88,
+                "page_end": 88,
+                "children": []
+              },
+              {
+                "title": "4.3.3 Relational Operators",
+                "summary": "4.3.3 Relational Operators (p.89-89)",
+                "page_start": 89,
+                "page_end": 89,
+                "children": []
+              },
+              {
+                "title": "4.3.4 Logical Operators",
+                "summary": "4.3.4 Logical Operators (p.89-89)",
+                "page_start": 89,
+                "page_end": 89,
+                "children": []
+              },
+              {
+                "title": "4.3.5 Precedence of Operator",
+                "summary": "4.3.5 Precedence of Operator (p.90-90)",
+                "page_start": 90,
+                "page_end": 90,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "4.4 Tableau Calculations",
+            "summary": "4.4 Tableau Calculations (p.90-90)",
+            "page_start": 90,
+            "page_end": 90,
+            "children": [
+              {
+                "title": "4.4.1 Simple Expressions",
+                "summary": "4.4.1 Simple Expressions (p.90-93)",
+                "page_start": 90,
+                "page_end": 93,
+                "children": []
+              },
+              {
+                "title": "4.4.2 Table Calculations",
+                "summary": "4.4.2 Table Calculations (p.94-97)",
+                "page_start": 94,
+                "page_end": 97,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "4.5 Level of Detail (LOD) Expressions",
+            "summary": "4.5 Level of Detail (LOD) Expressions (p.98-98)",
+            "page_start": 98,
+            "page_end": 98,
+            "children": [
+              {
+                "title": "4.5.1 Types of LOD Expressions",
+                "summary": "4.5.1 Types of LOD Expressions (p.98-102)",
+                "page_start": 98,
+                "page_end": 102,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "Key Notes",
+            "summary": "Key Notes (p.103-103)",
+            "page_start": 103,
+            "page_end": 103,
+            "children": []
+          },
+          {
+            "title": "Test Your Skills",
+            "summary": "Test Your Skills (p.103-103)",
+            "page_start": 103,
+            "page_end": 103,
+            "children": []
+          },
+          {
+            "title": "References",
+            "summary": "References (p.104-104)",
+            "page_start": 104,
+            "page_end": 104,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Chapter 5 Sorting and Filters in Tableau",
+        "summary": "Chapter 5 Sorting and Filters in Tableau (p.105-105)",
+        "page_start": 105,
+        "page_end": 105,
+        "children": [
+          {
+            "title": "5.1 Filters in Tableau",
+            "summary": "5.1 Filters in Tableau (p.105-105)",
+            "page_start": 105,
+            "page_end": 105,
+            "children": [
+              {
+                "title": "5.1.1 Types of Filters in Tableau",
+                "summary": "5.1.1 Types of Filters in Tableau (p.105-128)",
+                "page_start": 105,
+                "page_end": 128,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "5.2 Sorting in Tableau",
+            "summary": "5.2 Sorting in Tableau (p.129-129)",
+            "page_start": 129,
+            "page_end": 129,
+            "children": [
+              {
+                "title": "5.2.1 Toolbar Sorting",
+                "summary": "5.2.1 Toolbar Sorting (p.129-131)",
+                "page_start": 129,
+                "page_end": 131,
+                "children": []
+              },
+              {
+                "title": "5.2.2 Axis Sorting",
+                "summary": "5.2.2 Axis Sorting (p.132-132)",
+                "page_start": 132,
+                "page_end": 132,
+                "children": []
+              },
+              {
+                "title": "5.2.3 Manual Sorting",
+                "summary": "5.2.3 Manual Sorting (p.133-133)",
+                "page_start": 133,
+                "page_end": 133,
+                "children": []
+              },
+              {
+                "title": "5.2.4 Nested Sorting",
+                "summary": "5.2.4 Nested Sorting (p.134-141)",
+                "page_start": 134,
+                "page_end": 141,
+                "children": []
+              },
+              {
+                "title": "5.2.5 Custom Sorting",
+                "summary": "5.2.5 Custom Sorting (p.142-146)",
+                "page_start": 142,
+                "page_end": 146,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "5.3 Group, Hierarchy, and Set in Tableau",
+            "summary": "5.3 Group, Hierarchy, and Set in Tableau (p.147-147)",
+            "page_start": 147,
+            "page_end": 147,
+            "children": [
+              {
+                "title": "5.3.1 Creating and Managing Group",
+                "summary": "5.3.1 Creating and Managing Group (p.147-148)",
+                "page_start": 147,
+                "page_end": 148,
+                "children": []
+              },
+              {
+                "title": "5.3.2 Creating Hierarchy Structure",
+                "summary": "5.3.2 Creating Hierarchy Structure (p.149-150)",
+                "page_start": 149,
+                "page_end": 150,
+                "children": []
+              },
+              {
+                "title": "5.3.3 Combining Dimensions into Sets",
+                "summary": "5.3.3 Combining Dimensions into Sets (p.151-154)",
+                "page_start": 151,
+                "page_end": 154,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "Key Notes",
+            "summary": "Key Notes (p.155-155)",
+            "page_start": 155,
+            "page_end": 155,
+            "children": []
+          },
+          {
+            "title": "Test Your Skills",
+            "summary": "Test Your Skills (p.156-156)",
+            "page_start": 156,
+            "page_end": 156,
+            "children": []
+          },
+          {
+            "title": "References",
+            "summary": "References (p.156-156)",
+            "page_start": 156,
+            "page_end": 156,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Chapter 6 Charts in Tableau",
+        "summary": "Chapter 6 Charts in Tableau (p.157-157)",
+        "page_start": 157,
+        "page_end": 157,
+        "children": [
+          {
+            "title": "6.1 Introducing Charts in Tableau",
+            "summary": "6.1 Introducing Charts in Tableau (p.157-157)",
+            "page_start": 157,
+            "page_end": 157,
+            "children": [
+              {
+                "title": "6.1.1 Types of Charts in Tableau",
+                "summary": "6.1.1 Types of Charts in Tableau (p.157-166)",
+                "page_start": 157,
+                "page_end": 166,
+                "children": []
+              },
+              {
+                "title": "6.1.2 When to Choose Which Chart?",
+                "summary": "6.1.2 When to Choose Which Chart? (p.167-170)",
+                "page_start": 167,
+                "page_end": 170,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "6.2 Color Schemes and Palettes in Tableau",
+            "summary": "6.2 Color Schemes and Palettes in Tableau (p.171-171)",
+            "page_start": 171,
+            "page_end": 171,
+            "children": [
+              {
+                "title": "6.2.1 Qualitative or Categorical Color Palette",
+                "summary": "6.2.1 Qualitative or Categorical Color Palette (p.171-174)",
+                "page_start": 171,
+                "page_end": 174,
+                "children": []
+              },
+              {
+                "title": "6.2.2 Quantitative Color Palette",
+                "summary": "6.2.2 Quantitative Color Palette (p.175-176)",
+                "page_start": 175,
+                "page_end": 176,
+                "children": []
+              },
+              {
+                "title": "6.2.3 Configuring Color Effects",
+                "summary": "6.2.3 Configuring Color Effects (p.177-178)",
+                "page_start": 177,
+                "page_end": 178,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "6.3 Color Choosing Best Practices",
+            "summary": "6.3 Color Choosing Best Practices (p.179-179)",
+            "page_start": 179,
+            "page_end": 179,
+            "children": []
+          },
+          {
+            "title": "Key Notes",
+            "summary": "Key Notes (p.180-180)",
+            "page_start": 180,
+            "page_end": 180,
+            "children": []
+          },
+          {
+            "title": "Test Your Skills",
+            "summary": "Test Your Skills (p.180-180)",
+            "page_start": 180,
+            "page_end": 180,
+            "children": []
+          },
+          {
+            "title": "References",
+            "summary": "References (p.180-180)",
+            "page_start": 180,
+            "page_end": 180,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Chapter 7 Comparison Charts in Tableau",
+        "summary": "Chapter 7 Comparison Charts in Tableau (p.181-181)",
+        "page_start": 181,
+        "page_end": 181,
+        "children": [
+          {
+            "title": "7.1 Introduction to Comparison Charts",
+            "summary": "7.1 Introduction to Comparison Charts (p.181-181)",
+            "page_start": 181,
+            "page_end": 181,
+            "children": [
+              {
+                "title": "7.1.1 Text Table",
+                "summary": "7.1.1 Text Table (p.181-185)",
+                "page_start": 181,
+                "page_end": 185,
+                "children": []
+              },
+              {
+                "title": "7.1.2 Bar Graph for Comparison",
+                "summary": "7.1.2 Bar Graph for Comparison (p.186-203)",
+                "page_start": 186,
+                "page_end": 203,
+                "children": []
+              },
+              {
+                "title": "7.1.3 Lollipop Chart for Presentation",
+                "summary": "7.1.3 Lollipop Chart for Presentation (p.204-208)",
+                "page_start": 204,
+                "page_end": 208,
+                "children": []
+              },
+              {
+                "title": "7.1.4 Line Chart in Tableau",
+                "summary": "7.1.4 Line Chart in Tableau (p.209-211)",
+                "page_start": 209,
+                "page_end": 211,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "7.2 Studying Changes across Time: Trends and Forecasting",
+            "summary": "7.2 Studying Changes across Time: Trends and Forecasting (p.212-212)",
+            "page_start": 212,
+            "page_end": 212,
+            "children": [
+              {
+                "title": "7.2.1 Components of Time Series",
+                "summary": "7.2.1 Components of Time Series (p.213-216)",
+                "page_start": 213,
+                "page_end": 216,
+                "children": []
+              },
+              {
+                "title": "7.2.2 Decomposition Models for Time Series Analysis",
+                "summary": "7.2.2 Decomposition Models for Time Series Analysis (p.217-217)",
+                "page_start": 217,
+                "page_end": 217,
+                "children": []
+              },
+              {
+                "title": "7.2.3 Time Distribution Charts in Tableau",
+                "summary": "7.2.3 Time Distribution Charts in Tableau (p.218-225)",
+                "page_start": 218,
+                "page_end": 225,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "7.3 Trend Lines and Forecasting",
+            "summary": "7.3 Trend Lines and Forecasting (p.226-226)",
+            "page_start": 226,
+            "page_end": 226,
+            "children": [
+              {
+                "title": "7.3.1 Types of Trend Lines",
+                "summary": "7.3.1 Types of Trend Lines (p.226-247)",
+                "page_start": 226,
+                "page_end": 247,
+                "children": []
+              },
+              {
+                "title": "7.3.2 Significance of Plotted Trend Line",
+                "summary": "7.3.2 Significance of Plotted Trend Line (p.248-249)",
+                "page_start": 248,
+                "page_end": 249,
+                "children": []
+              },
+              {
+                "title": "7.3.3 Forecast for Decision-Making",
+                "summary": "7.3.3 Forecast for Decision-Making (p.250-256)",
+                "page_start": 250,
+                "page_end": 256,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "7.4 Statistical Models for Trend Analysis",
+            "summary": "7.4 Statistical Models for Trend Analysis (p.257-257)",
+            "page_start": 257,
+            "page_end": 257,
+            "children": [
+              {
+                "title": "7.4.1 Case Study for Creating Moving Average Trend",
+                "summary": "7.4.1 Case Study for Creating Moving Average Trend (p.258-264)",
+                "page_start": 258,
+                "page_end": 264,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "Key Notes",
+            "summary": "Key Notes (p.265-265)",
+            "page_start": 265,
+            "page_end": 265,
+            "children": []
+          },
+          {
+            "title": "Practice Case Study",
+            "summary": "Practice Case Study (p.265-265)",
+            "page_start": 265,
+            "page_end": 265,
+            "children": []
+          },
+          {
+            "title": "Test Your Skills",
+            "summary": "Test Your Skills (p.265-265)",
+            "page_start": 265,
+            "page_end": 265,
+            "children": []
+          },
+          {
+            "title": "References",
+            "summary": "References (p.265-266)",
+            "page_start": 265,
+            "page_end": 266,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Chapter 8 Distribution Charts in Tableau",
+        "summary": "Chapter 8 Distribution Charts in Tableau (p.267-267)",
+        "page_start": 267,
+        "page_end": 267,
+        "children": [
+          {
+            "title": "8.1 Introduction to Distribution Charts",
+            "summary": "8.1 Introduction to Distribution Charts (p.267-267)",
+            "page_start": 267,
+            "page_end": 267,
+            "children": []
+          },
+          {
+            "title": "8.2 Histogram with Its Types and Components",
+            "summary": "8.2 Histogram with Its Types and Components (p.267-267)",
+            "page_start": 267,
+            "page_end": 267,
+            "children": [
+              {
+                "title": "8.2.1 Structure of Histogram",
+                "summary": "8.2.1 Structure of Histogram (p.268-268)",
+                "page_start": 268,
+                "page_end": 268,
+                "children": []
+              },
+              {
+                "title": "8.2.2 Characteristics of Histograms",
+                "summary": "8.2.2 Characteristics of Histograms (p.268-272)",
+                "page_start": 268,
+                "page_end": 272,
+                "children": []
+              },
+              {
+                "title": "8.2.3 Case Study",
+                "summary": "8.2.3 Case Study (p.273-277)",
+                "page_start": 273,
+                "page_end": 277,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "8.3 Scatter Plot and Matrix",
+            "summary": "8.3 Scatter Plot and Matrix (p.278-278)",
+            "page_start": 278,
+            "page_end": 278,
+            "children": [
+              {
+                "title": "8.3.1 Interpreting Scatter Plots",
+                "summary": "8.3.1 Interpreting Scatter Plots (p.278-278)",
+                "page_start": 278,
+                "page_end": 278,
+                "children": []
+              },
+              {
+                "title": "8.3.2 Type and Strength of Correlation in Scatter Plot",
+                "summary": "8.3.2 Type and Strength of Correlation in Scatter Plot (p.279-279)",
+                "page_start": 279,
+                "page_end": 279,
+                "children": []
+              },
+              {
+                "title": "8.3.3 Calculate Correlation in Scatter Plot",
+                "summary": "8.3.3 Calculate Correlation in Scatter Plot (p.279-279)",
+                "page_start": 279,
+                "page_end": 279,
+                "children": []
+              },
+              {
+                "title": "8.3.4 Strength of Correlational Relationship",
+                "summary": "8.3.4 Strength of Correlational Relationship (p.279-280)",
+                "page_start": 279,
+                "page_end": 280,
+                "children": []
+              },
+              {
+                "title": "8.3.5 Shape Followed in Correlational Relationship",
+                "summary": "8.3.5 Shape Followed in Correlational Relationship (p.281-281)",
+                "page_start": 281,
+                "page_end": 281,
+                "children": []
+              },
+              {
+                "title": "8.3.6 Trendline, Clusters and Outliers in Scatter Plot",
+                "summary": "8.3.6 Trendline, Clusters and Outliers in Scatter Plot (p.281-283)",
+                "page_start": 281,
+                "page_end": 283,
+                "children": []
+              },
+              {
+                "title": "8.3.7 Case Study",
+                "summary": "8.3.7 Case Study (p.284-291)",
+                "page_start": 284,
+                "page_end": 291,
+                "children": []
+              },
+              {
+                "title": "8.3.8 Scatter Plot Matrix",
+                "summary": "8.3.8 Scatter Plot Matrix (p.292-292)",
+                "page_start": 292,
+                "page_end": 292,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "8.4 Bubble Chart for Distribution",
+            "summary": "8.4 Bubble Chart for Distribution (p.293-293)",
+            "page_start": 293,
+            "page_end": 293,
+            "children": [
+              {
+                "title": "8.4.1 Features of Bubble Chart",
+                "summary": "8.4.1 Features of Bubble Chart (p.293-293)",
+                "page_start": 293,
+                "page_end": 293,
+                "children": []
+              },
+              {
+                "title": "8.4.2 Case Study",
+                "summary": "8.4.2 Case Study (p.294-298)",
+                "page_start": 294,
+                "page_end": 298,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "8.5 Radar Chart for Multivariate Data",
+            "summary": "8.5 Radar Chart for Multivariate Data (p.299-299)",
+            "page_start": 299,
+            "page_end": 299,
+            "children": [
+              {
+                "title": "8.5.1 Components of Radar Chart",
+                "summary": "8.5.1 Components of Radar Chart (p.300-300)",
+                "page_start": 300,
+                "page_end": 300,
+                "children": []
+              },
+              {
+                "title": "8.5.2 Mathematical Foundations for Radar Diagram",
+                "summary": "8.5.2 Mathematical Foundations for Radar Diagram (p.300-301)",
+                "page_start": 300,
+                "page_end": 301,
+                "children": []
+              },
+              {
+                "title": "8.5.3 Case Study",
+                "summary": "8.5.3 Case Study (p.302-314)",
+                "page_start": 302,
+                "page_end": 314,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "8.6 Heat Map with Color Variations",
+            "summary": "8.6 Heat Map with Color Variations (p.315-315)",
+            "page_start": 315,
+            "page_end": 315,
+            "children": [
+              {
+                "title": "8.6.1 Features of Heat Map",
+                "summary": "8.6.1 Features of Heat Map (p.316-316)",
+                "page_start": 316,
+                "page_end": 316,
+                "children": []
+              },
+              {
+                "title": "8.6.2 Case Study",
+                "summary": "8.6.2 Case Study (p.316-318)",
+                "page_start": 316,
+                "page_end": 318,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "8.7 Box Plot and Quartiles",
+            "summary": "8.7 Box Plot and Quartiles (p.319-319)",
+            "page_start": 319,
+            "page_end": 319,
+            "children": [
+              {
+                "title": "8.7.1 Characteristics of Box Plot",
+                "summary": "8.7.1 Characteristics of Box Plot (p.320-321)",
+                "page_start": 320,
+                "page_end": 321,
+                "children": []
+              },
+              {
+                "title": "8.7.2 Comparison Guidelines for Box Plots",
+                "summary": "8.7.2 Comparison Guidelines for Box Plots (p.322-322)",
+                "page_start": 322,
+                "page_end": 322,
+                "children": []
+              },
+              {
+                "title": "8.7.3 Case Study",
+                "summary": "8.7.3 Case Study (p.323-324)",
+                "page_start": 323,
+                "page_end": 324,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "Key Notes",
+            "summary": "Key Notes (p.325-325)",
+            "page_start": 325,
+            "page_end": 325,
+            "children": []
+          },
+          {
+            "title": "Practice Case Study",
+            "summary": "Practice Case Study (p.326-326)",
+            "page_start": 326,
+            "page_end": 326,
+            "children": []
+          },
+          {
+            "title": "Test Your Skills",
+            "summary": "Test Your Skills (p.326-326)",
+            "page_start": 326,
+            "page_end": 326,
+            "children": []
+          },
+          {
+            "title": "References",
+            "summary": "References (p.326-326)",
+            "page_start": 326,
+            "page_end": 326,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Chapter 9 Part-to-Whole Relationship: Composition Charts",
+        "summary": "Chapter 9 Part-to-Whole Relationship: Composition Charts (p.327-327)",
+        "page_start": 327,
+        "page_end": 327,
+        "children": [
+          {
+            "title": "9.1 Introduction to Composition Charts",
+            "summary": "9.1 Introduction to Composition Charts (p.327-327)",
+            "page_start": 327,
+            "page_end": 327,
+            "children": []
+          },
+          {
+            "title": "9.2 Charts for Static Composition",
+            "summary": "9.2 Charts for Static Composition (p.327-327)",
+            "page_start": 327,
+            "page_end": 327,
+            "children": [
+              {
+                "title": "9.2.1 Pie Chart for Categories",
+                "summary": "9.2.1 Pie Chart for Categories (p.327-333)",
+                "page_start": 327,
+                "page_end": 333,
+                "children": []
+              },
+              {
+                "title": "9.2.2 Donut Chart for Multiple Data Series",
+                "summary": "9.2.2 Donut Chart for Multiple Data Series (p.334-337)",
+                "page_start": 334,
+                "page_end": 337,
+                "children": []
+              },
+              {
+                "title": "9.2.3 Waterfall Chart to Analyze Value Changes",
+                "summary": "9.2.3 Waterfall Chart to Analyze Value Changes (p.338-342)",
+                "page_start": 338,
+                "page_end": 342,
+                "children": []
+              },
+              {
+                "title": "9.2.4 Tree Maps",
+                "summary": "9.2.4 Tree Maps (p.343-347)",
+                "page_start": 343,
+                "page_end": 347,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "9.3 Charts for Dynamic Composition over Time",
+            "summary": "9.3 Charts for Dynamic Composition over Time (p.348-348)",
+            "page_start": 348,
+            "page_end": 348,
+            "children": [
+              {
+                "title": "9.3.1 Stacked Area Charts",
+                "summary": "9.3.1 Stacked Area Charts (p.348-351)",
+                "page_start": 348,
+                "page_end": 351,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "Key Notes",
+            "summary": "Key Notes (p.352-352)",
+            "page_start": 352,
+            "page_end": 352,
+            "children": []
+          },
+          {
+            "title": "Practice Case Study",
+            "summary": "Practice Case Study (p.352-352)",
+            "page_start": 352,
+            "page_end": 352,
+            "children": []
+          },
+          {
+            "title": "Test Your Skills",
+            "summary": "Test Your Skills (p.352-352)",
+            "page_start": 352,
+            "page_end": 352,
+            "children": []
+          },
+          {
+            "title": "References",
+            "summary": "References (p.352-353)",
+            "page_start": 352,
+            "page_end": 353,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Chapter 10 Project Management with Evaluation Charts",
+        "summary": "Chapter 10 Project Management with Evaluation Charts (p.354-354)",
+        "page_start": 354,
+        "page_end": 354,
+        "children": [
+          {
+            "title": "10.1 Introduction Project and Project Management",
+            "summary": "10.1 Introduction Project and Project Management (p.354-354)",
+            "page_start": 354,
+            "page_end": 354,
+            "children": []
+          },
+          {
+            "title": "10.2 Project Management Charts",
+            "summary": "10.2 Project Management Charts (p.355-355)",
+            "page_start": 355,
+            "page_end": 355,
+            "children": [
+              {
+                "title": "10.2.1 Gauge Charts to Visualize Metrics",
+                "summary": "10.2.1 Gauge Charts to Visualize Metrics (p.356-375)",
+                "page_start": 356,
+                "page_end": 375,
+                "children": []
+              },
+              {
+                "title": "10.2.2 Calendar Reports",
+                "summary": "10.2.2 Calendar Reports (p.376-381)",
+                "page_start": 376,
+                "page_end": 381,
+                "children": []
+              },
+              {
+                "title": "10.2.3 Bullet Graph in Tableau",
+                "summary": "10.2.3 Bullet Graph in Tableau (p.382-387)",
+                "page_start": 382,
+                "page_end": 387,
+                "children": []
+              },
+              {
+                "title": "10.2.4 Gantt Chart for Project Planning",
+                "summary": "10.2.4 Gantt Chart for Project Planning (p.388-394)",
+                "page_start": 388,
+                "page_end": 394,
+                "children": []
+              },
+              {
+                "title": "10.2.5 Pareto Chart for Event Significance",
+                "summary": "10.2.5 Pareto Chart for Event Significance (p.395-401)",
+                "page_start": 395,
+                "page_end": 401,
+                "children": []
+              },
+              {
+                "title": "10.2.6 Responsibility Assignment Matrix (RAM)",
+                "summary": "10.2.6 Responsibility Assignment Matrix (RAM) (p.402-402)",
+                "page_start": 402,
+                "page_end": 402,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "10.3 Focus on Project Management Activities",
+            "summary": "10.3 Focus on Project Management Activities (p.402-402)",
+            "page_start": 402,
+            "page_end": 402,
+            "children": []
+          },
+          {
+            "title": "Key Notes",
+            "summary": "Key Notes (p.403-403)",
+            "page_start": 403,
+            "page_end": 403,
+            "children": []
+          },
+          {
+            "title": "Practice Case Study",
+            "summary": "Practice Case Study (p.403-403)",
+            "page_start": 403,
+            "page_end": 403,
+            "children": []
+          },
+          {
+            "title": "Test Your Skills",
+            "summary": "Test Your Skills (p.404-404)",
+            "page_start": 404,
+            "page_end": 404,
+            "children": []
+          },
+          {
+            "title": "References",
+            "summary": "References (p.404-404)",
+            "page_start": 404,
+            "page_end": 404,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Chapter 11 Maps in Tableau",
+        "summary": "Chapter 11 Maps in Tableau (p.405-405)",
+        "page_start": 405,
+        "page_end": 405,
+        "children": [
+          {
+            "title": "11.1 Introduction to Maps",
+            "summary": "11.1 Introduction to Maps (p.405-405)",
+            "page_start": 405,
+            "page_end": 405,
+            "children": []
+          },
+          {
+            "title": "11.2 Proportional Symbol Maps",
+            "summary": "11.2 Proportional Symbol Maps (p.406-406)",
+            "page_start": 406,
+            "page_end": 406,
+            "children": [
+              {
+                "title": "11.2.1 Case Study",
+                "summary": "11.2.1 Case Study (p.406-409)",
+                "page_start": 406,
+                "page_end": 409,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "11.3 Tableau Choropleth Maps (Filled Maps)",
+            "summary": "11.3 Tableau Choropleth Maps (Filled Maps) (p.410-410)",
+            "page_start": 410,
+            "page_end": 410,
+            "children": []
+          },
+          {
+            "title": "11.4 Point Distribution Maps",
+            "summary": "11.4 Point Distribution Maps (p.410-410)",
+            "page_start": 410,
+            "page_end": 410,
+            "children": [
+              {
+                "title": "11.4.1 Case Study",
+                "summary": "11.4.1 Case Study (p.410-415)",
+                "page_start": 410,
+                "page_end": 415,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "11.5 Flow Maps (Path Maps)",
+            "summary": "11.5 Flow Maps (Path Maps) (p.416-416)",
+            "page_start": 416,
+            "page_end": 416,
+            "children": [
+              {
+                "title": "11.5.1 Case Study",
+                "summary": "11.5.1 Case Study (p.416-420)",
+                "page_start": 416,
+                "page_end": 420,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "11.6 Spider Maps (Origin-Destination Maps)",
+            "summary": "11.6 Spider Maps (Origin-Destination Maps) (p.421-421)",
+            "page_start": 421,
+            "page_end": 421,
+            "children": [
+              {
+                "title": "11.6.1 Case Study",
+                "summary": "11.6.1 Case Study (p.421-425)",
+                "page_start": 421,
+                "page_end": 425,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "Key Notes",
+            "summary": "Key Notes (p.426-426)",
+            "page_start": 426,
+            "page_end": 426,
+            "children": []
+          },
+          {
+            "title": "Practice Case Study",
+            "summary": "Practice Case Study (p.427-427)",
+            "page_start": 427,
+            "page_end": 427,
+            "children": []
+          },
+          {
+            "title": "Test Your Skills",
+            "summary": "Test Your Skills (p.427-427)",
+            "page_start": 427,
+            "page_end": 427,
+            "children": []
+          },
+          {
+            "title": "References",
+            "summary": "References (p.427-427)",
+            "page_start": 427,
+            "page_end": 427,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Chapter 12 Designing Stories through Data",
+        "summary": "Chapter 12 Designing Stories through Data (p.428-428)",
+        "page_start": 428,
+        "page_end": 428,
+        "children": [
+          {
+            "title": "12.1 Introduction to Storytelling Concepts",
+            "summary": "12.1 Introduction to Storytelling Concepts (p.428-428)",
+            "page_start": 428,
+            "page_end": 428,
+            "children": [
+              {
+                "title": "12.1.1 Types of Data Stories with Purpose",
+                "summary": "12.1.1 Types of Data Stories with Purpose (p.428-434)",
+                "page_start": 428,
+                "page_end": 434,
+                "children": []
+              },
+              {
+                "title": "12.1.2 Tableau Workbook, Worksheets, Dashboard, and Story",
+                "summary": "12.1.2 Tableau Workbook, Worksheets, Dashboard, and Story (p.435-435)",
+                "page_start": 435,
+                "page_end": 435,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "12.2 Components of a Business Story",
+            "summary": "12.2 Components of a Business Story (p.436-436)",
+            "page_start": 436,
+            "page_end": 436,
+            "children": []
+          },
+          {
+            "title": "12.3 Storytelling Participants",
+            "summary": "12.3 Storytelling Participants (p.437-438)",
+            "page_start": 437,
+            "page_end": 438,
+            "children": []
+          },
+          {
+            "title": "12.4 Decision-Making Steps in Storytelling Framework",
+            "summary": "12.4 Decision-Making Steps in Storytelling Framework (p.439-439)",
+            "page_start": 439,
+            "page_end": 439,
+            "children": [
+              {
+                "title": "12.4.1 The Business KPI Story—A Case Study",
+                "summary": "12.4.1 The Business KPI Story—A Case Study (p.440-441)",
+                "page_start": 440,
+                "page_end": 441,
+                "children": []
+              },
+              {
+                "title": "12.4.2 Case-1: Sales KPI Dashboard",
+                "summary": "12.4.2 Case-1: Sales KPI Dashboard (p.442-447)",
+                "page_start": 442,
+                "page_end": 447,
+                "children": []
+              },
+              {
+                "title": "12.4.3 Case-2: Profit KPI Dashboard",
+                "summary": "12.4.3 Case-2: Profit KPI Dashboard (p.448-449)",
+                "page_start": 448,
+                "page_end": 449,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "12.5 Drawing Insights from a Story",
+            "summary": "12.5 Drawing Insights from a Story (p.450-450)",
+            "page_start": 450,
+            "page_end": 450,
+            "children": [
+              {
+                "title": "12.5.1 Data vs Insights",
+                "summary": "12.5.1 Data vs Insights (p.451-451)",
+                "page_start": 451,
+                "page_end": 451,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "12.6 Types of Insights",
+            "summary": "12.6 Types of Insights (p.451-452)",
+            "page_start": 451,
+            "page_end": 452,
+            "children": []
+          },
+          {
+            "title": "Key Notes",
+            "summary": "Key Notes (p.453-453)",
+            "page_start": 453,
+            "page_end": 453,
+            "children": []
+          },
+          {
+            "title": "Practice Case Study",
+            "summary": "Practice Case Study (p.453-453)",
+            "page_start": 453,
+            "page_end": 453,
+            "children": []
+          },
+          {
+            "title": "Test Your Skills",
+            "summary": "Test Your Skills (p.453-453)",
+            "page_start": 453,
+            "page_end": 453,
+            "children": []
+          },
+          {
+            "title": "References",
+            "summary": "References (p.453-454)",
+            "page_start": 453,
+            "page_end": 454,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Chapter 13 Exploratory Data Analysis (EDA) in Tableau",
+        "summary": "Chapter 13 Exploratory Data Analysis (EDA) in Tableau (p.455-455)",
+        "page_start": 455,
+        "page_end": 455,
+        "children": [
+          {
+            "title": "13.1 Introduction to Exploratory Data Analysis (EDA)",
+            "summary": "13.1 Introduction to Exploratory Data Analysis (EDA) (p.455-455)",
+            "page_start": 455,
+            "page_end": 455,
+            "children": [
+              {
+                "title": "13.1.1 EDA for Descriptive and Diagnostic Analytics",
+                "summary": "13.1.1 EDA for Descriptive and Diagnostic Analytics (p.455-456)",
+                "page_start": 455,
+                "page_end": 456,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "13.2 Types of Exploratory Data Analysis",
+            "summary": "13.2 Types of Exploratory Data Analysis (p.457-457)",
+            "page_start": 457,
+            "page_end": 457,
+            "children": [
+              {
+                "title": "13.2.1 Univariate Approach of EDA",
+                "summary": "13.2.1 Univariate Approach of EDA (p.457-458)",
+                "page_start": 457,
+                "page_end": 458,
+                "children": []
+              },
+              {
+                "title": "13.2.2 Bivariate Approach of EDA",
+                "summary": "13.2.2 Bivariate Approach of EDA (p.459-459)",
+                "page_start": 459,
+                "page_end": 459,
+                "children": []
+              },
+              {
+                "title": "13.2.3 Multivariate Approach of EDA",
+                "summary": "13.2.3 Multivariate Approach of EDA (p.460-460)",
+                "page_start": 460,
+                "page_end": 460,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "13.3 Explanatory Data Analysis",
+            "summary": "13.3 Explanatory Data Analysis (p.460-460)",
+            "page_start": 460,
+            "page_end": 460,
+            "children": [
+              {
+                "title": "13.3.1 Exploratory vs Explanatory Data Analysis",
+                "summary": "13.3.1 Exploratory vs Explanatory Data Analysis (p.461-461)",
+                "page_start": 461,
+                "page_end": 461,
+                "children": []
+              }
+            ]
+          },
+          {
+            "title": "13.4 Combine Exploratory and Explanatory Analyses for Storytelling",
+            "summary": "13.4 Combine Exploratory and Explanatory Analyses for Storytelling (p.462-462)",
+            "page_start": 462,
+            "page_end": 462,
+            "children": []
+          },
+          {
+            "title": "Key Notes",
+            "summary": "Key Notes (p.463-463)",
+            "page_start": 463,
+            "page_end": 463,
+            "children": []
+          },
+          {
+            "title": "Practice Case Study",
+            "summary": "Practice Case Study (p.463-463)",
+            "page_start": 463,
+            "page_end": 463,
+            "children": []
+          },
+          {
+            "title": "Test Your Skills",
+            "summary": "Test Your Skills (p.464-464)",
+            "page_start": 464,
+            "page_end": 464,
+            "children": []
+          },
+          {
+            "title": "References",
+            "summary": "References (p.464-464)",
+            "page_start": 464,
+            "page_end": 464,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Chapter 14 Misleading Visualizations",
+        "summary": "Chapter 14 Misleading Visualizations (p.465-465)",
+        "page_start": 465,
+        "page_end": 465,
+        "children": [
+          {
+            "title": "14.1 Introducing Misleading Data Visualizations",
+            "summary": "14.1 Introducing Misleading Data Visualizations (p.465-465)",
+            "page_start": 465,
+            "page_end": 465,
+            "children": []
+          },
+          {
+            "title": "14.2 Types of Misleading Visualizations",
+            "summary": "14.2 Types of Misleading Visualizations (p.466-472)",
+            "page_start": 466,
+            "page_end": 472,
+            "children": []
+          },
+          {
+            "title": "14.3 Impact of Misleading Visualizations",
+            "summary": "14.3 Impact of Misleading Visualizations (p.473-473)",
+            "page_start": 473,
+            "page_end": 473,
+            "children": []
+          },
+          {
+            "title": "14.4 Mistakes to Be Avoided during Visualization and Storytelling",
+            "summary": "14.4 Mistakes to Be Avoided during Visualization and Storytelling (p.473-473)",
+            "page_start": 473,
+            "page_end": 473,
+            "children": []
+          },
+          {
+            "title": "Key Notes",
+            "summary": "Key Notes (p.474-474)",
+            "page_start": 474,
+            "page_end": 474,
+            "children": []
+          },
+          {
+            "title": "Test Your Skills",
+            "summary": "Test Your Skills (p.474-474)",
+            "page_start": 474,
+            "page_end": 474,
+            "children": []
+          },
+          {
+            "title": "References",
+            "summary": "References (p.475-475)",
+            "page_start": 475,
+            "page_end": 475,
+            "children": []
+          }
+        ]
+      },
+      {
+        "title": "Index",
+        "summary": "Index (p.476-477)",
+        "page_start": 476,
+        "page_end": 477,
+        "children": []
+      }
+    ]
+  }
+}

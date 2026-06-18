@@ -1,0 +1,53 @@
+# service.yaml — ai-orchestrator
+
+name:        ai-orchestrator
+display:     "AI Orchestrator"
+language:    python
+runtime:     "FastAPI 0.111.0 + asyncpg + aiokafka + httpx"
+port:        8093
+owner:       "@yuta9999zn"
+team:        kaori-core
+tier:        1
+
+context: >
+  Orchestrates analysis runs (F-020/F-021), strategy frameworks (F-025),
+  decision audit reads (F-029), Gold layer aggregation consumer (F-032),
+  and the Sprint 8 conversational layer (F-NEW4) — chat tool registry +
+  agent loop + SSE endpoint at /chat/{enterprise,platform}/stream.
+  Forwards every LLM dispatch to llm-gateway (K-3); never imports an
+  LLM SDK directly.
+
+slo:
+  availability:    "99% pilot"
+  latency_p99_ms:  8000              # analysis run is long-tail by Qwen inference time
+  error_budget:    "1% of monthly minutes"
+
+invariants_enforced:
+  - K-1     # tenant_id filter (RLS via acquire_for_tenant)
+  - K-3     # all LLM calls via llm_router → llm-gateway
+  - K-4     # consent_external_ai gate on external LLMs
+  - K-6     # decision_audit_log row per LLM call + chat tool dispatch
+  - K-7     # X-Enterprise-ID / X-User-ID / X-User-Role via headers
+  - K-10    # 1 question = 1 framework
+  - K-12    # tenant_id only from JWT
+  - K-15    # MCP/tool authz + audit (chat tools enforce here today)
+  - K-16    # chat tools never accept tenant_id from args
+
+consumers:
+  - api-gateway       # /api/v1/analytics/**, /decisions/**, /chat/**, /strategy/**, /ai/**, /dashboard/**, /insights/**, /billing/**
+
+dependencies:
+  hard:
+    - postgres        # analysis_runs, analysis_results, decision_audit_log, gold_features, gold_aggregates
+    - kafka           # consumes kaori.pipeline.events (silver.complete → analysis); produces kaori.audit.internal
+    - llm-gateway     # all LLM calls (K-3 boundary); chat agent loop hard-depends on this
+  soft:
+    - redis           # consent cache, future semantic cache
+
+required_env:
+  - DATABASE_URL
+  - KAFKA_BOOTSTRAP_SERVERS
+  - LLM_GATEWAY_URL
+  - REDIS_URL
+
+runbook: docs/runbooks/ai-orchestrator.md

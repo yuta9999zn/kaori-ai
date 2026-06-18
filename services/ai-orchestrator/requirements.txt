@@ -1,0 +1,82 @@
+fastapi==0.136.3
+uvicorn[standard]==0.30.6
+asyncpg==0.31.0
+aiokafka==0.14.0
+httpx==0.28.1
+pydantic==2.13.4
+structlog==25.5.0
+prometheus-fastapi-instrumentator==7.1.0
+
+# Phase 2 #2/#5 — distributed tracing.
+# OTel SDK + OTLP HTTP exporter ships traces to Tempo. Auto-instrumentation
+# wraps FastAPI, asyncpg, aiokafka, httpx so we don't sprinkle manual
+# `tracer.start_as_current_span(...)` everywhere.
+opentelemetry-api==1.28.2
+opentelemetry-sdk==1.28.2
+opentelemetry-exporter-otlp-proto-http==1.28.2
+opentelemetry-instrumentation-fastapi==0.49b2
+opentelemetry-instrumentation-asyncpg==0.49b2
+opentelemetry-instrumentation-aiokafka==0.49b2
+opentelemetry-instrumentation-httpx==0.49b2
+
+# Phase 2 #7 (B3 PR #6) — circuit breaker for outgoing LLM calls.
+# pybreaker is sync internally but the helper in shared/circuit_breaker.py
+# wraps it so async coroutines call through it without blocking the
+# event loop. tenacity supplies jittered exponential backoff for the
+# bounded retry that runs INSIDE the breaker's closed state.
+pybreaker==1.4.1
+tenacity==8.5.0
+
+# Analysis engines
+pandas==2.2.2
+numpy==1.26.4
+scikit-learn==1.8.0
+
+# For ML engine (optional GPU skip)
+# torch is not included — pure CPU sklearn is sufficient for Phase 1
+
+# Issue #4 — Kafka event schema validation (infrastructure/kafka/schemas/)
+jsonschema==4.26.0
+
+# F-038 Reports — Jinja2 used for system_prompt templating
+# ({{enterprise_name}}, {{period}}) before forwarding to llm-gateway.
+jinja2==3.1.6
+# Pydantic EmailStr extras — used for owner_email field on the Reports
+# generate request body. Same package notification-service pulls in.
+email-validator==2.3.0
+
+# Phase 1.5 P15-S9 D3 — Temporal workflow worker (workflow_runtime/).
+# Worker is gated behind TEMPORAL_ENABLE_WORKER (default false) so the
+# dependency loads but does no I/O until explicitly enabled per env.
+# Pinned per K-20 spirit (no silent SDK upgrade across Phase 1.5 tags).
+temporalio==1.27.2
+
+# Phase 1.5 P15-S11 Tuần 5 — workflow YAML emitter (routers/workflow_from_cdfl.py).
+# PyYAML used to safe_dump the doc; also indirectly via Temporal worker
+# config + test_workflow_yaml_alignment. Pin matches workspace baseline.
+pyyaml==6.0.3
+
+# Phase 1.5 P15-S11 Hướng A — onboarding hook (routers/enterprise_users.py:onboard_from_csv).
+# Generates random unusable BCrypt password_hash for newly onboarded users
+# so Spring Security's BCryptPasswordEncoder (strength 10) can validate
+# during password reset. Matches WorkspaceMemberService.invite() in
+# auth-service. Pin matches the version already transitively present.
+bcrypt==5.0.0
+
+# Phase 2 wire (P15-S11 task #17) — Redis L2 adapter for Stage 7
+# Memory hierarchy. Per-tenant key prefix mem:l2:{tenant}: + 24h TTL.
+# Pin matches data-pipeline so the shared/redis client behaviour
+# stays consistent across services.
+redis[hiredis]==8.0.0
+
+# Phase 2 wire (P15-S11 task #18) — Neo4j adapter for Stage 5
+# Ontology 7-Primitives. Cypher with tenant label filter
+# (:Entity:_T<tenant_hash>) per PIPELINE_UNIFIED.md §7.7. Pin
+# follows the latest stable 5.x line.
+neo4j==5.25.0
+
+# P2-S25 — AES-256-GCM field encryption (P2-ENC-001) + TOTP support
+# for MFA flow (P2-AUTH-002). cryptography is the well-vetted standard
+# library; TOTP is implemented in shared/totp.py without pyotp to
+# minimise dependency surface.
+cryptography==48.0.0

@@ -1,0 +1,87 @@
+# Local dev Temporal cluster — single-node "auto-setup" image.
+#
+# This is the dev counterpart to the production Helm chart in helm/values.yaml.
+# Auto-setup creates the schema on first boot using the temporal-sql-tool,
+# so anh can `docker compose up -d` and have a working cluster in ~15s.
+#
+# To run alongside the main Kaori stack from repo root:
+#
+#   docker compose -f docker-compose.yml \
+#                  -f infrastructure/temporal/docker-compose.yml up -d
+#
+# The Postgres dependency reuses the main `kaori-postgres` instance; the
+# auto-setup script creates databases `temporal` + `temporal_visibility`
+# on first boot. They share the cluster but are logically isolated.
+#
+# Web UI at http://localhost:8088 — workflow list, replay, query.
+# gRPC frontend at localhost:7233 — what `temporal_client.py` connects to.
+
+services:
+
+  temporal:
+    image: temporalio/auto-setup:1.24.2
+    container_name: kaori-temporal
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      DB: postgres12
+      DB_PORT: 5432
+      POSTGRES_USER: kaori_user
+      POSTGRES_PWD: ${POSTGRES_PASSWORD:-kaori_dev_password}
+      POSTGRES_SEEDS: postgres
+      DBNAME: temporal
+      VISIBILITY_DBNAME: temporal_visibility
+      DYNAMIC_CONFIG_FILE_PATH: config/dynamicconfig/dev.yaml
+      LOG_LEVEL: info
+    ports:
+      - "7233:7233"  # gRPC frontend — workers + Temporal CLI talk here
+      - "9090:9090"  # Prometheus /metrics
+    volumes:
+      - ./dynamic-config.yaml:/etc/temporal/config/dynamicconfig/dev.yaml:ro
+    networks:
+      - kaori-network
+
+  temporal-ui:
+    image: temporalio/ui:2.27.2
+    container_name: kaori-temporal-ui
+    restart: unless-stopped
+    depends_on:
+      - temporal
+    environment:
+      TEMPORAL_ADDRESS: temporal:7233
+      TEMPORAL_CORS_ORIGINS: http://localhost:3000
+      TEMPORAL_NOTIFY_ON_NEW_VERSION: "false"
+    ports:
+      - "8088:8080"  # Web UI — http://localhost:8088
+    networks:
+      - kaori-network
+
+  # Helper container — runs `tctl namespace register kaori` on first boot.
+  # Uses the temporal CLI image; idempotent (re-register no-ops).
+  temporal-bootstrap:
+    image: temporalio/admin-tools:1.24.2
+    container_name: kaori-temporal-bootstrap
+    depends_on:
+      - temporal
+    environment:
+      TEMPORAL_ADDRESS: temporal:7233
+    entrypoint: >
+      sh -c "
+        until tctl --address temporal:7233 cluster health 2>/dev/null; do
+          echo 'waiting for temporal...';
+          sleep 2;
+        done;
+        tctl --address temporal:7233 namespace register
+             --retention 7
+             --description 'Kaori Phase 1.5 dev namespace'
+             kaori || true;
+        echo 'kaori namespace ready';
+      "
+    networks:
+      - kaori-network
+
+networks:
+  kaori-network:
+    external: true
+    name: kaori-system_default

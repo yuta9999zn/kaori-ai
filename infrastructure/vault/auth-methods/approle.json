@@ -1,0 +1,99 @@
+{
+  "_comment": "AppRole auth method bootstrap config for Kaori services.",
+  "_apply": [
+    "vault auth enable approle",
+    "for r in $(jq -r '.roles | keys[]' approle.json); do",
+    "  data=$(jq -c \".roles[\\\"$r\\\"]\" approle.json)",
+    "  vault write auth/approle/role/$r $data",
+    "done",
+    "# Then per-service: vault read auth/approle/role/<service>/role-id",
+    "# And: vault write -force auth/approle/role/<service>/secret-id",
+    "# Pass role-id + secret-id to the service as env (VAULT_ROLE_ID +",
+    "# VAULT_SECRET_ID) — kaori_vault.py exchanges them for a token."
+  ],
+  "_reference": "docs/archive/sprint/p15-s9/P15-S9_PLAN.md D2 + infrastructure/vault/policies/service-readonly.hcl",
+
+  "roles": {
+
+    "data-pipeline": {
+      "token_policies": "service-readonly",
+      "token_ttl": "1h",
+      "token_max_ttl": "24h",
+      "secret_id_ttl": "0",
+      "secret_id_num_uses": "0",
+      "bind_secret_id": true,
+      "token_bound_cidrs": [],
+      "token_no_default_policy": true,
+      "_metadata": {
+        "service_name": "data-pipeline"
+      }
+    },
+
+    "ai-orchestrator": {
+      "token_policies": "service-readonly",
+      "token_ttl": "1h",
+      "token_max_ttl": "24h",
+      "secret_id_ttl": "0",
+      "secret_id_num_uses": "0",
+      "bind_secret_id": true,
+      "token_no_default_policy": true,
+      "_metadata": {
+        "service_name": "ai-orchestrator"
+      }
+    },
+
+    "llm-gateway": {
+      "token_policies": "service-readonly",
+      "token_ttl": "1h",
+      "token_max_ttl": "24h",
+      "secret_id_ttl": "0",
+      "secret_id_num_uses": "0",
+      "bind_secret_id": true,
+      "token_no_default_policy": true,
+      "_metadata": {
+        "service_name": "llm-gateway"
+      }
+    },
+
+    "notification-service": {
+      "token_policies": "service-readonly",
+      "token_ttl": "1h",
+      "token_max_ttl": "24h",
+      "secret_id_ttl": "0",
+      "secret_id_num_uses": "0",
+      "bind_secret_id": true,
+      "token_no_default_policy": true,
+      "_metadata": {
+        "service_name": "notification-service"
+      }
+    },
+
+    "auth-service": {
+      "_purpose": "Reads MFA master key + JWT signing keys. Token TTL shorter — these are the highest-impact secrets.",
+      "token_policies": "service-readonly",
+      "token_ttl": "30m",
+      "token_max_ttl": "8h",
+      "secret_id_ttl": "0",
+      "secret_id_num_uses": "0",
+      "bind_secret_id": true,
+      "token_no_default_policy": true,
+      "_metadata": {
+        "service_name": "auth-service"
+      }
+    },
+
+    "workflow-worker": {
+      "_purpose": "Temporal worker. Same scope as ai-orchestrator (it reads from the same paths) but kept separate so a compromised worker can be rotated without touching the parent service.",
+      "token_policies": "service-readonly",
+      "token_ttl": "1h",
+      "token_max_ttl": "24h",
+      "secret_id_ttl": "0",
+      "secret_id_num_uses": "0",
+      "bind_secret_id": true,
+      "token_no_default_policy": true,
+      "_metadata": {
+        "service_name": "workflow-worker"
+      }
+    }
+  }
+}

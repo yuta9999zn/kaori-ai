@@ -1,0 +1,39 @@
+name: gitleaks
+
+# Scan every push and PR diff for committed secrets.
+# Uses gitleaks/gitleaks-action@v3 (no license key needed for personal repos).
+# Would have caught the JWT private key + Gmail App Password leaked in
+# the earlier .env commit — now rotated + ignored.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  # gitleaks-action@v2 lists PR commits via the GitHub API to scope the
+  # scan to the diff (avoids re-flagging historical, already-rotated
+  # secrets on every PR). Without this it 403s on
+  # GET /repos/{owner}/{repo}/pulls/{n}/commits.
+  pull-requests: read
+
+concurrency:
+  group: gitleaks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    name: gitleaks secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # Full history so gitleaks can scan the diff properly on PRs
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

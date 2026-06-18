@@ -1,0 +1,41 @@
+# Tempo single-node config — Phase 2 #5 distributed tracing.
+#
+# Single-tenant + local filesystem storage to keep the pilot footprint small.
+# Production sizing (multi-tenant, S3 backend, retention tuning) is Phase 3.
+#
+# Receivers: OTLP HTTP on :4318 (used by every Java + Python service in
+# the pilot stack). The auto-detect-deployment search guide for Spring Boot
+# 3 + opentelemetry-distro both default to /v1/traces on this port.
+
+server:
+  http_listen_port: 3200
+  log_level: info
+
+distributor:
+  receivers:
+    otlp:
+      protocols:
+        http:
+          endpoint: 0.0.0.0:4318
+        # gRPC kept available so future Phase-3 services with grpc-only
+        # SDKs (eg. Triton model-serving) can ship traces without a
+        # protocol mismatch.
+        grpc:
+          endpoint: 0.0.0.0:4317
+
+ingester:
+  trace_idle_period: 10s
+  max_block_bytes: 1_000_000
+  max_block_duration: 5m
+
+compactor:
+  compaction:
+    block_retention: 24h          # Pilot 16 GB laptop: keep traces 1 day.
+
+storage:
+  trace:
+    backend: local
+    local:
+      path: /var/tempo/traces
+    wal:
+      path: /var/tempo/wal

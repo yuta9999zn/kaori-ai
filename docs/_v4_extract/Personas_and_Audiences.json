@@ -1,0 +1,212 @@
+[
+ [
+  "Kaori AI — Audiences & Personas Detail",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "4 audiences × 18 personas. Each persona maps to specific portal(s) + features.",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Audience",
+  "Portal",
+  "Persona Code",
+  "Persona Name",
+  "Role/Title (typical)",
+  "Goals & Responsibilities",
+  "Key Features Used",
+  "Pricing Tier Access"
+ ],
+ [
+  "1. Platform (Kaori Internal)",
+  "P1",
+  "PLT-01",
+  "Super Admin",
+  "CTO / VP Engineering / Founding Engineer",
+  "Toàn quyền platform. Manage infrastructure, all tenants, security, emergency interventions.",
+  "All P1 features; emergency override; cross-tenant queries (admin role); LLM provider config",
+  "Internal — không bị giới hạn"
+ ],
+ [
+  "1. Platform (Kaori Internal)",
+  "P1",
+  "PLT-02",
+  "Platform Admin",
+  "Platform Operations Lead / SRE Lead",
+  "Day-to-day platform ops. Manage workspaces, billing, plans, monitor health.",
+  "P1 workspaces, billing, plan config, health dashboard, LLM token monitoring",
+  "Internal"
+ ],
+ [
+  "1. Platform (Kaori Internal)",
+  "P1",
+  "PLT-03",
+  "Customer Success Manager (CSM)",
+  "CSM / Account Manager",
+  "Theo dõi adoption health của customers, intervene khi at-risk, schedule QBR.",
+  "CSM dashboard, adoption health view, intervention triggers, customer cohort view",
+  "Internal"
+ ],
+ [
+  "1. Platform (Kaori Internal)",
+  "P1",
+  "PLT-04",
+  "Support Engineer",
+  "Tier 2 Support / Implementation Engineer",
+  "Resolve support tickets, debug customer issues (read-only by default; escalation grants temp write).",
+  "Read-only access via tenant impersonation, audit trail review, log search",
+  "Internal"
+ ],
+ [
+  "1. Platform (Kaori Internal)",
+  "P1",
+  "PLT-05",
+  "Sales / Account Manager",
+  "Sales Lead / Customer Lead",
+  "Track sales pipeline, conversion (Pilot → Enterprise), upsell opportunities.",
+  "Pilot conversion tracking, billing monitor, tenant cohort view, ROI showcases",
+  "Internal"
+ ],
+ [
+  "1. Platform (Kaori Internal)",
+  "P1",
+  "PLT-06",
+  "Finance / Accounting",
+  "Finance Lead / Bookkeeper",
+  "Tổng hợp doanh thu, invoice, overage, FX rate, monthly close.",
+  "Billing aggregations, invoice generation, FX management, accounting export",
+  "Internal"
+ ],
+ [
+  "2. User Enterprise (B2B)",
+  "P2",
+  "ENT-01",
+  "Enterprise Manager / Owner",
+  "CEO / COO / Department Head (SME)",
+  "Decision maker. Quan tâm ROI, NOV (VND), strategic decisions, team management.",
+  "Dashboard, ROI/NOV reports, OKR, strategy timeline, approval gates, member management",
+  "BASIC, MID, MAX (all features visible per tier)"
+ ],
+ [
+  "2. User Enterprise (B2B)",
+  "P2",
+  "ENT-02",
+  "Department Head",
+  "Head of Sales / Marketing / Operations / Finance",
+  "Team lead. Approve workflows, review insights, monitor department adoption + NOV.",
+  "Department dashboard, workflow approvals, adoption health, NOV by dept, criterion tuning",
+  "BASIC+"
+ ],
+ [
+  "2. User Enterprise (B2B)",
+  "P2",
+  "ENT-03",
+  "Data Analyst",
+  "Senior Data Analyst / BI Analyst",
+  "Build pipelines + insights. Tune AI parameters. Validate outputs with domain expertise.",
+  "Pipeline builder (5-step), insights generation, criteria tuning, formula library, RAG queries",
+  "BASIC+"
+ ],
+ [
+  "2. User Enterprise (B2B)",
+  "P2",
+  "ENT-04",
+  "Operations User / Domain Expert",
+  "Marketing Manager / Sales Ops / Inventory Manager",
+  "Daily user. Use workflows, follow recommendations, override AI when needed.",
+  "Workflow runtime, insight consumption, override AI decisions, request reports",
+  "BASIC+ (limited config)"
+ ],
+ [
+  "2. User Enterprise (B2B)",
+  "P2",
+  "ENT-05",
+  "Auditor / Compliance Officer",
+  "Internal Auditor / Compliance / Legal",
+  "Read-only review. Audit decisions, trace AI explanations, compliance reports.",
+  "Audit log read, decision explainability, compliance reports, RBAC matrix view",
+  "MID+ (compliance pack)"
+ ],
+ [
+  "2. User Enterprise (B2B)",
+  "P2",
+  "ENT-06",
+  "IT Admin / DevOps",
+  "IT Lead / Sysadmin (SME)",
+  "Setup integrations, manage users, configure SSO, monitor performance.",
+  "Integration management, user CRUD, SSO config, secrets management, performance monitor",
+  "BASIC+"
+ ],
+ [
+  "2. User Enterprise (B2B)",
+  "P2",
+  "ENT-07",
+  "External Stakeholder (Read-only)",
+  "Investor / Board Member / Consultant",
+  "Limited view of high-level metrics + dashboards. Time-bounded access.",
+  "View shared dashboards, NOV summaries, insight feeds (filtered), no edit",
+  "Custom (per tenant config)"
+ ],
+ [
+  "3. Studio (Power Users)",
+  "P3",
+  "STU-01",
+  "Studio Owner / AI Workflow Designer",
+  "Workflow Architect / Solutions Engineer (customer or partner)",
+  "Build custom workflows + AI logic for specific industries. Reuse templates.",
+  "Visual workflow builder, formula editor, custom criteria, prompt template editor, A/B test",
+  "MID+, mostly MAX"
+ ],
+ [
+  "3. Studio (Power Users)",
+  "P3",
+  "STU-02",
+  "Template Designer / Industry Expert",
+  "Domain Consultant / Industry SME (3rd party)",
+  "Create industry-specific templates (retail, F&B, finance). Sell to other tenants.",
+  "Template authoring, marketplace listing (Phase 3), royalty tracking, version mgmt",
+  "MAX (Phase 3 marketplace)"
+ ],
+ [
+  "3. Studio (Power Users)",
+  "P3",
+  "STU-03",
+  "Reviewer / QA Engineer",
+  "AI Reviewer / Workflow QA",
+  "Review and approve workflow templates before publish. Catch errors, ensure quality.",
+  "Template review queue, simulation runner, regression test, approval workflow",
+  "MAX"
+ ],
+ [
+  "4. Personal (Individual)",
+  "P4",
+  "PSN-01",
+  "Personal User / Solo Professional",
+  "Freelancer / Solopreneur / Personal Investor",
+  "Individual SaaS. Personal data analysis, AI insights, simple workflows.",
+  "Personal dashboard, simple pipelines, individual insights, basic workflows",
+  "PERSONAL FREE / PRO"
+ ],
+ [
+  "4. Personal (Individual)",
+  "P4",
+  "PSN-02",
+  "Personal Power User",
+  "Independent Consultant / Heavy Personal User",
+  "Power features at individual level. Custom criteria, integrations, mobile.",
+  "Advanced pipelines, custom formulas, mobile + Zalo bot, multi-source integration",
+  "PERSONAL PRO"
+ ]
+]

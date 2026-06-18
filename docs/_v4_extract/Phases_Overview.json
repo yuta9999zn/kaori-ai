@@ -1,0 +1,72 @@
+[
+ [
+  "Kaori AI — 4 Phases Strategic Roadmap",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "24-month roadmap aligned with SAD Part XIV. Each phase has clear scope + acceptance criteria.",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Phase",
+  "Duration",
+  "Months",
+  "Team Size",
+  "Theme / Goal",
+  "Must-have Capabilities",
+  "Cut from Scope",
+  "Acceptance Criteria"
+ ],
+ [
+  "Phase 1 — FOUNDATION",
+  "4 months",
+  "M1-M4",
+  "6-8 engineers + 1 PM + 1 designer + 1 CSM",
+  "Ship MVP với core capabilities — modular monolith. First 10-15 customers.",
+  "L0 infra (K8s VN region, Postgres+ClickHouse+MinIO+Redis+Vault)\nL1 ingestion (8 connectors: Postgres CDC, Excel, Zalo, Gmail, Misa, Fast, generic API, webhook)\nL2 data plane (Bronze/Silver/Gold)\nL3 reasoning (Insight + Recommendation + Constraint engines, LLM pinning)\nL4 workflow (Temporal-based, 25 nodes, 15 templates, idempotency + retry + DLQ)\nL4.5 Org Intel v1 (Process Mining v1 — 3 sources; Adoption Intel — 5/9 signals; NOV basic)\nL5 user (Web UI, Workflow Builder, ROI Dashboard basic, Zalo Bot)\nCross-cutting: multi-tenancy + secrets + cost tracking + audit + observability basic",
+  "90-day parallel testing → Phase 1.5\nProcess Mining full (8 sources, all algos) → Phase 2\nSimulation engine → Phase 2\nMulti-user collab → Phase 2\nWorkflow as Code (YAML) → Phase 2\nMulti-agent → Phase 3\nMarketplace → Phase 3\nMobile app → Phase 2\nStrategic OKR mapping → Phase 2",
+  "≥10 customers onboarded\nWorkflow execution success rate ≥99.5%\n0 cross-tenant leaks\nAdoption health score >70 average\nNOV positive cho ≥3 customers\nFirst case study published"
+ ],
+ [
+  "Phase 1.5 — STABILIZATION",
+  "2 months",
+  "M5-M6",
+  "Same team",
+  "Stabilize Phase 1 + fill critical gaps from real customer feedback.",
+  "90-day parallel testing infrastructure\nProcess Mining: add email + calendar sources\nAdoption Intelligence: full 9 signals + intervention playbook\nOperational Economics: A/B attribution method + time-to-payback projection\n3 more AI node types (forecasting, risk_detection, extract_entities)\n10 more workflow templates\nCustomer-facing public APIs\nPerformance + security hardening based on real load\nBug fixing from Phase 1 launch",
+  "Workflow Marketplace → Phase 3\nMulti-agent → Phase 3\nMobile app → Phase 2\nSelf-hosted LLM → Phase 3",
+  "10-15 customers active\nAdoption health score >75 avg\nNPS >30\nFirst customer success stories\nProcessing >100K events/month\nPerformance SLOs met"
+ ],
+ [
+  "Phase 2 — DIFFERENTIATION",
+  "6 months",
+  "M7-M12",
+  "12-15 engineers + dedicated SRE",
+  "Build moat features. Selective microservices extraction. International (English UI).",
+  "Process Mining FULL: 8 sources, all algorithms (Heuristic + Inductive + Fuzzy)\nConformance analysis, bypass risk scoring, shadow process detection\nAll 45 node types complete\n40 workflow templates\nMulti-user workflow collaboration\nWorkflow as Code (YAML import/export, CI/CD)\nWorkflow ontology\nStrategic OKR mapping\nMobile app (React Native)\nSSO (Google, Microsoft Azure AD)\nMFA option\nField-level PII encryption\nSOC 2 Type 1 audit prep\nMicroservices: extract Workflow Engine + Process Mining\nService mesh (Istio/Linkerd)\nFirst non-VN customer (Singapore/Thailand pilot)\nCustom AI fine-tuning option (MAX tier)",
+  "Multi-agent → Phase 3\nMarketplace → Phase 3\nFederated workflows → Phase 3\nOn-premises deployment → Phase 3",
+  "100 customers\nInternational revenue ≥10%\nSOC 2 Type 1 obtained\n99.9% API uptime\nP95 workflow latency <5min\n3+ industries with templates"
+ ],
+ [
+  "Phase 3 — PLATFORM",
+  "12 months",
+  "Year 2",
+  "20-30 engineers + 2-3 product teams",
+  "Platform + ecosystem. Multi-region. Marketplace. Self-hosted LLM option.",
+  "Full microservices architecture\nMulti-agent orchestration\nAgent marketplace\nFederated workflows (cross-tenant with consent)\nSelf-hosted LLM (fine-tuned Vietnamese model)\nHybrid LLM strategy (vendor + self)\nRegional expansion (Singapore, Thailand, Indonesia)\nWhite-label option\nOn-premises deployment (regulated customers)\nMulti-region active-active\nPublic marketplace (workflows, templates, agents)\nDeveloper platform (3rd party connectors)\nCertified consultants program\nSOC 2 Type 2 + ISO 27001",
+  "(Phase 3 is comprehensive — minimal cuts)",
+  "1000+ customers\nInternational revenue ≥30%\nSOC 2 Type 2 + ISO 27001 certified\n3+ regions active\nMarketplace with 50+ items\nSeries A → B funding milestone"
+ ]
+]

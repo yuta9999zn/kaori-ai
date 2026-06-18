@@ -1,0 +1,114 @@
+{
+  "_meta": {
+    "source": "docs/specs/VALIDATION_RULES.md §2 (v1.0.3)",
+    "purpose": "Shared FE+BE parity contract. BE: tests/test_validation_rules_parity.py runs these through shared/validators.py. FE (post-restructure): the form validator consumes the SAME file. A case = {input, valid, errcode}. errcode is the USR-ERR* from the spec's Error column; null when valid. Optional 'opts' is passed as kwargs to the validator. Add a case → both sides re-run; drift surfaces as a test failure.",
+    "errcodes": {
+      "USR-ERR3": "required field missing",
+      "USR-ERR4": "invalid format / charset / structure",
+      "USR-ERR5": "length out of range",
+      "USR-ERR7": "value out of allowed numeric range"
+    }
+  },
+  "email": [
+    {"input": "user@acme.vn", "valid": true, "errcode": null},
+    {"input": "minh.huy@sub.acme.com", "valid": true, "errcode": null},
+    {"input": "a1b2@x.io", "valid": true, "errcode": null},
+    {"input": "", "valid": false, "errcode": "USR-ERR3"},
+    {"input": "a@b.c", "valid": false, "errcode": "USR-ERR5"},
+    {"input": "user acme@acme.vn", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "useracme.vn", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "user@acme", "valid": false, "errcode": "USR-ERR4"},
+    {"input": ".user@acme.vn", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "u..s@acme.vn", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "123@acme.vn", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "user@acme.toolongtld", "valid": false, "errcode": "USR-ERR4"}
+  ],
+  "username": [
+    {"input": "minh_01", "valid": true, "errcode": null},
+    {"input": "a", "valid": true, "errcode": null},
+    {"input": "user-name.x", "valid": true, "errcode": null},
+    {"input": "", "valid": false, "errcode": "USR-ERR3"},
+    {"input": "aaaaaaaaaaaaaaaaaaaaa", "valid": false, "errcode": "USR-ERR5"},
+    {"input": "user nguyen", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "nguyễn", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "___", "valid": false, "errcode": "USR-ERR4"}
+  ],
+  "password": [
+    {"input": "Passw0rd!", "valid": true, "errcode": null},
+    {"input": "a1b2c3d8", "valid": true, "errcode": null},
+    {"input": "short1", "valid": false, "errcode": "USR-ERR5"},
+    {"input": "pass word", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "<script>x9", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "abc--def1", "valid": false, "errcode": "USR-ERR4"}
+  ],
+  "natural_int": [
+    {"input": "0", "valid": true, "errcode": null},
+    {"input": "42", "valid": true, "errcode": null},
+    {"input": 100, "valid": true, "errcode": null},
+    {"input": "", "valid": false, "errcode": "USR-ERR3"},
+    {"input": "-5", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "3.14", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "abc", "valid": false, "errcode": "USR-ERR4"}
+  ],
+  "free_text": [
+    {"input": "Ghi chú ngắn về khách hàng.", "valid": true, "errcode": null},
+    {"input": "x", "valid": true, "errcode": null},
+    {"input": "", "valid": false, "errcode": "USR-ERR3"},
+    {"input": "<script>alert(1)</script>", "valid": false, "errcode": "USR-ERR4"}
+  ],
+  "datetime": [
+    {"input": "15/08/2026 10:30:00", "valid": true, "errcode": null},
+    {"input": "29/02/2024 00:00:00", "valid": true, "errcode": null},
+    {"input": "29/02/2023 00:00:00", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "31/04/2026 00:00:00", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "2026-08-15", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "15/13/2026 10:00:00", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "15/08/1899 10:00:00", "valid": false, "errcode": "USR-ERR4"}
+  ],
+  "year": [
+    {"input": "2026", "valid": true, "errcode": null},
+    {"input": "1900", "valid": true, "errcode": null},
+    {"input": "2200", "valid": true, "errcode": null},
+    {"input": "26", "valid": false, "errcode": "USR-ERR5"},
+    {"input": "20a6", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "1899", "valid": false, "errcode": "USR-ERR7"},
+    {"input": "2201", "valid": false, "errcode": "USR-ERR7"}
+  ],
+  "phone": [
+    {"input": "0912345678", "valid": true, "errcode": null},
+    {"input": "19001234", "valid": true, "errcode": null},
+    {"input": "+84912345678", "valid": true, "errcode": null},
+    {"input": "", "valid": false, "errcode": "USR-ERR3"},
+    {"input": "12345", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "09abc45678", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "+1234567890123456", "valid": false, "errcode": "USR-ERR4"}
+  ],
+  "url": [
+    {"input": "https://acme.vn", "valid": true, "errcode": null},
+    {"input": "http://sub.acme.com/path?q=1", "valid": true, "errcode": null},
+    {"input": "ftp://acme.vn", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "acme.vn", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "https://localhost", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "https://acme.vn/<script>", "valid": false, "errcode": "USR-ERR4"}
+  ],
+  "doc_no": [
+    {"input": "01/QD-ACME", "valid": true, "errcode": null},
+    {"input": "01/qd-acme", "valid": true, "errcode": null},
+    {"input": "QD#01", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "QD 01", "valid": false, "errcode": "USR-ERR4"}
+  ],
+  "address": [
+    {"input": "12 Nguyen Trai, Q1, TPHCM", "valid": true, "errcode": null},
+    {"input": "So 5, Lang Ha, Ba Dinh, Ha Noi", "valid": true, "errcode": null},
+    {"input": "Q1, HCM", "valid": false, "errcode": "USR-ERR5"},
+    {"input": "Nha so 5 @#$ test khu", "valid": false, "errcode": "USR-ERR4"}
+  ],
+  "national_id": [
+    {"input": "012345678", "valid": true, "errcode": null},
+    {"input": "012345678901", "valid": true, "errcode": null},
+    {"input": "ab12345", "valid": true, "errcode": null, "opts": {"foreign": true}},
+    {"input": "12345", "valid": false, "errcode": "USR-ERR5"},
+    {"input": "0123abc89", "valid": false, "errcode": "USR-ERR4"},
+    {"input": "abcdef", "valid": false, "errcode": "USR-ERR4", "opts": {"foreign": true}}
+  ]
+}

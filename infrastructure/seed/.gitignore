@@ -1,0 +1,4 @@
+# Pilot UAT seed dataset — Olist Brazilian E-commerce
+# (CC BY-NC-SA 4.0 license, downloadable per docs/PILOT_SEED.md).
+# Don't commit the CSVs themselves — re-download via Kaggle CLI.
+olist/

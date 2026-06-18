@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:'Segoe UI',Arial,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0">
+    <tr><td align="center" style="padding:40px 20px">
+      <table width="560" cellpadding="0" cellspacing="0"
+             style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)">
+        <tr>
+          <td style="background:{% if usage_pct >= 95 %}#dc2626{% else %}#d97706{% endif %};padding:28px 40px">
+            <h1 style="margin:0;color:#fff;font-size:20px;font-weight:700">
+              Kaori AI — ⚠ Cảnh báo hạn mức
+            </h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:36px 40px">
+            <p style="margin:0 0 16px;color:#374151;font-size:16px">
+              Workspace <strong>{{ enterprise_name }}</strong> đã sử dụng
+              <strong style="color:{% if usage_pct >= 95 %}#dc2626{% else %}#d97706{% endif %}">
+                {{ usage_pct }}%
+              </strong> hạn mức tháng này.
+            </p>
+
+            <!-- Usage bar -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px">
+              <tr>
+                <td style="background:#e5e7eb;border-radius:8px;height:12px;overflow:hidden">
+                  <table width="{{ [usage_pct, 100]|min }}%" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="background:{% if usage_pct >= 95 %}#dc2626{% else %}#d97706{% endif %};height:12px"></td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+
+            <table width="100%" cellpadding="0" cellspacing="0"
+                   style="background:#f9fafb;border-radius:8px;padding:16px;margin:0 0 24px">
+              <tr>
+                <td style="color:#6b7280;font-size:13px;padding:4px 0">Gói hiện tại</td>
+                <td style="color:#374151;font-size:13px;font-weight:600;text-align:right">{{ plan_label|default(plan) }}</td>
+              </tr>
+              <tr>
+                <td style="color:#6b7280;font-size:13px;padding:4px 0">Đã dùng</td>
+                <td style="color:#374151;font-size:13px;font-weight:600;text-align:right">{{ used }} / {{ quota_limit }} khách hàng</td>
+              </tr>
+            </table>
+
+            {#-
+              F-037 — per-tier upsell text. The dispatcher passes
+              `plan` (CLAUDE.md §10 plan_code: PILOT / ENT_BASIC /
+              ENT_MID / ENT_MAX / ENT_ROI) and `plan_label` (Vietnamese
+              display name). The 95% threshold uses urgent copy
+              regardless of tier; the 80% threshold tunes the
+              recommendation per-tier so a Pilot customer hears "Hãy
+              nâng cấp lên Enterprise Basic" while ENT_MAX hears "Liên
+              hệ team Sales để tối ưu gói".
+            -#}
+            {% if usage_pct >= 95 %}
+            <p style="margin:0 0 24px;color:#dc2626;font-size:14px;font-weight:600">
+              Bạn sắp đạt giới hạn. Nâng cấp ngay để tránh gián đoạn dịch vụ.
+              {% if plan == 'PILOT' %}
+              Gói Pilot không hỗ trợ vượt hạn mức — workspace sẽ tạm khóa khi đầy.
+              {% elif plan == 'ENT_BASIC' %}
+              Gói Enterprise Basic có overage 500.000₫ / 1.000 khách hàng — cân nhắc nâng cấp Mid để giảm chi phí.
+              {% elif plan == 'ENT_MID' %}
+              Gói Enterprise Mid có overage 400.000₫ / 1.000 khách hàng — cân nhắc nâng cấp Max nếu mức dùng tăng đều.
+              {% elif plan == 'ENT_MAX' %}
+              Gói Enterprise Max có overage 250.000₫ / 1.000 khách hàng — liên hệ Sales để bàn về gói ROI khi nhu cầu vượt 10.000 khách/tháng.
+              {% endif %}
+            </p>
+            {% else %}
+            <p style="margin:0 0 24px;color:#6b7280;font-size:14px">
+              Workspace đã dùng 80% hạn mức. Vui lòng theo dõi và cân nhắc nâng cấp trước khi đạt 100%.
+              {% if plan == 'PILOT' %}
+              Gói Pilot tối đa 500 khách hàng / tháng — bước tiếp theo là Enterprise Basic (1.000 khách / 2.000.000₫).
+              {% elif plan == 'ENT_BASIC' %}
+              Bước tiếp theo: Enterprise Mid — 4.000 khách hàng / 5.000.000₫, overage rẻ hơn.
+              {% elif plan == 'ENT_MID' %}
+              Bước tiếp theo: Enterprise Max — 10.000 khách hàng / 8.000.000₫, phù hợp khi mức dùng ổn định.
+              {% elif plan == 'ENT_MAX' %}
+              Đã ở gói Max — nếu mức dùng vượt 10.000 khách / tháng đều đặn, gói ROI có giá theo doanh thu (cần tối thiểu 3 tháng ENT_MAX).
+              {% endif %}
+            </p>
+            {% endif %}
+
+            <table cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="border-radius:8px;background:#1d4ed8">
+                  <a href="{{ upgrade_url }}"
+                     style="display:inline-block;padding:14px 28px;color:#fff;font-size:15px;font-weight:600;text-decoration:none">
+                    Xem gói nâng cấp →
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f9fafb;padding:20px 40px;border-top:1px solid #e5e7eb">
+            <p style="margin:0;color:#9ca3af;font-size:12px">© 2026 Kaori AI · AI Data Analytics Platform</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>

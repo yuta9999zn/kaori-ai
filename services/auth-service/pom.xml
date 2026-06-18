@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.12</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.kaorisystem</groupId>
+    <artifactId>auth-service</artifactId>
+    <version>1.0.0</version>
+    <name>kaori-auth-service</name>
+    <description>Kaori System Auth Service — JWT + user management</description>
+
+    <properties>
+        <java.version>21</java.version>
+        <jjwt.version>0.13.0</jjwt.version>
+        <testcontainers.version>1.21.4</testcontainers.version>
+    </properties>
+
+    <dependencies>
+        <!-- Spring Boot Web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Spring Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- Spring Data JPA -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Spring Data Redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- Spring Mail (password reset emails) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!-- Spring Actuator (health endpoint) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Phase 2 #2/#5 — distributed tracing.
+             Micrometer Tracing is the Spring Boot 3 native tracing API.
+             We bridge it to OpenTelemetry so spans hit the OTLP HTTP
+             exporter (Tempo at http://tempo:4318/v1/traces). Spring Boot's
+             autoconfig wires HTTP-server / RestTemplate / WebClient / JDBC
+             instrumentation automatically, plus stamps trace_id + span_id
+             into Logback MDC so every log line carries the correlation. -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-otel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-exporter-otlp</artifactId>
+        </dependency>
+
+        <!-- P1-S1 (OBS-012) — JSON structured logging via logstash-logback-encoder.
+             Activated by logback-spring.xml in src/main/resources when SPRING_PROFILES_ACTIVE
+             selects 'json' (default for prod / staging). Local dev keeps the colored text
+             pattern via the !json profile. Every JSON line carries: @timestamp, level,
+             logger, thread, message, service.name, traceId, spanId (the latter two from
+             Spring Boot Tracing MDC autoconfig). tenant_id MDC follow-up scheduled for
+             P1-S2 alongside OTel SDK upgrade — see CLAUDE.md K-19. -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>9.0</version>
+        </dependency>
+
+        <!-- Phase 2 #7 (B3 PR #6) — Resilience4j circuit breaker.
+             Wraps NotificationClient.send so a wedged notification-service
+             stops cascading into auth-service's request thread pool. The
+             starter brings autoconfig: a single @CircuitBreaker annotation
+             on the method + a yaml stanza at
+             resilience4j.circuitbreaker.instances.* and we get
+             open/half-open/closed transitions, Micrometer metrics, and
+             actuator /circuitbreakers endpoint for free. -->
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-spring-boot3</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <!-- Validation -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- PostgreSQL Driver -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Flyway 3.2.a — schema migration runner. Spring Boot 3.2.5 manages
+             flyway-core 9.22.x; the postgres dialect is built-in (no separate
+             flyway-database-postgresql module needed at this version). -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
+        <!-- JWT (JJWT) -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Testcontainers — real Postgres for end-to-end IT (*IT.java) -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Sprint 6.5 — OpenAPI / Swagger UI for FE codegen pipeline.
+             springdoc 2.5.x is the matched version for Spring Boot 3.2.x;
+             auto-configures /v3/api-docs (JSON spec) and /swagger-ui (the
+             interactive doc, dev-only — see SecurityConfig matchers).
+             Used by frontend/scripts/gen-api-types.sh to refresh the
+             committed types under frontend/lib/api/types/. -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- 3.2.a — single source of truth for SQL migrations.
+             infrastructure/postgres/migrations/ remains the canonical location
+             (mounted by docker-compose into Postgres's docker-entrypoint-initdb.d
+             on first boot, and copied by AbstractIntegrationIT into TC containers).
+             At Maven build time we ALSO copy them into the auth-service JAR at
+             classpath:db/migration/ so Flyway can pick them up at runtime. -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/../../infrastructure/postgres/migrations</directory>
+                <targetPath>db/migration</targetPath>
+                <includes>
+                    <include>*.sql</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <!-- Pick up *IT.java integration tests in the same `mvn test` pass.
+                 Default surefire patterns omit IT — adding it here keeps the
+                 single-command flow (mvn test) and the convention (*IT.java
+                 for SpringBootTest + Testcontainers, *Test for unit). -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*IT.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

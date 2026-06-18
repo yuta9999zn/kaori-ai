@@ -1,0 +1,549 @@
+
+=== P1-S1 — Cluster ready, monorepo, CI/CD, basic auth (21 features) ===
+  [Platform] 10 features:
+    P1-AUTH-001        Đăng nhập Platform Admin                                L5 + Cross    
+    P1-AUTH-002        MFA bắt buộc SUPER_ADMIN (TOTP)                         L5 + Cross    
+    P1-AUTH-003        Session management + force logout                       L5 + Cross    
+    P1-ADM-001         Invite admin + gán role (SUPER_ADMIN/ADMIN/SUPPORT/CSM/ L5            
+    P1-M10-004         Đăng xuất (invalidate session)                          L0 + L5       
+    P1-M10-006         MFA / 2FA bắt buộc cho SUPER_ADMIN                      L5            
+    P1-M10-007         Session Management (JWT 1h + Refresh 30d)               L5            
+    P1-M10-008         Rate Limit Login (5 lần → lock 15 phút)                 L0 + L3       
+    P1-M10-009         Force logout all sessions (SUPER_ADMIN)                 L5            
+    P1-M13-006         Enforce MFA cho SUPER_ADMIN                             L5            
+  [Enterprise] 4 features:
+    P2-M20-007         First Login (force change password cho invited user)    L5            
+    P2-M20-008         MFA / 2FA optional                                      L5            
+    P2-M20-009         Session Management (JWT + Refresh Token)                L5            
+    P2-M20-011         SSO (OAuth Google/Microsoft — Phase 2)                  L3 + L5       
+  [Studio] 3 features:
+    P3-M30-006         First Login (force change password)                     L5            
+    P3-M30-007         MFA / 2FA bắt buộc cho Kaori Staff Admin                L5            
+    P3-M30-008         Session Management (JWT + Refresh)                      L5            
+  [Personal] 3 features:
+    P4-M40-003         Đăng ký qua Google / Facebook / Apple (OAuth)           L5            
+    P4-M40-008         MFA / 2FA optional                                      L5            
+    P4-M40-009         Session Management (JWT + Refresh)                      L5            
+  [Cross-cutting] 1 features:
+    OBS-012            Structured JSON logging (all services)                  L0 + Cross     ⭐NEW
+
+=== P1-S2 — Multi-tenancy + RLS + Vault setup (42 features) ===
+  [Platform] 25 features:
+    P1-WS-001          Tạo workspace mới                                       L4-L5         
+    P1-WS-002          List + filter workspaces (status, plan, industry)       L4-L5         
+    P1-WS-003          Activate / Deactivate / Archive workspace               L4-L5         
+    P1-KEY-001         Sinh KAORI-XXXX-XXXX-XXXX (reveal once)                 L0-L5 (Cross) 
+    P1-KEY-002         Revoke key + xem usage history                          L0-L5 (Cross) 
+    P1-MTNT-001        ⭐ Cross-tenant access attempt monitoring                L0-L2 (Cross)  ⭐NEW
+    P1-MTNT-002        ⭐ Continuous RLS leak testing in CI/CD                  L0-L2 (Cross)  ⭐NEW
+    P1-M10-001         Đăng nhập Platform Admin                                L3 + L5       
+    P1-M11-001         Tạo workspace mới                                       Cross         
+    P1-M11-002         Sửa thông tin workspace (plan, notes)                   Cross         
+    P1-M11-003         Xem chi tiết workspace                                  L5            
+    P1-M11-004         Activate / Deactivate workspace                         L5            
+    P1-M11-005         Filter workspaces (status, plan)                        L5            
+    P1-M11-006         Search workspaces                                       L5            
+    P1-M11-007         Export danh sách workspace                              L5            
+    P1-M12-001         Generate key mới (KAORI-XXXX-XXXX-XXXX)                 L3            
+    P1-M12-002         Copy key (hiện 1 lần duy nhất)                          L5            
+    P1-M12-003         Revoke key                                              L5            
+    P1-M13-001         Invite admin qua email                                  L3            
+    P1-M13-002         Gán role (SUPER_ADMIN / ADMIN / SUPPORT)                Cross         
+    P1-M13-003         Deactivate admin                                        L5 + Cross    
+    P1-M13-004         Reset password admin                                    L3            
+    P1-M13-005         Force logout admin                                      L5            
+    P1-M16-001         KPI cards (Workspace, MRR, Customers billed)            L5            
+    P1-M16-004         Quick link tới workspace vấn đề                         L3 + L5       
+  [Enterprise] 4 features:
+    P2-M22-001         Nhập private key                                        L5            
+    P2-M22-002         Auto-format key input                                   L5            
+    P2-M22-003         Validate key hash                                       L3            
+    P2-M25-010         Retention policy per tenant (default 90 ngày)           L1 + L2       
+  [Studio] 1 features:
+    P3-M30-002         Kích hoạt tài khoản qua email invite (Studio Admin mời) L3 + L5       
+  [Cross-cutting] 12 features:
+    SH-M52-001         Middleware extract tenant_id từ JWT                     L3 + Cross    
+    OBS-001            OpenTelemetry SDK integration (every service)           L0 + Cross     ⭐NEW
+    OBS-002            Jaeger UI for trace visualization                       L0 + Cross     ⭐NEW
+    OBS-003            Tenant_id in every span (mandatory attribute)           L0 + Cross     ⭐NEW
+    OBS-006            Prometheus + Grafana stack                              L0 + Cross     ⭐NEW
+    OBS-009            Custom metrics: tenant_quota_usage                      L0 + Cross     ⭐NEW
+    OBS-013            Loki log aggregation                                    L0 + Cross     ⭐NEW
+    OBS-014            Trace_id + span_id in every log                         L0 + Cross     ⭐NEW
+    OBS-015            Tenant_id in every log                                  L0 + Cross     ⭐NEW
+    OBS-016            PagerDuty alerting integration                          L0 + Cross     ⭐NEW
+    OBS-019            Alert playbooks per alert type                          L0 + Cross     ⭐NEW
+    OBS-022            Sentry error tracking integration                       L0 + Cross     ⭐NEW
+
+=== P1-S3 — First 3 connectors + Bronze tier (23 features) ===
+  [Platform] 1 features:
+    P1-M15-003         Pipeline view (Prospect → Pilot → ENT)                  L3            
+  [Enterprise] 20 features:
+    P2-M21-002         Upload logo / avatar tổ chức                            L1            
+    P2-M22-006         Upload logo công ty                                     L1            
+    P2-M23-007         Quick link → Data Pipeline Wizard                       L5            
+    P2-M25-001         Ingestion từ file upload (CSV/Excel/JSON/Parquet)       L1 + L2       
+    P2-M25-002         Ingestion từ data source connect (DB/API/CRM/ERP)       L0 + L1       
+    P2-M25-003         Streaming ingestion (webhook/Kafka — Phase 2)           L0 + L1       
+    P2-M25-006         Gắn metadata source (source_name, ingested_at, file_nam L1 + L2       
+    P2-M25-008         Xem lịch sử ingestion                                   L1 + L2       
+    P2-M25-009         Rollback ingestion (restore previous raw snapshot)      L1 + L2       
+    P2-M26-001         Upload CSV (max 50MB)                                   L1            
+    P2-M26-002         Upload Excel (XLSX/XLS)                                 L1            
+    P2-M26-003         Upload JSON / JSON Lines                                L1            
+    P2-M26-004         Upload Parquet — Phase 2                                L1            
+    P2-M26-006         Progress bar upload realtime                            L1 + L5       
+    P2-M26-009         Đặt tên pipeline                                        L5            
+    P2-M27-001         Phân tích pattern data từ các pipeline đã chạy          L5            
+    P2-M27-010         Khi upload data theo template → auto-classify Bronze/Si L1 + L2       
+    P2-M210-001        Input: data analysis result + uploaded documents        L1 + L3       
+    P2-M210-012        Upload tài liệu nội bộ (PDF, Word, TXT, MD)             L1 + L3       
+    P2-M216-005        Gửi feedback tới pipeline retrain                       L2 + L3       
+  [Personal] 2 features:
+    P4-M42-002         Drag-drop upload                                        L1 + L3       
+    P4-M49-001         Avatar upload                                           L1            
+
+=== P1-S4 — Silver + Gold tiers + data quality (7 features) ===
+  [Enterprise] 3 features:
+    P2-M25-011         Data Cleaning (remove duplicates, trim whitespace, null L1 + L2       
+    P2-M25-020         Data Integration (join nhiều Silver table thành dimensi L1 + L2       
+    P2-M26-023         AI suggested cleaning rules list                        L3            
+  [Studio] 2 features:
+    P3-M33-007         Tab Datasets (Bronze/Silver/Gold snapshot)              L1 + L2       
+    P3-M36-003         Insert chart/analysis từ Gold layer (dùng Chart Library L2 + L3       
+  [Cross-cutting] 2 features:
+    SH-M57-002         Silver layer storage (columnar DB)                      L2 + L3       
+    SH-M57-003         Gold layer storage (views + materialized views)         L2 + L3       
+
+=== P1-S5 — Reasoning Layer + LLM integration (39 features) ===
+  [Platform] 3 features:
+    P1-LLM-004         ⭐ LLM Version Pinning (Workflow v2.0 Phần 21)           L3             ⭐NEW
+    P1-M10-002         Quên mật khẩu → email reset                             L3 + L5       
+    P1-M14-006         Tính overage cost tự động                               L0 + L3       
+  [Enterprise] 24 features:
+    P2-M20-002         Kích hoạt tài khoản qua email invite                    L3 + L5       
+    P2-M20-003         Quên mật khẩu → email reset                             L3 + L5       
+    P2-M21-006         Custom subdomain (vd: mycompany.kaori.ai) — Phase 2     L3            
+    P2-M21-007         Custom email template branding (logo trong email invite L3            
+    P2-M22-007         Chọn industry (RETAIL, FINANCE, LOGISTICS, F&B, EDUCATI L3 + L5       
+    P2-M23-004         Widget AI decisions today                               L3 + L5       
+    P2-M23-010         Customize widget layout (drag-drop)                     L3 + L5       
+    P2-M24-002         Mời member qua email                                    L3            
+    P2-M25-024         Aggregated Objects (daily/weekly/monthly summary)       L1 + L2       
+    P2-M26-005         Drag-drop file                                          L3 + L5       
+    P2-M26-008         Template catalog — Retail, Finance, Logistics, HR, Mark L3            
+    P2-M26-016         Drag-drop mapping                                       L3            
+    P2-M26-031         Rule: Validate email/phone format                       L3            
+    P2-M26-044         Chọn external AI provider (optional)                    L3            
+    P2-M26-051         Insight panel "Chuyện gì · Tại sao · Nên làm gì" — xem  L3            
+    P2-M210-005        Confidence score cho mỗi insight                        L3            
+    P2-M210-008        Chọn LLM nội bộ hoặc external AI (nếu không sợ lộ data) L3            
+    P2-M210-009        Export insight as PDF report                            L3            
+    P2-M210-010        Save insight + track acted/not-acted                    L3            
+    P2-M210-011        Feedback loop — user rate insight → improve prompt      L3            
+    P2-M210-014        RAG (Retrieval-Augmented Generation) cho insights       L3            
+    P2-M216-002        Panel "Tại sao AI quyết định" (top 3 factors)           L3            
+    P2-M219-001        Tab Quota — gauge X/Y khách / token LLM                 L3            
+    P2-M219-002        Dự báo overage                                          L3            
+  [Studio] 2 features:
+    P3-M34-002         Click → version detail                                  L3 + L5       
+    P3-M34-005         Tab Training Log                                        L3            
+  [Personal] 5 features:
+    P4-M40-002         Đăng ký tài khoản cá nhân (self-signup email/phone)     L3 + L5       
+    P4-M40-004         Xác thực email / SMS OTP khi đăng ký                    L3 + L5       
+    P4-M41-004         AI suggestions unread panel                             L3 + L5       
+    P4-M44-003         Insights cá nhân hóa                                    L3            
+    P4-M45-005         Drag-drop reorder (persist ngay)                        L3            
+  [Cross-cutting] 5 features:
+    SH-M51-001         Cron daily aggregate                                    L3            
+    SH-M53-005         API explainability public                               L3            
+    SH-M57-001         Bronze layer storage (object storage / S3-compatible)   L1 + L3       
+    SH-M62-002         Gửi invoice qua email                                   L3            
+    OBS-008            Custom metrics: ai_calls_total + tokens_total           L0 + Cross     ⭐NEW
+
+=== P1-S6 — Workflow Engine (Temporal) + builder UI (27 features) ===
+  [Enterprise] 4 features:
+    P2-M26-045         Config form auto-generate từ template                   L5            
+    P2-M26-058         Save analysis as template                               L3            
+    P2-M27-006         Đề xuất quy trình quản lý data (workflow recommendation L3 + L4       
+    P2-M27-009         Save workflow template cho lần sau                      L4            
+  [Cross-cutting] 23 features:
+    REL-001            Side-effect classification taxonomy (5 classes)         L4 + Cross     ⭐NEW
+    REL-002            Per-node side-effect declaration in YAML                L4 + Cross     ⭐NEW
+    REL-003            Class-aware execution path in Action Runtime            L4 + Cross     ⭐NEW
+    REL-004            Idempotency key generation (deterministic per node + ru L4 + Cross     ⭐NEW
+    REL-005            Postgres idempotency_records table with TTL             L4 + Cross     ⭐NEW
+    REL-006            Distributed lock for write_non_idempotent               L4 + Cross     ⭐NEW
+    REL-007            Provider-side dedup integration (SendGrid, Twilio)      L4 + Cross     ⭐NEW
+    REL-008            Retry policy per node (max attempts, backoff)           L4 + Cross     ⭐NEW
+    REL-009            Retry-After header respect                              L4 + Cross     ⭐NEW
+    REL-010            Per-tenant rate limiting on retries                     L4 + Cross     ⭐NEW
+    REL-011            Saga pattern for irreversible workflows                 L4 + Cross     ⭐NEW
+    REL-012            Compensation action declarations in YAML                L4 + Cross     ⭐NEW
+    REL-013            Saga orchestrator (Temporal-based)                      L4 + Cross     ⭐NEW
+    REL-015            Dead Letter Queue (DLQ) for failed workflows            L4 + Cross     ⭐NEW
+    REL-016            DLQ admin UI (review + reprocess + discard)             L4 + Cross     ⭐NEW
+    REL-017            DLQ alerting (high volume = systemic issue)             L4 + Cross     ⭐NEW
+    REL-018            Circuit breaker per external service                    L4 + Cross     ⭐NEW
+    REL-020            Per-node timeout configuration                          L4 + Cross     ⭐NEW
+    REL-021            Heartbeating for long-running activities                L4 + Cross     ⭐NEW
+    REL-022            Per-tenant connection pool isolation                    L4 + Cross     ⭐NEW
+    REL-023            Per-tenant thread pool limits                           L4 + Cross     ⭐NEW
+    OBS-004            Workflow_run_id correlation across services             L0 + Cross     ⭐NEW
+    OBS-007            Custom metrics: workflow_executions_total               L0 + Cross     ⭐NEW
+
+=== P1-S7 — Process Mining v1 + Adoption + NOV basic (48 features) ===
+  [Platform] 6 features:
+    P1-BIL-001         Tổng quan billing theo tháng (MRR + breakdown)          L4-L5         
+    P1-BIL-002         Alert khi enterprise >80% quota                         L4-L5         
+    P1-BIL-003         Tính overage cost tự động                               L4-L5         
+    P1-PILOT-001       Pipeline view (Prospect → Pilot → Enterprise)           L4-L5         
+    P1-PILOT-002       Auto-trigger D25 reminder + D30 upgrade prompt          L4-L5         
+    P1-CSM-001         ⭐ Customer health overview (Adoption + ROI + Renewal Ri L4.5 + L5      ⭐NEW
+  [Enterprise] 40 features:
+    P2-M219-008        Contact sales (ENT ROI tier)                            L4.5          
+    PM-EVT-001         Postgres CDC log connector                              L1 + L4.5      ⭐NEW
+    PM-EVT-002         Excel history connector (Excel revision metadata)       L1 + L4.5      ⭐NEW
+    PM-EVT-003         Zalo Business API metadata connector                    L1 + L4.5      ⭐NEW
+    PM-PII-009         Common event log schema normalization                   L4.5 + Cross   ⭐NEW
+    PM-PII-010         PII detection (Vietnamese-aware)                        L4.5 + Cross   ⭐NEW
+    PM-PII-011         PII redaction (mask names → roles)                      L4.5 + Cross   ⭐NEW
+    PM-PII-012         Tenant-id stamping on every event                       L4.5 + Cross   ⭐NEW
+    PM-ALG-014         Case inference (group events by case_id)                L4.5           ⭐NEW
+    PM-ALG-015         Heuristic Miner algorithm (Phase 1)                     L4.5           ⭐NEW
+    PM-ALG-018         Variant analysis (main + alternates)                    L4.5           ⭐NEW
+    PM-ALG-019         Temporal pattern extraction (avg duration per step)     L4.5           ⭐NEW
+    PM-ALG-020         Frequency analysis (path occurrence counts)             L4.5           ⭐NEW
+    PM-ANM-021         Bottleneck detection (long wait times)                  L4.5           ⭐NEW
+    AI-SIG-001         ⭐ Signal 1: Workflow execution abandonment              L4.5           ⭐NEW
+    AI-SIG-002         ⭐ Signal 2: AI decision override rate tracking          L4.5           ⭐NEW
+    AI-SIG-003         ⭐ Signal 3: Side-channel detection (Zalo/Excel use post L4.5           ⭐NEW
+    AI-SIG-005         ⭐ Signal 5: Manager intervention frequency              L4.5           ⭐NEW
+    AI-SIG-006         ⭐ Signal 6: Workflow completion rate per user/dept      L4.5           ⭐NEW
+    AI-HSC-010         Composite adoption health score (0-100)                 L4.5           ⭐NEW
+    AI-HSC-011         Per-workflow health score                               L4.5           ⭐NEW
+    AI-HSC-012         Per-department adoption rollup                          L4.5           ⭐NEW
+    AI-HSC-013         Per-tenant overall adoption score                       L4.5           ⭐NEW
+    AI-HSC-014         Health classification (EXCELLENT/HEALTHY/AT_RISK/STRUGG L4.5           ⭐NEW
+    AI-HSC-015         Trend analysis (improving/declining/stable)             L4.5           ⭐NEW
+    AI-INT-018         CSM alert generation (escalate to human)                L4.5 + L5      ⭐NEW
+    NOV-REV-001        Pre/Post comparison method                              L4.5           ⭐NEW
+    NOV-REV-003        Industry benchmark fallback method                      L4.5           ⭐NEW
+    NOV-REV-004        KPI-to-revenue mapper (per industry)                    L4.5           ⭐NEW
+    NOV-REV-005        Confidence scoring on revenue estimates                 L4.5           ⭐NEW
+    NOV-CST-007        People cost estimator (time saved × rate)               L4.5           ⭐NEW
+    NOV-CST-008        Infrastructure cost calculator (per-tenant compute + st L4.5           ⭐NEW
+    NOV-CST-009        AI call cost tracking (token-based)                     L4.5           ⭐NEW
+    NOV-CST-010        Integration cost (3rd party API calls)                  L4.5           ⭐NEW
+    NOV-CORE-013       NOV monthly computation (revenue - cost)                L4.5           ⭐NEW
+    NOV-CORE-014       Time-to-payback projection                              L4.5           ⭐NEW
+    NOV-CORE-015       Cumulative NOV tracking                                 L4.5           ⭐NEW
+    NOV-CORE-016       Negative NOV alerts                                     L4.5           ⭐NEW
+    NOV-CORE-017       Per-department NOV rollup                               L4.5           ⭐NEW
+    NOV-CORE-018       Per-tenant total NOV                                    L4.5           ⭐NEW
+  [Cross-cutting] 2 features:
+    OBS-010            Custom metrics: nov_per_workflow                        L0 + Cross     ⭐NEW
+    OBS-011            Custom metrics: adoption_score_per_workflow             L0 + Cross     ⭐NEW
+
+=== P1-S8 — Zalo Bot + final polish + beta launch (296 features) ===
+  [Platform] 28 features:
+    P1-HEALTH-001      KPI cards (Workspaces, MRR, Customers billed, Workflows L5            
+    P1-PLAN-001        CRUD plans với soft-update versioning (AP-8)            L4            
+    P1-CSM-002         ⭐ Customer cohort health portfolio                      L4.5 + L5      ⭐NEW
+    P1-M10-003         Reset mật khẩu (link 1h)                                L5            
+    P1-M10-005         Đổi mật khẩu                                            L5            
+    P1-M10-010         IP Whitelist (tùy chọn)                                 L5            
+    P1-M12-004         Xem lịch sử sử dụng (used_at, used_by_ip)               L5            
+    P1-M12-005         Hash SHA-256 lưu DB (AP-6)                              L3            
+    P1-M14-001         Xem tổng quan billing theo tháng                        L0            
+    P1-M14-002         Drill-down theo enterprise                              L0            
+    P1-M14-003         Xem quota usage %                                       L0 + L5       
+    P1-M14-004         Aggregate DISTINCT customer_external_id                 L0            
+    P1-M14-005         Alert khi enterprise >80% quota                         L0            
+    P1-M14-007         Export báo cáo billing                                  L0            
+    P1-M15-001         Xem conversion rate tổng                                L5            
+    P1-M15-002         Drill-down theo tháng                                   L5            
+    P1-M15-004         Filter theo ngành                                       L3            
+    P1-M15-005         Auto-trigger reminder D25                               L3            
+    P1-M15-006         Auto-trigger upgrade prompt D30                         L3            
+    P1-M15-007         1-click upgrade flow                                    L5            
+    P1-M16-002         Chart 30 ngày (trend)                                   L5            
+    P1-M16-003         Alert widget real-time                                  L5            
+    P1-M16-005         Auto-refresh 5 phút                                     L5            
+    P1-M17-001         Xem danh sách plans                                     L5            
+    P1-M17-002         Sửa giá plan (AP-8 soft update)                         L5            
+    P1-M17-003         Sửa quota (customers_per_month)                         L5            
+    P1-M17-004         Deactivate plan cũ (soft)                               L5            
+    P1-M17-005         Tạo plan mới                                            L5            
+  [Enterprise] 134 features:
+    P2-M20-001         Đăng nhập Enterprise User                               L3 + L5       
+    P2-M20-004         Reset mật khẩu (link 1h)                                L5            
+    P2-M20-005         Đăng xuất                                               L5            
+    P2-M20-006         Đổi mật khẩu                                            L5            
+    P2-M20-010         Rate Limit (5 lần → lock 15 phút)                       L3 + L5       
+    P2-M21-001         Đặt tên tổ chức                                         L5            
+    P2-M21-003         Chọn màu sắc thương hiệu (primary / secondary / accent) L5            
+    P2-M21-004         Chọn theme sáng/tối                                     L5            
+    P2-M21-005         Preview trước khi áp dụng                               L5            
+    P2-M21-008         Custom PDF report header branding                       L5            
+    P2-M22-004         Rate limit 5 lần thử/phút                               L0 + Cross    
+    P2-M22-005         Điền thông tin công ty (tên, industry, timezone)        L5            
+    P2-M22-008         Mời thành viên đầu tiên                                 L3            
+    P2-M22-009         Skip invite step                                        L4            
+    P2-M22-010         Pilot countdown D25 notification                        L3            
+    P2-M22-011         Pilot countdown D30 upgrade prompt                      L3            
+    P2-M22-012         1-click upgrade với data migrate seamless               L5            
+    P2-M23-001         Widget KPI chính theo ngành (tùy chỉnh)                 L5            
+    P2-M23-002         Widget "Doanh thu đang được bảo vệ"                     L3 + L5       
+    P2-M23-003         Widget HIGH risk count                                  L5            
+    P2-M23-005         Quota gauge "X/Y khách được phát hiện"                  L5            
+    P2-M23-006         Alert list real-time                                    L5            
+    P2-M23-008         Auto-refresh 60s                                        L5            
+    P2-M23-009         Mobile responsive (tablet)                              L5            
+    P2-M24-001         Danh sách members                                       L5            
+    P2-M24-003         Multi-role per user (AP-5 compound PK)                  L5            
+    P2-M24-004         Gán role MANAGER / OPERATOR / ANALYST / VIEWER          L5            
+    P2-M24-005         Deactivate member                                       L5            
+    P2-M24-006         Resend invite                                           L3            
+    P2-M24-007         Đổi role                                                Cross         
+    P2-M24-008         Enforce ≥1 MANAGER active                               L5            
+    P2-M25-004         Lưu raw data as-is (không transformation)               L1 + L2       
+    P2-M25-005         Truncate & Insert load method                           L1 + L2       
+    P2-M25-007         Data lineage tracking                                   L1 + L2       
+    P2-M25-012         Data Standardization (date format, case, encoding)      L1 + L2       
+    P2-M25-013         Data Normalization (unit conversion, category mapping)  L1 + L2       
+    P2-M25-014         Derived Columns (tuổi từ DOB, full_name từ first+last,  L1 + L2       
+    P2-M25-015         Data Enrichment (thêm thông tin từ external source / re L1 + L2       
+    P2-M25-016         Schema validation (type, format, required fields)       L1 + L2       
+    P2-M25-017         Xem Before/After mỗi transformation                     L1 + L2       
+    P2-M25-018         Log chi tiết transformation (step_log append-only)      L1 + L2       
+    P2-M25-019         Quality score NUMERIC(5,4)                              L1 + L2       
+    P2-M25-021         Data Aggregation (SUM/AVG/COUNT theo time/category)     L1 + L2       
+    P2-M25-022         Business Logic & Rules (custom KPI, formula)            L1 + L2       
+    P2-M25-023         Star Schema modeling (dimensions + facts)               L1 + L2       
+    P2-M25-025         Flat Tables (denormalized cho reporting nhanh)          L1 + L2       
+    P2-M25-026         Materialized Views (cache kết quả nặng)                 L1 + L2       
+    P2-M25-027         Version hóa business rules (audit change)               L1 + L2       
+    P2-M26-007         Connect từ data source đã có (CRM/ERP/DB)               L1            
+    P2-M26-010         Preview 10 dòng đầu                                     L5            
+    P2-M26-011         Step indicator 1●○○○○                                   L5            
+    P2-M26-012         Auto phân tích schema                                   L5            
+    P2-M26-013         Phát hiện cột + data type + null_rate                   L5            
+    P2-M26-014         Hiển thị sample values                                  L5            
+    P2-M26-015         Bảng so sánh "Cột của bạn" vs "Cột cần thiết"           L5            
+    P2-M26-017         Quality gauge (NUMERIC 5,4)                             L5            
+    P2-M26-018         Warning null_rate > 30%                                 L5            
+    P2-M26-019         Warning quality_score < 0.6                             L5            
+    P2-M26-020         Validate required columns 100%                          L5            
+    P2-M26-021         Bỏ qua cột thừa                                         L5            
+    P2-M26-022         Đề xuất type conversion (text → date/number)            L3            
+    P2-M26-024         Toggle on/off từng rule                                 L5            
+    P2-M26-025         Rule: Remove duplicates                                 L5            
+    P2-M26-026         Rule: Fill missing values                               L5            
+    P2-M26-027         Rule: Trim whitespace                                   L5            
+    P2-M26-028         Rule: Standardize date format                           L5            
+    P2-M26-029         Rule: Normalize case                                    L5            
+    P2-M26-030         Rule: Remove outliers (IQR/Z-score)                     L5            
+    P2-M26-032         Rule: Derive columns (age from DOB, etc.)               L5            
+    P2-M26-033         Rule: Enrich từ reference table                         L5            
+    P2-M26-034         Hiển thị rows affected per rule                         L5            
+    P2-M26-035         Hiển thị quality_delta per rule                         L5            
+    P2-M26-036         Preview Before/After 20 dòng sample                     L5            
+    P2-M26-037         Button "Giải thích quyết định" per rule                 L3            
+    P2-M26-038         Apply all rules                                         L5            
+    P2-M26-039         Undo toàn bộ / Undo từng bước                           L5            
+    P2-M26-040         Final quality_score card                                L5            
+    P2-M26-041         Step_log append-only (immutable)                        Cross         
+    P2-M26-042         Chọn loại phân tích (Basic / Intermediate / Advanced) — L5            
+    P2-M26-043         Chọn analysis framework (SWOT/6W2H/Fishbone/MoM) — xem  L3            
+    P2-M26-046         Run analysis                                            L3            
+    P2-M26-047         Realtime progress bar                                   L5            
+    P2-M26-048         Summary stats card sau khi xong                         L5            
+    P2-M26-049         Dashboard 4-panel charts (chọn từ Chart Library — xem S L5            
+    P2-M26-050         Widget KPI theo loại phân tích                          L5            
+    P2-M26-052         Recommended actions list                                L3 + L4       
+    P2-M26-053         Filter / search result                                  L5            
+    P2-M26-054         Export PDF report có branding tổ chức                   L5            
+    P2-M26-055         Export CSV / Excel                                      L5            
+    P2-M26-056         Export chart PNG/SVG                                    L5            
+    P2-M26-057         Share link (có quyền)                                   L5            
+    P2-M27-002         Đề xuất schema tối ưu (chuẩn hóa 3NF hoặc star schema)  L3            
+    P2-M27-003         Auto-generate CREATE TABLE scripts                      L0            
+    P2-M27-004         Auto-generate index đề xuất                             L5            
+    P2-M27-005         Auto-generate ERD (Entity Relationship Diagram)         L3            
+    P2-M27-007         Đề xuất quy trình nhập liệu (form structure, validation L5            
+    P2-M27-008         Tạo data entry form tự động từ schema                   L5            
+    P2-M27-011         Đánh giá data quality improvement qua thời gian         L2            
+    P2-M27-012         Version control schema (migration scripts)              L5            
+    P2-M210-002        "Chuyện gì đang xảy ra?" — What is happening (factual d L3            
+    P2-M210-003        "Tại sao xảy ra?" — Why (causal analysis từ correlation L3            
+    P2-M210-004        "Nên làm gì?" — Recommended actions (action plan từ bes L3 + L4       
+    P2-M210-006        Dẫn chứng từ data (data citation)                       L3            
+    P2-M210-007        Dẫn chứng từ tài liệu user (document citation)          L3            
+    P2-M210-013        Vector embedding + index                                L3            
+    P2-M210-015        Quản lý phiên bản tài liệu                              L3            
+    P2-M210-016        Kiểm soát quyền truy cập tài liệu (role-based)          L3            
+    P2-M215-001        List decisions (pagination 50/page)                     L3 + L5       
+    P2-M215-002        Filter date range / type / confidence                   L3            
+    P2-M215-003        Filter has_override                                     L3            
+    P2-M215-004        Full-text search (GIN trigram AP-12)                    L3            
+    P2-M215-005        Sort columns                                            L3            
+    P2-M215-006        Export CSV (max 10,000 records)                         L3            
+    P2-M215-007        Immutable UI (no edit/delete)                           L3 + L5       
+    P2-M216-001        Xem features JSONB + output NUMERIC + confidence        L3            
+    P2-M216-003        Override form (Operator+)                               L3            
+    P2-M216-004        Nhập lý do override                                     L3            
+    P2-M216-006        Decision gốc immutable                                  L3            
+    P2-M219-003        Warning khi quota >80%                                  L5            
+    P2-M219-004        Critical khi quota >95%                                 L5            
+    P2-M219-005        Tab Gói — tên, giá VND+USD                              L5            
+    P2-M219-006        Tab Upgrade — comparison 4 gói                          L5            
+    P2-M219-007        1-click upgrade                                         L5            
+    PM-PII-013         Mining session approval gates (consent flow)            L4.5 + Cross   ⭐NEW
+    PM-ANM-022         Shadow process detection (off-system steps)             L4.5           ⭐NEW
+    PM-OUT-028         Findings report generation (human-readable)             L4 + L4.5      ⭐NEW
+    PM-OUT-029         Workflow YAML auto-generation                           L4 + L4.5      ⭐NEW
+    PM-OUT-030         Off-system steps tagging in YAML                        L4 + L4.5      ⭐NEW
+    PM-OUT-031         Bottleneck flagging in builder                          L4 + L4.5      ⭐NEW
+    PM-OUT-032         User decision UI on findings                            L4 + L4.5      ⭐NEW
+    PM-OUT-033         Workflow draft creation from mining                     L4 + L4.5      ⭐NEW
+    NOV-RPT-019        Manager email digest (monthly)                          L4.5 + L5      ⭐NEW
+    NOV-RPT-021        ROI Dashboard (real-time)                               L4.5 + L5      ⭐NEW
+    NOV-RPT-022        Workflow ROI ranking (top performers)                   L4.5 + L5      ⭐NEW
+  [Studio] 43 features:
+    P3-M30-001         Đăng nhập Studio User (Kaori Staff / Enterprise Analyst L3 + L5       
+    P3-M30-003         Quên / Reset mật khẩu                                   L3 + L5       
+    P3-M30-004         Đăng xuất                                               L5            
+    P3-M30-005         Đổi mật khẩu                                            L5            
+    P3-M30-009         Rate Limit (5 lần → lock 15 phút)                       L5 + Cross    
+    P3-M31-001         Xem projects được assign                                L5            
+    P3-M31-002         Activity feed (50 records)                              L4            
+    P3-M31-003         Shortcut tạo project                                    L5            
+    P3-M31-004         Shortcut compose report                                 L5            
+    P3-M31-005         Role badge hiển thị                                     L5            
+    P3-M31-006         Isolation: Analyst chỉ thấy enterprise mình             L5            
+    P3-M32-001         List projects table                                     L5            
+    P3-M32-002         Filter theo enterprise (Kaori Staff)                    L5            
+    P3-M32-003         Filter theo status (ACTIVE/ARCHIVED/DRAFT)              L5            
+    P3-M32-004         Tạo project mới                                         L5            
+    P3-M32-005         Archive project                                         L5            
+    P3-M32-006         Auto-assign creator as lead                             L5            
+    P3-M33-001         Xem info project                                        L3            
+    P3-M33-002         Tab Members (junction AP-1)                             L3            
+    P3-M33-003         Add/remove members                                      L3            
+    P3-M33-004         Assign role (LEAD/MEMBER/REVIEWER)                      L3            
+    P3-M33-005         Tab Models                                              L3            
+    P3-M33-006         Tab Reports                                             L3            
+    P3-M33-008         Edit (chỉ lead)                                         L3            
+    P3-M34-001         List models                                             L5            
+    P3-M34-003         Xem checksum CHAR(64) AP-6                              L5            
+    P3-M34-004         Xem metrics NUMERIC(5,4) AP-7                           L5            
+    P3-M34-006         State machine DRAFT → STAGING → DEPLOYED → ARCHIVED     L4            
+    P3-M34-007         Promote DEPLOYED (yêu cầu +2% accuracy)                 L5            
+    P3-M34-008         Rollback version                                        L5            
+    P3-M35-001         Chart loss/accuracy by epoch                            L3            
+    P3-M35-002         Compare epochs                                          L3            
+    P3-M35-003         Xem hyperparameters                                     L3            
+    P3-M35-004         Xem dataset info                                        L2 + L3       
+    P3-M35-005         Readonly (immutable)                                    L3 + L5       
+    P3-M36-001         Rich text editor                                        L5            
+    P3-M36-002         Attach files                                            L5            
+    P3-M36-004         Chọn enterprise nhận                                    L5            
+    P3-M36-005         Draft autosave 30s                                      L5            
+    P3-M36-006         Send report                                             L4            
+    P3-M36-007         Fan-out delivery                                        L5            
+    P3-M36-008         Preview trước khi gửi                                   L5            
+    P3-M36-009         Isolation: Analyst chỉ enterprise mình                  L5            
+  [Personal] 48 features:
+    P4-M40-001         Đăng nhập Personal User                                 L3 + L5       
+    P4-M40-005         Quên / Reset mật khẩu                                   L5            
+    P4-M40-006         Đăng xuất                                               L5            
+    P4-M40-007         Đổi mật khẩu                                            L5            
+    P4-M40-010         Rate Limit (5 lần → lock 15 phút)                       L5 + Cross    
+    P4-M40-011         Xóa tài khoản (GDPR-style data erasure)                 L5            
+    P4-M41-001         KPI goals active                                        L5            
+    P4-M41-002         Streak badge (consecutive days)                         L5            
+    P4-M41-003         Stats hôm nay NUMERIC(12,4)                             L5            
+    P4-M41-005         Chart 7 ngày (dùng Chart Library 2.14)                  L5            
+    P4-M41-006         Progress overview                                       L5            
+    P4-M42-001         Chọn type HEALTH / FINANCE / PRODUCTIVITY / GENERIC     L1            
+    P4-M42-003         Progress bar realtime                                   L1 + L5       
+    P4-M42-004         Checksum SHA-256 (AP-6)                                 L1            
+    P4-M42-005         Virus scan                                              L1            
+    P4-M42-006         Status lifecycle PENDING → PROCESSING → READY/ERROR     L1 + L4       
+    P4-M43-001         List files                                              L1            
+    P4-M43-002         Filter type / status                                    L5            
+    P4-M43-003         Preview 10 dòng                                         L5            
+    P4-M43-004         Soft-delete (giữ 30 ngày) + Restore                     L5            
+    P4-M44-001         Wizard 5 bước (Tải → Nhận diện → Làm sạch → Phân tích → L5            
+    P4-M44-002         Basic analysis only (nâng cấp để unlock Intermediate/Ad L3            
+    P4-M45-001         Tree view Goal → Plan → Strategy                        L5            
+    P4-M45-002         Tạo Goal (target_value NUMERIC(12,4))                   L5            
+    P4-M45-003         Add Plan dưới Goal                                      L5            
+    P4-M45-004         Add Strategy dưới Plan                                  L5            
+    P4-M45-006         Edit inline                                             L5            
+    P4-M45-007         Progress circle auto-compute                            L5            
+    P4-M45-008         Max 10 goals active per user                            L5            
+    P4-M46-001         Target vs progress chart                                L3            
+    P4-M46-002         Plans accordion                                         L3            
+    P4-M46-003         Strategy checklist                                      L3            
+    P4-M46-004         Edit inline                                             L3            
+    P4-M46-005         Archive goal                                            L3            
+    P4-M47-001         Quick-log value + note                                  L5            
+    P4-M47-002         measured_value NUMERIC(12,4)                            L5            
+    P4-M47-003         1 log/goal/day (update nếu đã có)                       L5            
+    P4-M47-004         Line chart target vs actual                             L5            
+    P4-M47-005         Calendar heatmap                                        L5            
+    P4-M47-006         Partition by (user, month)                              L5            
+    P4-M48-001         List suggestions sort relevance DESC                    L3            
+    P4-M48-002         relevance_score NUMERIC(5,4) AP-7                       L3            
+    P4-M48-003         Action Accept / Dismiss / Later                         L3 + L4       
+    P4-M48-004         Filter by type                                          L3            
+    P4-M48-005         Unread badge                                            L3            
+    P4-M49-002         Theme sáng/tối                                          L5            
+    P4-M49-003         Chọn màu accent yêu thích                               L5            
+    P4-M49-004         Ngôn ngữ (VN/EN)                                        L5            
+  [Cross-cutting] 43 features:
+    SH-M51-002         COUNT(DISTINCT customer_external_id) per month          L5            
+    SH-M51-003         Lưu vào enterprise_monthly_billing                      L5            
+    SH-M51-004         Trigger alert khi >80% quota                            L5            
+    SH-M51-005         Partition by billing_month                              L5            
+    SH-M51-006         Chống gaming split-batch                                L5            
+    SH-M52-002         Inject WHERE enterprise_id = X                          Cross         
+    SH-M52-003         Deny 403 nếu mismatch                                   Cross         
+    SH-M52-004         Audit log mọi access denied                             Cross         
+    SH-M52-005         Row-level isolation tại API layer                       Cross         
+    SH-M53-001         Compute SHAP values tại inference                       L3            
+    SH-M53-002         Translate thành top 3 factors tiếng Việt                L3            
+    SH-M53-003         Business language (không số kỹ thuật)                   L3            
+    SH-M53-004         Lưu top_factors JSONB                                   L3            
+    SH-M54-001         Async write audit_logs                                  L0 + Cross    
+    SH-M54-002         Include actor_id, action, resource, timestamp, IP       L4 + Cross    
+    SH-M54-003         Immutable (no edit/delete)                              Cross         
+    SH-M54-004         Partition monthly + Retention 2 năm                     Cross         
+    SH-M54-005         Query indexed                                           Cross         
+    SH-M57-004         Data lineage graph                                      L5            
+    SH-M57-005         Incremental load support (Phase 2)                      L1            
+    SH-M57-006         Time travel (query snapshot cũ) — Phase 2               L5            
+    SH-M58-001         Backend chart rendering (server-side cho PDF/PPT export L5            
+    SH-M58-002         Chart spec JSON schema (chuẩn hóa) — base cho Section 2 L5            
+    SH-M58-003         Theme engine (brand colors auto-apply)                  L5            
+    SH-M58-004         Cache chart render                                      L5            
+    SH-M58-005         Library: Recharts / ECharts / D3 integration            L5            
+    SH-M61-001         Thêm thẻ tín dụng / ghi nợ (Visa/Master/JCB)            L5            
+    SH-M61-002         Chuyển khoản ngân hàng (VietQR / MBQR)                  L5            
+    SH-M61-003         Ví điện tử (Momo / VNPay / ZaloPay)                     L5            
+    SH-M61-004         Xem phương thức hiện tại                                L5            
+    SH-M61-005         Xóa phương thức                                         L5            
+    SH-M61-006         Đặt mặc định                                            L5            
+    SH-M62-001         Tự động sinh invoice PDF hàng tháng                     L5            
+    SH-M62-003         Xem lịch sử hóa đơn                                     L5            
+    SH-M62-004         Thanh toán invoice                                      L4            
+    SH-M62-005         Xuất báo cáo thuế                                       L5            
+    SH-M62-006         Hỗ trợ xuất hóa đơn điện tử Việt Nam (theo Nghị định 12 L5            
+    SH-M63-001         Auto-renewal monthly                                    L5            
+    SH-M63-002         Upgrade plan (1-click, data migrate)                    L5            
+    SH-M63-003         Downgrade plan                                          L5            
+    SH-M63-004         Pause subscription                                      L5            
+    SH-M63-005         Cancel subscription                                     L5            
+    SH-M63-006         Refund process                                          L4            

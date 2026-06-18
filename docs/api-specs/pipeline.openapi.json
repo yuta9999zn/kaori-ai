@@ -1,0 +1,2037 @@
+{
+  "components": {
+    "schemas": {
+      "AnalyzeRequest": {
+        "properties": {
+          "config": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Config",
+            "type": "object"
+          },
+          "consent_external_ai": {
+            "default": false,
+            "title": "Consent External Ai",
+            "type": "boolean"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "templates": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Templates",
+            "type": "array"
+          }
+        },
+        "required": [
+          "run_id",
+          "templates"
+        ],
+        "title": "AnalyzeRequest",
+        "type": "object"
+      },
+      "ApplyRulesRequest": {
+        "properties": {
+          "rule_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Rule Ids",
+            "type": "array"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "rule_ids"
+        ],
+        "title": "ApplyRulesRequest",
+        "type": "object"
+      },
+      "Body_upload_file_upload_post": {
+        "properties": {
+          "file": {
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_file_upload_post",
+        "type": "object"
+      },
+      "CalendarRegisterRequest": {
+        "properties": {
+          "channel": {
+            "description": "'google_calendar' or 'outlook_calendar'",
+            "title": "Channel",
+            "type": "string"
+          },
+          "oauth_credential_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Oauth Credential Path"
+          },
+          "poll_interval_seconds": {
+            "default": 300,
+            "maximum": 3600.0,
+            "minimum": 60.0,
+            "title": "Poll Interval Seconds",
+            "type": "integer"
+          },
+          "tenant_calendar_id": {
+            "description": "Calendar id ('primary' for default user calendar)",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Tenant Calendar Id",
+            "type": "string"
+          },
+          "tenant_mailbox": {
+            "description": "Calendar owner email (OAuth principal)",
+            "maxLength": 255,
+            "minLength": 6,
+            "title": "Tenant Mailbox",
+            "type": "string"
+          }
+        },
+        "required": [
+          "channel",
+          "tenant_calendar_id",
+          "tenant_mailbox"
+        ],
+        "title": "CalendarRegisterRequest",
+        "type": "object"
+      },
+      "CleanSuggestRequest": {
+        "properties": {
+          "file_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Id"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id"
+        ],
+        "title": "CleanSuggestRequest",
+        "type": "object"
+      },
+      "ConnectorRegisterResponse": {
+        "description": "Response shape for both endpoints. session_id is a stable handle\nthat the Temporal Process Mining worker uses for cursor state.",
+        "properties": {
+          "channel": {
+            "title": "Channel",
+            "type": "string"
+          },
+          "connector_source": {
+            "title": "Connector Source",
+            "type": "string"
+          },
+          "next_poll_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Poll At"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "connector_source",
+          "channel",
+          "status"
+        ],
+        "title": "ConnectorRegisterResponse",
+        "type": "object"
+      },
+      "GenericWebhookMapping": {
+        "properties": {
+          "actor_path": {
+            "title": "Actor Path",
+            "type": "string"
+          },
+          "case_id_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Case Id Path"
+          },
+          "event_id_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Id Path"
+          },
+          "event_type_path": {
+            "title": "Event Type Path",
+            "type": "string"
+          },
+          "occurred_at_path": {
+            "title": "Occurred At Path",
+            "type": "string"
+          },
+          "payload_keys": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Payload Keys",
+            "type": "array"
+          },
+          "pii_redact_paths": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Pii Redact Paths",
+            "type": "array"
+          }
+        },
+        "required": [
+          "actor_path",
+          "event_type_path",
+          "occurred_at_path"
+        ],
+        "title": "GenericWebhookMapping",
+        "type": "object"
+      },
+      "GenericWebhookRegisterRequest": {
+        "properties": {
+          "mapping": {
+            "$ref": "#/components/schemas/GenericWebhookMapping"
+          },
+          "webhook_label": {
+            "description": "Tenant-friendly label, e.g. 'crm-events' or 'stripe-prod'",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Webhook Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "webhook_label",
+          "mapping"
+        ],
+        "title": "GenericWebhookRegisterRequest",
+        "type": "object"
+      },
+      "GmailOutlookRegisterRequest": {
+        "description": "POST body. enterprise_id is NEVER from here — K-12 header only.",
+        "properties": {
+          "channel": {
+            "description": "'gmail' or 'outlook'",
+            "title": "Channel",
+            "type": "string"
+          },
+          "oauth_credential_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Vault path 'secret/tenant/{id}/connectors/gmail_oauth' in prod; env override in dev. Real adapters land P15-S11.",
+            "title": "Oauth Credential Path"
+          },
+          "poll_interval_seconds": {
+            "default": 300,
+            "maximum": 3600.0,
+            "minimum": 60.0,
+            "title": "Poll Interval Seconds",
+            "type": "integer"
+          },
+          "tenant_mailbox": {
+            "description": "The mailbox to poll (also derives received vs sent direction)",
+            "maxLength": 255,
+            "minLength": 6,
+            "title": "Tenant Mailbox",
+            "type": "string"
+          }
+        },
+        "required": [
+          "channel",
+          "tenant_mailbox"
+        ],
+        "title": "GmailOutlookRegisterRequest",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "MappingOverride": {
+        "properties": {
+          "canonical_name": {
+            "title": "Canonical Name",
+            "type": "string"
+          },
+          "data_type": {
+            "title": "Data Type",
+            "type": "string"
+          },
+          "source_column": {
+            "title": "Source Column",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_column",
+          "canonical_name",
+          "data_type"
+        ],
+        "title": "MappingOverride",
+        "type": "object"
+      },
+      "SchemaConfirmRequest": {
+        "properties": {
+          "overrides": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/MappingOverride"
+            },
+            "title": "Overrides",
+            "type": "array"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id"
+        ],
+        "title": "SchemaConfirmRequest",
+        "type": "object"
+      },
+      "SchemaRequest": {
+        "properties": {
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id"
+        ],
+        "title": "SchemaRequest",
+        "type": "object"
+      },
+      "SharePointRegisterRequest": {
+        "properties": {
+          "drive_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Drive Id",
+            "type": "string"
+          },
+          "oauth_credential_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Oauth Credential Path"
+          },
+          "poll_interval_seconds": {
+            "default": 300,
+            "maximum": 3600.0,
+            "minimum": 60.0,
+            "title": "Poll Interval Seconds",
+            "type": "integer"
+          },
+          "site_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Site Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "site_id",
+          "drive_id"
+        ],
+        "title": "SharePointRegisterRequest",
+        "type": "object"
+      },
+      "SlackTeamsRegisterRequest": {
+        "properties": {
+          "channel": {
+            "description": "'slack' or 'teams'",
+            "title": "Channel",
+            "type": "string"
+          },
+          "oauth_credential_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Oauth Credential Path"
+          },
+          "poll_interval_seconds": {
+            "default": 300,
+            "maximum": 3600.0,
+            "minimum": 60.0,
+            "title": "Poll Interval Seconds",
+            "type": "integer"
+          },
+          "workspace_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "channel",
+          "workspace_id"
+        ],
+        "title": "SlackTeamsRegisterRequest",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "File upload, column detection, data cleaning, and analysis pipeline",
+    "title": "Kaori Data Pipeline",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/analyze": {
+      "post": {
+        "description": "Create an analysis_run (multi-template batch) and emit pipeline.silver.complete\nso the ai-orchestrator picks it up.\n\nValidation: UUID-typed inputs return 422 on malformed values.",
+        "operationId": "trigger_analysis_analyze_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-User-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-User-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyzeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Trigger Analysis",
+        "tags": [
+          "Gold — Analysis"
+        ]
+      }
+    },
+    "/clean/apply": {
+      "post": {
+        "description": "Apply selected cleaning rules to Bronze → write Silver. ASYNC: validate,\nthen return 202 and run the heavy rule-application + Silver write (tens of\nthousands of rows across sheets — synchronously it blew the gateway 30s\n→ 504) in a BackgroundTask. Poll GET /upload/{run_id}/status until\n'silver_complete' or 'failed'. K-2: Bronze rows never modified.\n\nValidation: UUID-typed inputs return 422 on malformed values.",
+        "operationId": "apply_cleaning_rules_clean_apply_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplyRulesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Apply Cleaning Rules",
+        "tags": [
+          "Silver — Cleaning"
+        ]
+      }
+    },
+    "/clean/suggestions": {
+      "post": {
+        "description": "Return applicable cleaning rules based on detected schema.\n\nCR-0016 closeout: when DERIVE_LINE_TOTAL applies, attach MEASURED amount\nsignals + a suggestion (presence-based, no forced threshold) so the user\napproves the unit-price × quantity derivation with the evidence in view.\n\nValidation: UUID-typed run_id / file_id / X-Enterprise-ID return 422 on\nmalformed values.",
+        "operationId": "get_cleaning_suggestions_clean_suggestions_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CleanSuggestRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Cleaning Suggestions",
+        "tags": [
+          "Silver — Cleaning"
+        ]
+      }
+    },
+    "/data/bronze/files": {
+      "get": {
+        "description": "List bronze files for the calling tenant, newest first.\n\nEach row joins ``bronze_files`` (per-sheet metadata) with the parent\n``pipeline_runs`` (the upload that produced it) so the FE can show\n\"X.csv → Sheet1 (1,200 rows)\" without a second round-trip.",
+        "operationId": "list_bronze_files_data_bronze_files_get",
+        "parameters": [
+          {
+            "description": "Opaque cursor from prior meta.cursor",
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque cursor from prior meta.cursor",
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Bronze Files",
+        "tags": [
+          "Data Explorer"
+        ]
+      }
+    },
+    "/data/bronze/files/{file_id}/sample": {
+      "get": {
+        "description": "Sample N rows from a bronze file (default 50, max 200).\n\nK-2 — bronze_rows is append-only and contains the raw upload as\nJSONB. We return the first ``limit`` rows ordered by ``row_index``;\nthe FE renders them as a table where columns are inferred from the\nJSON keys of the first row.",
+        "operationId": "sample_bronze_file_data_bronze_files__file_id__sample_get",
+        "parameters": [
+          {
+            "description": "bronze_files.file_id",
+            "in": "path",
+            "name": "file_id",
+            "required": true,
+            "schema": {
+              "description": "bronze_files.file_id",
+              "format": "uuid",
+              "title": "File Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Sample Bronze File",
+        "tags": [
+          "Data Explorer"
+        ]
+      }
+    },
+    "/data/explorer": {
+      "get": {
+        "description": "One-shot snapshot for the /p2/data hub.\n\nEach layer block is a single small SQL — bronze + silver + gold all\nuse indexed enterprise_id columns. The recent-activity strip shares\nthe pipeline_runs index. Total cost is well under the 50ms p95\nbudget for a hub page.",
+        "operationId": "get_explorer_snapshot_data_explorer_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Explorer Snapshot Data Explorer Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Explorer Snapshot",
+        "tags": [
+          "Data Explorer"
+        ]
+      }
+    },
+    "/data/gold/customers": {
+      "get": {
+        "description": "List gold_features for the tenant — analyst browse view.\n\nNote this is the *all customers* version. /api/v1/customers/at-risk\n(F-060) is the focused HIGH-risk slice with extra revenue tile +\naction toggle; this endpoint is for \"show me everything in gold\"\nso analysts can validate the aggregator output.",
+        "operationId": "list_gold_customers_data_gold_customers_get",
+        "parameters": [
+          {
+            "description": "Opaque cursor from prior meta.cursor",
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque cursor from prior meta.cursor",
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Filter to is_actioned=true|false; omit for all rows",
+            "in": "query",
+            "name": "actioned",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter to is_actioned=true|false; omit for all rows",
+              "title": "Actioned"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Gold Customers",
+        "tags": [
+          "Data Explorer"
+        ]
+      }
+    },
+    "/data/lineage": {
+      "get": {
+        "description": "Trace one bronze file through Silver and Gold.\n\nBronze: file + parent run metadata (always present if 404 doesn't fire).\nSilver: aggregate of silver_rows for this file + applied_rules\n         top-3 (null when the file has never been cleaned).\nGold:   best-effort COUNT DISTINCT customer_external_id seen in\n         this file's silver row_data → how many gold_features\n         rows this file contributes to. Null when the silver\n         row_data doesn't carry the canonical customer key\n         (per MEDALLION_CONTRACT.md the tenant must onboard with\n         that mapping; older pipelines may not have it).",
+        "operationId": "get_lineage_data_lineage_get",
+        "parameters": [
+          {
+            "description": "bronze_files.file_id to trace",
+            "in": "query",
+            "name": "file_id",
+            "required": true,
+            "schema": {
+              "description": "bronze_files.file_id to trace",
+              "format": "uuid",
+              "title": "File Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Lineage",
+        "tags": [
+          "Data Explorer"
+        ]
+      }
+    },
+    "/data/silver/datasets": {
+      "get": {
+        "description": "List silver datasets (group of silver_rows per file) for the tenant.\n\nEach row aggregates ``silver_rows`` and joins ``bronze_files`` +\n``pipeline_runs`` so the FE shows the cleaned-rows count alongside\nthe source filename and the average quality score.",
+        "operationId": "list_silver_datasets_data_silver_datasets_get",
+        "parameters": [
+          {
+            "description": "Opaque cursor from prior meta.cursor",
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque cursor from prior meta.cursor",
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Silver Datasets",
+        "tags": [
+          "Data Explorer"
+        ]
+      }
+    },
+    "/data/silver/datasets/{file_id}/sample": {
+      "get": {
+        "description": "Sample N cleaned rows from a silver dataset (default 50, max 200).\n\nK-5 — silver_rows.row_data already has PII redacted by the\ncleaning pipeline. We never re-mask here; the source of truth is\nwhat the cleaning step wrote.",
+        "operationId": "sample_silver_dataset_data_silver_datasets__file_id__sample_get",
+        "parameters": [
+          {
+            "description": "silver dataset = silver_rows.file_id",
+            "in": "path",
+            "name": "file_id",
+            "required": true,
+            "schema": {
+              "description": "silver dataset = silver_rows.file_id",
+              "format": "uuid",
+              "title": "File Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Sample Silver Dataset",
+        "tags": [
+          "Data Explorer"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health"
+      }
+    },
+    "/metrics": {
+      "get": {
+        "description": "Endpoint that serves Prometheus metrics.",
+        "operationId": "metrics_metrics_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Metrics"
+      }
+    },
+    "/pipelines": {
+      "get": {
+        "description": "List pipeline runs for the calling tenant, newest first.",
+        "operationId": "list_pipelines_pipelines_get",
+        "parameters": [
+          {
+            "description": "Opaque cursor from prior meta.cursor",
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque cursor from prior meta.cursor",
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Comma-separated status filter",
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated status filter",
+              "title": "Status"
+            }
+          },
+          {
+            "description": "ISO-8601 lower bound on created_at",
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ISO-8601 lower bound on created_at",
+              "title": "From"
+            }
+          },
+          {
+            "description": "ISO-8601 upper bound on created_at",
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ISO-8601 upper bound on created_at",
+              "title": "To"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Pipelines",
+        "tags": [
+          "Pipelines"
+        ]
+      }
+    },
+    "/pipelines/{run_id}/events": {
+      "get": {
+        "description": "Server-Sent Events for a single pipeline run.\n\nEmits one event per ``pipeline_runs.status`` transition for the run.\nHeartbeats every 15 s as comment lines so reverse proxies (nginx,\nAWS ALB) don't close the idle TCP connection. Browsers reconnect\nautomatically with ``Last-Event-ID`` — when present, we replay the\ncurrent row state immediately so the client sees the latest known\nstatus without having to wait for the next transition.",
+        "operationId": "status_stream_pipelines__run_id__events_get",
+        "parameters": [
+          {
+            "description": "Pipeline run UUID",
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "description": "Pipeline run UUID",
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Last-Event-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last-Event-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Status Stream",
+        "tags": [
+          "Pipelines"
+        ]
+      }
+    },
+    "/process-mining/connectors/calendar": {
+      "post": {
+        "description": "Register a Calendar metadata connector for this tenant.",
+        "operationId": "register_calendar_process_mining_connectors_calendar_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-enterprise-id",
+            "required": true,
+            "schema": {
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarRegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectorRegisterResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Register Calendar",
+        "tags": [
+          "Process Mining",
+          "Process Mining"
+        ]
+      }
+    },
+    "/process-mining/connectors/generic": {
+      "post": {
+        "description": "PM-EVT-008 — generic webhook event-log connector. Tenants register\nthe mapping config; the actual webhook receiver endpoint (POST\n/process-mining/webhook/{label}) routes payloads here for mapping.",
+        "operationId": "register_generic_webhook_process_mining_connectors_generic_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-enterprise-id",
+            "required": true,
+            "schema": {
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenericWebhookRegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectorRegisterResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Register Generic Webhook",
+        "tags": [
+          "Process Mining",
+          "Process Mining"
+        ]
+      }
+    },
+    "/process-mining/connectors/gmail-outlook": {
+      "post": {
+        "description": "Register a Gmail / Outlook metadata connector for this tenant.\n\nValidates channel + mailbox via the connector's own __init__ so any\nmisconfig surfaces as 422 immediately. Returns a session_id that\nthe worker uses as cursor key. Real polling fires when the\n`TEMPORAL_ENABLE_WORKER=true` flag is set (default false P15-S10).",
+        "operationId": "register_gmail_outlook_process_mining_connectors_gmail_outlook_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-enterprise-id",
+            "required": true,
+            "schema": {
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GmailOutlookRegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectorRegisterResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Register Gmail Outlook",
+        "tags": [
+          "Process Mining",
+          "Process Mining"
+        ]
+      }
+    },
+    "/process-mining/connectors/microsoft": {
+      "post": {
+        "description": "PM-EVT-007 — MS SharePoint file change connector via MS Graph\ndelta query.",
+        "operationId": "register_microsoft_sharepoint_process_mining_connectors_microsoft_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-enterprise-id",
+            "required": true,
+            "schema": {
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SharePointRegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectorRegisterResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Register Microsoft Sharepoint",
+        "tags": [
+          "Process Mining",
+          "Process Mining"
+        ]
+      }
+    },
+    "/process-mining/connectors/slack-teams": {
+      "post": {
+        "description": "PM-EVT-006 — Slack Enterprise Grid / Teams audit-API connector.\n\nValidates channel + workspace via the connector's __init__. Real\npolling fires when TEMPORAL_ENABLE_WORKER=true AND the per-tenant\nOAuth onboarding completes (the Slack admin / Teams Tenant Admin\nconsent ships outside this endpoint).",
+        "operationId": "register_slack_teams_process_mining_connectors_slack_teams_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-enterprise-id",
+            "required": true,
+            "schema": {
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SlackTeamsRegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectorRegisterResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Register Slack Teams",
+        "tags": [
+          "Process Mining",
+          "Process Mining"
+        ]
+      }
+    },
+    "/results/{run_id}": {
+      "get": {
+        "description": "Get all analysis results for a pipeline run.\n\nValidation: UUID-typed run_id and X-Enterprise-ID return 422 on\nmalformed values.",
+        "operationId": "get_results_results__run_id__get",
+        "parameters": [
+          {
+            "description": "Pipeline run UUID",
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "description": "Pipeline run UUID",
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Results",
+        "tags": [
+          "Results"
+        ]
+      }
+    },
+    "/schema": {
+      "post": {
+        "description": "Detect canonical schema for a pipeline run.\nReturns column mappings with confidence scores + uncertainty flags.\n\nValidation: req.run_id and X-Enterprise-ID are typed as UUID — Pydantic +\nFastAPI return 422 automatically on malformed values.",
+        "operationId": "get_schema_schema_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchemaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Schema",
+        "tags": [
+          "Canonical — Schema"
+        ]
+      }
+    },
+    "/schema/confirm": {
+      "post": {
+        "description": "User confirms (and optionally overrides) column mappings.\nSaves to canonical_schemas table.\n\nValidation: UUID-typed inputs return 422 on malformed values.",
+        "operationId": "confirm_schema_schema_confirm_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchemaConfirmRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Confirm Schema",
+        "tags": [
+          "Canonical — Schema"
+        ]
+      }
+    },
+    "/schema/fields": {
+      "get": {
+        "operationId": "list_canonical_fields_schema_fields_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Canonical Fields",
+        "tags": [
+          "Canonical — Schema"
+        ]
+      }
+    },
+    "/upload": {
+      "post": {
+        "description": "Upload a data file (Excel, CSV, ODS, ZIP, SQL).\n\nTwo paths:\n  • **Workflow-card attach** (X-Workflow-Step-ID set) → SYNCHRONOUS. These\n    carry the required_document_types whitelist (must reject wrong-kind\n    before the dedup short-circuit) and are typically small docs. Returns\n    the full ingest result, as before.\n  • **Basic data upload** (no X-Workflow-Step-ID) → ASYNC. A large workbook\n    (parse + detect + Bronze write) can exceed the gateway timeout, so we\n    return 202 {run_id, status:'uploading'} immediately and ingest in a\n    BackgroundTask. Poll GET /upload/{run_id}/status until 'bronze_complete'\n    / 'silver_complete' / 'unstructured_pending' / 'failed'.\n\nIdempotent (K-8): same file hash + enterprise → existing non-failed run_id\nis reused (async path checks before spawning; sync path checks inside\ningest_file). Cross-tenant guard: a supplied ID not in the enterprise → 400.",
+        "operationId": "upload_file_upload_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-User-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-User-Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Department-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Department-Id"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Branch-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Branch-Id"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Source-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Source-Id"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Workflow-Step-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Workflow-Step-Id"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Requirement-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Requirement-Id"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Folder-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Folder-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_file_upload_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Upload File",
+        "tags": [
+          "Bronze — Upload"
+        ]
+      }
+    },
+    "/upload/{run_id}/status": {
+      "get": {
+        "description": "Poll pipeline run status. Frontend polls every 2s until status =\n'bronze_complete' or 'failed'.\n\nValidation: malformed run_id or X-Enterprise-ID returns 422 from\nFastAPI's path/header parser before hitting the handler.",
+        "operationId": "get_upload_status_upload__run_id__status_get",
+        "parameters": [
+          {
+            "description": "Pipeline run UUID",
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "description": "Pipeline run UUID",
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Upload Status",
+        "tags": [
+          "Bronze — Upload"
+        ]
+      }
+    }
+  }
+}

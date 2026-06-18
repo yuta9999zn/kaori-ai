@@ -1,0 +1,45 @@
+# service.yaml — economics (skeleton, Phase 2 extract target)
+
+name:        economics
+display:     "Operational Economics (NOV Engine)"
+language:    python
+runtime:     "FastAPI + pandas/numpy"
+port:        8098                # reserved at P15-S9 follow-up; service goes live Phase 2 extract
+owner:       "@yuta9999zn"
+team:        kaori-core
+tier:        2
+status:      skeleton
+
+# Bounded context.
+context: >
+  Net Operational Value (NOV) engine — manager-facing ROI in VND. Revenue
+  estimator (pre/post comparison, A/B attribution method, industry benchmark
+  fallback, KPI-to-revenue mapper, confidence scoring). Cost calculator
+  (people time × rate, infrastructure compute + storage, AI call tokens,
+  3rd-party integration costs). Monthly NOV computation, time-to-payback
+  projection, cumulative tracking, negative-NOV alerts, per-department
+  rollup, manager email digest, ROI dashboard, workflow ROI ranking.
+
+slo:
+  availability:    "99% (NOV is reported, not real-time-blocking)"
+  monthly_compute_p95_min: 15
+
+invariants_enforced:
+  - K-1
+  - K-9     # NUMERIC(14,4) for VND money
+  - K-12
+  - K-15
+
+consumers:
+  - api-gateway     # /economics/* dashboard reads
+  - notification-service # monthly manager email digest
+  - studio          # P3 reports include NOV section
+
+depends_on:
+  - postgres        # NOV records + cost ledger
+  - clickhouse      # time-series NOV history Phase 1.5+
+  - workflow-engine # workflow execution costs (compute + AI tokens)
+
+references:
+  - docs/strategic/WORKFLOW_SYSTEM.md   # PART XI (Operational Economics ⭐ NEW v2.0)
+  - docs/BACKLOG_V4.md                  # P1-S7 (NOV-REV-001..NOV-CORE-018, NOV-RPT-019..022)

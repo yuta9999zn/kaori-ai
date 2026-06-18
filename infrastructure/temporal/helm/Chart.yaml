@@ -1,0 +1,51 @@
+apiVersion: v2
+name: kaori-temporal
+description: |
+  Kaori AI — Temporal cluster wrapper chart.
+  Phase 1.5 P15-S9 D3 — wraps temporalio/helm-charts upstream.
+
+  Cluster topology:
+    - 3x frontend (gRPC ingress on 7233)
+    - 3x history  (workflow state)
+    - 3x matching (task queue dispatch)
+    - 1x worker   (Temporal-internal system workflows)
+    - 1x web UI   (operator dashboard, behind oauth2-proxy)
+
+  User-defined Kaori workflows run in the ai-orchestrator pod alongside
+  the FastAPI app — they connect to this cluster's frontend service.
+  Phase 2 (P2-S19) extracts them into a dedicated services/workflow-engine.
+
+  Persistence:
+    - Default + visibility stores both Postgres
+    - Dedicated databases on the existing CloudNativePG cluster
+    - Schema lives separate from kaori business DB so Phase 2 extract
+      doesn't need a data migration
+
+  Observability:
+    - /metrics on 9090 → Prometheus ServiceMonitor
+    - OTLP traces → otel-collector → Tempo
+    - Web UI dashboards → Grafana (upstream-bundled JSON)
+
+type: application
+version: 0.1.0
+appVersion: "1.24.2"
+
+home: https://github.com/yuta9999zn/kaori-system
+sources:
+  - https://github.com/temporalio/helm-charts
+  - https://github.com/yuta9999zn/kaori-system
+
+# Upstream chart pulled in via dependency, not vendored. `helm dependency
+# update` populates charts/ at install time.
+dependencies:
+  - name: temporal
+    version: "0.41.0"
+    repository: "https://go.temporal.io/helm-charts"
+
+maintainers:
+  - name: Nguyen Truong An
+    url: https://github.com/yuta9999zn
+
+annotations:
+  category: SaaS
+  licenses: Proprietary

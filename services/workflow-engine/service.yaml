@@ -1,0 +1,60 @@
+# service.yaml — workflow-engine (skeleton, Phase 2 extract target)
+
+name:        workflow-engine
+display:     "Workflow Engine"
+language:    python
+runtime:     "FastAPI + Temporal SDK (planned)"
+port:        8099                # reserved at P15-S9 follow-up; service goes live Phase 2 extract per ADR-0010
+owner:       "@yuta9999zn"
+team:        kaori-core
+tier:        1
+status:      skeleton              # skeleton | scaffold | implemented | extracted
+
+# Bounded context.
+context: >
+  Workflow orchestration engine wrapping Temporal.io. Owns workflow definitions
+  (45 node types in 6 categories), 8-state lifecycle, idempotency framework
+  (5 side-effect classes per K-17), saga pattern for irreversible workflows,
+  DLQ admin UI, retry + circuit breaker per external service, per-tenant
+  thread + connection pool isolation. Phase 1 — runs as embedded module under
+  ai-orchestrator/workflow_runtime/. Phase 2 P2-S19 — extracted to standalone
+  service per ADR-0010.
+
+# Phase 1 SLOs (target post-extraction).
+slo:
+  availability:    "99% pilot, 99.9% target Phase 2"
+  workflow_success_rate: "≥99.5%"
+  latency_p95_workflow_min: 5
+
+invariants_enforced:
+  - K-1
+  - K-7
+  - K-12
+  - K-13
+  - K-14
+  - K-17    # side-effect class declaration
+  - K-19    # OTel + tenant_id span
+  - K-20    # LLM version pinning per workflow
+
+# Consumers (downstream callers).
+consumers:
+  - api-gateway     # workflow CRUD + execution endpoints (Phase 2)
+  - ai-orchestrator # reasoning layer dispatches workflow runs
+  - studio          # P3 builder UI invokes /workflows/* endpoints (Phase 2)
+
+# Producers (services this depends on).
+depends_on:
+  - postgres        # workflow definitions + idempotency_records (REL-005)
+  - temporal        # workflow + activity execution (ADR-0011)
+  - redis           # distributed locks + retry rate limit
+  - llm-gateway     # AI nodes (8 types in catalog)
+  - vault           # external API keys per tenant (Phase 1.5+)
+  - notification-service # email + Zalo Bot side-effects
+
+# Source docs.
+references:
+  - docs/strategic/WORKFLOW_SYSTEM.md
+  - docs/strategic/SAD_SKELETON_V2.md   # Phần 18-21 + Phần 32 reliability
+  - docs/adr/0011-temporal-for-workflow-orchestration.md
+  - docs/adr/0014-at-least-once-plus-idempotency.md
+  - docs/BACKLOG_V4.md                  # P1-S6 (REL-001..REL-023)

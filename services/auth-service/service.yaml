@@ -1,0 +1,54 @@
+# service.yaml — auth-service
+
+name:        auth-service
+display:     "Auth Service"
+language:    java
+runtime:     "Spring Boot 3.2.5 + Spring Security + Flyway"
+port:        8091
+owner:       "@yuta9999zn"
+team:        kaori-core
+tier:        1
+
+context: >
+  Tenant authentication (P2 enterprise users) + platform admin (P1) auth
+  with TOTP MFA. Owns workspace activation (F-013), platform admin
+  management (F-010), workspace key management (F-009), platform billing
+  monitor reads (F-011), and DDL migrations via Flyway. Issues RS256 JWTs.
+
+slo:
+  availability:    "99% pilot, 99.9% target post-Phase-1"
+  latency_p99_ms:  300               # includes bcrypt + DB write on /auth/login
+  error_budget:    "1% of monthly minutes"
+
+invariants_enforced:
+  - K-1     # tenant_id filter on every SELECT
+  - K-7     # JWT claims schema (enterprise_id, user_id, role, token_kind, session_id)
+  - K-12    # tenant_id never from query string
+  - K-13    # idempotency-key on POST mutations
+  - K-14    # RFC 7807 errors
+
+consumers:
+  - api-gateway       # all /auth/**, /api/v1/platform/**, /api/v1/users/**
+  - notification-service  # only as a target for password-reset/invite emails (caller is auth-service itself)
+
+dependencies:
+  hard:
+    - postgres        # primary DB; auth-service runs Flyway migrations on startup
+  soft:
+    - redis           # rate-limit + MFA verify counter
+    - notification-service  # SMTP for password reset + F-015 invite (failure → user sees "email could not be sent" but auth still works)
+
+# Special — auth-service has TWO database roles:
+db_roles:
+  - kaori                # Flyway migration runner (DDL)
+  - kaori_app            # runtime DML (SELECT/INSERT/UPDATE only; BYPASSRLS dropped per migration 008)
+
+required_env:
+  - DATABASE_URL
+  - JWT_PRIVATE_KEY
+  - JWT_PUBLIC_KEY
+  - KAORI_MFA_KEY        # AES-256 base64; CLAUDE.md §15 — refuses to start in prod profile if missing
+  - SMTP_HOST            # via notification-service indirectly
+  - SPRING_PROFILES_ACTIVE
+
+runbook: docs/runbooks/auth-service.md

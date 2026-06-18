@@ -1,0 +1,38 @@
+{{- range $name, $svc := .Values.services }}
+{{- if and $svc.enabled $svc.ingress $svc.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "kaori-services.serviceLabels" (dict "name" $name "root" $) | nindent 4 }}
+  annotations:
+    # cert-manager Let's Encrypt — Phase 1.5 P15-S9 D1 standard.
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    # K-19: pass-through tracing headers.
+    nginx.ingress.kubernetes.io/proxy-set-headers: "kaori-system/nginx-trace-headers"
+spec:
+  ingressClassName: {{ $svc.ingress.className | default "nginx" }}
+  {{- with $svc.ingress.tls }}
+  tls:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  rules:
+    {{- range $svc.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ $name }}
+                port:
+                  number: {{ $svc.service.port }}
+          {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}

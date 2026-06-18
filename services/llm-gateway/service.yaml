@@ -1,0 +1,54 @@
+# service.yaml — llm-gateway
+
+name:        llm-gateway
+display:     "LLM Gateway"
+language:    python
+runtime:     "FastAPI + httpx"
+port:        8095
+owner:       "@yuta9999zn"
+team:        kaori-core
+tier:        2     # supporting service (no end-user traffic; only ai-orchestrator calls)
+
+context: >
+  Single boundary for every LLM dispatch (ADR-0004). Routes between
+  internal Ollama (Qwen 2.5) and external Anthropic / OpenAI based on
+  task + consent + provider availability. Owns PII redaction (K-5) for
+  external calls, audit log writes (K-6), and the Sprint 8 chat
+  tool-calling pipeline (Ollama /api/chat + Anthropic + OpenAI tool
+  format conversion).
+
+slo:
+  availability:    "99% pilot — degraded UX if down (chat surfaces error, app still works)"
+  latency_p99_ms:  10000              # Qwen 2.5 7B/14B inference time; gateway overhead ~10ms
+  error_budget:    "1% of monthly minutes"
+
+invariants_enforced:
+  - K-3     # boundary for K-3 (no caller imports LLM SDK)
+  - K-4     # consent_external check enforced on caller side via shim; gateway respects flag
+  - K-5     # PII redaction before external dispatch
+  - K-6     # decision_audit_log row per LLM call
+  - K-14    # RFC 7807 errors
+
+consumers:
+  - ai-orchestrator       # /v1/infer (single-shot + chat tool calling)
+
+dependencies:
+  hard:
+    - postgres            # llm_task_routing table, decision_audit_log writes
+    - ollama              # internal LLM provider (Qwen 2.5); without it external must be configured
+  soft:
+    - anthropic_api       # external provider; key optional (gateway falls back to internal Qwen if missing)
+    - openai_api          # external provider; key optional
+
+required_env:
+  - DATABASE_URL
+  - OLLAMA_HOST
+  - EXTERNAL_AI_ENABLED   # default false; true only when an external key is configured
+  - ANTHROPIC_API_KEY     # optional
+  - OPENAI_API_KEY        # optional
+  - OLLAMA_MODEL          # default qwen2.5:14b; pilot uses qwen2.5:7b on 16 GB laptop
+
+# Phase 2 expansions (F-063) tracked: provider quota, semantic cache,
+# circuit breaker, multi-model A/B routing.
+
+runbook: docs/runbooks/llm-gateway-down.md

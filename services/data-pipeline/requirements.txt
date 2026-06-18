@@ -1,0 +1,72 @@
+fastapi==0.111.0
+uvicorn[standard]==0.48.0
+python-multipart==0.0.30
+pydantic==2.13.4
+pydantic-settings==2.14.0
+
+# Database
+asyncpg==0.31.0
+sqlalchemy[asyncio]==2.0.50
+
+# Kafka
+aiokafka==0.14.0
+
+# Redis
+redis[hiredis]==5.0.4
+
+# File parsing (reuse existing deps)
+pandas==2.2.2
+openpyxl==3.1.5
+xlrd==2.0.1
+odfpy==1.4.1
+python-magic==0.4.27
+
+# Data processing
+numpy==1.26.4
+scikit-learn==1.4.2
+scipy==1.13.0
+
+# Text processing (multilang)
+rapidfuzz==3.14.5
+langdetect==1.0.9
+unicodedata2==15.1.0
+
+# HTTP client (for Ollama)
+httpx==0.28.1
+
+# Utilities
+python-dotenv==1.0.1
+structlog==24.1.0
+prometheus-fastapi-instrumentator==7.1.0
+
+# Phase 2 #2/#5 — distributed tracing (mirrored across all 4 Python
+# services so trace context propagates through the Kafka outbox hop).
+opentelemetry-api==1.28.2
+opentelemetry-sdk==1.28.2
+opentelemetry-exporter-otlp-proto-http==1.28.2
+opentelemetry-instrumentation-fastapi==0.49b2
+opentelemetry-instrumentation-asyncpg==0.49b2
+opentelemetry-instrumentation-aiokafka==0.49b2
+opentelemetry-instrumentation-httpx==0.49b2
+
+# Phase 2 #7 (B3 PR #6) — circuit breaker, mirrored from ai-orchestrator
+# so the shared/circuit_breaker.py helper is available to data-pipeline
+# call sites that hit external services (Ollama health probe, etc.).
+pybreaker==1.4.1
+tenacity==8.5.0
+
+# Issue #4 — Kafka event schema validation (infrastructure/kafka/schemas/)
+jsonschema==4.26.0
+
+# P15-S11 D2 — Stage 6 text extraction for the DocSage pipeline. Pure
+# Python, MIT/BSD; OCR (scanned PDFs / images) deferred to Phase 2 when
+# the Qwen2-VL llm-gateway adapter lands. Both libs are read-only on
+# the source bytes — no network calls.
+pypdf==6.12.2
+python-docx==1.2.0
+# 2026-05-18 Pattern 3 (MinerU borrow) — pdfplumber adds table
+# extraction. pypdf alone returns plain text per page with no layout
+# awareness; pdfplumber parses the layer tree + reconstructs tables
+# as nested lists. ~5 MB install; pure Python so no native build
+# chain.
+pdfplumber==0.11.9

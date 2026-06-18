@@ -1,0 +1,10 @@
+# Gitleaks ignore file — historical false positives only.
+#
+# Format: <commit-sha>:<file-path>:<rule-id>:<line>
+# Each entry MUST cite the rotation/cleanup evidence.
+
+# False positive: test fixture key in PR #206 test_dlq_console.py.
+# Original string "dup-key-abc-123" was renamed to "TEST-IDEMPOTENCY-DUPLICATE"
+# in commit 7d1bfe9 — gitleaks generic-api-key rule (entropy 3.59) hit on
+# the legacy commit. Not a secret — purely a test fixture passed to a mock.
+784afd4eb4a52dca365444e672e0b081cbf1b4cf:services/ai-orchestrator/tests/test_dlq_console.py:generic-api-key:479

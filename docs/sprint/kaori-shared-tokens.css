@@ -1,0 +1,195 @@
+/*
+ * kaori-shared-tokens.css — Common design tokens cho 3 file UX
+ *
+ * Phase 2.8 Round 2 Nhóm 3 (2026-05-20 EOD3)
+ *
+ * Used by:
+ *  - feature-screens.html (72 screens × 6 groups)
+ *  - feature-workflows.html (40 workflows — internal catalog)
+ *  - workflow-builder-ux.html (Workflow Builder mockup, 4-step builder-only)
+ *
+ * Per-file vars (portal colors, dept colors, wireframe colors) vẫn giữ
+ * inline trong từng file vì scope khác nhau.
+ *
+ * Maintenance rule (avoid drift):
+ *  - Bất kỳ thay đổi design token chung → sửa file này, KHÔNG sửa inline 3 file.
+ *  - Per-file vars (--p1, --marketing, --wf-*) vẫn sửa inline trong từng file.
+ *  - Nếu add badge class mới dùng cho 2+ file → move vào file này.
+ */
+
+:root {
+  /* Background */
+  --bg: #fafaf7;
+  --bg-card: #ffffff;
+  --bg-soft: #f7fafc;
+  --code-bg: #f7fafc;
+
+  /* Text */
+  --text: #1f2933;
+  --text-soft: #52606d;
+  --text-mute: #9aa5b1;
+
+  /* Border */
+  --border: #e4e7eb;
+  --border-strong: #cbd5e1;
+
+  /* Accent (Kaori brand red) */
+  --accent: #d64545;
+  --accent-soft: #fff5f5;
+
+  /* Semantic colors */
+  --warn: #b45309;
+  --warn-bg: #fef3c7;
+  --ok: #166534;
+  --ok-bg: #dcfce7;
+  --info: #1e40af;
+  --info-bg: #dbeafe;
+
+  /* Shadow (unified .04, .06 across 3 files) */
+  --shadow: 0 1px 3px rgba(0,0,0,.04), 0 1px 2px rgba(0,0,0,.06);
+  --shadow-hover: 0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+
+  /* Radius */
+  --radius: 8px;
+}
+
+/* ─── Shared badge classes ─── */
+.badge.mode-simple   { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.badge.mode-adv      { background: var(--info-bg); color: var(--info); font-weight: 700; }
+.badge.mode-dev      { background: var(--warn-bg); color: var(--warn); font-weight: 700; }
+
+.badge.exec-live     { background: #dcfce7; color: #15803d; font-weight: 700; }
+.badge.exec-partial  { background: #fef3c7; color: #b45309; font-weight: 700; }
+.badge.exec-seed     { background: #fee2e2; color: #991b1b; font-weight: 700; }
+
+/* ─── File metadata header (standardized) ─── */
+.file-meta {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 12px;
+  color: var(--text-soft);
+}
+.file-meta h1 {
+  font-size: 18px;
+  color: var(--text);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.file-meta dl {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 4px 14px;
+}
+.file-meta dt { font-weight: 700; color: var(--text); }
+.file-meta dd { color: var(--text-soft); }
+.file-meta dd code {
+  background: var(--code-bg);
+  padding: 0 4px;
+  border-radius: 3px;
+  font-size: 11.5px;
+}
+
+/* ─── Back-to-top button (utility) ─── */
+.back-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: var(--shadow-hover);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s, transform .2s;
+  z-index: 100;
+}
+.back-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.back-to-top:hover {
+  background: #b73838;
+  transform: translateY(-2px);
+}
+.back-to-top:focus {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+/* ─── Matrix mapping table (3-way: screens ↔ workflows ↔ WF-UX) ─── */
+.matrix-mapping {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+}
+.matrix-mapping h3 {
+  font-size: 14px;
+  color: var(--accent);
+  margin-bottom: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+.matrix-mapping h3::before {
+  content: "▶ ";
+  font-size: 11px;
+  display: inline-block;
+  transition: transform .15s;
+}
+.matrix-mapping.open h3::before { transform: rotate(90deg); }
+.matrix-mapping-body { display: none; padding-top: 8px; }
+.matrix-mapping.open .matrix-mapping-body { display: block; }
+.matrix-mapping table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.matrix-mapping th, .matrix-mapping td {
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.matrix-mapping th {
+  background: var(--bg-soft);
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+.matrix-mapping a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.matrix-mapping a:hover { text-decoration: underline; }
+
+/* ─── @media print (shared across 3 files) ─── */
+@media print {
+  body { background: white; }
+  aside.sidebar { display: none; }
+  .back-to-top { display: none; }
+  main { padding: 0 !important; max-width: none !important; }
+  .file-meta { page-break-after: avoid; }
+  .workflow-card, .screen-card, .step-panel { page-break-inside: avoid; }
+  pre.mermaid { font-size: 11px; overflow: visible !important; }
+  /* Wizard mockup: show ALL step-panels in print, not just .active */
+  .step-panel { display: block !important; page-break-before: auto; }
+  .wizard-nav { display: none; }
+  /* Matrix mapping: always expanded in print */
+  .matrix-mapping-body { display: block !important; }
+  /* Advanced reference collapsible: always open in print */
+  .advanced-ref-body { display: block !important; }
+  /* Hide hint texts and cursors */
+  a { color: black !important; text-decoration: underline; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 10px; }
+}

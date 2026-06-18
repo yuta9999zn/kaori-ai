@@ -1,0 +1,332 @@
+[
+ [
+  "⚠️ Risks & Blockers — Architectural + execution risks per phase",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Top 30 risks from SAD Part XIII + Workflow System v2.0. Mitigations + owners.",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Risk ID",
+  "Category",
+  "Risk Description",
+  "Phase Impacted",
+  "Severity",
+  "Likelihood",
+  "Mitigation",
+  "Owner"
+ ],
+ [
+  "R-A-1",
+  "Technical",
+  "Temporal cluster management complexity",
+  "Phase 1+",
+  "MEDIUM",
+  "HIGH",
+  "Start with Temporal Cloud (managed); train 2 engineers; self-host Phase 2 only if cost demands",
+  "CTO"
+ ],
+ [
+  "R-A-2",
+  "Security",
+  "RLS bug → cross-tenant data leak",
+  "All phases",
+  "CRITICAL",
+  "LOW",
+  "Continuous testing in CI/CD; production audit log monitoring; quarterly pen testing; bug bounty Phase 2",
+  "CTO"
+ ],
+ [
+  "R-A-3",
+  "Tech/Business",
+  "Anthropic/OpenAI outage or pricing change",
+  "All phases",
+  "HIGH",
+  "MEDIUM",
+  "Multi-provider adapter pattern; fallback chains; cost caps + alerts; Phase 3 self-hosted",
+  "CTO + Finance"
+ ],
+ [
+  "R-A-4",
+  "Infrastructure",
+  "FPT/Viettel maturity gaps vs hyperscalers",
+  "Phase 1-2",
+  "MEDIUM",
+  "MEDIUM",
+  "Multi-provider strategy; self-host critical pieces; standard K8s portable",
+  "DevOps Lead"
+ ],
+ [
+  "R-A-5",
+  "Data",
+  "Bad data in Bronze cascades to Insights",
+  "All phases",
+  "HIGH",
+  "HIGH",
+  "Quality gates between tiers; Great Expectations; quarantine + manual review; data quality dashboard",
+  "Data Lead"
+ ],
+ [
+  "R-A-6",
+  "Scalability",
+  "Temporal becomes bottleneck at scale",
+  "Phase 2+",
+  "MEDIUM",
+  "LOW",
+  "Quarterly capacity planning; auto-scaling workers; sharded task queues; dedicated cluster per whale Phase 2",
+  "SRE"
+ ],
+ [
+  "R-A-7",
+  "Scalability",
+  "Workflow traces + audit logs fill DB",
+  "Phase 1+",
+  "MEDIUM",
+  "HIGH",
+  "Date-based partitioning; ClickHouse for analytics; retention policies; cold storage archival",
+  "DevOps"
+ ],
+ [
+  "R-A-8",
+  "Availability",
+  "FPT HCMC region outage",
+  "All phases",
+  "CRITICAL",
+  "LOW",
+  "DR plan to Hanoi; quarterly DR drills; documented runbook; communication plan",
+  "SRE Lead"
+ ],
+ [
+  "R-A-9",
+  "Security",
+  "Vault breach OR exposed key",
+  "All phases",
+  "CRITICAL",
+  "LOW",
+  "Vault hardening; key rotation policies; audit on every access; tenant vs Kaori secret separation",
+  "Security"
+ ],
+ [
+  "R-A-10",
+  "Integration",
+  "Zalo Business API changes break integration",
+  "Phase 1+",
+  "HIGH",
+  "MEDIUM",
+  "Versioned adapter; beta program with Zalo; fallback to email/SMS; direct Zalo team relationship",
+  "Integration Lead"
+ ],
+ [
+  "R-A-11",
+  "Operations",
+  "K8s ops overhead exceeds team capacity",
+  "Phase 1+",
+  "HIGH",
+  "MEDIUM",
+  "Use managed K8s (FPT); GitOps (Flux/ArgoCD); standardized tooling; SRE hire by Phase 2",
+  "CTO"
+ ],
+ [
+  "R-A-12",
+  "Reliability",
+  "Cascading event amplification overloads system",
+  "Phase 2+",
+  "MEDIUM",
+  "LOW",
+  "Circuit breakers; rate limits per topic; DLQ; backpressure mechanisms",
+  "SRE"
+ ],
+ [
+  "R-A-13",
+  "Data",
+  "Schema evolution breaks active workflows",
+  "All phases",
+  "HIGH",
+  "MEDIUM",
+  "Backward compat (additive); 90-day migration period; schema registry; impact analysis",
+  "Data Lead"
+ ],
+ [
+  "R-A-14",
+  "Operations",
+  "Issue happens, can't reproduce or debug",
+  "All phases",
+  "MEDIUM",
+  "MEDIUM",
+  "Distributed tracing; structured logging; comprehensive metrics; on-call runbooks",
+  "SRE"
+ ],
+ [
+  "R-A-15",
+  "Financial",
+  "AI/infra costs grow faster than revenue",
+  "All phases",
+  "HIGH",
+  "MEDIUM",
+  "Per-tenant cost tracking; cost caps + alerts; quarterly cost reviews; anomaly detection",
+  "Finance + CTO"
+ ],
+ [
+  "R-A-16",
+  "Adoption",
+  "Customers don't adopt workflows (silent failure)",
+  "Phase 1+",
+  "HIGH",
+  "HIGH",
+  "⭐ Adoption Intelligence (9 signals); CSM playbook; intervention engine; 90-day testing",
+  "CSM Lead"
+ ],
+ [
+  "R-A-17",
+  "Validation",
+  "NOV calculations don't match reality (trust loss)",
+  "Phase 1+",
+  "HIGH",
+  "MEDIUM",
+  "Variance tracking (predicted vs actual); confidence scoring; A/B method when possible",
+  "Data Lead"
+ ],
+ [
+  "R-A-18",
+  "Process Mining",
+  "PII leak through process mining",
+  "Phase 1+",
+  "CRITICAL",
+  "MEDIUM",
+  "⭐ PII detection (Vietnamese-aware); auto-redaction; consent flows; tenant isolation",
+  "Security + Data"
+ ],
+ [
+  "R-A-19",
+  "Workflow",
+  "Workflow state machine bugs (8 states × transitions)",
+  "Phase 1.5+",
+  "HIGH",
+  "MEDIUM",
+  "⭐ Property-based testing on transitions; pre-condition checks; comprehensive audit",
+  "Engineering Lead"
+ ],
+ [
+  "R-A-20",
+  "LLM",
+  "Silent LLM version drift breaks workflows",
+  "Phase 1+",
+  "HIGH",
+  "HIGH",
+  "⭐ LLM version pinning; daily drift detection; 90-day controlled upgrade process",
+  "AI Lead"
+ ],
+ [
+  "R-A-21",
+  "Vietnamese SME",
+  "Customer expects \"we don't have workflows\" (truth: chaos)",
+  "Phase 1+",
+  "HIGH",
+  "HIGH",
+  "⭐ Process Mining surfaces hidden flows; education + showcase; case studies",
+  "CSM Lead"
+ ],
+ [
+  "R-A-22",
+  "Vietnamese SME",
+  "Mobile/Zalo critical for adoption (web-only fails)",
+  "Phase 1+",
+  "HIGH",
+  "HIGH",
+  "⭐ Zalo Bot Phase 1; mobile app Phase 2; Vietnamese language priority",
+  "Product Lead"
+ ],
+ [
+  "R-A-23",
+  "Sales",
+  "Sales team can't demo without case studies",
+  "Phase 1+",
+  "MEDIUM",
+  "HIGH",
+  "First customer case study by month 4; demo workflows pre-built; ROI calculator tool",
+  "Sales Lead"
+ ],
+ [
+  "R-A-24",
+  "Pricing",
+  "Pricing tier complexity confuses customers",
+  "Phase 1+",
+  "MEDIUM",
+  "MEDIUM",
+  "Clear tier comparison page; tier upgrade prompts; pilot → paid conversion flow",
+  "Product"
+ ],
+ [
+  "R-A-25",
+  "Compliance",
+  "PDPL audit fails (Vietnam DPL)",
+  "Phase 1+",
+  "CRITICAL",
+  "LOW",
+  "PDPL-by-design; consent management; DPA; right-to-deletion; right-to-access; legal review",
+  "Legal + Security"
+ ],
+ [
+  "R-A-26",
+  "Talent",
+  "Cannot hire Vietnamese SRE/ML engineers",
+  "Phase 2+",
+  "HIGH",
+  "MEDIUM",
+  "Remote-friendly; competitive comp; partner with universities; train internally",
+  "CTO + HR"
+ ],
+ [
+  "R-A-27",
+  "Ecosystem",
+  "Vendor lock-in to Anthropic (cost growth)",
+  "Phase 2+",
+  "MEDIUM",
+  "MEDIUM",
+  "⭐ Adapter pattern; multi-provider; Phase 3 self-hosted Vietnamese model",
+  "AI Lead"
+ ],
+ [
+  "R-A-28",
+  "Workflow Templates",
+  "Templates don't fit any specific industry well",
+  "Phase 1+",
+  "MEDIUM",
+  "MEDIUM",
+  "Industry-specific templates (retail, F&B, finance); customer-tunable; template marketplace Phase 3",
+  "Product"
+ ],
+ [
+  "R-A-29",
+  "Data Connectors",
+  "Misa/Fast/Bravo APIs unreliable",
+  "Phase 1+",
+  "HIGH",
+  "HIGH",
+  "Multiple connector strategies (API + DB-direct + CSV import); customer fallback path",
+  "Integration"
+ ],
+ [
+  "R-A-30",
+  "Feedback Loop",
+  "Slow feedback = wrong feature investment",
+  "All phases",
+  "HIGH",
+  "MEDIUM",
+  "Weekly customer calls; quarterly business review; feature usage analytics; build-measure-learn",
+  "Product"
+ ]
+]

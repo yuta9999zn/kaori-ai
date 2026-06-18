@@ -1,0 +1,290 @@
+[
+ [
+  "Kaori AI — Feature Tree Master Workbook",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "v4.0 · 2026-05-07 · Comprehensive rewrite with v2.0 capabilities (Process Mining, Adoption Intelligence, NOV Engine, Runtime Reliability)",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "STRUCTURE: 4 Audiences × 4 Phases × Multiple Batches × Sprints × Features × APIs",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "#",
+  "Sheet",
+  "Purpose",
+  "Audience Focus",
+  "Size",
+  "Notes"
+ ],
+ [
+  "A. FOUNDATION & NAVIGATION",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "1",
+  "📋 TOC",
+  "This page — workbook map",
+  "All",
+  "~30 rows",
+  "Navigation"
+ ],
+ [
+  "2",
+  "👥 Personas & Audiences",
+  "4 audiences × 18 personas defined with goals",
+  "All",
+  "18 personas",
+  "Detailed actor model"
+ ],
+ [
+  "3",
+  "🗺️ Phases Overview",
+  "4 phases (1 / 1.5 / 2 / 3) with goals + scope",
+  "All",
+  "4 phases",
+  "Strategic timeline"
+ ],
+ [
+  "4",
+  "📅 Batches & Sprints",
+  "Sprint-level breakdown across 24 months",
+  "All",
+  "~36 sprints",
+  "Tactical execution"
+ ],
+ [
+  "B. FEATURE CATALOGS (per audience)",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "5",
+  "🏛️ P1 Platform Features",
+  "Platform Manager features (super_admin, admin, support)",
+  "Platform",
+  "~150 features",
+  "Platform internal"
+ ],
+ [
+  "6",
+  "🏢 P2 Enterprise Features",
+  "Enterprise Portal — main product",
+  "Enterprise",
+  "~700 features",
+  "Largest portal"
+ ],
+ [
+  "7",
+  "🎨 P3 Studio Features",
+  "Studio for AI/workflow builders",
+  "Studio",
+  "~120 features",
+  "Power user portal"
+ ],
+ [
+  "8",
+  "👤 P4 Personal Features",
+  "Personal/Persona portal — individual SaaS",
+  "Personal",
+  "~100 features",
+  "Individual users"
+ ],
+ [
+  "9",
+  "🔗 Shared Cross-cutting Features",
+  "Auth/AuthZ/Billing/Observability shared",
+  "Cross-cutting",
+  "~250 features",
+  "Cross-portal"
+ ],
+ [
+  "C. NEW v2.0 CAPABILITIES (from SAD + Workflow System v2.0)",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "10",
+  "🔍 Process Mining",
+  "Discover workflows from event logs (Workflow v2.0 PART IV)",
+  "Enterprise",
+  "~80 features",
+  "⭐ NEW — Moat capability"
+ ],
+ [
+  "11",
+  "📊 Adoption Intelligence",
+  "9 resistance signals + intervention playbook (PART VIII)",
+  "Enterprise",
+  "~70 features",
+  "⭐ NEW — Moat capability"
+ ],
+ [
+  "12",
+  "💰 Operational Economics (NOV)",
+  "Revenue + cost modeling, ROI dashboard (PART XI)",
+  "Enterprise",
+  "~60 features",
+  "⭐ NEW — Manager language"
+ ],
+ [
+  "13",
+  "🛡️ Runtime Reliability",
+  "Idempotency + saga + DLQ + retry (Workflow v2.0 PART IX)",
+  "Cross-cutting",
+  "~50 features",
+  "⭐ NEW — Enterprise-grade"
+ ],
+ [
+  "14",
+  "🔭 Observability",
+  "Distributed tracing + anomaly detection (PART X)",
+  "Cross-cutting",
+  "~40 features",
+  "⭐ NEW — SRE-grade"
+ ],
+ [
+  "D. API CATALOGS & DEPENDENCIES",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "15",
+  "🌐 API Master Catalog",
+  "All REST endpoints with metadata",
+  "All",
+  "~250 APIs",
+  "Master list"
+ ],
+ [
+  "16",
+  "🔄 API Dependencies",
+  "Which API calls which API (graph)",
+  "All",
+  "~150 edges",
+  "Dependency graph"
+ ],
+ [
+  "17",
+  "🔌 Feature → API Mapping",
+  "Per-feature API consumption",
+  "All",
+  "~1500 mappings",
+  "Linkage"
+ ],
+ [
+  "E. USER JOURNEYS & DATA FLOWS",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "18",
+  "🛤️ User Journeys",
+  "End-to-end flows per persona",
+  "All",
+  "~15 journeys",
+  "Golden paths"
+ ],
+ [
+  "19",
+  "↔️ Screen Dependencies",
+  "Cross-screen data flows",
+  "All",
+  "~80 flows",
+  "State propagation"
+ ],
+ [
+  "F. SPRINT EXECUTION",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "20",
+  "🏃 Phase 1 Sprint Backlog",
+  "Sprint-by-sprint feature list (4 months)",
+  "All",
+  "8 sprints",
+  "Foundation phase"
+ ],
+ [
+  "21",
+  "🚀 Phase 1.5 Sprint Backlog",
+  "Stabilization sprints (2 months)",
+  "All",
+  "4 sprints",
+  "Critical gaps"
+ ],
+ [
+  "22",
+  "🌟 Phase 2 Sprint Backlog",
+  "Differentiation sprints (6 months)",
+  "All",
+  "12 sprints",
+  "Moat features"
+ ],
+ [
+  "23",
+  "🌐 Phase 3 Sprint Backlog",
+  "Platform sprints (Year 2)",
+  "All",
+  "12 sprints",
+  "Scale + ecosystem"
+ ],
+ [
+  "G. STATUS & GOVERNANCE",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "24",
+  "📊 Status Tracker",
+  "Per-feature implementation status",
+  "All",
+  "~1500 features",
+  "Live tracking"
+ ],
+ [
+  "25",
+  "⚠️ Risks & Blockers",
+  "Known risks per phase",
+  "All",
+  "~30 risks",
+  "Risk register"
+ ]
+]

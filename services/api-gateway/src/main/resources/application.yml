@@ -1,0 +1,88 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: kaori-api-gateway
+
+  # K-14: Spring Boot 3 RFC 7807 problem-details responses (WebFlux).
+  # Default error pipeline emits {"type","title","status","detail",
+  # "instance"} with Content-Type: application/problem+json.
+  webflux:
+    problemdetails:
+      enabled: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  r2dbc:
+    url: r2dbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:kaori}
+    username: ${POSTGRES_USER:kaori}
+    password: ${POSTGRES_PASSWORD:kaori_dev_password}
+
+  cloud:
+    gateway:
+      # Phase 2 #7 (B3 PR #6) — bounded httpClient timeouts. Previously
+      # unconfigured, which meant a slow upstream could keep the gateway
+      # holding a forwarded connection open until OS-level keepalive
+      # killed it. 30s read + 5s connect lines up with the
+      # LLM_TIMEOUT_S downstream bound and gives the FE an explicit
+      # failure to retry on rather than a hanging spinner.
+      httpclient:
+        connect-timeout: 5000             # ms
+        response-timeout: 30s
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: ${CORS_ALLOW_ORIGINS:http://localhost:3000}
+            allowedMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+            allowedHeaders: ["*"]
+            allowCredentials: true
+            maxAge: 3600
+
+jwt:
+  public-key: ${JWT_PUBLIC_KEY:}
+
+kaori:
+  services:
+    auth-url: ${AUTH_SERVICE_URL:http://localhost:8091}
+    pipeline-url: ${DATA_PIPELINE_URL:http://localhost:8092}
+    orchestrator-url: ${AI_ORCHESTRATOR_URL:http://localhost:8093}
+  rate-limit:
+    jwt-per-minute: ${RATE_LIMIT_JWT_PER_MIN:60}
+    ip-per-minute: ${RATE_LIMIT_IP_PER_MIN:300}
+  billing:
+    cache-ttl-seconds: 60
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: never
+
+  # Phase 2 #2/#5 — distributed tracing on the reactive gateway.
+  # The gateway is the trace-creation point for all HTTP traffic into
+  # Kaori; downstream services pick up the W3C ``traceparent`` header
+  # via Spring's WebClient/RestTemplate auto-instrumentation and the
+  # Python services' OTel propagators.
+  tracing:
+    sampling:
+      probability: ${TRACING_SAMPLE_RATE:1.0}
+    enabled: ${TRACING_ENABLED:true}
+  otlp:
+    tracing:
+      endpoint: ${OTLP_ENDPOINT:http://tempo:4318/v1/traces}
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+  level:
+    com.kaorisystem: ${LOG_LEVEL:INFO}
+    org.springframework.cloud.gateway: WARN

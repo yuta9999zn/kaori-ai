@@ -1,0 +1,59 @@
+# Local dev ClickHouse — single-node, no replication.
+#
+# This is the dev counterpart to the production Helm chart in helm/values.yaml.
+# Single-node skip ZooKeeper; production uses the kafka-zk ensemble per
+# values.yaml.
+#
+# To run alongside the main Kaori stack from repo root:
+#
+#   docker compose -f docker-compose.yml \
+#                  -f infrastructure/clickhouse/docker-compose.yml up -d
+#
+# HTTP interface at http://localhost:8123 (Tabix UI, curl), native
+# protocol at localhost:9000 (clickhouse-client, JDBC drivers).
+#
+# Credentials match the production user split — kaori_ro / kaori_writer
+# — so dev queries exercise the same RBAC profile that production does.
+# Override the dev passwords via .env; .env.example carries placeholders
+# the same way it does for the rest of the stack.
+
+services:
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:23.8.14
+    container_name: kaori-clickhouse
+    restart: unless-stopped
+    environment:
+      # Default DB — schemas/ files use ENGINE=MergeTree on this DB.
+      CLICKHOUSE_DB: kaori_silver
+      # Single-node skip ZooKeeper coordination
+      CLICKHOUSE_SKIP_USER_SETUP: "1"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    ports:
+      - "8123:8123"   # HTTP
+      - "9000:9000"   # Native protocol
+      - "9009:9009"   # Inter-server (single-node = unused, exposed for parity)
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+      - clickhouse-logs:/var/log/clickhouse-server
+      # Apply schemas on first boot. ClickHouse runs every .sql in
+      # /docker-entrypoint-initdb.d in lexicographic order — same
+      # behaviour as the postgres image so the convention is uniform
+      # across our stack.
+      - ./schemas:/docker-entrypoint-initdb.d:ro
+      # Per-user config (kaori_ro / kaori_writer profiles).
+      - ./users.xml:/etc/clickhouse-server/users.d/kaori.xml:ro
+    networks:
+      - kaori-network
+
+volumes:
+  clickhouse-data:
+  clickhouse-logs:
+
+networks:
+  kaori-network:
+    external: true
+    name: kaori-system_default

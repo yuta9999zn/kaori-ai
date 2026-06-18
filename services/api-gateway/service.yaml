@@ -1,0 +1,59 @@
+# service.yaml — api-gateway
+#
+# Read by future tooling (service catalog generators, drift checks).
+# Today this is documentation: human-readable metadata so a new
+# contributor knows the bounded context, owner, and SLO budget
+# without reading the source.
+#
+# Schema is intentionally informal — when we adopt Backstage / a
+# service catalog, the same keys are mappable.
+
+name:        api-gateway
+display:     "API Gateway"
+language:    java
+runtime:     "Spring Cloud Gateway / Spring Boot 3.2.5"
+port:        8080
+owner:       "@yuta9999zn"          # GitHub handle
+team:        kaori-core              # logical team (single-dev today)
+tier:        1                        # 1 = customer-facing critical, 2 = supporting, 3 = internal-only
+
+# Bounded context — one sentence.
+context: >
+  Single ingress for /api/v1/**, /auth/**. Validates JWTs (RS256), strips
+  client-supplied X-* headers, injects gateway-trusted X-User-ID /
+  X-Enterprise-ID / X-User-Role / X-Session-Id from JWT claims, and
+  enforces the platform role + token_kind gate on /api/v1/platform/**.
+
+# Phase 1 SLOs — pilot-tier, not production-grade.
+slo:
+  availability:    "99% pilot, 99.9% target post-Phase-1"
+  latency_p99_ms:  100               # gateway routing only, not downstream
+  error_budget:    "1% of monthly minutes (~7h)"
+
+# Critical invariants this service enforces (CLAUDE.md §4).
+invariants_enforced:
+  - K-7    # JWT claims forwarded as X-* headers
+  - K-12   # tenant_id only via JWT, never query string
+  - K-14   # RFC 7807 problem+json on all error paths
+
+# Inbound (who calls this) — first-line consumers only.
+consumers:
+  - frontend         # Next.js app, all /api/v1/** traffic
+
+# Outbound (what this calls) — direct downstreams.
+dependencies:
+  hard:                              # service unhealthy → gateway returns 503
+    - auth-service          # /auth/**, /api/v1/platform/**, /api/v1/users/**, etc.
+    - data-pipeline         # /api/v1/upload/**, /api/v1/pipeline/**, /api/v1/results/**
+    - ai-orchestrator       # /api/v1/analytics/**, /api/v1/decisions/**, /api/v1/chat/**
+  soft:
+    - redis                 # idempotency-key dedup; failure = pass-through (no idempotency)
+
+# What needs to exist for this service to start cleanly.
+required_env:
+  - JWT_PUBLIC_KEY          # base64 RSA public key, validated against auth-service signer
+  - REDIS_URL               # idempotency-key store
+  - SPRING_PROFILES_ACTIVE  # dev | prod
+
+# Where the runbook for typical incidents lives.
+runbook: docs/runbooks/api-gateway.md

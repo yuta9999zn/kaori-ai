@@ -1,0 +1,186 @@
+# Kaori Temporal cluster values — wraps temporalio/helm-charts upstream.
+#
+# Reference: https://github.com/temporalio/helm-charts/blob/main/charts/temporal/values.yaml
+# Anything not overridden here uses upstream defaults.
+#
+# Phase 1.5 P15-S9 D3 — 3-pod frontend / 3-pod history / 3-pod matching,
+# dedicated Postgres database `temporal_persistence` separate from the
+# Kaori business DB so a Phase 2 microservice extract doesn't require a
+# data migration. Visibility uses default Postgres backend Phase 1.5; ES
+# evaluated P15-S10 if fuzzy workflow_id search becomes hot.
+#
+# Dev overlay (kustomize/overlays/dev) collapses every tier to 1 replica
+# and points to the docker-compose-style single-node temporal-dev image.
+
+temporal:
+
+  # -------------------------------------------------------------------------
+  # Server tiers — frontend (gRPC ingress), history (workflow state), matching
+  # (task queue dispatch), worker (system workflows). Worker pod is the
+  # Temporal-internal one (e.g. archival); user-defined Kaori workflows run
+  # in the ai-orchestrator pod alongside the FastAPI app, not here.
+  # -------------------------------------------------------------------------
+  server:
+    enabled: true
+    image:
+      repository: temporalio/server
+      tag: "1.24.2"   # pinned per K-20 spirit (no silent server upgrade)
+
+    # K-19: every span attribute carries tenant_id. Temporal itself doesn't
+    # know tenant_id (workflow code does), but its OTLP export still tags
+    # service.name=temporal-* so traces show the cluster identity.
+    additionalEnv:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: "http://otel-collector.otel.svc.cluster.local:4318"
+      - name: OTEL_RESOURCE_ATTRIBUTES
+        value: "service.namespace=kaori,deployment.environment=production"
+
+    config:
+      logLevel: info
+      numHistoryShards: 512  # production target; dev overlay drops to 4
+
+    frontend:
+      replicaCount: 3
+      service:
+        type: ClusterIP
+        port: 7233  # gRPC — workers connect here
+      resources:
+        requests: { cpu: 250m, memory: 512Mi }
+        limits:   { cpu: 2,    memory: 2Gi }
+
+    history:
+      replicaCount: 3
+      resources:
+        requests: { cpu: 500m, memory: 1Gi }
+        limits:   { cpu: 4,    memory: 4Gi }
+
+    matching:
+      replicaCount: 3
+      resources:
+        requests: { cpu: 250m, memory: 512Mi }
+        limits:   { cpu: 2,    memory: 2Gi }
+
+    worker:
+      # Internal Temporal worker (archival, batch, etc.) — NOT the Kaori
+      # workflow worker. Kaori workflows run in the ai-orchestrator pod.
+      replicaCount: 1
+      resources:
+        requests: { cpu: 100m, memory: 256Mi }
+        limits:   { cpu: 1,    memory: 1Gi }
+
+  # -------------------------------------------------------------------------
+  # Persistence — Postgres for default + visibility stores. Connects to the
+  # CloudNativePG cluster managed by the kaori-infra chart, but uses a
+  # DEDICATED database so the schema lives apart from kaori business data.
+  # -------------------------------------------------------------------------
+  cassandra:
+    enabled: false  # We use Postgres, not Cassandra
+
+  mysql:
+    enabled: false
+
+  postgresql:
+    # We do not let the upstream chart provision postgres — we point at
+    # the existing CloudNativePG cluster. The user-credentials secret is
+    # managed via Vault path `service/temporal/db_credentials` and synced
+    # by external-secrets-operator into a K8s secret called
+    # `temporal-default-store`.
+    enabled: false
+
+  server.config.persistence:
+    default:
+      driver: sql
+      sql:
+        driver: postgres12
+        host: kaori-pg-rw.postgres.svc.cluster.local
+        port: 5432
+        database: temporal_persistence
+        existingSecret: temporal-default-store
+        maxConns: 20
+        maxIdleConns: 5
+        maxConnLifetime: "1h"
+    visibility:
+      driver: sql
+      sql:
+        driver: postgres12
+        host: kaori-pg-rw.postgres.svc.cluster.local
+        port: 5432
+        database: temporal_visibility
+        existingSecret: temporal-visibility-store
+        maxConns: 10
+        maxIdleConns: 5
+        maxConnLifetime: "1h"
+
+  # -------------------------------------------------------------------------
+  # Dynamic config — Temporal reads this at runtime (changes without restart).
+  # Kept as ConfigMap so SREs can edit + temporal will pick up the new
+  # limits within the configured poll window.
+  # -------------------------------------------------------------------------
+  dynamicConfig:
+    # Source is infrastructure/temporal/dynamic-config.yaml — the chart
+    # mounts that file at /etc/temporal/config/dynamicconfig.yaml.
+    enabled: true
+    values:
+      # Workflow defaults — keep retention modest; long-history storage is
+      # expensive and Phase 1.5 doesn't need 30-day replays.
+      system.maxWorkflowTaskTimeout: "10s"
+      history.persistenceMaxQPS: 9000
+      frontend.persistenceMaxQPS: 9000
+      matching.persistenceMaxQPS: 9000
+      # Per-namespace retention default = 7 days (override per namespace
+      # via temporal CLI: `temporal namespace update -r 30d kaori`).
+      history.archivalEnabled: false
+      worker.archivalEnabled: false
+
+  # -------------------------------------------------------------------------
+  # Web UI — temporal CLI alternative for ops. Phase 1.5 expose through
+  # ingress with the same auth-proxy used for Grafana (oauth2-proxy + GitHub
+  # team membership). NOT exposed publicly without auth.
+  # -------------------------------------------------------------------------
+  web:
+    enabled: true
+    image:
+      repository: temporalio/ui
+      tag: "2.27.2"
+    replicaCount: 1
+    service:
+      type: ClusterIP
+      port: 8080
+    additionalEnv:
+      - name: TEMPORAL_AUTH_ENABLED
+        value: "false"   # auth handled by oauth2-proxy in front of this
+      - name: TEMPORAL_NOTIFY_ON_NEW_VERSION
+        value: "false"
+
+  # -------------------------------------------------------------------------
+  # Schema setup job — runs `temporal-sql-tool setup-schema` once at install.
+  # Idempotent (matches up version table); safe to re-run on upgrade.
+  # -------------------------------------------------------------------------
+  schema:
+    setup:
+      enabled: true
+    update:
+      enabled: true
+
+  # -------------------------------------------------------------------------
+  # Prometheus scraping — frontend/history/matching emit /metrics on 9090
+  # by default. Aligns with the OTel collector deployed alongside.
+  # -------------------------------------------------------------------------
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      interval: 30s
+      additionalLabels:
+        release: kube-prometheus-stack
+
+  # -------------------------------------------------------------------------
+  # Grafana dashboards — the upstream chart bundles JSON definitions; pin
+  # them on so the SRE team has a baseline view without rebuilding from
+  # scratch. Custom dashboards (Kaori-specific workflow-by-tenant metrics)
+  # ship later from infrastructure/grafana/dashboards/temporal/.
+  # -------------------------------------------------------------------------
+  grafana:
+    enabled: true
+    dashboards:
+      enabled: true

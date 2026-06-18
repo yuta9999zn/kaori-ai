@@ -1,0 +1,59 @@
+topics:
+  - name: pipeline.upload.received
+    partitions: 3
+    replication_factor: 1
+    config:
+      retention.ms: "604800000"  # 7 days
+      cleanup.policy: delete
+
+  - name: pipeline.bronze.complete
+    partitions: 3
+    replication_factor: 1
+    config:
+      retention.ms: "604800000"
+
+  - name: pipeline.silver.complete
+    partitions: 3
+    replication_factor: 1
+    config:
+      retention.ms: "604800000"
+
+  - name: pipeline.analysis.complete
+    partitions: 3
+    replication_factor: 1
+    config:
+      retention.ms: "604800000"
+
+  - name: billing.event
+    partitions: 1
+    replication_factor: 1
+    config:
+      retention.ms: "2592000000"  # 30 days
+
+  - name: service.health
+    partitions: 1
+    replication_factor: 1
+    config:
+      retention.ms: "86400000"   # 1 day
+
+  # F-038 Reports — ai-orchestrator emits when a report run reaches a
+  # terminal state (status='ready' or 'failed'). Consumers (future):
+  # notification dispatcher fan-out, analytics rollup. Schema in
+  # infrastructure/kafka/schemas/kaori.reports.generated.json.
+  - name: kaori.reports.generated
+    partitions: 3
+    replication_factor: 1
+    config:
+      retention.ms: "604800000"  # 7 days
+
+# Event schemas (documentation — enforced in code)
+# pipeline.upload.received:
+#   { run_id: uuid, enterprise_id: uuid, filename: str, sha256: str, size_bytes: int }
+# pipeline.bronze.complete:
+#   { run_id: uuid, enterprise_id: uuid, row_count: int, detected_lang: str, sheet_count: int }
+# pipeline.silver.complete:
+#   { run_id: uuid, enterprise_id: uuid, quality_score: float, eligible_templates: [str] }
+# pipeline.analysis.complete:
+#   { run_id: uuid, analysis_id: uuid, enterprise_id: uuid, template: str, status: str }
+# billing.event:
+#   { enterprise_id: uuid, month: str (YYYY-MM), record_count: int }

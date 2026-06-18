@@ -1,0 +1,215 @@
+# Default values for kaori-services umbrella chart.
+# Each service has its own block under `services.<name>`. Generic
+# templates iterate over `services` to produce Deployment + Service +
+# ConfigMap + Ingress for each enabled service.
+#
+# Override per environment via kustomize overlays
+# (infrastructure/k8s/kustomize/overlays/{dev,staging,production}/).
+
+global:
+  # Container image registry. Production points at FPT Cloud Container
+  # Registry; dev points at GHCR (free for public repos).
+  imageRegistry: ghcr.io/yuta9999zn
+  imagePullPolicy: IfNotPresent
+  # Tag is set per env overlay — base values has placeholder.
+  imageTag: "v4.0-phase1-complete"
+
+  # K-19 — every service must export OpenTelemetry to the cluster
+  # collector. Phase 1.5 P15-S9 deploys the collector via otel-stack
+  # chart; URL points at it.
+  otlpEndpoint: "http://otel-collector.observability.svc.cluster.local:4318"
+  tracingSampleRate: "0.1"  # 10% in prod, override to 1.0 in dev
+
+  # Vault address — services read secrets from here Phase 1.5+.
+  vaultAddr: "http://vault.vault.svc.cluster.local:8200"
+
+  # Common pod resources baseline. Per-service overrides below.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 1
+      memory: 1Gi
+
+  # Network policy default — Phase 2 enables Calico cross-tenant deny.
+  # Phase 1.5 ships permissive (logs only).
+  networkPolicy:
+    enabled: false
+
+  # JWT keypair (RS256) — Phase 1.5 these come from Vault
+  # secret/service/auth-service/jwt_keys. Base values empty.
+  jwtPublicKey: ""
+  jwtPrivateKey: ""  # only for auth-service
+
+# -----------------------------------------------------------------------
+# Per-service config. Each block becomes one Deployment + Service.
+# -----------------------------------------------------------------------
+services:
+
+  api-gateway:
+    enabled: true
+    image:
+      repository: kaori-system/api-gateway
+      # Falls back to global.imageTag when unset.
+    replicas: 2
+    port: 8080
+    containerPort: 8080
+    service:
+      type: ClusterIP
+      port: 8080
+    ingress:
+      enabled: true
+      className: nginx
+      hosts:
+        - host: api.kaori.ai
+          paths: [{ path: /, pathType: Prefix }]
+      tls:
+        - secretName: api-kaori-ai-tls
+          hosts: [api.kaori.ai]
+    resources:
+      requests: { cpu: 100m, memory: 256Mi }
+      limits:   { cpu: 1,    memory: 768Mi }
+    env:
+      LOG_LEVEL: INFO
+      SPRING_PROFILES_ACTIVE: production,json
+    livenessProbe:
+      httpGet: { path: /actuator/health, port: 8080 }
+      initialDelaySeconds: 60
+      periodSeconds: 30
+    readinessProbe:
+      httpGet: { path: /actuator/health, port: 8080 }
+      initialDelaySeconds: 30
+      periodSeconds: 10
+
+  auth-service:
+    enabled: true
+    image:
+      repository: kaori-system/auth-service
+    replicas: 2
+    port: 8091
+    containerPort: 8091
+    service:
+      type: ClusterIP
+      port: 8091
+    ingress:
+      enabled: false  # internal only; reached via gateway
+    resources:
+      requests: { cpu: 200m, memory: 512Mi }
+      limits:   { cpu: 1,    memory: 1Gi }
+    env:
+      LOG_LEVEL: INFO
+      SPRING_PROFILES_ACTIVE: production,json
+    livenessProbe:
+      httpGet: { path: /actuator/health, port: 8091 }
+      initialDelaySeconds: 90  # Flyway migration on startup
+      periodSeconds: 30
+    readinessProbe:
+      httpGet: { path: /actuator/health/readiness, port: 8091 }
+      initialDelaySeconds: 60
+
+  data-pipeline:
+    enabled: true
+    image:
+      repository: kaori-system/data-pipeline
+    replicas: 2
+    port: 8092
+    containerPort: 8092
+    service:
+      type: ClusterIP
+      port: 8092
+    ingress:
+      enabled: false
+    resources:
+      # Memory bumped per pilot Olist UAT (drift commit 59afe58 — Excel
+      # peak parsing for multi-sheet customer files).
+      requests: { cpu: 200m, memory: 512Mi }
+      limits:   { cpu: 2,    memory: 1536Mi }
+    env:
+      LOG_LEVEL: INFO
+      KAORI_BOT_PROVIDER: telegram
+    livenessProbe:
+      httpGet: { path: /health, port: 8092 }
+      initialDelaySeconds: 30
+    readinessProbe:
+      httpGet: { path: /health/ready, port: 8092 }
+
+  ai-orchestrator:
+    enabled: true
+    image:
+      repository: kaori-system/ai-orchestrator
+    replicas: 2
+    port: 8093
+    containerPort: 8093
+    service:
+      type: ClusterIP
+      port: 8093
+    ingress:
+      enabled: false
+    resources:
+      # Higher mem for pandas/ML engines + Process Mining.
+      requests: { cpu: 200m, memory: 512Mi }
+      limits:   { cpu: 2,    memory: 2Gi }
+    env:
+      LOG_LEVEL: INFO
+    livenessProbe:
+      httpGet: { path: /health, port: 8093 }
+      initialDelaySeconds: 30
+    readinessProbe:
+      httpGet: { path: /health/ready, port: 8093 }
+
+  llm-gateway:
+    enabled: true
+    image:
+      repository: kaori-system/llm-gateway
+    replicas: 2
+    port: 8095
+    containerPort: 8095
+    service:
+      type: ClusterIP
+      port: 8095
+    ingress:
+      enabled: false
+    resources:
+      requests: { cpu: 100m, memory: 256Mi }
+      limits:   { cpu: 1,    memory: 1Gi }
+    env:
+      LOG_LEVEL: INFO
+    livenessProbe:
+      httpGet: { path: /health, port: 8095 }
+      initialDelaySeconds: 30
+    readinessProbe:
+      httpGet: { path: /health/ready, port: 8095 }
+
+  notification-service:
+    enabled: true
+    image:
+      repository: kaori-system/notification-service
+    replicas: 1  # SMTP outbox poller is single-instance by design
+    port: 8094
+    containerPort: 8094
+    service:
+      type: ClusterIP
+      port: 8094
+    ingress:
+      enabled: true  # webhook receiver for Telegram callback (REL-011 saga)
+      className: nginx
+      hosts:
+        - host: webhook.kaori.ai
+          paths:
+            - path: /webhook/telegram
+              pathType: Prefix
+      tls:
+        - secretName: webhook-kaori-ai-tls
+          hosts: [webhook.kaori.ai]
+    resources:
+      requests: { cpu: 50m,  memory: 128Mi }
+      limits:   { cpu: 500m, memory: 512Mi }
+    env:
+      LOG_LEVEL: INFO
+      KAORI_BOT_PROVIDER: telegram
+    livenessProbe:
+      httpGet: { path: /health, port: 8094 }
+      initialDelaySeconds: 30
+    readinessProbe:
+      httpGet: { path: /health/ready, port: 8094 }

@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Staging overlay — closer to prod (2 replicas), sample tenants only,
+# NetworkPolicy in audit mode (logs cross-tenant attempts but doesn't
+# block). Used for pre-pilot UAT against synthetic data.
+
+namespace: kaori-staging
+
+resources:
+  - ../../base
+  - rendered.yaml
+
+patches:
+  - target:
+      kind: Deployment
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2
+
+configMapGenerator:
+  - name: env-overrides
+    literals:
+      - LOG_LEVEL=INFO
+      - KAORI_ENV=staging
+      - VAULT_ADDR=http://vault.vault.svc.cluster.local:8200
+      - OTEL_TRACES_SAMPLER_ARG=0.5  # 50% sampling
+
+images:
+  - name: ghcr.io/yuta9999zn/kaori-system/api-gateway
+    newTag: staging
+  - name: ghcr.io/yuta9999zn/kaori-system/auth-service
+    newTag: staging
+  - name: ghcr.io/yuta9999zn/kaori-system/data-pipeline
+    newTag: staging
+  - name: ghcr.io/yuta9999zn/kaori-system/ai-orchestrator
+    newTag: staging
+  - name: ghcr.io/yuta9999zn/kaori-system/llm-gateway
+    newTag: staging
+  - name: ghcr.io/yuta9999zn/kaori-system/notification-service
+    newTag: staging

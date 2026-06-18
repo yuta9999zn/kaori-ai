@@ -1,0 +1,68 @@
+# Temporal dynamic-config — read at runtime, no restart on edit.
+#
+# Format: each setting is a key with a list of constrained values. The
+# constraints filter by namespace; an empty `constraints: {}` applies
+# globally. See the official docs for the full key catalog:
+#   https://docs.temporal.io/references/dynamic-configuration
+#
+# Phase 1.5 dev settings — small history shards (faster boot), generous
+# task timeouts (laptop dev = slower than prod), no archival (don't
+# silt up the laptop disk). Production overrides land in the Helm
+# values' dynamicConfig section.
+
+# ---------------------------------------------------------------------------
+# Persistence rate limits — keep below the dev Postgres can sustain
+# without complaining. Bump in production via the Helm chart.
+# ---------------------------------------------------------------------------
+system.persistenceMaxQPS:
+  - value: 3000
+    constraints: {}
+
+frontend.persistenceMaxQPS:
+  - value: 3000
+    constraints: {}
+
+history.persistenceMaxQPS:
+  - value: 3000
+    constraints: {}
+
+matching.persistenceMaxQPS:
+  - value: 3000
+    constraints: {}
+
+# ---------------------------------------------------------------------------
+# Workflow task timeouts — laptop CPU contention can slow polls past the
+# default 10s. Doubling stops dev workflows from spuriously timing out.
+# ---------------------------------------------------------------------------
+system.workflowTaskHeartbeatTimeout:
+  - value: "20s"
+    constraints: {}
+
+# ---------------------------------------------------------------------------
+# Archival — disabled in dev (storage cost not worth it locally).
+# Production enables S3-compatible object storage (MinIO Phase 1.5).
+# ---------------------------------------------------------------------------
+system.historyArchivalState:
+  - value: "disabled"
+    constraints: {}
+
+system.visibilityArchivalState:
+  - value: "disabled"
+    constraints: {}
+
+# ---------------------------------------------------------------------------
+# Search attributes — the schema dev gets out of the box. Production adds
+# tenant_id + workflow_template via `tctl admin cluster add-search-attributes`.
+# ---------------------------------------------------------------------------
+# (none — defaults are fine for first workflows)
+
+# ---------------------------------------------------------------------------
+# Frontend — keep RPS forgiving on laptop; throttle is per pod.
+# ---------------------------------------------------------------------------
+frontend.rps:
+  - value: 1200
+    constraints: {}
+
+frontend.namespaceRPS:
+  - value: 600
+    constraints: {}

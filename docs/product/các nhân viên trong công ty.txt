@@ -1,0 +1,9 @@
+/office-hours        → PO + Founder + BA (discovery, not CEO thuần)
+/autoplan            → BA + Tech Lead + Product (tạo spec + plan)
+/plan-eng-review     → Architect / EM (deep system design)
+/review              → Senior Engineer (logic + production risk)
+/qa                  → QA Engineer (test + fix luôn)
+/ship                → DevOps / Release
+ 
+
+Discovery → Planning → Architecture → Build → Review → QA → Release

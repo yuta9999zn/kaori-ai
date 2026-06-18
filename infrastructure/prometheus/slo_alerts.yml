@@ -1,0 +1,147 @@
+# OBS-017 — SLO-based alerting (error budget burn rate).
+#
+# Multi-window, multi-burn-rate alerts per the Google SRE Workbook
+# "Alerting on SLOs" chapter (https://sre.google/workbook/alerting-on-slos/).
+# Same rule applies to every HTTP-serving Kaori service.
+#
+# SLO targets (Phase 1.5):
+#   * availability: 99.5% (error budget = 0.5%)
+#   * window:       30-day rolling
+#
+# Two-window rule:
+#   * Fast alert (1h window): burn rate ≥ 14.4 → CRITICAL page
+#       — burns 2% of monthly budget in 1h → exhausted in ~2.5 days
+#   * Slow alert (6h window): burn rate ≥ 6   → WARNING page
+#       — burns 5% in 6h → exhausted in ~5 days
+#
+# Burn rate formula:
+#   burn = (error_rate over window) / SLO_error_budget
+#   SLO_error_budget = 1 - SLO_target = 1 - 0.995 = 0.005
+#
+# Companion Grafana dashboard:
+#   infrastructure/grafana/dashboards/slo_burn_rate.json
+#
+# Runbook:
+#   docs/runbooks/slo-burn-rate.md (P15-S12 lands this)
+#
+# Add new SLO domains by appending a group below with its own targets +
+# thresholds; do NOT modify the existing groups' thresholds without an
+# explicit SLO-change ticket — they map to the customer-facing SLA.
+
+groups:
+  - name: slo_availability_burn
+    interval: 30s
+    rules:
+      # ─── Per-service availability SLO (99.5%) ────────────────────
+
+      - alert: SLOErrorBudgetBurnFast
+        expr: |
+          (
+            sum by (service) (rate(http_server_requests_seconds_count{status=~"5.."}[1h]))
+            /
+            sum by (service) (rate(http_server_requests_seconds_count[1h]))
+          )
+          / 0.005
+          > 14.4
+        for: 5m
+        labels:
+          severity: page
+          domain: slo
+          window: 1h
+          slo_target: "99.5%"
+        annotations:
+          summary: "Fast SLO burn ({{ $labels.service }}, 1h window)"
+          description: |
+            Service {{ $labels.service }} is burning the error budget
+            at {{ $value | printf "%.2f" }}× the SLO threshold over
+            the past hour. At this rate the monthly error budget
+            (0.5% of requests) will be exhausted in ~2.5 days.
+
+            Investigate IMMEDIATELY: check recent deploys, downstream
+            dependency latency (Postgres, Redis, Ollama, llm-gateway),
+            and per-tenant error breakdown in the SLI dashboard.
+          runbook_url: "https://github.com/yuta9999zn/kaori-system/blob/main/docs/runbooks/slo-burn-rate.md"
+
+      - alert: SLOErrorBudgetBurnSlow
+        expr: |
+          (
+            sum by (service) (rate(http_server_requests_seconds_count{status=~"5.."}[6h]))
+            /
+            sum by (service) (rate(http_server_requests_seconds_count[6h]))
+          )
+          / 0.005
+          > 6
+        for: 15m
+        labels:
+          severity: warn
+          domain: slo
+          window: 6h
+          slo_target: "99.5%"
+        annotations:
+          summary: "Slow SLO burn ({{ $labels.service }}, 6h window)"
+          description: |
+            Service {{ $labels.service }} has been burning the error
+            budget at {{ $value | printf "%.2f" }}× the SLO threshold
+            over the past 6 hours. This catches sustained low-volume
+            degradation the 1h window misses.
+
+            Action: page on-call, freeze non-critical deploys, check
+            the slo_burn_rate dashboard for tenant + endpoint breakdown.
+          runbook_url: "https://github.com/yuta9999zn/kaori-system/blob/main/docs/runbooks/slo-burn-rate.md"
+
+      - alert: SLOErrorBudgetExhausted
+        # Annual but checked daily — fire ONCE when the 30-day budget
+        # has gone below 0 (i.e. SLO is breached for the period).
+        expr: |
+          (
+            sum by (service) (increase(http_server_requests_seconds_count{status=~"5.."}[30d]))
+            /
+            sum by (service) (increase(http_server_requests_seconds_count[30d]))
+          )
+          > 0.005
+        for: 1h
+        labels:
+          severity: page
+          domain: slo
+          window: 30d
+          slo_target: "99.5%"
+        annotations:
+          summary: "{{ $labels.service }} 30-day SLO breached"
+          description: |
+            Service {{ $labels.service }} has exceeded 0.5% error rate
+            over the rolling 30-day window. The monthly error budget
+            is exhausted. Customer-facing SLA at risk.
+
+            Decision: file SLO-breach postmortem ticket. Freeze
+            feature work for {{ $labels.service }} until error rate
+            returns under target for 7 consecutive days (per error
+            budget policy doc).
+          runbook_url: "https://github.com/yuta9999zn/kaori-system/blob/main/docs/runbooks/slo-burn-rate.md"
+
+  # ─── LLM dispatch — separate SLO (less strict — vendor failure
+  #     can swing rate hard; we don't carry vendor SLA inside ours).
+  - name: slo_llm_burn
+    interval: 30s
+    rules:
+      - alert: LLMDispatchBurnFast
+        expr: |
+          (
+            sum(rate(kaori_ai_calls_total{status="upstream_error"}[1h]))
+            /
+            sum(rate(kaori_ai_calls_total[1h]))
+          )
+          / 0.05
+          > 5
+        for: 10m
+        labels:
+          severity: warn
+          domain: slo_llm
+          window: 1h
+          slo_target: "95%"
+        annotations:
+          summary: "LLM dispatch fast burn (vendor SLO 95%)"
+          description: |
+            LLM dispatch upstream-error rate burning at {{ $value | printf "%.2f" }}×
+            over the past hour. Includes vendor outages — check vendor
+            status page before paging.
+          runbook_url: "https://github.com/yuta9999zn/kaori-system/blob/main/docs/runbooks/slo-burn-rate.md"

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  P1-S1 (OBS-012) — Logback config for the reactive Gateway. Same shape
+  as auth-service's logback-spring.xml (kept synchronised). Gateway runs
+  on Reactor Netty; Micrometer-tracing's reactor MDC propagation
+  carries traceId/spanId across reactive boundaries so the JSON encoder
+  picks them up the same way as for blocking servlet stacks.
+
+  See services/auth-service/src/main/resources/logback-spring.xml for
+  full annotation.
+-->
+<configuration>
+
+  <springProperty scope="context" name="serviceName"
+                  source="spring.application.name" defaultValue="kaori-api-gateway"/>
+
+  <springProfile name="!json">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder>
+        <pattern>%d{HH:mm:ss.SSS} %-5level [${serviceName},%X{traceId:-},%X{spanId:-}] %logger{36} - %msg%n</pattern>
+      </encoder>
+    </appender>
+    <root level="${LOG_LEVEL:-INFO}">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+  </springProfile>
+
+  <springProfile name="json">
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+        <providers>
+          <timestamp>
+            <fieldName>@timestamp</fieldName>
+            <timeZone>UTC</timeZone>
+          </timestamp>
+          <version/>
+          <pattern>
+            <pattern>
+              {
+                "service.name": "${serviceName}",
+                "level": "%level",
+                "logger": "%logger",
+                "thread": "%thread",
+                "message": "%message",
+                "traceId": "%mdc{traceId}",
+                "spanId": "%mdc{spanId}"
+              }
+            </pattern>
+          </pattern>
+          <mdc>
+            <excludeMdcKeyName>traceId</excludeMdcKeyName>
+            <excludeMdcKeyName>spanId</excludeMdcKeyName>
+          </mdc>
+          <stackTrace>
+            <fieldName>stack_trace</fieldName>
+            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+              <maxDepthPerThrowable>30</maxDepthPerThrowable>
+              <rootCauseFirst>true</rootCauseFirst>
+            </throwableConverter>
+          </stackTrace>
+        </providers>
+      </encoder>
+    </appender>
+    <root level="${LOG_LEVEL:-INFO}">
+      <appender-ref ref="JSON_CONSOLE"/>
+    </root>
+  </springProfile>
+
+</configuration>

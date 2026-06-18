@@ -1,0 +1,22 @@
+# Phase 2 #6 (B2 PR #5) — Grafana dashboard provisioning.
+#
+# Auto-imports every JSON file in /var/lib/grafana/dashboards on boot.
+# Adding a new dashboard = drop the JSON file in
+# infrastructure/grafana/dashboards/, no Grafana UI clicking required.
+#
+# `editable: false` so operators can't accidentally drift the
+# committed JSON; updates flow through git.
+apiVersion: 1
+
+providers:
+  - name: kaori
+    orgId: 1
+    folder: ""
+    type: file
+    disableDeletion: true
+    editable: false
+    allowUiUpdates: false
+    updateIntervalSeconds: 30
+    options:
+      path: /var/lib/grafana/dashboards
+      foldersFromFilesStructure: false

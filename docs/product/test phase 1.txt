@@ -1,0 +1,14 @@
+
+  # 1. First time setup
+  cp .env.example .env  # fill in DB creds and file paths
+  psql -d kaori -f sql/schema.sql
+
+  # 2. Load all data
+  python etl/load_all.py
+
+  # 3. Classify bank statements
+  python etl/classify_bank.py /path/to/lpbank_export.csv
+  python etl/classify_bank.py --review   # inspect unclassified rows
+
+  # 4. Test morning report
+  python reports/morning_report.py --dry-run

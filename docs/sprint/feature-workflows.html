@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaori AI — Workflow Catalog (Internal — for dev/AI agent; NOT customer UX)</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"
+        onerror="document.getElementById('mermaid-cdn-fallback').style.display='block'"></script>
+<link rel="stylesheet" href="kaori-shared-tokens.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  /* Per-file vars only (common tokens loaded from kaori-shared-tokens.css) */
+  --marketing: #b45309;
+  --marketing-bg: #fef3c7;
+  --sales: #166534;
+  --sales-bg: #dcfce7;
+  --cs: #1e40af;
+  --cs-bg: #dbeafe;
+  --warehouse: #7c2d12;
+  --warehouse-bg: #fed7aa;
+  --finance: #581c87;
+  --finance-bg: #ede9fe;
+  --system: #1e293b;
+  --system-bg: #e2e8f0;
+}
+/* (badge.exec-* + badge.mode-* CSS classes loaded from kaori-shared-tokens.css) */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  font-size: 14px;
+}
+.app { display: grid; grid-template-columns: 290px 1fr; min-height: 100vh; }
+aside.sidebar {
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 18px 0;
+}
+.brand {
+  padding: 0 20px 14px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+.brand h1 {
+  font-size: 17px;
+  color: var(--accent);
+  font-weight: 700;
+}
+.brand .sub { font-size: 10px; color: var(--text-soft); margin-top: 4px; font-family: ui-monospace, monospace; }
+.search-box {
+  margin: 0 16px 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  font-size: 13px;
+  width: calc(100% - 32px);
+}
+.search-box:focus { outline: none; border-color: var(--accent); }
+nav ul { list-style: none; }
+nav li.section-header {
+  font-weight: 700;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--text-soft);
+  padding: 14px 20px 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+nav li.section-header::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+nav li.section-header.s-system    { color: var(--system); }
+nav li.section-header.s-marketing { color: var(--marketing); }
+nav li.section-header.s-sales     { color: var(--sales); }
+nav li.section-header.s-cs        { color: var(--cs); }
+nav li.section-header.s-warehouse { color: var(--warehouse); }
+nav li.section-header.s-finance   { color: var(--finance); }
+nav li.section-header.s-aux       { color: var(--accent); }
+nav a {
+  display: block;
+  padding: 4px 20px 4px 28px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 12.5px;
+  border-left: 3px solid transparent;
+}
+nav a:hover { background: var(--accent-soft); border-left-color: var(--accent); }
+nav a.active { background: var(--accent-soft); color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+main { padding: 28px 44px; max-width: 1180px; }
+.intro {
+  background: var(--bg-card);
+  padding: 22px 26px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 26px;
+  box-shadow: var(--shadow);
+}
+.intro h2 { font-size: 22px; margin-bottom: 8px; }
+.intro p { color: var(--text-soft); margin-bottom: 8px; }
+.intro .meta { font-size: 12px; color: var(--text-soft); margin-top: 12px; font-family: ui-monospace, monospace; }
+.phase-divider {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  padding: 24px 0 12px;
+  border-bottom: 2px solid;
+  margin: 12px 0 18px;
+}
+.phase-divider.s-system    { color: var(--system); border-color: var(--system); }
+.phase-divider.s-marketing { color: var(--marketing); border-color: var(--marketing); }
+.phase-divider.s-sales     { color: var(--sales); border-color: var(--sales); }
+.phase-divider.s-cs        { color: var(--cs); border-color: var(--cs); }
+.phase-divider.s-warehouse { color: var(--warehouse); border-color: var(--warehouse); }
+.phase-divider.s-finance   { color: var(--finance); border-color: var(--finance); }
+.phase-divider.s-aux       { color: var(--accent); border-color: var(--accent); }
+.workflow-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
+.workflow-card.s-system    { border-left: 4px solid var(--system); }
+.workflow-card.s-marketing { border-left: 4px solid var(--marketing); }
+.workflow-card.s-sales     { border-left: 4px solid var(--sales); }
+.workflow-card.s-cs        { border-left: 4px solid var(--cs); }
+.workflow-card.s-warehouse { border-left: 4px solid var(--warehouse); }
+.workflow-card.s-finance   { border-left: 4px solid var(--finance); }
+.workflow-card.s-aux       { border-left: 4px solid var(--accent); }
+.workflow-card header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 9px;
+}
+.workflow-card header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-right: auto;
+  flex: 1 0 50%;
+}
+.badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+.badge.dept-marketing  { background: var(--marketing-bg); color: var(--marketing); }
+.badge.dept-sales      { background: var(--sales-bg); color: var(--sales); }
+.badge.dept-cs         { background: var(--cs-bg); color: var(--cs); }
+.badge.dept-warehouse  { background: var(--warehouse-bg); color: var(--warehouse); }
+.badge.dept-finance    { background: var(--finance-bg); color: var(--finance); }
+.badge.dept-system     { background: var(--system-bg); color: var(--system); }
+.badge.industry        { background: var(--accent-soft); color: var(--accent); font-family: ui-monospace, monospace; }
+.badge.setup           { background: var(--code-bg); color: var(--text-soft); }
+.purpose {
+  background: var(--code-bg);
+  padding: 10px 13px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  border-left: 3px solid var(--accent);
+}
+.purpose strong { color: var(--accent); }
+.flow-diagram {
+  margin: 12px 0 14px;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+.steps-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin: 10px 0;
+}
+.steps-table th, .steps-table td {
+  padding: 7px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.steps-table th {
+  background: var(--code-bg);
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.steps-table td.step-n {
+  font-family: ui-monospace, monospace;
+  font-weight: 600;
+  color: var(--accent);
+  width: 32px;
+  text-align: center;
+}
+.steps-table td.node-key {
+  font-family: ui-monospace, monospace;
+  font-size: 11.5px;
+  color: var(--text-soft);
+  width: 200px;
+}
+code {
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  background: var(--code-bg);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+.hidden { display: none !important; }
+
+/* (file-meta CSS class loaded from kaori-shared-tokens.css) */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); border: 0;
+}
+/* Mobile: collapse 290px sidebar; stack single-column; smaller body padding.
+   Sidebar still scrollable as a top section so search + TOC stay reachable. */
+@media (max-width: 768px) {
+  .app { grid-template-columns: 1fr; }
+  aside.sidebar {
+    position: static;
+    height: auto;
+    max-height: 50vh;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    overflow-y: auto;
+  }
+  main { padding: 16px; max-width: 100%; }
+  .workflow-card { padding: 12px; }
+  .workflow-card header { flex-wrap: wrap; gap: 6px; }
+  .summary-table th, .summary-table td { padding: 5px !important; font-size: 11px !important; }
+  pre.mermaid { font-size: 11px; overflow-x: auto; }
+}
+@media print {
+  .app { grid-template-columns: 1fr; }
+  aside.sidebar { display: none; }
+  main { padding: 0; max-width: none; }
+  .workflow-card { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<aside class="sidebar">
+  <div class="brand">
+    <h1>Kaori AI — All Workflows</h1>
+    <div class="sub">version 2026-05-20 EOD · Phase 2.8 Industry Template Bootstrap (anh's "rõ vật thể" workflow UX)</div>
+  </div>
+  <label for="search" class="visually-hidden">Tìm workflow</label>
+  <input type="text" class="search-box" id="search"
+         placeholder="🔎 Tìm workflow..."
+         aria-label="Tìm workflow theo tên, mã, hoặc chú thích">
+  <nav>
+    <ul id="toc">
+      <li class="section-header s-system">A. System pipelines</li>
+      <li><a href="#sp-master">A.1 Master 12-stage pipeline</a></li>
+      <li><a href="#sp-stage1">A.2 Stage 1 — Upload + Bronze</a></li>
+      <li><a href="#sp-stage2-4">A.3 Stage 2-4 — Schema + Silver</a></li>
+      <li><a href="#sp-stage5">A.4 Stage 5 — Ontology</a></li>
+      <li><a href="#sp-stage6">A.5 Stage 6 — Knowledge extraction</a></li>
+      <li><a href="#sp-stage7">A.6 Stage 7 — Memory 4-tier</a></li>
+      <li><a href="#sp-stage8-9">A.7 Stage 8-9 — Gold + AI Decision</a></li>
+      <li><a href="#sp-stage10-12">A.8 Stage 10-12 — Insight + Action + Output</a></li>
+      <li><a href="#sp-wf-lifecycle">A.9 Workflow lifecycle</a></li>
+      <li><a href="#sp-industry-bootstrap">A.10 Industry Template Bootstrap ⭐ Phase 2.8</a></li>
+
+      <li class="section-header s-marketing">B. Marketing (5)</li>
+      <li><a href="#wf-campaign">B.1 Campaign Launch</a></li>
+      <li><a href="#wf-churn-int">B.2 Churn Intervention</a></li>
+      <li><a href="#wf-vip">B.3 VIP Onboarding</a></li>
+      <li><a href="#wf-lead-nurture">B.4 Lead Nurture Sequence</a></li>
+      <li><a href="#wf-ab-test">B.5 Email A/B Test</a></li>
+
+      <li class="section-header s-sales">C. Sales (5)</li>
+      <li><a href="#wf-lead-qual">C.1 Lead Qualification</a></li>
+      <li><a href="#wf-proposal">C.2 Proposal Approval</a></li>
+      <li><a href="#wf-renewal">C.3 Contract Renewal</a></li>
+      <li><a href="#wf-discount">C.4 Discount Approval</a></li>
+      <li><a href="#wf-pipeline-review">C.5 Pipeline Review</a></li>
+
+      <li class="section-header s-cs">D. Customer Service (5)</li>
+      <li><a href="#wf-ticket">D.1 Ticket Triage</a></li>
+      <li><a href="#wf-sla">D.2 SLA Escalation</a></li>
+      <li><a href="#wf-nps">D.3 NPS Follow-up</a></li>
+      <li><a href="#wf-refund">D.4 Refund Approval</a></li>
+      <li><a href="#wf-churn-save">D.5 Churn Save</a></li>
+
+      <li class="section-header s-warehouse">E. Warehouse (5)</li>
+      <li><a href="#wf-restock">E.1 Inventory Restock</a></li>
+      <li><a href="#wf-supplier-audit">E.2 Supplier Audit</a></li>
+      <li><a href="#wf-qc">E.3 Quality Check</a></li>
+      <li><a href="#wf-shipment">E.4 Shipment Dispatch</a></li>
+      <li><a href="#wf-warranty">E.5 Warranty Claim</a></li>
+
+      <li class="section-header s-finance">F. Finance (5)</li>
+      <li><a href="#wf-invoice">F.1 Invoice Approval</a></li>
+      <li><a href="#wf-expense">F.2 Expense Reimbursement</a></li>
+      <li><a href="#wf-close">F.3 Monthly Close</a></li>
+      <li><a href="#wf-vendor-pay">F.4 Vendor Payment</a></li>
+      <li><a href="#wf-budget">F.5 Budget Approval</a></li>
+
+      <li class="section-header s-aux">G. Auxiliary</li>
+      <li><a href="#wf-sso-flow">G.1 SSO Google login</a></li>
+      <li><a href="#wf-mfa-flow">G.2 MFA enroll + verify</a></li>
+      <li><a href="#wf-pm-session">G.3 PM session reconstruction</a></li>
+      <li><a href="#wf-adoption-loop">G.4 Adoption signals loop</a></li>
+      <li><a href="#wf-cfo-digest">G.5 CFO quarterly digest</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main>
+
+<header class="file-meta">
+  <h1>Kaori AI — Workflow Catalog (Internal, NOT customer UX)</h1>
+  <dl>
+    <dt>File</dt><dd><code>docs/sprint/feature-workflows.html</code></dd>
+    <dt>Version</dt><dd>2.8.1 (Round 2 polish 2026-05-20 EOD3)</dd>
+    <dt>Phase</dt><dd>Phase 2.8 — 40 workflows (10 system + 25 business mig 069 + 5 auxiliary)</dd>
+    <dt>Audience</dt><dd><b>Internal — dev / AI agent / partner technical review</b>. KHÔNG dành cho khách. Customer-facing UX sống ở <a href="feature-screens.html"><code>feature-screens.html</code></a> + <a href="workflow-builder-ux.html"><code>workflow-builder-ux.html</code></a>.</dd>
+    <dt>Depends on</dt><dd><code>docs/BACKLOG_V4.md</code> · <code>strategic/PIPELINE_UNIFIED.md</code> · <code>runbooks/workflow-execution-enable.md</code> · mig 053/054/067-099 · ai-orch 2371 tests · pipeline 695 · llm-gw 218</dd>
+    <dt>Last review</dt><dd>2026-05-20 EOD3 — anh's review round 2</dd>
+  </dl>
+</header>
+
+<div class="matrix-mapping" id="matrix-mapping-workflows">
+  <h3 onclick="document.getElementById('matrix-mapping-workflows').classList.toggle('open')">Matrix mapping 3 chiều — Workflows ↔ Screens ↔ Builder mockup</h3>
+  <div class="matrix-mapping-body">
+    <p style="font-size: 12px; color: var(--text-soft); margin-bottom: 8px;">Mỗi workflow render trên screen nào (FE catalog) · maps vào builder mockup step nào (SME UX). Workflow detail tự thân ở dưới; bảng này chỉ cross-ref.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Workflow group</th>
+          <th>Screens hiển thị (FE)</th>
+          <th>Builder mockup step</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>A. System pipelines (10)</td><td>Mostly internal — <a href="feature-screens.html#P2-08">P2-08 Bronze</a>/<a href="feature-screens.html#P2-09">09 Silver</a>/<a href="feature-screens.html#P2-10">10 Gold</a> + <a href="feature-screens.html#P1-13">P1-13 Observability</a></td><td>—</td></tr>
+        <tr><td>A.10 Industry Bootstrap</td><td><a href="feature-screens.html#P2-02">P2-02 Onboarding</a> + <a href="feature-screens.html#P2-31">P2-31 Library</a> + <a href="feature-screens.html#P2-32">P2-32 Preview</a></td><td>Step 1+2 (Onboarding context)</td></tr>
+        <tr><td>B. Marketing (5)</td><td><a href="feature-screens.html#P2-26">P2-26 Builder</a> when dept=marketing</td><td>Step 3 Card Stack + Step 4 Card Editor</td></tr>
+        <tr><td>C. Sales (5)</td><td><a href="feature-screens.html#P2-26">P2-26 Builder</a> when dept=sales</td><td>Step 3+4 (mockup demo C.4 Discount Approval)</td></tr>
+        <tr><td>D. Customer Service (5)</td><td><b>5 runtime CS screens (Round 3 NEW):</b> <a href="feature-screens.html#P2-33">P2-33 Ticket Inbox</a> (D.1) · <a href="feature-screens.html#P2-34">P2-34 Ticket Detail+SLA</a> (D.2) · <a href="feature-screens.html#P2-35">P2-35 NPS Dashboard</a> (D.3) · <a href="feature-screens.html#P2-36">P2-36 Refund Queue</a> (D.4) · <a href="feature-screens.html#P2-37">P2-37 Churn Save Workspace</a> (D.5) · <a href="feature-screens.html#P2-26">P2-26 Builder</a> để edit workflow definition</td><td>Step 3+4 (Builder); runtime CS screens dedicated</td></tr>
+        <tr><td>E. Warehouse (5)</td><td><a href="feature-screens.html#P2-26">P2-26 Builder</a> when dept=warehouse</td><td>Step 3+4</td></tr>
+        <tr><td>F. Finance (5)</td><td><a href="feature-screens.html#P2-26">P2-26 Builder</a> when dept=finance · <a href="feature-screens.html#P2-21">P2-21 Decision Log</a> cho approvals</td><td>Step 3+4</td></tr>
+        <tr><td>G.1 SSO + G.2 MFA</td><td><a href="feature-screens.html#P1-01">P1-01</a>/<a href="feature-screens.html#P2-01">P2-01</a> login flows</td><td>— (auth, không qua Builder)</td></tr>
+        <tr><td>G.3 PM session</td><td><a href="feature-screens.html#P2-28">P2-28 Process Mining</a></td><td>—</td></tr>
+        <tr><td>G.4 Adoption loop</td><td><a href="feature-screens.html#P1-10">P1-10 CS Portfolio</a> + <a href="feature-screens.html#P1-11">P1-11 Tenant Health</a></td><td>— (system cron)</td></tr>
+        <tr><td>G.5 CFO digest</td><td><a href="feature-screens.html#P2-23">P2-23 Reports</a> + email outbox</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size: 11.5px; color: var(--text-mute); margin-top: 8px;">Shared vocabulary: <a href="kaori-shared-glossary.html"><code>kaori-shared-glossary.html</code></a>. Mode + Plan Gate metadata per workflow: <a href="#mode-plan-matrix">§ Mode + Plan Gate matrix</a> bên dưới.</p>
+  </div>
+</div>
+
+<div id="mermaid-cdn-fallback" style="display:none;padding:14px 16px;margin:0 0 16px;background:#fef3c7;border:1px solid #f59e0b;border-radius:4px;font-size:13px;color:#7c2d12">
+  <strong>⚠️ Mermaid CDN unreachable.</strong>
+  Workflow diagrams won't render. Either restore internet access to <code>cdn.jsdelivr.net</code>,
+  or self-host <code>mermaid.min.js</code> next to this file and update the script <code>src</code>.
+</div>
+
+<div class="intro">
+  <h2>Kaori AI — Workflow Catalog (Internal · 2026-05-20 EOD)</h2>
+  <p style="background: #fef3c7; border-left: 3px solid #b45309; padding: 10px 14px; border-radius: 4px; font-size: 13px; margin-bottom: 12px;">
+    <strong>⚠ Audience:</strong> Tài liệu này là <b>internal workflow catalog</b> cho dev / AI agent / partner technical review.
+    Chứa Mermaid diagrams + K-rule annotations + mig refs + executor coverage + side_effect_class taxonomy + Temporal cluster details.
+    <b>KHÔNG dành cho khách hàng.</b> Customer-facing UX spec sống ở
+    <a href="feature-screens.html"><code>docs/sprint/feature-screens.html</code></a> (72 screens) +
+    <a href="workflow-builder-ux.html"><code>docs/sprint/workflow-builder-ux.html</code></a> (Workflow Builder mockup, 4-step builder-only post-bootstrap).
+    FE / stakeholder muốn xem trải nghiệm khách → mở 2 file kia, không phải file này.
+  </p>
+  <p style="background: #f1f5f9; border-left: 3px solid #1e293b; padding: 10px 14px; border-radius: 4px; font-size: 13px; margin-bottom: 12px;">
+    <strong>📐 Catalog view vs Card editor view (clarification cho reviewer):</strong>
+    <br>• <b>Catalog (file này)</b> = <em>workflow-level Mermaid view</em>. Mỗi workflow render thành flowchart + steps-table compact với metadata workflow-level (Trigger / SLA tổng / Owner workflow / executor coverage). Tốt cho dev audit + AI agent parse + cross-workflow lookup. 40 workflows × 5 cards trung bình = 200 cards — quá dày để render full 7-field per card.
+    <br>• <b>Card editor (workflow-builder-ux.html)</b> = <em>card-level 7-field SSOT</em>. Mỗi card hiển thị đầy đủ 7 field chuẩn anh chốt 2026-05-20: <code>Owner</code> / <code>Input</code> / <code>Required docs</code> / <code>AI action</code> / <code>Branch</code> / <code>Output</code> / <code>SLA</code>. Source of truth cho card format; nếu cần thay đổi cấu trúc card → sửa ở mockup đó, không sửa per-workflow trong catalog này.
+  </p>
+  <p>10 system pipelines (Phase 2.8 thêm A.10 Industry Template Bootstrap) + 25 business templates (mig 069) + 5 auxiliary flows = <strong>40 workflows</strong>. Mỗi workflow có sơ đồ Mermaid hiển thị các bước thực tế đang chạy trong production code.</p>
+  <p style="background: #fff5f5; padding: 10px 14px; border-left: 3px solid #d64545; border-radius: 4px; font-size: 13px; margin-top: 10px;">
+    <strong>⭐ Phase 2.8 (2026-05-20):</strong> Bổ sung lớp Industry tier trên Workflow Template (3-tier: Industry → Department → Workflow). Anh's spec "workflow chưa rõ vật thể, SME không tạo từ canvas trắng" → bootstrap full org config chỉ trong 1 click. Mig 101-103 + router <code>industry_bootstrap.py</code> + ADR-0026. 3 industry seeded (Retail / Finance / Generic SME); 5 còn lại defer Phase 3.
+  </p>
+  <p>Click sidebar để jump. Type vào search để filter (sidebar + cards + section dividers đều ẩn theo). Click vào diagram để zoom (Mermaid native).</p>
+  <div class="priority-list" style="background: #f1f5f9; padding: 14px 16px; border-radius: 6px; border-left: 3px solid #15803d; margin-top: 14px; font-size: 13px;">
+    <b>Executable status badges:</b><br>
+    <span class="badge exec-live">✓ EXECUTABLE</span> = code + endpoint + tested e2e, runs today (in-process or live cron) ·
+    <span class="badge exec-partial">~ PARTIAL</span> = some nodes executable, some still seed-only ·
+    <span class="badge exec-seed">✗ SEED ONLY</span> = catalog + template seed in DB, no executor for required nodes yet
+  </div>
+  <p class="meta">Source: <code>infrastructure/postgres/migrations/069_production_templates_seed.sql</code> · <code>docs/strategic/PIPELINE_UNIFIED.md</code> · <code>docs/runbooks/workflow-execution-enable.md</code> · ai-orch 2371 / pipeline 695 / llm-gw 218 tests</p>
+</div>
+
+<!-- ⭐ NEW Round 2 polish: Mode + Plan Gate matrix cho 40 workflows -->
+<div class="intro" id="mode-plan-matrix" style="background: #fafbfc; border-left: 3px solid #166534;">
+  <h2 style="margin-bottom: 6px;">Mode + Plan Gate matrix — 40 workflows</h2>
+  <p style="font-size: 12.5px; color: #52606d; margin-bottom: 10px;">
+    Mỗi workflow có 2 thuộc tính chốt 2026-05-20 EOD3:
+    <b>mode</b> ∈ {<span style="background:#dcfce7;color:#166534;padding:1px 6px;border-radius:3px;font-weight:600;">SIMPLE</span> · <span style="background:#dbeafe;color:#1e40af;padding:1px 6px;border-radius:3px;font-weight:600;">ADVANCED</span> · <span style="background:#fef3c7;color:#b45309;padding:1px 6px;border-radius:3px;font-weight:600;">DEVELOPER</span>} điều khiển edit affordance trong P2-26 Workflow Builder;
+    <b>plan_gate</b> ∈ {<code>PILOT</code> · <code>ENT_BASIC</code> · <code>ENT_MID</code> · <code>ENT_MAX</code> · <code>ENT_ROI</code> · <code>ALL</code>} điều khiển feature availability theo subscription plan.
+    FE dùng cặp metadata này để enable/disable buttons (Test / Customize / Promote) per tenant. Spec đầy đủ ở <a href="workflow-builder-ux.html"><code>workflow-builder-ux.html § 3-Mode UI</code></a> + <a href="feature-screens.html#P2-26"><code>feature-screens.html § P2-26 Workflow Builder</code></a>.
+  </p>
+  <table class="summary-table" style="width: 100%; border-collapse: collapse; font-size: 12.5px;">
+    <thead>
+      <tr style="background: #f1f5f9;">
+        <th style="padding: 6px; text-align: left; border-bottom: 2px solid #cbd5e1;">ID</th>
+        <th style="padding: 6px; text-align: left; border-bottom: 2px solid #cbd5e1;">Workflow</th>
+        <th style="padding: 6px; text-align: left; border-bottom: 2px solid #cbd5e1;">Dept / Category</th>
+        <th style="padding: 6px; text-align: left; border-bottom: 2px solid #cbd5e1;">Mode</th>
+        <th style="padding: 6px; text-align: left; border-bottom: 2px solid #cbd5e1;">Plan gate</th>
+        <th style="padding: 6px; text-align: left; border-bottom: 2px solid #cbd5e1;">Exec</th>
+        <th style="padding: 6px; text-align: left; border-bottom: 2px solid #cbd5e1;">Rationale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="7" style="padding: 6px; background: #e2e8f0; font-weight: 700;">A. System pipelines (10) — platform-level, plan-independent</td></tr>
+      <tr><td>A.1</td><td>Master 12-stage pipeline</td><td>System</td><td><span class="badge mode-dev">DEVELOPER</span></td><td><code>ALL</code></td><td>~ PARTIAL</td><td>Platform foundation</td></tr>
+      <tr><td>A.2</td><td>Stage 1 Upload + Bronze</td><td>System</td><td><span class="badge mode-dev">DEVELOPER</span></td><td><code>ALL</code></td><td>✓ LIVE</td><td>Core ingestion</td></tr>
+      <tr><td>A.3</td><td>Stage 2-4 Schema/Silver/Quality</td><td>System</td><td><span class="badge mode-dev">DEVELOPER</span></td><td><code>ALL</code></td><td>~ PARTIAL</td><td>Pipeline internal</td></tr>
+      <tr><td>A.4</td><td>Stage 5 Ontology 7-Primitives</td><td>System</td><td><span class="badge mode-dev">DEVELOPER</span></td><td><code>ALL</code></td><td>~ PARTIAL</td><td>Pipeline internal</td></tr>
+      <tr><td>A.5</td><td>Stage 6 Knowledge Extraction</td><td>System</td><td><span class="badge mode-dev">DEVELOPER</span></td><td><code>ALL</code></td><td>✓ LIVE</td><td>MinerU + AI nodes</td></tr>
+      <tr><td>A.6</td><td>Stage 7 Memory 4-tier</td><td>System</td><td><span class="badge mode-dev">DEVELOPER</span></td><td><code>ALL</code></td><td>✓ LIVE</td><td>Cross-stage infra</td></tr>
+      <tr><td>A.7</td><td>Stage 8-9 Gold + AI Decision</td><td>System</td><td><span class="badge mode-dev">DEVELOPER</span></td><td><code>ALL</code></td><td>~ PARTIAL</td><td>Decision generation</td></tr>
+      <tr><td>A.8</td><td>Stage 10-12 Insight + Action + Output</td><td>System</td><td><span class="badge mode-dev">DEVELOPER</span></td><td><code>ALL</code></td><td>~ PARTIAL</td><td>Action runtime</td></tr>
+      <tr><td>A.9</td><td>Workflow Lifecycle (build→publish→run→A/B→promote)</td><td>Studio</td><td><span class="badge mode-dev">DEVELOPER</span></td><td><code>ENT_BASIC+</code></td><td>✓ LIVE</td><td>Studio analyst editor; SIMPLE/ADV mode chỉ áp dụng cho per-workflow customization</td></tr>
+      <tr><td>A.10</td><td>Industry Template Bootstrap</td><td>System</td><td><span class="badge mode-adv">ADVANCED</span></td><td><code>ENT_BASIC+</code></td><td>✓ LIVE</td><td>MANAGER+ chạy 1 lần per tenant; force=true destructive</td></tr>
+
+      <tr><td colspan="7" style="padding: 6px; background: #fef3c7; font-weight: 700;">B. Marketing (5)</td></tr>
+      <tr><td>B.1</td><td>Campaign Launch</td><td>marketing/campaign</td><td><span class="badge mode-simple">SIMPLE</span></td><td><code>ENT_BASIC</code></td><td>✓ LIVE</td><td>1 manager approval + send</td></tr>
+      <tr><td>B.2</td><td>Churn Intervention</td><td>marketing/retention</td><td><span class="badge mode-adv">ADVANCED</span></td><td><code>ENT_MID</code></td><td>✓ LIVE</td><td>call_risk_detection + per-cluster save</td></tr>
+      <tr><td>B.3</td><td>VIP Onboarding</td><td>marketing/onboarding</td><td><span class="badge mode-simple">SIMPLE</span></td><td><code>ENT_BASIC</code></td><td>✓ LIVE</td><td>LTV trigger + CSM task</td></tr>
+      <tr><td>B.4</td><td>Lead Nurture Sequence</td><td>marketing/lead_gen</td><td><span class="badge mode-simple">SIMPLE</span></td><td><code>ENT_BASIC</code></td><td>✓ LIVE</td><td>Scoring + drip + handoff</td></tr>
+      <tr><td>B.5</td><td>Email A/B Test</td><td>marketing/experiment</td><td><span class="badge mode-adv">ADVANCED</span></td><td><code>ENT_MID</code></td><td>✓ LIVE</td><td>p&lt;0.05 statistical test + auto-promote (Stage 12 Loop)</td></tr>
+
+      <tr><td colspan="7" style="padding: 6px; background: #dcfce7; font-weight: 700;">C. Sales (5)</td></tr>
+      <tr><td>C.1</td><td>Lead Qualification</td><td>sales/qualification</td><td><span class="badge mode-simple">SIMPLE</span></td><td><code>ENT_BASIC</code></td><td>✓ LIVE</td><td>BANT score + routing</td></tr>
+      <tr><td>C.2</td><td>Proposal Approval</td><td>sales/approval</td><td><span class="badge mode-simple">SIMPLE</span></td><td><code>ENT_BASIC</code></td><td>✓ LIVE</td><td>3-step approval</td></tr>
+      <tr><td>C.3</td><td>Contract Renewal</td><td>sales/renewal</td><td><span class="badge mode-adv">ADVANCED</span></td><td><code>ENT_MID</code></td><td>✓ LIVE</td><td>90d scheduled + 9-signal health</td></tr>
+      <tr><td>C.4</td><td>Discount Approval</td><td>sales/approval</td><td><span class="badge mode-simple">SIMPLE</span></td><td><code>ENT_BASIC</code></td><td>✓ LIVE</td><td>Tiered % approval (core SME case)</td></tr>
+      <tr><td>C.5</td><td>Pipeline Review</td><td>sales/reporting</td><td><span class="badge mode-simple">SIMPLE</span></td><td><code>ENT_BASIC</code></td><td>✓ LIVE</td><td>Weekly aggregate + narrative</td></tr>
+
+      <tr><td colspan="7" style="padding: 6px; background: #dbeafe; font-weight: 700;">D. Customer Service (5)</td></tr>
+      <tr><td>D.1</td><td>Ticket Triage</td><td>customer_service/triage</td><td><span class="badge mode-simple">SIMPLE</span></td><td><code>ENT_BASIC</code></td><td>✓ LIVE</td><td>Classify + SLA timer</td></tr>
+      <tr><td>D.2</td><td>SLA Escalation</td><td>customer_service/escalation</td><td><span class="badge mode-adv">ADVANCED</span></td><td><code>ENT_MID</code></td><td>✓ LIVE</td><td>Scheduled 15-min + multi-hop notify</td></tr>
+      <tr><td>D.3</td><td>NPS Follow-up</td><td>customer_service/feedback</td><td><span class="badge mode-simple">SIMPLE</span></td><td><code>ENT_BASIC</code></td><td>✓ LIVE</td><td>Score categorize + outreach</td></tr>
+      <tr><td>D.4</td><td>Refund Approval</td><td>customer_service/approval</td><td><span class="badge mode-simple">SIMPLE</span></td><td><code>ENT_BASIC</code></td><td>✓ LIVE</td><td>Policy + threshold gate</td></tr>
+      <tr><td>D.5</td><td>Churn Save</td><td>customer_service/retention</td><td><span class="badge mode-adv">ADVANCED</span></td><td><code>ENT_MID</code></td><td>✓ LIVE</td><td>VIP exec path + per-cluster offer</td></tr>
+
+      <tr><td colspan="7" style="padding: 6px; background: #fed7aa; font-weight: 700;">E. Warehouse (5)</td></tr>
+      <tr><td>E.1</td><td>Inventory Restock</td><td>warehouse/restock</td><td><span class="badge mode-simple">SIMPLE</span></td><td><code>ENT_BASIC</code></td><td>✓ LIVE</td><td>Threshold + manager approve</td></tr>
+      <tr><td>E.2</td><td>Supplier Audit</td><td>warehouse/audit</td><td><span class="badge mode-adv">ADVANCED</span></td><td><code>ENT_MID</code></td><td>✓ LIVE</td><td>Quarterly + AI scoring + cohort flag</td></tr>
+      <tr><td>E.3</td><td>Quality Check</td><td>warehouse/quality</td><td><span class="badge mode-simple">SIMPLE</span></td><td><code>ENT_BASIC</code></td><td>✓ LIVE</td><td>Sample + defect rate threshold</td></tr>
+      <tr><td>E.4</td><td>Shipment Dispatch</td><td>warehouse/logistics</td><td><span class="badge mode-adv">ADVANCED</span></td><td><code>ENT_MID</code></td><td>✓ LIVE</td><td>AI carrier recommendation</td></tr>
+      <tr><td>E.5</td><td>Warranty Claim</td><td>warehouse/warranty</td><td><span class="badge mode-simple">SIMPLE</span></td><td><code>ENT_BASIC</code></td><td>✓ LIVE</td><td>Intake + validate + assign</td></tr>
+
+      <tr><td colspan="7" style="padding: 6px; background: #ede9fe; font-weight: 700;">F. Finance (5)</td></tr>
+      <tr><td>F.1</td><td>Invoice Approval</td><td>finance/approval</td><td><span class="badge mode-adv">ADVANCED</span></td><td><code>ENT_MID</code></td><td>✓ LIVE</td><td>3-way match + CFO tier &gt;100M</td></tr>
+      <tr><td>F.2</td><td>Expense Reimbursement</td><td>finance/approval</td><td><span class="badge mode-simple">SIMPLE</span></td><td><code>ENT_BASIC</code></td><td>✓ LIVE</td><td>Policy cap + manager tier</td></tr>
+      <tr><td>F.3</td><td>Monthly Close</td><td>finance/reporting</td><td><span class="badge mode-dev">DEVELOPER</span></td><td><code>ENT_MAX</code></td><td>✓ LIVE</td><td>Multi-source GL aggregate + reconcile</td></tr>
+      <tr><td>F.4</td><td>Vendor Payment</td><td>finance/payment</td><td><span class="badge mode-adv">ADVANCED</span></td><td><code>ENT_MID</code></td><td>✓ LIVE</td><td>Batch + CFO single approval + saga</td></tr>
+      <tr><td>F.5</td><td>Budget Approval</td><td>finance/approval</td><td><span class="badge mode-adv">ADVANCED</span></td><td><code>ENT_MID</code></td><td>✓ LIVE</td><td>Variance check + board vote 14d</td></tr>
+
+      <tr><td colspan="7" style="padding: 6px; background: #fff5f5; font-weight: 700;">G. Auxiliary (5)</td></tr>
+      <tr><td>G.1</td><td>SSO Google login</td><td>auth/sso</td><td><span class="badge mode-dev">DEVELOPER</span></td><td><code>ALL</code></td><td>✓ LIVE</td><td>Platform auth (no customization)</td></tr>
+      <tr><td>G.2</td><td>MFA TOTP enroll + verify</td><td>auth/mfa</td><td><span class="badge mode-dev">DEVELOPER</span></td><td><code>ALL</code></td><td>✓ LIVE</td><td>Platform auth</td></tr>
+      <tr><td>G.3</td><td>PM session reconstruction</td><td>process_mining</td><td><span class="badge mode-adv">ADVANCED</span></td><td><code>ENT_MID</code></td><td>~ PARTIAL</td><td>STUDIO_ANALYST Mode 2 view</td></tr>
+      <tr><td>G.4</td><td>Adoption signals loop</td><td>adoption</td><td><span class="badge mode-dev">DEVELOPER</span></td><td><code>ALL</code></td><td>✓ LIVE</td><td>System cron, no customer customize</td></tr>
+      <tr><td>G.5</td><td>CFO quarterly digest</td><td>finance/digest</td><td><span class="badge mode-adv">ADVANCED</span></td><td><code>ENT_MID</code></td><td>~ PARTIAL</td><td>MANAGER+ subscribe; analyst tune content</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size: 11.5px; color: #9aa5b1; margin-top: 10px;">
+    <b>Total breakdown:</b> SIMPLE 14 (35%) · ADVANCED 14 (35%) · DEVELOPER 12 (30%). Plan gate: ALL 11 (system+auth, plan-independent) · ENT_BASIC 14 · ENT_MID 13 · ENT_MAX 2. PILOT tier defer (chỉ enable SIMPLE subset sau khi pilot 30 ngày OK, gate qua <code>tenant.plan</code> ở runtime).
+  </p>
+</div>
+
+<!-- Glossary — internal vocabulary used throughout the diagrams + summary tables. -->
+<div class="intro" id="glossary" style="background: #fafbfc; border-left: 3px solid #52606d;">
+  <h2 style="margin-bottom: 6px;">Glossary — internal vocabulary</h2>
+  <p style="font-size: 12.5px; color: #52606d;">Tài liệu dùng nhiều ký hiệu nội bộ. Bảng này giúp người mới đọc khỏi phải tra <code>CLAUDE.md</code> hay <code>SAD_SKELETON_V2.md</code> cold.</p>
+  <table class="summary-table" style="width: 100%; border-collapse: collapse; font-size: 12.5px;">
+    <tr style="background: #f1f5f9;">
+      <th style="padding: 6px; text-align: left; border-bottom: 2px solid #cbd5e1;">Term</th>
+      <th style="padding: 6px; text-align: left; border-bottom: 2px solid #cbd5e1;">Meaning</th>
+      <th style="padding: 6px; text-align: left; border-bottom: 2px solid #cbd5e1;">Where to read more</th>
+    </tr>
+    <tr><td style="padding: 5px;"><b>K-rules (K-1 .. K-20)</b></td><td style="padding: 5px;">Critical invariants the platform never breaks. K-2 = bronze append-only; K-4 = consent_external for vendor LLM; K-6 = decision audit log; K-8 = SHA-256 idempotency; K-12 = tenant_id from JWT only; K-13 = Idempotency-Key on POST; K-17 = side_effect_class on every workflow node; K-18 = Vault-only secrets; K-19 = OTel mandatory + tenant_id span attr.</td><td style="padding: 5px;"><code>CLAUDE.md §4</code></td></tr>
+    <tr><td style="padding: 5px;"><b>L0 .. L5 + L4.5</b></td><td style="padding: 5px;">Architecture layers. L0 = ingest connectors · L1 = ingestion data plane (Bronze) · L2 = data plane (Silver / Gold + quality) · L3 = reasoning (Insight / Recommendation / Constraint / Formula / RAG / Profile) · L4 = workflow runtime (Temporal worker, side-effect classes) · L4.5 = org_intel (Process Mining, Adoption, Economics / NOV) · L5 = output delivery (FE + email + chat bots).</td><td style="padding: 5px;"><code>SAD_SKELETON_V2.md §3</code></td></tr>
+    <tr><td style="padding: 5px;"><b>mig 069</b></td><td style="padding: 5px;">Migration <code>069_production_templates_seed.sql</code> — seeded the 25 production workflow templates (B.1 → F.5 in this doc). When you see "mig 069 templates", it refers to this batch.</td><td style="padding: 5px;"><code>infrastructure/postgres/migrations/069_…</code></td></tr>
+    <tr><td style="padding: 5px;"><b>7-Primitives</b></td><td style="padding: 5px;">Ontology entity model (Stage 5): Customer · Transaction · Product · Location · Time · Channel · Outcome. Every business question maps onto one or more of these.</td><td style="padding: 5px;"><code>strategic/PIPELINE_UNIFIED.md §Stage 5</code></td></tr>
+    <tr><td style="padding: 5px;"><b>T-Cube</b></td><td style="padding: 5px;">Trace-augmented reasoning (ADR-0021 + arXiv 2605.03344). Distils prior decision traces into a recall index so similar future questions can pull "thinking-trace" context. Lives in <code>reasoning/trace_distiller/</code>.</td><td style="padding: 5px;"><code>ADR-0021</code></td></tr>
+    <tr><td style="padding: 5px;"><b>Side-effect class</b></td><td style="padding: 5px;">K-17 requirement on every workflow node: <code>pure</code> · <code>read_only</code> · <code>write_idempotent</code> · <code>write_non_idempotent</code> · <code>external</code>. Drives retry policy + saga compensation eligibility.</td><td style="padding: 5px;"><code>ADR-0014</code></td></tr>
+    <tr><td style="padding: 5px;"><b>NOV</b></td><td style="padding: 5px;">Net Operational Value — Kaori's "value created" metric. Built from revenue protected (NSM) + cost avoided + decisions automated + adoption health. Reported in CFO quarterly digest.</td><td style="padding: 5px;"><code>strategic/PIPELINE_UNIFIED.md §Stage 11</code></td></tr>
+    <tr><td style="padding: 5px;"><b>Industry Template (Phase 2.8)</b></td><td style="padding: 5px;">Top tier trên Workflow Template. 8 industry: Retail / F&B / Logistics / Finance / Healthcare / Manufacturing / Education / Generic SME. Mỗi industry mang đi: default depts + workflow links + KPI suggestion + data schema expectation + role permissions. Bootstrap = clone full org config vào tenant.</td><td style="padding: 5px;"><code>ADR-0026</code> · <code>mig 101-103</code></td></tr>
+    <tr><td style="padding: 5px;"><b>Workflow Card</b></td><td style="padding: 5px;">Đơn vị công việc trên canvas (= node trong DB). Mỗi card có: title + owner + input (artifact/document) + AI action + branch condition + output + required documents + SLA. Anh's UX spec 2026-05-20: card phải "rõ vật thể" — SME nhìn vào hiểu ngay đây là 1 bước công việc.</td><td style="padding: 5px;"><code>mig 053 workflow_nodes</code></td></tr>
+    <tr><td style="padding: 5px;"><b>3-Mode UI</b></td><td style="padding: 5px;">Simple / Advanced / Developer. Simple = SME chỉnh rename/owner/SLA/threshold. Advanced = analyst chỉnh branch/schema/KPI/approval. Developer = platform admin chỉnh connector/node type/API. Plan gating: PILOT = simple-only; ENT_BASIC+ unlock advanced; Developer chỉ bật với Custom Implementation contract.</td><td style="padding: 5px;"><code>mig 102 enterprise_workflow_mode</code></td></tr>
+    <tr><td style="padding: 5px;"><b>Customer Configuration</b></td><td style="padding: 5px;">Bản cấu hình riêng của tenant — KHÔNG sửa template upstream. Mỗi save = snapshot vào <code>customer_workflow_versions</code> (immutable K-2). Customize trung bình → log <code>workflow_customizations</code>. Customize lớn → mở <code>workflow_change_requests</code> link sang BA 4.2.</td><td style="padding: 5px;"><code>mig 102</code> · <code>ADR-0026</code></td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="phase-divider s-system">A. System Pipelines (foundational)</div>
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+<section class="workflow-card s-system" id="sp-master">
+  <header>
+    <h3>A.1 Master 12-stage data pipeline — end-to-end</h3>
+    <span class="badge dept-system">System</span>
+    <span class="badge exec-partial">~ PARTIAL</span>
+    <span class="badge setup">L1-L5 stack</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Toàn bộ pipeline từ moment khách click Upload đến moment ra action có thể thực thi. Pipeline = Cognitive Pipeline (DATA → DECISION → INSIGHT → ACTION → OUTCOME → FEEDBACK).</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart TD
+    U[User: Upload CSV/PDF/DOCX/Image] --> S1[Stage 1: Bronze<br/>MinIO immutable + SHA-256]
+    S1 --> S2[Stage 2: Schema Detection<br/>exact → fuzzy → LLM fallback]
+    S2 --> S3[Stage 3: Cleaning → Silver<br/>3-layer rules Universal+Domain+AI]
+    S3 --> S4{Stage 4: Quality Gate<br/>7-dim weighted scorecard}
+    S4 -->|Pass| S5[Stage 5: Ontology<br/>7-Primitives Customer/Trans/Prod/Loc/Time/Channel/Outcome]
+    S4 -->|Fail| Q[Quality alert → user]
+    S5 --> S6[Stage 6: Knowledge Extraction<br/>DocSage + MinerU patterns + AI nodes]
+    S6 --> S7[Stage 7: Memory L1/L2/L3/L4<br/>Ephemeral · Episodic · Semantic · Procedural]
+    S7 --> S8[Stage 8: Gold Views<br/>per-dept MV + Redis cache]
+    S8 --> S9[Stage 9: AI Decision<br/>confidence-based action policy]
+    S9 --> S10[Stage 10: Insight Composition<br/>3-tuyến Narrative/Diagnostic/Predictive]
+    S10 --> S11[Stage 11: Action Runtime<br/>8 sub-stages Temporal workflow]
+    S11 --> S12[Stage 12: Output Delivery<br/>FE dashboard + email + Slack/Zalo]
+    S12 --> F[Feedback loop → Stage 5 lifecycle update]
+    F -.-> S5
+    </pre>
+  </div>
+  <table class="steps-table">
+    <tr><th>#</th><th>Stage</th><th>Layer</th><th>Key tech</th></tr>
+    <tr><td class="step-n">1</td><td>Upload + Bronze</td><td>L2</td><td>MinIO + SHA-256, K-2 append-only, K-8 idempotency</td></tr>
+    <tr><td class="step-n">2</td><td>Schema Detection</td><td>L2+L3</td><td>Multi-stage exact→fuzzy→LLM</td></tr>
+    <tr><td class="step-n">3</td><td>Cleaning → Silver</td><td>L2</td><td>3-layer rules (Universal/Domain/AI), Parquet</td></tr>
+    <tr><td class="step-n">4</td><td>Quality Scorecard</td><td>L2+L4</td><td>7-dim weighted, NUMERIC(5,4)</td></tr>
+    <tr><td class="step-n">5</td><td>Ontology</td><td>L4</td><td>7-Primitives, master records, lifecycle FSM</td></tr>
+    <tr><td class="step-n">6</td><td>Knowledge Extract</td><td>L4</td><td>DocSage + MinerU + 6 AI nodes parallel</td></tr>
+    <tr><td class="step-n">7</td><td>Memory 4-tier</td><td>L4</td><td>Redis L1/L2 + Postgres pgvector L3 + Neo4j L4</td></tr>
+    <tr><td class="step-n">8</td><td>Gold Views</td><td>L2</td><td>Postgres MV + Redis hot path</td></tr>
+    <tr><td class="step-n">9</td><td>AI Decision</td><td>L3+L4</td><td>Confidence-based + decision_audit_log K-6</td></tr>
+    <tr><td class="step-n">10</td><td>Insight Composition</td><td>L3+L4</td><td>Narrative + Diagnostic + Predictive</td></tr>
+    <tr><td class="step-n">11</td><td>Action Runtime</td><td>L4</td><td>Temporal 8 sub-stages + saga compensation</td></tr>
+    <tr><td class="step-n">12</td><td>Output Delivery</td><td>L5</td><td>FE + email + Slack/Zalo/Telegram</td></tr>
+  </table>
+</section>
+
+<section class="workflow-card s-system" id="sp-stage1">
+  <header>
+    <h3>A.2 Stage 1 — Upload + Bronze layer</h3>
+    <span class="badge dept-system">System</span>
+    <span class="badge exec-live">✓ EXECUTABLE</span>
+    <span class="badge setup">L2</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Bytes vào Kaori → immutable Bronze layer. K-2 append-only, K-8 SHA-256 idempotency, K-12 enterprise_id từ JWT, magic-byte detect spoof.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart TD
+    A[POST /upload<br/>multipart file + X-Workflow-Step-ID] --> B[JWT → enterprise_id + user_id]
+    B --> C[Read 512B header → magic byte detect]
+    C --> D{detected_kind in expected_document_types?}
+    D -->|No| E1[422 RFC 7807 — type mismatch + spoof hint]
+    D -->|Yes| F[SHA-256 fingerprint content]
+    F --> G{Fingerprint exists in bronze_files?}
+    G -->|Yes K-8 idempotency| H[Return existing run_id — skip duplicate]
+    G -->|No| I[MinIO PUT object<br/>path: tenant/yyyy/mm/dd/sha256.ext]
+    I --> J[INSERT bronze_files row<br/>tenant_id + sha256 + storage_path + uploaded_by]
+    J --> K[INSERT workflow_step_documents if X-Workflow-Step-ID]
+    K --> L[Emit Kafka kaori.ingest.bronze key=tenant_id]
+    L --> M[Return 201 + run_id]
+    </pre>
+  </div>
+  <table class="steps-table">
+    <tr><th>#</th><th>Step</th><th>K-rule</th></tr>
+    <tr><td class="step-n">1</td><td>JWT extract enterprise_id</td><td>K-12</td></tr>
+    <tr><td class="step-n">2</td><td>Magic-byte detect + spoof guard</td><td>K-5 / type safety</td></tr>
+    <tr><td class="step-n">3</td><td>Whitelist check vs workflow's expected_types</td><td>K-12</td></tr>
+    <tr><td class="step-n">4</td><td>SHA-256 fingerprint</td><td>K-8</td></tr>
+    <tr><td class="step-n">5</td><td>MinIO PUT immutable</td><td>K-2 append-only</td></tr>
+    <tr><td class="step-n">6</td><td>Emit Kafka <code>kaori.ingest.bronze</code></td><td>—</td></tr>
+  </table>
+</section>
+
+<section class="workflow-card s-system" id="sp-stage2-4">
+  <header>
+    <h3>A.3 Stage 2-4 — Schema detection → Silver → Quality gate</h3>
+    <span class="badge dept-system">System</span>
+    <span class="badge exec-partial">~ PARTIAL</span>
+    <span class="badge setup">L2+L3</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Bronze bytes → typed Silver rows. Multi-stage schema detect, 3-layer cleaning, 7-dim quality scorecard gate.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart TD
+    A[Kafka consume bronze event] --> B[Stage 2: Schema Detection]
+    B --> B1[Exact match: header names hashed → mapping_templates]
+    B1 -->|hit| F[Apply template mapping]
+    B1 -->|miss| B2[Fuzzy: Levenshtein + synonym dict 5 langs]
+    B2 -->|hit| F
+    B2 -->|miss| B3[LLM fallback: classify_document + DocSage Schema Discovery]
+    B3 --> B4[Propose new template → user confirm → INSERT mapping_templates]
+    B4 --> F
+    F --> C[Stage 3: Cleaning per row]
+    C --> C1[Layer 1 Universal: trim, NFC normalise, dedup]
+    C --> C2[Layer 2 Domain: VN phone, ID, address parsing]
+    C --> C3[Layer 3 AI-detected: outlier flag, anomaly scoring]
+    C1 --> D[Stage 4: Quality Scorecard 7 dimensions]
+    C2 --> D
+    C3 --> D
+    D --> D1[Completeness · Validity · Uniqueness · Consistency · Timeliness · Accuracy · Conformity]
+    D1 --> E{Weighted score >= tenant target?}
+    E -->|Yes| G[Write Silver per-domain table<br/>tenant_silver_customers / _transactions / etc.]
+    E -->|No| H[Alert user + reject batch + log incident]
+    </pre>
+  </div>
+  <table class="steps-table">
+    <tr><th>#</th><th>Step</th><th>Owner</th></tr>
+    <tr><td class="step-n">1</td><td>Schema exact match</td><td>data-pipeline/silver/document_type.py</td></tr>
+    <tr><td class="step-n">2</td><td>Fuzzy fallback</td><td><code>language_dictionary.json</code></td></tr>
+    <tr><td class="step-n">3</td><td>LLM fallback Schema Discovery D1-D6</td><td>ai-orch DocSage</td></tr>
+    <tr><td class="step-n">4</td><td>3-layer cleaning</td><td>silver/rule_catalog.py</td></tr>
+    <tr><td class="step-n">5</td><td>7-dim quality compute</td><td>silver/quality.py</td></tr>
+    <tr><td class="step-n">6</td><td>Gate decision</td><td>K-9 NUMERIC(5,4)</td></tr>
+    <tr><td class="step-n">7</td><td>Silver INSERT mig 051</td><td>data-pipeline</td></tr>
+  </table>
+</section>
+
+<section class="workflow-card s-system" id="sp-stage5">
+  <header>
+    <h3>A.4 Stage 5 — Semantic Ontology (7-Primitives)</h3>
+    <span class="badge dept-system">System</span>
+    <span class="badge exec-partial">~ PARTIAL</span>
+    <span class="badge setup">L4</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Universal 7-Primitives ontology cho mọi business (Customer / Transaction / Product / Location / Time / Channel / Outcome) + entity lifecycle FSM.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart TD
+    A[Silver row] --> B[OntologyMapper.project row, template_id]
+    B --> C[Build Primitives]
+    C --> C1[Customer entity]
+    C --> C2[Transaction event]
+    C --> C3[Product item]
+    C --> C4[Location point]
+    C --> C5[Time event_ts]
+    C --> C6[Channel source]
+    C --> C7[Outcome status]
+    C1 --> D[OntologyStore backend]
+    C2 --> D
+    C3 --> D
+    C4 --> D
+    C5 --> D
+    C6 --> D
+    C7 --> D
+    D -->|dev| D1[in_memory dict]
+    D -->|prod| D2[Neo4j 5.25 label _T_hash16 tenant isolate]
+    D2 --> E[INSERT ontology_nodes + ontology_edges]
+    E --> F[Lifecycle FSM transition<br/>active → at_risk → churned]
+    F --> G[Cross-stage trigger: Stage 9 decision read]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-system" id="sp-stage6">
+  <header>
+    <h3>A.5 Stage 6 — Knowledge Extraction (MinerU + DocSage + AI nodes)</h3>
+    <span class="badge dept-system">System</span>
+    <span class="badge exec-live">✓ EXECUTABLE</span>
+    <span class="badge setup">L4</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Unstructured (PDF/DOCX/Image/Audio) → typed blocks → AI nodes (classify / extract / summarise / sentiment / dedup / compare). 10-stage parallel branch.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart TD
+    A[Bronze unstructured file<br/>PDF/DOCX/Image] --> B{File type?}
+    B -->|PDF native text| C1[docsage_extract pypdf → blocks]
+    B -->|PDF complex| C2[Pattern 3 tables pdfplumber<br/>Pattern 4 reading order<br/>Pattern 2 header/footer strip]
+    B -->|DOCX| C3[python-docx → blocks]
+    B -->|Image JPG/PNG/WebP| C4[OCR Qwen2-VL via /v1/ocr<br/>K-4 local only]
+    C1 --> D[Unified Block list type, page_idx, char_start, text, metadata, bbox]
+    C2 --> D
+    C3 --> D
+    C4 --> D
+    D --> E{Caller workflow node?}
+    E -->|classify| F1[classify_document<br/>1 LLM call → category + confidence]
+    E -->|extract| F2[extract_structured_data<br/>per-table LLM → typed rows]
+    E -->|summarise| F3[summarise_document<br/>1 LLM → summary + bullets]
+    E -->|sentiment| F4[sentiment_analysis<br/>1 LLM → 5-point + aspects]
+    E -->|dedup| F5[dedup_records<br/>PURE K-17 deterministic]
+    E -->|compare| F6[compare_to_template<br/>RAG-backed contract diff]
+    F1 --> G[Output → Stage 8 Gold]
+    F2 --> G
+    F3 --> G
+    F4 --> G
+    F5 --> G
+    F6 --> G
+    </pre>
+  </div>
+  <table class="steps-table">
+    <tr><th>#</th><th>Extractor / Node</th><th>K-17</th></tr>
+    <tr><td class="step-n">1</td><td>docsage_extract (PDF text)</td><td>pure</td></tr>
+    <tr><td class="step-n">2</td><td>table_extractor (Pattern 3)</td><td>pure</td></tr>
+    <tr><td class="step-n">3</td><td>reading_order (Pattern 4)</td><td>pure</td></tr>
+    <tr><td class="step-n">4</td><td>header_footer_strip (Pattern 2)</td><td>pure</td></tr>
+    <tr><td class="step-n">5</td><td>ocr_client → /v1/ocr</td><td>external (local Qwen-VL)</td></tr>
+    <tr><td class="step-n">6</td><td>classify_document</td><td>read_only</td></tr>
+    <tr><td class="step-n">7</td><td>extract_structured_data</td><td>read_only</td></tr>
+    <tr><td class="step-n">8</td><td>summarise_document</td><td>read_only</td></tr>
+    <tr><td class="step-n">9</td><td>sentiment_analysis</td><td>read_only</td></tr>
+    <tr><td class="step-n">10</td><td>dedup_records</td><td>PURE</td></tr>
+    <tr><td class="step-n">11</td><td>compare_to_template</td><td>read_only</td></tr>
+  </table>
+</section>
+
+<section class="workflow-card s-system" id="sp-stage7">
+  <header>
+    <h3>A.6 Stage 7 — Memory 4-tier (cross-stage)</h3>
+    <span class="badge dept-system">System</span>
+    <span class="badge exec-live">✓ EXECUTABLE</span>
+    <span class="badge setup">L4</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Long-term memory cho AI agent + RAG. L1 ephemeral (in-process) / L2 episodic (Redis 7d) / L3 semantic (Postgres+pgvector HNSW 1024d) / L4 procedural (T-Cube distilled).</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart TD
+    subgraph Write
+      W[Caller write record] --> WT{Tier?}
+      WT -->|L1| W1[In-process dict / Redis short]
+      WT -->|L2| W2[Redis Stream 7d TTL]
+      WT -->|L3| W3[BGE-M3 embed via gateway]
+      W3 --> W3A["Importance gate >=0.3"]
+      W3A --> W3B[HNSW upsert mig 067]
+      WT -->|L4| W4[T-Cube distil 3 forms]
+      W4 --> W4A[Struct SPO + Semantic + Reflect]
+      W4A --> W4B[All 3 PROCEDURAL store]
+    end
+    subgraph Read
+      R[Caller recall query, tier, top_k=5] --> RT{Tier?}
+      RT -->|L1/L2| R1[Direct key lookup]
+      RT -->|L3| R3["Embed query + HNSW search cosine >=0.5"]
+      RT -->|L4| R4[Query by tcube_form filter]
+    end
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-system" id="sp-stage8-9">
+  <header>
+    <h3>A.7 Stage 8-9 — Gold layer + AI Decision Generation</h3>
+    <span class="badge dept-system">System</span>
+    <span class="badge exec-partial">~ PARTIAL</span>
+    <span class="badge setup">L2+L3+L4</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Silver typed rows → Gold business views (per-dept MV) → AI Decision với confidence-based action policy + decision_audit_log K-6.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart TD
+    A[Stage 8: Gold Views] --> B[Postgres MV per dept]
+    B --> B1[v_customer_360 MV]
+    B --> B2[v_revenue_by_channel MV]
+    B --> B3[v_churn_risk_dashboard MV]
+    B --> B4[Custom views per tenant]
+    B1 --> C[Redis hot path cache]
+    B2 --> C
+    B3 --> C
+    C --> D[Stage 9: AI Decision]
+    D --> E[Read Gold + Ontology + Memory L3]
+    E --> F{Confidence level?}
+    F -->|"high >=0.85"| G1[Auto-execute action]
+    F -->|"medium 0.6-0.85"| G2[Suggest + require approval gate]
+    F -->|"low <0.6"| G3[Escalate to human queue]
+    G1 --> H[INSERT decision_audit_log K-6<br/>tenant_id + decision_type + chosen + alternatives + reasoning + confidence]
+    G2 --> H
+    G3 --> H
+    H --> I[Emit Kafka kaori.decisions.log]
+    I --> J[Trigger Stage 10 Insight composition]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-system" id="sp-stage10-12">
+  <header>
+    <h3>A.8 Stage 10-12 — Insight + Action Runtime + Output</h3>
+    <span class="badge dept-system">System</span>
+    <span class="badge exec-partial">~ PARTIAL</span>
+    <span class="badge setup">L4+L5</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Decision → 3-tuyến Insight (Narrative/Diagnostic/Predictive) → 8 sub-stage Temporal action runtime → fan-out delivery (FE/email/Slack/Zalo/Telegram).</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart TD
+    D[Stage 9 decision_audit_log row] --> S10[Stage 10 Insight Composition]
+    S10 --> S10A[Narrative: prose summary VN/EN]
+    S10 --> S10B[Diagnostic: root-cause SQL + chart]
+    S10 --> S10C[Predictive: next 30/60/90 day forecast]
+    S10A --> S11[Stage 11 Action Runtime - 8 sub-stages]
+    S10B --> S11
+    S10C --> S11
+    S11 --> S11A[1. Plan: workflow yaml load]
+    S11A --> S11B[2. Validate side_effect K-17]
+    S11B --> S11C[3. Acquire idempotency_records K-13]
+    S11C --> S11D[4. Execute nodes via Temporal worker]
+    S11D --> S11E[5. Per-node retry policy by side_effect_class]
+    S11E --> S11F[6. Saga compensation on external fail]
+    S11F --> S11G[7. Audit each node decision K-6]
+    S11G --> S11H[8. Mark workflow_run complete + emit metrics]
+    S11H --> S12[Stage 12 Output Delivery]
+    S12 --> O1[FE dashboard render]
+    S12 --> O2[Email via notification-service SMTP outbox]
+    S12 --> O3[Slack/Teams via PluggableBotAdapter]
+    S12 --> O4[Zalo OA / Telegram Bot]
+    O1 --> FB[Stage 12 Feedback loop → adoption signals]
+    O2 --> FB
+    O3 --> FB
+    O4 --> FB
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-system" id="sp-wf-lifecycle">
+  <header>
+    <h3>A.9 Workflow Lifecycle (build → publish → run → A/B → promote)</h3>
+    <span class="badge dept-system">System</span>
+    <span class="badge exec-live">✓ EXECUTABLE</span>
+    <span class="badge setup">Studio</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Lifecycle của 1 workflow trong Studio. From scratch hoặc clone từ 25 templates → DAG validate → publish → Temporal run → A/B test (Stage 12 Loop) → promote winner.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart TD
+    A[Studio FE] --> B{From?}
+    B -->|Scratch| C1[Drag node from palette<br/>28 curated nodes mig 068]
+    B -->|Template| C2[POST /workflow-templates/instantiate/id<br/>clone mig 069 row]
+    B -->|YAML import| C3[POST /workflows/import<br/>validate against mig 068]
+    C1 --> D[Configure node config_json<br/>validate config_schema]
+    C2 --> D
+    C3 --> D
+    D --> E[Connect edges with conditions]
+    E --> F[POST /workflows save final]
+    F --> G{DAG no cycle?}
+    G -->|No| GF[422 CYCLE_DETECTED]
+    G -->|Yes| H{Every node side_effect_class K-17?}
+    H -->|No| HF[422 hint]
+    H -->|Yes| I[Workflow status=draft]
+    I --> J[Multi-user collab P2-S16<br/>editors + comments + locks]
+    J --> K[Publish status=active]
+    K --> L[Trigger fires - cron/webhook/event/manual]
+    L --> M[Temporal workflow_run<br/>idempotency_records K-13]
+    M --> N[Run outcome → adoption signal + decision_audit]
+    N --> O{Stage 12 Loop A/B running?}
+    O -->|Yes| P[Compare variant A vs B 90d]
+    P --> Q{B beats A by >=epsilon + CI excludes 0?}
+    Q -->|Yes| R[Promote B → archive A]
+    Q -->|No| S[Keep A status quo]
+    O -->|No| T[Single variant operation]
+    </pre>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- A.10 Industry Template Bootstrap — Phase 2.8 (anh's spec 2026-05-20) -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+<section class="workflow-card s-system" id="sp-industry-bootstrap">
+  <header>
+    <h3>A.10 ⭐ Industry Template Bootstrap — Phase 2.8</h3>
+    <span class="badge dept-system">System</span>
+    <span class="badge exec-live">✓ EXECUTABLE</span>
+    <span class="badge setup">L0 admin · L4 catalog</span>
+  </header>
+  <div class="purpose">
+    <strong>Mục đích:</strong> SME không tạo workflow từ canvas trắng. Khi tenant mới được provision → chọn ngành kinh doanh → 1 click bootstrap full org config (phòng ban + workflow + KPI + data schema + role permissions). Anh's spec 2026-05-20: "chọn ngành → sinh phòng ban mẫu → sinh workflow mẫu → user chỉnh".
+  </div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart TD
+    Admin[Kaori Admin onboard new tenant] --> Pick{Chọn industry<br/>retail / finance / generic_sme<br/>(8 total — 3 seeded)}
+    Pick -->|Retail| R[Retail config<br/>6 dept + 15 wf + 8 KPI + 6 schema + 5 role]
+    Pick -->|Finance| F[Finance config<br/>5 dept + 4 wf + 7 KPI + 4 schema + 5 role]
+    Pick -->|Generic SME| G[Generic SME config<br/>4 dept + 5 wf + 4 KPI + 3 schema + 4 role]
+    R --> DryRun{Dry-run preview?}
+    F --> DryRun
+    G --> DryRun
+    DryRun -->|Yes| Preview[Return counts only<br/>NO writes]
+    DryRun -->|No| Idempotent{Prior bootstrap?}
+    Idempotent -->|Yes + force=false| Conflict[409 — already bootstrapped]
+    Idempotent -->|Yes + force=true| Drop[DROP prior bootstrap row<br/>destructive]
+    Idempotent -->|No| Clone
+    Drop --> Clone[Clone industry_department_templates<br/>→ departments table per tenant]
+    Clone --> WF[Clone industry_workflow_links<br/>→ workflows table source=template_based]
+    WF --> Audit[INSERT enterprise_industry_bootstrap<br/>UNIQUE per enterprise_id]
+    Audit --> Mode[Default enterprise_workflow_mode<br/>= simple, advanced_unlocked=true]
+    Mode --> Review[Tenant FE: hiển thị wizard<br/>"Review your org structure"]
+    Review -->|Edit per-card| Customize[POST /workflows/id/customize<br/>log workflow_customizations]
+    Customize -->|Save| Snapshot[INSERT customer_workflow_versions<br/>K-2 immutable]
+    Snapshot --> Mode2{Customization scope?}
+    Mode2 -->|Small simple| Live[Workflow LIVE immediately]
+    Mode2 -->|Medium advanced| CR_check{≥5 customizations<br/>OR schema change?}
+    CR_check -->|Yes| Suggest[System suggest:<br/>"Mở Change Request chính thức"]
+    CR_check -->|No| Live
+    Mode2 -->|Large developer| MustCR[BLOCK save<br/>required workflow_change_requests<br/>linked BA 4.2 CR-XXXX]
+    MustCR --> APPROVE{Sponsor approve?}
+    APPROVE -->|Yes| Live
+    APPROVE -->|No| Reject[Rejected — revert]
+    </pre>
+  </div>
+  <table class="steps-table">
+    <tr><th>Tier</th><th>Bảng</th><th>RLS</th><th>Mục đích</th></tr>
+    <tr><td>1. Industry</td><td><code>industry_templates</code></td><td>—</td><td>8 industries catalog (3 seeded). Platform-shared reference.</td></tr>
+    <tr><td>2. Department</td><td><code>industry_department_templates</code></td><td>—</td><td>Per-industry default depts. Cloned vào tenant.departments khi bootstrap.</td></tr>
+    <tr><td>3. Workflow</td><td><code>industry_workflow_links</code></td><td>—</td><td>M-N bridge industry × dept × workflow_template. recommendation_level (core/suggested/advanced) drive sequence.</td></tr>
+    <tr><td>3a. KPI</td><td><code>industry_kpi_templates</code></td><td>—</td><td>Per (industry, dept) KPI catalog + default threshold (warning/critical).</td></tr>
+    <tr><td>3b. Schema</td><td><code>industry_data_schema_templates</code></td><td>—</td><td>Expected data files + columns per (industry, dept).</td></tr>
+    <tr><td>3c. Role</td><td><code>industry_role_permission_templates</code></td><td>—</td><td>Per (industry, dept_type, seniority) → role + permission keys.</td></tr>
+    <tr><td>—</td><td><code>enterprise_industry_bootstrap</code></td><td>K-1</td><td>One-shot per-tenant audit + counters. UNIQUE(enterprise_id) → idempotency.</td></tr>
+    <tr><td>—</td><td><code>customer_workflow_versions</code></td><td>K-1 + K-2</td><td>Immutable snapshot history. K-2 trigger refuses UPDATE/DELETE.</td></tr>
+    <tr><td>—</td><td><code>workflow_customizations</code></td><td>K-1</td><td>Per-edit change log với edit_mode (simple/advanced/developer).</td></tr>
+    <tr><td>—</td><td><code>enterprise_workflow_mode</code></td><td>K-1</td><td>Per-tenant 3-mode flag + plan-gated unlock flags.</td></tr>
+    <tr><td>—</td><td><code>workflow_change_requests</code></td><td>K-1</td><td>Runtime CR row linked tới BA 4.2 CR Register.</td></tr>
+  </table>
+  <p style="margin-top: 10px; font-size: 12.5px;">
+    <strong>Endpoints:</strong>
+    <code>GET /industries</code> ·
+    <code>GET /industries/{id}</code> ·
+    <code>GET /industries/{id}/departments</code> ·
+    <code>GET /industries/{id}/workflows?recommendation_level=core|suggested|advanced</code> ·
+    <code>POST /enterprises/{id}/bootstrap-from-industry</code> (body: industry_id, dry_run, dept_keys_to_skip, force) ·
+    <code>GET /enterprises/{id}/bootstrap-status</code> ·
+    <code>GET /workflows/{id}/versions</code> ·
+    <code>POST /workflows/{id}/customize</code> ·
+    <code>GET /enterprises/{id}/workflow-mode</code> ·
+    <code>PATCH /enterprises/{id}/workflow-mode</code>
+  </p>
+  <p style="margin-top: 8px; font-size: 12.5px;">
+    <strong>Seed scope:</strong>
+    <span class="badge industry">retail</span> 6 dept × 15 wf × 8 KPI ·
+    <span class="badge industry">finance</span> 5 dept × 4 wf × 7 KPI ·
+    <span class="badge industry">generic_sme</span> 4 dept × 5 wf × 4 KPI.
+    F&B / Logistics / Healthcare / Manufacturing / Education <strong>defer Phase 3</strong> — seed khi customer đầu tiên thuộc industry đó ký (tránh "template chết").
+  </p>
+  <p style="margin-top: 8px; font-size: 12.5px;">
+    <strong>K-rule:</strong> K-1 RLS (mọi customer_workflow_* + enterprise_*) · K-2 immutability trigger trên customer_workflow_versions · K-12 anti-IDOR (path enterprise_id MUST = X-Enterprise-ID header) · K-13 idempotency (UNIQUE(enterprise_id) trong enterprise_industry_bootstrap; force=true để re-bootstrap destructive) · K-19 OTel tenant_id span.
+  </p>
+  <p style="margin-top: 8px; font-size: 12.5px;">
+    <strong>Refs:</strong> <code>ADR-0026</code> · <code>infrastructure/postgres/migrations/101_industry_templates.sql</code> · <code>infrastructure/postgres/migrations/102_customer_workflow_versioning.sql</code> · <code>infrastructure/postgres/migrations/103_industry_templates_seed.sql</code> · <code>services/ai-orchestrator/routers/industry_bootstrap.py</code> · <code>docs/ba/3.1_SRS_…md</code> UC-TB-01 · <code>docs/ba/4.2_Change_Request_Register.md</code>
+  </p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="phase-divider s-marketing">B. Marketing — 5 templates</div>
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+<section class="workflow-card s-marketing" id="wf-campaign">
+  <header>
+    <h3>B.1 Campaign Launch — Khởi chạy chiến dịch marketing</h3>
+    <span class="badge dept-marketing">marketing/campaign</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 3</span>
+    <span class="badge industry">general</span>
+    <span class="badge setup">~10 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Define segment → A/B test content → manager approve → send → measure ROAS.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Define segment<br/><i>read_table</i><br/>📎 Segment list CSV] --> N2[2. Draft 2 variants<br/><i>generate_narrative</i><br/>AI subject + body]
+    N2 --> N3[3. Manager approval<br/><i>approval_gate</i><br/>marketing manager]
+    N3 --> N4[4. Send campaign<br/><i>send_email</i><br/>50/50 split idempotency]
+    N4 --> N5[5. Measure ROAS<br/><i>publish_insight</i><br/>📎 Revenue attribution]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-marketing" id="wf-churn-int">
+  <header>
+    <h3>B.2 Churn Intervention — Can thiệp khách rời</h3>
+    <span class="badge dept-marketing">marketing/retention</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 3</span>
+    <span class="badge industry">saas</span>
+    <span class="badge setup">~12 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Detect churn risk → classify reason → trigger save flow → measure save rate.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Pull at-risk customers<br/><i>call_risk_detection</i><br/>9 adoption signals] --> N2[2. Classify reason<br/><i>classify_text</i><br/>pricing/feature/support/other]
+    N2 --> N3[3. Decide save offer<br/><i>if_else</i><br/>pricing→discount, feature→1-1 demo]
+    N3 --> N4[4. Send save email<br/><i>send_email</i><br/>Personalized per cluster]
+    N4 --> N5[5. Track save rate<br/><i>publish_insight</i><br/>30d cohort + promote winner]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-marketing" id="wf-vip">
+  <header>
+    <h3>B.3 VIP Onboarding — Onboarding khách VIP</h3>
+    <span class="badge dept-marketing">marketing/onboarding</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 4</span>
+    <span class="badge industry">fintech</span>
+    <span class="badge setup">~15 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> VIP detection (LTV &gt; 50M) → CSM assignment → welcome call → activation milestone tracking.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Detect VIP signup<br/><i>read_webhook</i><br/>payment LTV > 50M] --> N2[2. Create CSM task<br/><i>create_task</i><br/>SLA 24h]
+    N2 --> N3[3. Schedule welcome call<br/><i>send_email</i><br/>Calendly 30-min link]
+    N3 --> N4[4. Track activation<br/><i>rag_query</i><br/>3/5 milestones?]
+    N4 --> N5[5. Update VIP dashboard<br/><i>display_dashboard</i><br/>Sales Director tile]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-marketing" id="wf-lead-nurture">
+  <header>
+    <h3>B.4 Lead Nurture Sequence — Chuỗi nuôi dưỡng lead</h3>
+    <span class="badge dept-marketing">marketing/lead_gen</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 3</span>
+    <span class="badge industry">general</span>
+    <span class="badge setup">~8 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Lead intake → score → drip email sequence → handoff to sales when MQL.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Lead intake<br/><i>read_form_submission</i><br/>Zalo OA / FB form] --> N2[2. Score lead<br/><i>call_insight_engine</i><br/>AI 0-100 by company/industry]
+    N2 --> N3[3. Branch by score<br/><i>switch</i><br/>0-30 cold, 31-70 warm, 71+ MQL]
+    N3 --> N4[4. Drip email<br/><i>send_email</i><br/>idempotency=lead+step]
+    N4 --> N5[5. Handoff to sales<br/><i>trigger_workflow</i><br/>→ Lead Qualification]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-marketing" id="wf-ab-test">
+  <header>
+    <h3>B.5 Email A/B Test — A/B test email</h3>
+    <span class="badge dept-marketing">marketing/experiment</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 4</span>
+    <span class="badge industry">retail</span>
+    <span class="badge setup">~6 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Create variants → split audience 50/50 → send → measure → declare winner (statistical test p&lt;0.05).</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Define hypothesis<br/><i>read_form_submission</i><br/>+ success metric] --> N2[2. Generate variants<br/><i>generate_narrative</i><br/>A vs B subject/CTA/copy]
+    N2 --> N3[3. Split audience<br/><i>split</i><br/>50/50 fixed seed]
+    N3 --> N4[4. Send both<br/><i>send_email</i><br/>idempotency per variant]
+    N4 --> N5["5. Declare winner<br/><i>publish_insight</i><br/>p&lt;0.05 + auto-promote"]
+    </pre>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="phase-divider s-sales">C. Sales — 5 templates</div>
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+<section class="workflow-card s-sales" id="wf-lead-qual">
+  <header>
+    <h3>C.1 Lead Qualification — Đánh giá lead</h3>
+    <span class="badge dept-sales">sales/qualification</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 3</span>
+    <span class="badge industry">general</span>
+    <span class="badge setup">~8 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> BANT scoring (Budget/Authority/Need/Timeline) → routing to AE → first-touch follow-up.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Read lead pool<br/><i>read_table</i><br/>WHERE status=new last 24h] --> N2[2. BANT score<br/><i>call_insight_engine</i><br/>AI 0-100]
+    N2 --> N3["3. Route by score<br/><i>switch</i><br/>70+ senior, 40-70 mid, &lt;40 nurture"]
+    N3 --> N4[4. Create AE task<br/><i>create_task</i><br/>SLA 4h senior, 24h mid]
+    N4 --> N5[5. Send first-touch<br/><i>send_email</i><br/>Personalized AE intro]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-sales" id="wf-proposal">
+  <header>
+    <h3>C.2 Proposal Approval — Duyệt proposal</h3>
+    <span class="badge dept-sales">sales/approval</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 3</span>
+    <span class="badge industry">general</span>
+    <span class="badge setup">~10 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Draft → margin check → manager approval → send to customer → track signature.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Read deal data<br/><i>read_table</i><br/>📎 Deal CSV from CRM] --> N2[2. Calculate margin<br/><i>aggregate</i><br/>price-cogs/price NUMERIC]
+    N2 --> N3["3. Manager approval<br/><i>approval_gate</i><br/>margin &gt;=25% auto, else manager"]
+    N3 --> N4[4. Send proposal<br/><i>send_email</i><br/>PDF + DocuSign link]
+    N4 --> N5["5. Track signature<br/><i>publish_alert</i><br/>Alert &gt;48h chưa ký"]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-sales" id="wf-renewal">
+  <header>
+    <h3>C.3 Contract Renewal — Gia hạn hợp đồng</h3>
+    <span class="badge dept-sales">sales/renewal</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 4</span>
+    <span class="badge industry">saas</span>
+    <span class="badge setup">~12 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> 90-day pre-expiry trigger → health check → renewal proposal → close.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Detect expiry<br/><i>scheduled_trigger</i><br/>Daily 9am 60-90d before] --> N2[2. Account health check<br/><i>call_risk_detection</i><br/>9 signals green/yellow/red]
+    N2 --> N3[3. Choose play<br/><i>if_else</i><br/>green=auto, yellow=save, red=exec]
+    N3 --> N4[4. Send renewal proposal<br/><i>send_email</i><br/>Tailored per health tier]
+    N4 --> N5[5. Track close<br/><i>create_task</i><br/>AE follow-up 7d after]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-sales" id="wf-discount">
+  <header>
+    <h3>C.4 Discount Approval — Duyệt giảm giá</h3>
+    <span class="badge dept-sales">sales/approval</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 3</span>
+    <span class="badge industry">retail</span>
+    <span class="badge setup">~6 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Discount request → tiered approval (depth → role) → notify customer.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Receive request<br/><i>read_form_submission</i><br/>customer + product + pct + reason] --> N2[2. Validate ceiling<br/><i>validate</i><br/>0-50 pct]
+    N2 --> N3["3. Route by depth<br/><i>switch</i><br/>&lt;10% AE, 10-25% manager, &gt;25% director"]
+    N3 --> N4[4. Manager approval<br/><i>approval_gate</i><br/>SLA 4h, timeout=reject]
+    N4 --> N5[5. Notify customer<br/><i>send_email</i><br/>New pricing]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-sales" id="wf-pipeline-review">
+  <header>
+    <h3>C.5 Pipeline Review — Review pipeline</h3>
+    <span class="badge dept-sales">sales/reporting</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 3</span>
+    <span class="badge industry">general</span>
+    <span class="badge setup">~5 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Weekly pipeline aggregation → forecast → manager review → action items.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Pull pipeline<br/><i>read_table</i><br/>WHERE stage NOT IN won,lost] --> N2[2. Aggregate by stage<br/><i>aggregate</i><br/>count + sum amount]
+    N2 --> N3[3. Forecast close<br/><i>call_forecasting</i><br/>30-day Prophet]
+    N3 --> N4[4. Generate narrative<br/><i>generate_narrative</i><br/>Executive summary Monday]
+    N4 --> N5[5. Publish to dashboard<br/><i>display_dashboard</i><br/>Sales Director tile]
+    </pre>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="phase-divider s-cs">D. Customer Service — 5 templates</div>
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+<section class="workflow-card s-cs" id="wf-ticket">
+  <header>
+    <h3>D.1 Ticket Triage — Phân loại ticket</h3>
+    <span class="badge dept-cs">customer_service/triage</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 3</span>
+    <span class="badge industry">general</span>
+    <span class="badge setup">~8 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Inbound ticket → AI classify → priority routing → SLA timer.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Read inbound ticket<br/><i>read_email</i><br/>email + Zalo chat] --> N2[2. Classify category<br/><i>classify_text</i><br/>billing/tech/sales/refund]
+    N2 --> N3[3. Set priority<br/><i>switch</i><br/>Critical VIP+outage, High refund, Mid default]
+    N3 --> N4[4. Create ticket<br/><i>create_task</i><br/>Tier-1 agent assignment]
+    N4 --> N5[5. Start SLA timer<br/><i>publish_alert</i><br/>Crit 1h, High 4h, Mid 24h]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-cs" id="wf-sla">
+  <header>
+    <h3>D.2 SLA Escalation — Escalate khi quá SLA</h3>
+    <span class="badge dept-cs">customer_service/escalation</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 4</span>
+    <span class="badge industry">general</span>
+    <span class="badge setup">~5 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Monitor SLA → escalate to tier-2 → notify manager → re-assign.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Check SLA breach<br/><i>scheduled_trigger</i><br/>Every 15min] --> N2[2. Filter breaches<br/><i>filter</i><br/>created + sla_window < now]
+    N2 --> N3[3. Notify tier-2<br/><i>send_chat_message</i><br/>Slack/Telegram + manager]
+    N3 --> N4[4. Re-assign<br/><i>update_record</i><br/>tier_2_pool + escalated_at]
+    N4 --> N5[5. Log incident<br/><i>log</i><br/>Post-mortem analysis]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-cs" id="wf-nps">
+  <header>
+    <h3>D.3 NPS Follow-up — Follow-up NPS</h3>
+    <span class="badge dept-cs">customer_service/feedback</span>
+    <span class="badge exec-live">✓ EXECUTABLE — all 5 nodes ship after wave 2b</span>
+    <span class="badge industry">saas</span>
+    <span class="badge setup">~7 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> NPS survey response → categorize → promoter outreach / detractor save.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Read NPS response<br/><i>read_form_submission</i><br/>score 0-10] --> N2[2. Categorize<br/><i>if_else</i><br/>9-10 promoter, 7-8 passive, 0-6 detractor]
+    N2 --> N3[3. Extract reason<br/><i>extract_entities</i><br/>NER on comment]
+    N3 --> N4[4. Send response<br/><i>send_email</i><br/>Promoter=referral, Detractor=CSM call]
+    N4 --> N5[5. Update CRM record<br/><i>update_record</i><br/>last_nps + nps_updated_at]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-cs" id="wf-refund">
+  <header>
+    <h3>D.4 Refund Approval — Duyệt hoàn tiền</h3>
+    <span class="badge dept-cs">customer_service/approval</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 3</span>
+    <span class="badge industry">retail</span>
+    <span class="badge setup">~6 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Refund request → policy check → manager approval (if needed) → process via payment API.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Read refund request<br/><i>read_form_submission</i><br/>order + reason + amount] --> N2["2. Validate policy<br/><i>validate</i><br/>&lt;30 days + valid reason"]
+    N2 --> N3["3. Check threshold<br/><i>if_else</i><br/>&lt;500K auto, &gt;=500K manager"]
+    N3 --> N4[4. Manager approval<br/><i>approval_gate</i><br/>SLA 24h, timeout=escalate]
+    N4 --> N5[5. Process refund<br/><i>call_api</i><br/>POST /payment/refund saga compensation]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-cs" id="wf-churn-save">
+  <header>
+    <h3>D.5 Churn Save — Cứu khách rời</h3>
+    <span class="badge dept-cs">customer_service/retention</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 3</span>
+    <span class="badge industry">saas</span>
+    <span class="badge setup">~10 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Cancellation request → reason capture → save offer → exec escalation if VIP.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Receive cancellation<br/><i>read_form_submission</i><br/>Portal Settings cancel form] --> N2[2. Classify reason<br/><i>classify_text</i><br/>pricing/feature/support/business]
+    N2 --> N3["3. Check VIP<br/><i>if_else</i><br/>LTV &gt;100M exec-led, else standard"]
+    N3 --> N4[4. Send save offer<br/><i>send_email</i><br/>Per cluster + VIP exec personalized]
+    N4 --> N5[5. Track save outcome<br/><i>publish_insight</i><br/>30d save rate per cluster]
+    </pre>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="phase-divider s-warehouse">E. Warehouse — 5 templates</div>
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+<section class="workflow-card s-warehouse" id="wf-restock">
+  <header>
+    <h3>E.1 Inventory Restock — Nhập kho khi sắp hết</h3>
+    <span class="badge dept-warehouse">warehouse/restock</span>
+    <span class="badge exec-live">✓ EXECUTABLE — all 5 nodes ship after wave 2b</span>
+    <span class="badge industry">retail</span>
+    <span class="badge setup">~10 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Daily stock check → low-stock detection → auto-PO → vendor notification.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Read inventory<br/><i>read_table</i><br/>stock < reorder_threshold] --> N2[2. Aggregate by SKU<br/><i>aggregate</i><br/>sum stock per warehouse]
+    N2 --> N3[3. Generate PO draft<br/><i>generate_narrative</i><br/>AI PO text + qty]
+    N3 --> N4["4. Manager approval<br/><i>approval_gate</i><br/>If total &gt;50M VND"]
+    N4 --> N5[5. Send PO to vendor<br/><i>send_email</i><br/>PDF + idempotency=po_number]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-warehouse" id="wf-supplier-audit">
+  <header>
+    <h3>E.2 Supplier Audit — Audit supplier định kỳ</h3>
+    <span class="badge dept-warehouse">warehouse/audit</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 4</span>
+    <span class="badge industry">manufacturing</span>
+    <span class="badge setup">~8 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Quarterly schedule → pull supplier performance → score → flag underperformers.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Quarterly trigger<br/><i>scheduled_trigger</i><br/>Q1/Q2/Q3/Q4 first day] --> N2[2. Pull supplier metrics<br/><i>read_table</i><br/>on_time + defect + response]
+    N2 --> N3[3. Score supplier<br/><i>call_insight_engine</i><br/>AI 0-100]
+    N3 --> N4["4. Flag underperformers<br/><i>filter</i><br/>score &lt;60 → review queue"]
+    N4 --> N5[5. Notify procurement<br/><i>send_chat_message</i><br/>Slack underperformer list]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-warehouse" id="wf-qc">
+  <header>
+    <h3>E.3 Quality Check — QC nhận hàng</h3>
+    <span class="badge dept-warehouse">warehouse/quality</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 4</span>
+    <span class="badge industry">manufacturing</span>
+    <span class="badge setup">~7 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Goods receipt → sample inspection → defect rate → accept / reject / partial.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Receive goods<br/><i>read_form_submission</i><br/>QC sample + defects] --> N2[2. Calculate defect rate<br/><i>transform</i><br/>defects/sample NUMERIC]
+    N2 --> N3["3. Decide action<br/><i>switch</i><br/>&lt;1% accept, 1-5% partial, &gt;5% reject"]
+    N3 --> N4[4. Update inventory<br/><i>save_to_database</i><br/>accepted/quarantined]
+    N4 --> N5[5. Notify supplier<br/><i>send_email</i><br/>QC result + return claim if reject]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-warehouse" id="wf-shipment">
+  <header>
+    <h3>E.4 Shipment Dispatch — Điều phối giao hàng</h3>
+    <span class="badge dept-warehouse">warehouse/logistics</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 3</span>
+    <span class="badge industry">logistics</span>
+    <span class="badge setup">~8 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Order ready → carrier selection → label generation → handoff → track.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Read ready orders<br/><i>read_table</i><br/>pack_status=ready] --> N2[2. Choose carrier<br/><i>call_recommendation_engine</i><br/>AI zone+size+cost+SLA]
+    N2 --> N3[3. Generate label<br/><i>call_api</i><br/>POST /carrier/label idempotency]
+    N3 --> N4[4. Update order status<br/><i>update_record</i><br/>shipped + tracking_no]
+    N4 --> N5[5. Notify customer<br/><i>send_email</i><br/>Tracking link]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-warehouse" id="wf-warranty">
+  <header>
+    <h3>E.5 Warranty Claim — Xử lý bảo hành</h3>
+    <span class="badge dept-warehouse">warehouse/warranty</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 3</span>
+    <span class="badge industry">retail</span>
+    <span class="badge setup">~9 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Claim intake → validate → assign technician → process → close.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Receive claim<br/><i>read_form_submission</i><br/>serial + issue + photos] --> N2[2. Validate warranty<br/><i>validate</i><br/>purchase + period]
+    N2 --> N3[3. Assign technician<br/><i>create_task</i><br/>Tech pool SLA 48h]
+    N3 --> N4[4. Track resolution<br/><i>publish_alert</i><br/>Alert >SLA]
+    N4 --> N5[5. Close claim<br/><i>send_email</i><br/>Resolution + survey]
+    </pre>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="phase-divider s-finance">F. Finance — 5 templates</div>
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+<section class="workflow-card s-finance" id="wf-invoice">
+  <header>
+    <h3>F.1 Invoice Approval — Duyệt hóa đơn</h3>
+    <span class="badge dept-finance">finance/approval</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 4</span>
+    <span class="badge industry">general</span>
+    <span class="badge setup">~10 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Invoice intake → 3-way match → tiered approval → payment scheduling.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Read incoming invoice<br/><i>read_email</i><br/>AP mailbox + PDF extract Stage 6] --> N2[2. 3-way match<br/><i>join</i><br/>invoice + PO + GR]
+    N2 --> N3[3. Validate amounts<br/><i>validate</i><br/>±5% tolerance]
+    N3 --> N4["4. Tiered approval<br/><i>approval_gate</i><br/>&lt;10M auto, 10-100M manager, &gt;100M CFO"]
+    N4 --> N5[5. Schedule payment<br/><i>create_task</i><br/>due_date = invoice + net_terms]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-finance" id="wf-expense">
+  <header>
+    <h3>F.2 Expense Reimbursement — Hoàn ứng chi phí</h3>
+    <span class="badge dept-finance">finance/approval</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 3</span>
+    <span class="badge industry">general</span>
+    <span class="badge setup">~6 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Submit expense → policy check → manager approval → reimburse.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Submit expense<br/><i>read_form_submission</i><br/>category + amount + receipt] --> N2[2. Policy check<br/><i>validate</i><br/>per-category caps]
+    N2 --> N3[3. Classify category<br/><i>classify_text</i><br/>AI travel/meal/supplies]
+    N3 --> N4["4. Manager approval<br/><i>approval_gate</i><br/>&lt;500K auto, 500K-5M manager, &gt;5M director"]
+    N4 --> N5[5. Reimburse<br/><i>call_api</i><br/>POST /payroll/reimburse idempotency]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-finance" id="wf-close">
+  <header>
+    <h3>F.3 Monthly Close — Đóng sổ tháng</h3>
+    <span class="badge dept-finance">finance/reporting</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 4</span>
+    <span class="badge industry">general</span>
+    <span class="badge setup">~15 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Trigger month-end → aggregate ledger → reconcile bank → publish P&amp;L + BS + CF to CFO.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Month-end trigger<br/><i>scheduled_trigger</i><br/>Last biz day 18:00 ICT] --> N2[2. Aggregate GL<br/><i>aggregate</i><br/>account+cost_center+month NUMERIC]
+    N2 --> N3[3. Reconcile bank<br/><i>join</i><br/>GL ⋈ bank_statements flag mismatch]
+    N3 --> N4[4. Generate close report<br/><i>generate_report</i><br/>PDF P&L + BS + CF]
+    N4 --> N5[5. Publish to CFO<br/><i>send_email</i><br/>CFO + Board + attached PDF]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-finance" id="wf-vendor-pay">
+  <header>
+    <h3>F.4 Vendor Payment — Thanh toán nhà cung cấp</h3>
+    <span class="badge dept-finance">finance/payment</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 3</span>
+    <span class="badge industry">general</span>
+    <span class="badge setup">~10 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Payment due → batch invoices per vendor → CFO approval → process → reconcile AP ledger.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Pull due payments<br/><i>read_table</i><br/>due 0-7d + status=approved] --> N2[2. Batch by vendor<br/><i>aggregate</i><br/>sum per vendor]
+    N2 --> N3[3. CFO batch approval<br/><i>approval_gate</i><br/>Single approval all]
+    N3 --> N4[4. Process payments<br/><i>call_api</i><br/>POST /bank/payment-batch saga compensation]
+    N4 --> N5[5. Update AP ledger<br/><i>save_to_database</i><br/>ap_payments + invoices.paid_at]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-finance" id="wf-budget">
+  <header>
+    <h3>F.5 Budget Approval — Duyệt ngân sách</h3>
+    <span class="badge dept-finance">finance/approval</span>
+    <span class="badge exec-live">✓ EXECUTABLE — 5/5 nodes post wave 3</span>
+    <span class="badge industry">general</span>
+    <span class="badge setup">~12 min setup</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Annual budget submission → finance review → board approval → publish.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart LR
+    N1[1. Submit budget<br/><i>read_form_submission</i><br/>Dept heads line items] --> N2[2. Validate format<br/><i>validate</i><br/>schema + variance vs prior year]
+    N2 --> N3[3. Finance review<br/><i>approval_gate</i><br/>Finance Director + comments]
+    N3 --> N4[4. Board approval<br/><i>approval_gate</i><br/>Board vote SLA 14d]
+    N4 --> N5[5. Publish budget<br/><i>publish_insight</i><br/>Insight Hub + dept heads notif]
+    </pre>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="phase-divider s-aux">G. Auxiliary flows</div>
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+<section class="workflow-card s-aux" id="wf-sso-flow">
+  <header>
+    <h3>G.1 SSO Google login — end-to-end</h3>
+    <span class="badge dept-system">auth/sso</span>
+    <span class="badge exec-live">✓ EXECUTABLE</span>
+    <span class="badge industry">live 2026-05-18</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Google OAuth 2.0 — no password. RS256 JWT private key stays in auth-service. Tested với <code>nguyentruongan25051997@gmail.com</code>.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+sequenceDiagram
+    participant U as User
+    participant FE as Frontend
+    participant AI as ai-orchestrator
+    participant G as Google
+    participant AUTH as auth-service Java
+    U->>FE: Click Sign in with Google
+    FE->>AI: GET /p2/auth/sso/google/start?return_url
+    AI->>AI: state_token + INSERT sso_oauth_state TTL 10min
+    AI->>FE: Google authorization URL
+    FE->>U: Redirect to Google
+    U->>G: Authenticate + consent
+    G->>AI: GET /callback?code+state
+    AI->>AI: Verify state + exchange code → id_token
+    AI->>AI: Lookup sso_identities by (provider, sub)
+    AI->>AI: Generate sso_code TTL 60s
+    AI->>FE: Redirect return_url?sso_code=X
+    FE->>AUTH: POST /sso/exchange {sso_code}
+    AUTH->>AI: POST /exchange-info X-Internal-Service-Token
+    AI->>AI: Validate code + mark consumed
+    AI->>AUTH: user_id + enterprise_id + sso_identity_id
+    AUTH->>AUTH: Generate RS256 JWT
+    AUTH->>FE: JWT
+    FE->>U: Logged-in state
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-aux" id="wf-mfa-flow">
+  <header>
+    <h3>G.2 MFA TOTP — enroll + verify</h3>
+    <span class="badge dept-system">auth/mfa</span>
+    <span class="badge exec-live">✓ EXECUTABLE</span>
+    <span class="badge industry">mig 074</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> RFC 6238 TOTP HMAC-SHA1 30s 6 digits. Wire format identical Java <code>TotpService</code>. K-18 Vault-resolved.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart TD
+    subgraph Enroll
+      A1[POST /mfa/enroll] --> A2[secrets.token_bytes 20B]
+      A2 --> A3[AES-256-GCM encrypt KAORI_MFA_KEY<br/>Vault prod / env dev fallback K-18]
+      A3 --> A4[Wire: base64 IV+ciphertext]
+      A4 --> A5[INSERT user_mfa_secrets]
+      A5 --> A6[Return otpauth URI]
+      A6 --> A7[FE render QR code]
+      A7 --> A8[User scan Google Authenticator]
+    end
+    subgraph Verify
+      B1[User enter 6-digit code] --> B2[POST /mfa/verify]
+      B2 --> B3[Decrypt stored secret]
+      B3 --> B4[totp_code drift ±30s window]
+      B4 --> B5{Match?}
+      B5 -->|Yes| B6[mfa_enabled=true]
+      B5 -->|No| B7[Rate limit 5/min, 15min lock after 10]
+    end
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-aux" id="wf-pm-session">
+  <header>
+    <h3>G.3 PM session reconstruction — event → case → anomaly</h3>
+    <span class="badge dept-system">process_mining</span>
+    <span class="badge exec-partial">~ PARTIAL — registration ship; cron pending TEMPORAL_ENABLE_WORKER</span>
+    <span class="badge industry">P2-S13/S14</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Connector poll events → infer cases by correlation → run anomaly detectors + miners → publish dashboard.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart TD
+    A[Connector poll: Gmail/Outlook/Calendar/Slack/SharePoint/Webhook] --> B[Emit Redis Stream s/tenant/pm.events.raw]
+    B --> C[Bronze INSERT raw event]
+    C --> D[Temporal worker: infer_cases by case_id correlation]
+    D --> E{Per case sequence}
+    E --> F1[detect_approval_bypass]
+    E --> F2[detect_rework_loops]
+    E --> F3[score_bypass_risk]
+    E --> F4[analyze_conformance LCS]
+    E --> F5[token_replay Petri-net]
+    E --> F6[Inductive Miner ProcessTree]
+    E --> F7[Fuzzy Miner edge-weighted]
+    F1 --> G[Aggregate anomalies per session]
+    F2 --> G
+    F3 --> G
+    F4 --> G
+    F5 --> G
+    F6 --> G
+    F7 --> G
+    G --> H[GET /process-mining/sessions/id/anomalies]
+    H --> I[FE Process Mining dashboard]
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-aux" id="wf-adoption-loop">
+  <header>
+    <h3>G.4 Adoption signals loop — health → intervention → outcome</h3>
+    <span class="badge dept-system">adoption</span>
+    <span class="badge exec-live">✓ EXECUTABLE — Temporal workflow ship 2026-05-19 (commit f8ca879)</span>
+    <span class="badge industry">P15-S9 + commit 3</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> 9 adoption signals compute health 0-100 → intervention engine suggest actions → tracker measure outcome → 7d health re-check (close loop).</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart TD
+    A[Cron 10min: read Redis adoption.raw] --> B[Per tenant: compute_health events]
+    B --> C[9 signals 0..1]
+    C --> C1[login_freq]
+    C --> C2[feature_breadth]
+    C --> C3[decision_rate]
+    C --> C4[integration_adoption]
+    C --> C5[workflow_runs]
+    C --> C6[report_generation]
+    C --> C7[alert_response]
+    C --> C8[framework_switch]
+    C --> C9[multi_user]
+    C1 --> D[Weighted aggregate health_score 0-100]
+    C2 --> D
+    C3 --> D
+    C4 --> D
+    C5 --> D
+    C6 --> D
+    C7 --> D
+    C8 --> D
+    C9 --> D
+    D --> E{Health trend?}
+    E -->|"Drop >threshold"| F[intervention_engine.suggest]
+    E -->|Stable/up| Z[No action]
+    F --> G[Trigger POST /adoption/interventions/trigger]
+    G --> H[Execute: email / CS task / feature spotlight]
+    H --> I[INSERT tenant_interventions]
+    I --> J[7-day later snapshot]
+    J --> K[Compute lift vs baseline]
+    K --> L[Cohort comparison vs peer benchmark]
+    L --> M[Feedback → adjust intervention_engine weights]
+    M -.-> F
+    </pre>
+  </div>
+</section>
+
+<section class="workflow-card s-system" id="exec-status-summary">
+  <header>
+    <h3>Executable Status Summary — 39 workflows (current state, HEAD e58c1d5)</h3>
+    <span class="badge dept-system">Summary</span>
+  </header>
+  <div class="purpose"><strong>Trạng thái hiện tại (post Phase 2.7 + chaos harness, 2026-05-20):</strong> Audit 2026-05-19 phát hiện 25/39 SEED-only. 5 waves đã ship <strong>45/45 catalog executors (100% coverage)</strong>. <strong>ALL 25 business templates fully LIVE 5/5 nodes</strong> — 0 SEED remaining. 7 PARTIAL items còn lại đều ở system pipelines + 2 auxiliary cron flows (chờ Temporal cluster activation per runbook). 39-workflow totals: <strong>32 LIVE (82%) / 7 PARTIAL (18%) / 0 SEED (0%)</strong>. <em>Lịch sử burndown</em>: Pre-audit 5/9/25 → W1+2a 7/11/21 → W2b 9/16/14 → W3 24/12/3 → W4 32/7/0 → W5 (catalog coverage flips 76% → 100%, templates unchanged).</div>
+  <table style="width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 10px;">
+    <tr style="background: #f1f5f9;">
+      <th style="padding: 8px; text-align: left; border-bottom: 2px solid #cbd5e1;">Group</th>
+      <th style="padding: 8px; text-align: center; border-bottom: 2px solid #cbd5e1;">✓ Live</th>
+      <th style="padding: 8px; text-align: center; border-bottom: 2px solid #cbd5e1;">~ Partial</th>
+      <th style="padding: 8px; text-align: center; border-bottom: 2px solid #cbd5e1;">✗ Seed only</th>
+      <th style="padding: 8px; text-align: left; border-bottom: 2px solid #cbd5e1;">Note</th>
+    </tr>
+    <tr><td style="padding: 6px;">A. System pipelines (9)</td><td style="text-align: center; color: #15803d; font-weight: 700;">4</td><td style="text-align: center; color: #b45309; font-weight: 700;">5</td><td style="text-align: center; color: #991b1b; font-weight: 700;">0</td><td style="padding: 6px; font-size: 11px;">A.2 Upload, A.5 Stage 6 KE, A.6 Memory, A.9 WF Lifecycle = LIVE; others = orchestration partials</td></tr>
+    <tr><td style="padding: 6px;">B. Marketing templates (5)</td><td style="text-align: center; color: #15803d; font-weight: 700;">5</td><td style="text-align: center; color: #b45309; font-weight: 700;">0</td><td style="text-align: center; color: #991b1b; font-weight: 700;">0</td><td style="padding: 6px; font-size: 11px;">All 5 LIVE — B.3 + B.5 closed post wave 4 (read_webhook + split)</td></tr>
+    <tr><td style="padding: 6px;">C. Sales templates (5)</td><td style="text-align: center; color: #15803d; font-weight: 700;">5</td><td style="text-align: center; color: #b45309; font-weight: 700;">0</td><td style="text-align: center; color: #991b1b; font-weight: 700;">0</td><td style="padding: 6px; font-size: 11px;">All 5 LIVE — C.3 closed post wave 4 (scheduled_trigger)</td></tr>
+    <tr><td style="padding: 6px;">D. Customer Service (5)</td><td style="text-align: center; color: #15803d; font-weight: 700;">5</td><td style="text-align: center; color: #b45309; font-weight: 700;">0</td><td style="text-align: center; color: #991b1b; font-weight: 700;">0</td><td style="padding: 6px; font-size: 11px;">All 5 LIVE — D.2 closed (scheduled_trigger/filter/send_chat_message/log)</td></tr>
+    <tr><td style="padding: 6px;">E. Warehouse (5)</td><td style="text-align: center; color: #15803d; font-weight: 700;">5</td><td style="text-align: center; color: #b45309; font-weight: 700;">0</td><td style="text-align: center; color: #991b1b; font-weight: 700;">0</td><td style="padding: 6px; font-size: 11px;">All 5 LIVE — E.2 (scheduled_trigger/filter/send_chat_message) + E.3 (transform)</td></tr>
+    <tr><td style="padding: 6px;">F. Finance (5)</td><td style="text-align: center; color: #15803d; font-weight: 700;">5</td><td style="text-align: center; color: #b45309; font-weight: 700;">0</td><td style="text-align: center; color: #991b1b; font-weight: 700;">0</td><td style="padding: 6px; font-size: 11px;">All 5 LIVE — F.1 (join) + F.3 (scheduled_trigger + join)</td></tr>
+    <tr><td style="padding: 6px;">G. Auxiliary (5)</td><td style="text-align: center; color: #15803d; font-weight: 700;">3</td><td style="text-align: center; color: #b45309; font-weight: 700;">2</td><td style="text-align: center; color: #991b1b; font-weight: 700;">0</td><td style="padding: 6px; font-size: 11px;">SSO/MFA/Adoption-cron LIVE; PM session + CFO digest PARTIAL (TEMPORAL flag)</td></tr>
+    <tr style="background: #f1f5f9; font-weight: 700;"><td style="padding: 8px;">TOTAL 39</td><td style="text-align: center; padding: 8px; color: #15803d;">32 (82%)</td><td style="text-align: center; padding: 8px; color: #b45309;">7 (18%)</td><td style="text-align: center; padding: 8px; color: #991b1b;">0 (0%)</td><td style="padding: 6px; font-size: 11px;">Pre: 5/9/25 → W1+2a: 7/11/21 → W2b: 9/16/14 → W3: 24/12/3 → <b>W4: 32/7/0</b></td></tr>
+  </table>
+  <p style="margin-top: 12px; font-size: 12px; color: #52606d;"><strong>Closeout status (post wave 5):</strong> all 25 mig 069 business templates fully executable end-to-end. <strong>Registry coverage 45/45 (100%)</strong> — every catalog node type has an executor. Wave 5 added the final 11: <code>sort</code> + <code>merge</code> + <code>deduplicate</code> (pure list ops), <code>enrich</code> (master lookup left-join), <code>wait_for_condition</code> (polling read until match/timeout), <code>read_api</code> / <code>read_calendar</code> / <code>read_chat</code> / <code>read_file_upload</code> (data input wrappers), <code>send_sms</code> (chat outbox channel='sms'), <code>export_file</code> (queue render+MinIO). Mig 093: workflow_calendar_intake + workflow_chat_intake + workflow_export_files. Future templates can compose any catalog node without further executor work.</p>
+  <div style="margin-top: 16px; padding: 14px 16px; background: #f1f5f9; border-left: 4px solid #1e293b; border-radius: 4px; font-size: 12.5px;">
+    <strong>Phase 2.6 — Orchestration Hardening (anh's architectural review 2026-05-19):</strong>
+    <br><b>9 OF 12 ITEMS SHIPPED</b> (+151 tests, 2128 → 2279 across 8 commits):
+    <ul style="margin: 8px 0 0 18px; line-height: 1.6;">
+      <li>✅ <strong>P0.1 Event sourcing</strong> — mig 094 <code>workflow_events</code> append-only + 15 event types + immutability triggers + per-run sequence_no. Runner emits at every state change. <code>c4eb59d</code></li>
+      <li>✅ <strong>P0.2 State machine</strong> — explicit ALLOWED_WORKFLOW + ALLOWED_NODE graph. Terminal states frozen. Illegal transitions raise StateTransitionDenied. <code>1b3e9ae</code></li>
+      <li>✅ <strong>P0.3 Persistent idempotency</strong> — mig 095 <code>workflow_idempotency_records</code>. call_api tiers in-process → persistent → HTTP. Worker restart no longer re-fires POST. <code>e68f841</code></li>
+      <li>✅ <strong>P0.4 Replay harness</strong> — ReplayHarness + diff comparator + pytest assertion helper. Drift detection + deterministic test invariant. <code>8d54230</code></li>
+      <li>✅ <strong>P1.1 Module split</strong> — runner → state_store (CRUD) + state_machine (transitions) + runner (orchestration only). Public surface unchanged. <code>54caed7</code></li>
+      <li>✅ <strong>P1.2 Worker queue routing</strong> — 3 queues (critical-finance / default / low-priority). Rule chain: finance approval → critical; AI nodes → low-priority; default fallback. K8s manifest activation per worker pool. <code>6ddb099</code></li>
+      <li>⏳ <strong>P1.3 Gold incremental</strong> — DEFER (needs Kafka+Debezium+ClickHouse). Design in <code>PHASE_2_6_DEFER_QUEUE.md</code>.</li>
+      <li>✅ <strong>P1.4 Compensation runtime</strong> — 4 builtin handlers (send_retraction_email / cancel_approval_request / delete_task / retract_alert). Walks completed external nodes in reverse on failure. <code>54caed7</code></li>
+      <li>⏳ <strong>P2.1 ClickHouse cutover</strong> — DEFER (needs ClickHouse cluster, helm chart exists). Design in defer-queue.</li>
+      <li>✅ <strong>P2.2 Lifecycle FSM</strong> — mig 096 <code>lifecycle_state_transitions</code>. 9 seeded transitions. <code>churned → lead</code> requires win_back event + MANAGER role + is_recovery=true. <code>6ddb099</code></li>
+      <li>✅ <strong>P2.3 Edge taxonomy</strong> — mig 096 <code>ontology_edge_types</code>. 11 v0 edges seeded. Free-form edges blocked (Neo4j adapter validates before INSERT). <code>6ddb099</code></li>
+      <li>⏳ <strong>P2.4 Streaming pipeline</strong> — DEFER (needs Flink/ksqlDB). Design in defer-queue.</li>
+    </ul>
+    <b>Closeout:</b> 9 code-only items shipped today. 3 infra-gated items fully designed for "drop-in when cluster provisioned" activation. Per anh's review §6: "distributed operational correctness, not AI quality" — now systematically addressed at every layer the runtime touches.
+  </div>
+  <div style="margin-top: 12px; padding: 14px 16px; background: #ecfeff; border-left: 4px solid #0e7490; border-radius: 4px; font-size: 12.5px;">
+    <strong>Phase 2.7 — Production-Readiness Governance Layer (anh's 3-dim review 2026-05-19):</strong>
+    <br><b>5 OF 5 ITEMS SHIPPED</b> (+71 tests, 2279 → 2350 across 2 commits):
+    <ul style="margin: 8px 0 0 18px; line-height: 1.6;">
+      <li>✅ <strong>P1 Data lineage tracking</strong> — mig 097 <code>data_lineage_edges</code> with 12 ObjectKind enum (bronze_file → silver_row → ontology_entity → ai_decision → workflow_run → insight/alert/task → document_chunk → embedding_vector). <code>shared/lineage.py</code> record_edge/walk_upstream/walk_downstream (BFS + cycle detection + depth/node caps). 2 endpoints <code>GET /lineage/{kind}/{id}/{upstream,downstream}</code>. <code>011965b</code></li>
+      <li>✅ <strong>P1 DLQ recovery console</strong> — <code>routers/dlq_console.py</code> unifies 5 failure sources (Kafka DLQ + Redis stream DLQ + workflow_run failed + idempotency expired + compensation logs). Admin endpoints <code>GET /admin/dlq</code> paginated + <code>POST /admin/dlq/{source}/{id}/{retry,replay,requeue,discard}</code>. BackgroundTasks for non-blocking replay. Admin-role-gated. <code>011965b</code></li>
+      <li>✅ <strong>P3 AI governance audit</strong> — mig 098 <code>ai_decision_audit</code> with conditional immutability trigger (only override fields mutable; DELETE blocked). Captures model_version + model_provider + prompt_hash + context_refs + confidence + output_validated + consent_external + pii_redacted + cost_cents. <code>shared/ai_governance.py</code>: hash_prompt (SHA-256 + 1MB truncate) + record_ai_call + record_human_override + list_for_tenant. <code>5e750b2</code></li>
+      <li>✅ <strong>P3 Declarative policy engine</strong> — mig 099 <code>policy_rules</code> (scope global/tenant/role + priority + condition_json + action allow/deny/require_approval/rate_limit/audit). Seeded 3 K-rule conversions: k4_consent_external_required + finance_invoice_cfo_threshold + mfa_required_super_admin. <code>shared/policy_engine.py</code>: evaluate_condition (==/!=/&gt;/&lt;/in/notin + and/or compound) + evaluate (priority order, first match wins, scope-filtered). 60s TTL cache. <code>5e750b2</code></li>
+      <li>✅ <strong>P2 Tenant quotas</strong> — mig 099 <code>tenant_quotas</code> + <code>tenant_quota_usage</code>. 5 default quota types seeded per enterprise (llm_tokens_external/local + workflow_concurrent + api_calls + export_files). <code>shared/tenant_quotas.py</code>: _window_bounds pure math (per_minute/hour/day/month/rolling + December rollover) + check_and_consume atomic SELECT FOR UPDATE + UPSERT (rolls back on QuotaExceeded BEFORE commit). fail_open_if_unconfigured flag for graceful degradation. <code>5e750b2</code></li>
+    </ul>
+    <b>Closeout:</b> 5 of 5 shipped, 0 deferred. Production-readiness gap closed for governance/observability layer per anh's 2026-05-19 3-dim review (Data Pipeline / Distributed Runtime / Observability-Governance). K-rules now declaratively enforced; every LLM call audited; every tenant quota'd; every data object lineage-traceable; every failure operationally recoverable.
+  </div>
+</section>
+
+<section class="workflow-card s-aux" id="wf-cfo-digest">
+  <header>
+    <h3>G.5 CFO quarterly digest (NOV-RPT-020)</h3>
+    <span class="badge dept-finance">finance/digest</span>
+    <span class="badge exec-partial">~ PARTIAL — Temporal workflow ship; cron schedule needs CLI register</span>
+    <span class="badge industry">P15-S12</span>
+  </header>
+  <div class="purpose"><strong>Mục đích:</strong> Quarterly CFO digest: revenue protected + cost avoided + decisions automated + top 3 wins / issues. Markdown → PDF → email.</div>
+  <div class="flow-diagram">
+    <pre class="mermaid">
+flowchart TD
+    A[Cron quarterly / admin POST /economics/cfo-digest] --> B[Aggregate sources]
+    B --> B1[enterprise_monthly_billing]
+    B --> B2[NOV signals revenue_at_risk]
+    B --> B3[tenant_interventions outcomes]
+    B --> B4[decision_audit_log automated count]
+    B1 --> C[Compute sections]
+    B2 --> C
+    B3 --> C
+    B4 --> C
+    C --> D1[Revenue protected NSM]
+    C --> D2[Cost avoided]
+    C --> D3[Decisions automated count]
+    C --> D4[Top 3 wins]
+    C --> D5[Top 3 issues]
+    D1 --> E[Compose markdown]
+    D2 --> E
+    D3 --> E
+    D4 --> E
+    D5 --> E
+    E --> F[Render PDF via notification-service template]
+    F --> G[Email CFO + Manager roles]
+    </pre>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'neutral',
+  themeVariables: {
+    fontFamily: 'ui-monospace, "SF Mono", Consolas, monospace',
+    fontSize: '13px',
+    primaryColor: '#fff5f5',
+    primaryBorderColor: '#d64545',
+    primaryTextColor: '#1f2933',
+    lineColor: '#52606d',
+  },
+  flowchart: { curve: 'basis', useMaxWidth: true, htmlLabels: true },
+  sequence:  { useMaxWidth: true, mirrorActors: false },
+});
+
+// Sidebar active state on scroll
+const cards = document.querySelectorAll('.workflow-card');
+const navLinks = document.querySelectorAll('nav a');
+function updateActive() {
+  let current = '';
+  cards.forEach(card => {
+    const top = card.getBoundingClientRect().top;
+    if (top < 200) current = card.id;
+  });
+  navLinks.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+  });
+}
+window.addEventListener('scroll', updateActive, { passive: true });
+updateActive();
+
+// Search filter
+const search = document.getElementById('search');
+const dividers = document.querySelectorAll('.phase-divider');
+
+search.addEventListener('input', e => {
+  const q = e.target.value.toLowerCase().trim();
+  // Filter sidebar nav links (each <li> wraps an <a>).
+  navLinks.forEach(link => {
+    const text = link.textContent.toLowerCase();
+    const li = link.parentElement;
+    li.style.display = !q || text.includes(q) ? '' : 'none';
+  });
+  // Filter workflow cards.
+  cards.forEach(card => {
+    if (!q) { card.classList.remove('hidden'); return; }
+    const text = card.textContent.toLowerCase();
+    card.classList.toggle('hidden', !text.includes(q));
+  });
+  // Hide phase-divider when no descendant card matches. Each divider
+  // is followed by one or more workflow-card siblings until the next
+  // divider — count visible siblings in that range.
+  if (!q) {
+    dividers.forEach(d => d.classList.remove('hidden'));
+    return;
+  }
+  dividers.forEach(divider => {
+    let visibleCount = 0;
+    let sibling = divider.nextElementSibling;
+    while (sibling && !sibling.classList.contains('phase-divider')) {
+      if (sibling.classList.contains('workflow-card')
+            && !sibling.classList.contains('hidden')) {
+        visibleCount += 1;
+      }
+      sibling = sibling.nextElementSibling;
+    }
+    divider.classList.toggle('hidden', visibleCount === 0);
+  });
+});
+
+// Back-to-top button
+const _btt = document.querySelector('.back-to-top');
+if (_btt) {
+  window.addEventListener('scroll', () => {
+    _btt.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+}
+</script>
+
+<button class="back-to-top" aria-label="Scroll to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- Machine-readable workflow index for AI agents (JSON-LD-style structured data) -->
+<script type="application/json" id="workflows-index">
+{
+  "@context": "https://kaori.ai/schema/workflow-catalog/v1",
+  "version": "2026-05-20-eod3",
+  "phase": "2.8",
+  "total_workflows": 40,
+  "groups": {
+    "system_pipelines": 10,
+    "marketing": 5,
+    "sales": 5,
+    "customer_service": 5,
+    "warehouse": 5,
+    "finance": 5,
+    "auxiliary": 5
+  },
+  "workflows": [
+    {"id":"A.1","name":"Master 12-stage pipeline","dept":"system","mode":"DEVELOPER","plan_gate":"ALL","exec":"PARTIAL"},
+    {"id":"A.2","name":"Stage 1 Upload + Bronze","dept":"system","mode":"DEVELOPER","plan_gate":"ALL","exec":"LIVE"},
+    {"id":"A.3","name":"Stage 2-4 Schema/Silver/Quality","dept":"system","mode":"DEVELOPER","plan_gate":"ALL","exec":"PARTIAL"},
+    {"id":"A.4","name":"Stage 5 Ontology 7-Primitives","dept":"system","mode":"DEVELOPER","plan_gate":"ALL","exec":"PARTIAL"},
+    {"id":"A.5","name":"Stage 6 Knowledge Extraction","dept":"system","mode":"DEVELOPER","plan_gate":"ALL","exec":"LIVE"},
+    {"id":"A.6","name":"Stage 7 Memory 4-tier","dept":"system","mode":"DEVELOPER","plan_gate":"ALL","exec":"LIVE"},
+    {"id":"A.7","name":"Stage 8-9 Gold + AI Decision","dept":"system","mode":"DEVELOPER","plan_gate":"ALL","exec":"PARTIAL"},
+    {"id":"A.8","name":"Stage 10-12 Insight + Action + Output","dept":"system","mode":"DEVELOPER","plan_gate":"ALL","exec":"PARTIAL"},
+    {"id":"A.9","name":"Workflow Lifecycle","dept":"studio","mode":"DEVELOPER","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"A.10","name":"Industry Template Bootstrap","dept":"system","mode":"ADVANCED","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"B.1","name":"Campaign Launch","dept":"marketing","industry_vertical":"general","mode":"SIMPLE","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"B.2","name":"Churn Intervention","dept":"marketing","industry_vertical":"saas","mode":"ADVANCED","plan_gate":"ENT_MID","exec":"LIVE"},
+    {"id":"B.3","name":"VIP Onboarding","dept":"marketing","industry_vertical":"fintech","mode":"SIMPLE","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"B.4","name":"Lead Nurture Sequence","dept":"marketing","industry_vertical":"general","mode":"SIMPLE","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"B.5","name":"Email A/B Test","dept":"marketing","industry_vertical":"retail","mode":"ADVANCED","plan_gate":"ENT_MID","exec":"LIVE"},
+    {"id":"C.1","name":"Lead Qualification","dept":"sales","industry_vertical":"general","mode":"SIMPLE","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"C.2","name":"Proposal Approval","dept":"sales","industry_vertical":"general","mode":"SIMPLE","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"C.3","name":"Contract Renewal","dept":"sales","industry_vertical":"saas","mode":"ADVANCED","plan_gate":"ENT_MID","exec":"LIVE"},
+    {"id":"C.4","name":"Discount Approval","dept":"sales","industry_vertical":"retail","mode":"SIMPLE","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"C.5","name":"Pipeline Review","dept":"sales","industry_vertical":"general","mode":"SIMPLE","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"D.1","name":"Ticket Triage","dept":"customer_service","industry_vertical":"general","mode":"SIMPLE","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"D.2","name":"SLA Escalation","dept":"customer_service","industry_vertical":"general","mode":"ADVANCED","plan_gate":"ENT_MID","exec":"LIVE"},
+    {"id":"D.3","name":"NPS Follow-up","dept":"customer_service","industry_vertical":"saas","mode":"SIMPLE","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"D.4","name":"Refund Approval","dept":"customer_service","industry_vertical":"retail","mode":"SIMPLE","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"D.5","name":"Churn Save","dept":"customer_service","industry_vertical":"saas","mode":"ADVANCED","plan_gate":"ENT_MID","exec":"LIVE"},
+    {"id":"E.1","name":"Inventory Restock","dept":"warehouse","industry_vertical":"retail","mode":"SIMPLE","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"E.2","name":"Supplier Audit","dept":"warehouse","industry_vertical":"manufacturing","mode":"ADVANCED","plan_gate":"ENT_MID","exec":"LIVE"},
+    {"id":"E.3","name":"Quality Check","dept":"warehouse","industry_vertical":"manufacturing","mode":"SIMPLE","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"E.4","name":"Shipment Dispatch","dept":"warehouse","industry_vertical":"logistics","mode":"ADVANCED","plan_gate":"ENT_MID","exec":"LIVE"},
+    {"id":"E.5","name":"Warranty Claim","dept":"warehouse","industry_vertical":"retail","mode":"SIMPLE","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"F.1","name":"Invoice Approval","dept":"finance","industry_vertical":"general","mode":"ADVANCED","plan_gate":"ENT_MID","exec":"LIVE"},
+    {"id":"F.2","name":"Expense Reimbursement","dept":"finance","industry_vertical":"general","mode":"SIMPLE","plan_gate":"ENT_BASIC","exec":"LIVE"},
+    {"id":"F.3","name":"Monthly Close","dept":"finance","industry_vertical":"general","mode":"DEVELOPER","plan_gate":"ENT_MAX","exec":"LIVE"},
+    {"id":"F.4","name":"Vendor Payment","dept":"finance","industry_vertical":"general","mode":"ADVANCED","plan_gate":"ENT_MID","exec":"LIVE"},
+    {"id":"F.5","name":"Budget Approval","dept":"finance","industry_vertical":"general","mode":"ADVANCED","plan_gate":"ENT_MID","exec":"LIVE"},
+    {"id":"G.1","name":"SSO Google login","dept":"auth","mode":"DEVELOPER","plan_gate":"ALL","exec":"LIVE"},
+    {"id":"G.2","name":"MFA TOTP","dept":"auth","mode":"DEVELOPER","plan_gate":"ALL","exec":"LIVE"},
+    {"id":"G.3","name":"PM session reconstruction","dept":"process_mining","mode":"ADVANCED","plan_gate":"ENT_MID","exec":"PARTIAL"},
+    {"id":"G.4","name":"Adoption signals loop","dept":"adoption","mode":"DEVELOPER","plan_gate":"ALL","exec":"LIVE"},
+    {"id":"G.5","name":"CFO quarterly digest","dept":"finance","mode":"ADVANCED","plan_gate":"ENT_MID","exec":"PARTIAL"}
+  ],
+  "totals": {
+    "mode_simple": 14,
+    "mode_advanced": 14,
+    "mode_developer": 12,
+    "plan_all": 11,
+    "plan_basic": 14,
+    "plan_mid": 13,
+    "plan_max": 2,
+    "exec_live": 32,
+    "exec_partial": 7,
+    "exec_seed": 0
+  },
+  "anchor_refs": {
+    "feature_screens": "feature-screens.html",
+    "workflow_builder_ux": "workflow-builder-ux.html",
+    "shared_glossary": "kaori-shared-glossary.html"
+  }
+}
+</script>
+</body>
+</html>

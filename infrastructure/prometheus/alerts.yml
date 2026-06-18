@@ -1,0 +1,137 @@
+# Phase 2 #6 (B2 PR #5) — Prometheus alert rules.
+#
+# These rules drive the pilot Grafana dashboard's red/amber bands and the
+# (Phase 3) PagerDuty escalation. Keep severity labels consistent —
+# ``severity: warn`` rolls into Slack #ops; ``severity: page`` rolls into
+# the on-call rotation. The ``runbook_url`` annotation should point at
+# docs/runbooks/<file>.md once the matching playbook exists.
+#
+# Rule of thumb for thresholds:
+#   * warn  — operator needs to look this hour; no immediate user impact
+#   * page  — user-visible degradation likely; investigate now
+#
+# Adding a new rule:
+#   1. Append to the matching group below, OR add a new group if the
+#      domain doesn't fit any existing one.
+#   2. Set both ``for: <duration>`` and ``severity: <warn|page>``.
+#   3. Smoke with ``promtool check rules infrastructure/prometheus/alerts.yml``
+#      before pushing.
+
+groups:
+  - name: kafka
+    interval: 30s
+    rules:
+      - alert: KafkaConsumerLagWarn
+        expr: kafka_consumergroup_lag > 500
+        for: 5m
+        labels:
+          severity: warn
+          domain: pipeline
+        annotations:
+          summary: "Consumer group {{ $labels.consumergroup }} lag > 500 on {{ $labels.topic }}"
+          description: |
+            Lag is {{ $value }} for {{ $labels.consumergroup }}
+            on partition {{ $labels.partition }} of topic {{ $labels.topic }}.
+            Check downstream consumer health (ai-orchestrator pipeline_consumer
+            or data-pipeline gold consumer) and recent deploys.
+
+      - alert: KafkaConsumerLagPage
+        expr: kafka_consumergroup_lag > 5000
+        for: 5m
+        labels:
+          severity: page
+          domain: pipeline
+        annotations:
+          summary: "Consumer group {{ $labels.consumergroup }} lag > 5000 on {{ $labels.topic }}"
+          description: |
+            Lag is {{ $value }} on {{ $labels.topic }} partition
+            {{ $labels.partition }}. Pipeline events are stacking up — user
+            uploads will time out or analyse late. Page the pipeline owner.
+
+  - name: jvm
+    interval: 30s
+    rules:
+      - alert: JvmGcPauseHigh
+        expr: |
+          histogram_quantile(0.99,
+            sum by (le, application) (rate(jvm_gc_pause_seconds_bucket[5m]))
+          ) > 1
+        for: 10m
+        labels:
+          severity: warn
+          domain: jvm
+        annotations:
+          summary: "{{ $labels.application }} JVM GC pause p99 > 1s"
+          description: |
+            p99 GC pause is {{ $value | humanizeDuration }} on
+            {{ $labels.application }}. Likely heap pressure or large object
+            churn — check resource limits + recent allocations.
+
+  - name: db-pool
+    interval: 30s
+    rules:
+      - alert: HikariPoolNearMax
+        expr: |
+          (hikaricp_connections_active / hikaricp_connections_max) > 0.85
+        for: 5m
+        labels:
+          severity: warn
+          domain: db
+        annotations:
+          summary: "{{ $labels.application }} HikariCP > 85% utilisation"
+          description: |
+            {{ $value | humanizePercentage }} of the pool is in use. Either
+            tune the pool ceiling up or look for a slow query holding
+            connections.
+
+      - alert: AsyncpgPoolSaturated
+        expr: kaori_db_pool_idle == 0 and kaori_db_pool_size >= kaori_db_pool_max
+        for: 3m
+        labels:
+          severity: page
+          domain: db
+        annotations:
+          summary: "{{ $labels.service }} asyncpg pool saturated"
+          description: |
+            Pool reached max ({{ $labels.service }}) with zero idle for
+            3+ minutes — every new request is queueing. Check for a
+            stuck transaction or a long-running query.
+
+  - name: process
+    interval: 30s
+    rules:
+      - alert: ServiceMemoryHigh
+        expr: |
+          (process_resident_memory_bytes
+            / on(instance) group_left() process_virtual_memory_max_bytes) > 0.85
+        for: 10m
+        labels:
+          severity: warn
+          domain: ops
+        annotations:
+          summary: "Service {{ $labels.job }} resident memory > 85% of limit"
+          description: |
+            RSS = {{ $value | humanizePercentage }} of the configured cap.
+            Phase 3 should add JAVA_OPTS / cgroup tuning; for now flag for
+            inspection so we don't OOM mid-pilot.
+
+  - name: outbox
+    interval: 30s
+    rules:
+      - alert: OutboxStaleRowsAccumulating
+        # Counter from the OutboxReconciliationJob's WARN log (PR #2);
+        # actual log-derived metric would need Loki/Promtail. Until
+        # then this rule stays disabled (`expr` references a metric
+        # that does not exist yet) — kept here so the next observability
+        # PR can flip it on by emitting a counter from the recon job.
+        expr: kaori_outbox_pending_total > 100
+        for: 0m
+        labels:
+          severity: page
+          domain: pipeline
+        annotations:
+          summary: "Outbox has > 100 pending rows older than 15 minutes"
+          description: |
+            Publisher likely wedged. Restart ai-orchestrator + data-pipeline,
+            then `SELECT COUNT(*) FROM event_outbox WHERE published_at IS NULL`
+            to confirm drain.

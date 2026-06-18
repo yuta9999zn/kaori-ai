@@ -1,0 +1,46 @@
+apiVersion: v2
+name: kaori-clickhouse
+description: |
+  Kaori AI — ClickHouse cluster wrapper chart.
+  Phase 1.5 P15-S9 D8 — wraps Altinity clickhouse-operator + a per-
+  cluster ClickHouseInstallation. Production deploys 3 nodes (1 shard
+  × 3 replicas Phase 1.5; sharded later when row count justifies).
+
+  Workloads (per ADR-0012):
+    - services/data-pipeline/data_plane/silver/  Silver tier columnar
+    - observability OTel trace storage warm 90 days
+    - services/economics/  NOV time-series
+    - services/adoption-intel/  signal events aggregation
+
+  Persistence:
+    - ZooKeeper coordination (shared with Kafka ZK Phase 1; separate
+      ensemble Phase 2 once write throughput justifies)
+    - MinIO daily backup, 30-day retention
+    - Compression: ZSTD(3) for text, Delta+ZSTD for timestamps
+    - Tenant isolation: tenant_id mandatory first column +
+      PARTITION BY tenant_id, toYYYYMM(ts) — query rewriter (ADR-0013)
+      enforces WHERE tenant_id = $1 because CH v23 lacks native RLS.
+
+type: application
+version: 0.1.0
+appVersion: "23.8.14"
+
+home: https://github.com/yuta9999zn/kaori-system
+sources:
+  - https://github.com/Altinity/clickhouse-operator
+  - https://github.com/yuta9999zn/kaori-system
+
+# Altinity operator pulled in via dependency, not vendored. `helm
+# dependency update` populates charts/ at install time.
+dependencies:
+  - name: altinity-clickhouse-operator
+    version: "0.23.7"
+    repository: "https://docs.altinity.com/clickhouse-operator"
+
+maintainers:
+  - name: Nguyen Truong An
+    url: https://github.com/yuta9999zn
+
+annotations:
+  category: SaaS
+  licenses: Proprietary

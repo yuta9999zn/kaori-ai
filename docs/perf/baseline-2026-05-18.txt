@@ -1,0 +1,61 @@
+============================================================
+Kaori perf baseline — 50 reqs × 5 concurrent
+Captured: 2026-05-18T12:57:36.888749Z
+Gateway : http://localhost:8080
+Tenant  : f90e0cdb-dc0c-4b91-b86a-92c824aa1103
+============================================================
+
+--- [health-check] GET http://localhost:8080/health
+  Total time         : 0.28 s
+  Requests/sec       : 178.1
+  Failed             : 0  Non-2xx: 50
+  Latency p50 / p95  : 12.8 ms / 73.0 ms
+  Latency p99 / max  : 73.7 ms / 73.7 ms
+  Latency mean       : 27.7 ms
+
+--- [orch-roi-subscription] GET http://localhost:8093/economics/roi/subscription
+  Total time         : 0.13 s
+  Requests/sec       : 386.5
+  Failed             : 0  Non-2xx: 0
+  Latency p50 / p95  : 8.7 ms / 49.1 ms
+  Latency p99 / max  : 49.5 ms / 49.5 ms
+  Latency mean       : 12.5 ms
+
+--- [orch-reencrypt-status] GET http://localhost:8093/p2/auth/field-key/reencrypt/status
+  Total time         : 0.10 s
+  Requests/sec       : 500.2
+  Failed             : 0  Non-2xx: 50
+  Latency p50 / p95  : 7.1 ms / 39.1 ms
+  Latency p99 / max  : 39.6 ms / 39.6 ms
+  Latency mean       : 9.7 ms
+
+--- [orch-sso-google-start] GET http://localhost:8093/p2/auth/sso/google/start?return_url=http://localhost:3000/cb
+  Total time         : 0.14 s
+  Requests/sec       : 348.6
+  Failed             : 0  Non-2xx: 0
+  Latency p50 / p95  : 8.0 ms / 44.8 ms
+  Latency p99 / max  : 50.6 ms / 50.6 ms
+  Latency mean       : 14.1 ms
+
+--- [gw-sso-google-start] GET http://localhost:8080/api/v1/p2/auth/sso/google/start?return_url=http://localhost:3000/cb
+  Total time         : 0.23 s
+  Requests/sec       : 213.9
+  Failed             : 0  Non-2xx: 0
+  Latency p50 / p95  : 12.6 ms / 74.9 ms
+  Latency p99 / max  : 76.2 ms / 76.2 ms
+  Latency mean       : 20.1 ms
+
+--- [llm-validate-input] POST http://localhost:8095/guardrails/validate-input
+  Total time         : 0.46 s
+  Requests/sec       : 108.3
+  Failed             : 0  Non-2xx: 0
+  Latency p50 / p95  : 5.9 ms / 322.5 ms
+  Latency p99 / max  : 323.5 ms / 323.5 ms
+  Latency mean       : 45.7 ms
+
+============================================================
+Baseline complete.
+
+Save to: docs/perf/baseline-<date>.txt  (>= )
+Compare via: diff old new
+============================================================

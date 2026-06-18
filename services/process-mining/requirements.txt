@@ -1,0 +1,4 @@
+# Skeleton deps only. Real deps (asyncpg, aiokafka, openpyxl, etc.)
+# land at Phase 2 extract — see README.md and service.yaml extract_from.
+fastapi==0.111.0
+uvicorn[standard]==0.30.1

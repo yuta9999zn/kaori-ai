@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaori — Workflow Builder P0: cách FE đang render các case</title>
+<style>
+  :root{
+    --gold:#C2A36B; --gold-dark:#9A7B4F; --gold-tint:#F6EFE2;
+    --ink:#23211c; --soft:#6b6557; --mute:#9a9384; --border:#e6e1d6;
+    --card:#fffdf8; --app:#faf7f0; --line:#d9d3c6;
+    --amber:#f59e0b; --amber-bg:#fffbeb; --amber-bd:#fde68a; --amber-ink:#92400e;
+    --violet:#8b5cf6; --violet-bg:#f5f3ff; --violet-bd:#ddd6fe; --violet-ink:#5b21b6;
+    --emerald:#10b981; --emerald-bg:#ecfdf5; --emerald-bd:#a7f3d0; --emerald-ink:#065f46;
+    --indigo:#6366f1; --indigo-bg:#eef2ff; --indigo-bd:#c7d2fe; --indigo-ink:#3730a3;
+    --rose:#f43f5e; --rose-bg:#fff1f2; --rose-bd:#fecdd3; --rose-ink:#9f1239;
+    --blue:#60a5fa; --blue-bg:#eff6ff; --blue-bd:#bfdbfe; --blue-ink:#1e40af;
+    --sky:#0ea5e9; --sky-bg:#f0f9ff; --sky-bd:#bae6fd; --sky-ink:#075985;
+    --slate:#64748b; --slate-bg:#f8fafc; --slate-bd:#cbd5e1; --slate-ink:#334155;
+    --ok:#16a34a; --warn:#d97706;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--app);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Inter",Helvetica,sans-serif;
+    font-size:14px;line-height:1.55;}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 22px 80px;}
+  h1{font-size:22px;margin:0 0 4px;font-weight:650;}
+  h2{font-size:16px;margin:34px 0 6px;border-bottom:2px solid var(--gold);padding-bottom:6px;}
+  h3{font-size:13px;margin:18px 0 8px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em;}
+  p{margin:6px 0;color:var(--soft);}
+  code{background:#efeadd;padding:1px 5px;border-radius:4px;font-size:12.5px;}
+  .meta{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:8px;}
+  .meta dl{display:grid;grid-template-columns:120px 1fr;gap:4px 14px;margin:0;font-size:13px;}
+  .meta dt{color:var(--mute);} .meta dd{margin:0;}
+  .banner{background:var(--gold-tint);border:1px solid var(--amber-bd);border-radius:10px;padding:12px 16px;font-size:13px;margin:10px 0 4px;}
+  .grid2{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start;}
+  @media(max-width:880px){.grid2{grid-template-columns:1fr;}}
+
+  /* ── builder column (faithful to BuilderView) ── */
+  .builder{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+  .builder-head{border-bottom:1px solid var(--border);background:var(--app);padding:8px 14px;
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--soft);}
+  .builder-body{padding:22px;min-height:300px;display:flex;flex-direction:column;align-items:center;}
+  .pill{width:128px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:600;}
+  .pill.start{background:#d1fae5;border:2px solid #6ee7b7;color:#065f46;}
+  .pill.end{background:#f1f5f9;border:2px solid #cbd5e1;color:#334155;}
+
+  .card{width:100%;max-width:440px;border:2px solid var(--border);background:var(--app);
+    border-radius:9px;padding:13px;display:flex;gap:11px;align-items:flex-start;cursor:default;}
+  .card.active{border-color:var(--gold);background:#fdf8ec;box-shadow:0 4px 14px rgba(160,130,60,.12);}
+  .card .ico{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+    font-size:15px;font-weight:700;flex-shrink:0;}
+  .card .body{min-width:0;flex:1;}
+  .card .title{font-size:14px;font-weight:600;display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+  .badge{font-size:10px;font-weight:600;padding:1px 7px;border-radius:5px;}
+  .card .sum{font-size:11.5px;font-weight:600;margin-top:3px;}
+  .card .note{font-size:11px;color:var(--mute);margin-top:2px;}
+  .tags{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;}
+  .tag{font-size:10px;font-weight:600;color:#1d4ed8;background:#eff6ff;padding:1px 7px;border-radius:5px;}
+  .accent-amber{border-left:4px solid var(--amber);}
+  .accent-violet{border-left:4px solid var(--violet);}
+  .accent-emerald{border-left:4px solid var(--emerald);}
+  .accent-indigo{border-left:4px solid var(--indigo);}
+  .accent-rose{border-left:4px solid var(--rose);}
+  .accent-blue{border-left:4px solid var(--blue);}
+  .accent-sky{border-left:4px solid var(--sky);}
+  .accent-slate{border-left:4px solid var(--slate);}
+
+  /* ── connector (plain) ── */
+  .conn{display:flex;flex-direction:column;align-items:center;margin:7px 0;}
+  .conn .stem{width:1px;height:22px;background:var(--line);}
+  .arrow{font-size:13px;line-height:1;color:var(--mute);}
+
+  /* ── P0 REAL FORK connector ── */
+  .fork{display:flex;flex-direction:column;align-items:center;margin:8px 0;width:100%;max-width:440px;gap:5px;}
+  .fork .stem{width:1px;height:14px;background:var(--amber-bd);}
+  .fork .split{color:var(--amber);font-size:15px;font-weight:700;}
+  .fork .lanes{display:grid;gap:8px;width:100%;}
+  .fork .lane{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;padding:0 4px;}
+  .chip{font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;border:1px solid var(--amber-bd);
+    background:var(--amber-bg);color:var(--amber-ink);display:inline-flex;gap:4px;align-items:center;max-width:100%;}
+  .chip .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .fork .tgt{font-size:10.5px;color:var(--soft);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;}
+
+  /* ── card editor (drawer) ── */
+  .editor{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
+  .editor h4{margin:0 0 12px;font-size:14px;display:flex;gap:6px;align-items:center;
+    border-bottom:1px solid var(--border);padding-bottom:10px;}
+  .field{margin-bottom:12px;}
+  .field label{font-size:12.5px;font-weight:600;display:block;margin-bottom:4px;}
+  .inp{width:100%;height:34px;padding:0 10px;border:1px solid var(--border);border-radius:7px;
+    font-size:12.5px;background:#fff;}
+  .inp.mono{font-family:ui-monospace,Menlo,Consolas,monospace;}
+  .branchbox{border-left:4px solid var(--amber);background:#fffdf5;border-radius:0 8px 8px 0;
+    padding:10px 12px;}
+  .branchbox.violet{border-left-color:var(--violet);background:#faf9ff;}
+  .branchrow{background:#fff;border:1px solid var(--amber-bd);border-radius:8px;padding:9px;margin-bottom:8px;}
+  .branchrow.violet{border-color:var(--violet-bd);}
+  .branchrow.slate{border-color:var(--slate-bd);}
+  .kbadge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;color:#fff;}
+  .row{display:flex;align-items:center;gap:7px;}
+  .sel{flex:1;height:30px;border:1px solid var(--border);border-radius:6px;font-size:11.5px;padding:0 8px;background:#fff;}
+  .status{font-size:10px;font-weight:600;white-space:nowrap;}
+  .status.ok{color:var(--ok);} .status.warn{color:var(--warn);}
+  .addbtn{font-size:11.5px;font-weight:600;color:var(--amber-ink);background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:5px;}
+  .hint{font-size:10.5px;color:var(--mute);margin-top:6px;}
+
+  /* ── gallery ── */
+  .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;}
+  .gcard{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;}
+  .gcard .cap{font-size:11px;color:var(--mute);margin-top:8px;}
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace;}
+
+  /* ── lane view preview (P1, BPMN-style top-down) ── */
+  .lanev{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;}
+  .lnode{border:2px solid var(--border);background:var(--app);border-radius:9px;padding:9px 12px;
+    max-width:380px;font-size:13px;font-weight:600;display:flex;gap:9px;align-items:center;}
+  .lnode .ic{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;
+    font-size:13px;flex-shrink:0;}
+  .lnode .nb{font-size:10px;font-weight:600;color:var(--mute);margin-left:auto;}
+  .lstem{width:2px;height:16px;background:var(--line);margin-left:18px;}
+  .ltrack{border-left:3px dashed var(--amber);margin:2px 0 2px 17px;padding:8px 0 8px 18px;}
+  .ltrack.elsep{border-left-color:var(--slate);}
+  .ltrack.casep{border-left-color:var(--violet);}
+  .lhd{display:inline-flex;gap:6px;align-items:center;font-size:11px;font-weight:700;
+    padding:2px 9px;border-radius:6px;margin-bottom:8px;}
+  .lto{font-size:11.5px;color:var(--soft);margin-top:8px;display:flex;align-items:center;gap:5px;}
+  .lto b{color:var(--ink);}
+  .merge{display:flex;align-items:center;gap:8px;margin:4px 0 4px 17px;}
+  .mergebadge{font-size:10.5px;font-weight:700;color:var(--emerald-ink);background:var(--emerald-bg);
+    border:1px solid var(--emerald-bd);padding:2px 10px;border-radius:999px;}
+
+  /* ── discussion ── */
+  .disc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px 18px;}
+  .disc li{margin:10px 0;color:var(--ink);}
+  .disc b{color:var(--gold-dark);}
+  .qa{background:var(--gold-tint);border:1px dashed var(--gold);border-radius:8px;padding:10px 14px;margin:8px 0;font-size:13px;}
+  table{border-collapse:collapse;width:100%;font-size:12.5px;margin:6px 0;}
+  th,td{border:1px solid var(--border);padding:6px 9px;text-align:left;vertical-align:top;}
+  th{background:var(--app);font-weight:600;}
+  .tagpos{color:var(--ok);font-weight:600;} .tagneg{color:var(--warn);font-weight:600;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Workflow Builder — cách FE đang render các "case" (sau P0)</h1>
+  <p>Trang tĩnh tái hiện <b>đúng</b> những gì <code>frontend/components/p2/templates/60-workflow-detail.tsx</code> render sau P0 (2026-05-29), để anh em soi từng case và bàn hướng P1/P2.</p>
+
+  <div class="meta">
+    <dl>
+      <dt>Tái hiện file</dt><dd><code>60-workflow-detail.tsx</code> (template hiện tại, @ts-nocheck)</dd>
+      <dt>Trạng thái</dt><dd>P0 shipped — branch→target = <b>edge thật</b>, fork hiển thị tên node đích</dd>
+      <dt>Spec gốc</dt><dd><code>docs/specs/WORKFLOW_BUILDER_REDESIGN.md</code> (Hybrid lane+canvas) · <code>workflow-builder-ux.html</code> (mockup n8n-style)</dd>
+      <dt>Mục đích</dt><dd>Artifact để trao đổi — KHÔNG phải UI production</dd>
+    </dl>
+  </div>
+
+  <div style="margin:10px 0 2px">
+    <span style="display:inline-flex;gap:5px;align-items:center;font-size:11.5px;font-weight:600;
+      background:#f1f5f9;border:1px solid #cbd5e1;color:#475569;padding:3px 10px;border-radius:999px">
+      ⚙ Thiết kế — chưa thực thi</span>
+    <span style="font-size:11.5px;color:var(--mute);margin-left:8px">← badge runtime disclaimer (chốt P1): hiện ngay cạnh tên workflow để khách không hiểu nhầm "flow đẹp = chạy thật". Runtime thật chờ Phase 2/Temporal.</span>
+  </div>
+
+  <div class="banner">
+    <b>Mô hình hiện tại:</b> builder vẽ workflow thành <b>chuỗi card dọc</b>. Node rẽ nhánh
+    (Quyết định / Phân loại / Song song) giờ nối tới node đích bằng <b>edge thật</b> qua selector
+    "→ đi tới bước", và connector vẽ <b>fork kèm tên đích</b>. Đây là bước đệm tới lane view (P1) —
+    nơi nhánh sẽ tách thành làn riêng thay vì gói trong 1 cột.
+  </div>
+
+  <!-- ============================================================ -->
+  <h2>A. Ví dụ cụ thể — "Duyệt chiết khấu" (Quyết định if/else 2 nhánh)</h2>
+  <p>Node Quyết định nối <b>2 nhánh tới 2 bước khác nhau</b>. Đây là case anh thấy thiếu trước đây
+  (doc có chia nhánh, FE không). Bên trái = builder column; bên phải = drawer chỉnh node.</p>
+
+  <div class="grid2">
+    <!-- builder column -->
+    <div class="builder">
+      <div class="builder-head"><span>⛓ Luồng bước</span><span>+ Thêm bước</span></div>
+      <div class="builder-body">
+        <div class="pill start">▶ Bắt đầu</div>
+
+        <div class="conn"><div class="stem"></div><span class="arrow">▼</span></div>
+        <div class="card accent-slate">
+          <div class="ico" style="background:#f6efe2;color:var(--gold-dark)">1</div>
+          <div class="body">
+            <div class="title">Tiếp nhận yêu cầu giảm giá <span class="badge" style="background:#f1f5f9;color:#475569">Bước nghiệp vụ</span></div>
+            <div class="note">Operator nhập % chiết khấu khách đề nghị</div>
+          </div>
+        </div>
+
+        <div class="conn"><div class="stem"></div><span class="arrow">▼</span></div>
+        <div class="card active accent-amber">
+          <div class="ico" style="background:#fef3c7;color:#b45309">⑂</div>
+          <div class="body">
+            <div class="title">Kiểm tra mức chiết khấu <span class="badge" style="background:var(--amber-bg);color:var(--amber-ink)">Quyết định</span></div>
+            <div class="sum" style="color:var(--amber-ink)">if · else</div>
+            <div class="note">Rẽ theo % chiết khấu so với ngưỡng</div>
+          </div>
+        </div>
+
+        <!-- P0 REAL FORK -->
+        <div class="fork">
+          <div class="stem"></div>
+          <div class="split">⑂</div>
+          <div class="lanes" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+            <div class="lane">
+              <span class="chip">⎇ <span class="t">Đơn lớn (&gt;20%)</span></span>
+              <span class="arrow" style="color:var(--amber)">▼</span>
+              <span class="tgt">Giám đốc duyệt</span>
+            </div>
+            <div class="lane">
+              <span class="chip">⎇ <span class="t">Đơn nhỏ (mặc định)</span></span>
+              <span class="arrow" style="color:var(--amber)">▼</span>
+              <span class="tgt">Áp dụng &amp; ghi sổ</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card accent-emerald" style="max-width:440px">
+          <div class="ico" style="background:#d1fae5;color:#047857">✓</div>
+          <div class="body">
+            <div class="title">Giám đốc duyệt <span class="badge" style="background:var(--emerald-bg);color:var(--emerald-ink)">Phê duyệt</span></div>
+            <div class="sum" style="color:var(--emerald-ink)">Phê duyệt bởi: MANAGER</div>
+          </div>
+        </div>
+
+        <div class="conn"><div class="stem"></div><span class="arrow">▼</span></div>
+        <div class="card accent-slate">
+          <div class="ico" style="background:#f6efe2;color:var(--gold-dark)">4</div>
+          <div class="body">
+            <div class="title">Áp dụng &amp; ghi sổ <span class="badge" style="background:#f1f5f9;color:#475569">Bước nghiệp vụ</span></div>
+          </div>
+        </div>
+
+        <div class="conn"><div class="stem"></div><span class="arrow">▼</span></div>
+        <div class="pill end">■ Kết thúc</div>
+      </div>
+    </div>
+
+    <!-- editor drawer -->
+    <div class="editor">
+      <h4>✎ Chỉnh bước — "Kiểm tra mức chiết khấu"</h4>
+      <div class="field">
+        <label>Loại bước</label>
+        <select class="inp"><option>Quyết định — rẽ theo điều kiện (đúng / sai / khác)</option></select>
+      </div>
+
+      <div class="branchbox">
+        <div class="row" style="justify-content:space-between;margin-bottom:8px">
+          <label style="margin:0;color:var(--amber-ink)">⎇ Các nhánh điều kiện</label>
+          <span style="font-size:10px;color:var(--amber-ink)">2 nhánh (gồm else)</span>
+        </div>
+
+        <div class="branchrow">
+          <div class="row" style="justify-content:space-between;margin-bottom:6px">
+            <span class="kbadge" style="background:var(--amber)">IF</span>
+          </div>
+          <input class="inp mono" style="height:30px;margin-bottom:6px" value="discount_pct > 20" readonly>
+          <input class="inp" style="height:30px;margin-bottom:6px" value="Đơn lớn (>20%)" readonly>
+          <div class="row">
+            <span style="color:var(--mute)">→</span>
+            <select class="sel"><option>Giám đốc duyệt</option></select>
+            <span class="status ok">✓ đã nối</span>
+          </div>
+        </div>
+
+        <div class="branchrow slate">
+          <div class="row" style="justify-content:space-between;margin-bottom:6px">
+            <span class="kbadge" style="background:var(--slate)">ELSE</span>
+          </div>
+          <input class="inp" style="height:30px;margin-bottom:6px" value="Đơn nhỏ (mặc định)" readonly>
+          <div class="row">
+            <span style="color:var(--mute)">→</span>
+            <select class="sel"><option>Áp dụng &amp; ghi sổ</option></select>
+            <span class="status ok">✓ đã nối</span>
+          </div>
+        </div>
+
+        <button class="addbtn">+ Thêm else if</button>
+        <div class="hint">Đánh giá tuần tự: nhánh đầu thỏa điều kiện sẽ chạy. Mỗi nhánh tạo 1 <b>edge thật</b> tới node đích.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qa"><b>Điểm chốt:</b> selector "→ đi tới bước" mới là cái biến nhánh thành edge thật.
+  Trước P0, nhánh chỉ là nhãn trang trí → node Quyết định không bao giờ đủ out-edge để kích hoạt.</div>
+
+  <!-- ============================================================ -->
+  <h2>A·bis. Cùng quy trình vẽ chuẩn BPMN — rõ pool · lane (role) · luồng</h2>
+  <p>anh đúng: ở cột thẳng, nhánh ELSE "Đơn nhỏ" không có đường thật tới "Áp dụng &amp; ghi sổ" nên khó hình dung.
+  Dưới đây là <b>BPMN chuẩn</b>: 2 pool (Khách hàng / Doanh nghiệp), 3 lane theo role, exclusive gateway tách + hội tụ,
+  default flow, sequence flow (liền) vs message flow (đứt). <b>Mỗi nhánh có đường riêng rõ ràng tới đích.</b></p>
+
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 10px;overflow-x:auto">
+  <svg viewBox="0 0 960 470" style="width:100%;min-width:760px;font-family:inherit" role="img"
+       aria-label="Sơ đồ BPMN quy trình duyệt chiết khấu">
+    <defs>
+      <marker id="seq" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L8,3 L0,6 Z" fill="#475569"/>
+      </marker>
+      <marker id="msg" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+        <path d="M1,1 L9,4 L1,7" fill="none" stroke="#64748b" stroke-width="1.2"/>
+      </marker>
+    </defs>
+
+    <!-- Pool: Khách hàng (collapsed black-box) -->
+    <rect x="20" y="14" width="920" height="40" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <rect x="20" y="14" width="26" height="40" fill="#eef2f7" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="33" y="34" transform="rotate(-90 33 34)" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">Khách hàng</text>
+    <text x="60" y="38" font-size="12" fill="#64748b">✉ Pool thu gọn — gửi yêu cầu giảm giá (message)</text>
+
+    <!-- Pool: Doanh nghiệp -->
+    <rect x="20" y="66" width="920" height="386" fill="none" stroke="#64748b" stroke-width="1.5"/>
+    <rect x="20" y="66" width="26" height="386" fill="#eef2f7" stroke="#64748b" stroke-width="1.5"/>
+    <text x="33" y="259" transform="rotate(-90 33 259)" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">Doanh nghiệp</text>
+
+    <!-- lanes -->
+    <rect x="46" y="66"  width="120" height="130" fill="#fbfaf7" stroke="#d9d3c6"/>
+    <rect x="46" y="196" width="120" height="130" fill="#f5f9ff" stroke="#d9d3c6"/>
+    <rect x="46" y="326" width="120" height="126" fill="#fbf6f9" stroke="#d9d3c6"/>
+    <line x1="166" y1="196" x2="940" y2="196" stroke="#e6e1d6"/>
+    <line x1="166" y1="326" x2="940" y2="326" stroke="#e6e1d6"/>
+    <text x="106" y="125" text-anchor="middle" font-size="11.5" font-weight="600" fill="#475569">Nhân viên</text>
+    <text x="106" y="140" text-anchor="middle" font-size="11.5" font-weight="600" fill="#475569">bán hàng</text>
+    <text x="106" y="261" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1e40af">Hệ thống</text>
+    <text x="106" y="276" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1e40af">(Kaori)</text>
+    <text x="106" y="392" text-anchor="middle" font-size="11.5" font-weight="600" fill="#9f1239">Giám đốc</text>
+
+    <!-- message flow from customer pool to start -->
+    <circle cx="210" cy="54" r="2.5" fill="#64748b"/>
+    <path d="M210,54 L210,113" fill="none" stroke="#64748b" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#msg)"/>
+
+    <!-- message start event (Nhân viên lane) -->
+    <circle cx="210" cy="131" r="16" fill="#ecfdf5" stroke="#10b981" stroke-width="1.6"/>
+    <path d="M203,127 h14 v8 h-14 z M203,127 l7,5 l7,-5" fill="none" stroke="#10b981" stroke-width="1.1"/>
+
+    <!-- task: tiếp nhận -->
+    <rect x="248" y="109" width="140" height="44" rx="9" fill="#fff" stroke="#64748b" stroke-width="1.3"/>
+    <text x="318" y="127" text-anchor="middle" font-size="11.5" font-weight="600" fill="#23211c">Tiếp nhận yêu cầu</text>
+    <text x="318" y="142" text-anchor="middle" font-size="11.5" font-weight="600" fill="#23211c">giảm giá</text>
+
+    <!-- exclusive gateway: split -->
+    <polygon points="470,235 496,261 470,287 444,261" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <line x1="458" y1="249" x2="482" y2="273" stroke="#b45309" stroke-width="2"/>
+    <line x1="482" y1="249" x2="458" y2="273" stroke="#b45309" stroke-width="2"/>
+    <text x="470" y="305" text-anchor="middle" font-size="11" font-weight="600" fill="#92400e">Mức chiết khấu?</text>
+
+    <!-- task: giám đốc duyệt (Giám đốc lane) -->
+    <rect x="560" y="367" width="140" height="44" rx="9" fill="#fff" stroke="#10b981" stroke-width="1.3"/>
+    <text x="630" y="393" text-anchor="middle" font-size="11.5" font-weight="600" fill="#065f46">Giám đốc duyệt</text>
+
+    <!-- exclusive gateway: merge -->
+    <polygon points="700,237 724,261 700,285 676,261" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <line x1="689" y1="250" x2="711" y2="272" stroke="#b45309" stroke-width="1.8"/>
+    <line x1="711" y1="250" x2="689" y2="272" stroke="#b45309" stroke-width="1.8"/>
+
+    <!-- task: áp dụng & ghi sổ -->
+    <rect x="748" y="239" width="134" height="44" rx="9" fill="#fff" stroke="#64748b" stroke-width="1.3"/>
+    <text x="815" y="257" text-anchor="middle" font-size="11.5" font-weight="600" fill="#23211c">Áp dụng</text>
+    <text x="815" y="272" text-anchor="middle" font-size="11.5" font-weight="600" fill="#23211c">&amp; ghi sổ</text>
+
+    <!-- end event -->
+    <circle cx="908" cy="261" r="16" fill="#fff" stroke="#334155" stroke-width="3"/>
+
+    <!-- sequence flows -->
+    <path d="M226,131 L248,131" fill="none" stroke="#475569" stroke-width="1.3" marker-end="url(#seq)"/>
+    <polyline points="388,131 470,131 470,235" fill="none" stroke="#475569" stroke-width="1.3" marker-end="url(#seq)"/>
+    <!-- split -> manager (>20%) -->
+    <polyline points="470,287 470,389 560,389" fill="none" stroke="#475569" stroke-width="1.3" marker-end="url(#seq)"/>
+    <text x="486" y="345" font-size="10.5" font-weight="600" fill="#92400e">đơn &gt; 20%</text>
+    <!-- split -> merge (default, <=20%) -->
+    <path d="M496,261 L676,261" fill="none" stroke="#475569" stroke-width="1.3" marker-end="url(#seq)"/>
+    <line x1="506" y1="254" x2="514" y2="268" stroke="#475569" stroke-width="1.6"/>
+    <text x="560" y="252" text-anchor="middle" font-size="10.5" font-weight="600" fill="#475569">≤ 20% · mặc định</text>
+    <!-- manager -> merge -->
+    <polyline points="630,367 630,310 700,310 700,285" fill="none" stroke="#475569" stroke-width="1.3" marker-end="url(#seq)"/>
+    <!-- merge -> apply -->
+    <path d="M724,261 L748,261" fill="none" stroke="#475569" stroke-width="1.3" marker-end="url(#seq)"/>
+    <!-- apply -> end -->
+    <path d="M882,261 L892,261" fill="none" stroke="#475569" stroke-width="1.3" marker-end="url(#seq)"/>
+  </svg>
+  </div>
+
+  <h3>Chú giải ký hiệu BPMN dùng ở trên</h3>
+  <table>
+    <tr><th>Ký hiệu</th><th>BPMN element</th><th>Trong ví dụ</th></tr>
+    <tr><td>○ vòng tròn mảnh + ✉</td><td>Message Start Event</td><td>Nhận yêu cầu giảm giá từ pool Khách hàng</td></tr>
+    <tr><td>▭ bo góc</td><td>Task / Activity</td><td>Tiếp nhận · Giám đốc duyệt · Áp dụng &amp; ghi sổ</td></tr>
+    <tr><td>◇ + ✕</td><td>Exclusive Gateway (XOR)</td><td>Tách "Mức chiết khấu?" + hội tụ trước khi ghi sổ</td></tr>
+    <tr><td>◉ vòng tròn đậm</td><td>End Event</td><td>Hoàn tất quy trình</td></tr>
+    <tr><td>→ liền</td><td>Sequence Flow</td><td>Luồng trong nội bộ pool Doanh nghiệp</td></tr>
+    <tr><td>⇢ đứt nét</td><td>Message Flow</td><td>Khách hàng → Doanh nghiệp (giữa 2 pool)</td></tr>
+    <tr><td>／ gạch chéo trên mũi tên</td><td>Default Flow</td><td>Nhánh "≤ 20% · mặc định" của gateway</td></tr>
+    <tr><td>▭ swimlane</td><td>Pool (participant) · Lane (role)</td><td>Pool Doanh nghiệp; lane Nhân viên / Hệ thống / Giám đốc</td></tr>
+  </table>
+
+  <div class="qa"><b>Phân biệt P1 vs P2:</b> "hội tụ hiển thị" (gateway merge vẽ rõ 2 nhánh về 1 đích) là việc
+  <b>P1</b> — chỉ là render đường + gateway XOR. Khác với <b>node Hợp nhánh song song (parallel join)</b> có ngữ nghĩa
+  chờ-tất-cả / race / timeout → đó mới là <b>P2</b>. Ví dụ này chỉ cần exclusive merge, không cần join song song.</div>
+
+  <!-- ============================================================ -->
+  <h2>B. Case "chưa nối" — vì sao builder chặn kích hoạt</h2>
+  <p>Nếu một nhánh chưa chọn node đích, selector hiện <b>⚠ chưa nối</b> và panel kích hoạt báo thiếu.
+  Đây là pre-flight bám luật BE validator (if_else ≥2, switch ≥case+default, split ≥branch_count).</p>
+
+  <div class="grid2">
+    <div class="branchbox" style="background:var(--card);border:1px solid var(--border);border-radius:10px;border-left:4px solid var(--amber)">
+      <div class="branchrow">
+        <span class="kbadge" style="background:var(--amber)">IF</span>
+        <input class="inp mono" style="height:30px;margin:6px 0" value="order_total > 1000000" readonly>
+        <div class="row">
+          <span style="color:var(--mute)">→</span>
+          <select class="sel"><option>— Chưa nối tới bước nào —</option></select>
+          <span class="status warn">⚠ chưa nối</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px">
+      <div style="background:#fffbeb;border:1px solid var(--amber-bd);border-radius:8px;padding:11px 13px;font-size:12.5px;color:#8B6914">
+        <b>⏰ Cần hoàn thiện trước khi kích hoạt:</b>
+        <ul style="margin:6px 0 0;padding-left:18px;font-size:12px">
+          <li>"Kiểm tra mức chiết khấu" (Quyết định) cần ≥2 nhánh nối tới bước — hiện 1.</li>
+        </ul>
+      </div>
+      <p style="font-size:11.5px;margin-top:8px">Nút <b>Kết thúc &amp; Kích hoạt</b> bị disable tới khi hết cảnh báo. BE vẫn chốt lại lần cuối khi PUT state (RFC 7807 <code>.issues[]</code>).</p>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2>C. Case "Phân loại" (switch) — nhiều nhánh case + default</h2>
+  <p>Switch rẽ theo giá trị của 1 biểu thức. Mỗi case + default là 1 edge riêng tới node đích.</p>
+
+  <div class="grid2">
+    <div class="builder">
+      <div class="builder-head"><span>⛓ Luồng bước</span></div>
+      <div class="builder-body">
+        <div class="card active accent-violet" style="max-width:440px">
+          <div class="ico" style="background:#ede9fe;color:#6d28d9">⊞</div>
+          <div class="body">
+            <div class="title">Phân loại khách theo hạng <span class="badge" style="background:var(--violet-bg);color:var(--violet-ink)">Phân loại</span></div>
+            <div class="sum" style="color:var(--violet-ink)">customer.tier → 2 case + default</div>
+          </div>
+        </div>
+        <div class="fork">
+          <div class="stem" style="background:var(--violet-bd)"></div>
+          <div class="split" style="color:var(--violet)">⊞</div>
+          <div class="lanes" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+            <div class="lane"><span class="chip" style="background:var(--violet-bg);border-color:var(--violet-bd);color:var(--violet-ink)">⇢ <span class="t">VIP</span></span><span class="arrow" style="color:var(--violet)">▼</span><span class="tgt">Ưu đãi đặc biệt</span></div>
+            <div class="lane"><span class="chip" style="background:var(--violet-bg);border-color:var(--violet-bd);color:var(--violet-ink)">⇢ <span class="t">Thường</span></span><span class="arrow" style="color:var(--violet)">▼</span><span class="tgt">Quy trình chuẩn</span></div>
+            <div class="lane"><span class="chip" style="background:var(--slate-bg);border-color:var(--slate-bd);color:var(--slate-ink)">DEFAULT</span><span class="arrow" style="color:var(--violet)">▼</span><span class="tgt">Gắn nhãn review</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="editor">
+      <h4>✎ Switch — biểu thức &amp; nhánh case</h4>
+      <div class="field"><label>Biểu thức / field cần đánh giá</label><input class="inp mono" value="customer.tier" readonly></div>
+      <div class="branchbox violet">
+        <div class="branchrow violet">
+          <span class="kbadge" style="background:var(--violet)">CASE 1</span>
+          <input class="inp mono" style="height:30px;margin:6px 0" value='"vip"' readonly>
+          <input class="inp" style="height:30px;margin-bottom:6px" value="VIP" readonly>
+          <div class="row"><span style="color:var(--mute)">→</span><select class="sel"><option>Ưu đãi đặc biệt</option></select><span class="status ok">✓ đã nối</span></div>
+        </div>
+        <div class="branchrow slate">
+          <span class="kbadge" style="background:var(--slate)">DEFAULT</span>
+          <input class="inp" style="height:30px;margin:6px 0" value="Gắn nhãn review" readonly>
+          <div class="row"><span style="color:var(--mute)">→</span><select class="sel"><option>Gắn nhãn review</option></select><span class="status ok">✓ đã nối</span></div>
+        </div>
+        <button class="addbtn" style="color:var(--violet-ink)">+ Thêm case</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2>D. Gallery — 10 loại node &amp; cách connector render</h2>
+  <p>Mỗi <code>node_type</code> có icon + accent + connector riêng. 3 loại <b>rẽ nhánh</b> (Quyết định / Phân loại / Song song) dùng fork thật ở §A-C; còn lại nối tuyến tính.</p>
+
+  <div class="gal">
+    <div class="gcard"><div class="card accent-amber"><div class="ico" style="background:#fef3c7;color:#b45309">⑂</div><div class="body"><div class="title">Quyết định <span class="badge" style="background:var(--amber-bg);color:var(--amber-ink)">if/else</span></div></div></div><div class="cap"><b>Fork:</b> N nhánh điều kiện → N node đích (edge có <code>condition</code>).</div></div>
+    <div class="gcard"><div class="card accent-violet"><div class="ico" style="background:#ede9fe;color:#6d28d9">⊞</div><div class="body"><div class="title">Phân loại <span class="badge" style="background:var(--violet-bg);color:var(--violet-ink)">switch</span></div></div></div><div class="cap"><b>Fork:</b> case theo giá trị + default → mỗi nhánh 1 edge.</div></div>
+    <div class="gcard"><div class="card accent-indigo"><div class="ico" style="background:#e0e7ff;color:#4338ca">⇶</div><div class="body"><div class="title">Chạy song song <span class="badge" style="background:var(--indigo-bg);color:var(--indigo-ink)">split</span></div></div></div><div class="cap"><b>Fork:</b> tách N nhánh chạy đồng thời (<code>branch_count</code>).</div></div>
+    <div class="gcard"><div class="card accent-emerald"><div class="ico" style="background:#d1fae5;color:#047857">✓</div><div class="body"><div class="title">Phê duyệt <span class="badge" style="background:var(--emerald-bg);color:var(--emerald-ink)">gate</span></div></div></div><div class="cap">Tuyến tính: "Sau khi duyệt → bước kế". Cần ≥1 out-edge.</div></div>
+    <div class="gcard"><div class="card accent-indigo"><div class="ico" style="background:#e0e7ff;color:#4338ca">⊕</div><div class="body"><div class="title">Hợp nhánh <span class="badge" style="background:var(--indigo-bg);color:var(--indigo-ink)">join</span></div></div></div><div class="cap">Gộp các nhánh song song về 1 node (chờ xong).</div></div>
+    <div class="gcard"><div class="card accent-blue"><div class="ico" style="background:#dbeafe;color:#1d4ed8">⌛</div><div class="body"><div class="title">Chờ sự kiện <span class="badge" style="background:var(--blue-bg);color:var(--blue-ink)">wait</span></div></div></div><div class="cap">Tuyến tính: chờ khách ký / thanh toán / webhook rồi đi tiếp.</div></div>
+    <div class="gcard"><div class="card accent-rose"><div class="ico" style="background:#ffe4e6;color:#be123c">⏱</div><div class="body"><div class="title">Hạn xử lý <span class="badge" style="background:var(--rose-bg);color:var(--rose-ink)">SLA</span></div></div></div><div class="cap">Đếm ngược + cảnh báo / leo thang khi quá hạn.</div></div>
+    <div class="gcard"><div class="card accent-slate"><div class="ico" style="background:#f1f5f9;color:#475569">⤵</div><div class="body"><div class="title">Quy trình con <span class="badge" style="background:var(--slate-bg);color:var(--slate-ink)">sub</span></div></div></div><div class="cap">Gọi workflow khác rồi quay lại bước kế.</div></div>
+    <div class="gcard"><div class="card accent-sky"><div class="ico" style="background:#e0f2fe;color:#0369a1">📤</div><div class="body"><div class="title">Thông báo <span class="badge" style="background:var(--sky-bg);color:var(--sky-ink)">notify</span></div></div></div><div class="cap">Gửi email / Zalo / Teams rồi đi tiếp.</div></div>
+    <div class="gcard"><div class="card accent-slate" style="border-left-color:var(--gold)"><div class="ico" style="background:#f6efe2;color:var(--gold-dark)">5</div><div class="body"><div class="title">Bước nghiệp vụ <span class="badge" style="background:#f1f5f9;color:#475569">step</span></div></div></div><div class="cap">Công việc thường — nối tuyến tính prev→next.</div></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2>E. Điểm cần bàn (để anh em quyết hướng P1)</h2>
+  <ul class="disc">
+    <li><b>1. Fork vẫn nằm trong 1 cột.</b> P0 vẽ nhánh + tên đích, nhưng node đích vẫn xuất hiện lại
+      ở dưới theo thứ tự list → hơi trùng. <span class="tagneg">P1 lane view</span> sẽ tách mỗi nhánh
+      thành làn riêng, node đích nằm trong làn đó (không lặp). <i>Anh muốn lane dọc thụt lề hay cột cạnh nhau?</i></li>
+    <li><b>2. Match nhánh ↔ edge theo nhãn (label).</b> Hiện đổi tên nhãn sau khi đã nối có thể làm
+      selector tạm hiện "chưa nối" (edge vẫn còn). <span class="tagpos">P2 canvas</span> bind theo
+      handle nên hết vấn đề. <i>P1 có cần khoá nhãn sau khi nối không, hay chấp nhận?</i></li>
+    <li><b>3. Hội tụ nhánh (2 nhánh về cùng 1 node).</b> Builder list chưa thể hiện rõ. Lane view cần
+      vẽ đường gộp. <i>Có case thật nào của khách cần hội tụ ngay không, hay để P2?</i></li>
+    <li><b>4. Reorder up/down.</b> Còn ý nghĩa với chuỗi thẳng, vô nghĩa khi đã rẽ nhánh.
+      <i>P1 bỏ hẳn up/down và chuyển sang định vị theo nhánh?</i></li>
+    <li><b>5. Runtime.</b> Nhánh giờ <i>dựng + thấy</i> được nhưng <i>chạy thật</i> còn chờ Phase 2/Temporal.
+      <i>Có cần ghi rõ trên UI "đã thiết kế — chạy thật từ Phase 2" để khách khỏi hiểu nhầm?</i></li>
+  </ul>
+
+  <table>
+    <tr><th>Hạng mục</th><th>P0 (đang có)</th><th>P1 lane view</th><th>P2 canvas</th></tr>
+    <tr><td>Thấy nhánh</td><td class="tagpos">✓ fork + tên đích</td><td class="tagpos">✓ làn riêng</td><td class="tagpos">✓ graph tự do</td></tr>
+    <tr><td>Nối nhánh</td><td class="tagpos">✓ selector</td><td class="tagpos">✓ selector / kéo</td><td class="tagpos">✓ kéo handle</td></tr>
+    <tr><td>Hội tụ nhánh</td><td class="tagneg">✗</td><td>một phần</td><td class="tagpos">✓</td></tr>
+    <tr><td>Định vị tự do (x/y)</td><td class="tagneg">✗</td><td class="tagneg">✗</td><td class="tagpos">✓</td></tr>
+    <tr><td>Hợp đối tượng FE</td><td>SME</td><td>SME</td><td>Analyst</td></tr>
+  </table>
+
+  <p style="margin-top:22px;font-size:12px;color:var(--mute)">Kaori · artifact trao đổi P0 workflow builder · 2026-05-29 · sibling <code>WORKFLOW_BUILDER_REDESIGN.md</code> + <code>workflow-builder-ux.html</code></p>
+
+</div>
+</body>
+</html>

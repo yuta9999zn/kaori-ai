@@ -1,0 +1,4 @@
+# Skeleton deps only. Real deps (temporalio, asyncpg, redis, etc.) land
+# at Phase 2 extract — see README.md.
+fastapi==0.111.0
+uvicorn[standard]==0.30.1

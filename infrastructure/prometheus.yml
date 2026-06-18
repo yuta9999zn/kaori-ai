@@ -1,0 +1,50 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Phase 2 #6 (B2 PR #5) — alert rules live in /etc/prometheus/alerts.yml,
+# mounted from infrastructure/prometheus/alerts.yml. Adding a new rule
+# file = drop another *.alerts.yml beside it; the glob picks them up.
+rule_files:
+  - "/etc/prometheus/alerts.yml"
+
+scrape_configs:
+  - job_name: api-gateway
+    static_configs:
+      - targets: ["api-gateway:8080"]
+    metrics_path: /actuator/prometheus
+
+  - job_name: auth-service
+    static_configs:
+      - targets: ["auth-service:8091"]
+    metrics_path: /actuator/prometheus
+
+  - job_name: data-pipeline
+    static_configs:
+      - targets: ["data-pipeline:8092"]
+    metrics_path: /metrics
+
+  - job_name: ai-orchestrator
+    static_configs:
+      - targets: ["ai-orchestrator:8093"]
+    metrics_path: /metrics
+
+  - job_name: postgres
+    static_configs:
+      - targets: ["postgres-exporter:9187"]
+
+  # Phase 2 #6 (B2 PR #5) — kafka-exporter sidecar exposes
+  # kafka_consumergroup_lag, kafka_topic_partitions, kafka_brokers.
+  # The pilot alerts watch consumergroup lag for the orchestrator +
+  # gold consumer; the dashboard graphs partition lag per topic.
+  - job_name: kafka-exporter
+    static_configs:
+      - targets: ["kafka-exporter:9308"]
+    metrics_path: /metrics
+
+  # NB: kafka:9101 was an old JMX target. Real consumer-group lag now
+  # comes from kafka-exporter above; the JMX scrape stays disabled
+  # until we wire JMX exporter onto the broker.
+  - job_name: kafka
+    static_configs:
+      - targets: ["kafka:9101"]

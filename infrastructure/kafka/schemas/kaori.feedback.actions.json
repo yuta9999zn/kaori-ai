@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaori.io/kafka-schemas/kaori.feedback.actions.json",
+  "title": "kaori.feedback.actions",
+  "description": "F-036 Decision Override + future feedback signals — fired by ai-orchestrator when a domain expert overrides an AI decision (today) or marks one as actioned (future, when Sprint 7 PR D is migrated to emit too). Consumers (planned): F-074 fine-tuning trigger, F-060 ROI rollup, audit / compliance exporter. Producer: services/ai-orchestrator/routers/decisions.py.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["override_id", "decision_id", "enterprise_id", "action", "occurred_at"],
+  "properties": {
+    "override_id": {
+      "type": "string",
+      "description": "decision_overrides.override_id — UUID string. Unique per emit; a revoke event references the same override_id with action='override.revoke'."
+    },
+    "decision_id": {
+      "type": "string",
+      "description": "decision_audit_log.decision_id — joins back to the original AI decision row."
+    },
+    "enterprise_id": {
+      "type": "string",
+      "description": "Tenant scope. Consumers must filter their downstream outputs by this."
+    },
+    "action": {
+      "type": "string",
+      "enum": ["override.created", "override.revoked", "customer.actioned", "customer.unactioned"],
+      "description": "What kind of feedback fired. Additive — F-060 added customer.actioned / customer.unactioned for the per-customer is_actioned toggle on gold_features (the canonical North Star column). Future actions extend this enum further."
+    },
+    "decision_type": {
+      "type": "string",
+      "description": "Optional — convenience copy of decision_audit_log.decision_type so consumers can route without joining (e.g., 'churn_risk' → fine-tuning, 'pricing' → manual review)."
+    },
+    "original_value": {
+      "type": "string",
+      "description": "Snapshot of the AI's chosen_value at override time. Empty string when not applicable (e.g. action='override.revoked' carries the override_value being revoked, not the original)."
+    },
+    "override_value": {
+      "type": "string",
+      "description": "The human-supplied corrected value (action='override.created') or the revoked override's value (action='override.revoked')."
+    },
+    "reason": {
+      "type": "string",
+      "description": "User-supplied justification — for create this is decision_overrides.reason; for revoke it's decision_overrides.revoke_reason. May be empty on revoke if user didn't supply one."
+    },
+    "user_id": {
+      "type": "string",
+      "description": "decision_overrides.overridden_by_user (or revoked_by_user). UUID string. Consumers needing PII redaction should treat this as an opaque identifier — don't dereference into enterprise_users on emit."
+    },
+    "occurred_at": {
+      "type": "string",
+      "description": "ISO 8601 UTC timestamp when the override was created or revoked."
+    }
+  }
+}

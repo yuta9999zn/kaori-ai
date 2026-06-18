@@ -1,0 +1,43 @@
+# Grafana datasource provisioning — Phase 2 #5.
+#
+# Two datasources auto-loaded on Grafana boot:
+#   * prometheus  — already-running scraper for service metrics
+#   * tempo       — distributed-tracing backend; correlates with logs
+#                   via trace_id + span_id when the service emits them
+#
+# The tracesToMetrics + tracesToLogs links are the operator UX win:
+# from a slow trace span, click straight to the matching Prometheus
+# query or to logs filtered on the trace_id. Bonus: the structlog
+# processor (Python) + Logback MDC (Java) attach trace_id to every
+# log line emitted while a request is in-flight.
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: false
+    editable: false
+
+  - name: Tempo
+    type: tempo
+    access: proxy
+    url: http://tempo:3200
+    uid: tempo
+    isDefault: true
+    editable: false
+    jsonData:
+      httpMethod: GET
+      tracesToLogs:
+        # Loki not deployed yet (Phase 3) — this section will start working
+        # the moment a Loki datasource lands; until then Grafana shows the
+        # span and skips the log link. Mapping kept here so the wire-up
+        # is obvious to the next operator who adds Loki.
+        datasourceUid: 'loki'
+        tags: ['enterprise_id', 'service.name']
+      serviceMap:
+        datasourceUid: 'prometheus'
+      nodeGraph:
+        enabled: true

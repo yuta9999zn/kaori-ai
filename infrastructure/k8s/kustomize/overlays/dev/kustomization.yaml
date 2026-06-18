@@ -1,0 +1,41 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Dev overlay — single-replica everything, debug log level, Vault dev
+# server. Intended for laptop kind/k3d clusters or anh's local dev VM.
+
+namespace: kaori-dev
+
+resources:
+  - ../../base
+  - rendered.yaml  # `helm template kaori ../../../helm-charts/kaori-services -f values.yaml`
+
+patches:
+  - target:
+      kind: Deployment
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
+
+configMapGenerator:
+  - name: env-overrides
+    literals:
+      - LOG_LEVEL=DEBUG
+      - KAORI_ENV=dev
+      - VAULT_ADDR=http://vault.vault.svc.cluster.local:8200
+      - OTEL_TRACES_SAMPLER_ARG=1.0  # 100% trace sampling in dev
+
+images:
+  - name: ghcr.io/yuta9999zn/kaori-system/api-gateway
+    newTag: dev
+  - name: ghcr.io/yuta9999zn/kaori-system/auth-service
+    newTag: dev
+  - name: ghcr.io/yuta9999zn/kaori-system/data-pipeline
+    newTag: dev
+  - name: ghcr.io/yuta9999zn/kaori-system/ai-orchestrator
+    newTag: dev
+  - name: ghcr.io/yuta9999zn/kaori-system/llm-gateway
+    newTag: dev
+  - name: ghcr.io/yuta9999zn/kaori-system/notification-service
+    newTag: dev

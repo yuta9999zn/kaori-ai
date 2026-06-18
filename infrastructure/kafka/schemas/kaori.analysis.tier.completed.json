@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaori.io/kafka-schemas/kaori.analysis.tier.completed.json",
+  "title": "kaori.analysis.tier.completed",
+  "description": "F-033 Multi-tier Analysis — terminal-state event (status='done' or 'error'). Mirrors kaori.reports.generated. Producer: services/ai-orchestrator/multi_tier/service.py.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["analysis_run_id", "enterprise_id", "status"],
+  "properties": {
+    "analysis_run_id": {
+      "type": "string",
+      "description": "analysis_runs.id — UUID string."
+    },
+    "enterprise_id": {
+      "type": "string",
+      "description": "Tenant scope (kafka partition key)."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["done", "error"],
+      "description": "Terminal status. queued / running rows do NOT emit. 'error' carries last_error in analysis_runs.overview->>'error', not in this event."
+    }
+  }
+}

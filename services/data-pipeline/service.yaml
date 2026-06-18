@@ -1,0 +1,47 @@
+# service.yaml — data-pipeline
+
+name:        data-pipeline
+display:     "Data Pipeline"
+language:    python
+runtime:     "FastAPI 0.111.0 + asyncpg + aiokafka"
+port:        8092
+owner:       "@yuta9999zn"
+team:        kaori-core
+tier:        1
+
+context: >
+  CSV ingestion (F-017) → Bronze persistence (K-2 append-only) → schema
+  mapping (F-018) → cleaning (F-019). Owns pipelines list (F-022) with
+  cursor pagination + SSE status stream (F-NEW2). Writes to bronze + silver
+  layers (medallion architecture, ADR-0002).
+
+slo:
+  availability:    "99% pilot"
+  latency_p99_ms:  2000              # upload latency on a 10 MB CSV; analysis is async
+  error_budget:    "1% of monthly minutes"
+
+invariants_enforced:
+  - K-1     # tenant_id filter (RLS via acquire_for_tenant)
+  - K-2     # Bronze append-only (DB-layer RULES + app discipline)
+  - K-6     # decision_audit_log row per column-mapping decision
+  - K-7     # X-Enterprise-ID / X-User-ID via headers
+  - K-8     # SHA-256 dedup on upload
+  - K-13    # idempotency-key on POST /upload, /clean/apply
+
+consumers:
+  - api-gateway       # /api/v1/upload, /api/v1/schema/**, /api/v1/clean/**, /api/v1/pipelines/**
+
+dependencies:
+  hard:
+    - postgres        # bronze_files, bronze_rows, silver_rows, pipeline_runs
+    - kafka           # publishes kaori.ingest.bronze, kaori.pipeline.events
+  soft:
+    - ai-orchestrator # consumed via Kafka (kaori.pipeline.events) — failure = analysis delayed, ingest still works
+    - redis           # idempotency-key store
+
+required_env:
+  - DATABASE_URL
+  - KAFKA_BOOTSTRAP_SERVERS
+  - REDIS_URL
+
+runbook: docs/runbooks/data-pipeline.md

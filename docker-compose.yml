@@ -1,0 +1,508 @@
+version: "3.9"
+
+services:
+
+  # ============================================================
+  # Infrastructure
+  # ============================================================
+
+  postgres:
+    image: pgvector/pgvector:pg15
+    environment:
+      POSTGRES_USER: kaori
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kaori_dev_password}
+      POSTGRES_DB: kaori
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure/postgres/migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kaori"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./infrastructure/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+
+  # K-18 — HashiCorp Vault dev mode for local + staging.
+  # Production (Phase 3) swaps to Helm chart with HA Raft (3 nodes) +
+  # KMS auto-unseal + AppRole auth method. The wrapper in
+  # services/*/shared/kaori_vault.py is unchanged across modes —
+  # only addr/token resolution differs.
+  vault:
+    image: hashicorp/vault:1.15
+    command: server -dev -dev-root-token-id=${KAORI_VAULT_DEV_TOKEN:-kaori-dev-root}
+    environment:
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+      VAULT_ADDR: http://0.0.0.0:8200
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - "8200:8200"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8200/v1/sys/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    ports:
+      - "29092:29092"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "kafka:9092"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: kaori
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    ports:
+      - "8085:8080"
+
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    # GPU support (uncomment for NVIDIA GPU):
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================
+  # Application Services
+  # ============================================================
+
+  api-gateway:
+    build: ./services/api-gateway
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SPRING_R2DBC_URL: r2dbc:postgresql://postgres:5432/kaori
+      SPRING_R2DBC_USERNAME: kaori_app
+      SPRING_R2DBC_PASSWORD: ${KAORI_APP_PASSWORD:-kaori_app_password}
+      SPRING_REDIS_HOST: redis
+      REDIS_HOST: redis
+      JWT_PUBLIC_KEY: ${JWT_PUBLIC_KEY}
+      CORS_ALLOW_ORIGINS: ${CORS_ALLOW_ORIGINS:-http://localhost:3000}
+      AUTH_SERVICE_URL: http://auth-service:8091
+      DATA_PIPELINE_URL: http://data-pipeline:8092
+      AI_ORCHESTRATOR_URL: http://ai-orchestrator:8093
+      RATE_LIMIT_JWT_PER_MIN: ${RATE_LIMIT_JWT_PER_MIN:-60}
+      RATE_LIMIT_IP_PER_MIN: ${RATE_LIMIT_IP_PER_MIN:-300}
+    ports:
+      - "8080:8080"
+    # B3 PR #9 — bounded heap (-Xmx400m in Dockerfile) + ~200m non-heap
+    # leaves room for ~768m total. CPU cap of 1.0 lets the gateway burst
+    # but prevents one wedged route from monopolising the host.
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: "1.0"
+    healthcheck:
+      # eclipse-temurin:21-jre-alpine ships nc but not curl/python.
+      # /health is proxied to auth-service so a HTTP probe would return
+      # 500 whenever a downstream is down — TCP listen check is what
+      # we actually want here ("the gateway itself is accepting").
+      test: ["CMD", "nc", "-z", "localhost", "8080"]
+      interval: 30s
+
+  auth-service:
+    build: ./services/auth-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      notification-service:
+        condition: service_healthy
+    environment:
+      NOTIFICATION_SERVICE_URL: http://notification-service:8094
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/kaori
+      SPRING_DATASOURCE_USERNAME: kaori_app
+      SPRING_DATASOURCE_PASSWORD: ${KAORI_APP_PASSWORD:-kaori_app_password}
+      # 3.2.a — Flyway runs DDL (creates flyway_schema_history) which kaori_app
+      # is not granted (SELECT/INSERT/UPDATE only — see migration 008). Use the
+      # superuser for the bootstrap path so the runtime app stays on kaori_app.
+      # Spring Boot inherits spring.flyway.url from spring.datasource.url; only
+      # user/password need overriding.
+      SPRING_FLYWAY_USER: ${SPRING_FLYWAY_USER:-kaori}
+      SPRING_FLYWAY_PASSWORD: ${SPRING_FLYWAY_PASSWORD:-${POSTGRES_PASSWORD:-kaori_dev_password}}
+      SPRING_REDIS_HOST: redis
+      JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY}
+      JWT_PUBLIC_KEY: ${JWT_PUBLIC_KEY}
+      JWT_ACCESS_TOKEN_TTL_MINUTES: ${JWT_ACCESS_TOKEN_TTL_MINUTES:-15}
+      JWT_REFRESH_TOKEN_TTL_DAYS: ${JWT_REFRESH_TOKEN_TTL_DAYS:-7}
+      # MFA at-rest key. Empty default = deterministic dev key + WARN log.
+      # Production deployments MUST set both KAORI_MFA_KEY and
+      # SPRING_PROFILES_ACTIVE=production — auth-service then refuses to
+      # start when the key is missing. See CLAUDE.md §15.
+      KAORI_MFA_KEY: ${KAORI_MFA_KEY:-}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-}
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      # P2-AUTH-001 SSO — shared secret with ai-orchestrator for the
+      # /p2/auth/sso/exchange-info handshake. Spring maps this env var
+      # to property `kaori.internal-svc-token` via the standard
+      # relaxed-binding rules (UPPER_SNAKE_CASE → kebab-case).
+      # KAORI_ORCHESTRATOR_BASE_URL likewise maps to
+      # `kaori.orchestrator-base-url`.
+      KAORI_INTERNAL_SVC_TOKEN: ${KAORI_INTERNAL_SVC_TOKEN:-}
+      KAORI_ORCHESTRATOR_BASE_URL: ${KAORI_ORCHESTRATOR_BASE_URL:-http://ai-orchestrator:8093}
+      # K-18 Vault wiring (auth-service side)
+      VAULT_ADDR:  ${VAULT_ADDR:-http://vault:8200}
+      VAULT_TOKEN: ${VAULT_TOKEN:-${KAORI_VAULT_DEV_TOKEN:-kaori-dev-root}}
+      KAORI_PROFILE: ${KAORI_PROFILE:-dev}
+      # Dev env: many migrations were applied manually outside Flyway
+      # (the dev DB pre-dates Flyway adoption for migs 042+). Repair
+      # syncs the history checksums to whatever the JAR ships. Production
+      # uses Flyway from day 1 so repair is a no-op there.
+      SPRING_FLYWAY_REPAIR_ON_MIGRATE: ${SPRING_FLYWAY_REPAIR_ON_MIGRATE:-true}
+      SPRING_FLYWAY_VALIDATE_ON_MIGRATE: ${SPRING_FLYWAY_VALIDATE_ON_MIGRATE:-false}
+    ports:
+      - "8091:8091"
+    # B3 PR #9 — same memory budget as api-gateway (Spring Boot baseline).
+    # auth-service does more allocation per request (BCrypt, JPA) so we
+    # don't shrink the cap further; lower if pilot host is tight.
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: "1.0"
+
+  data-pipeline:
+    build: ./services/data-pipeline
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      notification-service:
+        condition: service_healthy
+    volumes:
+      # Mount existing Kaori ETL scripts (read-only)
+      - ./config:/app/config:ro
+      - ./etl:/app/etl:ro
+      - ./utils:/app/utils:ro
+      # Issue #4 — Kafka event-schema registry, walked up from
+      # data_pipeline/shared/event_schema.py at runtime.
+      - ./infrastructure/kafka/schemas:/app/infrastructure/kafka/schemas:ro
+      # ADR-0037 Phase 0 — raw file bytes (shared with ai-orchestrator read side).
+      - kaori-blobs:/app/object-store
+    environment:
+      DATABASE_URL: postgresql://kaori_app:${KAORI_APP_PASSWORD:-kaori_app_password}@postgres:5432/kaori
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      REDIS_URL: redis://redis:6379
+      BLOB_STORE_BACKEND: ${BLOB_STORE_BACKEND:-local}
+      BLOB_STORE_PATH: /app/object-store
+      LANGUAGE_DICT_PATH: /app/config/language_dictionary.json
+      UPLOAD_MAX_SIZE_MB: ${UPLOAD_MAX_SIZE_MB:-100}
+      NOTIFICATION_SERVICE_URL: http://notification-service:8094
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      # Stage 2B LLM column-naming fallback. ON for the 14B production model;
+      # the pilot .env sets it to 0 — the 7B box times out the per-sheet call
+      # (5s) on every sheet, adding minutes for zero successful names.
+      SCHEMA_LLM_FALLBACK: ${SCHEMA_LLM_FALLBACK:-1}
+    ports:
+      - "8092:8092"
+    # Pilot: bumped from 512M → 1.5G to cover openpyxl/pandas peak when
+    # parsing real customer Excel files (multi-sheet, ~13MB upload =
+    # ~10x in-memory blow-up). Revisit once streaming-parser lands.
+    deploy:
+      resources:
+        limits:
+          memory: 1536M
+          cpus: "1.0"
+    healthcheck:
+      # python:3.11-slim doesn't ship curl. Same urllib pattern as
+      # notification-service. urlopen() raises on non-2xx → exit !=0.
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8092/health')"]
+      interval: 30s
+
+  ai-orchestrator:
+    build: ./services/ai-orchestrator
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      llm-gateway:
+        condition: service_healthy
+    volumes:
+      - ./config:/app/config:ro
+      - ./utils:/app/utils:ro
+      - ./etl:/app/etl:ro
+      - ./infrastructure/kafka/schemas:/app/infrastructure/kafka/schemas:ro
+      # ADR-0037 Phase 0 — read raw file bytes (data-pipeline writes, this serves).
+      - kaori-blobs:/app/object-store
+    environment:
+      DATABASE_URL: postgresql://kaori_app:${KAORI_APP_PASSWORD:-kaori_app_password}@postgres:5432/kaori
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      REDIS_URL: redis://redis:6379
+      BLOB_STORE_BACKEND: ${BLOB_STORE_BACKEND:-local}
+      BLOB_STORE_PATH: /app/object-store
+      # P-1 cutover: ai-orchestrator no longer dispatches LLM calls
+      # itself; the in-process llm_router is now an HTTP shim.
+      LLM_GATEWAY_URL: http://llm-gateway:8095
+      # Cap freeform narrative generations so they finish under the 30s LLM
+      # timeout on the pilot 7B box (~6.7 tok/s). Pilot .env sets 128; default
+      # 400 keeps production (14B/GPU) summaries longer. Must stay a valid int
+      # (the :-400 fallback avoids an empty value → int('') crash).
+      KAORI_NARRATIVE_MAX_TOKENS: ${KAORI_NARRATIVE_MAX_TOKENS:-400}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      # P2-AUTH-001 SSO — OAuth client credentials. Set in top-level
+      # .env or pass via shell. Empty = provider disabled (router
+      # returns 503 from /sso/<provider>/start). KAORI_INTERNAL_SVC_TOKEN
+      # MUST match the same env var on auth-service for the internal
+      # exchange-info handshake to authenticate.
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI:-http://localhost:8080/api/v1/p2/auth/sso/google/callback}
+      MICROSOFT_CLIENT_ID: ${MICROSOFT_CLIENT_ID:-}
+      MICROSOFT_CLIENT_SECRET: ${MICROSOFT_CLIENT_SECRET:-}
+      MICROSOFT_REDIRECT_URI: ${MICROSOFT_REDIRECT_URI:-http://localhost:8080/api/v1/p2/auth/sso/microsoft/callback}
+      # Optional single-tenant restriction. Leave empty for multi-tenant
+      # "common" authority (default — accepts any Entra ID + personal
+      # Microsoft account). Set to a tenant GUID to restrict.
+      MICROSOFT_TENANT_ID: ${MICROSOFT_TENANT_ID:-}
+      KAORI_INTERNAL_SVC_TOKEN: ${KAORI_INTERNAL_SVC_TOKEN:-}
+      # K-18 Vault wiring. Dev mode uses root token "kaori-dev-root"
+      # baked into the dev server. Production swaps to AppRole tokens
+      # resolved at boot; kaori_vault.py wrapper handles both.
+      VAULT_ADDR:  ${VAULT_ADDR:-http://vault:8200}
+      VAULT_TOKEN: ${VAULT_TOKEN:-${KAORI_VAULT_DEV_TOKEN:-kaori-dev-root}}
+      # KAORI_PROFILE gates strict secret resolution. "production" =
+      # crypto.py + auth_security._platform_mfa_master_key refuse
+      # inline/env fallbacks; "dev"/"staging" allow transparent fallback
+      # with a warning log.
+      KAORI_PROFILE: ${KAORI_PROFILE:-dev}
+    ports:
+      - "8093:8093"
+    # B3 PR #9 — bigger envelope than data-pipeline because LLM payloads
+    # (chat tools registry, analysis_results JSON) hold more in memory.
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: "1.0"
+
+  # P-1: centralized LLM dispatch. Real Ollama / Anthropic / OpenAI
+  # provider clients live here. ai-orchestrator's llm_router is now
+  # an HTTP shim against this service.
+  llm-gateway:
+    build: ./services/llm-gateway
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://kaori_app:${KAORI_APP_PASSWORD:-kaori_app_password}@postgres:5432/kaori
+      OLLAMA_HOST: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:7b}
+      EXTERNAL_AI_ENABLED: ${EXTERNAL_AI_ENABLED:-false}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "8095:8095"
+    # B3 PR #9 — small footprint (HTTP shim over Ollama / external APIs).
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8095/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  notification-service:
+    build: ./services/notification-service
+    environment:
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      # Issue #6 outbox — poller reads notification_outbox in the
+      # shared Postgres. Set OUTBOX_POLL_ENABLED=false to fall back to
+      # the legacy direct-HTTP path (callers stop hitting the outbox
+      # writer in auth-service before flipping this off).
+      DATABASE_URL: postgresql://kaori_app:${KAORI_APP_PASSWORD:-kaori_app_password}@postgres:5432/kaori
+      OUTBOX_POLL_ENABLED: ${OUTBOX_POLL_ENABLED:-true}
+      OUTBOX_POLL_INTERVAL_SECONDS: ${OUTBOX_POLL_INTERVAL_SECONDS:-5}
+      OUTBOX_BATCH_SIZE: ${OUTBOX_BATCH_SIZE:-10}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8094:8094"
+    # B3 PR #9 sized this at 256M/0.5 CPU (SMTP only, no DB pool).
+    # Issue #6 added the asyncpg pool (1-3 connections) + the poller
+    # task — bump to 384M to keep headroom for the Jinja render path.
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+          cpus: "0.5"
+    healthcheck:
+      # python:3.11-slim doesn't ship curl; urllib avoids the extra
+      # apt install. urlopen() raises on non-2xx, which exits non-zero.
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8094/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - api-gateway
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8080}
+    ports:
+      - "3000:3000"
+    # B3 PR #9 — Next.js production server.
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+
+  # ============================================================
+  # Observability (optional, comment out to save resources)
+  # ============================================================
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./infrastructure/prometheus.yml:/etc/prometheus/prometheus.yml
+      # Phase 2 #6 (B2 PR #5) — alert rules. Filename pattern
+      # "*.alerts.yml" matches the rule_files glob in prometheus.yml.
+      - ./infrastructure/prometheus/alerts.yml:/etc/prometheus/alerts.yml
+    ports:
+      - "9090:9090"
+
+  # Phase 2 #6 (B2 PR #5) — Kafka exporter for Prometheus.
+  # Connects to the broker over the in-cluster network and exposes
+  # JMX + consumer-group lag metrics on /metrics:9308. The pilot
+  # alerts.yml escalates kafka_consumergroup_lag > 500 (warn) /
+  # > 5000 (page).
+  kafka-exporter:
+    image: danielqsj/kafka-exporter:latest
+    command:
+      - "--kafka.server=kafka:9092"
+      - "--web.listen-address=:9308"
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - "9308:9308"
+
+  # Phase 2 #5 — Tempo single-node tracing backend. Receives OTLP HTTP
+  # spans from every Java + Python service. 24h retention to keep the
+  # pilot footprint small (single-tenant, local FS storage).
+  tempo:
+    image: grafana/tempo:2.5.0
+    command: ["-config.file=/etc/tempo/tempo.yml"]
+    volumes:
+      - ./infrastructure/tempo/tempo.yml:/etc/tempo/tempo.yml
+      - tempo_data:/var/tempo
+    ports:
+      - "3200:3200"   # Tempo query API (Grafana datasource)
+      - "4318:4318"   # OTLP HTTP — services post traces here
+      - "4317:4317"   # OTLP gRPC — reserved for Phase 3 services
+
+  grafana:
+    image: grafana/grafana:latest
+    depends_on:
+      - prometheus
+      - tempo
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      # Phase 2 #5 — auto-load Prometheus + Tempo datasources on boot
+      # so operators don't have to wire them by hand after every fresh
+      # `docker compose up`.
+      - ./infrastructure/grafana/provisioning:/etc/grafana/provisioning
+      # Phase 2 #6 — committed dashboard JSON files. The provisioning
+      # config in ./provisioning/dashboards/dashboards.yml points
+      # Grafana at this directory and auto-imports everything in it.
+      - ./infrastructure/grafana/dashboards:/var/lib/grafana/dashboards
+    ports:
+      - "3001:3000"
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    environment:
+      SWAGGER_JSON_URL: http://localhost:8080/v3/api-docs
+    ports:
+      - "8082:8080"
+
+volumes:
+  postgres_data:
+  redis_data:
+  kafka_data:
+  zookeeper_data:
+  tempo_data:
+  ollama_data:
+  grafana_data:
+  kaori-blobs:        # ADR-0037 Phase 0 — raw file bytes, shared data-pipeline ↔ ai-orchestrator

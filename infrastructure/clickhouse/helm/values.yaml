@@ -1,0 +1,172 @@
+# Kaori ClickHouse cluster values — wraps Altinity clickhouse-operator
+# upstream chart + a single ClickHouseInstallation custom resource.
+#
+# Phase 1.5 P15-S9 D8 — 1 shard × 3 replicas (HA, no horizontal sharding
+# yet). Phase 1.5+ adds shards when row count justifies. The dev overlay
+# (kustomize/overlays/dev) collapses to 1 replica + the auto-setup
+# docker-compose for laptop development.
+#
+# Reference: https://github.com/Altinity/clickhouse-operator/blob/master/docs/chi-examples
+#
+# Why Altinity Operator (not the bare StatefulSet):
+#  * Schema rollout happens via ClickHouseInstallation CR — the operator
+#    coordinates ALTER TABLE across replicas, watches for drift.
+#  * Rolling restart on config change is operator-managed; bare STS
+#    would risk a quorum loss during /etc/clickhouse-server reload.
+#  * Backup integration via clickhouse-backup operator (companion CRD)
+#    — Phase 1.5+ wires daily MinIO snapshots without a separate cron.
+
+clickhouseOperator:
+  enabled: true
+  image:
+    repository: altinity/clickhouse-operator
+    tag: "0.23.7"   # pinned per K-20 spirit (no silent operator upgrade)
+
+  # CRDs ship with the operator — ClickHouseInstallation +
+  # ClickHouseInstallationTemplate + ClickHouseOperatorConfiguration.
+  crds:
+    install: true
+
+  resources:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits:   { cpu: 1,    memory: 1Gi }
+
+# ---------------------------------------------------------------------------
+# ClickHouseInstallation — declarative cluster definition. The operator
+# reads this CR + reconciles StatefulSets + Services + ConfigMaps.
+# ---------------------------------------------------------------------------
+clickhouse:
+  installation:
+    metadata:
+      name: kaori-ch
+      namespace: clickhouse
+
+    spec:
+      defaults:
+        templates:
+          podTemplate: kaori-ch-pod
+          dataVolumeClaimTemplate: kaori-ch-data
+          logVolumeClaimTemplate: kaori-ch-logs
+
+      configuration:
+        users:
+          # Read-only user for dashboard / BI tools (Grafana, Metabase).
+          # Password resolved via Vault path service/clickhouse/readonly_password
+          # synced into a K8s secret by external-secrets-operator.
+          kaori_ro/password_sha256_hex: "{{ .Values.users.readonly.passwordSha256 }}"
+          kaori_ro/networks/ip:
+            - "::/0"          # any network — service mesh enforces RBAC
+          kaori_ro/profile: readonly
+          kaori_ro/quota: default
+
+          # Read-write user for the data-pipeline silver tier writer.
+          # Password via Vault path service/clickhouse/writer_password.
+          kaori_writer/password_sha256_hex: "{{ .Values.users.writer.passwordSha256 }}"
+          kaori_writer/networks/ip:
+            - "::/0"
+          kaori_writer/profile: default
+          kaori_writer/quota: default
+
+        # ZooKeeper coordination — shared with Kafka ZK Phase 1, splits to
+        # a dedicated ensemble Phase 2 once write throughput justifies.
+        zookeeper:
+          nodes:
+            - host: kafka-zookeeper.kafka.svc.cluster.local
+              port: 2181
+
+        # Single cluster: 1 shard × 3 replicas. Sharding lands Phase 1.5+
+        # once we hit the row-count threshold (~1B rows).
+        clusters:
+          - name: kaori_cluster
+            layout:
+              shardsCount: 1
+              replicasCount: 3
+
+        profiles:
+          # readonly profile — SELECT only + low memory cap.
+          readonly/readonly: 1
+          readonly/max_memory_usage: 5_000_000_000
+          readonly/max_threads: 8
+          # default profile — read+write, higher memory, parallel insert.
+          default/max_memory_usage: 20_000_000_000
+          default/max_threads: 16
+          default/insert_distributed_sync: 1
+
+      templates:
+        podTemplates:
+          - name: kaori-ch-pod
+            spec:
+              containers:
+                - name: clickhouse
+                  image: clickhouse/clickhouse-server:23.8.14
+                  resources:
+                    requests: { cpu: 1,   memory: 4Gi }
+                    limits:   { cpu: 8,   memory: 16Gi }
+                  env:
+                    # K-19 — every span attribute carries tenant_id;
+                    # OTel exporter sends server traces to the otel
+                    # collector + tags service.name=clickhouse.
+                    - name: OTEL_EXPORTER_OTLP_ENDPOINT
+                      value: "http://otel-collector.otel.svc.cluster.local:4318"
+                    - name: OTEL_RESOURCE_ATTRIBUTES
+                      value: "service.namespace=kaori,deployment.environment=production,service.name=clickhouse"
+
+        volumeClaimTemplates:
+          - name: kaori-ch-data
+            spec:
+              accessModes: [ReadWriteOnce]
+              resources:
+                requests:
+                  storage: 500Gi   # Silver tier sized; bump per tenant growth
+              storageClassName: fpt-ssd
+          - name: kaori-ch-logs
+            spec:
+              accessModes: [ReadWriteOnce]
+              resources:
+                requests:
+                  storage: 50Gi
+              storageClassName: fpt-ssd
+
+# ---------------------------------------------------------------------------
+# Users — sha256_hex of the password. The actual cleartext lives in Vault;
+# external-secrets-operator (Phase 1.5+) syncs it + computes the hash via
+# a sidecar init container. Set values from a values-secret.yaml at
+# install time so the cleartext never enters the chart repo.
+# ---------------------------------------------------------------------------
+users:
+  readonly:
+    passwordSha256: "REPLACE_AT_INSTALL_TIME_FROM_VAULT"
+  writer:
+    passwordSha256: "REPLACE_AT_INSTALL_TIME_FROM_VAULT"
+
+# ---------------------------------------------------------------------------
+# Backup — clickhouse-backup operator integration. Daily snapshot to
+# MinIO (s3-compatible), 30-day retention. Phase 2 adds point-in-time
+# restore via WAL shipping when ClickHouse adds it natively.
+# ---------------------------------------------------------------------------
+backup:
+  enabled: true
+  schedule: "0 2 * * *"   # 02:00 UTC daily
+  retentionDays: 30
+  destination:
+    type: s3
+    bucket: kaori-ch-backups
+    endpoint: http://minio.minio.svc.cluster.local:9000
+    region: vn-hcm
+    accessKeySecretRef:
+      name: minio-creds
+      key: access-key
+    secretKeySecretRef:
+      name: minio-creds
+      key: secret-key
+
+# ---------------------------------------------------------------------------
+# Prometheus — operator + clickhouse-server expose /metrics. Aligns with
+# the kube-prometheus-stack labels used elsewhere in the kaori-infra chart.
+# ---------------------------------------------------------------------------
+prometheus:
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    additionalLabels:
+      release: kube-prometheus-stack

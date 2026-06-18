@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Base manifests are produced by `helm template` of the kaori-services
+# umbrella chart. Overlays in ../overlays/{dev,staging,production}/
+# patch image tags, replicas, resources, and ConfigMap data per env.
+#
+# Usage:
+#   helm template kaori \
+#     ../../helm-charts/kaori-services > rendered.yaml
+#   kustomize build overlays/production
+#
+# Phase 1.5 P15-S9 D1 — base is empty placeholder; overlays declare
+# resources via `resources` after rendering. Once ArgoCD lands the
+# helm-chart-inflator we'll wire the chart directly here.
+
+namespace: kaori
+
+commonLabels:
+  app.kubernetes.io/managed-by: kustomize
+
+resources: []

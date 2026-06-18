@@ -1,0 +1,93 @@
+name: docker-smoke
+
+# Validates docker-compose.yml parses correctly and every service's
+# Dockerfile builds cleanly. Runs only when infra or service code changes
+# so normal doc-only PRs don't pay the 3-5min cost.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docker-compose.yml'
+      - 'services/**/Dockerfile'
+      - 'services/**/requirements.txt'
+      - 'services/**/pom.xml'
+      - 'frontend/Dockerfile'
+      - 'frontend/package*.json'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docker-compose.yml'
+      - 'services/**/Dockerfile'
+      - 'services/**/requirements.txt'
+      - 'services/**/pom.xml'
+      - 'frontend/Dockerfile'
+      - 'frontend/package*.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docker-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-compose:
+    name: validate docker-compose.yml
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: docker compose config (syntax + interpolation)
+        run: |
+          # dummy values for env-var interpolation; we're only validating syntax
+          export POSTGRES_PASSWORD=dummy
+          export JWT_PRIVATE_KEY=dummy
+          export JWT_PUBLIC_KEY=dummy
+          docker compose -f docker-compose.yml config > /dev/null
+          echo "✅ docker-compose.yml parses"
+
+  build-smoke:
+    name: build / ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - services/auth-service
+          - services/api-gateway
+          - services/data-pipeline
+          - services/ai-orchestrator
+          - services/notification-service
+          - frontend
+    steps:
+      - uses: actions/checkout@v6
+
+      # auth-service ships a one-stage Dockerfile that copies the host-built
+      # target/auth-service-*.jar (the multi-stage flow can't see
+      # infrastructure/postgres/migrations from the constrained build
+      # context). The CI runner has no jar yet, so we package it first.
+      - name: Set up JDK 21 (auth-service only)
+        if: matrix.service == 'services/auth-service'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Maven package (auth-service only)
+        if: matrix.service == 'services/auth-service'
+        working-directory: services/auth-service
+        run: mvn -B -q package -DskipTests
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build image (no push, cached)
+        uses: docker/build-push-action@v7
+        with:
+          context: ${{ matrix.service }}
+          file: ${{ matrix.service }}/Dockerfile
+          push: false
+          load: false
+          cache-from: type=gha,scope=${{ matrix.service }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.service }}

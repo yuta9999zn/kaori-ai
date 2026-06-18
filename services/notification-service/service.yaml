@@ -1,0 +1,44 @@
+# service.yaml — notification-service
+
+name:        notification-service
+display:     "Notification Service"
+language:    python
+runtime:     "FastAPI + aiosmtplib + jinja2"
+port:        8094
+owner:       "@yuta9999zn"
+team:        kaori-core
+tier:        2     # supporting — failure means email doesn't send, primary auth flow still works
+
+context: >
+  SMTP sender (F-NEW1). Renders Jinja2 templates and dispatches via
+  configured SMTP relay. Phase 1 callers: auth-service (password reset,
+  F-015 invite). Quota alert email (80%/95%) still uses generic copy
+  pending Phase 2 F-037 finalisation. No Kafka topic yet — direct HTTP
+  caller pattern.
+
+slo:
+  availability:    "99% pilot"
+  latency_p99_ms:  3000              # SMTP relay round-trip
+  error_budget:    "1% of monthly minutes"
+
+invariants_enforced:
+  - K-5     # PII fields in templates not logged (email body uses Jinja2 escaping; logger redacts subject/to)
+  - K-14    # RFC 7807 errors
+
+consumers:
+  - auth-service          # password reset, F-015 invite
+
+dependencies:
+  hard:
+    - smtp_relay          # external SMTP provider (Mailgun / SES / smtp.gmail.com in dev)
+  soft:
+    - kafka               # Phase 2 F-NEW1 expansion: consume kaori.alerts.fire topic. Today direct HTTP only.
+
+required_env:
+  - SMTP_HOST
+  - SMTP_PORT
+  - SMTP_USER
+  - SMTP_PASSWORD
+  - SMTP_FROM_ADDRESS
+
+runbook: docs/runbooks/notification-service.md

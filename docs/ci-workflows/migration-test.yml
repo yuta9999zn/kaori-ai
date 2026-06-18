@@ -1,0 +1,97 @@
+name: migration-test
+
+# Phase 2 error-handling B3 PR #9 — schema drift gate (#13).
+#
+# Boots a clean PostgreSQL container, applies every SQL file under
+# infrastructure/postgres/migrations/ in order (mirrors the
+# docker-entrypoint-initdb.d behaviour the dev compose uses), then runs
+# scripts/schema-drift.py in --check mode against the committed
+# infrastructure/postgres/schema_snapshot.txt.
+#
+# Catches:
+#   * A new migration that wasn't accompanied by a snapshot refresh.
+#   * A modified migration that silently shifts pre-existing schema.
+#   * Out-of-band manual DDL that disagrees with the migration history.
+#
+# Bootstrap (one-off, after this workflow lands):
+#   docker compose up postgres -d
+#   for f in infrastructure/postgres/migrations/*.sql; do
+#     PGPASSWORD=kaori_dev_password psql -h localhost -U kaori -d kaori -f "$f"
+#   done
+#   python scripts/schema-drift.py --write \
+#     --url postgresql://kaori:kaori_dev_password@localhost:5432/kaori
+#   git add infrastructure/postgres/schema_snapshot.txt
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    paths:
+      - "infrastructure/postgres/migrations/**"
+      - "scripts/schema-drift.py"
+      - ".github/workflows/migration-test.yml"
+      - "infrastructure/postgres/schema_snapshot.txt"
+
+concurrency:
+  group: migration-test-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    name: schema drift check
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        # Same image the dev compose uses, so extension availability
+        # (pgvector, pgcrypto, uuid-ossp) matches production.
+        image: pgvector/pgvector:pg15
+        env:
+          POSTGRES_USER: kaori
+          POSTGRES_PASSWORD: kaori_dev_password
+          POSTGRES_DB: kaori
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install psycopg2
+        run: pip install --no-cache-dir psycopg2-binary
+
+      - name: Apply migrations to clean Postgres
+        env:
+          PGPASSWORD: kaori_dev_password
+        run: |
+          set -e
+          for f in $(ls infrastructure/postgres/migrations/*.sql | sort); do
+            echo "::group::Applying $(basename "$f")"
+            psql -v ON_ERROR_STOP=1 -h localhost -U kaori -d kaori -f "$f"
+            echo "::endgroup::"
+          done
+
+      - name: Verify no schema drift
+        env:
+          DATABASE_URL: postgresql://kaori:kaori_dev_password@localhost:5432/kaori
+        run: |
+          if [ ! -f infrastructure/postgres/schema_snapshot.txt ]; then
+            echo "::error::Snapshot missing at infrastructure/postgres/schema_snapshot.txt"
+            echo "::error::Bootstrap with: python scripts/schema-drift.py --write"
+            echo "::error::then commit the file. See workflow header for the full bootstrap recipe."
+            exit 1
+          fi
+          python scripts/schema-drift.py --check

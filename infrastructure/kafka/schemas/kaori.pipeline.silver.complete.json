@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaori.io/kafka-schemas/kaori.pipeline.silver.complete.json",
+  "title": "kaori.pipeline.silver.complete",
+  "description": "Fired when Silver layer is ready (post-cleaning OR pre-analysis trigger). Two producer sites today emit slightly different optional fields — see ``Required vs optional`` in README. Required surface = what the consumer (ai-orchestrator/consumers/pipeline_consumer.py:_handle_silver_complete) actually reads.\n\nFollow-up cleanup task: split into kaori.pipeline.silver.cleaned (clean.py emits) and kaori.pipeline.silver.queued_for_analysis (analyze.py emits) so each producer owns a single shape. Tracked separately — this schema captures today's reality.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["run_id", "enterprise_id"],
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "description": "pipeline_runs.run_id — UUID string. Consumer joins on this to find queued analysis_runs."
+    },
+    "enterprise_id": {
+      "type": "string",
+      "description": "Tenant scope. Consumer uses this for acquire_for_tenant before reading analysis_runs."
+    },
+    "row_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Optional — set by clean.py after silver_rows insert. Not used by the orchestrator consumer; reserved for the gold consumer's stats."
+    },
+    "analysis_run_id": {
+      "type": "string",
+      "description": "Optional — set by analyze.py when an explicit POST /analytics/runs created the analysis_run row. Consumer falls back to looking up queued runs by (run_id, enterprise_id) when absent."
+    },
+    "consent_external_ai": {
+      "type": "boolean",
+      "description": "Optional — set by analyze.py to forward the K-4 consent flag to the runner without an extra DB lookup."
+    }
+  }
+}

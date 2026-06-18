@@ -1,0 +1,75 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Production overlay — FPT Cloud target. 3 replicas for gateway/auth/
+# data-pipeline (high traffic), 2 for ai/llm/notification, 1 for
+# notification-service (single-instance SMTP outbox poller).
+# NetworkPolicy enforced. OTel sampling 10% (cost). VaultAddr points
+# at the prod Vault HA cluster.
+
+namespace: kaori
+
+resources:
+  - ../../base
+  - rendered.yaml
+
+# Per-service replica overrides (gateway/auth/data scale higher).
+patches:
+  - target:
+      kind: Deployment
+      name: api-gateway
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 3
+  - target:
+      kind: Deployment
+      name: auth-service
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 3
+  - target:
+      kind: Deployment
+      name: data-pipeline
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 3
+  - target:
+      kind: Deployment
+      name: notification-service
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
+
+configMapGenerator:
+  - name: env-overrides
+    literals:
+      - LOG_LEVEL=INFO
+      - KAORI_ENV=production
+      - VAULT_ADDR=https://vault.kaori.ai:8200  # HA cluster, TLS
+      - OTEL_TRACES_SAMPLER_ARG=0.1  # 10% sampling — cost vs coverage
+
+# Production registry — FPT Cloud Container Registry once active.
+# Until commercial contract signed, falls back to GHCR.
+images:
+  - name: ghcr.io/yuta9999zn/kaori-system/api-gateway
+    newName: registry.fptcloud.com/kaori-prod/api-gateway
+    newTag: v4.0-phase1-complete
+  - name: ghcr.io/yuta9999zn/kaori-system/auth-service
+    newName: registry.fptcloud.com/kaori-prod/auth-service
+    newTag: v4.0-phase1-complete
+  - name: ghcr.io/yuta9999zn/kaori-system/data-pipeline
+    newName: registry.fptcloud.com/kaori-prod/data-pipeline
+    newTag: v4.0-phase1-complete
+  - name: ghcr.io/yuta9999zn/kaori-system/ai-orchestrator
+    newName: registry.fptcloud.com/kaori-prod/ai-orchestrator
+    newTag: v4.0-phase1-complete
+  - name: ghcr.io/yuta9999zn/kaori-system/llm-gateway
+    newName: registry.fptcloud.com/kaori-prod/llm-gateway
+    newTag: v4.0-phase1-complete
+  - name: ghcr.io/yuta9999zn/kaori-system/notification-service
+    newName: registry.fptcloud.com/kaori-prod/notification-service
+    newTag: v4.0-phase1-complete

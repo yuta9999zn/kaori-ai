@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaori.io/kafka-schemas/kaori.pipeline.upload.received.json",
+  "title": "kaori.pipeline.upload.received",
+  "description": "Fired by data-pipeline POST /upload after a file lands in bronze. Producer: services/data-pipeline/bronze/ingestor.py:130.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["run_id", "enterprise_id", "filename", "sha256", "size_bytes"],
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "description": "pipeline_runs.run_id — UUID string. Joins to bronze_files / silver_rows / analysis_runs."
+    },
+    "enterprise_id": {
+      "type": "string",
+      "description": "Tenant scope. Always set; consumers filter cross-tenant work by this."
+    },
+    "filename": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Original upload filename. Used in the dashboard run list."
+    },
+    "sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "description": "K-8 idempotency key — same content = same hash, dedupe at ingest."
+    },
+    "size_bytes": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Raw upload size. Surfaced for billing/auditing."
+    }
+  }
+}

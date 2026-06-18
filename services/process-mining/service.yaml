@@ -1,0 +1,46 @@
+# service.yaml — process-mining (skeleton, Phase 2 extract target)
+
+name:        process-mining
+display:     "Process Mining Engine"
+language:    python
+runtime:     "FastAPI + pm4py / custom Heuristic Miner"
+port:        8096                # reserved at P15-S9 follow-up; service goes live Phase 2 extract
+owner:       "@yuta9999zn"
+team:        kaori-core
+tier:        2
+status:      skeleton
+
+# Bounded context.
+context: >
+  Discover workflows from event logs across 8 source types (Postgres CDC,
+  Excel revisions, Zalo metadata, Gmail audit, Misa, Fast, Outlook, Slack/
+  Teams audit). Phase 1 implements 3 sources (Postgres CDC + Excel + Zalo),
+  Heuristic Miner algorithm, bypass + shadow process detection. Phase 2
+  adds Inductive + Fuzzy Miner, all 8 sources, conformance analysis.
+  This is the v4 moat capability — SME khách hàng không biết workflow thật,
+  AI mine từ log thật → builder pre-populated.
+
+slo:
+  availability:    "95% Phase 1 (mining session is async)"
+  mining_session_completion_p95_min: 30   # for 100K events
+
+invariants_enforced:
+  - K-1
+  - K-5     # PII redaction Vietnamese-aware (PM-PII-010)
+  - K-12
+  - K-15
+  - K-19    # OTel + tenant_id span
+
+consumers:
+  - studio          # P3 builder reads mining session results
+  - ai-orchestrator # reasoning layer cites mining findings in insight panel
+
+depends_on:
+  - postgres        # mining sessions metadata + findings
+  - clickhouse      # event log storage Phase 1.5+ (Silver tier)
+  - redis           # session locks
+  - vault           # source connector credentials per tenant
+
+references:
+  - docs/strategic/WORKFLOW_SYSTEM.md   # PART IV (Process Mining ⭐ NEW v2.0)
+  - docs/BACKLOG_V4.md                  # P1-S7 (PM-EVT-001..033), P2-S13/S14 (full 8 sources + algos)

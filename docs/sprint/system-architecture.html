@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaori AI — System Architecture (Backend · LLM/RAG · API Security · Frontend)</title>
+<link rel="stylesheet" href="kaori-shared-tokens.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"
+        onerror="document.getElementById('mermaid-cdn-fallback').style.display='block'"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 14px;
+  }
+  .container { max-width: 1180px; margin: 0 auto; padding: 28px 36px; }
+
+  /* Intro */
+  .intro {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+  }
+  .intro h2 { font-size: 20px; margin-bottom: 8px; }
+  .intro p { color: var(--text-soft); margin-bottom: 8px; }
+
+  /* TOC */
+  .toc {
+    background: var(--bg-soft);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 13px;
+  }
+  .toc h3 { font-size: 13px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .4px; color: var(--text-soft); }
+  .toc ol { list-style: none; columns: 2; column-gap: 24px; }
+  .toc li { padding: 2px 0; break-inside: avoid; counter-increment: toc-counter; }
+  .toc li::before { content: counter(toc-counter) ". "; color: var(--text-mute); font-variant-numeric: tabular-nums; }
+  .toc { counter-reset: toc-counter; }
+  .toc a { color: var(--accent); text-decoration: none; font-size: 12.5px; }
+  .toc a:hover { text-decoration: underline; }
+
+  /* Sections */
+  section.sa-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 26px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  section.sa-section > h2 {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 6px;
+  }
+  section.sa-section h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 16px 0 8px;
+  }
+  section.sa-section h4 {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin: 12px 0 6px;
+  }
+  section.sa-section p { margin-bottom: 8px; color: var(--text-soft); }
+  section.sa-section ul, section.sa-section ol { margin: 6px 0 12px 22px; color: var(--text-soft); }
+  section.sa-section li { margin-bottom: 3px; }
+  section.sa-section code {
+    background: var(--code-bg);
+    padding: 0 5px;
+    border-radius: 3px;
+    font-size: 12.5px;
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  }
+  section.sa-section strong { color: var(--text); }
+  section.sa-section .note {
+    background: var(--info-bg);
+    color: var(--info);
+    border-left: 3px solid var(--info);
+    padding: 8px 12px;
+    border-radius: 0 4px 4px 0;
+    margin: 10px 0;
+    font-size: 12.5px;
+  }
+  section.sa-section .warn {
+    background: var(--warn-bg);
+    color: var(--warn);
+    border-left: 3px solid var(--warn);
+    padding: 8px 12px;
+    border-radius: 0 4px 4px 0;
+    margin: 10px 0;
+    font-size: 12.5px;
+  }
+
+  /* Tables */
+  table.sa-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 16px;
+    font-size: 12.5px;
+  }
+  table.sa-table th {
+    background: var(--bg-soft);
+    color: var(--text);
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 2px solid var(--border-strong);
+    font-weight: 700;
+  }
+  table.sa-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-soft);
+    vertical-align: top;
+  }
+  table.sa-table tr:hover td { background: var(--bg-soft); }
+  table.sa-table code { font-size: 11.5px; }
+  table.sa-table .kcode {
+    display: inline-block;
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 11.5px;
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  }
+
+  /* Mermaid */
+  pre.mermaid {
+    background: var(--bg-soft);
+    padding: 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    overflow-x: auto;
+    font-size: 11.5px;
+    margin: 12px 0;
+  }
+
+  /* Layer cards */
+  .layer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+    margin: 12px 0 16px;
+  }
+  .layer-card {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 12px 14px;
+  }
+  .layer-card h4 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    color: var(--accent);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .layer-card p { font-size: 12.5px; margin-bottom: 4px; }
+  .layer-card ul { margin: 4px 0 0 18px; font-size: 12px; }
+
+  /* Footer */
+  footer.refs {
+    margin-top: 24px;
+    padding: 16px 22px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    font-size: 12.5px;
+    color: var(--text-soft);
+  }
+  footer.refs h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .4px; color: var(--text-mute); margin-bottom: 8px; }
+  footer.refs ul { margin-left: 22px; }
+
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div id="mermaid-cdn-fallback" style="display:none;padding:14px 16px;margin:0 0 16px;background:#fef3c7;border:1px solid #f59e0b;border-radius:4px;font-size:13px;color:#7c2d12">
+  ⚠ Mermaid CDN không tải được. Diagram sẽ hiển thị dưới dạng code block. Bật mạng hoặc self-host
+  <code>mermaid.min.js</code> next to this file rồi cập nhật <code>src</code> trong script tag.
+</div>
+
+<div class="container">
+
+  <header class="file-meta">
+    <h1>Kaori AI — System Architecture (SA)</h1>
+    <dl>
+      <dt>File</dt><dd><code>docs/sprint/system-architecture.html</code></dd>
+      <dt>Version</dt><dd>1.2 (2026-05-21 EOD3) — tier 3 close: +Reading paths §1 · +3 sub-view diagrams §2 · +UAT coverage column §12 · +CR Register §12.1. v1.1 (2026-05-21 EOD2) — tier 1+2 review pass. v1.0 (2026-05-21) — initial.</dd>
+      <dt>Phase</dt><dd>Phase 2.8 / Round 5 — branch <code>feat/p15-s9-d1</code> ~252 commits ahead <code>main</code></dd>
+      <dt>Audience</dt><dd>Engineering Lead · Architect · Senior dev · DevOps · Security review · Onboarding partner technical</dd>
+      <dt>Scope</dt><dd>Tổng quan từ backend (LLM/RAG, Data Plane, Workflow) → API Security (K-rules, JWT/RLS) → Frontend (6 portal · 77 màn). KHÔNG thay thế <code>SAD_SKELETON_V2.md</code> deep-dive; SA HTML này là entry-point + visual index.</dd>
+      <dt>Depends on</dt><dd><code>CLAUDE.md</code> §1-15 · <code>strategic/SAD_SKELETON_V2.md</code> · <code>strategic/PIPELINE_UNIFIED.md</code> · 17 ADRs (0001-0026) · <code>BACKLOG_V4.md</code> · <code>API_CATALOG_V4.md</code></dd>
+    </dl>
+  </header>
+
+  <div class="intro">
+    <h2>Một file, toàn cảnh</h2>
+    <p>Tài liệu này tổng hợp <strong>kiến trúc tổng thể Kaori AI</strong> ở mức "đọc 20 phút hiểu hệ thống" — 6 layer + 4 nhóm cross-cutting, kèm Mermaid diagram, ASCII flow, K-rule table. Mục tiêu: engineer mới onboard, security audit, hoặc partner technical review đều có thể bắt đầu từ đây và đi sâu vào doc layer tương ứng.</p>
+    <p>3 trục anh muốn nắm rõ và bố cục trong file này:</p>
+    <ul style="margin-left: 24px; color: var(--text-soft); font-size: 13px;">
+      <li><strong>Backend / LLM / RAG</strong> → §3-5 (Infra · Data Plane · Reasoning + LLM Gateway)</li>
+      <li><strong>API Security</strong> → §8 (20 K-rule invariants) + §9 (Governance + Observability)</li>
+      <li><strong>Frontend</strong> → §7 (Layer 5: 77 màn × 6 portal, tạm paused per CLAUDE.md §2)</li>
+    </ul>
+
+    <h3 style="font-size: 14px; margin-top: 14px; color: var(--text);">Reading paths — đọc theo audience</h3>
+    <table class="sa-table" style="margin: 6px 0 4px;">
+      <tr><th style="width: 32%;">Audience</th><th>Section path</th><th style="width: 12%;">Time</th></tr>
+      <tr><td><strong>Engineering Lead onboarding</strong></td><td>§1 → §2 → §10 → §12 (overview + diagram + tech stack + roadmap)</td><td>~30 min</td></tr>
+      <tr><td><strong>Security audit</strong></td><td>§8 → §9 → §11 (K-rules + governance + E2E walkthrough)</td><td>~45 min</td></tr>
+      <tr><td><strong>Architect deep-dive</strong></td><td>Toàn bộ file (12 section + 4 Mermaid + 15 bảng + links ra strategic docs)</td><td>~2 h</td></tr>
+      <tr><td><strong>Partner technical review</strong></td><td>§2 → §5 → §11 (high-level + LLM/RAG + E2E flow)</td><td>~1 h</td></tr>
+    </table>
+  </div>
+
+  <nav class="toc">
+    <h3>Mục lục</h3>
+    <ol>
+      <li><a href="#s1-overview">Tổng quan + Triết lý kiến trúc</a></li>
+      <li><a href="#s2-diagram">Sơ đồ hệ thống (6 layer)</a></li>
+      <li><a href="#s3-layer0">Layer 0 — Infrastructure Foundation</a></li>
+      <li><a href="#s4-data">Layer 1+2 — Ingestion + Data Plane (Medallion)</a></li>
+      <li><a href="#s5-reasoning">Layer 3 — Reasoning + LLM Gateway + RAG</a></li>
+      <li><a href="#s6-workflow">Layer 4 + 4.5 — Workflow + Org Intelligence</a></li>
+      <li><a href="#s7-user">Layer 5 — User Layer (FE · API Gateway · Notification)</a></li>
+      <li><a href="#s8-security">API Security — 20 K-rule invariants</a></li>
+      <li><a href="#s9-governance">Cross-cutting — Governance + Observability</a></li>
+      <li><a href="#s10-tech">Tech Stack tổng kết</a></li>
+      <li><a href="#s11-walkthrough">E2E walkthrough — Upload đến Insight</a></li>
+      <li><a href="#s12-roadmap">Sprint roadmap đến hôm nay</a></li>
+    </ol>
+  </nav>
+
+  <!-- ============================ §1 ============================ -->
+  <section class="sa-section" id="s1-overview">
+    <h2>1. Tổng quan + 10 nguyên tắc kiến trúc</h2>
+    <p><strong>Kaori AI</strong> là SaaS B2B (+ một dòng Personal nhỏ) biến dữ liệu kinh doanh thành quyết định — không cần data engineer. v4 mở rộng qua <strong>24 tháng × 36 sprint × ~1147 features</strong>, phục vụ <strong>4 audience × 6 portal</strong>:</p>
+
+    <table class="sa-table">
+      <tr><th>Audience</th><th>Portal</th><th>Route</th><th>Roles</th><th>Entry</th></tr>
+      <tr><td>Platform staff</td><td>P1 Platform Manager</td><td><code>/platform</code></td><td>SUPER_ADMIN · ADMIN · SUPPORT · CSM</td><td>Phase 1</td></tr>
+      <tr><td>Enterprise</td><td>P2 Enterprise Portal</td><td><code>/p2</code></td><td>MANAGER · OPERATOR · ANALYST · VIEWER</td><td>Phase 1-3</td></tr>
+      <tr><td>Studio Analyst</td><td>P3 Studio</td><td><code>/p3</code></td><td>STU-01 Studio Analyst (alias <code>STUDIO_ANALYST</code> in code) · STU-02 Studio Admin (alias <code>STUDIO_ADMIN</code>) · STU-03 Reviewer/QA</td><td>Phase 2</td></tr>
+      <tr><td>Freelancer</td><td>P4 Personal</td><td><code>/p4</code></td><td>PERSONAL_USER</td><td>Phase 2</td></tr>
+      <tr><td>Cross-cutting</td><td>P5 Shared · P6 Billing</td><td><code>/shared</code> · <code>/billing</code></td><td>Admin / Finance only</td><td>Phase 1-3</td></tr>
+    </table>
+
+    <h3>10 nguyên tắc kiến trúc (lấy từ <code>SAD_SKELETON_V2.md</code>)</h3>
+    <ol>
+      <li><strong>Layered architecture</strong> — 6 layer rõ ràng, dependency một chiều top-down request, bottom-up data.</li>
+      <li><strong>Event-driven backbone</strong> — Redis Streams Phase 1 + Kafka topic legacy; async by default.</li>
+      <li><strong>Polyglot persistence</strong> — Postgres + pgvector (transactional + Phase 1-2 vector embedded) + ClickHouse (analytical) + MinIO (blob) + Redis (cache) + Vault (secrets); external managed vector DB (Pinecone / Qdrant) cân nhắc Phase 3 cho data-residency-strict workload.</li>
+      <li><strong>Multi-tenancy first-class</strong> — every layer carries <code>tenant_id</code>; RLS at DB; cross-tenant leak = critical bug (K-1, K-12).</li>
+      <li><strong>Reliability over performance</strong> — idempotency by design (K-8, K-13), saga compensation, at-least-once + idempotency &gt;&gt;&gt; exactly-once.</li>
+      <li><strong>AI as layer, not feature</strong> — Reasoning Layer là service riêng; LLM version pinned per workflow (K-20).</li>
+      <li><strong>Process Mining = moat</strong> — discover before build; AI mine logs → builder pre-populated.</li>
+      <li><strong>Operational economics = manager language</strong> — mọi capability quy ra VND; NOV monthly; ROI first-class.</li>
+      <li><strong>Adoption intelligence</strong> — track resistance signals (abandonment, override, side-channel); proactive intervention.</li>
+      <li><strong>Vietnam-native</strong> — hosted in Vietnam (data residency); Zalo + Misa + Fast + Bravo first-class; pricing in VND.</li>
+    </ol>
+  </section>
+
+  <!-- ============================ §2 ============================ -->
+  <section class="sa-section" id="s2-diagram">
+    <h2>2. Sơ đồ hệ thống — 6 layer</h2>
+    <p>Top-down request flow (Frontend → Gateway → Reasoning → Workflow → Data → Infra). Bottom-up data flow (Bronze → Silver → Gold → UI).</p>
+
+    <pre class="mermaid">
+flowchart TB
+  subgraph L5["L5 — User Layer (Phase 1 paused: FE Next.js · API Gateway live)"]
+    FE["Frontend Next.js 16<br/>77 màn × 6 portal"]
+    GW["API Gateway<br/>Java SCG 8080"]
+    NT["Notification<br/>SMTP + Zalo + Telegram"]
+  end
+
+  subgraph L4["L4 — Workflow + L4.5 Org Intelligence"]
+    WF["Workflow Engine<br/>Temporal worker · 45 node executors · 25 templates · K-17"]
+    PM["Process Mining<br/>10 connectors · 5 anomaly detectors · Inductive/Fuzzy Miner"]
+    AD["Adoption Intel<br/>9 signals · interventions"]
+    NV["Economics / NOV<br/>Revenue / Cost / ROI dashboards"]
+  end
+
+  subgraph L3["L3 — Reasoning + LLM + RAG"]
+    RE["Reasoning Layer<br/>Insight · Recommendation · Constraint · Formula · Criteria · KPI engine · CDFL · DocSage"]
+    RAG["RAG 4-engine<br/>Vector (pgvector) · Tree (PageIndex) · Trace recall (T-Cube) · Structured SQL"]
+    LG["LLM Gateway 8095<br/>Qwen-first · pluggable adapter · K-4/K-20"]
+  end
+
+  subgraph L2["L2 — Data Plane (Medallion)"]
+    BR["Bronze<br/>MinIO + Parquet · append-only · SHA-256 · K-2"]
+    SI["Silver<br/>ClickHouse + Postgres · 8-step clean · 7-dim quality scorecard"]
+    GO["Gold<br/>Postgres MV + Redis cache · feature engineering · K-9"]
+  end
+
+  subgraph L1["L1 — Ingestion"]
+    CN["10 Connectors<br/>Postgres CDC · Excel · Zalo · Gmail · Outlook · Calendar · Slack · Teams · SharePoint · webhook"]
+  end
+
+  subgraph L0["L0 — Infrastructure (Hosted in VN — FPT/Viettel)"]
+    PG["Postgres 15<br/>+ pgvector · RLS"]
+    RD["Redis 7<br/>cache · streams · idempotency"]
+    KF["Kafka 7.5<br/>legacy topic"]
+    OL["Ollama / Qwen 2.5 14B<br/>+ BGE-M3 + Qwen2-VL"]
+    VA["Vault HA<br/>secrets per-tenant"]
+    TM["Temporal<br/>workflow cluster"]
+    CK["ClickHouse 3-node<br/>silver + traces"]
+    K8["K8s 1.28<br/>FPT Cloud HCM"]
+  end
+
+  FE --> GW
+  GW --> RE
+  GW --> WF
+  GW --> NT
+  RE --> RAG
+  RE --> LG
+  WF --> RE
+  WF --> NT
+  PM --> WF
+  AD --> NT
+  NV --> RE
+  RAG --> SI
+  RAG --> GO
+  SI --> BR
+  GO --> SI
+  CN --> BR
+  BR --> PG
+  SI --> CK
+  GO --> PG
+  RE --> PG
+  WF --> PG
+  WF --> TM
+  WF --> RD
+  LG --> OL
+  PG --> K8
+    </pre>
+
+    <div class="note">Mỗi layer có <strong>contract API riêng</strong> + có thể swap implementation. Process Mining / Adoption Intel / Economics đang là <strong>module trong <code>ai-orchestrator</code></strong> (Phase 1 monolith); Phase 3 extract thành microservice riêng — phân tách boundary đã ready từ Phase B-2 (ADR-0010).</div>
+
+    <h3>2.1 Sub-view A — Top-down request path (đường đi của 1 user request)</h3>
+    <pre class="mermaid">
+flowchart LR
+  U([User]) --> FE[Frontend Next.js]
+  FE -- JWT + Idempotency-Key --> GW[API Gateway · Java SCG]
+  GW -- X-Enterprise-Id<br/>X-User-Id · X-Role<br/>K-7 --> SVC[FastAPI service<br/>data-pipeline / ai-orch / llm-gw / notification]
+  SVC -- acquire_for_tenant GUC<br/>K-1 RLS --> PG[(Postgres)]
+  SVC -- async event --> RD[(Redis Streams)]
+  SVC -- LLM call --> LG[llm-gateway]
+  LG -- K-3 K-4 K-20 --> OL[Ollama Qwen / Vendor]
+    </pre>
+
+    <h3>2.2 Sub-view B — Bottom-up data path (Bronze → Insight)</h3>
+    <pre class="mermaid">
+flowchart LR
+  Src[(Source<br/>Excel · Postgres CDC · Zalo · Gmail<br/>10 connector)] --> CN[Ingestion<br/>K-5 PII redact byte-level]
+  CN --> BR[(Bronze<br/>MinIO Parquet · append-only K-2<br/>SHA-256 K-8)]
+  BR --> SI[(Silver<br/>ClickHouse + Postgres<br/>8-step clean · 7-dim quality ≥0.80)]
+  SI --> GO[(Gold<br/>Postgres MV + Redis cache<br/>K-9 NUMERIC)]
+  GO --> IE[Insight Engine<br/>SQL → KPI → benchmark]
+  IE --> RAG[RAG enrich<br/>4 engine]
+  RAG --> Render[LLM render<br/>chỉ render, không compute]
+  Render --> UI[Frontend / SSE / Notification]
+    </pre>
+
+    <h3>2.3 Sub-view C — Cross-cutting concerns (xuyên mọi layer)</h3>
+    <pre class="mermaid">
+flowchart TB
+  subgraph CC["Cross-cutting concerns (mọi layer phải thoả)"]
+    direction LR
+    Vault[Vault HA<br/>K-18 secrets only-store]
+    Otel[OpenTelemetry<br/>K-19 tenant_id span]
+    Audit[Audit log<br/>K-6 decision · ai_decision_audit · workflow_events]
+    Lineage[Data lineage<br/>P2.7 mig 097 — 12 object kind]
+    Policy[Policy engine<br/>P2.7 mig 099 — declarative rule]
+    Quota[Tenant quotas<br/>P2.7 mig 099 — pre-flight 429]
+    RLS[RLS K-1<br/>tenant_id GUC mọi SELECT]
+    Idem[Idempotency<br/>K-13 Redis 24h + PG ledger 7d]
+  end
+
+  L5[L5 User] --> CC
+  L4[L4 Workflow + 4.5 Org Intel] --> CC
+  L3[L3 Reasoning + LLM + RAG] --> CC
+  L2[L2 Data Plane] --> CC
+  L1[L1 Ingestion] --> CC
+  L0[L0 Infrastructure] --> CC
+    </pre>
+    <p class="note" style="background:transparent;border-left:3px solid var(--info);color:var(--text-soft);">Cross-cutting concerns KHÔNG là layer riêng — chúng xuyên qua mọi layer. Mỗi PR mới đụng vào bất kỳ layer nào phải tự verify đã carry 8 concern này (RLS · idempotency · OTel · audit · lineage · policy · quota · Vault). Phá 1 trong số = critical bug per CLAUDE.md §4.</p>
+  </section>
+
+  <!-- ============================ §3 ============================ -->
+  <section class="sa-section" id="s3-layer0">
+    <h2>3. Layer 0 — Infrastructure Foundation</h2>
+    <p>Mọi service top-up đều phụ thuộc vào layer này. Tách bạch transactional / analytical / blob / vector / secret theo nguyên tắc <strong>polyglot persistence</strong>.</p>
+
+    <table class="sa-table">
+      <tr><th>Component</th><th>Tech</th><th>Vai trò</th><th>State</th><th>K-rule liên quan</th></tr>
+      <tr><td>Transactional DB</td><td>PostgreSQL 15 + pgvector</td><td>workflows · configs · ACL · embeddings · audit · gold MV</td><td>✅ chạy</td><td><span class="kcode">K-1</span> RLS · <span class="kcode">K-9</span> NUMERIC</td></tr>
+      <tr><td>Cache + Stream</td><td>Redis 7</td><td>API cache · Idempotency 24h · rate limit · Redis Streams workflow events</td><td>✅ chạy</td><td><span class="kcode">K-13</span> idem 24h · ADR-0017</td></tr>
+      <tr><td>Legacy event bus</td><td>Kafka 7.5</td><td>topic v3 legacy giữ; Phase 2 mở rộng cho PM throughput</td><td>✅ chạy</td><td>ADR-0017</td></tr>
+      <tr><td>LLM runtime</td><td>Ollama · Qwen 2.5 14B · BGE-M3 · Qwen2-VL</td><td>chat completion · embedding · OCR (Phase 2.5)</td><td>✅ chạy</td><td><span class="kcode">K-4</span> Qwen default · ADR-0015</td></tr>
+      <tr><td>Object storage</td><td>MinIO distributed</td><td>Bronze immutable Parquet · file exports · attachments</td><td>🔵 P1-S3</td><td><span class="kcode">K-2</span> append-only · <span class="kcode">K-8</span> SHA-256 idem</td></tr>
+      <tr><td>Analytics DB</td><td>ClickHouse 3-node</td><td>Silver tier columnar · OTel traces · NOV time-series</td><td>🔵 P15-S10 (infra-gated)</td><td>ADR-0012</td></tr>
+      <tr><td>Secret store</td><td>HashiCorp Vault HA</td><td>secrets per-tenant path · field-encryption keys · MFA master · SSO IdP creds</td><td>🔵 P15-S9 (Vault wired 2026-05-18)</td><td><span class="kcode">K-18</span> Vault-only prod</td></tr>
+      <tr><td>Workflow orchestrator</td><td>Temporal cluster</td><td>workflow execution · cron schedule · saga compensation · activity retry</td><td>🔵 P1-S6 (worker code ready, gated <code>TEMPORAL_ENABLE_WORKER=true</code>)</td><td><span class="kcode">K-17</span> side-effect class · ADR-0011</td></tr>
+      <tr><td>Observability</td><td>OTel + Jaeger + Prometheus + Loki + Sentry</td><td>distributed trace · metrics · log · error tracking</td><td>🔵 P1-S2 partial</td><td><span class="kcode">K-19</span> tenant_id span attr</td></tr>
+      <tr><td>Container orchestration</td><td>Kubernetes 1.28</td><td>FPT Cloud HCM — 3 node pool (default · ollama tainted · low-priority)</td><td>🔵 P15-S9 deferred</td><td>ADR-0016</td></tr>
+      <tr><td>Vector store (Phase 2+)</td><td>Pinecone managed / Qdrant fallback</td><td>RAG retrieval cho enterprise corpus</td><td>🔵 P15+</td><td>ADR-0019</td></tr>
+    </table>
+
+    <div class="note"><strong>Hosting</strong>: data residency Vietnam (ADR-0016 FPT Cloud HCM primary, Viettel secondary). Phase 1 pilot localhost dev; Phase 1.5+ cutover K8s production. Per <code>tenant.data_residency_strict=true</code> tenant: <strong>luôn Qwen local, override mọi consent_external</strong>.</div>
+  </section>
+
+  <!-- ============================ §4 ============================ -->
+  <section class="sa-section" id="s4-data">
+    <h2>4. Layer 1+2 — Ingestion + Data Plane (Medallion)</h2>
+    <p><strong>BA traceability</strong>: thực hiện <code>EPIC-01</code> Data Foundation (BRD v4.1). Quality scorecard thuộc <code>NFR-DQ-01..07</code> (NFRS §13).</p>
+
+    <h3>4.1 Layer 1 — Ingestion (10 connector)</h3>
+    <p>Multi-source ingestion với PII redaction byte-level <strong>trước</strong> publish vào Bronze (K-5). Mỗi connector implement contract <code>extract_events()</code> → normalized event stream.</p>
+    <table class="sa-table">
+      <tr><th>Connector</th><th>Source</th><th>Auth</th><th>Mode</th></tr>
+      <tr><td>Postgres CDC</td><td>Debezium / wal2json</td><td>service role</td><td>streaming</td></tr>
+      <tr><td>Excel / CSV</td><td>FE upload</td><td>JWT</td><td>batch</td></tr>
+      <tr><td>Zalo</td><td>Zalo OA API</td><td>OAuth2</td><td>polling</td></tr>
+      <tr><td>Gmail</td><td>Gmail API</td><td>OAuth2 + label filter</td><td>polling (Temporal cron)</td></tr>
+      <tr><td>Outlook</td><td>MS Graph</td><td>OAuth2</td><td>polling</td></tr>
+      <tr><td>Calendar</td><td>Google / Outlook</td><td>OAuth2</td><td>polling</td></tr>
+      <tr><td>Slack / Teams</td><td>Webhook / Bot SDK</td><td>OAuth2 + signing secret</td><td>push</td></tr>
+      <tr><td>SharePoint</td><td>MS Graph</td><td>OAuth2 + app permission</td><td>polling</td></tr>
+      <tr><td>Generic webhook</td><td>HTTP POST</td><td>HMAC-SHA256 signature</td><td>push</td></tr>
+    </table>
+
+    <h3>4.2 Layer 2 — Medallion Architecture (Bronze · Silver · Gold)</h3>
+    <pre class="mermaid">
+flowchart LR
+  Upload[Upload / Connector] --> Bronze[(Bronze MinIO<br/>Parquet append-only<br/>SHA-256 fingerprint<br/>K-2 · K-8)]
+  Bronze --> SilverStep[Silver pipeline<br/>8 step]
+  SilverStep --> S1[1. schema_validation]
+  S1 --> S2[2. type_cast]
+  S2 --> S3[3. null_handling]
+  S3 --> S4[4. dedup]
+  S4 --> S5[5. PII_masking_VN<br/>K-5]
+  S5 --> S6[6. normalize]
+  S6 --> S7[7. outlier_flag]
+  S7 --> S8[8. lineage_tag]
+  S8 --> QualityGate{7-dim Quality<br/>weighted ≥ 0.80?}
+  QualityGate -- yes --> Gold[(Gold Postgres MV<br/>+ Redis cache<br/>K-9 NUMERIC)]
+  QualityGate -- no --> Quarantine[Silver quarantine<br/>+ DLQ alert]
+    </pre>
+
+    <h4>7-dimension quality scorecard (mig 065)</h4>
+    <table class="sa-table">
+      <tr><th>Dimension</th><th>Weight</th><th>Measured by</th></tr>
+      <tr><td>Completeness</td><td>0.20</td><td>NULL count / row count per column</td></tr>
+      <tr><td>Validity</td><td>0.20</td><td>Type-cast success rate · regex match</td></tr>
+      <tr><td>Uniqueness</td><td>0.15</td><td>1 − (duplicate count / row count)</td></tr>
+      <tr><td>Consistency</td><td>0.15</td><td>Cross-field constraint pass</td></tr>
+      <tr><td>Timeliness</td><td>0.10</td><td>Event lag from source timestamp</td></tr>
+      <tr><td>Accuracy</td><td>0.10</td><td>Outlier residual (IQR / Z-score)</td></tr>
+      <tr><td>Conformity</td><td>0.10</td><td>Enum + format adherence</td></tr>
+    </table>
+    <p><strong>Gate</strong>: weighted avg ≥ 0.80 → promote Gold; else quarantine + DLQ.</p>
+
+    <h4>Self-discovery ở Silver (CR-0016, 2026-05-27) — không hardcode</h4>
+    <p>Bước 2 (type_cast) + bước 6 (normalize) <strong>đo từ chính dữ liệu</strong> thay vì giả định locale; phần diễn giải (QUYẾT) được <strong>surface cho người dùng/LLM duyệt</strong>, không tự áp:</p>
+    <ul>
+      <li><strong>Hướng ngày</strong> (<code>_infer_dayfirst</code>): suy D/M/Y vs M/D/Y từ cột (phần &gt;12 chứng minh vị trí ngày), mẫu ngẫu nhiên, mọi dòng đọc nhất quán. Bỏ <code>dayfirst=True</code> cứng; cột mơ hồ → default env <code>KAORI_DATE_DAYFIRST_DEFAULT</code>. Data Mỹ M/D/Y đọc đúng.</li>
+      <li><strong>Đơn giá vs thành tiền</strong>: thêm canonical <code>unit_price</code> (tách khỏi <code>amount</code>); rule <code>DERIVE_LINE_TOTAL</code> (<code>safe=false</code> → user duyệt) tính <code>amount = unit_price × quantity</code> khi chưa có total; <code>measure_amount_signals</code> ĐO bằng chứng để quyết. Gold không đổi (normalize ở Silver, Gold strict).</li>
+    </ul>
+    <p style="font-size:13px;color:var(--muted)">Chi tiết + backlog: <code>docs/strategic/NNL_SELFDISCOVERY_REASONING_ROADMAP.md</code> · spec: <code>docs/specs/MEDALLION_CONTRACT.md §6</code> · CR: <code>4.2 CR-0016</code>.</p>
+
+    <div class="warn"><strong>K-2 enforcement</strong>: Bronze tables append-only. UPDATE/DELETE refused at trigger level. Any "fix bad row" workflow MUST insert a new corrected row + lineage tag the original — never mutate.</div>
+  </section>
+
+  <!-- ============================ §5 ============================ -->
+  <section class="sa-section" id="s5-reasoning">
+    <h2>5. Layer 3 — Reasoning + LLM Gateway + RAG</h2>
+    <p>L3 là <strong>brain layer</strong>. Mọi suggestion, insight, recommendation, prompt augmentation đều đi qua đây. LLM call <strong>luôn</strong> qua <code>llm-gateway</code> — không SDK direct (K-3).</p>
+    <p><strong>BA traceability</strong>: thực hiện <code>EPIC-02</code> Insight Engine + RAG (BRD v4.1). Chat guardrails (§5.4) thuộc <code>EPIC-06</code> Conversational Layer.</p>
+
+    <h3>5.1 Reasoning sub-modules (per <code>services/ai-orchestrator/reasoning/</code>)</h3>
+    <div class="layer-grid">
+      <div class="layer-card">
+        <h4>Insight Engine</h4>
+        <p>SQL Gold view → KPI threshold → industry benchmark → RAG enrich → LLM render. <strong>LLM không compute, chỉ render</strong> (anh's lock-in 2026-05-15).</p>
+      </div>
+      <div class="layer-card">
+        <h4>KPI Engine</h4>
+        <p>30 KPI definitions × 6 dept_type (mig 049) + P25/P50/P75/P90 benchmarks (retail VN, ecommerce global, b2b VN). asyncpg $N parametrised + sql_executed audit.</p>
+      </div>
+      <div class="layer-card">
+        <h4>CDFL Agent</h4>
+        <p>Convergent Dual-Field Learning (luận văn NNL-NTHT). Learned transition model + H-step Monte Carlo lookahead + Information Gain. Map vào Process Mining + Workflow planner + RAG re-rank.</p>
+      </div>
+      <div class="layer-card">
+        <h4>DocSage</h4>
+        <p>P15-S11 D1→D6 end-to-end. Document understanding: chunk → embed (BGE-M3) → store pgvector → cosine retrieve → LLM answer.</p>
+      </div>
+      <div class="layer-card">
+        <h4>Recommendation · Constraint · Formula · Criteria</h4>
+        <p>Pure SQL/Python compute → LLM render. Constraint solver dùng Z3 cho hard constraint, fallback greedy cho soft.</p>
+      </div>
+      <div class="layer-card">
+        <h4>Trace Distiller (T-Cube)</h4>
+        <p>ADR-0021. Trace-augmented reasoning. Save thinking trace → distill → recall via 4th RAG engine cho future similar query.</p>
+      </div>
+    </div>
+
+    <h3>5.2 RAG — 4 engines (ADR-0019)</h3>
+    <table class="sa-table">
+      <tr><th>Engine</th><th>Storage</th><th>Use case</th><th>Latency</th></tr>
+      <tr><td>Vector</td><td>pgvector HNSW (mig 067)</td><td>Semantic similarity — document chunks · contract clauses</td><td>~50ms</td></tr>
+      <tr><td>Tree (PageIndex)</td><td>Postgres pageindex_trees (mig 045)</td><td>Hierarchical reasoning — long structured docs (offline pre-compute)</td><td>~30ms</td></tr>
+      <tr><td>Trace recall</td><td>Distilled trace table (T-Cube)</td><td>Recall similar past reasoning chain</td><td>~80ms</td></tr>
+      <tr><td>Structured SQL</td><td>Gold views</td><td>Numeric / aggregate questions — manager dashboard queries</td><td>~10-100ms</td></tr>
+    </table>
+
+    <h3>5.3 LLM Gateway — routing logic (K-4 · ADR-0015)</h3>
+    <pre class="mermaid">
+flowchart TD
+  Req[Inference request] --> Schema{output_schema<br/>provided?}
+  Schema --> Strict{tenant.data_residency_strict<br/>= true?}
+  Strict -- yes --> Qwen[Qwen 2.5 14B local<br/>BGE-M3 embed · Qwen2-VL OCR]
+  Strict -- no --> PII{PII detected<br/>VN-aware?}
+  PII -- yes --> Qwen
+  PII -- no --> Consent{tenant.consent_external<br/>= true AND<br/>request.prefer_external?}
+  Consent -- no --> Qwen
+  Consent -- yes --> Chat{task = chat.*<br/>v0?}
+  Chat -- yes --> Qwen
+  Chat -- no --> CB{circuit breaker<br/>open?}
+  CB -- yes --> Qwen
+  CB -- no --> Vendor[Vendor primary<br/>Anthropic / OpenAI / ...]
+  Vendor -- error --> Qwen
+  Qwen --> Validate{schema validate?}
+  Vendor --> Validate
+  Validate -- pass --> Out[Output + audit row<br/>K-6 + K-20 pinned model_version]
+  Validate -- 1st fail --> Repair[1 repair round]
+  Repair --> Validate
+  Validate -- 2nd fail --> Err[502 LLM.OUTPUT_VALIDATION_FAILED<br/>schema_repaired=true logged]
+    </pre>
+    <p>Pluggable adapter trong <code>llm-gateway</code>: <code>OllamaAdapter</code> (Qwen + BGE-M3 + Qwen2-VL, default) · <code>AnthropicAdapter</code> · <code>OpenAIAdapter</code>. Mỗi adapter circuit breaker per provider + per-tenant token budget.</p>
+
+    <h3>5.4 Chat tool-calling guardrails (Phase 2.8 Round 5)</h3>
+    <ul>
+      <li><strong>Knowing-doing gap heuristic</strong> (ADR-0023) — keyword-score user message hop 0 → force <code>tool_choice="required"</code> nếu score ≥ 0.7. Closes ~80% paper-measured gap.</li>
+      <li><strong>Depth/width loop guardrail</strong> (ADR-0023 Alt 5, DPEPO-borrow 2026-05-21) — track tool-call history per session, abort khi <code>combined_penalty &lt; 0.3</code>. Penalty = <code>α^depth × ω^width</code> với α=0.7, ω=0.8. Refuses dispatch + feeds structured error back to LLM.</li>
+      <li><strong>Tool necessity gate by JWT</strong> (K-15, K-16) — mỗi tool call kiểm authz per tenant_id + audit log; tools never accept tenant_id/user_id/workspace_id from arguments (JWT-only via <code>ToolContext</code>).</li>
+    </ul>
+
+    <h3>5.5 Reasoning substrate — memory trust + foundational knowledge (2026-05, NNL-Harness)</h3>
+    <p>Mang 3 năng lực từ harness cục bộ NNL vào Kaori, multi-tenant + additive (engine không đổi); tri thức từ DB, ngưỡng env-configurable (<strong>không hardcode</strong>).</p>
+    <ul>
+      <li><strong>Memory trust + palace</strong> (ADR-0030 / 0032, mig 110): mỗi ký ức Stage 7 có độ-tin suy giảm theo tuổi <code>trust = confidence × 0.5^(age/half-life)</code> + cờ "confident-but-unchecked"; <code>verify()</code>/<code>reinforce()</code> tươi lại + leo confidence (học theo lần dùng); <code>experience_level</code> = "càng nhiều tháng càng biết nhiều"; recall đi 1-hop theo links (associative). Tách bạch với <em>importance</em> (giữ/quên). Knobs <code>KAORI_MEM_*</code>.</li>
+      <li><strong>Foundational knowledge base</strong> (ADR-0033, mig 106/107/111): authority tier 1–4 (regulatory &gt; curated &gt; market &gt; tenant); lớp nền (tier 1/2) bền + <em>chín theo tuổi</em> (reinforce-on-cite, ceiling per tier); version-history (<code>supersedes</code> + <code>change_reason</code>) trả lời "vì sao lại vậy"; lớp biến-động (tier 3) refresh theo chu kỳ.</li>
+      <li><strong>CDFL |OR| coverage gate — "học 1 hiểu 10"</strong>: <code>knowledge_coverage</code> trên tri thức nền → đủ phủ thì khái quát hoá tự tin (kèm "độ phủ tri thức nền X%"), thiếu thì "kiến thức nền chưa đủ" — KHÔNG bịa (K-3). Inject doc nền vào narrative phân tích thay cho principles hardcode. Knobs <code>KAORI_KB_*</code>.</li>
+    </ul>
+  </section>
+
+  <!-- ============================ §6 ============================ -->
+  <section class="sa-section" id="s6-workflow">
+    <h2>6. Layer 4 + 4.5 — Workflow Engine + Org Intelligence</h2>
+
+    <h3>6.1 Workflow Engine (L4)</h3>
+    <p>Temporal-based execution. 45 node executors (100% catalog coverage, mig 088→092→093) wrap 25 production templates (mig 069) × 8 industry vertical. Mỗi node MUST declare <code>side_effect_class</code> (K-17): <code>pure · read_only · write_idempotent · write_non_idempotent · external</code>.</p>
+    <p><strong>BA traceability</strong>: thực hiện <code>EPIC-08</code> Workflow Engine + <code>EPIC-09</code> Workflow Builder + <code>EPIC-10</code> Industry Bootstrap (BRD v4.1).</p>
+
+    <pre class="mermaid">
+flowchart LR
+  Trigger[Trigger<br/>cron / webhook / API / approval] --> Runner[Runner<br/>Kahn topo-sort]
+  Runner --> SM[State Machine<br/>WorkflowRunState + NodeRunState<br/>P2.6 P0.2]
+  SM --> Exec{Node executor<br/>by side_effect_class}
+  Exec -- pure --> P[no retry · no compensate]
+  Exec -- read_only --> R[idem retry 3×]
+  Exec -- write_idempotent --> WI[idem retry 3× · K-13 ledger]
+  Exec -- write_non_idempotent --> WNI[no retry · compensate on rollback]
+  Exec -- external --> Ext[circuit breaker · K-13 ledger]
+  P --> Persist[(workflow_run_nodes)]
+  R --> Persist
+  WI --> Persist
+  WNI --> Persist
+  Ext --> Persist
+  Persist --> Events[workflow_events<br/>append-only · event sourcing P2.6 P0.1]
+  Events --> Replay[Replay harness P2.6 P0.4<br/>diff drift detect]
+    </pre>
+
+    <h4>Node executor categories (5 + 10 + 8 + 5 + 6 + 11 = 45)</h4>
+    <ul>
+      <li><strong>Control flow (5)</strong>: if_else · switch · aggregate · approval_gate · scheduled_trigger</li>
+      <li><strong>Data (10)</strong>: read_table · read_form_submission · read_email · read_webhook · read_calendar · read_chat · read_file_upload · read_api · update_record · enrich</li>
+      <li><strong>AI (8)</strong>: classify_text · generate_narrative · rag_query · call_insight_engine · call_risk_detection · call_forecasting · extract_entities · call_recommendation_engine</li>
+      <li><strong>Output (5)</strong>: publish_insight · publish_alert · create_task · display_dashboard · save_to_database</li>
+      <li><strong>Action / external (6)</strong>: call_api (K-13 + SSRF allowlist) · trigger_workflow · generate_report · send_email · send_sms · send_chat_message</li>
+      <li><strong>Utility / data ops (11)</strong>: filter · transform · split · join · log · validate · sort · merge · deduplicate · wait_for_condition · export_file</li>
+    </ul>
+
+    <h3>6.2 Workflow Builder + 3-tier Industry Bootstrap (Phase 2.8)</h3>
+    <p>Per ADR-0026: <strong>SME không tạo workflow từ canvas trắng</strong>. Flow là: chọn industry → preview → bootstrap → tweak.</p>
+    <ul>
+      <li><strong>Tier 1 Industry catalog</strong> (mig 101): 8 industries (Retail / F&amp;B / Logistics / Finance / Healthcare / Manufacturing / Education / Generic SME). 3 seeded (Retail / Finance / Generic SME) — 5 defer Phase 3.</li>
+      <li><strong>Tier 2 Customer config</strong> (mig 102): per-enterprise <code>workflow_customizations</code> với <code>edit_mode ∈ {simple, advanced, developer}</code>. K-2 immutable <code>customer_workflow_versions</code>.</li>
+      <li><strong>Tier 3 Runtime</strong>: 25 mig 069 templates × per-tenant customization → workflow_runs.</li>
+    </ul>
+
+    <h3>6.3 Layer 4.5 — Org Intelligence</h3>
+    <table class="sa-table">
+      <tr><th>Module</th><th>EPIC</th><th>Phase</th><th>Capability</th></tr>
+      <tr><td>Process Mining</td><td><code>EPIC-12</code></td><td>P1-S7 → P2-S14</td><td>Direct-follows + Inductive Miner + Fuzzy Miner + 5 anomaly detectors (bypass · loop · skip · split-merge · long-tail) + cohort comparison</td></tr>
+      <tr><td>Adoption Intelligence</td><td><code>EPIC-13</code></td><td>P1-S7 → P2-S18</td><td>9 signal (abandonment · override · side-channel · idle · re-export · etc.) + auto intervention triggers + Temporal hourly cron</td></tr>
+      <tr><td>Economics / NOV</td><td><code>EPIC-14</code></td><td>P1-S7 → P15-S12</td><td>Revenue / Cost / ROI per workflow · CFO quarterly digest · NOV-RPT-023/024 (recommendations + simulation)</td></tr>
+    </table>
+
+    <h3>6.4 Workflow data-model — item envelope + declarative builder (2026-05, n8n-inspired)</h3>
+    <p>Mượn <em>data-model + builder UX</em> của n8n, KHÔNG mượn engine (saga / idempotency K-13 / K-17 / Temporal / RLS giữ nguyên). Per ADR-0034 — additive / opt-in, không phá vỡ executor nào:</p>
+    <ul>
+      <li><strong>Item envelope</strong> (<code>workflow_runtime/items.py</code>): node I/O = mảng <code>[{json, binary?, pairedItem?}]</code> với lineage record-level. Runner mang <code>prior_items</code> song song <code>prior_outputs</code> — executor cũ trả <code>dict</code> vẫn chạy (auto-wrap thành 1 item, lossless). <code>map_items</code> / <code>fan_out</code> (1→N) / <code>aggregate</code> (N→1) giữ <code>pairedItem</code>; per-item failure ≠ abort (Tenet 13).</li>
+      <li><strong>Declarative builder</strong> (mig 112): <code>config_schema_json</code> (validate BE) + <code>ui_schema_json</code> (render hints FE) → builder sinh form generic, hết per-node FE code. <code>GET /workflow-node-types</code> trả cả hai → mở khoá FE workflow builder đang tạm dừng.</li>
+      <li><strong>Node <code>type_version</code></strong> (mig 113 — K-20 áp cho node): catalog + <code>workflow_nodes</code> mang version; registry <code>get_versioned</code> pin version node được build → workflow cũ không đổi ngầm khi node-type nâng cấp.</li>
+    </ul>
+  </section>
+
+  <!-- ============================ §7 ============================ -->
+  <section class="sa-section" id="s7-user">
+    <h2>7. Layer 5 — User Layer (FE · API Gateway · Notification)</h2>
+
+    <h3>7.1 API Gateway (Java Spring Cloud Gateway · port 8080)</h3>
+    <ul>
+      <li>Public route forward: <code>/api/v1/{platform,p2,p3,p4,shared,billing}/**</code> → backend.</li>
+      <li>JWT RS256 validation + extract claims → forward as <code>X-Enterprise-Id · X-User-Id · X-Role · X-Tenant-Id</code> headers (K-7).</li>
+      <li>SSO pre-auth whitelist: <code>/api/v1/auth/sso/**</code> bypass JwtAuthFilter để OAuth handshake không cần Bearer.</li>
+      <li>Rate limit: per-tenant via Redis token bucket (NFR-SEC-09).</li>
+      <li>Idempotency-Key header check on POST mutations (K-13, Redis TTL 24h).</li>
+    </ul>
+
+    <h3>7.2 Notification Service (Python FastAPI · port 8094)</h3>
+    <p>SMTP outbox Phase 1; Phase 2 thêm Zalo Bot + Telegram pluggable adapter (ADR-0018). Workflow node <code>send_email / send_sms / send_chat_message</code> push vào <code>workflow_chat_outbox</code> → bot adapter consume.</p>
+
+    <h3>7.3 Frontend (Next.js 16 + TypeScript · port 3000 · ⏸ paused)</h3>
+    <p>Per CLAUDE.md §2: FE tạm dừng — anh restructure FE template trước khi resume. FE Impl Spec v1.1 chuẩn cho 11 priority screen + 2 NEW khi resume (per <code>docs/sprint/PHASE_2_8_FE_IMPL_SPEC.md</code>).</p>
+
+    <table class="sa-table">
+      <tr><th>Portal</th><th>Routes</th><th>Screen count</th><th>Notes</th></tr>
+      <tr><td>P1 Platform</td><td><code>/platform/**</code></td><td>16 màn</td><td>Kaori staff admin</td></tr>
+      <tr><td>P2 Enterprise</td><td><code>/p2/**</code></td><td>37 màn (incl. 5 CS vertical NEW Round 4)</td><td>Enterprise daily workspace</td></tr>
+      <tr><td>P3 Studio</td><td><code>/p3/**</code></td><td>8 màn</td><td>Analyst per-enterprise scope</td></tr>
+      <tr><td>P4 Personal</td><td><code>/p4/**</code></td><td>6 màn</td><td>Freelancer self-only</td></tr>
+      <tr><td>P5 Shared</td><td><code>/shared/**</code></td><td>6 màn</td><td>Cross-cutting · admin-only — audit log · DLQ console · MCP · guardrails</td></tr>
+      <tr><td>P6 Billing</td><td><code>/billing/**</code></td><td>4 màn</td><td>Cross-cutting · financial ops</td></tr>
+    </table>
+
+    <p><strong>Stack</strong>: Next.js 16 (App Router) · TypeScript · shadcn/ui · Zustand (state) · Tanstack Query (polling) · Playwright (E2E) · Vitest + Testing Library (unit/integration) · axe-core (a11y WCAG 2.1 AA) · Lighthouse (perf budget).</p>
+
+    <div class="note">FE permission claim model (NFRS §5.bis): 10 claim chính (e.g. <code>triage_cs_tickets</code> · <code>approve_refund</code> · <code>run_churn_save_action</code>). Auto-grant theo role + dept; temporary grant TTL có audit. <strong>FE hide-not-deny</strong>: không render menu cho permission denied (anti-pattern fixed Round 3).</div>
+  </section>
+
+  <!-- ============================ §8 ============================ -->
+  <section class="sa-section" id="s8-security">
+    <h2>8. API Security — 20 K-rule invariants</h2>
+    <p>Đây là <strong>contract bất biến</strong> giữa mọi service. Phá K-rule = critical bug. CLAUDE.md §4 là canonical source; bảng dưới đây re-group theo concern.</p>
+
+    <h3>8.1 Multi-tenancy (K-1 · K-7 · K-12 · K-15 · K-16 · K-19)</h3>
+    <table class="sa-table">
+      <tr><th>K</th><th>Invariant</th><th>Why</th></tr>
+      <tr><td><span class="kcode">K-1</span></td><td>Every SELECT filters <code>WHERE tenant_id = $1</code>; RLS enforced via <code>acquire_for_tenant</code> GUC</td><td>Multi-tenant isolation (ADR-0013)</td></tr>
+      <tr><td><span class="kcode">K-7</span></td><td>JWT claims forwarded as X-* headers to all services</td><td>Single source of truth for identity</td></tr>
+      <tr><td><span class="kcode">K-12</span></td><td><code>tenant_id</code> NEVER accepted via query / body / header — JWT only</td><td>Anti-IDOR</td></tr>
+      <tr><td><span class="kcode">K-15</span></td><td>MCP tool calls: authz check per tenant_id + audit log every call</td><td>Prevent cross-tenant data via MCP</td></tr>
+      <tr><td><span class="kcode">K-16</span></td><td>Chat tools NEVER accept tenant_id / user_id / workspace_id from arguments — JWT-only via <code>ToolContext</code></td><td>K-12 applied to LLM tool-calling</td></tr>
+      <tr><td><span class="kcode">K-19</span></td><td>OpenTelemetry mandatory; every span MUST carry attribute <code>tenant_id</code></td><td>Cross-tenant trace search + leak detection</td></tr>
+    </table>
+
+    <h3>8.2 Privacy + LLM + Reasoning quality (K-3 · K-4 · K-5 · K-10 · K-20)</h3>
+    <table class="sa-table">
+      <tr><th>K</th><th>Invariant</th></tr>
+      <tr><td><span class="kcode">K-3</span></td><td>All LLM calls via <code>llm-gateway</code> — never direct SDK</td></tr>
+      <tr><td><span class="kcode">K-4</span></td><td>External AI only with <code>consent_external=True</code> + per-call <code>prefer_external=True</code>; Qwen default; <code>data_residency_strict</code> override; OCR + embedding ALWAYS local (schema-pinned)</td></tr>
+      <tr><td><span class="kcode">K-5</span></td><td>PII redaction before any external API call — VN-aware (email · phone · CCCD · tax code · name)</td></tr>
+      <tr><td><span class="kcode">K-10</span></td><td>1 question = 1 primary analysis framework, optional secondary (multi-framework via P2-M26-043) — đảm bảo recommendation traceability</td></tr>
+      <tr><td><span class="kcode">K-20</span></td><td>LLM version pinning per workflow (<code>model: ...</code>, <code>version: "..."</code>); no silent vendor upgrade — drift control</td></tr>
+    </table>
+
+    <h3>8.3 Reliability (K-8 · K-13 · K-14 · K-17)</h3>
+    <table class="sa-table">
+      <tr><th>K</th><th>Invariant</th></tr>
+      <tr><td><span class="kcode">K-8</span></td><td>Idempotent pipeline runs — SHA-256 fingerprint per file</td></tr>
+      <tr><td><span class="kcode">K-13</span></td><td>Idempotency-Key header on all POST mutations: Redis TTL 24h API-layer + Postgres <code>workflow_idempotency_records</code> TTL 7d node-layer (P2.6 P0.3)</td></tr>
+      <tr><td><span class="kcode">K-14</span></td><td>Error format: RFC 7807 Problem Details (<code>application/problem+json</code>)</td></tr>
+      <tr><td><span class="kcode">K-17</span></td><td>Workflow YAML — every node declares <code>side_effect_class</code> ∈ {pure · read_only · write_idempotent · write_non_idempotent · external}</td></tr>
+    </table>
+
+    <h3>8.4 Data integrity + audit (K-2 · K-6 · K-9 · K-11)</h3>
+    <table class="sa-table">
+      <tr><th>K</th><th>Invariant</th></tr>
+      <tr><td><span class="kcode">K-2</span></td><td>Bronze tables append-only — no UPDATE/DELETE (trigger-enforced)</td></tr>
+      <tr><td><span class="kcode">K-6</span></td><td>Decision audit log at every automated decision (<code>decision_audit_log</code> + <code>ai_decision_audit</code> P2.7)</td></tr>
+      <tr><td><span class="kcode">K-9</span></td><td><code>NUMERIC(5,4)</code> for rates, <code>NUMERIC(14,4)</code> for money — never FLOAT</td></tr>
+      <tr><td><span class="kcode">K-11</span></td><td>Billing unit = <code>COUNT(DISTINCT customer_external_id)</code> per month — anti split-batch gaming</td></tr>
+    </table>
+
+    <h3>8.5 Secrets management (K-18)</h3>
+    <table class="sa-table">
+      <tr><th>K</th><th>Invariant</th></tr>
+      <tr><td><span class="kcode">K-18</span></td><td>Phase 1.5+ — Vault is the only secret store; no env-var secrets in production profile. Field-encryption keys + MFA master + SSO IdP creds đều trong Vault path per-tenant.</td></tr>
+    </table>
+
+    <div class="warn"><strong>Audit fast-paths</strong>: AI decisions → <code>ai_decision_audit</code> (mig 098, immutable trigger). Workflow runs → <code>workflow_events</code> (mig 094, append-only). Lineage → <code>data_lineage_edges</code> (mig 097). DLQ → unified console aggregates 5 source (Kafka DLQ · Redis stream DLQ · failed runs · expired idempotency · compensation logs).</div>
+  </section>
+
+  <!-- ============================ §9 ============================ -->
+  <section class="sa-section" id="s9-governance">
+    <h2>9. Cross-cutting — Governance + Observability + Reliability</h2>
+
+    <h3>9.1 Governance layer (Phase 2.7 — 5 modules)</h3>
+    <table class="sa-table">
+      <tr><th>Module</th><th>Mig</th><th>Producer</th><th>Capability</th></tr>
+      <tr><td>Data lineage</td><td>097</td><td>data-pipeline /clean · workflow output executors</td><td>12-kind object graph (bronze/silver/gold/insight/alert/task/etc.) · BFS upstream/downstream walk</td></tr>
+      <tr><td>AI decision audit</td><td>098</td><td>llm-gateway /v1/{infer,embed,ocr}</td><td>model_version + prompt_hash + output_hash + confidence + override fields. Immutable trigger</td></tr>
+      <tr><td>Policy engine</td><td>099</td><td>approval_gate executor</td><td>Declarative rules (priority + scope + condition + action) — replaces hard-coded K-rule logic at approval</td></tr>
+      <tr><td>Tenant quotas</td><td>099</td><td>llm-gateway pre-flight · workflow start</td><td>5 quota types: llm_tokens_external · llm_tokens_local · workflow_concurrent · api_calls · export_files. 429 RFC 7807 BEFORE side effect</td></tr>
+      <tr><td>DLQ console</td><td>—</td><td>—</td><td>5-source unified ops surface · admin authz · retry / replay / requeue / discard</td></tr>
+    </table>
+
+    <h3>9.2 Reliability layer (Phase 2.6 — 9 modules)</h3>
+    <ul>
+      <li><strong>Event sourcing</strong> (P0.1, mig 094) — <code>workflow_events</code> append-only · 15-value event_type enum · immutability trigger</li>
+      <li><strong>State machine</strong> (P0.2) — <code>state_machine.py</code> · ALLOWED_WORKFLOW + ALLOWED_NODE frozensets · atomic SELECT FOR UPDATE + UPDATE</li>
+      <li><strong>Persistent idempotency</strong> (P0.3, mig 095) — survives worker restart · 3-tier cache (in-process → Postgres ledger → HTTP)</li>
+      <li><strong>Replay harness</strong> (P0.4) — projection drift detect · pytest invariant assert</li>
+      <li><strong>Module split</strong> (P1.1) — runner / state_store / state_machine / executor separation</li>
+      <li><strong>Worker pool isolation</strong> (P1.2) — 3-tier queues: kaori-critical-finance · kaori-default · kaori-low-priority</li>
+      <li><strong>Saga compensation</strong> (P1.4) — COMPENSATION_REGISTRY · reverse walk on terminal failure</li>
+      <li><strong>Lifecycle FSM</strong> (P2.2, mig 096) — customer (lead/active/at_risk/churned + win_back) · asset (draft/published/archived) with role+event guard</li>
+      <li><strong>Edge taxonomy</strong> (P2.3, mig 096) — Neo4j edge governance · 11 v0 edges · cardinality + retention + governance_owner</li>
+    </ul>
+
+    <h3>9.3 Observability stack</h3>
+    <table class="sa-table">
+      <tr><th>Concern</th><th>Tool</th><th>K-rule</th></tr>
+      <tr><td>Distributed trace</td><td>OpenTelemetry SDK + Jaeger</td><td><span class="kcode">K-19</span> tenant_id mandatory span attr</td></tr>
+      <tr><td>Metrics</td><td>Prometheus + Grafana dashboards (<code>infrastructure/grafana/dashboards/</code>)</td><td>—</td></tr>
+      <tr><td>Logs</td><td>Loki + structlog (JSON)</td><td>—</td></tr>
+      <tr><td>Errors</td><td>Sentry</td><td>—</td></tr>
+      <tr><td>Anomaly</td><td>OBS-018 z-score + EWMA per metric</td><td>—</td></tr>
+      <tr><td>SLO burn rate</td><td>OBS-017 alerts (P15-S12)</td><td>—</td></tr>
+      <tr><td>Session replay</td><td>OBS-023 opt-in (mig 073)</td><td>—</td></tr>
+    </table>
+  </section>
+
+  <!-- ============================ §10 ============================ -->
+  <section class="sa-section" id="s10-tech">
+    <h2>10. Tech Stack tổng kết</h2>
+    <table class="sa-table">
+      <tr><th>Service</th><th>Tech</th><th>Port</th><th>Code path</th></tr>
+      <tr><td>API Gateway</td><td>Java Spring Cloud Gateway 3.2.5</td><td>8080</td><td><code>services/api-gateway/</code></td></tr>
+      <tr><td>Auth Service</td><td>Java Spring Boot + Security 3.2.5</td><td>8091</td><td><code>services/auth-service/</code></td></tr>
+      <tr><td>Data Pipeline</td><td>Python FastAPI 0.111.0</td><td>8092</td><td><code>services/data-pipeline/</code> — Phase B split <code>ingestion/ · data_plane/ · quality/</code></td></tr>
+      <tr><td>AI Orchestrator</td><td>Python FastAPI 0.111.0</td><td>8093</td><td><code>services/ai-orchestrator/</code> — Phase B split <code>reasoning/ · workflow_runtime/ · org_intel/</code></td></tr>
+      <tr><td>LLM Gateway</td><td>Python FastAPI</td><td>8095</td><td><code>services/llm-gateway/</code></td></tr>
+      <tr><td>Notification</td><td>Python FastAPI</td><td>8094</td><td><code>services/notification-service/</code></td></tr>
+      <tr><td>Process Mining · Adoption · Economics</td><td>module trong ai-orchestrator</td><td>—</td><td><code>services/ai-orchestrator/org_intel/{process_mining,adoption,economics}/</code></td></tr>
+      <tr><td>Workflow Engine</td><td>Temporal worker (Python SDK)</td><td>—</td><td><code>services/ai-orchestrator/workflow_runtime/</code></td></tr>
+      <tr><td>Frontend</td><td>Next.js 16 + TypeScript (⏸ paused)</td><td>3000</td><td><code>frontend/</code></td></tr>
+    </table>
+
+    <h3>Source-of-truth docs</h3>
+    <ul>
+      <li><code>CLAUDE.md</code> v3.9.4 — living architecture documentation (file này derive từ đây)</li>
+      <li><code>docs/strategic/SAD_SKELETON_V2.md</code> — kiến trúc deep-dive</li>
+      <li><code>docs/strategic/PIPELINE_UNIFIED.md</code> — 12-stage data pipeline canonical</li>
+      <li><code>docs/strategic/REASONING_LAYER.md</code> — L3 brain layer</li>
+      <li><code>docs/strategic/WORKFLOW_SYSTEM.md</code> — L4 workflow design</li>
+      <li><code>docs/strategic/PLAYBOOK_90DAY.md</code> — operational deployment context</li>
+      <li><code>docs/BACKLOG_V4.md</code> — 36 sprint × ~1147 features</li>
+      <li><code>docs/API_CATALOG_V4.md</code> — ~187 endpoints (169 baseline + ~30 Phase 2.5/2.6/2.7/2.8 NEW)</li>
+    </ul>
+  </section>
+
+  <!-- ============================ §11 ============================ -->
+  <section class="sa-section" id="s11-walkthrough">
+    <h2>11. E2E walkthrough — Một quyết định, đi qua mọi layer</h2>
+    <p>Use-case: <em>Manager Retail upload file Excel danh sách khách hàng → hệ thống phát hiện khách rủi ro churn cao → gửi insight + tạo workflow follow-up.</em></p>
+
+    <pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant U as User (Manager)
+  participant FE as Frontend
+  participant GW as API Gateway
+  participant DP as data-pipeline
+  participant AI as ai-orchestrator
+  participant LG as llm-gateway
+  participant NT as notification
+  participant WF as Workflow runner
+
+  U->>FE: Upload customers.xlsx [US-A1]
+  FE->>GW: POST /api/v1/p2/upload (JWT + Idempotency-Key) [US-A1]
+  GW->>DP: forward + X-Enterprise-Id (K-7, K-13)
+  DP->>DP: PII redact VN-aware (K-5) · SHA-256 (K-8)
+  DP->>DP: write Bronze (append-only K-2) [US-B1]
+  DP->>DP: 8-step Silver · 7-dim quality ≥0.80 [US-B2]
+  DP->>DP: promote Gold (MV refresh) [US-B3]
+  DP-->>AI: emit kaori.pipeline.events
+  AI->>AI: Insight Engine: SQL Gold → KPI → benchmark [US-B4]
+  AI->>LG: render insight (Qwen local · K-4 default)
+  LG->>LG: K-20 model_version pin · K-6 audit · K-19 trace
+  LG-->>AI: rendered narrative
+  AI->>AI: write decision_audit_log (K-6) + ai_decision_audit [US-B5]
+  AI->>WF: trigger workflow D.5 "Churn Save Workspace" [US-CS-5]
+  WF->>WF: K-17 side_effect class · K-13 idem ledger
+  WF->>NT: send_alert + create_task (write_idempotent)
+  NT->>FE: SSE event "insight ready" [US-B6]
+  FE->>U: Hiển thị insight + suggest action [US-B6]
+    </pre>
+
+    <p><strong>URD US-ID traceback</strong>: <code>US-A1</code> = Upload (URD §3 UR-Data) · <code>US-B1..B6</code> = data → insight pipeline (URD §4 UR-Insight) · <code>US-CS-5</code> = Churn save action (URD §5 UR-CS).</p>
+    <p>Mọi bước trên đều có <strong>span OpenTelemetry với <code>tenant_id</code></strong> (K-19), <strong>lineage edge</strong> (bronze_file → silver_row → gold_row → insight → workflow_run_node → alert/task), và nếu approval cần thì <strong>policy engine evaluate</strong> rule seeded từ mig 099 (e.g. invoice &gt; 100M VND → CFO required).</p>
+  </section>
+
+  <!-- ============================ §12 ============================ -->
+  <section class="sa-section" id="s12-roadmap">
+    <h2>12. Sprint roadmap — đâu đã ship, đâu còn chờ</h2>
+    <table class="sa-table">
+      <tr><th>Phase</th><th>Months</th><th>Sprint</th><th>Theme</th><th>Status</th><th>UAT / Test Coverage</th></tr>
+      <tr><td>Phase 1 — Foundation</td><td>M1-M4</td><td>8 (P1-S1..S8)</td><td>Modular monolith MVP, 10-15 khách đầu</td><td>✅ closeout 2026-05-08 (tag <code>v4.0-phase1-complete</code>)</td><td>✅ Round 1 Olist pilot UAT</td></tr>
+      <tr><td>Phase 1.5 — Stabilization</td><td>M5-M6</td><td>4 (P15-S9..S12)</td><td>K8s · Vault · Temporal · ClickHouse · A/B · CFO digest</td><td>✅ closeout 2026-05-17</td><td>🟡 SSO PASS partial · K8s/Temporal/ClickHouse infra-gated UAT chờ</td></tr>
+      <tr><td>Phase 2 — Differentiation</td><td>M7-M12</td><td>P2-S13..S18 + S21 + S25</td><td>PM full · Workflow Builder · Collab · OBS · Trace-augmented reasoning · SSO/MFA/FE-encrypt</td><td>✅ shipped to date</td><td>✅ UAT P2-S25 SSO Google end-to-end (browser-tested 2026-05-18)</td></tr>
+      <tr><td>Phase 2.5</td><td>—</td><td>(rolling)</td><td>MinerU pattern borrow + 9 AI nodes catalog</td><td>✅ 10/10 BE done 2026-05-19</td><td>❌ chưa UAT 9 AI nodes (P2.5 scripts shipped Round 5 N4 — execute pending)</td></tr>
+      <tr><td>Phase 2.6</td><td>—</td><td>(rolling)</td><td>Event sourcing · state machine · idempotency ledger · saga · queue routing · lifecycle FSM · edge taxonomy</td><td>✅ 9/12 ship · 3 defer (infra-gated)</td><td>❌ chưa UAT replay harness + DLQ console (P2.6 scripts shipped Round 5 N4 — execute pending)</td></tr>
+      <tr><td>Phase 2.7</td><td>—</td><td>(rolling)</td><td>Lineage · DLQ console · AI audit · policy engine · quotas + 4-wire producer-side</td><td>✅ 5/5 ship + wiring complete 2026-05-20</td><td>❌ chưa UAT lineage walk + policy engine + quota 429 (P2.7 scripts shipped Round 5 N4 — execute pending)</td></tr>
+      <tr><td>Phase 2.8</td><td>—</td><td>(rolling)</td><td>Industry Template 3-tier Bootstrap + UX redesign 9 priority screen + 2 NEW + IA split + BA mirror</td><td>✅ 8/9 D-piece ship 2026-05-20 EOD2 · Round 5 closeout 2026-05-21 EOD</td><td>🟡 13 unit test ship per D5; integration UAT chờ FE resume</td></tr>
+      <tr><td>Phase 2.8 — Silver self-discovery</td><td>—</td><td>(rolling)</td><td>CR-0016: hướng ngày tự-suy + <code>unit_price</code>/line-total (không hardcode)</td><td>✅ BE shipped 2026-05-27 (PR #281) · 738 test pass</td><td>🟡 FE closeout (nhãn + evidence panel) + LLM auto-suggest chờ</td></tr>
+      <tr><td>Phase 2.S19/S20 microservices extract</td><td>—</td><td>—</td><td>—</td><td>⏭ DEFERRED Phase 3 (monolith sufficient at 100-customer scale; ADR-0010)</td><td>n/a</td></tr>
+      <tr><td>Phase 3 — Platform</td><td>Year 2</td><td>12 (P3-S25..S36)</td><td>Multi-region · marketplace · self-hosted LLM · ecosystem</td><td>⏳ not started</td><td>—</td></tr>
+    </table>
+    <p style="font-size:11.5px;color:var(--text-mute);"><strong>Legend</strong>: ✅ executed + passing · 🟡 partial (scripts ready but execution pending) · ❌ scripts shipped but not executed · — not applicable / not started.</p>
+
+    <h3>12.1 Scope governance — Change Request register</h3>
+    <p>Mọi scope change đi qua CR Register (BA layer 4.2). 13 CR đang track tại commit này:</p>
+    <table class="sa-table">
+      <tr><th>Status</th><th>Count</th><th>Examples</th></tr>
+      <tr><td>IMPLEMENTED</td><td>5</td><td>CR-0001 (Phase 1.5 insert) · CR-0002 (Industry bootstrap) · CR-0006 (P5/P6 rename) · CR-0007 (5 CS vertical) · CR-0008 (PM 10 connector)</td></tr>
+      <tr><td>IMPLEMENTING</td><td>5</td><td>CR-0009 (governance scripts) · CR-0010 (Phase 2.6+2.7 module catalog) · CR-0011 CS Vertical FE (HIGH, approved 2026-05-21) · CR-0012 Permission Claims framework (HIGH, approved 2026-05-21 partial — NFRS §5.bis done) · CR-0016 Silver self-discovery (BE shipped PR #281; LLM auto-suggest + FE pending)</td></tr>
+      <tr><td>SUBMITTED / ASSESSING</td><td>3</td><td>CR-0004 (Excel v4.1 sprint phase mismatch) · CR-0005 (1.143 feature owner) · CR-0003 (legacy)</td></tr>
+    </table>
+    <p>CR Register canonical: <a href="../ba/4.2_Change_Request_Register.md"><code>docs/ba/4.2_Change_Request_Register.md</code></a> (v2.4). Mọi PR mở thêm scope KHÔNG có CR# → reject per CR-0009 governance script <code>scripts/check_cr_compliance.py --ci</code>.</p>
+
+    <p><strong>Branch state 2026-05-21</strong>: <code>feat/p15-s9-d1</code> HEAD post-tier 3 · ~256 commits ahead <code>main</code> · ai-orchestrator <strong>2128+ tests pass</strong> · 103 migrations · 27 ADRs · 4-layer alignment (code ↔ UX spec ↔ FE Impl Spec v1.1 ↔ BA layer URD/NFRS/CR Register/BRD/Vision/Business Case/PRD/RACI Round 5).</p>
+  </section>
+
+  <footer class="refs">
+    <h3>Tài liệu tham khảo</h3>
+    <ul>
+      <li><a href="../../CLAUDE.md"><code>CLAUDE.md</code></a> — Living architecture documentation (canonical)</li>
+      <li><a href="../strategic/SAD_SKELETON_V2.md"><code>strategic/SAD_SKELETON_V2.md</code></a> — Architecture deep-dive</li>
+      <li><a href="../strategic/PIPELINE_UNIFIED.md"><code>strategic/PIPELINE_UNIFIED.md</code></a> — 12-stage data pipeline canonical</li>
+      <li><a href="../strategic/NNL_SELFDISCOVERY_REASONING_ROADMAP.md"><code>strategic/NNL_SELFDISCOVERY_REASONING_ROADMAP.md</code></a> — Silver self-discovery (CR-0016) + reasoning backlog (CDFL · học-1-hiểu-10 · kho tri thức)</li>
+      <li><a href="feature-screens.html"><code>feature-screens.html</code></a> — 77 màn × 6 portal (FE catalog)</li>
+      <li><a href="feature-workflows.html"><code>feature-workflows.html</code></a> — 40 workflows internal catalog</li>
+      <li><a href="workflow-builder-ux.html"><code>workflow-builder-ux.html</code></a> — Workflow Builder UX mockup</li>
+      <li><a href="kaori-shared-glossary.html"><code>kaori-shared-glossary.html</code></a> — Shared vocabulary cho Phase 2.8</li>
+      <li><a href="PHASE_2_8_FE_IMPL_SPEC.md"><code>PHASE_2_8_FE_IMPL_SPEC.md</code></a> — FE Implementation Spec v1.1</li>
+      <li><a href="../adr/"><code>docs/adr/</code></a> — 27 ADRs (0001-0026)</li>
+      <li><a href="../BACKLOG_V4.md"><code>BACKLOG_V4.md</code></a> — Sprint backlog 36 × ~1147 features</li>
+      <li><a href="../API_CATALOG_V4.md"><code>API_CATALOG_V4.md</code></a> — ~187 endpoints + SLA + Rate Limit + Errors</li>
+    </ul>
+    <p style="margin-top:10px;color:var(--text-mute);font-size:11.5px;">
+      Generated 2026-05-21 — đồng bộ với CLAUDE.md v3.9.4 + branch <code>feat/p15-s9-d1</code> HEAD <code>28cc2e4</code>.
+      Khi CLAUDE.md bump version → cập nhật file này. Khi mig mới hoặc ADR mới → thêm row tương ứng vào §3-12.
+    </p>
+  </footer>
+
+</div>
+
+<script>
+  if (typeof mermaid !== 'undefined') {
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      themeVariables: {
+        primaryColor: '#fff5f5',
+        primaryBorderColor: '#d64545',
+        primaryTextColor: '#1f2933',
+        lineColor: '#52606d',
+        fontSize: '12px',
+      },
+      flowchart: { curve: 'basis', padding: 8 },
+      sequence: { actorMargin: 36, boxMargin: 8 },
+    });
+  }
+</script>
+
+</body>
+</html>

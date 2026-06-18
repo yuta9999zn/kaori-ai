@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaori.io/kafka-schemas/kaori.pipeline.bronze.complete.json",
+  "title": "kaori.pipeline.bronze.complete",
+  "description": "Fired after Bronze parsing finishes (rows landed in bronze_rows). Producer: services/data-pipeline/bronze/ingestor.py:219.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["run_id", "enterprise_id"],
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "description": "pipeline_runs.run_id — UUID string."
+    },
+    "enterprise_id": {
+      "type": "string",
+      "description": "Tenant scope."
+    },
+    "row_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total bronze_rows inserted across all sheets."
+    },
+    "detected_lang": {
+      "type": "string",
+      "description": "Primary detected language (e.g. 'vi', 'en') used for column-mapping LLM prompts."
+    },
+    "sheet_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of sheets parsed from the file."
+    },
+    "workflow_id": {
+      "type": "string",
+      "description": "Set when the upload is attached to a workflow step (X-Workflow-Step-ID was supplied). UUID string. Gap 4 — used by ai-orchestrator KPI handler to attribute the compute run to a workflow."
+    },
+    "workflow_step_id": {
+      "type": "string",
+      "description": "workflow_nodes.node_id — set together with workflow_id. UUID string."
+    },
+    "department_id": {
+      "type": "string",
+      "description": "Department the workflow belongs to. UUID string. KPI handler looks up dept_type from this and fans out to every active KPI for that dept_type."
+    },
+    "branch_id": {
+      "type": "string",
+      "description": "Optional — set when the workflow attaches to a specific branch (subsidiary). UUID string."
+    },
+    "uploaded_by": {
+      "type": "string",
+      "description": "User who triggered the upload. UUID string. Audit trail only."
+    }
+  }
+}

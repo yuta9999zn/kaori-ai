@@ -1,0 +1,88 @@
+# analyze_pipeline workflow — reference YAML for P15-S9 D3.
+#
+# Mirrors services/ai-orchestrator/workflow_runtime/workflows/analyze_pipeline.py
+# node-for-node. The K-17 side_effect_class declarations on each node
+# MUST match the activity decorations in
+# services/ai-orchestrator/workflow_runtime/activities/analyze.py — drift
+# is caught by tests/test_workflow_yaml_alignment.py at CI time.
+#
+# Schema reference: services/ai-orchestrator/workflow_runtime/yaml_schema.py
+# (Draft 2020-12). retry uses {max_attempts, initial_backoff_ms,
+# max_backoff_ms, multiplier}; node-level timeout uses timeout_ms.
+
+workflow_id: analyze_pipeline
+name: Analyze Pipeline (reference workflow)
+description: |
+  P15-S9 D3 reference workflow — covers all 5 K-17 side-effect classes
+  in a single linear flow. Used by tests as the canonical happy-path
+  example + by docs as the K-17 explainer.
+version: "1.0"
+
+nodes:
+  - node_id: parse_input
+    type: activity
+    side_effect_class: pure
+    timeout_ms: 5000
+    retry:
+      max_attempts: 5
+      initial_backoff_ms: 1000
+      max_backoff_ms: 30000
+      multiplier: 2.0
+
+  - node_id: load_pipeline_run
+    type: activity
+    side_effect_class: read_only
+    timeout_ms: 10000
+    retry:
+      max_attempts: 5
+
+  - node_id: upsert_run_status_running
+    type: activity
+    side_effect_class: write_idempotent
+    timeout_ms: 10000
+    retry:
+      max_attempts: 5
+
+  - node_id: insert_decision_audit
+    type: activity
+    side_effect_class: write_non_idempotent
+    timeout_ms: 15000
+    retry:
+      max_attempts: 5
+    lock:
+      # REL-006 — write_non_idempotent requires a distributed lock so the
+      # idempotency_records insert wins exactly once across retries.
+      ttl_seconds: 30
+      key_template: "audit:{tenant_id}:{run_id}"
+
+  - node_id: upsert_run_status_complete
+    type: activity
+    side_effect_class: write_idempotent
+    timeout_ms: 10000
+    retry:
+      max_attempts: 5
+
+  - node_id: send_completion_notification
+    type: activity
+    side_effect_class: external
+    timeout_ms: 30000
+    retry:
+      max_attempts: 5
+    compensation:
+      # REL-012 — external nodes must declare a compensation. The saga
+      # orchestrator (Phase 1.5+) invokes this if a downstream node fails
+      # after this one has already delivered.
+      node_id: send_correction_message
+      reason_template: "Downstream failure for run ${run_id}; previous notification superseded."
+
+edges:
+  - from: parse_input
+    to: load_pipeline_run
+  - from: load_pipeline_run
+    to: upsert_run_status_running
+  - from: upsert_run_status_running
+    to: insert_decision_audit
+  - from: insert_decision_audit
+    to: upsert_run_status_complete
+  - from: upsert_run_status_complete
+    to: send_completion_notification

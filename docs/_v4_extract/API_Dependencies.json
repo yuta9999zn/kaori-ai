@@ -1,0 +1,380 @@
+[
+ [
+  "🔄 Kaori AI — API Dependency Graph (which API calls which)",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Source API → Target API. Used for impact analysis when modifying APIs.",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Edge ID",
+  "Source API (caller)",
+  "Target API (callee)",
+  "Call Type",
+  "Purpose",
+  "Trigger Condition",
+  "Notes"
+ ],
+ [
+  "EDGE-001",
+  "POST /platform/auth/login",
+  "POST /platform/auth/mfa/verify",
+  "sync",
+  "After password match, if MFA enabled",
+  "mfa_required=true",
+  ""
+ ],
+ [
+  "EDGE-002",
+  "POST /platform/auth/login",
+  "GET /platform/admins/profile",
+  "sync",
+  "Load admin profile after auth",
+  "always after login",
+  ""
+ ],
+ [
+  "EDGE-003",
+  "POST /platform/workspaces",
+  "POST /platform/keys",
+  "sync",
+  "Generate KAORI-XXXX private key",
+  "always on workspace create",
+  ""
+ ],
+ [
+  "EDGE-004",
+  "POST /platform/workspaces",
+  "POST /enterprise/notification/email",
+  "async",
+  "Send activation link to enterprise admin",
+  "always",
+  "Async via Redis Streams"
+ ],
+ [
+  "EDGE-005",
+  "POST /enterprise/pipelines/upload",
+  "POST /enterprise/data/bronze/ingest",
+  "sync",
+  "Upload file → Bronze tier",
+  "on success upload",
+  ""
+ ],
+ [
+  "EDGE-006",
+  "POST /enterprise/data/bronze/ingest",
+  "POST /enterprise/data/silver/promote",
+  "async",
+  "Bronze → Silver promotion",
+  "event: pipeline.bronze.complete",
+  ""
+ ],
+ [
+  "EDGE-007",
+  "POST /enterprise/data/silver/promote",
+  "POST /enterprise/data/gold/aggregate",
+  "async",
+  "Silver → Gold aggregation",
+  "event: pipeline.silver.complete",
+  ""
+ ],
+ [
+  "EDGE-008",
+  "POST /enterprise/pipelines/analyze",
+  "POST /enterprise/reasoning/insights/generate",
+  "sync",
+  "Pipeline analysis triggers AI insight",
+  "user clicks Analyze",
+  ""
+ ],
+ [
+  "EDGE-009",
+  "POST /enterprise/reasoning/insights/generate",
+  "POST /enterprise/reasoning/rag/query",
+  "sync",
+  "Insight gen uses RAG context",
+  "always",
+  ""
+ ],
+ [
+  "EDGE-010",
+  "POST /enterprise/reasoning/insights/generate",
+  "POST /platform/llm/versions/check",
+  "sync",
+  "Verify pinned LLM version",
+  "always before LLM call",
+  ""
+ ],
+ [
+  "EDGE-011",
+  "POST /enterprise/reasoning/recommendations/generate",
+  "POST /enterprise/reasoning/constraints/validate",
+  "sync",
+  "Recommendations pass through constraints",
+  "always",
+  ""
+ ],
+ [
+  "EDGE-012",
+  "POST /enterprise/workflows/{id}/execute",
+  "POST /enterprise/reasoning/insights/generate",
+  "sync",
+  "AI nodes call reasoning layer",
+  "when AI node in workflow",
+  ""
+ ],
+ [
+  "EDGE-013",
+  "POST /enterprise/workflows/{id}/execute",
+  "POST /enterprise/integrations/{provider}/send",
+  "sync/async",
+  "External integration nodes",
+  "when external node in workflow",
+  "Idempotency-key required"
+ ],
+ [
+  "EDGE-014",
+  "POST /enterprise/workflows/{id}/execute",
+  "POST /enterprise/notification/dispatch",
+  "async",
+  "Notification nodes",
+  "when notification node",
+  ""
+ ],
+ [
+  "EDGE-015",
+  "POST /enterprise/process-mining/sessions",
+  "POST /enterprise/process-mining/connectors/{type}/extract",
+  "async",
+  "Mining session calls connectors",
+  "always on session start",
+  "Long-running"
+ ],
+ [
+  "EDGE-016",
+  "POST /enterprise/process-mining/sessions/{id}/run-algorithm",
+  "POST /enterprise/process-mining/sessions/{id}/extract-events",
+  "sync",
+  "Algorithm needs extracted events",
+  "always before algo runs",
+  ""
+ ],
+ [
+  "EDGE-017",
+  "POST /enterprise/process-mining/sessions/{id}/translate-to-builder",
+  "POST /enterprise/workflows",
+  "sync",
+  "Translation creates DRAFT workflow",
+  "on user approval of findings",
+  ""
+ ],
+ [
+  "EDGE-018",
+  "POST /enterprise/workflows/{id}/execute",
+  "POST /enterprise/adoption/signals/extract",
+  "async",
+  "Workflow execution feeds adoption signals",
+  "every workflow run",
+  "Event subscription"
+ ],
+ [
+  "EDGE-019",
+  "GET /enterprise/adoption/signals",
+  "GET /enterprise/adoption/health/{workflow_id}",
+  "sync",
+  "Health score aggregates signals",
+  "on health request",
+  ""
+ ],
+ [
+  "EDGE-020",
+  "GET /enterprise/adoption/health/{workflow_id}",
+  "POST /enterprise/adoption/interventions/trigger",
+  "sync",
+  "Low health → intervention trigger",
+  "health <40",
+  ""
+ ],
+ [
+  "EDGE-021",
+  "POST /enterprise/economics/nov/compute",
+  "POST /enterprise/economics/revenue/estimate",
+  "sync",
+  "NOV needs revenue estimate",
+  "monthly cron",
+  ""
+ ],
+ [
+  "EDGE-022",
+  "POST /enterprise/economics/nov/compute",
+  "POST /enterprise/economics/cost/compute",
+  "sync",
+  "NOV needs cost",
+  "monthly cron",
+  ""
+ ],
+ [
+  "EDGE-023",
+  "GET /enterprise/economics/dashboards/roi",
+  "GET /enterprise/economics/nov/tenant/total",
+  "sync",
+  "Dashboard aggregates NOV",
+  "on dashboard load",
+  ""
+ ],
+ [
+  "EDGE-024",
+  "POST /enterprise/workflows/{id}/promote-to-testing",
+  "POST /enterprise/workflows/{id}/setup-90day-test",
+  "sync",
+  "Setup 90-day parallel testing",
+  "always on transition",
+  ""
+ ],
+ [
+  "EDGE-025",
+  "POST /enterprise/workflows/{id}/promote-to-active",
+  "POST /enterprise/adoption/baseline/capture",
+  "sync",
+  "Capture adoption baseline at activation",
+  "always on activation",
+  ""
+ ],
+ [
+  "EDGE-026",
+  "POST /platform/llm/versions/upgrade-test",
+  "POST /enterprise/workflows/{id}/promote-to-testing",
+  "sync",
+  "LLM upgrade triggers workflow re-test",
+  "on new LLM version available",
+  ""
+ ],
+ [
+  "EDGE-027",
+  "All /enterprise/** APIs",
+  "GET /platform/security/check-tenant-context",
+  "sync",
+  "Verify tenant context before query",
+  "every authenticated request",
+  "Middleware"
+ ],
+ [
+  "EDGE-028",
+  "All write APIs",
+  "POST /platform/audit/log",
+  "async",
+  "Audit log every write",
+  "every write operation",
+  "Async via outbox"
+ ],
+ [
+  "EDGE-029",
+  "GET /platform/customer-success/{tenant_id}/health",
+  "GET /enterprise/adoption/health/tenant",
+  "sync",
+  "CSM health aggregates adoption",
+  "on CSM dashboard load",
+  "Cross-tenant (admin role)"
+ ],
+ [
+  "EDGE-030",
+  "GET /platform/customer-success/{tenant_id}/health",
+  "GET /enterprise/economics/nov/tenant/total",
+  "sync",
+  "CSM health includes NOV",
+  "on CSM dashboard load",
+  "Cross-tenant (admin role)"
+ ],
+ [
+  "EDGE-031",
+  "GET /platform/customer-success/engagement-triggers",
+  "GET /platform/customer-success/portfolio",
+  "sync",
+  "Triggers based on portfolio analysis",
+  "cron daily",
+  ""
+ ],
+ [
+  "EDGE-032",
+  "All workflow execution APIs",
+  "POST /platform/dlq/enqueue",
+  "async",
+  "Failed workflows → DLQ",
+  "after max retries",
+  ""
+ ],
+ [
+  "EDGE-033",
+  "POST /platform/dlq/{id}/reprocess",
+  "POST /enterprise/workflows/{id}/execute",
+  "sync",
+  "Reprocess from DLQ",
+  "on admin reprocess",
+  ""
+ ],
+ [
+  "EDGE-034",
+  "All APIs",
+  "POST /platform/health/metrics/emit",
+  "async",
+  "Custom metrics emission",
+  "every API call",
+  "Auto-instrumented"
+ ],
+ [
+  "EDGE-035",
+  "All APIs",
+  "POST /platform/health/traces/emit",
+  "async",
+  "OpenTelemetry trace emission",
+  "every API call",
+  "Auto-instrumented"
+ ],
+ [
+  "EDGE-036",
+  "GET /platform/adoption/renewal-risk/{tenant_id}",
+  "GET /enterprise/adoption/health/tenant",
+  "sync",
+  "Renewal risk uses adoption history",
+  "on CSM check",
+  ""
+ ],
+ [
+  "EDGE-037",
+  "GET /platform/adoption/renewal-risk/{tenant_id}",
+  "GET /enterprise/economics/nov/tenant/total",
+  "sync",
+  "Renewal risk uses NOV trend",
+  "on CSM check",
+  ""
+ ],
+ [
+  "EDGE-038",
+  "All /enterprise/** APIs",
+  "GET /platform/billing/tier-check",
+  "sync",
+  "Verify feature available in tenant tier",
+  "every API call",
+  "Middleware"
+ ],
+ [
+  "EDGE-039",
+  "All authenticated APIs",
+  "POST /platform/authz/pdp/decide",
+  "sync",
+  "Policy Decision Point check",
+  "every authenticated request",
+  "p99 <20ms"
+ ]
+]

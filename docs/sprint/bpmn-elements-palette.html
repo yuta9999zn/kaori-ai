@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaori — Bộ ký hiệu BPMN 2.0 (Camunda) + ví dụ duyệt 2 cấp</title>
+<style>
+  :root{--gold:#C2A36B;--gold-dark:#9A7B4F;--ink:#23211c;--soft:#6b6557;--mute:#9a9384;
+    --border:#e6e1d6;--card:#fffdf8;--app:#faf7f0;--line:#cfc8ba;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--app);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Inter",sans-serif;font-size:14px;line-height:1.55;}
+  .wrap{max-width:1200px;margin:0 auto;padding:26px 20px 80px;}
+  h1{font-size:22px;margin:0 0 4px;font-weight:650;}
+  h2{font-size:16px;margin:30px 0 4px;border-bottom:2px solid var(--gold);padding-bottom:6px;}
+  h3{font-size:13px;margin:16px 0 6px;color:var(--gold-dark);font-weight:650;}
+  p{margin:6px 0;color:var(--soft);}
+  code{background:#efeadd;padding:1px 5px;border-radius:4px;font-size:12.5px;}
+  .meta{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:13px;}
+  .meta dl{display:grid;grid-template-columns:130px 1fr;gap:3px 12px;margin:0;}
+  .meta dt{color:var(--mute);} .meta dd{margin:0;}
+  .banner{background:#f1f5f9;border:1px solid #cbd5e1;border-radius:9px;padding:10px 14px;font-size:13px;margin:8px 0;color:#334155;}
+  .pal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+  .pal .it{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:10px;display:flex;gap:10px;align-items:center;min-height:62px;}
+  .pal .it svg{flex-shrink:0;}
+  .pal .it .nm{font-size:12px;font-weight:600;line-height:1.3;}
+  .pal .it .en{font-size:10.5px;color:var(--mute);font-weight:500;}
+  .pal .it .ds{font-size:10px;color:var(--soft);margin-top:2px;display:none;}
+  .diagram{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 10px;overflow-x:auto;}
+  .legend{font-size:12px;color:var(--soft);margin-top:6px;}
+  .steps{counter-reset:s;}
+  .steps li{margin:8px 0;}
+  .qa{background:#f7f1e3;border:1px dashed var(--gold);border-radius:8px;padding:10px 14px;font-size:13px;margin:8px 0;}
+  .count{font-size:11px;color:var(--mute);font-weight:500;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Bộ ký hiệu BPMN 2.0 (chuẩn Camunda) + ví dụ "Duyệt 2 cấp"</h1>
+  <p>Toàn bộ ký hiệu lấy từ <code>camunda.com/bpmn/reference</code>, dựng thành <b>catalog có cấu trúc</b> (render bằng compose base-shape + marker, giống <code>bpmn-js</code>) — đây là <b>nơi lưu trữ</b> để sau này phục vụ palette kéo-thả của builder.</p>
+
+  <div class="meta"><dl>
+    <dt>Nguồn ký hiệu</dt><dd>https://camunda.com/bpmn/reference/ (BPMN 2.0)</dd>
+    <dt>Store code</dt><dd><code>frontend/lib/bpmn/bpmn-elements.ts</code> — cùng catalog, để builder import</dd>
+    <dt>Hướng đã chốt</dt><dd>Builder = <b>BPMN đầy đủ</b> · xuất <b>BPMN 2.0 XML</b> ưu tiên sớm · workflow chia rõ <b>pool/lane/nghiệp vụ</b> từ yêu cầu khách</dd>
+    <dt>Spec</dt><dd><code>docs/specs/WORKFLOW_BUILDER_REDESIGN.md</code></dd>
+  </dl></div>
+
+  <div class="banner"><b>Cách đọc icon (quy ước BPMN):</b> nét <b>mảnh</b>=bắt sự kiện (catch) · nét <b>đậm/đặc</b>=ném (throw)/kết thúc · vòng <b>đôi</b>=trung gian/biên · nét <b>đứt</b>=non-interrupting / message flow. Marker bên trong nói <i>loại</i> (✉ message, ⏰ timer, ▲ signal…).</div>
+
+  <h2 id="palette">A. Palette — toàn bộ ký hiệu theo nhóm</h2>
+  <div id="palette-root"></div>
+
+  <h2>B. Ví dụ chuẩn — "Duyệt 2 cấp" (tái hiện đúng ảnh của anh)</h2>
+  <p>3 pool/lane theo role: <b>Người duyệt 1</b> · <b>Process Engine</b> (hệ thống) · <b>Người duyệt 2</b>.
+  Mỗi cấp: nhận yêu cầu (message start ✉) → <b>User Task</b> "đánh giá" → "lập &amp; gửi quyết định" → end. Engine: <b>User Task</b> "quyết định duyệt" → <b>exclusive gateway</b> "đã duyệt?" yes/no. Message flow (đứt) nối engine ↔ người duyệt; sequence flow (liền) trong pool.</p>
+  <div class="diagram">
+    <svg viewBox="0 0 980 560" style="width:100%;min-width:840px;font-family:inherit" role="img" aria-label="BPMN duyệt 2 cấp">
+      <defs>
+        <marker id="sq" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#475569"/></marker>
+        <marker id="mg" markerWidth="13" markerHeight="13" refX="10" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L10,4.5 L1,8" fill="none" stroke="#64748b" stroke-width="1.2"/></marker>
+      </defs>
+
+      <!-- Pool: Người duyệt 1 -->
+      <rect x="14" y="14" width="952" height="150" fill="none" stroke="#64748b"/>
+      <rect x="14" y="14" width="24" height="150" fill="#eef2f7" stroke="#64748b"/>
+      <text x="26" y="89" transform="rotate(-90 26 89)" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">Người duyệt 1</text>
+      <!-- message start -->
+      <circle cx="80" cy="89" r="15" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+      <path d="M73,85 h14 v9 h-14 z M73,85 l7,5 l7,-5" fill="none" stroke="#10b981" stroke-width="1"/>
+      <text x="80" y="120" text-anchor="middle" font-size="10" fill="#475569">Có yêu cầu duyệt</text>
+      <rect x="130" y="66" width="120" height="46" rx="9" fill="#fff" stroke="#64748b"/>
+      <text x="190" y="93" text-anchor="middle" font-size="11" fill="#23211c">Đánh giá yêu cầu</text>
+      <rect x="290" y="66" width="130" height="46" rx="9" fill="#fff" stroke="#64748b"/>
+      <text x="355" y="86" text-anchor="middle" font-size="11" fill="#23211c">Lập &amp; gửi</text>
+      <text x="355" y="100" text-anchor="middle" font-size="11" fill="#23211c">quyết định</text>
+      <circle cx="468" cy="89" r="15" fill="#fff" stroke="#334155" stroke-width="3"/>
+      <text x="468" y="120" text-anchor="middle" font-size="10" fill="#475569">Xong</text>
+      <path d="M95,89 L130,89" stroke="#475569" marker-end="url(#sq)"/>
+      <path d="M250,89 L290,89" stroke="#475569" marker-end="url(#sq)"/>
+      <path d="M420,89 L453,89" stroke="#475569" marker-end="url(#sq)"/>
+
+      <!-- Pool: Process Engine -->
+      <rect x="14" y="176" width="952" height="208" fill="none" stroke="#64748b"/>
+      <rect x="14" y="176" width="24" height="208" fill="#eef2f7" stroke="#64748b"/>
+      <text x="26" y="280" transform="rotate(-90 26 280)" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">Process Engine</text>
+      <!-- start -->
+      <circle cx="80" cy="250" r="15" fill="#fff" stroke="#334155" stroke-width="1.5"/>
+      <text x="80" y="281" text-anchor="middle" font-size="10" fill="#475569">Yêu cầu duyệt</text>
+      <!-- user task 1 -->
+      <rect x="130" y="227" width="130" height="46" rx="9" fill="#fff" stroke="#64748b"/>
+      <circle cx="142" cy="239" r="5" fill="none" stroke="#475569" stroke-width="1"/><path d="M137,250 a5 4 0 0 1 10 0" fill="none" stroke="#475569" stroke-width="1"/>
+      <text x="200" y="246" text-anchor="middle" font-size="11" fill="#23211c">Quyết định duyệt</text>
+      <text x="200" y="260" text-anchor="middle" font-size="11" fill="#23211c">(cấp 1)</text>
+      <!-- gateway 1 -->
+      <polygon points="320,250 344,274 320,298 296,274" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.4"/>
+      <line x1="309" y1="263" x2="331" y2="285" stroke="#b45309" stroke-width="1.8"/><line x1="331" y1="263" x2="309" y2="285" stroke="#b45309" stroke-width="1.8"/>
+      <text x="320" y="240" text-anchor="middle" font-size="10" fill="#92400e">đã duyệt?</text>
+      <text x="352" y="262" font-size="10" fill="#475569">yes</text>
+      <text x="324" y="312" font-size="10" fill="#475569">no</text>
+      <!-- user task 2 -->
+      <rect x="430" y="227" width="130" height="46" rx="9" fill="#fff" stroke="#64748b"/>
+      <circle cx="442" cy="239" r="5" fill="none" stroke="#475569" stroke-width="1"/><path d="M437,250 a5 4 0 0 1 10 0" fill="none" stroke="#475569" stroke-width="1"/>
+      <text x="500" y="246" text-anchor="middle" font-size="11" fill="#23211c">Quyết định duyệt</text>
+      <text x="500" y="260" text-anchor="middle" font-size="11" fill="#23211c">(cấp 2)</text>
+      <!-- gateway 2 -->
+      <polygon points="620,250 644,274 620,298 596,274" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.4"/>
+      <line x1="609" y1="263" x2="631" y2="285" stroke="#b45309" stroke-width="1.8"/><line x1="631" y1="263" x2="609" y2="285" stroke="#b45309" stroke-width="1.8"/>
+      <text x="620" y="240" text-anchor="middle" font-size="10" fill="#92400e">đã duyệt?</text>
+      <text x="652" y="262" font-size="10" fill="#475569">yes</text>
+      <!-- end approved -->
+      <circle cx="720" cy="274" r="15" fill="#fff" stroke="#334155" stroke-width="3"/>
+      <text x="720" y="305" text-anchor="middle" font-size="10" fill="#475569">Đã duyệt</text>
+      <!-- end rejected 1 -->
+      <circle cx="320" cy="350" r="15" fill="#fff" stroke="#334155" stroke-width="3"/>
+      <text x="320" y="378" text-anchor="middle" font-size="9.5" fill="#475569">Từ chối (c1)</text>
+      <!-- end rejected 2 -->
+      <circle cx="620" cy="350" r="15" fill="#fff" stroke="#334155" stroke-width="3"/>
+      <text x="620" y="378" text-anchor="middle" font-size="9.5" fill="#475569">Từ chối (c2)</text>
+      <!-- flows engine -->
+      <path d="M95,250 L130,250" stroke="#475569" marker-end="url(#sq)"/>
+      <path d="M260,250 L296,260" stroke="#475569" marker-end="url(#sq)"/>
+      <path d="M344,274 L430,260" stroke="#475569" marker-end="url(#sq)"/>
+      <path d="M560,260 L596,266" stroke="#475569" marker-end="url(#sq)"/>
+      <path d="M644,274 L705,274" stroke="#475569" marker-end="url(#sq)"/>
+      <path d="M320,298 L320,335" stroke="#475569" marker-end="url(#sq)"/>
+      <path d="M620,298 L620,335" stroke="#475569" marker-end="url(#sq)"/>
+
+      <!-- Pool: Người duyệt 2 -->
+      <rect x="14" y="396" width="952" height="150" fill="none" stroke="#64748b"/>
+      <rect x="14" y="396" width="24" height="150" fill="#eef2f7" stroke="#64748b"/>
+      <text x="26" y="471" transform="rotate(-90 26 471)" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">Người duyệt 2</text>
+      <circle cx="460" cy="471" r="15" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+      <path d="M453,467 h14 v9 h-14 z M453,467 l7,5 l7,-5" fill="none" stroke="#10b981" stroke-width="1"/>
+      <text x="460" y="502" text-anchor="middle" font-size="10" fill="#475569">Có yêu cầu duyệt</text>
+      <rect x="510" y="448" width="120" height="46" rx="9" fill="#fff" stroke="#64748b"/>
+      <text x="570" y="475" text-anchor="middle" font-size="11" fill="#23211c">Đánh giá yêu cầu</text>
+      <rect x="670" y="448" width="130" height="46" rx="9" fill="#fff" stroke="#64748b"/>
+      <text x="735" y="468" text-anchor="middle" font-size="11" fill="#23211c">Lập &amp; gửi</text>
+      <text x="735" y="482" text-anchor="middle" font-size="11" fill="#23211c">quyết định</text>
+      <circle cx="848" cy="471" r="15" fill="#fff" stroke="#334155" stroke-width="3"/>
+      <text x="848" y="502" text-anchor="middle" font-size="10" fill="#475569">Xong</text>
+      <path d="M475,471 L510,471" stroke="#475569" marker-end="url(#sq)"/>
+      <path d="M630,471 L670,471" stroke="#475569" marker-end="url(#sq)"/>
+      <path d="M800,471 L833,471" stroke="#475569" marker-end="url(#sq)"/>
+
+      <!-- message flows (dashed) between pools -->
+      <path d="M200,227 L200,112" fill="none" stroke="#64748b" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#mg)"/>
+      <path d="M150,135 L150,224" fill="none" stroke="#64748b" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#mg)"/>
+      <path d="M500,273 L460,445" fill="none" stroke="#64748b" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#mg)"/>
+      <path d="M735,445 L600,300" fill="none" stroke="#64748b" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#mg)"/>
+    </svg>
+  </div>
+  <p class="legend">Liền = <b>Sequence Flow</b> (trong 1 pool). Đứt + mũi tên rỗng = <b>Message Flow</b> (giữa 2 pool). Vòng đậm = End. ✉ = Message Start. Người = User Task. ◇✕ = Exclusive Gateway.</p>
+
+  <h2>C. Quy trình dựng: từ yêu cầu khách → pool/lane/nghiệp vụ</h2>
+  <p>anh nhấn mạnh: workflow phải chia rõ <b>pool</b> &amp; <b>nghiệp vụ</b> ngay từ yêu cầu người dùng. Đề xuất luồng dựng builder:</p>
+  <ol class="steps">
+    <li><b>Nhập yêu cầu nghiệp vụ</b> (ngôn ngữ thường) — VD "Đơn giảm giá cần qua 2 cấp duyệt".</li>
+    <li><b>Xác định participant → Pool/Lane</b>: ai tham gia? (Khách, Người duyệt 1/2, Hệ thống). Mỗi role = 1 lane; bên ngoài tổ chức = pool riêng (giao tiếp bằng <b>message flow</b>).</li>
+    <li><b>Liệt kê nghiệp vụ → Task</b> trong từng lane, chọn đúng loại: User Task (người làm), Service Task (hệ thống tự chạy), Send/Receive (gửi/nhận), Business Rule (luật quyết định).</li>
+    <li><b>Điểm rẽ → Gateway</b>: Exclusive (1 nhánh), Parallel (chạy song song), Inclusive (nhiều nhánh có điều kiện), Event-based (chờ sự kiện nào tới trước).</li>
+    <li><b>Sự kiện đầu/cuối → Event</b>: Start (None/Message/Timer…), End (None/Message/Terminate…), boundary cho lỗi/timeout.</li>
+    <li><b>Nối</b>: sequence flow trong pool; message flow giữa pool; gắn điều kiện lên nhánh gateway.</li>
+  </ol>
+  <div class="qa"><b>Lưu trữ &amp; kéo-thả:</b> mỗi ký hiệu ở §A là 1 entry trong catalog (<code>bpmn-elements.ts</code>) với <code>id · category · bpmnType · marker · icon</code>. Palette kéo-thả tương lai render trực tiếp từ catalog này — không hardcode.</div>
+
+  <h2>D. Trạng thái BE (đã ship 2026-05-29)</h2>
+  <ul class="steps">
+    <li><b>Lưu diagram:</b> <code>workflows.bpmn_xml</code> (mig 115) + <code>GET/PUT /workflows/{id}/bpmn</code>. PUT parse-validate → 400 nếu sai, trả <code>design_summary</code> (pools/lanes/message-flow/boundary/design-only).</li>
+    <li><b>Mapper full-fidelity</b> <code>workflow_runtime/bpmn_mapper.py</code> (đối chiếu OMG BPMN 2.0.2): Pool/Participant + <b>Lane (role)</b>, Message Flow cross-pool, Sub-Process lồng, Boundary (<code>attachedToRef</code>), gateway <code>default</code>, đủ event-definition, 5 gateway. Ngoài subset chạy được: Conversation/Choreography/data/artifact (vẫn vẽ trong bpmn-js).</li>
+    <li><b>Sync → workflow_nodes/edges:</b> <code>POST /workflows/{id}/bpmn/sync</code> chiếu BPMN thành node/edge (mig 116: <code>pool_name/lane_name/bpmn_type/event_definition</code>; edges <code>flow_kind/is_default</code>) → tree view + builder thấy step kèm pool/lane. Trả <code>dangling_branches</code> (reuse validator).</li>
+    <li><b>Nối runner (mig 117):</b> 1 cột chuẩn <code>node_type_catalog_key</code> (executor key) — sync/clone/builder đều populate; vá 3 cột phantom runner đọc trước đây (alias <code>config/condition</code>). Node executable → runner chạy; ngoài subset → badge ⚙ "Thiết kế, chưa thực thi".</li>
+    <li><b>Watermark bpmn.io:</b> anh chốt GIỮ — không cần license OEM Camunda.</li>
+  </ul>
+
+  <p style="margin-top:20px;font-size:12px;color:var(--mute)">Kaori · BPMN palette &amp; chuẩn dựng workflow · 2026-05-29 · catalog: <code>frontend/lib/bpmn/bpmn-elements.ts</code> · mapper: <code>workflow_runtime/bpmn_mapper.py</code> · spec: <code>WORKFLOW_BUILDER_REDESIGN.md</code> §11</p>
+</div>
+
+<script>
+// ── BPMN element catalog (mirror của frontend/lib/bpmn/bpmn-elements.ts) ──
+// Render icon bằng compose: base shape + marker glyph (giống bpmn-js).
+const C = [
+ // participants
+ {cat:'Pool & Lane (Swimlane)', el:[
+   {base:'pool', vi:'Pool (Participant)', en:'Pool', ds:'1 participant/quy trình; chứa các lane'},
+   {base:'lane', vi:'Lane (Role)', en:'Lane', ds:'Phân vai trong pool: phòng ban/người'},
+ ]},
+ // start events
+ {cat:'Sự kiện Bắt đầu (Start Events)', el:[
+   {base:'ev',tier:'start',marker:null, vi:'Bắt đầu (None)', en:'None Start', ds:'Khởi đầu không điều kiện'},
+   {base:'ev',tier:'start',marker:'message', vi:'BĐ — Tin nhắn', en:'Message Start', ds:'Kích hoạt khi nhận message'},
+   {base:'ev',tier:'start',marker:'timer', vi:'BĐ — Hẹn giờ', en:'Timer Start', ds:'Theo thời điểm/chu kỳ'},
+   {base:'ev',tier:'start',marker:'conditional', vi:'BĐ — Điều kiện', en:'Conditional Start', ds:'Khi điều kiện thành true'},
+   {base:'ev',tier:'start',marker:'signal', vi:'BĐ — Tín hiệu', en:'Signal Start', ds:'Khi nhận signal broadcast'},
+   {base:'ev',tier:'start',marker:'multiple', vi:'BĐ — Đa sự kiện', en:'Multiple Start', ds:'Một trong nhiều (OR)'},
+   {base:'ev',tier:'start',marker:'parallel', vi:'BĐ — Song song', en:'Parallel Multiple Start', ds:'Tất cả sự kiện (AND)'},
+ ]},
+ // intermediate catch
+ {cat:'Sự kiện Trung gian — Bắt (Intermediate Catch)', el:[
+   {base:'ev',tier:'inter',marker:'message', vi:'TG bắt — Tin nhắn', en:'Message Catch', ds:'Chờ nhận message'},
+   {base:'ev',tier:'inter',marker:'timer', vi:'TG — Hẹn giờ', en:'Timer Catch', ds:'Chờ thời lượng/thời điểm'},
+   {base:'ev',tier:'inter',marker:'conditional', vi:'TG bắt — Điều kiện', en:'Conditional Catch', ds:'Chờ điều kiện true'},
+   {base:'ev',tier:'inter',marker:'signal', vi:'TG bắt — Tín hiệu', en:'Signal Catch', ds:'Chờ signal'},
+   {base:'ev',tier:'inter',marker:'link', vi:'TG — Link (vào)', en:'Link Catch', ds:'Điểm vào của cặp link'},
+ ]},
+ // intermediate throw
+ {cat:'Sự kiện Trung gian — Ném (Intermediate Throw)', el:[
+   {base:'ev',tier:'inter',marker:'message',throw:true, vi:'TG ném — Tin nhắn', en:'Message Throw', ds:'Gửi message'},
+   {base:'ev',tier:'inter',marker:'signal',throw:true, vi:'TG ném — Tín hiệu', en:'Signal Throw', ds:'Phát signal'},
+   {base:'ev',tier:'inter',marker:'escalation',throw:true, vi:'TG — Leo thang', en:'Escalation Throw', ds:'Báo lên cấp trên'},
+   {base:'ev',tier:'inter',marker:'compensation',throw:true, vi:'TG — Bù trừ', en:'Compensation Throw', ds:'Kích hoạt bù trừ'},
+   {base:'ev',tier:'inter',marker:'link',throw:true, vi:'TG — Link (ra)', en:'Link Throw', ds:'Điểm ra của cặp link'},
+ ]},
+ // boundary
+ {cat:'Sự kiện Biên (Boundary — gắn cạnh activity)', el:[
+   {base:'ev',tier:'inter',marker:'error', vi:'Biên — Lỗi', en:'Error Boundary', ds:'Bắt lỗi (chỉ interrupting)'},
+   {base:'ev',tier:'inter',marker:'timer', vi:'Biên — Timeout', en:'Timer Boundary', ds:'Quá hạn (interrupt/non-interrupt)'},
+   {base:'ev',tier:'inter',marker:'message',dash:true, vi:'Biên — Tin nhắn (non-int)', en:'Message Boundary (NI)', ds:'Nét đứt = không ngắt'},
+   {base:'ev',tier:'inter',marker:'cancel', vi:'Biên — Hủy', en:'Cancel Boundary', ds:'Trong transaction'},
+   {base:'ev',tier:'inter',marker:'escalation', vi:'Biên — Leo thang', en:'Escalation Boundary', ds:'Báo lên cấp trên'},
+ ]},
+ // end events
+ {cat:'Sự kiện Kết thúc (End Events)', el:[
+   {base:'ev',tier:'end',marker:null, vi:'Kết thúc (None)', en:'None End', ds:'Kết thúc bình thường'},
+   {base:'ev',tier:'end',marker:'message',throw:true, vi:'KT — Tin nhắn', en:'Message End', ds:'Gửi message khi xong'},
+   {base:'ev',tier:'end',marker:'error',throw:true, vi:'KT — Lỗi', en:'Error End', ds:'Kết thúc với lỗi'},
+   {base:'ev',tier:'end',marker:'terminate', vi:'KT — Chấm dứt', en:'Terminate End', ds:'Hủy mọi nhánh đang chạy'},
+   {base:'ev',tier:'end',marker:'escalation',throw:true, vi:'KT — Leo thang', en:'Escalation End', ds:'Báo lên cấp trên'},
+   {base:'ev',tier:'end',marker:'signal',throw:true, vi:'KT — Tín hiệu', en:'Signal End', ds:'Phát signal khi xong'},
+   {base:'ev',tier:'end',marker:'compensation',throw:true, vi:'KT — Bù trừ', en:'Compensation End', ds:'Kích hoạt bù trừ'},
+   {base:'ev',tier:'end',marker:'cancel',throw:true, vi:'KT — Hủy', en:'Cancel End', ds:'Trong transaction'},
+ ]},
+ // tasks
+ {cat:'Hoạt động — Task', el:[
+   {base:'task',marker:null, vi:'Task (chung)', en:'Undefined Task', ds:'Công việc chưa định loại'},
+   {base:'task',marker:'user', vi:'User Task', en:'User Task', ds:'Người thực hiện (icon người)'},
+   {base:'task',marker:'service', vi:'Service Task', en:'Service Task', ds:'Hệ thống/dịch vụ tự chạy'},
+   {base:'task',marker:'send', vi:'Send Task', en:'Send Task', ds:'Gửi message đi'},
+   {base:'task',marker:'receive', vi:'Receive Task', en:'Receive Task', ds:'Chờ nhận message'},
+   {base:'task',marker:'manual', vi:'Manual Task', en:'Manual Task', ds:'Làm tay, không cần hệ thống'},
+   {base:'task',marker:'rule', vi:'Business Rule Task', en:'Business Rule', ds:'Chạy luật quyết định (DMN)'},
+   {base:'task',marker:'script', vi:'Script Task', en:'Script Task', ds:'Chạy code tự động'},
+ ]},
+ // subprocess
+ {cat:'Hoạt động — Subprocess & Call', el:[
+   {base:'sub',marker:'collapsed', vi:'Subprocess (thu gọn)', en:'Embedded Subprocess', ds:'Gói nghiệp vụ con (+ = thu gọn)'},
+   {base:'sub',marker:'event', vi:'Event Subprocess', en:'Event Subprocess', ds:'Khung nét đứt, kích bởi 1 start event'},
+   {base:'sub',marker:'transaction', vi:'Transaction', en:'Transaction', ds:'Viền đôi, có hủy/bù trừ'},
+   {base:'sub',marker:'call', vi:'Call Activity', en:'Call Activity', ds:'Viền dày, gọi quy trình dùng lại'},
+   {base:'sub',marker:'adhoc', vi:'Ad-hoc Subprocess', en:'Ad-hoc', ds:'Marker ~ : chạy tự do, lặp/bỏ qua'},
+ ]},
+ // gateways
+ {cat:'Cổng (Gateways)', el:[
+   {base:'gw',marker:'exclusive', vi:'Exclusive (XOR)', en:'Exclusive Gateway', ds:'1 nhánh loại trừ nhau'},
+   {base:'gw',marker:'parallel', vi:'Parallel (AND)', en:'Parallel Gateway', ds:'Tách/gộp tất cả nhánh song song'},
+   {base:'gw',marker:'inclusive', vi:'Inclusive (OR)', en:'Inclusive Gateway', ds:'≥1 nhánh theo điều kiện'},
+   {base:'gw',marker:'eventbased', vi:'Event-based', en:'Event-based Gateway', ds:'Rẽ theo sự kiện nào tới trước'},
+   {base:'gw',marker:'complex', vi:'Complex', en:'Complex Gateway', ds:'Điều kiện gộp phức tạp'},
+ ]},
+ // data
+ {cat:'Dữ liệu (Data)', el:[
+   {base:'data',marker:null, vi:'Data Object', en:'Data Object', ds:'Thông tin/tài liệu trong quy trình'},
+   {base:'data',marker:'input', vi:'Data Input', en:'Data Input', ds:'Đầu vào dữ liệu'},
+   {base:'data',marker:'output', vi:'Data Output', en:'Data Output', ds:'Đầu ra dữ liệu'},
+   {base:'data',marker:'collection', vi:'Data Collection', en:'Collection', ds:'Tập nhiều bản ghi (|||)'},
+   {base:'store', vi:'Data Store', en:'Data Store', ds:'Kho lưu trữ bền vững'},
+ ]},
+ // artifacts
+ {cat:'Chú thích (Artifacts)', el:[
+   {base:'group', vi:'Group', en:'Group', ds:'Gom nhóm trực quan, không ảnh hưởng luồng'},
+   {base:'annot', vi:'Text Annotation', en:'Text Annotation', ds:'Ghi chú giải thích'},
+ ]},
+ // connections
+ {cat:'Đường nối (Connecting Objects)', el:[
+   {base:'cn',marker:'seq', vi:'Sequence Flow', en:'Sequence Flow', ds:'Thứ tự trong 1 pool (liền)'},
+   {base:'cn',marker:'cond', vi:'Conditional Flow', en:'Conditional Flow', ds:'Có điều kiện (hình thoi ở gốc)'},
+   {base:'cn',marker:'default', vi:'Default Flow', en:'Default Flow', ds:'Nhánh mặc định (gạch chéo)'},
+   {base:'cn',marker:'msg', vi:'Message Flow', en:'Message Flow', ds:'Giữa 2 pool (đứt, mũi tên rỗng)'},
+   {base:'cn',marker:'assoc', vi:'Association', en:'Association', ds:'Nối artifact (chấm)'},
+ ]},
+];
+
+// marker glyphs (vẽ trong vùng ~ 16x16 quanh tâm 23,23)
+function glyph(m, throwing){
+  const f = throwing ? '#334155' : 'none', s = throwing ? '#fff' : '#334155';
+  switch(m){
+    case 'message': return `<path d="M15,18 h16 v11 h-16 z M15,18 l8,6 l8,-6" fill="${f}" stroke="${throwing?'#fff':'#334155'}" stroke-width="1"/>`;
+    case 'timer': return `<circle cx="23" cy="23" r="8" fill="none" stroke="#334155" stroke-width="1.1"/><path d="M23,17 v6 l4,3" fill="none" stroke="#334155" stroke-width="1.1"/>`;
+    case 'signal': return `<path d="M23,15 L31,30 L15,30 Z" fill="${f}" stroke="#334155" stroke-width="1.1"/>`;
+    case 'conditional': return `<rect x="16" y="16" width="14" height="14" fill="none" stroke="#334155" stroke-width="1"/><path d="M18,20 h10 M18,23 h10 M18,26 h10" stroke="#334155" stroke-width="0.9"/>`;
+    case 'error': return `<path d="M16,30 L20,18 L25,26 L30,15" fill="${throwing?'#334155':'none'}" stroke="#334155" stroke-width="1.4"/>`;
+    case 'escalation': return `<path d="M23,15 L29,29 L23,23 L17,29 Z" fill="${f}" stroke="#334155" stroke-width="1"/>`;
+    case 'cancel': return `<path d="M17,17 L29,29 M29,17 L17,29" stroke="#334155" stroke-width="1.6"/>`;
+    case 'compensation': return `<path d="M23,17 L17,23 L23,29 Z M29,17 L23,23 L29,29 Z" fill="${f}" stroke="#334155" stroke-width="0.9"/>`;
+    case 'link': return `<path d="M16,23 h9 v-3 l5,4.5 l-5,4.5 v-3 h-9 z" fill="${f}" stroke="#334155" stroke-width="0.9"/>`;
+    case 'terminate': return `<circle cx="23" cy="23" r="8" fill="#334155"/>`;
+    case 'multiple': return `<path d="M23,15 L30,21 L27,30 L19,30 L16,21 Z" fill="${f}" stroke="#334155" stroke-width="1"/>`;
+    case 'parallel': return `<path d="M23,16 v14 M16,23 h14" stroke="#334155" stroke-width="2"/>`;
+    default: return '';
+  }
+}
+function taskMarker(m){ // top-left 16x16
+  switch(m){
+    case 'user': return `<circle cx="13" cy="13" r="3.2" fill="none" stroke="#475569" stroke-width="1"/><path d="M8.5,21 a4.5 3.5 0 0 1 9 0" fill="none" stroke="#475569" stroke-width="1"/>`;
+    case 'service': return `<circle cx="13" cy="15" r="4.5" fill="none" stroke="#475569" stroke-width="1"/><circle cx="13" cy="15" r="1.6" fill="#475569"/><path d="M13,9 v3 M13,18 v3 M7,15 h3 M16,15 h3" stroke="#475569" stroke-width="1.4"/>`;
+    case 'send': return `<path d="M7,11 h13 v9 h-13 z M7,11 l6.5,5 l6.5,-5" fill="#475569" stroke="#fff" stroke-width="0.8"/>`;
+    case 'receive': return `<path d="M7,11 h13 v9 h-13 z M7,11 l6.5,5 l6.5,-5" fill="none" stroke="#475569" stroke-width="1"/>`;
+    case 'manual': return `<path d="M7,16 c2,-4 6,-4 10,-2 l2,1 M9,14 v5 M12,13 v6 M15,14 v5" fill="none" stroke="#475569" stroke-width="1"/>`;
+    case 'rule': return `<rect x="7" y="11" width="13" height="9" fill="none" stroke="#475569" stroke-width="1"/><path d="M7,14 h13 M11,11 v9" stroke="#475569" stroke-width="0.8"/>`;
+    case 'script': return `<path d="M9,11 c4,0 4,4 8,4 M8,15 c4,0 4,4 8,4" fill="none" stroke="#475569" stroke-width="1"/>`;
+    default: return '';
+  }
+}
+function gwMarker(m){
+  const c='#b45309', sw='1.8';
+  switch(m){
+    case 'exclusive': return `<path d="M17,17 L29,29 M29,17 L17,29" stroke="${c}" stroke-width="${sw}"/>`;
+    case 'parallel': return `<path d="M23,15 v16 M15,23 h16" stroke="${c}" stroke-width="2.2"/>`;
+    case 'inclusive': return `<circle cx="23" cy="23" r="7" fill="none" stroke="${c}" stroke-width="2"/>`;
+    case 'complex': return `<path d="M23,15 v16 M15,23 h16 M17,17 L29,29 M29,17 L17,29" stroke="${c}" stroke-width="1.5"/>`;
+    case 'eventbased': return `<circle cx="23" cy="23" r="8" fill="none" stroke="${c}" stroke-width="1"/><path d="M23,17 L28,21 L26,28 L20,28 L18,21 Z" fill="none" stroke="${c}" stroke-width="1"/>`;
+    default: return '';
+  }
+}
+function icon(e){
+  const S=46; let inner='';
+  if(e.base==='ev'){
+    const dash = e.dash ? ' stroke-dasharray="3 2"' : '';
+    if(e.tier==='start') inner=`<circle cx="23" cy="23" r="16" fill="#fff" stroke="#10b981" stroke-width="1.6"${dash}/>`;
+    else if(e.tier==='end') inner=`<circle cx="23" cy="23" r="16" fill="#fff" stroke="#334155" stroke-width="3"${dash}/>`;
+    else inner=`<circle cx="23" cy="23" r="16" fill="#fff" stroke="#475569" stroke-width="1.2"${dash}/><circle cx="23" cy="23" r="13" fill="none" stroke="#475569" stroke-width="1.2"${dash}/>`;
+    inner+=glyph(e.marker, e.throw);
+  } else if(e.base==='task'){
+    inner=`<rect x="3" y="9" width="40" height="28" rx="6" fill="#fff" stroke="#64748b" stroke-width="1.3"/>`+taskMarker(e.marker);
+  } else if(e.base==='sub'){
+    const db = e.marker==='transaction'?`<rect x="5" y="11" width="36" height="24" rx="4" fill="none" stroke="#64748b"/>`:'';
+    const dash = (e.marker==='event')?' stroke-dasharray="4 3"':'';
+    const bw = e.marker==='call'?2.6:1.3;
+    inner=`<rect x="3" y="9" width="40" height="28" rx="6" fill="#fff" stroke="#64748b" stroke-width="${bw}"${dash}/>`+db;
+    if(e.marker==='collapsed'||e.marker==='event'||e.marker==='call') inner+=`<rect x="20" y="30" width="6" height="6" fill="none" stroke="#475569"/><path d="M23,31 v4 M21,33 h4" stroke="#475569" stroke-width="0.9"/>`;
+    if(e.marker==='adhoc') inner+=`<path d="M18,33 c2,-3 4,3 6,0" fill="none" stroke="#475569" stroke-width="1.4"/>`;
+  } else if(e.base==='gw'){
+    inner=`<polygon points="23,4 42,23 23,42 4,23" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.4"/>`+gwMarker(e.marker);
+  } else if(e.base==='pool'){
+    inner=`<rect x="3" y="11" width="40" height="24" fill="#fff" stroke="#64748b"/><rect x="3" y="11" width="9" height="24" fill="#eef2f7" stroke="#64748b"/>`;
+  } else if(e.base==='lane'){
+    inner=`<rect x="3" y="13" width="40" height="20" fill="#fff" stroke="#94a3b8"/><rect x="3" y="13" width="8" height="20" fill="#f6f8fb" stroke="#94a3b8"/>`;
+  } else if(e.base==='data'){
+    inner=`<path d="M12,8 h14 l6,6 v24 h-26 z" fill="#fff" stroke="#64748b"/><path d="M26,8 v6 h6" fill="none" stroke="#64748b"/>`;
+    if(e.marker==='collection') inner+=`<path d="M18,32 v6 M21,32 v6 M24,32 v6" stroke="#475569" stroke-width="1.4"/>`;
+    if(e.marker==='input') inner+=`<path d="M15,20 h10 v-2 l3,3 l-3,3 v-2 h-10 z" fill="none" stroke="#475569"/>`;
+    if(e.marker==='output') inner+=`<path d="M15,20 h10 v-2 l3,3 l-3,3 v-2 h-10 z" fill="#475569" stroke="#475569"/>`;
+  } else if(e.base==='store'){
+    inner=`<path d="M9,14 a14,4 0 0 1 28,0 v18 a14,4 0 0 1 -28,0 z" fill="#fff" stroke="#64748b"/><path d="M9,14 a14,4 0 0 0 28,0" fill="none" stroke="#64748b"/>`;
+  } else if(e.base==='group'){
+    inner=`<rect x="4" y="9" width="38" height="28" rx="6" fill="none" stroke="#64748b" stroke-dasharray="2 3 6 3"/>`;
+  } else if(e.base==='annot'){
+    inner=`<path d="M14,9 h26 M14,9 v28 M14,37 h26" fill="none" stroke="#64748b"/><path d="M19,18 h16 M19,23 h16 M19,28 h10" stroke="#94a3b8" stroke-width="0.9"/>`;
+  } else if(e.base==='cn'){
+    const y=23;
+    if(e.marker==='seq') inner=`<path d="M5,${y} h32" stroke="#475569" stroke-width="1.6" marker-end="url(#a)"/>`;
+    else if(e.marker==='cond') inner=`<path d="M11,${y} h26" stroke="#475569" stroke-width="1.6" marker-end="url(#a)"/><path d="M5,${y} l3,-3 l3,3 l-3,3 z" fill="#fff" stroke="#475569"/>`;
+    else if(e.marker==='default') inner=`<path d="M5,${y} h32" stroke="#475569" stroke-width="1.6" marker-end="url(#a)"/><path d="M10,${y-5} l5,10" stroke="#475569" stroke-width="1.4"/>`;
+    else if(e.marker==='msg') inner=`<path d="M5,${y} h31" stroke="#64748b" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#ao)"/><circle cx="5" cy="${y}" r="2.2" fill="#fff" stroke="#64748b"/>`;
+    else inner=`<path d="M5,${y} h32" stroke="#64748b" stroke-width="1.4" stroke-dasharray="1.5 2.5"/>`;
+  }
+  return `<svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}"><defs>
+     <marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#475569"/></marker>
+     <marker id="ao" markerWidth="11" markerHeight="11" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L8,4 L1,7" fill="none" stroke="#64748b"/></marker>
+   </defs>${inner}</svg>`;
+}
+
+const root=document.getElementById('palette-root');
+let total=0;
+C.forEach(grp=>{
+  const h=document.createElement('h3');
+  h.innerHTML = grp.cat + ` <span class="count">(${grp.el.length})</span>`;
+  root.appendChild(h);
+  const g=document.createElement('div'); g.className='pal';
+  grp.el.forEach(e=>{ total++;
+    const d=document.createElement('div'); d.className='it';
+    d.innerHTML = icon(e) + `<div><div class="nm">${e.vi}</div><div class="en">${e.en}</div></div>`;
+    d.title = e.ds || '';
+    g.appendChild(d);
+  });
+  root.appendChild(g);
+});
+const c=document.createElement('p'); c.className='count'; c.style.marginTop='14px';
+c.textContent = `Tổng: ${total} ký hiệu BPMN trong catalog.`;
+root.appendChild(c);
+</script>
+</body>
+</html>

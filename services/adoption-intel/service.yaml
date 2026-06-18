@@ -1,0 +1,45 @@
+# service.yaml — adoption-intel (skeleton, Phase 2 extract target)
+
+name:        adoption-intel
+display:     "Adoption Intelligence"
+language:    python
+runtime:     "FastAPI + signal aggregator"
+port:        8097                # reserved at P15-S9 follow-up; service goes live Phase 2 extract
+owner:       "@yuta9999zn"
+team:        kaori-core
+tier:        2
+status:      skeleton
+
+# Bounded context.
+context: >
+  9 resistance signals + intervention playbook. Track when users abandon
+  workflow execution, override AI decisions, use side-channels (Zalo / Excel
+  outside the workflow), get manager intervention, miss completion targets,
+  etc. Composite health score per workflow / department / tenant. CSM gets
+  alerts when score drops; auto-intervention playbook (email digest, Studio
+  outreach) per archetype. Phase 1 implements 5/9 signals; Phase 1.5
+  P15-S9 fills full 9.
+
+slo:
+  availability:    "99% (signals are advisory, not blocking)"
+  signal_freshness_p95_min: 60     # signals computed daily but read fresh
+
+invariants_enforced:
+  - K-1
+  - K-12
+  - K-15
+  - K-19
+
+consumers:
+  - api-gateway     # CSM dashboard reads /adoption/* endpoints
+  - notification-service # CSM alerts + intervention emails
+  - economics       # NOV correlations: low adoption = NOV declining
+
+depends_on:
+  - postgres        # signal events + health scores
+  - clickhouse      # event stream aggregation Phase 1.5+
+  - workflow-engine # workflow execution events trigger signals
+
+references:
+  - docs/strategic/WORKFLOW_SYSTEM.md   # PART VIII (Adoption Intelligence ⭐ NEW v2.0)
+  - docs/BACKLOG_V4.md                  # P1-S7 (AI-SIG-001..006, AI-HSC-010..015, AI-INT-018), P15-S9 (full 9)

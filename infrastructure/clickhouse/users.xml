@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!--
+  Dev user split — mirrors the production Helm chart's user definitions
+  so queries written against dev hit the same RBAC profile they will in
+  production.
+
+  Cleartext passwords are intentional in dev (no Vault on a laptop);
+  production builds the password_sha256_hex from a Vault-resolved
+  cleartext via the external-secrets-operator init container.
+-->
+<clickhouse>
+
+  <users>
+    <!-- Read-only role for dashboard / BI / Grafana. -->
+    <kaori_ro>
+      <password>kaori_ro_dev</password>
+      <networks>
+        <ip>::/0</ip>
+      </networks>
+      <profile>readonly</profile>
+      <quota>default</quota>
+    </kaori_ro>
+
+    <!-- Read+write role for the data-pipeline silver tier writer. -->
+    <kaori_writer>
+      <password>kaori_writer_dev</password>
+      <networks>
+        <ip>::/0</ip>
+      </networks>
+      <profile>default</profile>
+      <quota>default</quota>
+    </kaori_writer>
+  </users>
+
+  <profiles>
+    <readonly>
+      <readonly>1</readonly>
+      <max_memory_usage>5000000000</max_memory_usage>
+      <max_threads>8</max_threads>
+    </readonly>
+    <default>
+      <max_memory_usage>20000000000</max_memory_usage>
+      <max_threads>16</max_threads>
+      <insert_distributed_sync>1</insert_distributed_sync>
+    </default>
+  </profiles>
+
+</clickhouse>

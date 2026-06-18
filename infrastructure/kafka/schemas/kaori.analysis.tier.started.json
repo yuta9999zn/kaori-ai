@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaori.io/kafka-schemas/kaori.analysis.tier.started.json",
+  "title": "kaori.analysis.tier.started",
+  "description": "F-033 Multi-tier Analysis — fired by ai-orchestrator when a tier run is queued. Producer: services/ai-orchestrator/multi_tier/service.py. Consumers (future): tier-quota tracker, ops dashboard.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["analysis_run_id", "enterprise_id", "tier", "scope"],
+  "properties": {
+    "analysis_run_id": {
+      "type": "string",
+      "description": "analysis_runs.id — UUID string. Joins back to the row for the templates / source_ids / question."
+    },
+    "enterprise_id": {
+      "type": "string",
+      "description": "Tenant scope (kafka partition key)."
+    },
+    "tier": {
+      "type": "string",
+      "enum": ["basic", "intermediate", "advanced"],
+      "description": "Matches analysis_runs.tier — drives consumer routing (basic vs intermediate use different downstream rollups)."
+    },
+    "scope": {
+      "type": "string",
+      "enum": ["single", "multi", "cross"],
+      "description": "Data scope — informs cost rollup (cross-workspace runs are tracked separately)."
+    },
+    "framework": {
+      "type": ["string", "null"],
+      "enum": ["swot", "6w", "2h", "fishbone", null],
+      "description": "Framework code for intermediate / advanced tiers. NULL for basic."
+    }
+  }
+}

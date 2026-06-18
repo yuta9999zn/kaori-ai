@@ -1,0 +1,147 @@
+# Kaori Vault HA values — wraps hashicorp/vault upstream chart.
+#
+# Reference: https://github.com/hashicorp/vault-helm/blob/main/values.yaml
+# Anything not overridden here uses upstream defaults.
+#
+# Phase 1.5 P15-S9 D2 — 3-node Raft, KMS auto-unseal, audit to file
+# (sidecar tails into Loki). Dev overlay can drop to single dev-mode
+# pod for laptop testing.
+
+vault:
+
+  global:
+    enabled: true
+    tlsDisable: false  # K-18: TLS mandatory in production
+
+  injector:
+    # Vault Agent Injector for sidecar secret injection. Phase 1.5 we
+    # use direct API reads (kaori_vault.py wrapper); injector is the
+    # path forward when teams want declarative secret mounting on pods.
+    enabled: true
+    image:
+      repository: hashicorp/vault-k8s
+      tag: "1.4.1"
+
+  server:
+    image:
+      repository: hashicorp/vault
+      tag: "1.15.4"
+
+    # K8s service account that AppRole + JWT auth methods reference.
+    serviceAccount:
+      create: true
+      name: vault
+
+    # Resources baseline — Vault is light unless very high secret churn.
+    resources:
+      requests:
+        cpu: 250m
+        memory: 256Mi
+      limits:
+        cpu: 1
+        memory: 1Gi
+
+    # ---------------- HA Raft (production) ----------------
+    standalone:
+      enabled: false  # Disabled — we want HA
+
+    ha:
+      enabled: true
+      replicas: 3
+
+      # Raft consensus storage. Survives node loss up to (n-1)/2 = 1.
+      raft:
+        enabled: true
+        setNodeId: true
+        config: |
+          ui = true
+
+          listener "tcp" {
+            tls_disable = 0
+            address = "[::]:8200"
+            cluster_address = "[::]:8201"
+            tls_cert_file = "/vault/userconfig/vault-tls/tls.crt"
+            tls_key_file  = "/vault/userconfig/vault-tls/tls.key"
+            tls_client_ca_file = "/vault/userconfig/vault-tls/ca.crt"
+            telemetry {
+              unauthenticated_metrics_access = true
+            }
+          }
+
+          storage "raft" {
+            path = "/vault/data"
+            retry_join {
+              leader_api_addr = "https://vault-0.vault-internal:8200"
+              leader_ca_cert_file = "/vault/userconfig/vault-tls/ca.crt"
+            }
+            retry_join {
+              leader_api_addr = "https://vault-1.vault-internal:8200"
+              leader_ca_cert_file = "/vault/userconfig/vault-tls/ca.crt"
+            }
+            retry_join {
+              leader_api_addr = "https://vault-2.vault-internal:8200"
+              leader_ca_cert_file = "/vault/userconfig/vault-tls/ca.crt"
+            }
+          }
+
+          # Auto-unseal via cloud KMS — production overlay sets the
+          # actual provider stanza (awskms / azurekeyvault / gcpckms
+          # / OCIKMS). FPT Cloud exposes KMS-compatible endpoint per
+          # the AWS S3-style API surface.
+          seal "awskms" {
+            region     = "ap-southeast-1"
+            kms_key_id = "alias/kaori-vault-unseal"
+            endpoint   = "https://kms.fptcloud.com"
+          }
+
+          # Service registration — K8s readiness checks via Vault
+          # active/standby status.
+          service_registration "kubernetes" {}
+
+          # Audit log shipped to /vault/audit/ (PV) — Loki sidecar
+          # tails. K-18 invariant: every secret access auditable.
+          # Audit setup is a post-init step; declared here as comment
+          # for deployer.
+          # audit "file" {
+          #   file_path = "/vault/audit/audit.log"
+          # }
+
+      # Affinity so 3 replicas land on different nodes.
+      affinity: |
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: vault
+                  app.kubernetes.io/instance: "{{ .Release.Name }}"
+              topologyKey: kubernetes.io/hostname
+
+    # PV for Raft data — keep small (secrets are tiny).
+    dataStorage:
+      enabled: true
+      size: 10Gi
+      storageClass: fpt-cloud-ssd
+
+    auditStorage:
+      enabled: true
+      size: 10Gi
+      storageClass: fpt-cloud-ssd
+
+    # ---------------- Observability ----------------
+    extraEnvironmentVars:
+      VAULT_LOG_FORMAT: json  # K-19 spirit — structured logs
+      VAULT_LOG_LEVEL: info
+
+    # Liveness + readiness from upstream chart.
+    livenessProbe:
+      enabled: true
+    readinessProbe:
+      enabled: true
+
+  # CSI provider — Phase 2 (when we want CSI volume secrets). Off Phase 1.5.
+  csi:
+    enabled: false
+
+  ui:
+    enabled: true
+    serviceType: ClusterIP  # Reach via port-forward; no public expose.

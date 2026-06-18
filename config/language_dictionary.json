@@ -1,0 +1,522 @@
+{
+  "version": "1.3",
+  "description": "Multilingual semantic dictionary for SME business data columns. Covers EN / VI / JA / KO / ZH. v1.3 adds 4 common customer/transaction fields (email, gender, age, payment_method) — payment_method is a CATEGORY (how paid), distinct from the cash/card/bank_transfer monetary-amount fields, so a 'payment_method' column no longer fuzzy-steals canonical 'amount', and adds data_type hints to numeric/category fields. v1.2 added 12 logistics / supply-chain / workflow fields (order_id, region, country, channel, model, delivery_status, cycle_time, sla_target, sla_met, dealer_id, inventory_decision, approval_level) and prunes generic regional aliases from body_area so geographic 'region' resolves correctly.",
+  "fields": {
+    "date": {
+      "description": "Date or timestamp of a transaction, visit, or record",
+      "aliases": {
+        "en": ["date", "day", "time", "datetime", "transaction date", "visit date",
+               "created at", "period", "dt", "entry date", "recorded date", "month"],
+        "vi": ["ngày", "ngay", "thời gian", "thoi gian", "ngày tháng", "ngay thang",
+               "ngày giao dịch", "ngay giao dich", "ngày tạo", "ngay tao",
+               "ngày lập", "ngay lap", "ngày khám", "ngay kham", "kỳ", "tháng",
+               "ngay thuc hien", "ngày thực hiện"],
+        "ja": ["日付", "日", "日時", "取引日", "年月日", "日付け", "時間",
+               "作成日", "期日", "受付日", "登録日", "実施日"],
+        "ko": ["날짜", "일자", "거래일", "시간", "일시", "접수일", "기간", "기입일", "등록일"],
+        "zh": ["日期", "时间", "日", "交易日", "年月日", "记录日期", "日子", "时期"]
+      }
+    },
+    "amount": {
+      "description": "LINE TOTAL monetary amount of a transaction (already unit_price × quantity, NOT a per-unit price)",
+      "aliases": {
+        "en": ["amount", "total", "total amount", "value", "sum", "payment",
+               "charge", "fee", "gross", "net amount", "money",
+               "line total", "extended price", "amount due", "grand total", "subtotal"],
+        "vi": ["tiền", "tien", "số tiền", "so tien", "tổng tiền", "tong tien",
+               "tổng cộng", "tong cong", "thanh toán", "thanh toan",
+               "giá trị", "gia tri", "tổng thanh toán", "gia tien", "thành tiền", "thanh tien"],
+        "ja": ["金額", "合計", "合計金額", "総額", "支払金額", "請求金額", "代金", "料金", "額"],
+        "ko": ["금액", "합계", "총액", "결제금액", "지불금액", "요금", "총금액"],
+        "zh": ["金额", "总额", "合计", "总计", "付款金额", "金钱", "价值", "总价"]
+      }
+    },
+    "unit_price": {
+      "description": "Price per single unit — NOT the line total. The transaction amount is unit_price × quantity; keep these distinct so Gold never mistakes a per-unit price for the total (Medallion contract).",
+      "aliases": {
+        "en": ["unit price", "unitprice", "price per unit", "price/unit", "price each",
+               "price per item", "item price", "unit cost", "cost per unit",
+               "list price", "selling price per unit"],
+        "vi": ["đơn giá", "don gia", "giá đơn vị", "gia don vi", "giá/đơn vị",
+               "đơn giá bán", "don gia ban", "giá 1 sản phẩm", "gia mot san pham",
+               "đơn giá vốn", "don gia von"],
+        "ja": ["単価", "単位価格", "販売単価", "一個あたり", "個単価"],
+        "ko": ["단가", "단위가격", "판매단가", "개당가격", "개당단가"],
+        "zh": ["单价", "单位价格", "销售单价", "每单位价格", "单位单价"]
+      }
+    },
+    "revenue": {
+      "description": "Sales revenue or income generated",
+      "aliases": {
+        "en": ["revenue", "sales", "income", "earnings", "turnover",
+               "gross revenue", "net revenue", "sales amount", "receipts", "proceeds",
+               "uriage"],
+        "vi": ["doanh thu", "doanh so", "thu nhập", "thu nhap", "thu",
+               "tiền thu", "tien thu", "tổng doanh thu", "tong doanh thu",
+               "doanh thu thuần", "tổng thu", "tong thu", "thu vao"],
+        "ja": ["売上", "売上高", "売上金額", "収入", "収益", "販売高", "売り上げ", "売上額",
+               "うりあげ"],
+        "ko": ["매출", "매출액", "수입", "수익", "판매액", "영업수익", "매출금액"],
+        "zh": ["收入", "销售额", "营业额", "销售收入", "营收", "业绩", "销售"]
+      }
+    },
+    "cost": {
+      "description": "Costs, expenses, or outflow",
+      "aliases": {
+        "en": ["cost", "expense", "expenditure", "outflow", "spending",
+               "overhead", "charges", "cost of goods", "cogs", "disbursement"],
+        "vi": ["chi phí", "chi phi", "giá vốn", "gia von", "chi",
+               "tổng chi", "tong chi", "tiền chi", "tien chi", "chi tiêu"],
+        "ja": ["費用", "コスト", "支出", "経費", "原価", "仕入", "仕入れ", "経費合計"],
+        "ko": ["비용", "원가", "지출", "경비", "원가비용", "지출액"],
+        "zh": ["费用", "成本", "支出", "花费", "成本费用", "开支", "支出金额"]
+      }
+    },
+    "profit": {
+      "description": "Net profit or margin after costs",
+      "aliases": {
+        "en": ["profit", "net profit", "margin", "net income", "gain",
+               "earnings after cost", "bottom line", "operating profit"],
+        "vi": ["lợi nhuận", "loi nhuan", "lãi", "lai", "lợi nhuận thuần",
+               "lãi ròng", "lai rong", "loi nhuan thuan"],
+        "ja": ["利益", "純利益", "利潤", "収益", "純収益", "利益金額", "営業利益"],
+        "ko": ["이익", "순이익", "이윤", "수익", "마진", "영업이익"],
+        "zh": ["利润", "净利润", "盈利", "收益", "净收益", "毛利"]
+      }
+    },
+    "cash": {
+      "description": "Cash payment amount",
+      "aliases": {
+        "en": ["cash", "cash payment", "cash in hand", "notes", "physical cash", "cash received"],
+        "vi": ["tiền mặt", "tien mat", "mặt", "mat", "tiền mặt thực thu",
+               "tien mat thuc thu", "TM", "tien mat nhan"],
+        "ja": ["現金", "現金払い", "現金支払", "キャッシュ", "現金受取"],
+        "ko": ["현금", "현금결제", "현금지불", "현금수령"],
+        "zh": ["现金", "现金支付", "现钞", "实收现金"]
+      }
+    },
+    "bank_transfer": {
+      "description": "Bank transfer or electronic payment amount",
+      "aliases": {
+        "en": ["transfer", "bank transfer", "wire transfer", "eft", "electronic",
+               "banking", "online payment", "remittance"],
+        "vi": ["chuyển khoản", "chuyen khoan", "CK", "ck", "banking",
+               "chuyển khoản thực thu", "chuyen khoan thuc thu",
+               "internet banking", "ck thuc thu"],
+        "ja": ["振込", "銀行振込", "振り込み", "口座振替", "電子決済", "銀行転送", "送金"],
+        "ko": ["계좌이체", "이체", "은행이체", "전자이체", "송금"],
+        "zh": ["转账", "银行转账", "汇款", "电子支付", "网上支付", "银行划账"]
+      }
+    },
+    "card": {
+      "description": "Card payment amount (credit, debit, prepaid)",
+      "aliases": {
+        "en": ["card", "credit card", "debit card", "card payment",
+               "visa", "mastercard", "amex", "swipe"],
+        "vi": ["thẻ", "the", "thẻ tín dụng", "the tin dung",
+               "thẻ ngân hàng", "the ngan hang", "quẹt thẻ", "quet the"],
+        "ja": ["カード", "クレジット", "クレジットカード", "デビットカード", "カード払い"],
+        "ko": ["카드", "신용카드", "체크카드", "카드결제"],
+        "zh": ["刷卡", "信用卡", "银行卡", "卡支付", "刷卡金额"]
+      }
+    },
+    "customer_count": {
+      "description": "Number of customers, visitors, or guests",
+      "aliases": {
+        "en": ["customer count", "customers", "visitors", "guests", "headcount",
+               "pax", "qty customers", "client count", "number of customers"],
+        "vi": ["số khách", "so khach", "lượt khách", "luot khach",
+               "khách", "khach", "số lượt khách", "so luot khach",
+               "số khách hàng", "lượt", "so kh"],
+        "ja": ["客数", "来客数", "顧客数", "人数", "来店数", "来店客数"],
+        "ko": ["고객수", "방문자수", "내방객수", "고객인원", "방문수"],
+        "zh": ["客户数", "顾客数", "来客数", "访客数", "人数", "顾客人数"]
+      }
+    },
+    "customer_external_id": {
+      "description": "External / business identifier of the customer (loyalty card, CRM ID, phone-derived ID, account number). The Gold layer uses this as the unique billing + churn key per K-11.",
+      "aliases": {
+        "en": ["customer id", "customer_id", "customer code", "customer no", "customer number",
+               "member id", "member_id", "member code", "member number", "loyalty id",
+               "account id", "account_id", "account number", "client id", "crm id",
+               "external id", "external_id", "customer external id"],
+        "vi": ["mã khách hàng", "ma khach hang", "mã KH", "ma kh",
+               "mã khách", "ma khach", "ID khách hàng", "id khach hang",
+               "mã thành viên", "ma thanh vien", "số thành viên", "so thanh vien",
+               "mã CRM", "ma crm", "mã tài khoản", "ma tai khoan",
+               "số tài khoản", "so tai khoan"],
+        "ja": ["顧客ID", "顧客コード", "顧客番号", "お客様番号", "お客様ID",
+               "会員ID", "会員コード", "会員番号", "アカウントID", "アカウント番号",
+               "メンバーID", "顧客識別番号"],
+        "ko": ["고객ID", "고객 ID", "고객번호", "고객 번호", "고객코드", "고객 코드",
+               "회원ID", "회원 ID", "회원번호", "회원 번호", "계정번호", "계정 번호"],
+        "zh": ["客户ID", "客户编号", "客户编码", "客户号", "客户代码",
+               "会员ID", "会员编号", "会员号", "账户编号", "账号"]
+      }
+    },
+    "staff": {
+      "description": "Staff member, employee, or cast name",
+      "aliases": {
+        "en": ["staff", "employee", "worker", "cast", "technician",
+               "therapist", "operator", "personnel", "staff name"],
+        "vi": ["nhân viên", "nhan vien", "kỹ thuật viên", "ky thuat vien",
+               "nhân sự", "nhan su", "NV", "chuyên viên", "chuyen vien",
+               "ten nv", "tên nv"],
+        "ja": ["スタッフ", "従業員", "担当者", "技術者", "セラピスト",
+               "担当", "キャスト", "スタッフ名"],
+        "ko": ["직원", "스태프", "담당자", "직원명", "캐스트", "담당"],
+        "zh": ["员工", "职员", "工作人员", "担当", "技师", "员工名"]
+      }
+    },
+    "service": {
+      "description": "Service type or treatment performed",
+      "aliases": {
+        "en": ["service", "treatment", "menu", "procedure", "item", "service type", "service name"],
+        "vi": ["dịch vụ", "dich vu", "loại dịch vụ", "loai dich vu",
+               "menu", "liệu trình", "lieu trinh", "dịch vụ sử dụng"],
+        "ja": ["サービス", "施術", "メニュー", "コース", "治療", "施術内容", "サービス名"],
+        "ko": ["서비스", "시술", "메뉴", "치료", "시술명", "서비스명"],
+        "zh": ["服务", "项目", "菜单", "服务内容", "治疗", "服务名称"]
+      }
+    },
+    "body_area": {
+      "description": "Body area or treatment zone (clinic/spa/healthcare domain ONLY — geographic region maps to canonical 'region' instead)",
+      "aliases": {
+        "en": ["body area", "treatment area", "treatment zone", "anatomical area",
+               "body part", "body zone"],
+        "vi": ["vùng điều trị", "vung dieu tri", "vùng cơ thể", "vung co the",
+               "bộ phận cơ thể", "bo phan co the", "vùng da", "vung da",
+               "vùng spa", "vung spa"],
+        "ja": ["施術部位", "治療部位", "身体部位", "施術エリア"],
+        "ko": ["시술부위", "치료부위", "신체부위", "시술구역"],
+        "zh": ["施术部位", "治疗区域", "身体部位", "治疗部位"]
+      }
+    },
+    "name": {
+      "description": "Customer, person, or entity name",
+      "aliases": {
+        "en": ["name", "customer name", "full name", "client name", "guest name", "person"],
+        "vi": ["tên", "ten", "tên khách", "ten khach", "họ tên", "ho ten",
+               "khách hàng", "khach hang", "tên khách hàng", "ten khach hang"],
+        "ja": ["氏名", "名前", "お名前", "顧客名", "名", "お客様名"],
+        "ko": ["이름", "성명", "고객명", "성함", "이름/성명"],
+        "zh": ["姓名", "名字", "客户名", "顾客姓名", "姓名/名称"]
+      }
+    },
+    "phone": {
+      "description": "Phone number or mobile contact",
+      "aliases": {
+        "en": ["phone", "mobile", "telephone", "tel", "contact", "cell", "phone number"],
+        "vi": ["số điện thoại", "so dien thoai", "SDT", "SĐT",
+               "điện thoại", "dien thoai", "số DT", "so dt", "mobile", "lien lac"],
+        "ja": ["電話番号", "携帯", "電話", "TEL", "連絡先", "携帯番号"],
+        "ko": ["전화번호", "휴대폰", "연락처", "TEL", "핸드폰"],
+        "zh": ["电话", "手机", "电话号码", "联系方式", "联系电话"]
+      }
+    },
+    "email": {
+      "description": "Email address / electronic contact",
+      "data_type": "email",
+      "aliases": {
+        "en": ["email", "e-mail", "e mail", "email address", "mail", "contact email", "customer email"],
+        "vi": ["email", "thư điện tử", "thu dien tu", "địa chỉ email", "dia chi email",
+               "hòm thư", "hom thu", "email khách hàng", "email khach hang"],
+        "ja": ["メール", "Eメール", "メールアドレス", "電子メール", "イーメール", "メアド"],
+        "ko": ["이메일", "이메일주소", "전자우편", "메일", "이메일 주소"],
+        "zh": ["电子邮件", "邮箱", "电邮", "邮件地址", "电子邮箱", "电子信箱"]
+      }
+    },
+    "gender": {
+      "description": "Gender / sex of the customer (category: male / female / other)",
+      "data_type": "category",
+      "aliases": {
+        "en": ["gender", "sex", "male/female", "m/f", "gender identity"],
+        "vi": ["giới tính", "gioi tinh", "phái", "phai", "nam/nữ", "nam nu", "giới"],
+        "ja": ["性別", "男女", "性"],
+        "ko": ["성별", "남녀", "성"],
+        "zh": ["性别", "男女", "性"]
+      }
+    },
+    "age": {
+      "description": "Age of the customer in years (integer)",
+      "data_type": "integer",
+      "aliases": {
+        "en": ["age", "customer age", "years old", "age years", "age group"],
+        "vi": ["tuổi", "tuoi", "độ tuổi", "do tuoi", "số tuổi", "so tuoi",
+               "tuổi khách", "tuoi khach", "tuổi khách hàng", "tuoi khach hang"],
+        "ja": ["年齢", "歳", "年令", "お年", "年代"],
+        "ko": ["나이", "연령", "연세", "연령대"],
+        "zh": ["年龄", "岁数", "年纪", "年龄段"]
+      }
+    },
+    "payment_method": {
+      "description": "Payment METHOD / tender category — HOW the customer paid (cash, card, transfer, e-wallet). A category label, NOT a monetary amount: keep distinct from canonical 'amount' / 'cash' / 'card' so a method column is never mistaken for money.",
+      "data_type": "category",
+      "aliases": {
+        "en": ["payment method", "payment_method", "payment type", "pay method",
+               "method of payment", "tender type", "payment mode", "pay type",
+               "paytype", "tender"],
+        "vi": ["phương thức thanh toán", "phuong thuc thanh toan",
+               "hình thức thanh toán", "hinh thuc thanh toan",
+               "cách thanh toán", "cach thanh toan", "loại thanh toán",
+               "loai thanh toan", "PTTT", "pttt", "kiểu thanh toán"],
+        "ja": ["支払方法", "支払い方法", "決済方法", "決済手段", "支払区分", "支払種別"],
+        "ko": ["결제방법", "결제수단", "지불방법", "결제유형", "지불수단"],
+        "zh": ["支付方式", "付款方式", "支付方法", "结算方式", "支付类型", "付款类型"]
+      }
+    },
+    "quantity": {
+      "description": "Quantity, count, or number of units",
+      "aliases": {
+        "en": ["quantity", "qty", "count", "number", "units", "pieces", "volume", "pcs",
+               "get", "received", "purchase qty", "order qty"],
+        "vi": ["số lượng", "so luong", "lượng", "luong", "số", "đơn vị",
+               "cái", "chiếc", "sl", "mua", "nhập"],
+        "ja": ["数量", "個数", "数", "本数", "枚数", "個", "個数量"],
+        "ko": ["수량", "개수", "갯수", "수", "단위수"],
+        "zh": ["数量", "个数", "件数", "数目", "量"]
+      }
+    },
+    "inventory": {
+      "description": "Stock level or inventory on hand",
+      "aliases": {
+        "en": ["inventory", "stock", "stock level", "on hand", "available stock",
+               "supply", "balance stock", "opening stock", "closing stock"],
+        "vi": ["tồn kho", "ton kho", "tồn", "ton", "hàng tồn", "hang ton",
+               "hàng tồn kho", "hang ton kho", "dự trữ", "du tru",
+               "kho", "lượng tồn", "luong ton", "tong ton kho"],
+        "ja": ["在庫", "在庫数", "在庫量", "ストック", "残在庫", "在庫残"],
+        "ko": ["재고", "재고량", "재고수", "보유량", "잔여재고"],
+        "zh": ["库存", "存货", "库存量", "库存数", "在库", "库存余量"]
+      }
+    },
+    "usage": {
+      "description": "Amount used, consumed, or applied",
+      "aliases": {
+        "en": ["usage", "used", "consumed", "applied", "utilized",
+               "use", "consumption", "amount used", "used amount"],
+        "vi": ["sử dụng", "su dung", "dùng", "dung", "tiêu thụ", "tieu thu",
+               "đã dùng", "da dung", "lượng dùng", "luong dung",
+               "lượng sử dụng", "luong su dung"],
+        "ja": ["使用", "使用量", "使用数", "消費", "消費量", "使う", "使用済"],
+        "ko": ["사용", "사용량", "사용수", "소비", "사용분"],
+        "zh": ["使用", "使用量", "消耗", "用量", "消耗量", "已用"]
+      }
+    },
+    "remaining": {
+      "description": "Remaining quantity, balance, or leftover after use",
+      "aliases": {
+        "en": ["remaining", "remaining stock", "left", "leftover",
+               "balance", "remainder", "residual", "after", "closing",
+               "nokoru"],
+        "vi": ["còn lại", "con lai", "tồn lại", "ton lai", "còn", "con",
+               "dư", "du", "lượng còn", "luong con", "còn tồn", "con ton",
+               "ton cuoi"],
+        "ja": ["残り", "残量", "残数", "残在庫", "残る", "残高", "残", "のこる"],
+        "ko": ["남은", "남은량", "잔여", "잔량", "남은수량", "잔여량"],
+        "zh": ["剩余", "剩下", "余量", "结余", "剩余量", "余存"]
+      }
+    },
+    "store": {
+      "description": "Store, branch, or location name or code",
+      "aliases": {
+        "en": ["store", "branch", "location", "outlet", "site", "shop", "venue"],
+        "vi": ["cửa hàng", "cua hang", "chi nhánh", "chi nhanh",
+               "cơ sở", "co so", "địa điểm", "dia diem"],
+        "ja": ["店舗", "店", "支店", "店名", "拠点", "店舗名"],
+        "ko": ["매장", "지점", "가게", "점포", "점"],
+        "zh": ["门店", "分店", "店铺", "地点", "门市", "店名"]
+      }
+    },
+    "product": {
+      "description": "Product name, material, or item label",
+      "aliases": {
+        "en": ["product", "item", "material", "goods", "merchandise",
+               "sku", "article", "supply", "product name", "shopping",
+               "drink", "beverage", "bottle"],
+        "vi": ["sản phẩm", "san pham", "hàng hóa", "hang hoa",
+               "vật tư", "vat tu", "tên sản phẩm", "ten san pham",
+               "nguyên liệu", "nguyen lieu"],
+        "ja": ["商品", "製品", "品名", "材料", "品目", "物品", "商品名"],
+        "ko": ["제품", "상품", "품목", "물품", "재료", "제품명"],
+        "zh": ["产品", "商品", "物品", "货品", "材料", "产品名称"]
+      }
+    },
+    "description": {
+      "description": "Free-text description, note, or remark",
+      "aliases": {
+        "en": ["description", "note", "remark", "memo", "details",
+               "content", "info", "comment", "narration"],
+        "vi": ["nội dung", "noi dung", "ghi chú", "ghi chu",
+               "mô tả", "mo ta", "diễn giải", "dien giai", "thông tin"],
+        "ja": ["内容", "説明", "備考", "メモ", "詳細", "摘要", "内訳"],
+        "ko": ["내용", "설명", "비고", "메모", "상세", "적요"],
+        "zh": ["内容", "描述", "备注", "说明", "摘要", "注释"]
+      }
+    },
+    "ref": {
+      "description": "Reference number, transaction ID, or receipt number",
+      "aliases": {
+        "en": ["reference", "ref", "transaction id", "txn id", "receipt",
+               "voucher", "order number", "id", "no"],
+        "vi": ["số tham chiếu", "so tham chieu", "mã giao dịch", "ma giao dich",
+               "mã GD", "số hóa đơn", "so hoa don", "STT", "số"],
+        "ja": ["参照番号", "取引番号", "No", "番号", "伝票番号", "受付番号"],
+        "ko": ["참조번호", "거래번호", "No", "번호", "영수증번호"],
+        "zh": ["参考编号", "交易编号", "编号", "凭证号", "单号"]
+      }
+    },
+    "order_id": {
+      "description": "Work order / sales order / distribution order unique identifier",
+      "aliases": {
+        "en": ["order id", "order_id", "work order", "work_order_id", "wo",
+               "work order id", "sales order", "so", "order no", "order number",
+               "po number", "purchase order", "ticket id", "case id"],
+        "vi": ["mã đơn hàng", "ma don hang", "số đơn", "so don", "đơn hàng",
+               "don hang", "mã work order", "ma wo", "số PO", "so po"],
+        "ja": ["注文番号", "受注番号", "オーダーID", "ワークオーダー", "発注番号"],
+        "ko": ["주문번호", "수주번호", "오더ID", "작업지시번호"],
+        "zh": ["订单号", "工单号", "订单编号", "采购订单", "工作订单"]
+      }
+    },
+    "region": {
+      "description": "Geographic region — country, area, market region (NOT body_area)",
+      "aliases": {
+        "en": ["region", "area", "zone", "geo", "geography", "territory",
+               "market region", "sales region", "operating region"],
+        "vi": ["vùng", "vung", "khu vực", "khu vuc", "miền", "mien",
+               "vùng địa lý", "vung dia ly", "khu vực kinh doanh", "khu vuc kinh doanh"],
+        "ja": ["地域", "エリア", "リージョン", "地方", "営業地域"],
+        "ko": ["지역", "권역", "리전", "영업지역"],
+        "zh": ["地区", "区域", "地域", "营业区域", "市场区域"]
+      }
+    },
+    "country": {
+      "description": "Country / nation code or name",
+      "aliases": {
+        "en": ["country", "nation", "country code", "iso country", "country name"],
+        "vi": ["quốc gia", "quoc gia", "nước", "nuoc", "đất nước", "dat nuoc",
+               "tên quốc gia", "ten quoc gia", "mã quốc gia"],
+        "ja": ["国", "国名", "国コード", "カントリー"],
+        "ko": ["국가", "나라", "국가명", "국가코드"],
+        "zh": ["国家", "国名", "国别", "国家代码"]
+      }
+    },
+    "channel": {
+      "description": "Acquisition / sales / fulfillment channel (online, store, API, manual)",
+      "aliases": {
+        "en": ["channel", "sales channel", "acquisition channel", "source channel",
+               "fulfillment channel", "intake channel", "distribution channel"],
+        "vi": ["kênh", "kenh", "kênh bán", "kenh ban", "kênh phân phối",
+               "kenh phan phoi", "kênh tiếp cận", "kenh tiep can",
+               "nguồn", "nguon"],
+        "ja": ["チャネル", "販売チャネル", "流通チャネル", "顧客チャネル"],
+        "ko": ["채널", "판매채널", "유통채널", "획득채널"],
+        "zh": ["渠道", "销售渠道", "分销渠道", "获取渠道"]
+      }
+    },
+    "model": {
+      "description": "Product model / SKU code / variant identifier",
+      "aliases": {
+        "en": ["model", "product model", "sku", "variant", "model code",
+               "product code", "model name", "vehicle model", "trim"],
+        "vi": ["mẫu", "mau", "mã sản phẩm", "ma san pham", "mẫu xe", "mau xe",
+               "model xe", "phiên bản", "phien ban", "mã mẫu", "ma mau"],
+        "ja": ["モデル", "型式", "モデル名", "車種", "型番"],
+        "ko": ["모델", "차종", "모델명", "사양", "트림"],
+        "zh": ["型号", "车型", "款式", "产品型号", "规格"]
+      }
+    },
+    "delivery_status": {
+      "description": "Status of a delivery / shipment (delivered / in-transit / pending / backorder)",
+      "aliases": {
+        "en": ["delivery status", "shipment status", "delivery state",
+               "fulfillment status", "shipping status", "delivered",
+               "on time", "in full", "otif"],
+        "vi": ["trạng thái giao", "trang thai giao", "tình trạng giao hàng",
+               "tinh trang giao hang", "tt giao", "trạng thái vận chuyển",
+               "đúng hạn", "dung han", "đủ số lượng", "du so luong"],
+        "ja": ["配送状況", "配送ステータス", "出荷状況", "オン・タイム"],
+        "ko": ["배송상태", "배송현황", "출하상태", "정시도착"],
+        "zh": ["配送状态", "运输状态", "出货状态", "准时交付"]
+      }
+    },
+    "cycle_time": {
+      "description": "Total cycle time / lead time / duration of a process or order",
+      "aliases": {
+        "en": ["cycle time", "lead time", "duration", "duration hours",
+               "total cycle hours", "total time", "processing time",
+               "turnaround time", "elapsed time"],
+        "vi": ["thời gian xử lý", "thoi gian xu ly", "tổng thời gian",
+               "tong thoi gian", "thời lượng", "thoi luong", "thời gian chu trình",
+               "lead time", "thời gian dẫn"],
+        "ja": ["サイクルタイム", "リードタイム", "処理時間", "所要時間"],
+        "ko": ["사이클타임", "리드타임", "처리시간", "소요시간"],
+        "zh": ["周期时间", "前置时间", "处理时间", "总耗时", "总时长"]
+      }
+    },
+    "sla_target": {
+      "description": "Service-level target (hours, days, percentage) for a step or process",
+      "aliases": {
+        "en": ["sla", "sla target", "target hours", "target sla",
+               "sla goal", "service level target", "target", "sla target hours"],
+        "vi": ["mục tiêu SLA", "muc tieu sla", "sla mục tiêu", "ngưỡng SLA",
+               "nguong sla", "thời gian mục tiêu", "thoi gian muc tieu"],
+        "ja": ["SLA", "SLA目標", "目標時間", "サービスレベル目標"],
+        "ko": ["SLA", "SLA목표", "목표시간", "서비스레벨"],
+        "zh": ["SLA", "SLA目标", "目标时间", "服务水平目标"]
+      }
+    },
+    "sla_met": {
+      "description": "Boolean / count indicating whether SLA was met (yes/no, 1/0)",
+      "aliases": {
+        "en": ["sla met", "sla compliance", "on sla", "within sla",
+               "sla success", "passed sla", "sla flag"],
+        "vi": ["đạt SLA", "dat sla", "tuân thủ SLA", "tuan thu sla",
+               "đáp ứng SLA", "dap ung sla", "trong SLA", "cờ SLA"],
+        "ja": ["SLA達成", "SLA遵守", "SLAクリア", "SLA成功"],
+        "ko": ["SLA달성", "SLA준수", "SLA충족", "SLA통과"],
+        "zh": ["SLA达成", "SLA合规", "SLA满足", "SLA通过"]
+      }
+    },
+    "dealer_id": {
+      "description": "Dealer / distributor / agent unique identifier",
+      "aliases": {
+        "en": ["dealer id", "dealer_id", "distributor id", "agent id",
+               "dealer code", "distributor code", "partner id", "reseller id"],
+        "vi": ["mã đại lý", "ma dai ly", "mã NPP", "ma npp", "mã nhà phân phối",
+               "ma nha phan phoi", "id đại lý", "id dai ly", "mã đối tác",
+               "ma doi tac"],
+        "ja": ["ディーラーID", "代理店ID", "販売店コード", "パートナーID"],
+        "ko": ["딜러ID", "대리점ID", "판매점코드", "파트너ID"],
+        "zh": ["经销商ID", "代理商ID", "分销商代码", "合作伙伴ID"]
+      }
+    },
+    "inventory_decision": {
+      "description": "Inventory availability decision at order intake (available / partial / backorder)",
+      "aliases": {
+        "en": ["inventory decision", "stock status", "availability",
+               "inventory status", "stock decision", "fulfillability",
+               "available", "partial", "backorder"],
+        "vi": ["tình trạng tồn kho", "tinh trang ton kho", "có hàng", "co hang",
+               "khả năng đáp ứng", "kha nang dap ung", "tồn kho", "ton kho",
+               "trạng thái tồn", "trang thai ton"],
+        "ja": ["在庫状況", "在庫判定", "在庫ステータス", "出荷可否"],
+        "ko": ["재고상태", "재고판정", "재고현황", "출하가능여부"],
+        "zh": ["库存状态", "库存判定", "库存情况", "供货状态"]
+      }
+    },
+    "approval_level": {
+      "description": "Escalation / approval tier (L1, L2, L3, manager, director, CFO, CEO)",
+      "aliases": {
+        "en": ["approval level", "escalation level", "approval tier",
+               "approval rank", "sign-off level", "auth level", "approver level"],
+        "vi": ["cấp phê duyệt", "cap phe duyet", "cấp duyệt", "cap duyet",
+               "mức duyệt", "muc duyet", "thứ tự duyệt", "thu tu duyet"],
+        "ja": ["承認レベル", "承認段階", "決裁レベル", "承認権限"],
+        "ko": ["승인레벨", "승인단계", "결재레벨", "승인권한"],
+        "zh": ["审批级别", "审批层级", "签批级别", "决策层级"]
+      }
+    }
+  }
+}

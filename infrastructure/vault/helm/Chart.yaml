@@ -1,0 +1,34 @@
+apiVersion: v2
+name: kaori-vault
+description: |
+  Wrapper around hashicorp/vault Helm chart with Kaori HA defaults.
+
+  Phase 1.5 P15-S9 D2 — deploys 3-node Raft cluster on K8s.
+  Auto-unseal via FPT Cloud KMS in production; AWS KMS in non-VN
+  staging if anh runs an EU/SG eval. Dev overlay falls back to
+  shamir manual unseal (3-of-5).
+
+  Why a wrapper instead of using upstream chart directly:
+  - Pin specific Vault version (1.15+) for reproducibility
+  - Inject Kaori's policy bootstrap as init job
+  - Wire OTel + audit log shipping (Loki) without copy-pasting the
+    upstream values.yaml on every cluster
+  - Enforce K-18 enforcement annotation on the namespace
+
+type: application
+version: 0.1.0
+appVersion: "1.15.4"
+
+dependencies:
+  - name: vault
+    version: 0.27.0
+    repository: https://helm.releases.hashicorp.com
+
+home: https://github.com/yuta9999zn/kaori-system
+sources:
+  - https://github.com/yuta9999zn/kaori-system
+
+annotations:
+  category: Security
+  licenses: Proprietary
+  kaori.ai/invariant: K-18
