@@ -92,22 +92,30 @@ Engineered so an enterprise can actually say *yes* to a pilot:
 ## Quick start (local)
 
 ```bash
-# 1. Configure environment
-cp .env.example .env        # edit DB credentials, paths
+# 1. Configure environment + secrets
+cp .env.example .env
+bash scripts/generate-jwt-keys.sh     # RS256 keypair for auth
+bash scripts/generate-mfa-key.sh      # AES-256 MFA master key
+# then set POSTGRES_PASSWORD in .env
 
-# 2. Start infrastructure
-docker compose up postgres redis kafka zookeeper ollama -d
-
-# 3. Pull the local LLM + embedding model
-docker exec kaori-ollama-1 ollama pull qwen2.5:14b
-docker exec kaori-ollama-1 ollama pull bge-m3
-
-# 4. Start all services
+# 2. Start the full stack (Postgres, Redis, Kafka, Ollama, 6 services, frontend)
 docker compose up -d
+#   Windows shortcut that also waits for health + auto-pulls the model:
+#   kaori-start.bat
+
+# 3. Pull the local LLM + embedding model (first run only, ~5 GB)
+docker compose exec ollama ollama pull qwen2.5:7b
+docker compose exec ollama ollama pull bge-m3
 ```
 
-**Service URLs:** `:8080` API Gateway · `:8082` Swagger · `:3000` Frontend · `:11434`
-Ollama · `:3001` Grafana.
+**Demo logins** (once the stack is up):
+- **Enterprise portal** — `http://localhost:3000/login` → `admin@kaori.local` / `Admin@kaori1`
+- **Platform admin** — seed once via `kaori-seed-admin.bat`, then `superadmin@kaori.local` / `Kaori@Admin1`
+
+> Full first-run guide: [`docs/HOW_TO_RUN_PILOT.md`](./docs/HOW_TO_RUN_PILOT.md). First build ~15–20 min
+> (images + model); subsequent starts ~2–3 min.
+
+**Service URLs:** `:3000` Frontend · `:8080` API Gateway · `:8082` Swagger · `:3001` Grafana · `:11434` Ollama.
 
 ---
 
