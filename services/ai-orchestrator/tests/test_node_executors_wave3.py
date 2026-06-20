@@ -414,7 +414,7 @@ class TestCallApi:
     async def test_invalid_method_raises(self):
         with pytest.raises(NodeExecutorError):
             await CallApiExecutor().execute(_ctx(), {
-                "url": "http://localhost/x", "method": "PATCH",
+                "url": "http://llm-gateway/x", "method": "PATCH",
             })
 
     @pytest.mark.asyncio
@@ -428,7 +428,7 @@ class TestCallApi:
     async def test_timeout_out_of_range(self):
         with pytest.raises(NodeExecutorError):
             await CallApiExecutor().execute(_ctx(), {
-                "url": "http://localhost/x", "timeout_s": 9999,
+                "url": "http://llm-gateway/x", "timeout_s": 9999,
             })
 
     @pytest.mark.asyncio
@@ -455,12 +455,12 @@ class TestCallApi:
         ctx = _ctx()
         # First call: live, dedup_hit=False
         result1 = await CallApiExecutor().execute(ctx, {
-            "url": "http://localhost/health", "method": "GET",
+            "url": "http://llm-gateway/health", "method": "GET",
         })
         assert result1.output_data["dedup_hit"] is False
         # Second identical call same ctx: dedup_hit=True
         result2 = await CallApiExecutor().execute(ctx, {
-            "url": "http://localhost/health", "method": "GET",
+            "url": "http://llm-gateway/health", "method": "GET",
         })
         assert result2.output_data["dedup_hit"] is True
 
@@ -469,6 +469,158 @@ class TestCallApi:
         hosts = _allowed_hosts()
         assert "foo.com" in hosts
         assert "bar.com" in hosts
+
+
+# ─── SSRF guard (fix 1: tighter default · fix 2: IP denylist) ─────
+
+
+class TestSsrfGuard:
+    def test_default_allowlist_excludes_localhost(self, monkeypatch):
+        # Fix 1: loopback names must NOT be reachable by default — they let a
+        # workflow author hit any local port (Ollama :11434, Vault :8200, ...).
+        monkeypatch.delenv("WORKFLOW_CALL_API_ALLOWED_HOSTS", raising=False)
+        hosts = _allowed_hosts()
+        assert "localhost" not in hosts
+        assert "127.0.0.1" not in hosts
+
+    def test_default_allowlist_keeps_internal_services(self, monkeypatch):
+        # Internal service-to-service calls the runner legitimately makes.
+        monkeypatch.delenv("WORKFLOW_CALL_API_ALLOWED_HOSTS", raising=False)
+        hosts = _allowed_hosts()
+        assert "llm-gateway" in hosts
+        assert "notification-service" in hosts
+
+    def test_is_blocked_ip_loopback_linklocal_metadata(self):
+        from workflow_runtime.executors.action import _is_blocked_ip
+        for ip in ("127.0.0.1", "127.0.0.5", "169.254.169.254",
+                   "0.0.0.0", "::1", "fe80::1"):
+            assert _is_blocked_ip(ip) is True, ip
+
+    def test_is_blocked_ip_allows_public_and_private(self):
+        # Private ranges (172.16/12, 10/8, 192.168/16) stay ALLOWED — internal
+        # services resolve to Docker-bridge private IPs; blocking them would
+        # break legitimate service-to-service calls.
+        from workflow_runtime.executors.action import _is_blocked_ip
+        for ip in ("8.8.8.8", "172.17.0.2", "10.0.0.5", "192.168.1.1"):
+            assert _is_blocked_ip(ip) is False, ip
+
+    @pytest.mark.asyncio
+    async def test_allowlisted_host_resolving_to_metadata_blocked(self, monkeypatch):
+        # Fix 2: even an operator-allowlisted hostname is rejected if it
+        # resolves to a metadata/loopback IP (DNS-rebinding / TOCTOU defense).
+        import workflow_runtime.executors.action as _action
+        monkeypatch.setenv("WORKFLOW_CALL_API_ALLOWED_HOSTS", "partner.example.com")
+        monkeypatch.setattr(_action, "_resolve_host_ips",
+                            lambda host: ["169.254.169.254"])
+        with pytest.raises(NodeExecutorError, match="SSRF"):
+            await CallApiExecutor().execute(_ctx(), {
+                "url": "https://partner.example.com/x", "method": "GET",
+            })
+
+    @pytest.mark.asyncio
+    async def test_allowlisted_host_resolving_to_loopback_blocked(self, monkeypatch):
+        import workflow_runtime.executors.action as _action
+        monkeypatch.setenv("WORKFLOW_CALL_API_ALLOWED_HOSTS", "partner.example.com")
+        monkeypatch.setattr(_action, "_resolve_host_ips",
+                            lambda host: ["127.0.0.1"])
+        with pytest.raises(NodeExecutorError, match="SSRF"):
+            await CallApiExecutor().execute(_ctx(), {
+                "url": "https://partner.example.com/x", "method": "GET",
+            })
+
+    @pytest.mark.asyncio
+    async def test_external_host_requires_https(self, monkeypatch):
+        # Fix 3: external-class hosts must use TLS — plaintext http is refused.
+        import workflow_runtime.executors.action as _action
+        monkeypatch.setenv("WORKFLOW_CALL_API_EXTERNAL_HOSTS", "partner.example.com")
+        monkeypatch.setattr(_action, "_resolve_host_ips", lambda host: ["93.184.216.34"])
+        with pytest.raises(NodeExecutorError, match="https"):
+            await CallApiExecutor().execute(_ctx(), {
+                "url": "http://partner.example.com/x", "method": "GET",
+            })
+
+    @pytest.mark.asyncio
+    async def test_external_host_requires_port_443(self, monkeypatch):
+        import workflow_runtime.executors.action as _action
+        monkeypatch.setenv("WORKFLOW_CALL_API_EXTERNAL_HOSTS", "partner.example.com")
+        monkeypatch.setattr(_action, "_resolve_host_ips", lambda host: ["93.184.216.34"])
+        with pytest.raises(NodeExecutorError, match="443"):
+            await CallApiExecutor().execute(_ctx(), {
+                "url": "https://partner.example.com:8443/x", "method": "GET",
+            })
+
+    @pytest.mark.asyncio
+    async def test_external_host_https_443_allowed(self, monkeypatch):
+        import workflow_runtime.executors.action as _action
+        CallApiExecutor._DEDUP_CACHE.clear()
+        monkeypatch.setenv("WORKFLOW_CALL_API_EXTERNAL_HOSTS", "partner.example.com")
+        monkeypatch.setattr(_action, "_resolve_host_ips", lambda host: ["93.184.216.34"])
+
+        class _Resp:
+            status_code = 200
+            text = "OK"
+            def json(self): return {"ok": True}
+
+        class _Client:
+            def __init__(self, *a, **k): pass
+            async def __aenter__(self): return self
+            async def __aexit__(self, *a): return False
+            async def get(self, *a, **k): return _Resp()
+
+        monkeypatch.setattr(_action.httpx, "AsyncClient", _Client)
+        result = await CallApiExecutor().execute(_ctx(), {
+            "url": "https://partner.example.com/v1/refund", "method": "GET",
+        })
+        assert result.output_data["status_code"] == 200
+
+    @pytest.mark.asyncio
+    async def test_internal_host_allows_plain_http(self, monkeypatch):
+        # Internal-class hosts keep http + non-443 ports (service-to-service).
+        import workflow_runtime.executors.action as _action
+        CallApiExecutor._DEDUP_CACHE.clear()
+        monkeypatch.setattr(_action, "_resolve_host_ips", lambda host: ["172.17.0.4"])
+
+        class _Resp:
+            status_code = 200
+            text = "OK"
+            def json(self): return {"ok": True}
+
+        class _Client:
+            def __init__(self, *a, **k): pass
+            async def __aenter__(self): return self
+            async def __aexit__(self, *a): return False
+            async def get(self, *a, **k): return _Resp()
+
+        monkeypatch.setattr(_action.httpx, "AsyncClient", _Client)
+        result = await CallApiExecutor().execute(_ctx(), {
+            "url": "http://llm-gateway:8095/health", "method": "GET",
+        })
+        assert result.output_data["status_code"] == 200
+
+    @pytest.mark.asyncio
+    async def test_unresolvable_host_allowed_through_to_http(self, monkeypatch):
+        # If resolution yields nothing (e.g. CI sandbox), the allowlist already
+        # vouched for the host — proceed; httpx will fail on its own if dead.
+        import workflow_runtime.executors.action as _action
+        CallApiExecutor._DEDUP_CACHE.clear()
+        monkeypatch.setattr(_action, "_resolve_host_ips", lambda host: [])
+
+        class _Resp:
+            status_code = 200
+            text = "OK"
+            def json(self): return {"ok": True}
+
+        class _Client:
+            def __init__(self, *a, **k): pass
+            async def __aenter__(self): return self
+            async def __aexit__(self, *a): return False
+            async def get(self, *a, **k): return _Resp()
+
+        monkeypatch.setattr(_action.httpx, "AsyncClient", _Client)
+        result = await CallApiExecutor().execute(_ctx(), {
+            "url": "http://llm-gateway/health", "method": "GET",
+        })
+        assert result.output_data["status_code"] == 200
 
 
 # ─── trigger_workflow ────────────────────────────────────────────

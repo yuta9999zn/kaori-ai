@@ -513,21 +513,9 @@ class ReadApiExecutor(NodeExecutor):
             raise NodeExecutorError("read_api.url required (non-empty)")
         url = url.strip()
 
-        from urllib.parse import urlparse
-        try:
-            host = (urlparse(url).hostname or "").lower()
-        except Exception:  # noqa: BLE001
-            raise NodeExecutorError(f"read_api.url not parseable: {url!r}")
-        if not host:
-            raise NodeExecutorError("read_api.url missing host")
-
-        # Reuse same allowlist env as call_api
-        from .action import _allowed_hosts
-        whitelist = _allowed_hosts()
-        if host not in whitelist:
-            raise NodeExecutorError(
-                f"read_api host {host!r} not in allowlist {sorted(whitelist)}"
-            )
+        # SSRF guard: shared allowlist + resolve-to-internal denylist.
+        from .action import _assert_url_allowed
+        _assert_url_allowed(url, label="read_api")
 
         timeout_s = float(config.get("timeout_s") or 30)
         if timeout_s < 1 or timeout_s > 120:
@@ -543,7 +531,8 @@ class ReadApiExecutor(NodeExecutor):
         }
 
         try:
-            async with httpx.AsyncClient(timeout=timeout_s) as client:
+            async with httpx.AsyncClient(timeout=timeout_s,
+                                         follow_redirects=False) as client:
                 resp = await client.get(url, headers=headers)
         except httpx.HTTPError as exc:
             raise NodeExecutorError(f"read_api GET {url} failed: {type(exc).__name__}")

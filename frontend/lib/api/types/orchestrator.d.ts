@@ -804,6 +804,94 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/compliance/ai-uses/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Risk Register
+         * @description The tenant's full AI-use risk register (newest first) — drives the
+         *     /p2/compliance register table. RLS-scoped (K-1); not admin-gated (any
+         *     enterprise user can see their own register). Optional risk_tier filter.
+         */
+        get: operations["list_risk_register_compliance_ai_uses_register_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/compliance/model-cards": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Author Model Card
+         * @description Author an Annex IV-lite model card for a (model, version). Computes
+         *     completeness (which required sections are missing) and audits (K-6).
+         *     Append-only — re-authoring writes a new row; readers take the latest.
+         */
+        post: operations["author_model_card_compliance_model_cards_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/compliance/model-cards/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Latest For Model Version
+         * @description Latest model card for an exact (model, version), or null. This is the
+         *     K-25 satisfaction check: a `risk_tier = high` workflow pinned to this
+         *     (model, version) has its K-25 control met when a card exists AND
+         *     ``completeness.complete`` is true.
+         */
+        get: operations["latest_for_model_version_compliance_model_cards_lookup_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/compliance/model-cards/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Model Cards
+         * @description The tenant's model cards (newest first) — drives the /p2/compliance
+         *     model-card tab. RLS-scoped (K-1). Optional `model` filter.
+         */
+        get: operations["list_model_cards_compliance_model_cards_register_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/contracts": {
         parameters: {
             query?: never;
@@ -6954,6 +7042,72 @@ export interface components {
                 [key: string]: number;
             };
         };
+        /** ModelCardIn */
+        ModelCardIn: {
+            /** Annex Iv */
+            annex_iv?: {
+                [key: string]: unknown;
+            };
+            /** Capabilities */
+            capabilities?: string | null;
+            /** Evaluation Summary */
+            evaluation_summary?: string | null;
+            /** Foreseeable Misuse */
+            foreseeable_misuse?: string | null;
+            /** Intended Purpose */
+            intended_purpose: string;
+            /** Limitations */
+            limitations?: string | null;
+            /** Model */
+            model: string;
+            /** Provider */
+            provider?: string | null;
+            /** Risk Mitigations */
+            risk_mitigations?: string | null;
+            /** Training Data Summary */
+            training_data_summary?: string | null;
+            /** Version */
+            version: string;
+        };
+        /** ModelCardOut */
+        ModelCardOut: {
+            /** Annex Iv */
+            annex_iv: {
+                [key: string]: unknown;
+            };
+            /** Authored At */
+            authored_at: string | null;
+            /** Capabilities */
+            capabilities: string | null;
+            /** Completeness */
+            completeness: {
+                [key: string]: unknown;
+            };
+            /** Evaluation Summary */
+            evaluation_summary: string | null;
+            /** Foreseeable Misuse */
+            foreseeable_misuse: string | null;
+            /** Intended Purpose */
+            intended_purpose: string;
+            /** Limitations */
+            limitations: string | null;
+            /** Model */
+            model: string;
+            /** Model Card Id */
+            model_card_id: string;
+            /** Provider */
+            provider: string | null;
+            /** Public Ref */
+            public_ref: string;
+            /** Risk Mitigations */
+            risk_mitigations: string | null;
+            /** Status */
+            status: string;
+            /** Training Data Summary */
+            training_data_summary: string | null;
+            /** Version */
+            version: string;
+        };
         /**
          * NOVCurrentResponse
          * @description GET /economics/nov/current envelope.
@@ -11253,6 +11407,144 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RiskUseOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_risk_register_compliance_ai_uses_register_get: {
+        parameters: {
+            query?: {
+                risk_tier?: string | null;
+                limit?: number;
+            };
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RiskUseOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    author_model_card_compliance_model_cards_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+                "X-User-ID"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ModelCardIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModelCardOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    latest_for_model_version_compliance_model_cards_lookup_get: {
+        parameters: {
+            query: {
+                model: string;
+                version: string;
+            };
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModelCardOut"] | null;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_model_cards_compliance_model_cards_register_get: {
+        parameters: {
+            query?: {
+                model?: string | null;
+                limit?: number;
+            };
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModelCardOut"][];
                 };
             };
             /** @description Validation Error */

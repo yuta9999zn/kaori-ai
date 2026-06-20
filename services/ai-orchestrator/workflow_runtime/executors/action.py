@@ -16,8 +16,10 @@ K-13 idempotency: call_api derives source_ref from (run_id, node_id) so
 from __future__ import annotations
 
 import hashlib
+import ipaddress
 import json
 import os
+import socket
 from typing import Any, Optional
 from uuid import UUID
 
@@ -34,15 +36,127 @@ log = structlog.get_logger()
 # ─── 1. call_api ────────────────────────────────────────────────────
 
 
-# Hosts the workflow runner is allowed to call. Set via env so prod can
-# tighten beyond dev defaults. Comma-separated.
-_ALLOWED_HOST_ENV = "WORKFLOW_CALL_API_ALLOWED_HOSTS"
-_ALLOWED_HOSTS_DEFAULT = "localhost,127.0.0.1,llm-gateway,notification-service,ai-orchestrator"
+# Hosts the workflow runner is allowed to call, split into two classes so the
+# scheme/port policy (Fix 3) can differ:
+#
+#   internal  — service-to-service DNS names. http + any port allowed (the
+#               services speak plaintext on non-443 ports inside the cluster).
+#   external  — third-party partner APIs. ENFORCED https on port 443 only.
+#
+# Fix 1 (SSRF): the internal default no longer includes `localhost`/`127.0.0.1`
+# — those loopback names let a workflow author reach ANY local port (Ollama
+# :11434 unauthenticated, Vault :8200, internal admin endpoints). Operators
+# that genuinely need loopback opt in via WORKFLOW_CALL_API_INTERNAL_HOSTS.
+#
+# `WORKFLOW_CALL_API_ALLOWED_HOSTS` is the legacy single-list knob; it folds
+# into the internal class (lenient, no TLS enforcement) for backward compat.
+_INTERNAL_HOST_ENV = "WORKFLOW_CALL_API_INTERNAL_HOSTS"
+_EXTERNAL_HOST_ENV = "WORKFLOW_CALL_API_EXTERNAL_HOSTS"
+_ALLOWED_HOST_ENV = "WORKFLOW_CALL_API_ALLOWED_HOSTS"  # legacy → internal
+_INTERNAL_HOSTS_DEFAULT = "llm-gateway,notification-service,ai-orchestrator"
+
+
+def _parse_hosts(raw: str | None) -> set[str]:
+    return {h.strip().lower() for h in (raw or "").split(",") if h.strip()}
+
+
+def _internal_hosts() -> set[str]:
+    hosts = _parse_hosts(os.getenv(_INTERNAL_HOST_ENV, _INTERNAL_HOSTS_DEFAULT))
+    hosts |= _parse_hosts(os.getenv(_ALLOWED_HOST_ENV))  # legacy folds in
+    return hosts
+
+
+def _external_hosts() -> set[str]:
+    return _parse_hosts(os.getenv(_EXTERNAL_HOST_ENV))
 
 
 def _allowed_hosts() -> set[str]:
-    raw = os.getenv(_ALLOWED_HOST_ENV, _ALLOWED_HOSTS_DEFAULT)
-    return {h.strip().lower() for h in raw.split(",") if h.strip()}
+    """Full membership set (internal ∪ external) — kept for callers/tests that
+    only need to know whether a host is reachable at all."""
+    return _internal_hosts() | _external_hosts()
+
+
+def _resolve_host_ips(host: str) -> list[str]:
+    """Resolve a hostname to its IP literals. Returns [] if unresolvable
+    (sandbox/CI or genuinely-dead host) — the allowlist already vouched for
+    the name, so resolution failure is not itself a rejection. Separated out
+    so tests can monkeypatch DNS deterministically."""
+    try:
+        infos = socket.getaddrinfo(host, None)
+    except OSError:
+        return []
+    return list({info[4][0] for info in infos})
+
+
+def _is_blocked_ip(ip: str) -> bool:
+    """True if `ip` is a loopback / link-local / metadata / unspecified /
+    multicast / reserved address — destinations a workflow must never reach.
+
+    Private RFC-1918 ranges (10/8, 172.16/12, 192.168/16) are intentionally
+    NOT blocked: internal services resolve to Docker-bridge private IPs and
+    blocking them would break legitimate service-to-service calls. The
+    residual (an allowlisted host rebinding to a private internal IP) is
+    accepted — the positive allowlist is the primary control for that."""
+    try:
+        addr = ipaddress.ip_address(ip)
+    except ValueError:
+        return False
+    return (
+        addr.is_loopback        # 127.0.0.0/8, ::1
+        or addr.is_link_local   # 169.254.0.0/16 (cloud metadata), fe80::/10
+        or addr.is_unspecified  # 0.0.0.0, ::
+        or addr.is_multicast
+        or addr.is_reserved
+    )
+
+
+def _assert_url_allowed(url: str, *, label: str) -> str:
+    """Validate an outbound URL against the SSRF controls and return the host.
+
+    Layered defense:
+      1. host must be in the operator allowlist (positive list — encoding
+         tricks like 2130706433 / 0x7f.0.0.1 can't introduce new hosts).
+      2. even an allowlisted host must not resolve to a loopback/link-local/
+         metadata IP (DNS-rebinding / TOCTOU defense-in-depth).
+
+    Raises NodeExecutorError on any violation."""
+    from urllib.parse import urlparse
+    try:
+        parsed = urlparse(url)
+        host = (parsed.hostname or "").lower()
+    except Exception:  # noqa: BLE001
+        raise NodeExecutorError(f"{label}.url not parseable: {url!r}")
+    if not host:
+        raise NodeExecutorError(f"{label}.url missing host: {url!r}")
+    internal = _internal_hosts()
+    external = _external_hosts()
+    if host not in internal and host not in external:
+        raise NodeExecutorError(
+            f"{label} host {host!r} not in whitelist {sorted(internal | external)}. "
+            f"Set env {_INTERNAL_HOST_ENV} / {_EXTERNAL_HOST_ENV} to extend."
+        )
+    # Fix 3: external (third-party) hosts MUST use TLS on port 443. Internal
+    # service-to-service stays lenient (http + any port). External wins if a
+    # host is mistakenly listed in both classes.
+    if host in external:
+        scheme = (parsed.scheme or "").lower()
+        if scheme != "https":
+            raise NodeExecutorError(
+                f"{label} external host {host!r} requires https "
+                f"(got scheme {scheme or 'none'!r})"
+            )
+        port = parsed.port or 443
+        if port != 443:
+            raise NodeExecutorError(
+                f"{label} external host {host!r} requires port 443 (got {port})"
+            )
+    for ip in _resolve_host_ips(host):
+        if _is_blocked_ip(ip):
+            raise NodeExecutorError(
+                f"{label} host {host!r} resolves to blocked internal "
+                f"IP {ip} — refused (SSRF guard)"
+            )
+    return host
 
 
 class CallApiExecutor(NodeExecutor):
@@ -87,21 +201,8 @@ class CallApiExecutor(NodeExecutor):
             raise NodeExecutorError("call_api.url required (non-empty string)")
         url = url.strip()
 
-        # Host allowlist — defense-in-depth against SSRF
-        try:
-            from urllib.parse import urlparse
-            parsed = urlparse(url)
-            host = (parsed.hostname or "").lower()
-        except Exception:  # noqa: BLE001
-            raise NodeExecutorError(f"call_api.url not parseable: {url!r}")
-        if not host:
-            raise NodeExecutorError(f"call_api.url missing host: {url!r}")
-        whitelist = _allowed_hosts()
-        if host not in whitelist:
-            raise NodeExecutorError(
-                f"call_api host {host!r} not in whitelist {sorted(whitelist)}. "
-                f"Set env {_ALLOWED_HOST_ENV} to extend."
-            )
+        # SSRF guard: allowlisted host + no resolve-to-internal (see helper).
+        _assert_url_allowed(url, label="call_api")
 
         timeout_s = float(config.get("timeout_s") or 30)
         if timeout_s < 1 or timeout_s > 300:
@@ -177,7 +278,10 @@ class CallApiExecutor(NodeExecutor):
             )
 
         try:
-            async with httpx.AsyncClient(timeout=timeout_s) as client:
+            # follow_redirects=False (httpx default, pinned): a 3xx from an
+            # allowlisted host must not bounce us to an un-vetted internal URL.
+            async with httpx.AsyncClient(timeout=timeout_s,
+                                         follow_redirects=False) as client:
                 if method == "GET":
                     resp = await client.get(url, headers=headers)
                 elif method == "DELETE":
