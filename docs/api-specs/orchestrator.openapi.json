@@ -6669,6 +6669,261 @@
         "title": "MinedWorkflowOut",
         "type": "object"
       },
+      "ModelCardIn": {
+        "properties": {
+          "annex_iv": {
+            "additionalProperties": true,
+            "title": "Annex Iv",
+            "type": "object"
+          },
+          "capabilities": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capabilities"
+          },
+          "evaluation_summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evaluation Summary"
+          },
+          "foreseeable_misuse": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Foreseeable Misuse"
+          },
+          "intended_purpose": {
+            "maxLength": 4000,
+            "title": "Intended Purpose",
+            "type": "string"
+          },
+          "limitations": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limitations"
+          },
+          "model": {
+            "maxLength": 120,
+            "title": "Model",
+            "type": "string"
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider"
+          },
+          "risk_mitigations": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk Mitigations"
+          },
+          "training_data_summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Training Data Summary"
+          },
+          "version": {
+            "maxLength": 40,
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "model",
+          "version",
+          "intended_purpose"
+        ],
+        "title": "ModelCardIn",
+        "type": "object"
+      },
+      "ModelCardOut": {
+        "properties": {
+          "annex_iv": {
+            "additionalProperties": true,
+            "title": "Annex Iv",
+            "type": "object"
+          },
+          "authored_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Authored At"
+          },
+          "capabilities": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capabilities"
+          },
+          "completeness": {
+            "additionalProperties": true,
+            "title": "Completeness",
+            "type": "object"
+          },
+          "evaluation_summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evaluation Summary"
+          },
+          "foreseeable_misuse": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Foreseeable Misuse"
+          },
+          "intended_purpose": {
+            "title": "Intended Purpose",
+            "type": "string"
+          },
+          "limitations": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limitations"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "model_card_id": {
+            "title": "Model Card Id",
+            "type": "string"
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider"
+          },
+          "public_ref": {
+            "title": "Public Ref",
+            "type": "string"
+          },
+          "risk_mitigations": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk Mitigations"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "training_data_summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Training Data Summary"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "model_card_id",
+          "public_ref",
+          "model",
+          "version",
+          "provider",
+          "intended_purpose",
+          "capabilities",
+          "limitations",
+          "training_data_summary",
+          "evaluation_summary",
+          "risk_mitigations",
+          "foreseeable_misuse",
+          "annex_iv",
+          "completeness",
+          "status",
+          "authored_at"
+        ],
+        "title": "ModelCardOut",
+        "type": "object"
+      },
       "NOVCurrentResponse": {
         "description": "GET /economics/nov/current envelope.\n\nReturns null `current` (HTTP 200, not 404) when no digest exists\nyet — a brand-new tenant + workflow hasn't run; the dashboard\nrenders an empty state rather than an error tile.",
         "properties": {
@@ -16726,6 +16981,300 @@
           }
         },
         "summary": "Classify Ai Use",
+        "tags": [
+          "Compliance (EU AI Act, ADR-0041)"
+        ]
+      }
+    },
+    "/compliance/ai-uses/register": {
+      "get": {
+        "description": "The tenant's full AI-use risk register (newest first) — drives the\n/p2/compliance register table. RLS-scoped (K-1); not admin-gated (any\nenterprise user can see their own register). Optional risk_tier filter.",
+        "operationId": "list_risk_register_compliance_ai_uses_register_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "risk_tier",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Risk Tier"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 200,
+              "maximum": 500,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RiskUseOut"
+                  },
+                  "title": "Response List Risk Register Compliance Ai Uses Register Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Risk Register",
+        "tags": [
+          "Compliance (EU AI Act, ADR-0041)"
+        ]
+      }
+    },
+    "/compliance/model-cards": {
+      "post": {
+        "description": "Author an Annex IV-lite model card for a (model, version). Computes\ncompleteness (which required sections are missing) and audits (K-6).\nAppend-only — re-authoring writes a new row; readers take the latest.",
+        "operationId": "author_model_card_compliance_model_cards_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-User-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-User-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelCardIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelCardOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Author Model Card",
+        "tags": [
+          "Compliance (EU AI Act, ADR-0041)"
+        ]
+      }
+    },
+    "/compliance/model-cards/lookup": {
+      "get": {
+        "description": "Latest model card for an exact (model, version), or null. This is the\nK-25 satisfaction check: a `risk_tier = high` workflow pinned to this\n(model, version) has its K-25 control met when a card exists AND\n``completeness.complete`` is true.",
+        "operationId": "latest_for_model_version_compliance_model_cards_lookup_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "model",
+            "required": true,
+            "schema": {
+              "maxLength": 120,
+              "title": "Model",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "version",
+            "required": true,
+            "schema": {
+              "maxLength": 40,
+              "title": "Version",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ModelCardOut"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Latest For Model Version Compliance Model Cards Lookup Get"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Latest For Model Version",
+        "tags": [
+          "Compliance (EU AI Act, ADR-0041)"
+        ]
+      }
+    },
+    "/compliance/model-cards/register": {
+      "get": {
+        "description": "The tenant's model cards (newest first) — drives the /p2/compliance\nmodel-card tab. RLS-scoped (K-1). Optional `model` filter.",
+        "operationId": "list_model_cards_compliance_model_cards_register_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "model",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Model"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 200,
+              "maximum": 500,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ModelCardOut"
+                  },
+                  "title": "Response List Model Cards Compliance Model Cards Register Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Model Cards",
         "tags": [
           "Compliance (EU AI Act, ADR-0041)"
         ]
