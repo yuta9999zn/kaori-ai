@@ -311,7 +311,7 @@ class TestCallApiPersistentDedup:
 
         # First call — fires HTTP + persists
         r1 = await CallApiExecutor().execute(ctx, {
-            "url": "http://localhost/x", "method": "GET",
+            "url": "http://llm-gateway/x", "method": "GET",
         })
         assert r1.output_data["dedup_hit"] is False
 
@@ -319,7 +319,7 @@ class TestCallApiPersistentDedup:
         CallApiExecutor._DEDUP_CACHE.clear()
 
         r2 = await CallApiExecutor().execute(ctx, {
-            "url": "http://localhost/x", "method": "GET",
+            "url": "http://llm-gateway/x", "method": "GET",
         })
         assert r2.output_data["dedup_hit"] is True
 

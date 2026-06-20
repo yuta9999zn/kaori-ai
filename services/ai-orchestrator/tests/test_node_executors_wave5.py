@@ -362,7 +362,7 @@ class TestReadApi:
 
     @pytest.mark.asyncio
     async def test_disallowed_host_raises(self):
-        with pytest.raises(NodeExecutorError, match="allowlist"):
+        with pytest.raises(NodeExecutorError, match="whitelist"):
             await ReadApiExecutor().execute(_ctx(), {
                 "url": "https://evil.example.com/x",
             })
@@ -371,7 +371,7 @@ class TestReadApi:
     async def test_timeout_validation(self):
         with pytest.raises(NodeExecutorError):
             await ReadApiExecutor().execute(_ctx(), {
-                "url": "http://localhost/health", "timeout_s": 999,
+                "url": "http://llm-gateway/health", "timeout_s": 999,
             })
 
     @pytest.mark.asyncio
@@ -389,7 +389,7 @@ class TestReadApi:
         monkeypatch.setattr(_w5.httpx, "AsyncClient", _Client)
 
         result = await ReadApiExecutor().execute(_ctx(), {
-            "url": "http://localhost/api/x",
+            "url": "http://llm-gateway/api/x",
         })
         assert result.output_data["status_code"] == 200
         assert result.output_data["response_body"]["value"] == 42
