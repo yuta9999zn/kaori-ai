@@ -1547,7 +1547,9 @@ export interface paths {
         };
         /**
          * Search Repository
-         * @description Indexed search across the repository (name + type + status), not tree-walk.
+         * @description Indexed search across the repository (name + type + status + business
+         *     date), not tree-walk. Date filters hit COALESCE(doc_date, uploaded_at) —
+         *     a daily report dated 30/06 uploaded on 02/07 matches 30/06, not 02/07.
          */
         get: operations["search_repository_document_repository_search_get"];
         put?: never;
@@ -1556,6 +1558,49 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/document-repository/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Repository Timeline
+         * @description Virtual time tree (mig 138) — bucket counts over the EFFECTIVE date
+         *     (COALESCE(doc_date, uploaded_at::date)). Time is metadata, not folders:
+         *     the FE expands Năm → Quý → Tháng → Ngày by re-querying one level deeper.
+         *     Weekly docs surface via their doc_date; period_kind stays a filter/badge.
+         */
+        get: operations["repository_timeline_document_repository_timeline_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-repository/{doc_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Patch File Metadata
+         * @description Set the business date / reporting period of a filed document (mig 138).
+         */
+        patch: operations["patch_file_metadata_document_repository__doc_id__patch"];
         trace?: never;
     };
     "/economics/cost/compute": {
@@ -6422,6 +6467,17 @@ export interface components {
             rotated_at: string | null;
             /** Version */
             version: number;
+        };
+        /**
+         * FilePatch
+         * @description Mig 138 — business-date metadata. A daily report dated 30/06 can be
+         *     uploaded on 02/07, so filters/timeline key off doc_date, not uploaded_at.
+         */
+        FilePatch: {
+            /** Doc Date */
+            doc_date?: string | null;
+            /** Period Kind */
+            period_kind?: string | null;
         };
         /** FolderOut */
         FolderOut: {
@@ -12817,6 +12873,10 @@ export interface operations {
             query?: {
                 cursor?: string | null;
                 limit?: number;
+                /** @description effective doc date >= (mig 138) */
+                date_from?: string | null;
+                /** @description effective doc date <= */
+                date_to?: string | null;
             };
             header: {
                 "X-Enterprise-ID": string;
@@ -12855,6 +12915,11 @@ export interface operations {
                 q?: string;
                 doc_type?: string | null;
                 status?: string | null;
+                /** @description effective doc date >= (mig 138) */
+                date_from?: string | null;
+                /** @description effective doc date <= */
+                date_to?: string | null;
+                period_kind?: string | null;
                 limit?: number;
             };
             header: {
@@ -12864,6 +12929,79 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    repository_timeline_document_repository_timeline_get: {
+        parameters: {
+            query?: {
+                granularity?: string;
+                year?: number | null;
+                quarter?: number | null;
+                month?: number | null;
+            };
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_file_metadata_document_repository__doc_id__patch: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                doc_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FilePatch"];
+            };
+        };
         responses: {
             /** @description Successful Response */
             200: {
