@@ -1,0 +1,173 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel older runs on the same branch/PR so we don't burn Actions minutes
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ─── Tenant-filter lint (Phase 2 #9 multi-tenant leak guard) ───
+  # Cheap, stdlib-only Python; runs first so violations surface in
+  # under a minute even when the slower jobs queue.
+  tenant-filter-lint:
+    name: tenant-filter lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Run scripts/check-tenant-filter.py
+        run: python scripts/check-tenant-filter.py
+
+  # ─── Java: Maven test + package (no push) ──────────────────────
+  java:
+    name: java / ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [api-gateway, auth-service]
+    defaults:
+      run:
+        working-directory: services/${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: mvn verify (compile + unit + IT when present)
+        run: mvn -B -ntp -Dstyle.color=always verify
+
+      - name: Upload surefire reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: surefire-${{ matrix.service }}
+          path: services/${{ matrix.service }}/target/surefire-reports/
+          retention-days: 7
+
+  # ─── Python: pip install + pytest ──────────────────────────────
+  python:
+    name: python / ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [data-pipeline, ai-orchestrator, llm-gateway, notification-service]
+    defaults:
+      run:
+        working-directory: services/${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: services/${{ matrix.service }}/requirements.txt
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio
+
+      - name: Run pytest (skip gracefully if no tests)
+        run: |
+          if compgen -G "tests/test_*.py" > /dev/null; then
+            pytest -v --tb=short
+          else
+            echo "No tests/test_*.py found for ${{ matrix.service }} — skipping."
+          fi
+
+  # ─── OpenAPI codegen drift gates (Sprint 6.5) ──────────────────
+  # Two checks, one per side of the codegen pipeline:
+  #   1. dump_openapi.py --check       — committed specs match BE code
+  #   2. gen-api-types.mjs --check     — committed FE types match specs
+  # See docs/specs/API_CODEGEN.md for the refresh workflow.
+  openapi-codegen:
+    name: openapi codegen (drift check)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: |
+            services/data-pipeline/requirements.txt
+            services/ai-orchestrator/requirements.txt
+
+      - name: Install FastAPI service deps (both)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r services/data-pipeline/requirements.txt
+          pip install -r services/ai-orchestrator/requirements.txt
+
+      - name: Verify spec files match current BE code
+        run: python scripts/dump_openapi.py --check
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Verify FE types match committed specs
+        working-directory: frontend
+        run: |
+          npm ci --no-audit --no-fund
+          node scripts/gen-api-types.mjs --check
+
+  # ─── Frontend: lint + typecheck + build ────────────────────────
+  frontend:
+    name: frontend (next.js)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: npm ci
+        run: npm ci --no-audit --no-fund
+
+      - name: Lint
+        run: npm run lint --if-present
+
+      - name: Typecheck
+        run: npm run typecheck --if-present
+
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
