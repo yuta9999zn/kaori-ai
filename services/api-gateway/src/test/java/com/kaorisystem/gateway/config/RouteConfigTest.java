@@ -245,6 +245,10 @@ class RouteConfigTest {
         assertResolvesTo("/api/v1/document-folders/" +
                          "11111111-1111-1111-1111-111111111111/files",          ORCH_URL);
         assertResolvesTo("/api/v1/document-repository/search?q=x",              ORCH_URL);
+        // Mig 138 — business-date metadata + virtual timeline
+        assertResolvesTo("/api/v1/document-repository/timeline?granularity=year", ORCH_URL);
+        assertResolvesTo("/api/v1/document-repository/" +
+                         "99999999-9999-9999-9999-999999999999",                ORCH_URL);
     }
 
     @Test

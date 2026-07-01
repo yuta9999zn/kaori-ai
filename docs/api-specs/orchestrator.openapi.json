@@ -5015,6 +5015,37 @@
         "title": "FieldKeyStatusOut",
         "type": "object"
       },
+      "FilePatch": {
+        "description": "Mig 138 — business-date metadata. A daily report dated 30/06 can be\nuploaded on 02/07, so filters/timeline key off doc_date, not uploaded_at.",
+        "properties": {
+          "doc_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Doc Date"
+          },
+          "period_kind": {
+            "anyOf": [
+              {
+                "pattern": "^(day|week|month|quarter|year)$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Period Kind"
+          }
+        },
+        "title": "FilePatch",
+        "type": "object"
+      },
       "FolderOut": {
         "properties": {
           "folder_id": {
@@ -19750,6 +19781,44 @@
             }
           },
           {
+            "description": "effective doc date >= (mig 138)",
+            "in": "query",
+            "name": "date_from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "effective doc date >= (mig 138)",
+              "title": "Date From"
+            }
+          },
+          {
+            "description": "effective doc date <=",
+            "in": "query",
+            "name": "date_to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "effective doc date <=",
+              "title": "Date To"
+            }
+          },
+          {
             "in": "header",
             "name": "X-Enterprise-ID",
             "required": true,
@@ -19788,7 +19857,7 @@
     },
     "/document-repository/search": {
       "get": {
-        "description": "Indexed search across the repository (name + type + status), not tree-walk.",
+        "description": "Indexed search across the repository (name + type + status + business\ndate), not tree-walk. Date filters hit COALESCE(doc_date, uploaded_at) —\na daily report dated 30/06 uploaded on 02/07 matches 30/06, not 02/07.",
         "operationId": "search_repository_document_repository_search_get",
         "parameters": [
           {
@@ -19836,6 +19905,61 @@
             }
           },
           {
+            "description": "effective doc date >= (mig 138)",
+            "in": "query",
+            "name": "date_from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "effective doc date >= (mig 138)",
+              "title": "Date From"
+            }
+          },
+          {
+            "description": "effective doc date <=",
+            "in": "query",
+            "name": "date_to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "effective doc date <=",
+              "title": "Date To"
+            }
+          },
+          {
+            "in": "query",
+            "name": "period_kind",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^(day|week|month|quarter|year)$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Period Kind"
+            }
+          },
+          {
             "in": "query",
             "name": "limit",
             "required": false,
@@ -19879,6 +20003,175 @@
           }
         },
         "summary": "Search Repository",
+        "tags": [
+          "Document Repository / DMS (ADR-0039)"
+        ]
+      }
+    },
+    "/document-repository/timeline": {
+      "get": {
+        "description": "Virtual time tree (mig 138) — bucket counts over the EFFECTIVE date\n(COALESCE(doc_date, uploaded_at::date)). Time is metadata, not folders:\nthe FE expands Năm → Quý → Tháng → Ngày by re-querying one level deeper.\nWeekly docs surface via their doc_date; period_kind stays a filter/badge.",
+        "operationId": "repository_timeline_document_repository_timeline_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "granularity",
+            "required": false,
+            "schema": {
+              "default": "month",
+              "pattern": "^(year|quarter|month|day)$",
+              "title": "Granularity",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "year",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maximum": 2100,
+                  "minimum": 2000,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Year"
+            }
+          },
+          {
+            "in": "query",
+            "name": "quarter",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maximum": 4,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Quarter"
+            }
+          },
+          {
+            "in": "query",
+            "name": "month",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maximum": 12,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Month"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Repository Timeline",
+        "tags": [
+          "Document Repository / DMS (ADR-0039)"
+        ]
+      }
+    },
+    "/document-repository/{doc_id}": {
+      "patch": {
+        "description": "Set the business date / reporting period of a filed document (mig 138).",
+        "operationId": "patch_file_metadata_document_repository__doc_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "doc_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Doc Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilePatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Patch File Metadata",
         "tags": [
           "Document Repository / DMS (ADR-0039)"
         ]

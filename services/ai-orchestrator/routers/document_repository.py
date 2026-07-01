@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from datetime import date
 from typing import Optional
 from uuid import UUID
 
@@ -44,6 +45,16 @@ class FolderCreate(BaseModel):
 class FolderPatch(BaseModel):
     name_vi: Optional[str] = Field(None, min_length=1, max_length=200)
     sort_order: Optional[int] = None
+
+
+_PERIOD_KINDS = ("day", "week", "month", "quarter", "year")
+
+
+class FilePatch(BaseModel):
+    """Mig 138 — business-date metadata. A daily report dated 30/06 can be
+    uploaded on 02/07, so filters/timeline key off doc_date, not uploaded_at."""
+    doc_date: Optional[date] = None
+    period_kind: Optional[str] = Field(None, pattern="^(day|week|month|quarter|year)$")
 
 
 def _dept(x_department_id: Optional[UUID]) -> str:
@@ -186,28 +197,102 @@ async def list_files(
     x_enterprise_id: UUID = Header(..., alias="X-Enterprise-ID"),
     cursor: Optional[UUID] = Query(None),
     limit: int = Query(200, ge=1, le=_MAX_LIMIT),
+    date_from: Optional[date] = Query(None, description="effective doc date >= (mig 138)"),
+    date_to: Optional[date] = Query(None, description="effective doc date <="),
 ):
     async with acquire_for_tenant(x_enterprise_id) as conn:
         rows = await conn.fetch(
             """SELECT doc_id, external_ref, name_vi, doc_type, status, version,
-                      storage_tier, valid_until, sha256, uploaded_at
+                      storage_tier, valid_until, sha256, uploaded_at,
+                      doc_date, period_kind
                FROM document_repository_file
                WHERE folder_id = $1 AND is_current AND deleted_at IS NULL
                  AND ($2::uuid IS NULL OR
                       (name_vi, doc_id) > (SELECT name_vi, doc_id FROM document_repository_file WHERE doc_id = $2))
+                 AND ($4::date IS NULL OR COALESCE(doc_date, uploaded_at::date) >= $4)
+                 AND ($5::date IS NULL OR COALESCE(doc_date, uploaded_at::date) <= $5)
                ORDER BY name_vi, doc_id
                LIMIT $3""",
-            folder_id, cursor, limit + 1)
+            folder_id, cursor, limit + 1, date_from, date_to)
     items = rows[:limit]
     next_cursor = str(items[-1]["doc_id"]) if len(rows) > limit else None
-    return {"items": [{
+    return {"items": [_file_out(r) for r in items], "next_cursor": next_cursor}
+
+
+def _file_out(r) -> dict:
+    return {
         "doc_id": str(r["doc_id"]), "external_ref": r["external_ref"],
         "name_vi": r["name_vi"], "doc_type": r["doc_type"], "status": r["status"],
         "version": r["version"], "storage_tier": r["storage_tier"],
         "valid_until": r["valid_until"].isoformat() if r["valid_until"] else None,
         "sha256": r["sha256"],
         "uploaded_at": r["uploaded_at"].isoformat() if r["uploaded_at"] else None,
-    } for r in items], "next_cursor": next_cursor}
+        "doc_date": r["doc_date"].isoformat() if r["doc_date"] else None,
+        "period_kind": r["period_kind"],
+    }
+
+
+@router.patch("/document-repository/{doc_id}")
+async def patch_file_metadata(
+    body: FilePatch,
+    doc_id: UUID = Path(...),
+    x_enterprise_id: UUID = Header(..., alias="X-Enterprise-ID"),
+):
+    """Set the business date / reporting period of a filed document (mig 138)."""
+    if body.doc_date is None and body.period_kind is None:
+        raise HTTPException(status_code=400, detail="nothing to update")
+    async with acquire_for_tenant(x_enterprise_id) as conn:
+        row = await conn.fetchrow(
+            """UPDATE document_repository_file
+               SET doc_date    = COALESCE($2, doc_date),
+                   period_kind = COALESCE($3, period_kind)
+               WHERE doc_id = $1 AND deleted_at IS NULL
+               RETURNING doc_id, external_ref, name_vi, doc_type, status, version,
+                         storage_tier, valid_until, sha256, uploaded_at,
+                         doc_date, period_kind""",
+            doc_id, body.doc_date, body.period_kind)
+    if row is None:
+        raise HTTPException(status_code=404, detail="document not found")
+    return _file_out(row)
+
+
+@router.get("/document-repository/timeline")
+async def repository_timeline(
+    x_enterprise_id: UUID = Header(..., alias="X-Enterprise-ID"),
+    granularity: str = Query("month", pattern="^(year|quarter|month|day)$"),
+    year: Optional[int] = Query(None, ge=2000, le=2100),
+    quarter: Optional[int] = Query(None, ge=1, le=4),
+    month: Optional[int] = Query(None, ge=1, le=12),
+):
+    """Virtual time tree (mig 138) — bucket counts over the EFFECTIVE date
+    (COALESCE(doc_date, uploaded_at::date)). Time is metadata, not folders:
+    the FE expands Năm → Quý → Tháng → Ngày by re-querying one level deeper.
+    Weekly docs surface via their doc_date; period_kind stays a filter/badge."""
+    parts = {
+        "year":    "EXTRACT(YEAR FROM eff)::int",
+        "quarter": "EXTRACT(QUARTER FROM eff)::int",
+        "month":   "EXTRACT(MONTH FROM eff)::int",
+        "day":     "EXTRACT(DAY FROM eff)::int",
+    }
+    levels = ["year", "quarter", "month", "day"]
+    depth = levels.index(granularity)
+    select_cols = ", ".join(f"{parts[l]} AS {l}" for l in levels[:depth + 1])
+    group_cols = ", ".join(str(i + 2) for i in range(depth + 1))  # $-free ordinals
+
+    async with acquire_for_tenant(x_enterprise_id) as conn:
+        rows = await conn.fetch(
+            f"""SELECT COUNT(*)::int AS doc_count, {select_cols}
+                FROM (SELECT COALESCE(doc_date, uploaded_at::date) AS eff
+                        FROM document_repository_file
+                       WHERE is_current AND deleted_at IS NULL) t
+                WHERE ($1::int IS NULL OR EXTRACT(YEAR FROM eff)::int = $1)
+                  AND ($2::int IS NULL OR EXTRACT(QUARTER FROM eff)::int = $2)
+                  AND ($3::int IS NULL OR EXTRACT(MONTH FROM eff)::int = $3)
+                GROUP BY {group_cols}
+                ORDER BY {group_cols}""",
+            year, quarter, month)
+    return {"granularity": granularity,
+            "buckets": [dict(r) for r in rows]}
 
 
 # ─────────────────────────── search ─────────────────────────────────────
@@ -217,22 +302,34 @@ async def search_repository(
     q: str = Query("", description="name substring"),
     doc_type: Optional[str] = Query(None),
     status: Optional[str] = Query(None),
+    date_from: Optional[date] = Query(None, description="effective doc date >= (mig 138)"),
+    date_to: Optional[date] = Query(None, description="effective doc date <="),
+    period_kind: Optional[str] = Query(None, pattern="^(day|week|month|quarter|year)$"),
     limit: int = Query(100, ge=1, le=_MAX_LIMIT),
 ):
-    """Indexed search across the repository (name + type + status), not tree-walk."""
+    """Indexed search across the repository (name + type + status + business
+    date), not tree-walk. Date filters hit COALESCE(doc_date, uploaded_at) —
+    a daily report dated 30/06 uploaded on 02/07 matches 30/06, not 02/07."""
     async with acquire_for_tenant(x_enterprise_id) as conn:
         rows = await conn.fetch(
-            """SELECT d.doc_id, d.name_vi, d.doc_type, d.status, d.folder_id, f.path
+            """SELECT d.doc_id, d.name_vi, d.doc_type, d.status, d.folder_id, f.path,
+                      d.doc_date, d.period_kind, d.uploaded_at
                FROM document_repository_file d
                JOIN document_folder f ON f.folder_id = d.folder_id
                WHERE d.is_current AND d.deleted_at IS NULL
                  AND ($1 = '' OR d.name_vi ILIKE '%' || $1 || '%')
                  AND ($2::text IS NULL OR d.doc_type = $2)
                  AND ($3::text IS NULL OR d.status = $3)
+                 AND ($4::date IS NULL OR COALESCE(d.doc_date, d.uploaded_at::date) >= $4)
+                 AND ($5::date IS NULL OR COALESCE(d.doc_date, d.uploaded_at::date) <= $5)
+                 AND ($6::text IS NULL OR d.period_kind = $6)
                ORDER BY d.name_vi
-               LIMIT $4""",
-            q, doc_type, status, limit)
+               LIMIT $7""",
+            q, doc_type, status, date_from, date_to, period_kind, limit)
     return {"items": [{
         "doc_id": str(r["doc_id"]), "name_vi": r["name_vi"], "doc_type": r["doc_type"],
         "status": r["status"], "folder_id": str(r["folder_id"]), "path": r["path"],
+        "doc_date": r["doc_date"].isoformat() if r["doc_date"] else None,
+        "period_kind": r["period_kind"],
+        "uploaded_at": r["uploaded_at"].isoformat() if r["uploaded_at"] else None,
     } for r in rows]}

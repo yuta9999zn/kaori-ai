@@ -2,13 +2,14 @@
 # Update by running: python scripts/schema-drift.py --write
 # Each section is sorted to be deterministic across migration apply order.
 
-## TABLES (171 rows)
+## TABLES (172 rows)
 admin_sessions|TABLE|False|False
 adoption_health_snapshots|TABLE|True|False
 agent_sessions|TABLE|True|False
 agent_transcripts|TABLE|True|False
 ai_decision_audit|TABLE|True|False
 ai_incident|TABLE|True|False
+ai_model_card|TABLE|True|False
 ai_use_risk_register|TABLE|True|False
 alert_events|TABLE|True|False
 alert_rules|TABLE|True|False
@@ -175,7 +176,7 @@ workspace_audit_log|TABLE|False|False
 workspace_keys|TABLE|False|False
 workspaces|TABLE|False|False
 
-## COLUMNS (2109 rows)
+## COLUMNS (2130 rows)
 admin_sessions|admin_id|2|uuid||||NO|
 admin_sessions|created_at|6|timestamp with time zone||||NO|now()
 admin_sessions|device_label|5|character varying|120|||YES|
@@ -260,6 +261,25 @@ ai_incident|severity|5|character varying|12|||NO|
 ai_incident|status|6|character varying|16|||NO|'open'::character varying
 ai_incident|title|7|character varying|200|||NO|
 ai_incident|workflow_id|11|uuid||||YES|
+ai_model_card|annex_iv|14|jsonb||||NO|'{}'::jsonb
+ai_model_card|authored_at|18|timestamp with time zone||||NO|now()
+ai_model_card|authored_by|17|uuid||||YES|
+ai_model_card|capabilities|8|text||||YES|
+ai_model_card|completeness|15|jsonb||||NO|'{}'::jsonb
+ai_model_card|created_at|19|timestamp with time zone||||NO|now()
+ai_model_card|enterprise_id|3|uuid||||NO|
+ai_model_card|evaluation_summary|11|text||||YES|
+ai_model_card|foreseeable_misuse|13|text||||YES|
+ai_model_card|intended_purpose|7|text||||NO|
+ai_model_card|limitations|9|text||||YES|
+ai_model_card|model_card_id|1|uuid||||NO|gen_uuid_v7()
+ai_model_card|model|4|character varying|120|||NO|
+ai_model_card|provider|6|character varying|40|||YES|
+ai_model_card|public_ref|2|text||||NO|gen_ulid()
+ai_model_card|risk_mitigations|12|text||||YES|
+ai_model_card|status|16|character varying|16|||NO|'active'::character varying
+ai_model_card|training_data_summary|10|text||||YES|
+ai_model_card|version|5|character varying|40|||NO|
 ai_use_risk_register|ai_use_id|1|uuid||||NO|gen_uuid_v7()
 ai_use_risk_register|annex_iii_category|7|character varying|80|||YES|
 ai_use_risk_register|classified_at|12|timestamp with time zone||||NO|now()
@@ -736,6 +756,7 @@ document_folder|updated_at|12|timestamp with time zone||||NO|now()
 document_repository_file|change_reason|14|text||||YES|
 document_repository_file|deleted_at|20|timestamp with time zone||||YES|
 document_repository_file|department_id|4|uuid||||NO|
+document_repository_file|doc_date|21|date||||YES|
 document_repository_file|doc_id|1|uuid||||NO|gen_uuid_v7()
 document_repository_file|doc_type|8|character varying|40|||YES|
 document_repository_file|enterprise_id|3|uuid||||NO|
@@ -744,6 +765,7 @@ document_repository_file|file_id|6|uuid||||YES|
 document_repository_file|folder_id|5|uuid||||NO|
 document_repository_file|is_current|13|boolean||||NO|true
 document_repository_file|name_vi|7|character varying|300|||NO|
+document_repository_file|period_kind|22|character varying|8|||YES|
 document_repository_file|sha256|17|character|64|||YES|
 document_repository_file|status|9|character varying|24|||NO|'active'::character varying
 document_repository_file|storage_tier|16|character varying|8|||NO|'hot'::character varying
@@ -2286,7 +2308,7 @@ workspaces|status|4|character varying|20|||NO|'active'::character varying
 workspaces|updated_at|6|timestamp with time zone||||NO|now()
 workspaces|workspace_id|1|uuid||||NO|gen_random_uuid()
 
-## INDEXES (566 rows)
+## INDEXES (570 rows)
 admin_sessions|admin_sessions_pkey|CREATE UNIQUE INDEX admin_sessions_pkey ON public.admin_sessions USING btree (session_id)
 admin_sessions|idx_admin_sessions_admin_active|CREATE INDEX idx_admin_sessions_admin_active ON public.admin_sessions USING btree (admin_id, last_active_at DESC) WHERE (revoked_at IS NULL)
 admin_sessions|idx_admin_sessions_admin|CREATE INDEX idx_admin_sessions_admin ON public.admin_sessions USING btree (admin_id)
@@ -2308,6 +2330,9 @@ ai_incident|ai_incident_pkey|CREATE UNIQUE INDEX ai_incident_pkey ON public.ai_i
 ai_incident|idx_incident_open|CREATE INDEX idx_incident_open ON public.ai_incident USING btree (enterprise_id, status, reported_at DESC)
 ai_incident|idx_incident_severity|CREATE INDEX idx_incident_severity ON public.ai_incident USING btree (enterprise_id, severity)
 ai_incident|uq_incident_public|CREATE UNIQUE INDEX uq_incident_public ON public.ai_incident USING btree (public_ref)
+ai_model_card|ai_model_card_pkey|CREATE UNIQUE INDEX ai_model_card_pkey ON public.ai_model_card USING btree (model_card_id)
+ai_model_card|idx_modelcard_latest|CREATE INDEX idx_modelcard_latest ON public.ai_model_card USING btree (enterprise_id, model, version, authored_at DESC)
+ai_model_card|uq_modelcard_public|CREATE UNIQUE INDEX uq_modelcard_public ON public.ai_model_card USING btree (public_ref)
 ai_use_risk_register|ai_use_risk_register_pkey|CREATE UNIQUE INDEX ai_use_risk_register_pkey ON public.ai_use_risk_register USING btree (ai_use_id)
 ai_use_risk_register|idx_airisk_controls|CREATE INDEX idx_airisk_controls ON public.ai_use_risk_register USING gin (controls_required)
 ai_use_risk_register|idx_airisk_latest|CREATE INDEX idx_airisk_latest ON public.ai_use_risk_register USING btree (enterprise_id, workflow_id, classified_at DESC)
@@ -2446,6 +2471,7 @@ document_folder|idx_docfolder_path|CREATE INDEX idx_docfolder_path ON public.doc
 document_folder|uq_docfolder_external|CREATE UNIQUE INDEX uq_docfolder_external ON public.document_folder USING btree (external_ref)
 document_folder|uq_docfolder_sibling|CREATE UNIQUE INDEX uq_docfolder_sibling ON public.document_folder USING btree (enterprise_id, COALESCE(parent_id, '00000000-0000-0000-0000-000000000000'::uuid), name_vi) WHERE (deleted_at IS NULL)
 document_repository_file|document_repository_file_pkey|CREATE UNIQUE INDEX document_repository_file_pkey ON public.document_repository_file USING btree (doc_id)
+document_repository_file|idx_docrepo_doc_date|CREATE INDEX idx_docrepo_doc_date ON public.document_repository_file USING btree (enterprise_id, doc_date) WHERE (deleted_at IS NULL)
 document_repository_file|idx_drf_folder|CREATE INDEX idx_drf_folder ON public.document_repository_file USING btree (enterprise_id, folder_id, is_current)
 document_repository_file|idx_drf_name|CREATE INDEX idx_drf_name ON public.document_repository_file USING btree (enterprise_id, name_vi text_pattern_ops)
 document_repository_file|idx_drf_sha|CREATE INDEX idx_drf_sha ON public.document_repository_file USING btree (sha256)
@@ -2854,7 +2880,7 @@ workspace_keys|workspace_keys_key_hash_key|CREATE UNIQUE INDEX workspace_keys_ke
 workspace_keys|workspace_keys_pkey|CREATE UNIQUE INDEX workspace_keys_pkey ON public.workspace_keys USING btree (key_id)
 workspaces|workspaces_pkey|CREATE UNIQUE INDEX workspaces_pkey ON public.workspaces USING btree (workspace_id)
 
-## CONSTRAINTS (740 rows)
+## CONSTRAINTS (744 rows)
 admin_sessions_admin_id_fkey|admin_sessions|f|FOREIGN KEY (admin_id) REFERENCES platform_admins(admin_id) ON DELETE CASCADE
 admin_sessions_pkey|admin_sessions|p|PRIMARY KEY (session_id)
 adoption_health_snapshots_classification_check|adoption_health_snapshots|c|CHECK (((classification)::text = ANY ((ARRAY['healthy'::character varying, 'stable'::character varying, 'stretched'::character varying, 'at_risk'::character varying, 'churn_imminent'::character varying, 'unknown'::character varying])::text[])))
@@ -2873,6 +2899,7 @@ agent_transcripts_step_index_check|agent_transcripts|c|CHECK ((step_index >= 0))
 ai_decision_audit_enterprise_id_fkey|ai_decision_audit|f|FOREIGN KEY (enterprise_id) REFERENCES enterprises(enterprise_id) ON DELETE CASCADE
 ai_decision_audit_pkey|ai_decision_audit|p|PRIMARY KEY (audit_id)
 ai_incident_pkey|ai_incident|p|PRIMARY KEY (incident_id)
+ai_model_card_pkey|ai_model_card|p|PRIMARY KEY (model_card_id)
 ai_use_risk_register_pkey|ai_use_risk_register|p|PRIMARY KEY (ai_use_id)
 ai_use_risk_register_workflow_id_fkey|ai_use_risk_register|f|FOREIGN KEY (workflow_id) REFERENCES workflows(workflow_id) ON DELETE CASCADE
 alert_events_enterprise_id_fkey|alert_events|f|FOREIGN KEY (enterprise_id) REFERENCES enterprises(enterprise_id) ON DELETE CASCADE
@@ -2967,6 +2994,7 @@ chk_dept_type|departments|c|CHECK (((dept_type)::text = ANY ((ARRAY['marketing':
 chk_distilled_forms_range|distilled_decisions|c|CHECK (((forms_stored >= 0) AND (forms_stored <= 3)))
 chk_distilled_retry_nonneg|distilled_decisions|c|CHECK ((retry_count >= 0))
 chk_div_status|business_divisions|c|CHECK (((status)::text = ANY ((ARRAY['active'::character varying, 'archived'::character varying])::text[])))
+chk_docrepo_period_kind|document_repository_file|c|CHECK (((period_kind IS NULL) OR ((period_kind)::text = ANY ((ARRAY['day'::character varying, 'week'::character varying, 'month'::character varying, 'quarter'::character varying, 'year'::character varying])::text[]))))
 chk_docsage_extract_status|docsage_extractions|c|CHECK (((extraction_status)::text = ANY ((ARRAY['ok'::character varying, 'partial'::character varying, 'failed'::character varying])::text[])))
 chk_docsage_question_class|docsage_schemas|c|CHECK (((question_class)::text = ANY ((ARRAY['comparison'::character varying, 'aggregation'::character varying, 'relationship'::character varying, 'ranking'::character varying])::text[])))
 chk_drf_tier|document_repository_file|c|CHECK (((storage_tier)::text = ANY ((ARRAY['hot'::character varying, 'warm'::character varying, 'cold'::character varying])::text[])))
@@ -3017,6 +3045,7 @@ chk_memory_l3_type|memory_l3|c|CHECK (((memory_type)::text = ANY ((ARRAY['EPISOD
 chk_mfa_backup_codes_nonneg|mfa_secrets|c|CHECK ((backup_codes_remaining >= 0))
 chk_mfa_challenge_attempts_nonneg|mfa_challenges|c|CHECK ((attempts >= 0))
 chk_mode_default|enterprise_workflow_mode|c|CHECK (((default_mode)::text = ANY ((ARRAY['simple'::character varying, 'advanced'::character varying, 'developer'::character varying])::text[])))
+chk_modelcard_status|ai_model_card|c|CHECK (((status)::text = ANY ((ARRAY['active'::character varying, 'archived'::character varying])::text[])))
 chk_node_assigned_role|workflow_nodes|c|CHECK (((assigned_role IS NULL) OR ((assigned_role)::text = ANY ((ARRAY['executor'::character varying, 'reviewer'::character varying, 'approver'::character varying, 'dept_manager'::character varying, 'admin'::character varying])::text[]))))
 chk_node_category|workflow_nodes|c|CHECK (((category)::text = ANY ((ARRAY['data_input'::character varying, 'processing'::character varying, 'decision'::character varying, 'ai'::character varying, 'action'::character varying, 'output'::character varying, 'wait'::character varying, 'orchestration'::character varying, 'communication'::character varying])::text[])))
 chk_node_mandatory|workflow_nodes|c|CHECK (((mandatory)::text = ANY ((ARRAY['mandatory'::character varying, 'optional'::character varying, 'conditional'::character varying])::text[])))
@@ -3414,6 +3443,7 @@ uq_industry_schema_key|industry_data_schema_templates|u|UNIQUE (industry_id, ind
 uq_industry_workflow|industry_workflow_links|u|UNIQUE (industry_id, industry_dept_id, workflow_template_id)
 uq_kpi_code_per_dept|kpi_definitions|u|UNIQUE (dept_type, kpi_code)
 uq_measurement|kpi_measurements|u|UNIQUE (enterprise_id, department_id, kpi_code, period_kind, period_start)
+uq_modelcard_public|ai_model_card|u|UNIQUE (public_ref)
 uq_roi_enterprise_month|enterprise_roi_billing_lines|u|UNIQUE (enterprise_id, billing_month)
 uq_source_name_per_dept|data_sources|u|UNIQUE (enterprise_id, department_id, name)
 uq_sso_provider_sub|sso_identities|u|UNIQUE (provider, provider_sub)
@@ -3596,7 +3626,7 @@ workspace_keys_workspace_id_fkey|workspace_keys|f|FOREIGN KEY (workspace_id) REF
 workspaces_pkey|workspaces|p|PRIMARY KEY (workspace_id)
 workspaces_plan_code_fkey|workspaces|f|FOREIGN KEY (plan_code) REFERENCES subscription_plans(plan_code)
 
-## POLICIES (167 rows)
+## POLICIES (168 rows)
 adoption_health_snapshots|adoption_health_snapshots_isolation|PERMISSIVE|['public']|ALL|((enterprise_id)::text = current_setting('app.enterprise_id'::text, true))|
 agent_sessions|admin_bypass_agent_sessions|PERMISSIVE|['public']|ALL|(current_setting('app.is_admin'::text, true) = 'true'::text)|
 agent_sessions|tenant_agent_sessions|PERMISSIVE|['public']|ALL|(enterprise_id = (current_setting('app.enterprise_id'::text, true))::uuid)|
@@ -3604,6 +3634,7 @@ agent_transcripts|admin_bypass_agent_transcripts|PERMISSIVE|['public']|ALL|(curr
 agent_transcripts|tenant_agent_transcripts|PERMISSIVE|['public']|ALL|(enterprise_id = (current_setting('app.enterprise_id'::text, true))::uuid)|
 ai_decision_audit|ai_governance_isolation|PERMISSIVE|['public']|ALL|((enterprise_id)::text = current_setting('app.enterprise_id'::text, true))|
 ai_incident|isolation_incident|PERMISSIVE|['public']|ALL|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))
+ai_model_card|isolation_modelcard|PERMISSIVE|['public']|ALL|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))
 ai_use_risk_register|isolation_airisk|PERMISSIVE|['public']|ALL|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))
 alert_events|admin_bypass_alert_events|PERMISSIVE|['public']|ALL|(current_setting('app.is_admin'::text, true) = 'true'::text)|
 alert_events|tenant_alert_events|PERMISSIVE|['public']|ALL|(enterprise_id = (current_setting('app.enterprise_id'::text, true))::uuid)|
