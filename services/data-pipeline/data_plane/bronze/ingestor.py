@@ -326,7 +326,7 @@ async def ingest_file(
                 )
             if folder_id is not None:
                 # ADR-0039 — file the (deduped) existing bronze file into the repo.
-                await conn.execute(
+                filed = await conn.execute(
                     """INSERT INTO document_repository_file
                           (enterprise_id, department_id, folder_id, file_id,
                            name_vi, doc_type, sha256, uploaded_by)
@@ -342,6 +342,31 @@ async def ingest_file(
                     existing,
                     uuid.UUID(enterprise_id),
                 )
+                if filed.endswith(" 0"):
+                    # The original run landed ZERO bronze_files rows (prose
+                    # .txt parses to no tabular sheets) — the SELECT-insert
+                    # above filed nothing. File the document anyway with
+                    # file_id NULL; bytes serve from the sha256-keyed blob
+                    # store. NOT EXISTS keeps re-uploads from multiplying
+                    # rows in the same folder.
+                    await conn.execute(
+                        """INSERT INTO document_repository_file
+                              (enterprise_id, department_id, folder_id, file_id,
+                               name_vi, doc_type, sha256, uploaded_by)
+                           SELECT f.enterprise_id, f.department_id, f.folder_id,
+                                  NULL, $2, $3, $4, $5
+                             FROM document_folder f
+                            WHERE f.folder_id = $1
+                              AND NOT EXISTS
+                                  (SELECT 1 FROM document_repository_file
+                                    WHERE folder_id = $1 AND sha256 = $4
+                                      AND deleted_at IS NULL)""",
+                        uuid.UUID(folder_id),
+                        _fname or "tài liệu",
+                        ext.lstrip("."),
+                        sha256,
+                        uuid.UUID(uploaded_by) if uploaded_by else None,
+                    )
             return {"run_id": str(existing), "status": "duplicate", "sha256": sha256}
 
         # P15-S11 Tuần 8 — resolve dept/branch/source. Defaults filled when
@@ -608,6 +633,7 @@ async def ingest_file(
             uploaded_by=uploaded_by,
             requirement_id=requirement_id,
             doc_class=req_doc_class,
+            folder_id=folder_id,
         )
     )
 
@@ -667,7 +693,8 @@ async def _parse_and_land(content: bytes, ext: str, run_id: str, enterprise_id: 
                            workspace_id: Optional[str] = None,
                            uploaded_by: Optional[str] = None,
                            requirement_id: Optional[str] = None,
-                           doc_class: Optional[str] = None):
+                           doc_class: Optional[str] = None,
+                           folder_id: Optional[str] = None):
     """Parse file using existing utils/excel_parser.py and land to bronze_rows.
 
     P15-S11 Tuần 8 — attribution columns (branch_id, department_id,
@@ -693,9 +720,12 @@ async def _parse_and_land(content: bytes, ext: str, run_id: str, enterprise_id: 
         br_uuid   = uuid.UUID(branch_id)     if branch_id     else None
         dept_uuid = uuid.UUID(department_id) if department_id else None
         src_uuid  = uuid.UUID(source_id)     if source_id     else None
+        first_file_id: Optional[str] = None
         async with acquire_for_tenant(enterprise_id) as conn:
             for sheet_idx, sheet_data in enumerate(sheets):
                 file_id = str(uuid.uuid4())
+                if first_file_id is None:
+                    first_file_id = file_id
                 await conn.execute(
                     """INSERT INTO bronze_files
                        (file_id, run_id, enterprise_id, sheet_name, sheet_index,
@@ -767,6 +797,29 @@ async def _parse_and_land(content: bytes, ext: str, run_id: str, enterprise_id: 
                         src_uuid,
                     )
                 total_rows += len(rows)
+
+            # ADR-0039 DMS — a tabular file uploaded INTO a repository folder
+            # (X-Folder-ID) is still an enterprise document (price list, SOP
+            # in .txt, …). File it once per upload. file_id points at the
+            # first bronze_files sheet when one landed; a prose .txt parses
+            # to zero sheets → file_id NULL (column is nullable by design) —
+            # download serves the original bytes from the sha256-keyed blob
+            # store either way (K-8). Mirrors the unstructured-branch insert.
+            if folder_id is not None:
+                await conn.execute(
+                    """INSERT INTO document_repository_file
+                          (enterprise_id, department_id, folder_id, file_id,
+                           name_vi, doc_type, sha256, uploaded_by)
+                       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)""",
+                    uuid.UUID(enterprise_id),
+                    dept_uuid,
+                    uuid.UUID(folder_id),
+                    uuid.UUID(first_file_id) if first_file_id else None,
+                    filename or "tài liệu",
+                    ext.lstrip("."),
+                    hashlib.sha256(content).hexdigest(),
+                    uuid.UUID(uploaded_by) if uploaded_by else None,
+                )
 
             # Update run status. Migration 024 cutover — bare db_pool.acquire()
             # in this branch does NOT set app.enterprise_id, so under NOBYPASSRLS
