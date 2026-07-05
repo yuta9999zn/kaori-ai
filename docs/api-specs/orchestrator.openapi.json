@@ -445,6 +445,64 @@
         "title": "AtRiskListResponse",
         "type": "object"
       },
+      "AuthoredCreate": {
+        "properties": {
+          "content": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content"
+          },
+          "folder_id": {
+            "format": "uuid",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "generate_prompt": {
+            "anyOf": [
+              {
+                "maxLength": 8000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Mô tả tài liệu + yêu cầu — AI soạn nháp",
+            "title": "Generate Prompt"
+          },
+          "name_vi": {
+            "maxLength": 300,
+            "minLength": 1,
+            "title": "Name Vi",
+            "type": "string"
+          },
+          "template_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Template Id"
+          }
+        },
+        "required": [
+          "folder_id",
+          "name_vi"
+        ],
+        "title": "AuthoredCreate",
+        "type": "object"
+      },
       "BillingLineOut": {
         "properties": {
           "actioned_revenue_at_risk_vnd": {
@@ -1765,6 +1823,32 @@
           "granted"
         ],
         "title": "ConsentRequest",
+        "type": "object"
+      },
+      "ContentPatch": {
+        "properties": {
+          "change_note": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change Note"
+          },
+          "content": {
+            "additionalProperties": true,
+            "title": "Content",
+            "type": "object"
+          }
+        },
+        "required": [
+          "content"
+        ],
+        "title": "ContentPatch",
         "type": "object"
       },
       "ContractIn": {
@@ -4162,6 +4246,50 @@
         "title": "DocClassifyIn",
         "type": "object"
       },
+      "DocMetadataPatch": {
+        "properties": {
+          "labels": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Labels"
+          },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata"
+          },
+          "template_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Template Id"
+          }
+        },
+        "title": "DocMetadataPatch",
+        "type": "object"
+      },
       "DocRequirementIn": {
         "properties": {
           "allowed_formats": {
@@ -5100,6 +5228,84 @@
         "title": "FolderOut",
         "type": "object"
       },
+      "FolderPagePatch": {
+        "description": "One save of the nghiệp vụ page — snapshot + version bump (Confluence).",
+        "properties": {
+          "body_md": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Body Md"
+          },
+          "change_note": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change Note"
+          },
+          "clear_sample": {
+            "default": false,
+            "title": "Clear Sample",
+            "type": "boolean"
+          },
+          "clear_template": {
+            "default": false,
+            "title": "Clear Template",
+            "type": "boolean"
+          },
+          "default_labels": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Labels"
+          },
+          "default_template_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Template Id"
+          },
+          "sample_file_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sample File Id"
+          }
+        },
+        "title": "FolderPagePatch",
+        "type": "object"
+      },
       "FolderPatch": {
         "properties": {
           "name_vi": {
@@ -5855,6 +6061,25 @@
           "status"
         ],
         "title": "IngestResponse",
+        "type": "object"
+      },
+      "InsightCreate": {
+        "properties": {
+          "scope": {
+            "additionalProperties": true,
+            "title": "Scope",
+            "type": "object"
+          },
+          "scope_kind": {
+            "pattern": "^(group|folder)$",
+            "title": "Scope Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "scope_kind"
+        ],
+        "title": "InsightCreate",
         "type": "object"
       },
       "InterventionPlanOut": {
@@ -7751,6 +7976,21 @@
         "title": "NorthStarTileResponse",
         "type": "object"
       },
+      "NoteCreate": {
+        "properties": {
+          "body_md": {
+            "maxLength": 8000,
+            "minLength": 1,
+            "title": "Body Md",
+            "type": "string"
+          }
+        },
+        "required": [
+          "body_md"
+        ],
+        "title": "NoteCreate",
+        "type": "object"
+      },
       "OKRCreate": {
         "properties": {
           "department_id": {
@@ -8491,6 +8731,20 @@
           }
         },
         "title": "OverrideRevokeRequest",
+        "type": "object"
+      },
+      "PageRestore": {
+        "properties": {
+          "version_no": {
+            "minimum": 1.0,
+            "title": "Version No",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "version_no"
+        ],
+        "title": "PageRestore",
         "type": "object"
       },
       "PaletteNode": {
@@ -9436,6 +9690,21 @@
           "history_depth"
         ],
         "title": "ReencryptStatusOut",
+        "type": "object"
+      },
+      "RegeneratePrompt": {
+        "properties": {
+          "generate_prompt": {
+            "maxLength": 8000,
+            "minLength": 1,
+            "title": "Generate Prompt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "generate_prompt"
+        ],
+        "title": "RegeneratePrompt",
         "type": "object"
       },
       "RejectIn": {
@@ -11306,6 +11575,247 @@
           "items"
         ],
         "title": "TemplateCatalogueResponse",
+        "type": "object"
+      },
+      "TemplateCreate": {
+        "properties": {
+          "approval_chain_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approval Chain Id"
+          },
+          "clone_of": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clone Of"
+          },
+          "default_labels": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Default Labels",
+            "type": "array"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "icon": {
+            "anyOf": [
+              {
+                "maxLength": 16,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icon"
+          },
+          "metadata_schema": {
+            "items": {},
+            "title": "Metadata Schema",
+            "type": "array"
+          },
+          "name_vi": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name Vi",
+            "type": "string"
+          },
+          "requires_approval": {
+            "default": false,
+            "title": "Requires Approval",
+            "type": "boolean"
+          },
+          "section_outline": {
+            "items": {},
+            "title": "Section Outline",
+            "type": "array"
+          },
+          "type_key": {
+            "maxLength": 40,
+            "minLength": 1,
+            "pattern": "^[a-z0-9_]+$",
+            "title": "Type Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type_key",
+          "name_vi"
+        ],
+        "title": "TemplateCreate",
+        "type": "object"
+      },
+      "TemplateFromFile": {
+        "properties": {
+          "name_vi": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name Vi",
+            "type": "string"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "type_key": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "minLength": 1,
+                "pattern": "^[a-z0-9_]+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Type Key"
+          }
+        },
+        "required": [
+          "run_id",
+          "name_vi"
+        ],
+        "title": "TemplateFromFile",
+        "type": "object"
+      },
+      "TemplatePatch": {
+        "properties": {
+          "approval_chain_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approval Chain Id"
+          },
+          "default_labels": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Labels"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "icon": {
+            "anyOf": [
+              {
+                "maxLength": 16,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icon"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          },
+          "metadata_schema": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata Schema"
+          },
+          "name_vi": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name Vi"
+          },
+          "requires_approval": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requires Approval"
+          },
+          "section_outline": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Section Outline"
+          }
+        },
+        "title": "TemplatePatch",
         "type": "object"
       },
       "TenantKeyCreate": {
@@ -19855,6 +20365,778 @@
         ]
       }
     },
+    "/document-folders/{folder_id}/page": {
+      "get": {
+        "description": "The folder's nghiệp vụ page: body + own/effective template + sample file.",
+        "operationId": "get_folder_page_document_folders__folder_id__page_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "folder_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Folder Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Folder Page",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      },
+      "patch": {
+        "description": "Save the nghiệp vụ page. Every save appends a document_folder_version\nrow (Confluence page versioning) — history is never rewritten.",
+        "operationId": "patch_folder_page_document_folders__folder_id__page_patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "folder_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Folder Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-User-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-User-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderPagePatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Patch Folder Page",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      }
+    },
+    "/document-folders/{folder_id}/page/restore": {
+      "post": {
+        "description": "Restore = apply an old snapshot as a NEW version (Confluence semantics —\nhistory stays intact, K-2 spirit).",
+        "operationId": "restore_page_version_document_folders__folder_id__page_restore_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "folder_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Folder Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-User-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-User-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageRestore"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Restore Page Version",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      }
+    },
+    "/document-folders/{folder_id}/page/versions": {
+      "get": {
+        "operationId": "list_page_versions_document_folders__folder_id__page_versions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "folder_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Folder Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Page Versions",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      }
+    },
+    "/document-repository/authored": {
+      "post": {
+        "description": "Tạo tài liệu soạn-trong-Kaori theo bộ khung mẫu. Với `generate_prompt`,\nAI (Qwen local) soạn nháp per-section off the request path — poll GET\n…/content tới khi status='active'.",
+        "operationId": "create_authored_document_document_repository_authored_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Department-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Department-Id"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-User-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-User-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthoredCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Authored Document",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      }
+    },
+    "/document-repository/files/{file_id}/download": {
+      "get": {
+        "description": "Serve bytes by bronze file_id — used for a folder page's file mẫu\n(document_folder.sample_file_id, ADR-0042).",
+        "operationId": "download_repo_file_document_repository_files__file_id__download_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "file_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "File Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Download Repo File",
+        "tags": [
+          "Document Repository / DMS (ADR-0039)"
+        ]
+      }
+    },
+    "/document-repository/index": {
+      "get": {
+        "description": "Generic auto-index: columns come from the template's metadata_schema, so\nediting a template instantly reshapes every index built on it.",
+        "operationId": "documents_index_document_repository_index_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "template_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Template Id"
+            }
+          },
+          {
+            "description": "subtree scope",
+            "in": "query",
+            "name": "folder_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "subtree scope",
+              "title": "Folder Id"
+            }
+          },
+          {
+            "description": "comma-separated, ALL must match",
+            "in": "query",
+            "name": "labels",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "comma-separated, ALL must match",
+              "title": "Labels"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date From"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date To"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Documents Index",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      }
+    },
+    "/document-repository/insights": {
+      "get": {
+        "operationId": "list_insights_document_repository_insights_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Insights",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      },
+      "post": {
+        "description": "Kick off a group/folder analysis. 202 + insight_id; poll the GET.\nStats are deterministic; Qwen only synthesises (off the request path).",
+        "operationId": "create_insight_document_repository_insights_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Department-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Department-Id"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-User-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-User-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InsightCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Insight",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      }
+    },
+    "/document-repository/insights/{insight_id}": {
+      "get": {
+        "operationId": "get_insight_document_repository_insights__insight_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "insight_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Insight Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Insight",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      }
+    },
     "/document-repository/search": {
       "get": {
         "description": "Indexed search across the repository (name + type + status + business\ndate), not tree-walk. Date filters hit COALESCE(doc_date, uploaded_at) —\na daily report dated 30/06 uploaded on 02/07 matches 30/06, not 02/07.",
@@ -20174,6 +21456,885 @@
         "summary": "Patch File Metadata",
         "tags": [
           "Document Repository / DMS (ADR-0039)"
+        ]
+      }
+    },
+    "/document-repository/{doc_id}/content": {
+      "get": {
+        "description": "Nội dung tài liệu soạn (bất kỳ phiên bản nào) + outline của mẫu để\nFE render/sửa đúng cột.",
+        "operationId": "get_document_content_document_repository__doc_id__content_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "doc_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Doc Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Document Content",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      },
+      "patch": {
+        "description": "Lưu tài liệu soạn = TẠO PHIÊN BẢN MỚI (Confluence page semantics) —\nHistory Changes tự sinh từ chuỗi, không ghi đè lịch sử.",
+        "operationId": "patch_document_content_document_repository__doc_id__content_patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "doc_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Doc Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-User-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-User-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContentPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Patch Document Content",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      }
+    },
+    "/document-repository/{doc_id}/download": {
+      "get": {
+        "description": "Serve a filed document's bytes from the sha256-keyed blob store (K-8).",
+        "operationId": "download_repo_document_document_repository__doc_id__download_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "doc_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Doc Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Download Repo Document",
+        "tags": [
+          "Document Repository / DMS (ADR-0039)"
+        ]
+      }
+    },
+    "/document-repository/{doc_id}/history": {
+      "get": {
+        "description": "History Changes — TỰ SINH từ chuỗi phiên bản (không ai gõ tay):\nmọi phiên bản cùng (folder, name) của tài liệu này.",
+        "operationId": "get_document_history_document_repository__doc_id__history_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "doc_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Doc Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Document History",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      }
+    },
+    "/document-repository/{doc_id}/metadata": {
+      "patch": {
+        "description": "Fill/edit a document's Page Properties. Validation is trust-first:\nwarnings + completeness, never a hard block (Tenet 13).",
+        "operationId": "patch_doc_metadata_document_repository__doc_id__metadata_patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "doc_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Doc Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocMetadataPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Patch Doc Metadata",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      }
+    },
+    "/document-repository/{doc_id}/notes": {
+      "get": {
+        "description": "Ghi chú theo TÀI LIỆU (mọi phiên bản cùng folder+name) — lưu nội dung\ntạo version mới không được làm 'mất' ghi chú của bản trước.",
+        "operationId": "list_notes_document_repository__doc_id__notes_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "doc_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Doc Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Notes",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      },
+      "post": {
+        "operationId": "create_note_document_repository__doc_id__notes_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "doc_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Doc Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-User-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-User-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Note",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      }
+    },
+    "/document-repository/{doc_id}/notes/{note_id}": {
+      "delete": {
+        "operationId": "delete_note_document_repository__doc_id__notes__note_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "doc_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Doc Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "note_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Note Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delete Note",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      }
+    },
+    "/document-repository/{doc_id}/regenerate": {
+      "post": {
+        "description": "Chạy lại AI soạn nháp cho một tài liệu authored (vd lần đầu LLM quá\ntải). Ghi đè content hiện tại của CHÍNH phiên bản này — muốn giữ bản cũ\nthì Lưu (stack version) trước.",
+        "operationId": "regenerate_document_document_repository__doc_id__regenerate_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "doc_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Doc Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegeneratePrompt"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Regenerate Document",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      }
+    },
+    "/document-templates": {
+      "get": {
+        "description": "Global seeds (enterprise_id NULL) + this tenant's templates — RLS filters.",
+        "operationId": "list_templates_document_templates_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "include_inactive",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Inactive",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Templates",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      },
+      "post": {
+        "description": "Create a tenant template. `clone_of` copies schema/outline from an\nexisting visible template (the Confluence clone-a-blueprint flow).",
+        "operationId": "create_template_document_templates_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Department-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Department-Id"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-User-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-User-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TemplateCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Template",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      }
+    },
+    "/document-templates/from-file": {
+      "post": {
+        "description": "Dựng BẢN NHÁP mẫu từ một file đã upload (run_id của /api/v1/upload):\nAI nhận diện cấu trúc (mục/bảng/cột) → bản nháp is_active=FALSE — người\ndùng duyệt/sửa trong trình sửa Mẫu rồi kích hoạt. Poll GET template tới\nkhi description hết marker '⏳'.",
+        "operationId": "create_template_from_file_document_templates_from_file_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Department-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Department-Id"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-User-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-User-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TemplateFromFile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Template From File",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      }
+    },
+    "/document-templates/{template_id}": {
+      "get": {
+        "operationId": "get_template_document_templates__template_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Template Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Template",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
+        ]
+      },
+      "patch": {
+        "description": "Edit a TENANT template. Globals are read-only here (clone to customize) —\nthe RLS WITH CHECK refuses the write, surfaced as 403.",
+        "operationId": "patch_template_document_templates__template_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Template Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TemplatePatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Patch Template",
+        "tags": [
+          "Document Templates & Pages (ADR-0042)"
         ]
       }
     },

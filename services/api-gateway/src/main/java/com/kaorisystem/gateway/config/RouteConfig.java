@@ -268,6 +268,9 @@ public class RouteConfig {
                       "/api/v1/document-folders",
                       "/api/v1/document-folders/**",
                       "/api/v1/document-repository/**",
+                      // ADR-0042 doc-type templates (Confluence-style blueprints)
+                      "/api/v1/document-templates",
+                      "/api/v1/document-templates/**",
                       // ADR-0026 Industry Template bootstrap (mig 101-103).
                       // industry_bootstrap.py lists industries + dry-run/apply
                       // bootstrap. Served by ai-orchestrator WITHOUT /api/v1

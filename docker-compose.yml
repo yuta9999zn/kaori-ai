@@ -312,6 +312,13 @@ services:
       # 400 keeps production (14B/GPU) summaries longer. Must stay a valid int
       # (the :-400 fallback avoids an empty value → int('') crash).
       KAORI_NARRATIVE_MAX_TOKENS: ${KAORI_NARRATIVE_MAX_TOKENS:-400}
+      # ADR-0042 P2 — LLM client timeout + per-section token cap for the
+      # document author. Pilot 7B box (~6.7 tok/s): .env sets 120s/300 tok
+      # so one section (~45s) fits the timeout; production keeps defaults.
+      LLM_TIMEOUT_S: ${LLM_TIMEOUT_S:-30.0}
+      KAORI_DOCGEN_MAX_TOKENS: ${KAORI_DOCGEN_MAX_TOKENS:-600}
+      KAORI_TPLGEN_MAX_CHARS: ${KAORI_TPLGEN_MAX_CHARS:-7000}
+      KAORI_TPLGEN_MAX_TOKENS: ${KAORI_TPLGEN_MAX_TOKENS:-800}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       # P2-AUTH-001 SSO — OAuth client credentials. Set in top-level
       # .env or pass via shell. Empty = provider disabled (router
@@ -363,6 +370,8 @@ services:
       DATABASE_URL: postgresql://kaori_app:${KAORI_APP_PASSWORD:-kaori_app_password}@postgres:5432/kaori
       OLLAMA_HOST: http://ollama:11434
       OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:7b}
+      # ADR-0042 P2 — pilot CPU box: completion dài (doc-author) có thể vượt 120s
+      OLLAMA_TIMEOUT_S: ${OLLAMA_TIMEOUT_S:-120.0}
       EXTERNAL_AI_ENABLED: ${EXTERNAL_AI_ENABLED:-false}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}

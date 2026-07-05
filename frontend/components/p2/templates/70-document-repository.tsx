@@ -1,35 +1,22 @@
 // @ts-nocheck — template; tighten types when wiring to real API
-// ADR-0039 — Kho tài liệu (enterprise Document Repository / DMS).
-// Lazy breadcrumb browser: load a folder's direct children + files on navigate
-// (never the whole tree). Create folder, upload into folder, search.
+// ADR-0039 + ADR-0042 — Kho tài liệu (enterprise DMS, cấu trúc Confluence).
+// Bố cục 3-pane kiểu Confluence: page tree trái · nghiệp vụ page giữa (mô tả +
+// mẫu + file mẫu + version history + index) · màu giữ nguyên hệ Kaori.
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
-  Folder, FolderPlus, Upload, FileText, ChevronRight, ChevronDown, Home, Search,
-  Loader2, Trash2, ExternalLink, CalendarDays, ListTree,
+  ChevronRight, Home, Search, Loader2, CalendarDays, ListTree, FileText,
+  ChevronDown, LayoutTemplate,
 } from 'lucide-react';
 
 import {
-  Button, Badge, ErrorBanner, cn, api, API_BASE, type ProblemDetails,
+  Button, Badge, ErrorBanner, cn, api, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { FolderTree } from '@/components/p2/dms/tree';
+import { FolderPage } from '@/components/p2/dms/folder-page';
 
-interface FolderRow {
-  folder_id: string; name_vi: string; path: string;
-  child_count: number; file_count: number;
-}
-interface FileRow {
-  doc_id: string; name_vi: string; doc_type: string | null;
-  status: string; version: number; storage_tier: string; uploaded_at: string | null;
-  doc_date: string | null; period_kind: string | null;
-}
-interface Crumb { folder_id: string; name_vi: string; }
-
-const TOKEN_KEY = 'kaori.access_token';
-
-// Mig 138 — time is METADATA, not tree depth. `doc_date` = business date
-// (báo cáo ngày 30/06 có thể upload 02/07); period_kind = kỳ báo cáo.
 const PERIOD_LABEL: Record<string, string> = {
   day: 'Ngày', week: 'Tuần', month: 'Tháng', quarter: 'Quý', year: 'Năm',
 };
@@ -45,114 +32,31 @@ function dateQS(dateFrom: string, dateTo: string, periodKind: string): string {
 
 export default function DocumentRepositoryPage() {
   const [current, setCurrent] = useState<string | null>(null);   // null = root
-  const [crumbs, setCrumbs] = useState<Crumb[]>([]);
-  const [folders, setFolders] = useState<FolderRow[]>([]);
-  const [files, setFiles] = useState<FileRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [crumbs, setCrumbs] = useState<{ folder_id: string; name_vi: string }[]>([]);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
-  const [creating, setCreating] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [treeRefresh, setTreeRefresh] = useState(0);
   const [search, setSearch] = useState('');
   const [results, setResults] = useState<any[] | null>(null);
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [periodKind, setPeriodKind] = useState('');
-  const [view, setView] = useState<'tree' | 'time'>('tree');
-  const fileRef = useRef<HTMLInputElement>(null);
+  const [view, setView] = useState<'page' | 'time'>('page');
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setProblem(null);
+  const select = useCallback(async (id: string | null) => {
+    setCurrent(id);
     setResults(null);
-    try {
-      const fRes = await api<{ items: FolderRow[] }>(
-        `/api/v1/document-folders${current ? `?parent_id=${current}` : ''}`);
-      setFolders(fRes.items || []);
-      if (current) {
-        const [filesRes, crumbRes] = await Promise.all([
-          api<{ items: FileRow[] }>(
-            `/api/v1/document-folders/${current}/files?limit=200${dateQS(dateFrom, dateTo, '')}`),
-          api<{ items: Crumb[] }>(`/api/v1/document-folders/${current}/breadcrumb`),
-        ]);
-        setFiles(filesRes.items || []);
-        setCrumbs(crumbRes.items || []);
-      } else {
-        setFiles([]);
-        setCrumbs([]);
-      }
-    } catch (err: any) {
-      setProblem(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [current, dateFrom, dateTo]);
-
-  useEffect(() => { load(); }, [load]);
-
-  async function createFolder() {
-    const name = window.prompt('Tên thư mục mới (vd "Tài chính", "2024", "Quý 1"):');
-    if (!name?.trim()) return;
-    setCreating(true);
-    try {
-      await api('/api/v1/document-folders', {
-        method: 'POST',
-        body: JSON.stringify({ name_vi: name.trim(), parent_id: current }),
-      });
-      await load();
-    } catch (err: any) {
-      setProblem(err);
-    } finally {
-      setCreating(false);
-    }
-  }
-
-  async function onUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0];
-    e.target.value = '';
-    if (!f || !current) return;
-    setUploading(true);
+    setView('page');
     setProblem(null);
-    try {
-      let hint = '';
+    if (id) {
       try {
-        const dig = await crypto.subtle.digest('SHA-256', await f.arrayBuffer());
-        hint = Array.from(new Uint8Array(dig)).map((b) => b.toString(16).padStart(2, '0')).join('');
-      } catch { /* best-effort */ }
-      const fd = new FormData();
-      fd.append('file', f);
-      if (hint) fd.append('sha256_hint', hint);
-      const res = await fetch(`${API_BASE}/api/v1/upload`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem(TOKEN_KEY) ?? ''}`,
-          'X-Folder-ID': current,
-          'Idempotency-Key': `repo-${hint || crypto.randomUUID()}`,
-        },
-        body: fd,
-      });
-      if (!res.ok) {
-        let detail = `HTTP ${res.status}`;
-        try { const j = await res.json(); detail = (typeof j.detail === 'string' ? j.detail : j.detail?.message) || j.title || detail; } catch {}
-        throw { title: detail } as ProblemDetails;
-      }
-      await load();
-    } catch (err: any) {
-      setProblem(err.title ? err : { title: err?.message || 'Tải lên thất bại' });
-    } finally {
-      setUploading(false);
-    }
-  }
-
-  async function delFolder(id: string, name: string) {
-    if (!window.confirm(`Xoá thư mục "${name}" và toàn bộ bên trong? (xoá mềm)`)) return;
-    try {
-      await api(`/api/v1/document-folders/${id}`, { method: 'DELETE' });
-      await load();
-    } catch (err: any) { setProblem(err); }
-  }
+        const r = await api<{ items: { folder_id: string; name_vi: string }[] }>(
+          `/api/v1/document-folders/${id}/breadcrumb`);
+        setCrumbs(r.items || []);
+      } catch { setCrumbs([]); }
+    } else setCrumbs([]);
+  }, []);
 
   async function runSearch() {
-    // Filters count as a query too — "mọi báo cáo tuần của quý 2" needs no name.
     if (!search.trim() && !dateFrom && !dateTo && !periodKind) { setResults(null); return; }
     try {
       const r = await api<{ items: any[] }>(
@@ -161,42 +65,20 @@ export default function DocumentRepositoryPage() {
     } catch (err: any) { setProblem(err); }
   }
 
-  async function setDocMeta(docId: string, patch: { doc_date?: string; period_kind?: string }) {
-    try {
-      await api(`/api/v1/document-repository/${docId}`, {
-        method: 'PATCH',
-        body: JSON.stringify(patch),
-      });
-      await load();
-    } catch (err: any) { setProblem(err); }
-  }
-
   return (
     <div className="space-y-4">
       <PageHeader
         title="Kho tài liệu"
-        description="Lưu trữ tài liệu doanh nghiệp theo cây thư mục (Năm → Quý → Loại hồ sơ) — dùng chung kho byte Bronze, chống trùng SHA-256."
+        description="Mỗi thư mục là một trang nghiệp vụ (mô tả + mẫu tài liệu + file mẫu + lịch sử phiên bản) — tài liệu tải vào tự thừa hưởng cấu trúc."
         actions={
-          <div className="flex items-center gap-2">
-            <Button variant="secondary" onClick={createFolder} disabled={creating}>
-              {creating ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <FolderPlus className="w-4 h-4 mr-1.5" />}
-              Tạo thư mục
-            </Button>
-            {current && (
-              <>
-                <input ref={fileRef} type="file" hidden onChange={onUpload}
-                  accept=".pdf,.docx,.doc,.xlsx,.xls,.csv,.png,.jpg,.jpeg,.tiff,.webp,.pptx,.md,.json,.sql,.zip" />
-                <Button onClick={() => fileRef.current?.click()} disabled={uploading}>
-                  {uploading ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Upload className="w-4 h-4 mr-1.5" />}
-                  Tải lên
-                </Button>
-              </>
-            )}
-          </div>
+          <a href="/p2/document-templates"
+            className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-md-custom border border-[var(--border-color)] bg-white hover:border-[var(--primary-gold)]/60 text-[var(--text-primary)]">
+            <LayoutTemplate className="w-4 h-4 text-[var(--primary-gold-dark)]" /> Mẫu tài liệu
+          </a>
         }
       />
 
-      {/* search + date filters (mig 138 — lọc theo ngày nghiệp vụ, không phải ngày upload) */}
+      {/* search + date filters + view switch */}
       <div className="flex items-center gap-2 flex-wrap">
         <div className="relative flex-1 max-w-md min-w-[220px]">
           <Search className="w-4 h-4 text-[var(--text-secondary)] absolute left-3 top-1/2 -translate-y-1/2" />
@@ -233,10 +115,10 @@ export default function DocumentRepositoryPage() {
           </button>
         )}
         <div className="ml-auto flex items-center rounded-md-custom border border-[var(--border-color)] overflow-hidden">
-          <button onClick={() => setView('tree')}
+          <button onClick={() => setView('page')}
             className={cn('px-2.5 py-2 text-xs flex items-center gap-1.5',
-              view === 'tree' ? 'bg-[var(--primary-gold)]/15 text-[var(--primary-gold-dark)] font-medium' : 'bg-white text-[var(--text-secondary)]')}>
-            <ListTree className="w-3.5 h-3.5" /> Cây thư mục
+              view === 'page' ? 'bg-[var(--primary-gold)]/15 text-[var(--primary-gold-dark)] font-medium' : 'bg-white text-[var(--text-secondary)]')}>
+            <ListTree className="w-3.5 h-3.5" /> Cây nghiệp vụ
           </button>
           <button onClick={() => setView('time')}
             className={cn('px-2.5 py-2 text-xs flex items-center gap-1.5',
@@ -246,27 +128,9 @@ export default function DocumentRepositoryPage() {
         </div>
       </div>
 
-      {/* breadcrumb */}
-      <div className="flex items-center gap-1 text-sm text-[var(--text-secondary)] flex-wrap">
-        <button onClick={() => setCurrent(null)} className="inline-flex items-center gap-1 hover:text-[var(--primary-gold-dark)]">
-          <Home className="w-3.5 h-3.5" /> Kho
-        </button>
-        {crumbs.map((c) => (
-          <React.Fragment key={c.folder_id}>
-            <ChevronRight className="w-3.5 h-3.5 opacity-50" />
-            <button onClick={() => setCurrent(c.folder_id)}
-              className={cn('hover:text-[var(--primary-gold-dark)]', c.folder_id === current && 'text-[var(--text-primary)] font-medium')}>
-              {c.name_vi}
-            </button>
-          </React.Fragment>
-        ))}
-      </div>
-
       {problem && <ErrorBanner problem={problem} />}
 
-      {loading ? (
-        <div className="py-10 text-center text-[var(--text-secondary)]"><Loader2 className="w-5 h-5 animate-spin inline" /></div>
-      ) : results !== null ? (
+      {results !== null ? (
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-4">
           <p className="text-xs text-[var(--text-secondary)] mb-2">
             {results.length} kết quả{search.trim() ? ` cho “${search}”` : ''}
@@ -274,7 +138,7 @@ export default function DocumentRepositoryPage() {
             {periodKind && ` · ${PERIOD_LABEL[periodKind]}`}
           </p>
           {results.map((r) => (
-            <button key={r.doc_id} onClick={() => setCurrent(r.folder_id)}
+            <button key={r.doc_id} onClick={() => select(r.folder_id)}
               className="w-full flex items-center gap-2 px-2 py-2 rounded hover:bg-[var(--bg-app)]/50 text-left">
               <FileText className="w-4 h-4 text-emerald-700 shrink-0" />
               <span className="text-sm flex-1 truncate">{r.name_vi}</span>
@@ -292,7 +156,6 @@ export default function DocumentRepositoryPage() {
         <TimeTree
           periodKind={periodKind}
           onPick={async (from, to) => {
-            // A bucket click lists that period's documents across ALL folders.
             setDateFrom(from); setDateTo(to);
             try {
               const r = await api<{ items: any[] }>(
@@ -302,61 +165,45 @@ export default function DocumentRepositoryPage() {
           }}
         />
       ) : (
-        <div className="space-y-3">
-          {/* folders */}
-          {folders.length === 0 && files.length === 0 ? (
-            <div className="py-10 text-center text-[var(--text-secondary)] text-sm">
-              {current ? 'Thư mục trống. Tạo thư mục con hoặc tải tài liệu lên.' : 'Chưa có thư mục nào. Bấm “Tạo thư mục” để bắt đầu (vd theo Năm → Quý → Loại hồ sơ).'}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-              {folders.map((f) => (
-                <div key={f.folder_id}
-                  className="group flex items-center gap-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-md-custom px-3 py-2.5 hover:border-[var(--primary-gold)]/50">
-                  <button onClick={() => setCurrent(f.folder_id)} className="flex items-center gap-2 flex-1 min-w-0 text-left">
-                    <Folder className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0" />
-                    <span className="text-sm font-medium truncate">{f.name_vi}</span>
-                    <span className="text-[10px] text-[var(--text-secondary)] shrink-0">{f.child_count} mục · {f.file_count} file</span>
-                  </button>
-                  <button onClick={() => delFolder(f.folder_id, f.name_vi)}
-                    className="opacity-0 group-hover:opacity-100 text-[var(--text-secondary)] hover:text-[var(--state-error)] shrink-0">
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
+        /* ── 3-pane kiểu Confluence: tree trái · page giữa ─────────────── */
+        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-4 items-start">
+          <aside className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-2.5 lg:sticky lg:top-4">
+            <button onClick={() => select(null)}
+              className={cn('flex items-center gap-1.5 px-1.5 py-1 rounded text-[13px] w-full mb-1',
+                current === null ? 'bg-[var(--primary-gold)]/15 text-[var(--primary-gold-dark)] font-medium' : 'hover:bg-[var(--bg-app)]/60')}>
+              <Home className="w-3.5 h-3.5" /> Kho tài liệu
+            </button>
+            <FolderTree selected={current} onSelect={select}
+              refreshKey={treeRefresh} onProblem={setProblem} />
+          </aside>
 
-          {/* files in current folder — TimeTree defined at file bottom */}
-          {files.length > 0 && (
-            <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom divide-y divide-[var(--border-color)]/50">
-              {files.map((d) => (
-                <div key={d.doc_id} className="flex items-center gap-2 px-3 py-2.5">
-                  <FileText className="w-4 h-4 text-emerald-700 shrink-0" />
-                  <span className="text-sm flex-1 truncate">{d.name_vi}</span>
-                  {/* mig 138 — ngày chứng từ + kỳ, sửa inline (khác ngày upload) */}
-                  <input type="date" value={d.doc_date || ''}
-                    onChange={(e) => e.target.value && setDocMeta(d.doc_id, { doc_date: e.target.value })}
-                    title="Ngày chứng từ của tài liệu (báo cáo ngày 30/06 upload 02/07 → chọn 30/06)"
-                    className="px-1.5 py-0.5 text-[11px] bg-transparent border border-[var(--border-color)]/60 rounded text-[var(--text-secondary)] shrink-0" />
-                  <select value={d.period_kind || ''}
-                    onChange={(e) => e.target.value && setDocMeta(d.doc_id, { period_kind: e.target.value })}
-                    title="Kỳ báo cáo"
-                    className="px-1 py-0.5 text-[11px] bg-transparent border border-[var(--border-color)]/60 rounded text-[var(--text-secondary)] shrink-0">
-                    <option value="">— kỳ —</option>
-                    <option value="day">Ngày</option>
-                    <option value="week">Tuần</option>
-                    <option value="month">Tháng</option>
-                    <option value="quarter">Quý</option>
-                    <option value="year">Năm</option>
-                  </select>
-                  {d.version > 1 && <span className="text-[10px] font-mono text-[var(--text-secondary)]">v{d.version}</span>}
-                  {d.doc_type && <Badge variant="default" className="text-[10px]">.{d.doc_type}</Badge>}
-                  {d.storage_tier !== 'hot' && <span className="text-[10px] text-[var(--text-secondary)]">{d.storage_tier}</span>}
-                </div>
-              ))}
-            </div>
-          )}
+          <main className="min-w-0">
+            {/* breadcrumb */}
+            {current && crumbs.length > 0 && (
+              <div className="flex items-center gap-1 text-xs text-[var(--text-secondary)] flex-wrap mb-3">
+                <button onClick={() => select(null)} className="hover:text-[var(--primary-gold-dark)]">Kho</button>
+                {crumbs.map((c) => (
+                  <React.Fragment key={c.folder_id}>
+                    <ChevronRight className="w-3 h-3 opacity-50" />
+                    <button onClick={() => select(c.folder_id)}
+                      className={cn('hover:text-[var(--primary-gold-dark)]', c.folder_id === current && 'text-[var(--text-primary)] font-medium')}>
+                      {c.name_vi}
+                    </button>
+                  </React.Fragment>
+                ))}
+              </div>
+            )}
+
+            {current ? (
+              <FolderPage folderId={current} onUploaded={() => setTreeRefresh((k) => k + 1)} />
+            ) : (
+              <div className="py-14 text-center text-sm text-[var(--text-secondary)] border border-dashed border-[var(--border-color)] rounded-lg-custom">
+                <p className="font-medium text-[var(--text-primary)] mb-1">Chọn một nghiệp vụ ở cây bên trái</p>
+                <p>Mỗi thư mục là một <b>trang nghiệp vụ</b>: mô tả tài liệu, mẫu thuộc tính, file upload mẫu,<br />
+                  lịch sử phiên bản — tài liệu tải vào tự thừa hưởng cấu trúc của trang.</p>
+              </div>
+            )}
+          </main>
         </div>
       )}
     </div>
@@ -411,7 +258,7 @@ function TimeTree({ periodKind, onPick }: {
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const [err, setErr] = useState<ProblemDetails | null>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     api<{ buckets: Bucket[] }>('/api/v1/document-repository/timeline?granularity=year')
       .then((r) => setYears(r.buckets || []))
       .catch(setErr);

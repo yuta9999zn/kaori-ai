@@ -249,6 +249,14 @@ class RouteConfigTest {
         assertResolvesTo("/api/v1/document-repository/timeline?granularity=year", ORCH_URL);
         assertResolvesTo("/api/v1/document-repository/" +
                          "99999999-9999-9999-9999-999999999999",                ORCH_URL);
+        // ADR-0042 — doc-type templates + folder-as-page + index + insights
+        assertResolvesTo("/api/v1/document-templates",                          ORCH_URL);
+        assertResolvesTo("/api/v1/document-templates/" +
+                         "77777777-7777-7777-7777-777777777777",                ORCH_URL);
+        assertResolvesTo("/api/v1/document-folders/" +
+                         "11111111-1111-1111-1111-111111111111/page",           ORCH_URL);
+        assertResolvesTo("/api/v1/document-repository/index?limit=10",         ORCH_URL);
+        assertResolvesTo("/api/v1/document-repository/insights",                ORCH_URL);
     }
 
     @Test

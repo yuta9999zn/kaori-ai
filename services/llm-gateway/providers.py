@@ -92,8 +92,13 @@ async def invoke(
     return await _call_ollama(concrete, prompt, max_tokens), concrete
 
 
+# Pilot 7B trên CPU dưới tải nặng có thể vượt 120s cho một completion dài —
+# knob env thay vì hằng số (ADR-0042 P2 doc-author là caller dài nhất).
+OLLAMA_TIMEOUT_S = float(os.getenv("OLLAMA_TIMEOUT_S", "120.0"))
+
+
 async def _call_ollama(model: str, prompt: str, max_tokens: int) -> str:
-    async with httpx.AsyncClient(timeout=120.0) as client:
+    async with httpx.AsyncClient(timeout=OLLAMA_TIMEOUT_S) as client:
         resp = await client.post(
             f"{OLLAMA_HOST}/api/generate",
             json={

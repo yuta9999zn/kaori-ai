@@ -60,6 +60,112 @@ ALL_ACCEPTED_EXTENSIONS = SUPPORTED_EXTENSIONS | UNSTRUCTURED_EXTENSIONS
 MAX_FILE_SIZE_BYTES = int(os.getenv("UPLOAD_MAX_SIZE_MB", 100)) * 1024 * 1024
 
 
+async def _file_into_repository(
+    conn, *, folder_id: str, file_id, name_vi: str, doc_type: str,
+    sha256: str, uploaded_by, department_id=None,
+) -> None:
+    """ADR-0042 — file an upload into the Document Repository with Confluence
+    semantics (single writer for all three ingest branches):
+
+    1. Identical bytes already current in this folder → skip (K-8 dedup).
+    2. Same ``name_vi`` already current in the folder → stack as the next
+       VERSION (Confluence same-name attachment rule): version+1, supersedes
+       chain, metadata/template/labels carry over from the old version.
+    3. Otherwise fresh insert inheriting the folder chain's template + labels
+       (folder-as-page, mig 139) — nearest ancestor's template wins.
+
+    Predicates carry explicit enterprise_id (self-sufficient under RLS —
+    mirror of the pipeline_runs lesson at the tabular branch).
+    """
+    folder = await conn.fetchrow(
+        """SELECT folder_id, enterprise_id, department_id, path
+           FROM document_folder WHERE folder_id = $1 AND deleted_at IS NULL""",
+        uuid.UUID(folder_id))
+    if folder is None:
+        log.warning("repo.file.folder_missing", folder_id=folder_id)
+        return
+    dept = department_id or folder["department_id"]
+
+    dup = await conn.fetchval(
+        """SELECT 1 FROM document_repository_file
+           WHERE enterprise_id = $1 AND folder_id = $2 AND sha256 = $3
+             AND is_current AND deleted_at IS NULL""",
+        folder["enterprise_id"], folder["folder_id"], sha256)
+    if dup:
+        return
+
+    # folder-as-page inheritance: labels union up the chain; nearest template wins
+    chain = await conn.fetch(
+        """SELECT default_template_id, default_labels, page_version
+           FROM document_folder
+           WHERE enterprise_id = $1 AND deleted_at IS NULL
+             AND ($2 = path OR $2 LIKE path || '/%')
+           ORDER BY length(path) DESC""",
+        folder["enterprise_id"], folder["path"])
+    template_id, page_version = None, None
+    labels: list = []
+    for c in chain:
+        for lb in (c["default_labels"] or []):
+            if lb not in labels:
+                labels.append(lb)
+        if template_id is None and c["default_template_id"] is not None:
+            template_id = c["default_template_id"]
+            page_version = c["page_version"]
+    if template_id is not None:
+        trow = await conn.fetchrow(
+            """SELECT default_labels FROM document_type_template
+               WHERE template_id = $1
+                 AND (enterprise_id IS NULL OR enterprise_id = $2)""",
+            template_id, folder["enterprise_id"])
+        for lb in ((trow["default_labels"] if trow else None) or []):
+            if lb not in labels:
+                labels.append(lb)
+
+    prev = await conn.fetchrow(
+        """SELECT doc_id, version, template_id, metadata, labels,
+                  metadata_completeness, validated_page_version, doc_date, period_kind
+           FROM document_repository_file
+           WHERE enterprise_id = $1 AND folder_id = $2 AND name_vi = $3
+             AND is_current AND deleted_at IS NULL
+           ORDER BY version DESC LIMIT 1""",
+        folder["enterprise_id"], folder["folder_id"], name_vi)
+
+    if prev is not None:
+        # Confluence same-name-stacks: new bytes, same name → next version.
+        new_id = await conn.fetchval(
+            """INSERT INTO document_repository_file
+                  (enterprise_id, department_id, folder_id, file_id, name_vi,
+                   doc_type, sha256, uploaded_by, version, supersedes,
+                   change_reason, template_id, metadata, labels,
+                   metadata_completeness, validated_page_version, doc_date, period_kind)
+               VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+                       $11, $12, COALESCE($13, '{}')::jsonb, $14, $15, $16, $17, $18)
+               RETURNING doc_id""",
+            folder["enterprise_id"], dept, folder["folder_id"], file_id, name_vi,
+            doc_type, sha256, uploaded_by, prev["version"] + 1, prev["doc_id"],
+            "Tải lên lại cùng tên — phiên bản mới",
+            prev["template_id"], prev["metadata"], list(prev["labels"] or []),
+            prev["metadata_completeness"], prev["validated_page_version"],
+            prev["doc_date"], prev["period_kind"])
+        await conn.execute(
+            """UPDATE document_repository_file
+               SET is_current = FALSE, superseded_by = $2
+               WHERE doc_id = $1""",
+            prev["doc_id"], new_id)
+        log.info("repo.file.version_stacked", folder_id=folder_id,
+                 name_vi=name_vi, version=prev["version"] + 1)
+        return
+
+    await conn.execute(
+        """INSERT INTO document_repository_file
+              (enterprise_id, department_id, folder_id, file_id, name_vi,
+               doc_type, sha256, uploaded_by, template_id, labels,
+               validated_page_version)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)""",
+        folder["enterprise_id"], dept, folder["folder_id"], file_id, name_vi,
+        doc_type, sha256, uploaded_by, template_id, labels, page_version)
+
+
 async def ingest_file(
     file: Optional[UploadFile] = None,
     run_id: str = "",
@@ -325,48 +431,23 @@ async def ingest_file(
                     req_doc_class,
                 )
             if folder_id is not None:
-                # ADR-0039 — file the (deduped) existing bronze file into the repo.
-                filed = await conn.execute(
-                    """INSERT INTO document_repository_file
-                          (enterprise_id, department_id, folder_id, file_id,
-                           name_vi, doc_type, sha256, uploaded_by)
-                       SELECT bf.enterprise_id, bf.department_id, $1, bf.file_id,
-                              $2, bf.file_format, $3, $4
-                         FROM bronze_files bf
-                        WHERE bf.run_id = $5 AND bf.enterprise_id = $6
-                        LIMIT 1""",
-                    uuid.UUID(folder_id),
-                    _fname or "tài liệu",
-                    sha256,
-                    uuid.UUID(uploaded_by) if uploaded_by else None,
-                    existing,
-                    uuid.UUID(enterprise_id),
+                # ADR-0039/0042 — file the (deduped) existing bronze file into
+                # the repo. A prose .txt run lands zero bronze_files rows →
+                # file_id NULL; bytes serve from the sha256-keyed blob store.
+                bf = await conn.fetchrow(
+                    """SELECT file_id, department_id, file_format
+                       FROM bronze_files
+                       WHERE run_id = $1 AND enterprise_id = $2 LIMIT 1""",
+                    existing, uuid.UUID(enterprise_id))
+                await _file_into_repository(
+                    conn, folder_id=folder_id,
+                    file_id=bf["file_id"] if bf else None,
+                    name_vi=_fname or "tài liệu",
+                    doc_type=(bf["file_format"] if bf else None) or ext.lstrip("."),
+                    sha256=sha256,
+                    uploaded_by=uuid.UUID(uploaded_by) if uploaded_by else None,
+                    department_id=bf["department_id"] if bf else None,
                 )
-                if filed.endswith(" 0"):
-                    # The original run landed ZERO bronze_files rows (prose
-                    # .txt parses to no tabular sheets) — the SELECT-insert
-                    # above filed nothing. File the document anyway with
-                    # file_id NULL; bytes serve from the sha256-keyed blob
-                    # store. NOT EXISTS keeps re-uploads from multiplying
-                    # rows in the same folder.
-                    await conn.execute(
-                        """INSERT INTO document_repository_file
-                              (enterprise_id, department_id, folder_id, file_id,
-                               name_vi, doc_type, sha256, uploaded_by)
-                           SELECT f.enterprise_id, f.department_id, f.folder_id,
-                                  NULL, $2, $3, $4, $5
-                             FROM document_folder f
-                            WHERE f.folder_id = $1
-                              AND NOT EXISTS
-                                  (SELECT 1 FROM document_repository_file
-                                    WHERE folder_id = $1 AND sha256 = $4
-                                      AND deleted_at IS NULL)""",
-                        uuid.UUID(folder_id),
-                        _fname or "tài liệu",
-                        ext.lstrip("."),
-                        sha256,
-                        uuid.UUID(uploaded_by) if uploaded_by else None,
-                    )
             return {"run_id": str(existing), "status": "duplicate", "sha256": sha256}
 
         # P15-S11 Tuần 8 — resolve dept/branch/source. Defaults filled when
@@ -543,20 +624,14 @@ async def ingest_file(
                     req_doc_class,
                 )
             if folder_id is not None:
-                # ADR-0039 — register this document in the enterprise repository.
-                await conn.execute(
-                    """INSERT INTO document_repository_file
-                          (enterprise_id, department_id, folder_id, file_id,
-                           name_vi, doc_type, sha256, uploaded_by)
-                       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)""",
-                    uuid.UUID(enterprise_id),
-                    uuid.UUID(str(org["department_id"])),
-                    uuid.UUID(folder_id),
-                    file_id,
-                    _fname or "tài liệu",
-                    ext.lstrip("."),
-                    sha256,
-                    uuid.UUID(uploaded_by) if uploaded_by else None,
+                # ADR-0039/0042 — register in the enterprise repository
+                # (version-stacks on same name; inherits folder template/labels).
+                await _file_into_repository(
+                    conn, folder_id=folder_id, file_id=file_id,
+                    name_vi=_fname or "tài liệu", doc_type=ext.lstrip("."),
+                    sha256=sha256,
+                    uploaded_by=uuid.UUID(uploaded_by) if uploaded_by else None,
+                    department_id=uuid.UUID(str(org["department_id"])),
                 )
             log.info("pipeline.ingest.unstructured_extracted",
                      run_id=run_id, filename=_fname, ext=ext,
@@ -806,19 +881,13 @@ async def _parse_and_land(content: bytes, ext: str, run_id: str, enterprise_id: 
             # download serves the original bytes from the sha256-keyed blob
             # store either way (K-8). Mirrors the unstructured-branch insert.
             if folder_id is not None:
-                await conn.execute(
-                    """INSERT INTO document_repository_file
-                          (enterprise_id, department_id, folder_id, file_id,
-                           name_vi, doc_type, sha256, uploaded_by)
-                       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)""",
-                    uuid.UUID(enterprise_id),
-                    dept_uuid,
-                    uuid.UUID(folder_id),
-                    uuid.UUID(first_file_id) if first_file_id else None,
-                    filename or "tài liệu",
-                    ext.lstrip("."),
-                    hashlib.sha256(content).hexdigest(),
-                    uuid.UUID(uploaded_by) if uploaded_by else None,
+                await _file_into_repository(
+                    conn, folder_id=folder_id,
+                    file_id=uuid.UUID(first_file_id) if first_file_id else None,
+                    name_vi=filename or "tài liệu", doc_type=ext.lstrip("."),
+                    sha256=hashlib.sha256(content).hexdigest(),
+                    uploaded_by=uuid.UUID(uploaded_by) if uploaded_by else None,
+                    department_id=dept_uuid,
                 )
 
             # Update run status. Migration 024 cutover — bare db_pool.acquire()

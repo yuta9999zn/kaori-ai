@@ -72,6 +72,10 @@ async def upload_file(
     x_workflow_step_id: Optional[UUID] = Header(None, alias="X-Workflow-Step-ID"),
     x_requirement_id: Optional[UUID] = Header(None, alias="X-Requirement-ID"),
     x_folder_id: Optional[UUID] = Header(None, alias="X-Folder-ID"),  # ADR-0039 DMS
+    # ADR-0042 P3 — upload một FILE MẪU chỉ để AI phân tích cấu trúc thành
+    # template: đi đường sync (nhận unstructured + DocSage extract inline)
+    # nhưng KHÔNG đính vào workflow/folder nào.
+    x_template_analysis: Optional[str] = Header(None, alias="X-Template-Analysis"),
 ):
     """Upload a data file (Excel, CSV, ODS, ZIP, SQL).
 
@@ -91,8 +95,8 @@ async def upload_file(
     ingest_file). Cross-tenant guard: a supplied ID not in the enterprise → 400.
     """
     # ---- Sync path: workflow-card attach OR file into the Document Repository
-    # (both accept unstructured docs + run extraction inline) ----
-    if x_workflow_step_id is not None or x_folder_id is not None:
+    # OR template-analysis upload (all accept unstructured docs + extraction inline) ----
+    if x_workflow_step_id is not None or x_folder_id is not None or x_template_analysis:
         run_id = str(uuid.uuid4())
         try:
             return await ingest_file(

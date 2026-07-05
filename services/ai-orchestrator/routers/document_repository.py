@@ -15,9 +15,10 @@ from typing import Optional
 from uuid import UUID
 
 import structlog
-from fastapi import APIRouter, Header, HTTPException, Path, Query
+from fastapi import APIRouter, Header, HTTPException, Path, Query, Response
 from pydantic import BaseModel, Field
 
+from ..shared.blob_store import blob_key, get_blob_store
 from ..shared.db import acquire_for_tenant
 
 log = structlog.get_logger()
@@ -108,7 +109,10 @@ async def list_folders(
                       (SELECT COUNT(*) FROM document_folder c
                        WHERE c.parent_id = f.folder_id AND c.deleted_at IS NULL) AS child_count,
                       (SELECT COUNT(*) FROM document_repository_file d
-                       WHERE d.folder_id = f.folder_id AND d.is_current AND d.deleted_at IS NULL) AS file_count
+                       WHERE d.folder_id = f.folder_id AND d.is_current AND d.deleted_at IS NULL) AS file_count,
+                      -- ADR-0042: folder đã cấu hình thành TRANG nghiệp vụ (có mô tả
+                      -- hoặc gắn mẫu) — FE đổi icon để phân biệt với thư mục thuần.
+                      (f.body_md IS NOT NULL OR f.default_template_id IS NOT NULL) AS is_page
                FROM document_folder f
                WHERE parent_id IS NOT DISTINCT FROM $1
                  AND deleted_at IS NULL
@@ -124,6 +128,7 @@ async def list_folders(
         "parent_id": str(i["parent_id"]) if i["parent_id"] else None,
         "path": i["path"], "name_vi": i["name_vi"], "sort_order": i["sort_order"],
         "child_count": i["child_count"], "file_count": i["file_count"],
+        "is_page": bool(i["is_page"]),
     } for i in items], "next_cursor": next_cursor}
 
 
@@ -204,7 +209,8 @@ async def list_files(
         rows = await conn.fetch(
             """SELECT doc_id, external_ref, name_vi, doc_type, status, version,
                       storage_tier, valid_until, sha256, uploaded_at,
-                      doc_date, period_kind
+                      doc_date, period_kind, file_id, template_id, labels,
+                      metadata_completeness, metadata, doc_kind
                FROM document_repository_file
                WHERE folder_id = $1 AND is_current AND deleted_at IS NULL
                  AND ($2::uuid IS NULL OR
@@ -220,7 +226,7 @@ async def list_files(
 
 
 def _file_out(r) -> dict:
-    return {
+    out = {
         "doc_id": str(r["doc_id"]), "external_ref": r["external_ref"],
         "name_vi": r["name_vi"], "doc_type": r["doc_type"], "status": r["status"],
         "version": r["version"], "storage_tier": r["storage_tier"],
@@ -230,6 +236,29 @@ def _file_out(r) -> dict:
         "doc_date": r["doc_date"].isoformat() if r["doc_date"] else None,
         "period_kind": r["period_kind"],
     }
+    # ADR-0042 columns (present on list_files; PATCH-metadata RETURNING omits them)
+    keys = set(r.keys())
+    if "file_id" in keys:
+        out["file_id"] = str(r["file_id"]) if r["file_id"] else None
+    if "template_id" in keys:
+        out["template_id"] = str(r["template_id"]) if r["template_id"] else None
+    if "labels" in keys:
+        out["labels"] = list(r["labels"] or [])
+    if "metadata_completeness" in keys:
+        out["completeness"] = (float(r["metadata_completeness"])
+                               if r["metadata_completeness"] is not None else None)
+    if "metadata" in keys:
+        m = r["metadata"]
+        if isinstance(m, str):
+            import json as _json
+            try:
+                m = _json.loads(m)
+            except (ValueError, TypeError):
+                m = {}
+        out["metadata"] = m or {}
+    if "doc_kind" in keys:
+        out["doc_kind"] = r["doc_kind"]
+    return out
 
 
 @router.patch("/document-repository/{doc_id}")
@@ -293,6 +322,60 @@ async def repository_timeline(
             year, quarter, month)
     return {"granularity": granularity,
             "buckets": [dict(r) for r in rows]}
+
+
+# ─────────────────────────── download bytes ─────────────────────────────
+def _download_response(content: bytes, filename: str) -> Response:
+    import mimetypes
+    mime = mimetypes.guess_type(filename)[0] or "application/octet-stream"
+    return Response(content=content, media_type=mime,
+                    headers={"Content-Disposition": f'inline; filename="{filename}"'})
+
+
+@router.get("/document-repository/{doc_id}/download")
+async def download_repo_document(
+    doc_id: UUID = Path(...),
+    x_enterprise_id: UUID = Header(..., alias="X-Enterprise-ID"),
+):
+    """Serve a filed document's bytes from the sha256-keyed blob store (K-8)."""
+    async with acquire_for_tenant(x_enterprise_id) as conn:
+        row = await conn.fetchrow(
+            """SELECT sha256, name_vi FROM document_repository_file
+               WHERE doc_id = $1 AND deleted_at IS NULL""", doc_id)
+    if row is None or not row["sha256"]:
+        raise HTTPException(status_code=404, detail="document not found")
+    content = await get_blob_store().get(blob_key(str(x_enterprise_id), row["sha256"]))
+    if content is None:
+        raise HTTPException(status_code=409,
+                            detail="file bytes chưa được lưu trữ cho tài liệu này")
+    return _download_response(content, row["name_vi"] or str(doc_id))
+
+
+@router.get("/document-repository/files/{file_id}/download")
+async def download_repo_file(
+    file_id: UUID = Path(...),
+    x_enterprise_id: UUID = Header(..., alias="X-Enterprise-ID"),
+):
+    """Serve bytes by bronze file_id — used for a folder page's file mẫu
+    (document_folder.sample_file_id, ADR-0042)."""
+    async with acquire_for_tenant(x_enterprise_id) as conn:
+        row = await conn.fetchrow(
+            """SELECT sha256, name_vi FROM document_repository_file
+               WHERE file_id = $1 AND deleted_at IS NULL
+               ORDER BY uploaded_at DESC LIMIT 1""", file_id)
+        if row is None:
+            row = await conn.fetchrow(
+                """SELECT pr.file_sha256 AS sha256, pr.filename AS name_vi
+                   FROM bronze_files bf
+                   JOIN pipeline_runs pr ON pr.run_id = bf.run_id  -- tenant-filter-lint: allow
+                   WHERE bf.file_id = $1""", file_id)
+    if row is None or not row["sha256"]:
+        raise HTTPException(status_code=404, detail="file not found")
+    content = await get_blob_store().get(blob_key(str(x_enterprise_id), row["sha256"]))
+    if content is None:
+        raise HTTPException(status_code=409,
+                            detail="file bytes chưa được lưu trữ cho tài liệu này")
+    return _download_response(content, row["name_vi"] or str(file_id))
 
 
 # ─────────────────────────── search ─────────────────────────────────────

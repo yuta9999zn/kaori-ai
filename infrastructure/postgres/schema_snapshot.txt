@@ -2,7 +2,7 @@
 # Update by running: python scripts/schema-drift.py --write
 # Each section is sorted to be deterministic across migration apply order.
 
-## TABLES (172 rows)
+## TABLES (176 rows)
 admin_sessions|TABLE|False|False
 adoption_health_snapshots|TABLE|True|False
 agent_sessions|TABLE|True|False
@@ -49,8 +49,12 @@ distilled_decisions|TABLE|False|False
 docsage_extractions|TABLE|True|True
 docsage_schemas|TABLE|True|True
 document_analysis|TABLE|True|False
+document_collection_insight|TABLE|True|False
+document_folder_version|TABLE|True|False
 document_folder|TABLE|True|False
+document_note|TABLE|True|False
 document_repository_file|TABLE|True|False
+document_type_template|TABLE|True|False
 enterprise_industry_bootstrap|TABLE|True|False
 enterprise_monthly_billing|TABLE|True|True
 enterprise_roi_billing_lines|TABLE|False|False
@@ -176,7 +180,7 @@ workspace_audit_log|TABLE|False|False
 workspace_keys|TABLE|False|False
 workspaces|TABLE|False|False
 
-## COLUMNS (2130 rows)
+## COLUMNS (2192 rows)
 admin_sessions|admin_id|2|uuid||||NO|
 admin_sessions|created_at|6|timestamp with time zone||||NO|now()
 admin_sessions|device_label|5|character varying|120|||YES|
@@ -741,29 +745,72 @@ document_analysis|key_fields|6|jsonb||||NO|'[]'::jsonb
 document_analysis|model|4|character varying|40|||NO|'rules-only'::character varying
 document_analysis|risks|7|jsonb||||NO|'[]'::jsonb
 document_analysis|summary|5|text||||YES|
+document_collection_insight|completed_at|16|timestamp with time zone||||YES|
+document_collection_insight|created_at|15|timestamp with time zone||||NO|now()
+document_collection_insight|department_id|4|uuid||||YES|
+document_collection_insight|doc_count|7|integer||32|0|YES|
+document_collection_insight|enterprise_id|3|uuid||||NO|
+document_collection_insight|error|13|text||||YES|
+document_collection_insight|external_ref|2|text||||NO|gen_ulid()
+document_collection_insight|findings|12|jsonb||||NO|'[]'::jsonb
+document_collection_insight|insight_id|1|uuid||||NO|gen_uuid_v7()
+document_collection_insight|model|9|character varying|40|||YES|
+document_collection_insight|requested_by|14|uuid||||YES|
+document_collection_insight|scope_kind|5|character varying|8|||NO|
+document_collection_insight|scope|6|jsonb||||NO|
+document_collection_insight|stats|10|jsonb||||NO|'{}'::jsonb
+document_collection_insight|status|8|character varying|12|||NO|'pending'::character varying
+document_collection_insight|summary|11|text||||YES|
+document_folder_version|body_md|5|text||||YES|
+document_folder_version|change_note|10|text||||YES|
+document_folder_version|edited_at|9|timestamp with time zone||||NO|now()
+document_folder_version|edited_by|8|uuid||||YES|
+document_folder_version|enterprise_id|3|uuid||||NO|
+document_folder_version|folder_id|2|uuid||||NO|
+document_folder_version|sample_file_id|7|uuid||||YES|
+document_folder_version|template_snapshot|6|jsonb||||YES|
+document_folder_version|version_id|1|uuid||||NO|gen_uuid_v7()
+document_folder_version|version_no|4|integer||32|0|NO|
 document_folder|archive_after|9|timestamp with time zone||||YES|
+document_folder|body_md|13|text||||YES|
 document_folder|created_at|11|timestamp with time zone||||NO|now()
+document_folder|default_labels|16|ARRAY||||NO|'{}'::text[]
+document_folder|default_template_id|14|uuid||||YES|
 document_folder|deleted_at|10|timestamp with time zone||||YES|
 document_folder|department_id|4|uuid||||NO|
 document_folder|enterprise_id|3|uuid||||NO|
 document_folder|external_ref|2|text||||NO|gen_ulid()
 document_folder|folder_id|1|uuid||||NO|gen_uuid_v7()
 document_folder|name_vi|7|character varying|200|||NO|
+document_folder|page_version|17|integer||32|0|NO|1
 document_folder|parent_id|5|uuid||||YES|
 document_folder|path|6|text||||NO|
+document_folder|sample_file_id|15|uuid||||YES|
 document_folder|sort_order|8|integer||32|0|NO|0
 document_folder|updated_at|12|timestamp with time zone||||NO|now()
+document_note|author_id|5|uuid||||YES|
+document_note|body_md|4|text||||NO|
+document_note|created_at|6|timestamp with time zone||||NO|now()
+document_note|deleted_at|7|timestamp with time zone||||YES|
+document_note|doc_id|3|uuid||||NO|
+document_note|enterprise_id|2|uuid||||NO|
+document_note|note_id|1|uuid||||NO|gen_uuid_v7()
 document_repository_file|change_reason|14|text||||YES|
+document_repository_file|content|28|jsonb||||YES|
 document_repository_file|deleted_at|20|timestamp with time zone||||YES|
 document_repository_file|department_id|4|uuid||||NO|
 document_repository_file|doc_date|21|date||||YES|
 document_repository_file|doc_id|1|uuid||||NO|gen_uuid_v7()
+document_repository_file|doc_kind|29|character varying|12|||NO|'file'::character varying
 document_repository_file|doc_type|8|character varying|40|||YES|
 document_repository_file|enterprise_id|3|uuid||||NO|
 document_repository_file|external_ref|2|text||||NO|gen_ulid()
 document_repository_file|file_id|6|uuid||||YES|
 document_repository_file|folder_id|5|uuid||||NO|
 document_repository_file|is_current|13|boolean||||NO|true
+document_repository_file|labels|25|ARRAY||||NO|'{}'::text[]
+document_repository_file|metadata_completeness|26|numeric||5|4|YES|
+document_repository_file|metadata|24|jsonb||||NO|'{}'::jsonb
 document_repository_file|name_vi|7|character varying|300|||NO|
 document_repository_file|period_kind|22|character varying|8|||YES|
 document_repository_file|sha256|17|character|64|||YES|
@@ -771,10 +818,29 @@ document_repository_file|status|9|character varying|24|||NO|'active'::character 
 document_repository_file|storage_tier|16|character varying|8|||NO|'hot'::character varying
 document_repository_file|superseded_by|12|uuid||||YES|
 document_repository_file|supersedes|11|uuid||||YES|
+document_repository_file|template_id|23|uuid||||YES|
 document_repository_file|uploaded_at|19|timestamp with time zone||||NO|now()
 document_repository_file|uploaded_by|18|uuid||||YES|
 document_repository_file|valid_until|15|timestamp with time zone||||YES|
+document_repository_file|validated_page_version|27|integer||32|0|YES|
 document_repository_file|version|10|integer||32|0|NO|1
+document_type_template|approval_chain_id|13|uuid||||YES|
+document_type_template|created_at|16|timestamp with time zone||||NO|now()
+document_type_template|created_by|15|uuid||||YES|
+document_type_template|default_labels|11|ARRAY||||NO|'{}'::text[]
+document_type_template|department_id|4|uuid||||YES|
+document_type_template|description|8|text||||YES|
+document_type_template|enterprise_id|3|uuid||||YES|
+document_type_template|external_ref|2|text||||NO|gen_ulid()
+document_type_template|icon|7|character varying|16|||YES|
+document_type_template|is_active|14|boolean||||NO|true
+document_type_template|metadata_schema|9|jsonb||||NO|'[]'::jsonb
+document_type_template|name_vi|6|character varying|200|||NO|
+document_type_template|requires_approval|12|boolean||||NO|false
+document_type_template|section_outline|10|jsonb||||NO|'[]'::jsonb
+document_type_template|template_id|1|uuid||||NO|gen_uuid_v7()
+document_type_template|type_key|5|character varying|40|||NO|
+document_type_template|updated_at|17|timestamp with time zone||||NO|now()
 enterprise_industry_bootstrap|bootstrap_id|1|uuid||||NO|gen_random_uuid()
 enterprise_industry_bootstrap|bootstrapped_at|10|timestamp with time zone||||NO|now()
 enterprise_industry_bootstrap|bootstrapped_by|9|uuid||||YES|
@@ -2308,7 +2374,7 @@ workspaces|status|4|character varying|20|||NO|'active'::character varying
 workspaces|updated_at|6|timestamp with time zone||||NO|now()
 workspaces|workspace_id|1|uuid||||NO|gen_random_uuid()
 
-## INDEXES (570 rows)
+## INDEXES (585 rows)
 admin_sessions|admin_sessions_pkey|CREATE UNIQUE INDEX admin_sessions_pkey ON public.admin_sessions USING btree (session_id)
 admin_sessions|idx_admin_sessions_admin_active|CREATE INDEX idx_admin_sessions_admin_active ON public.admin_sessions USING btree (admin_id, last_active_at DESC) WHERE (revoked_at IS NULL)
 admin_sessions|idx_admin_sessions_admin|CREATE INDEX idx_admin_sessions_admin ON public.admin_sessions USING btree (admin_id)
@@ -2465,16 +2531,31 @@ docsage_schemas|idx_docsage_schemas_lookup|CREATE INDEX idx_docsage_schemas_look
 docsage_schemas|uq_docsage_schemas_cache|CREATE UNIQUE INDEX uq_docsage_schemas_cache ON public.docsage_schemas USING btree (enterprise_id, corpus_hash, question_class)
 document_analysis|document_analysis_pkey|CREATE UNIQUE INDEX document_analysis_pkey ON public.document_analysis USING btree (analysis_id)
 document_analysis|idx_docanalysis_latest|CREATE INDEX idx_docanalysis_latest ON public.document_analysis USING btree (enterprise_id, attachment_id, created_at DESC)
+document_collection_insight|document_collection_insight_pkey|CREATE UNIQUE INDEX document_collection_insight_pkey ON public.document_collection_insight USING btree (insight_id)
+document_collection_insight|idx_dci_latest|CREATE INDEX idx_dci_latest ON public.document_collection_insight USING btree (enterprise_id, created_at DESC)
+document_collection_insight|uq_dci_external|CREATE UNIQUE INDEX uq_dci_external ON public.document_collection_insight USING btree (external_ref)
+document_folder_version|document_folder_version_pkey|CREATE UNIQUE INDEX document_folder_version_pkey ON public.document_folder_version USING btree (version_id)
+document_folder_version|idx_dfv_folder|CREATE INDEX idx_dfv_folder ON public.document_folder_version USING btree (enterprise_id, folder_id, version_no DESC)
+document_folder_version|uq_dfv_folder_version|CREATE UNIQUE INDEX uq_dfv_folder_version ON public.document_folder_version USING btree (folder_id, version_no)
 document_folder|document_folder_pkey|CREATE UNIQUE INDEX document_folder_pkey ON public.document_folder USING btree (folder_id)
 document_folder|idx_docfolder_children|CREATE INDEX idx_docfolder_children ON public.document_folder USING btree (enterprise_id, parent_id, sort_order)
 document_folder|idx_docfolder_path|CREATE INDEX idx_docfolder_path ON public.document_folder USING btree (enterprise_id, path text_pattern_ops)
 document_folder|uq_docfolder_external|CREATE UNIQUE INDEX uq_docfolder_external ON public.document_folder USING btree (external_ref)
 document_folder|uq_docfolder_sibling|CREATE UNIQUE INDEX uq_docfolder_sibling ON public.document_folder USING btree (enterprise_id, COALESCE(parent_id, '00000000-0000-0000-0000-000000000000'::uuid), name_vi) WHERE (deleted_at IS NULL)
+document_note|document_note_pkey|CREATE UNIQUE INDEX document_note_pkey ON public.document_note USING btree (note_id)
+document_note|idx_docnote_doc|CREATE INDEX idx_docnote_doc ON public.document_note USING btree (enterprise_id, doc_id, created_at) WHERE (deleted_at IS NULL)
 document_repository_file|document_repository_file_pkey|CREATE UNIQUE INDEX document_repository_file_pkey ON public.document_repository_file USING btree (doc_id)
 document_repository_file|idx_docrepo_doc_date|CREATE INDEX idx_docrepo_doc_date ON public.document_repository_file USING btree (enterprise_id, doc_date) WHERE (deleted_at IS NULL)
 document_repository_file|idx_drf_folder|CREATE INDEX idx_drf_folder ON public.document_repository_file USING btree (enterprise_id, folder_id, is_current)
+document_repository_file|idx_drf_labels_gin|CREATE INDEX idx_drf_labels_gin ON public.document_repository_file USING gin (labels)
+document_repository_file|idx_drf_metadata_gin|CREATE INDEX idx_drf_metadata_gin ON public.document_repository_file USING gin (metadata jsonb_path_ops)
 document_repository_file|idx_drf_name|CREATE INDEX idx_drf_name ON public.document_repository_file USING btree (enterprise_id, name_vi text_pattern_ops)
 document_repository_file|idx_drf_sha|CREATE INDEX idx_drf_sha ON public.document_repository_file USING btree (sha256)
+document_repository_file|idx_drf_template|CREATE INDEX idx_drf_template ON public.document_repository_file USING btree (enterprise_id, template_id) WHERE (is_current AND (deleted_at IS NULL))
+document_type_template|document_type_template_pkey|CREATE UNIQUE INDEX document_type_template_pkey ON public.document_type_template USING btree (template_id)
+document_type_template|idx_doctpl_enterprise|CREATE INDEX idx_doctpl_enterprise ON public.document_type_template USING btree (enterprise_id, is_active)
+document_type_template|uq_doctpl_external|CREATE UNIQUE INDEX uq_doctpl_external ON public.document_type_template USING btree (external_ref)
+document_type_template|uq_doctpl_scope_key|CREATE UNIQUE INDEX uq_doctpl_scope_key ON public.document_type_template USING btree (COALESCE(enterprise_id, '00000000-0000-0000-0000-000000000000'::uuid), type_key)
 enterprise_industry_bootstrap|enterprise_industry_bootstrap_enterprise_id_key|CREATE UNIQUE INDEX enterprise_industry_bootstrap_enterprise_id_key ON public.enterprise_industry_bootstrap USING btree (enterprise_id)
 enterprise_industry_bootstrap|enterprise_industry_bootstrap_pkey|CREATE UNIQUE INDEX enterprise_industry_bootstrap_pkey ON public.enterprise_industry_bootstrap USING btree (bootstrap_id)
 enterprise_industry_bootstrap|idx_eib_industry|CREATE INDEX idx_eib_industry ON public.enterprise_industry_bootstrap USING btree (industry_id)
@@ -2880,7 +2961,7 @@ workspace_keys|workspace_keys_key_hash_key|CREATE UNIQUE INDEX workspace_keys_ke
 workspace_keys|workspace_keys_pkey|CREATE UNIQUE INDEX workspace_keys_pkey ON public.workspace_keys USING btree (key_id)
 workspaces|workspaces_pkey|CREATE UNIQUE INDEX workspaces_pkey ON public.workspaces USING btree (workspace_id)
 
-## CONSTRAINTS (744 rows)
+## CONSTRAINTS (759 rows)
 admin_sessions_admin_id_fkey|admin_sessions|f|FOREIGN KEY (admin_id) REFERENCES platform_admins(admin_id) ON DELETE CASCADE
 admin_sessions_pkey|admin_sessions|p|PRIMARY KEY (session_id)
 adoption_health_snapshots_classification_check|adoption_health_snapshots|c|CHECK (((classification)::text = ANY ((ARRAY['healthy'::character varying, 'stable'::character varying, 'stretched'::character varying, 'at_risk'::character varying, 'churn_imminent'::character varying, 'unknown'::character varying])::text[])))
@@ -2987,6 +3068,8 @@ chk_customer_status|customers|c|CHECK (((status)::text = ANY ((ARRAY['active'::c
 chk_customer_type|customers|c|CHECK (((customer_type)::text = ANY ((ARRAY['individual'::character varying, 'SMB'::character varying, 'enterprise'::character varying, 'strategic'::character varying])::text[])))
 chk_customization_mode|workflow_customizations|c|CHECK (((edit_mode)::text = ANY ((ARRAY['simple'::character varying, 'advanced'::character varying, 'developer'::character varying])::text[])))
 chk_customization_op|workflow_customizations|c|CHECK (((operation)::text = ANY ((ARRAY['add_node'::character varying, 'remove_node'::character varying, 'edit_node'::character varying, 'add_edge'::character varying, 'remove_edge'::character varying, 'edit_branch'::character varying, 'change_sla'::character varying, 'change_owner'::character varying, 'add_document_requirement'::character varying, 'edit_threshold'::character varying, 'rename'::character varying, 'reorder'::character varying, 'cr_apply'::character varying])::text[])))
+chk_dci_scope_kind|document_collection_insight|c|CHECK (((scope_kind)::text = ANY ((ARRAY['group'::character varying, 'folder'::character varying])::text[])))
+chk_dci_status|document_collection_insight|c|CHECK (((status)::text = ANY ((ARRAY['pending'::character varying, 'running'::character varying, 'complete'::character varying, 'failed'::character varying])::text[])))
 chk_deleg_distinct|approval_delegations|c|CHECK ((from_user_id <> to_user_id))
 chk_dept_pii|departments|c|CHECK (((pii_sensitivity)::text = ANY ((ARRAY['low'::character varying, 'normal'::character varying, 'high'::character varying, 'restricted'::character varying])::text[])))
 chk_dept_status|departments|c|CHECK (((status)::text = ANY ((ARRAY['active'::character varying, 'archived'::character varying])::text[])))
@@ -2997,6 +3080,7 @@ chk_div_status|business_divisions|c|CHECK (((status)::text = ANY ((ARRAY['active
 chk_docrepo_period_kind|document_repository_file|c|CHECK (((period_kind IS NULL) OR ((period_kind)::text = ANY ((ARRAY['day'::character varying, 'week'::character varying, 'month'::character varying, 'quarter'::character varying, 'year'::character varying])::text[]))))
 chk_docsage_extract_status|docsage_extractions|c|CHECK (((extraction_status)::text = ANY ((ARRAY['ok'::character varying, 'partial'::character varying, 'failed'::character varying])::text[])))
 chk_docsage_question_class|docsage_schemas|c|CHECK (((question_class)::text = ANY ((ARRAY['comparison'::character varying, 'aggregation'::character varying, 'relationship'::character varying, 'ranking'::character varying])::text[])))
+chk_drf_doc_kind|document_repository_file|c|CHECK (((doc_kind)::text = ANY ((ARRAY['file'::character varying, 'authored'::character varying])::text[])))
 chk_drf_tier|document_repository_file|c|CHECK (((storage_tier)::text = ANY ((ARRAY['hot'::character varying, 'warm'::character varying, 'cold'::character varying])::text[])))
 chk_drt_dept_type|department_role_templates|c|CHECK (((dept_type)::text = ANY ((ARRAY['marketing'::character varying, 'sales'::character varying, 'customer_service'::character varying, 'warehouse'::character varying, 'hr'::character varying, 'finance'::character varying, 'custom'::character varying])::text[])))
 chk_drt_role|department_role_templates|c|CHECK (((default_role)::text = ANY ((ARRAY['MANAGER'::character varying, 'OPERATOR'::character varying, 'ANALYST'::character varying, 'VIEWER'::character varying])::text[])))
@@ -3168,12 +3252,23 @@ docsage_schemas_enterprise_id_fkey|docsage_schemas|f|FOREIGN KEY (enterprise_id)
 docsage_schemas_pkey|docsage_schemas|p|PRIMARY KEY (schema_id)
 document_analysis_attachment_id_fkey|document_analysis|f|FOREIGN KEY (attachment_id) REFERENCES workflow_step_documents(attachment_id) ON DELETE CASCADE
 document_analysis_pkey|document_analysis|p|PRIMARY KEY (analysis_id)
+document_collection_insight_pkey|document_collection_insight|p|PRIMARY KEY (insight_id)
+document_folder_default_template_id_fkey|document_folder|f|FOREIGN KEY (default_template_id) REFERENCES document_type_template(template_id) ON DELETE SET NULL
 document_folder_parent_id_fkey|document_folder|f|FOREIGN KEY (parent_id) REFERENCES document_folder(folder_id) ON DELETE CASCADE
 document_folder_pkey|document_folder|p|PRIMARY KEY (folder_id)
+document_folder_sample_file_id_fkey|document_folder|f|FOREIGN KEY (sample_file_id) REFERENCES bronze_files(file_id) ON DELETE SET NULL
+document_folder_version_folder_id_fkey|document_folder_version|f|FOREIGN KEY (folder_id) REFERENCES document_folder(folder_id) ON DELETE CASCADE
+document_folder_version_pkey|document_folder_version|p|PRIMARY KEY (version_id)
+document_folder_version_sample_file_id_fkey|document_folder_version|f|FOREIGN KEY (sample_file_id) REFERENCES bronze_files(file_id) ON DELETE SET NULL
+document_note_doc_id_fkey|document_note|f|FOREIGN KEY (doc_id) REFERENCES document_repository_file(doc_id) ON DELETE CASCADE
+document_note_pkey|document_note|p|PRIMARY KEY (note_id)
 document_repository_file_file_id_fkey|document_repository_file|f|FOREIGN KEY (file_id) REFERENCES bronze_files(file_id) ON DELETE SET NULL
 document_repository_file_folder_id_fkey|document_repository_file|f|FOREIGN KEY (folder_id) REFERENCES document_folder(folder_id) ON DELETE CASCADE
 document_repository_file_pkey|document_repository_file|p|PRIMARY KEY (doc_id)
 document_repository_file_supersedes_fkey|document_repository_file|f|FOREIGN KEY (supersedes) REFERENCES document_repository_file(doc_id) ON DELETE SET NULL
+document_repository_file_template_id_fkey|document_repository_file|f|FOREIGN KEY (template_id) REFERENCES document_type_template(template_id) ON DELETE SET NULL
+document_type_template_approval_chain_id_fkey|document_type_template|f|FOREIGN KEY (approval_chain_id) REFERENCES approval_chains(chain_id) ON DELETE SET NULL
+document_type_template_pkey|document_type_template|p|PRIMARY KEY (template_id)
 enterprise_industry_bootstrap_enterprise_id_fkey|enterprise_industry_bootstrap|f|FOREIGN KEY (enterprise_id) REFERENCES enterprises(enterprise_id) ON DELETE CASCADE
 enterprise_industry_bootstrap_enterprise_id_key|enterprise_industry_bootstrap|u|UNIQUE (enterprise_id)
 enterprise_industry_bootstrap_industry_id_fkey|enterprise_industry_bootstrap|f|FOREIGN KEY (industry_id) REFERENCES industry_templates(industry_id) ON DELETE RESTRICT
@@ -3431,6 +3526,7 @@ uq_corp_group_name_per_workspace|corporate_groups|u|UNIQUE (workspace_id, name)
 uq_customer_code_per_enterprise|customers|u|UNIQUE (enterprise_id, code)
 uq_customer_contract_no|customer_contracts|u|UNIQUE (enterprise_id, contract_no)
 uq_dept_name_per_branch|departments|u|UNIQUE (enterprise_id, branch_id, name)
+uq_dfv_folder_version|document_folder_version|u|UNIQUE (folder_id, version_no)
 uq_div_name_per_group|business_divisions|u|UNIQUE (corporate_group_id, name)
 uq_docsage_extractions_cache|docsage_extractions|u|UNIQUE (enterprise_id, schema_id, doc_id)
 uq_docsage_schemas_cache|docsage_schemas|u|UNIQUE (enterprise_id, corpus_hash, question_class)
@@ -3626,7 +3722,7 @@ workspace_keys_workspace_id_fkey|workspace_keys|f|FOREIGN KEY (workspace_id) REF
 workspaces_pkey|workspaces|p|PRIMARY KEY (workspace_id)
 workspaces_plan_code_fkey|workspaces|f|FOREIGN KEY (plan_code) REFERENCES subscription_plans(plan_code)
 
-## POLICIES (168 rows)
+## POLICIES (173 rows)
 adoption_health_snapshots|adoption_health_snapshots_isolation|PERMISSIVE|['public']|ALL|((enterprise_id)::text = current_setting('app.enterprise_id'::text, true))|
 agent_sessions|admin_bypass_agent_sessions|PERMISSIVE|['public']|ALL|(current_setting('app.is_admin'::text, true) = 'true'::text)|
 agent_sessions|tenant_agent_sessions|PERMISSIVE|['public']|ALL|(enterprise_id = (current_setting('app.enterprise_id'::text, true))::uuid)|
@@ -3695,10 +3791,15 @@ docsage_extractions|tenant_docsage_extractions|PERMISSIVE|['public']|ALL|(enterp
 docsage_schemas|admin_bypass_docsage_schemas|PERMISSIVE|['public']|ALL|(current_setting('app.is_admin'::text, true) = 'true'::text)|
 docsage_schemas|tenant_docsage_schemas|PERMISSIVE|['public']|ALL|(enterprise_id = (current_setting('app.enterprise_id'::text, true))::uuid)|
 document_analysis|isolation_docanalysis|PERMISSIVE|['public']|ALL|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))
+document_collection_insight|isolation_document_collection_insight|PERMISSIVE|['public']|ALL|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))
+document_folder_version|isolation_document_folder_version|PERMISSIVE|['public']|ALL|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))
 document_folder|abac_dept_document_folder|RESTRICTIVE|['public']|ALL|((current_setting('app.current_department_id'::text, true) = ''::text) OR (current_setting('app.current_department_id'::text, true) IS NULL) OR ((department_id)::text = current_setting('app.current_department_id'::text, true)))|
 document_folder|isolation_document_folder|PERMISSIVE|['public']|ALL|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))
+document_note|isolation_document_note|PERMISSIVE|['public']|ALL|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))
 document_repository_file|abac_dept_document_repository_file|RESTRICTIVE|['public']|ALL|((current_setting('app.current_department_id'::text, true) = ''::text) OR (current_setting('app.current_department_id'::text, true) IS NULL) OR ((department_id)::text = current_setting('app.current_department_id'::text, true)))|
 document_repository_file|isolation_document_repository_file|PERMISSIVE|['public']|ALL|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))
+document_type_template|admin_bypass_document_type_template|PERMISSIVE|['public']|ALL|(current_setting('app.is_admin'::text, true) = 'true'::text)|(current_setting('app.is_admin'::text, true) = 'true'::text)
+document_type_template|tenant_document_type_template|PERMISSIVE|['public']|ALL|((enterprise_id IS NULL) OR ((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true)))|((enterprise_id)::text = current_setting('app.current_enterprise_id'::text, true))
 enterprise_industry_bootstrap|rls_eib_tenant|PERMISSIVE|['public']|ALL|(enterprise_id = (current_setting('app.enterprise_id'::text, true))::uuid)|(enterprise_id = (current_setting('app.enterprise_id'::text, true))::uuid)
 enterprise_monthly_billing|admin_bypass_enterprise_monthly_billing|PERMISSIVE|['public']|ALL|(current_setting('app.is_admin'::text, true) = 'true'::text)|
 enterprise_monthly_billing|tenant_billing|PERMISSIVE|['public']|ALL|(enterprise_id = (current_setting('app.enterprise_id'::text, true))::uuid)|

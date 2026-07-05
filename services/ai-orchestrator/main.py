@@ -24,7 +24,7 @@ from .shared.outbox import OutboxPublisher
 from .shared.log_context import LogContextMiddleware
 from .shared.tracing import configure_structlog_with_trace, setup_tracing
 from .consumers.pipeline_consumer import start_pipeline_consumer, stop_pipeline_consumer
-from .routers import analytics, strategy, dashboard, health, decisions, reports, frameworks, north_star, multi_tier, explainability, economics, rag, adoption, process_mining, cdfl, workflow_from_cdfl, workflow_builder, workflow_documents, workflow_advisor, document_repository, approval_rbac, contracts, corporate_tree, role_templates, enterprise_users, customers_vendors, temporal_health, admin_reconcile, industry_bootstrap, industry_compare, compliance_risk, compliance_model_card, incidents
+from .routers import analytics, strategy, dashboard, health, decisions, reports, frameworks, north_star, multi_tier, explainability, economics, rag, adoption, process_mining, cdfl, workflow_from_cdfl, workflow_builder, workflow_documents, workflow_advisor, document_repository, document_templates, approval_rbac, contracts, corporate_tree, role_templates, enterprise_users, customers_vendors, temporal_health, admin_reconcile, industry_bootstrap, industry_compare, compliance_risk, compliance_model_card, incidents
 from .chat import router as chat_router
 from .agents import router as agents_router
 from .workflow_runtime.worker import run_worker as run_temporal_worker
@@ -209,6 +209,7 @@ app.include_router(workflow_builder.router, tags=["Workflow Builder"])
 app.include_router(workflow_documents.router, tags=["Workflow Documents (Tier-3)"])
 app.include_router(workflow_advisor.router, tags=["Workflow Advisor (ADR-0040)"])
 app.include_router(document_repository.router, tags=["Document Repository / DMS (ADR-0039)"])
+app.include_router(document_templates.router, tags=["Document Templates & Pages (ADR-0042)"])
 app.include_router(approval_rbac.router, tags=["Approval Chains & RBAC (Tier-3)"])
 app.include_router(contracts.router, tags=["Contracts (Tier-3)"])
 # P15-S11 Tuần 8 — Corporate hierarchy CRUD (mig 055/056). Endpoints for

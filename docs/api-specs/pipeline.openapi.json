@@ -1941,6 +1941,22 @@
               ],
               "title": "X-Folder-Id"
             }
+          },
+          {
+            "in": "header",
+            "name": "X-Template-Analysis",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Template-Analysis"
+            }
           }
         ],
         "requestBody": {

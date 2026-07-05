@@ -65,6 +65,7 @@ A decision belongs in an ADR if it has at least one of:
 | 0039 | [Enterprise Document Repository (DMS) — 10-year hierarchical store](0039-enterprise-document-repository-dms.md) | accepted (building) | 2026-06-01 |
 | 0040 | [Qwen Workflow Advisor (workflow evaluation)](0040-qwen-workflow-advisor.md) | accepted (building) | 2026-06-01 |
 | 0041 | [EU AI Act control framework (trust-first, conformity-ready)](0041-eu-ai-act-control-framework.md) | accepted | 2026-06-03 |
+| 0042 | [Confluence-style document structure: doc-type templates + typed metadata + labels + auto-index](0042-confluence-style-document-templates.md) | accepted (building) | 2026-07-05 |
 
 ## How to add a new ADR
 

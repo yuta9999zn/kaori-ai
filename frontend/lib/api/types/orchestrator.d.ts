@@ -1538,6 +1538,172 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/document-folders/{folder_id}/page": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Folder Page
+         * @description The folder's nghiệp vụ page: body + own/effective template + sample file.
+         */
+        get: operations["get_folder_page_document_folders__folder_id__page_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Patch Folder Page
+         * @description Save the nghiệp vụ page. Every save appends a document_folder_version
+         *     row (Confluence page versioning) — history is never rewritten.
+         */
+        patch: operations["patch_folder_page_document_folders__folder_id__page_patch"];
+        trace?: never;
+    };
+    "/document-folders/{folder_id}/page/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Restore Page Version
+         * @description Restore = apply an old snapshot as a NEW version (Confluence semantics —
+         *     history stays intact, K-2 spirit).
+         */
+        post: operations["restore_page_version_document_folders__folder_id__page_restore_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-folders/{folder_id}/page/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Page Versions */
+        get: operations["list_page_versions_document_folders__folder_id__page_versions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-repository/authored": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Authored Document
+         * @description Tạo tài liệu soạn-trong-Kaori theo bộ khung mẫu. Với `generate_prompt`,
+         *     AI (Qwen local) soạn nháp per-section off the request path — poll GET
+         *     …/content tới khi status='active'.
+         */
+        post: operations["create_authored_document_document_repository_authored_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-repository/files/{file_id}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Download Repo File
+         * @description Serve bytes by bronze file_id — used for a folder page's file mẫu
+         *     (document_folder.sample_file_id, ADR-0042).
+         */
+        get: operations["download_repo_file_document_repository_files__file_id__download_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-repository/index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Documents Index
+         * @description Generic auto-index: columns come from the template's metadata_schema, so
+         *     editing a template instantly reshapes every index built on it.
+         */
+        get: operations["documents_index_document_repository_index_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-repository/insights": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Insights */
+        get: operations["list_insights_document_repository_insights_get"];
+        put?: never;
+        /**
+         * Create Insight
+         * @description Kick off a group/folder analysis. 202 + insight_id; poll the GET.
+         *     Stats are deterministic; Qwen only synthesises (off the request path).
+         */
+        post: operations["create_insight_document_repository_insights_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-repository/insights/{insight_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Insight */
+        get: operations["get_insight_document_repository_insights__insight_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/document-repository/search": {
         parameters: {
             query?: never;
@@ -1601,6 +1767,225 @@ export interface paths {
          * @description Set the business date / reporting period of a filed document (mig 138).
          */
         patch: operations["patch_file_metadata_document_repository__doc_id__patch"];
+        trace?: never;
+    };
+    "/document-repository/{doc_id}/content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Document Content
+         * @description Nội dung tài liệu soạn (bất kỳ phiên bản nào) + outline của mẫu để
+         *     FE render/sửa đúng cột.
+         */
+        get: operations["get_document_content_document_repository__doc_id__content_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Patch Document Content
+         * @description Lưu tài liệu soạn = TẠO PHIÊN BẢN MỚI (Confluence page semantics) —
+         *     History Changes tự sinh từ chuỗi, không ghi đè lịch sử.
+         */
+        patch: operations["patch_document_content_document_repository__doc_id__content_patch"];
+        trace?: never;
+    };
+    "/document-repository/{doc_id}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Download Repo Document
+         * @description Serve a filed document's bytes from the sha256-keyed blob store (K-8).
+         */
+        get: operations["download_repo_document_document_repository__doc_id__download_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-repository/{doc_id}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Document History
+         * @description History Changes — TỰ SINH từ chuỗi phiên bản (không ai gõ tay):
+         *     mọi phiên bản cùng (folder, name) của tài liệu này.
+         */
+        get: operations["get_document_history_document_repository__doc_id__history_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-repository/{doc_id}/metadata": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Patch Doc Metadata
+         * @description Fill/edit a document's Page Properties. Validation is trust-first:
+         *     warnings + completeness, never a hard block (Tenet 13).
+         */
+        patch: operations["patch_doc_metadata_document_repository__doc_id__metadata_patch"];
+        trace?: never;
+    };
+    "/document-repository/{doc_id}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Notes
+         * @description Ghi chú theo TÀI LIỆU (mọi phiên bản cùng folder+name) — lưu nội dung
+         *     tạo version mới không được làm 'mất' ghi chú của bản trước.
+         */
+        get: operations["list_notes_document_repository__doc_id__notes_get"];
+        put?: never;
+        /** Create Note */
+        post: operations["create_note_document_repository__doc_id__notes_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-repository/{doc_id}/notes/{note_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Note */
+        delete: operations["delete_note_document_repository__doc_id__notes__note_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-repository/{doc_id}/regenerate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Regenerate Document
+         * @description Chạy lại AI soạn nháp cho một tài liệu authored (vd lần đầu LLM quá
+         *     tải). Ghi đè content hiện tại của CHÍNH phiên bản này — muốn giữ bản cũ
+         *     thì Lưu (stack version) trước.
+         */
+        post: operations["regenerate_document_document_repository__doc_id__regenerate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Templates
+         * @description Global seeds (enterprise_id NULL) + this tenant's templates — RLS filters.
+         */
+        get: operations["list_templates_document_templates_get"];
+        put?: never;
+        /**
+         * Create Template
+         * @description Create a tenant template. `clone_of` copies schema/outline from an
+         *     existing visible template (the Confluence clone-a-blueprint flow).
+         */
+        post: operations["create_template_document_templates_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-templates/from-file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Template From File
+         * @description Dựng BẢN NHÁP mẫu từ một file đã upload (run_id của /api/v1/upload):
+         *     AI nhận diện cấu trúc (mục/bảng/cột) → bản nháp is_active=FALSE — người
+         *     dùng duyệt/sửa trong trình sửa Mẫu rồi kích hoạt. Poll GET template tới
+         *     khi description hết marker '⏳'.
+         */
+        post: operations["create_template_from_file_document_templates_from_file_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-templates/{template_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Template */
+        get: operations["get_template_document_templates__template_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Patch Template
+         * @description Edit a TENANT template. Globals are read-only here (clone to customize) —
+         *     the RLS WITH CHECK refuses the write, surfaced as 403.
+         */
+        patch: operations["patch_template_document_templates__template_id__patch"];
         trace?: never;
     };
     "/economics/cost/compute": {
@@ -4822,6 +5207,27 @@ export interface components {
             /** Next Cursor */
             next_cursor?: string | null;
         };
+        /** AuthoredCreate */
+        AuthoredCreate: {
+            /** Content */
+            content?: {
+                [key: string]: unknown;
+            } | null;
+            /**
+             * Folder Id
+             * Format: uuid
+             */
+            folder_id: string;
+            /**
+             * Generate Prompt
+             * @description Mô tả tài liệu + yêu cầu — AI soạn nháp
+             */
+            generate_prompt?: string | null;
+            /** Name Vi */
+            name_vi: string;
+            /** Template Id */
+            template_id?: string | null;
+        };
         /** BillingLineOut */
         BillingLineOut: {
             /** Actioned Revenue At Risk Vnd */
@@ -5307,6 +5713,15 @@ export interface components {
             granted: boolean;
             /** Notes */
             notes?: string | null;
+        };
+        /** ContentPatch */
+        ContentPatch: {
+            /** Change Note */
+            change_note?: string | null;
+            /** Content */
+            content: {
+                [key: string]: unknown;
+            };
         };
         /** ContractIn */
         ContractIn: {
@@ -6097,6 +6512,17 @@ export interface components {
             /** Requirement Id */
             requirement_id?: string | null;
         };
+        /** DocMetadataPatch */
+        DocMetadataPatch: {
+            /** Labels */
+            labels?: string[] | null;
+            /** Metadata */
+            metadata?: {
+                [key: string]: unknown;
+            } | null;
+            /** Template Id */
+            template_id?: string | null;
+        };
         /** DocRequirementIn */
         DocRequirementIn: {
             /** Allowed Formats */
@@ -6505,6 +6931,32 @@ export interface components {
              */
             workflow_id: string;
         };
+        /**
+         * FolderPagePatch
+         * @description One save of the nghiệp vụ page — snapshot + version bump (Confluence).
+         */
+        FolderPagePatch: {
+            /** Body Md */
+            body_md?: string | null;
+            /** Change Note */
+            change_note?: string | null;
+            /**
+             * Clear Sample
+             * @default false
+             */
+            clear_sample: boolean;
+            /**
+             * Clear Template
+             * @default false
+             */
+            clear_template: boolean;
+            /** Default Labels */
+            default_labels?: string[] | null;
+            /** Default Template Id */
+            default_template_id?: string | null;
+            /** Sample File Id */
+            sample_file_id?: string | null;
+        };
         /** FolderPatch */
         FolderPatch: {
             /** Name Vi */
@@ -6748,6 +7200,15 @@ export interface components {
             document_id: string;
             /** Status */
             status: string;
+        };
+        /** InsightCreate */
+        InsightCreate: {
+            /** Scope */
+            scope?: {
+                [key: string]: unknown;
+            };
+            /** Scope Kind */
+            scope_kind: string;
         };
         /**
          * InterventionPlanOut
@@ -7465,6 +7926,11 @@ export interface components {
              */
             total_at_risk_vnd: number;
         };
+        /** NoteCreate */
+        NoteCreate: {
+            /** Body Md */
+            body_md: string;
+        };
         /** OKRCreate */
         OKRCreate: {
             /** Department Id */
@@ -7746,6 +8212,11 @@ export interface components {
              * @description Optional — why the override is being revoked.
              */
             reason?: string | null;
+        };
+        /** PageRestore */
+        PageRestore: {
+            /** Version No */
+            version_no: number;
         };
         /**
          * PaletteNode
@@ -8162,6 +8633,11 @@ export interface components {
             reencrypt_started_at: string | null;
             /** Reencrypt Status */
             reencrypt_status: string;
+        };
+        /** RegeneratePrompt */
+        RegeneratePrompt: {
+            /** Generate Prompt */
+            generate_prompt: string;
         };
         /** RejectIn */
         RejectIn: {
@@ -8903,6 +9379,65 @@ export interface components {
         TemplateCatalogueResponse: {
             /** Items */
             items: components["schemas"]["TemplateCatalogueItem"][];
+        };
+        /** TemplateCreate */
+        TemplateCreate: {
+            /** Approval Chain Id */
+            approval_chain_id?: string | null;
+            /** Clone Of */
+            clone_of?: string | null;
+            /** Default Labels */
+            default_labels?: string[];
+            /** Description */
+            description?: string | null;
+            /** Icon */
+            icon?: string | null;
+            /** Metadata Schema */
+            metadata_schema?: unknown[];
+            /** Name Vi */
+            name_vi: string;
+            /**
+             * Requires Approval
+             * @default false
+             */
+            requires_approval: boolean;
+            /** Section Outline */
+            section_outline?: unknown[];
+            /** Type Key */
+            type_key: string;
+        };
+        /** TemplateFromFile */
+        TemplateFromFile: {
+            /** Name Vi */
+            name_vi: string;
+            /**
+             * Run Id
+             * Format: uuid
+             */
+            run_id: string;
+            /** Type Key */
+            type_key?: string | null;
+        };
+        /** TemplatePatch */
+        TemplatePatch: {
+            /** Approval Chain Id */
+            approval_chain_id?: string | null;
+            /** Default Labels */
+            default_labels?: string[] | null;
+            /** Description */
+            description?: string | null;
+            /** Icon */
+            icon?: string | null;
+            /** Is Active */
+            is_active?: boolean | null;
+            /** Metadata Schema */
+            metadata_schema?: unknown[] | null;
+            /** Name Vi */
+            name_vi?: string | null;
+            /** Requires Approval */
+            requires_approval?: boolean | null;
+            /** Section Outline */
+            section_outline?: unknown[] | null;
         };
         /** TenantKeyCreate */
         TenantKeyCreate: {
@@ -12908,6 +13443,365 @@ export interface operations {
             };
         };
     };
+    get_folder_page_document_folders__folder_id__page_get: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                folder_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_folder_page_document_folders__folder_id__page_patch: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+                "X-User-ID"?: string | null;
+            };
+            path: {
+                folder_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FolderPagePatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    restore_page_version_document_folders__folder_id__page_restore_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+                "X-User-ID"?: string | null;
+            };
+            path: {
+                folder_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PageRestore"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_page_versions_document_folders__folder_id__page_versions_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                folder_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_authored_document_document_repository_authored_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+                "X-Department-ID"?: string | null;
+                "X-User-ID"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AuthoredCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    download_repo_file_document_repository_files__file_id__download_get: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                file_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    documents_index_document_repository_index_get: {
+        parameters: {
+            query?: {
+                template_id?: string | null;
+                /** @description subtree scope */
+                folder_id?: string | null;
+                /** @description comma-separated, ALL must match */
+                labels?: string | null;
+                q?: string | null;
+                date_from?: string | null;
+                date_to?: string | null;
+                cursor?: string | null;
+                limit?: number;
+            };
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_insights_document_repository_insights_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_insight_document_repository_insights_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+                "X-Department-ID"?: string | null;
+                "X-User-ID"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InsightCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_insight_document_repository_insights__insight_id__get: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                insight_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     search_repository_document_repository_search_get: {
         parameters: {
             query?: {
@@ -13000,6 +13894,499 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["FilePatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_document_content_document_repository__doc_id__content_get: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                doc_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_document_content_document_repository__doc_id__content_patch: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+                "X-User-ID"?: string | null;
+            };
+            path: {
+                doc_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContentPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    download_repo_document_document_repository__doc_id__download_get: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                doc_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_document_history_document_repository__doc_id__history_get: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                doc_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_doc_metadata_document_repository__doc_id__metadata_patch: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                doc_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DocMetadataPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_notes_document_repository__doc_id__notes_get: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                doc_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_note_document_repository__doc_id__notes_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+                "X-User-ID"?: string | null;
+            };
+            path: {
+                doc_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NoteCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_note_document_repository__doc_id__notes__note_id__delete: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                doc_id: string;
+                note_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    regenerate_document_document_repository__doc_id__regenerate_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                doc_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegeneratePrompt"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_templates_document_templates_get: {
+        parameters: {
+            query?: {
+                include_inactive?: boolean;
+            };
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_template_document_templates_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+                "X-Department-ID"?: string | null;
+                "X-User-ID"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TemplateCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_template_from_file_document_templates_from_file_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+                "X-Department-ID"?: string | null;
+                "X-User-ID"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TemplateFromFile"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_template_document_templates__template_id__get: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_template_document_templates__template_id__patch: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TemplatePatch"];
             };
         };
         responses: {
