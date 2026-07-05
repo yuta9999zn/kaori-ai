@@ -1,0 +1,16 @@
+﻿customer_id,customer_name,company,email,phone,deal_value_vnd,credit_days_requested,region,industry,risk_score,requested_by,note
+KH-2026-001,Nguyễn Văn An,Công ty Vinhomes Riverside,an.nguyen@vhrs.vn,0901234567,150000000,30,Hà Nội,Bất động sản,LOW,sales1@kaori.local,Khách quen 3 năm — gia hạn hợp đồng marketing.
+KH-2026-002,Trần Thị Bình,VinMart Quận 1,binh.tran@vinmart.vn,0912345678,2400000000,60,TP.HCM,Bán lẻ,MEDIUM,sales1@kaori.local,Khách mới — đề xuất gói ENT MAX. Yêu cầu Manager duyệt.
+KH-2026-003,Phạm Quốc Cường,Vinpearl Phú Quốc,cuong.pham@vinpearl.vn,0923456789,890000000,45,Phú Quốc,Du lịch,LOW,sales2@kaori.local,Bổ sung phòng ban Booking — gia hạn dịch vụ.
+KH-2026-004,Lê Thị Diễm,Công ty TNHH ABC Trading,diem.le@abctrading.vn,0934567890,5500000000,90,TP.HCM,Xuất nhập khẩu,HIGH,sales3@kaori.local,KHÁCH MỚI giá trị cao — chưa rõ lịch sử thanh toán. Bắt buộc duyệt CFO.
+KH-2026-005,Hoàng Văn Em,Vingroup HQ,em.hoang@vingroup.net,0945678901,300000000,30,Hà Nội,Tập đoàn,LOW,sales1@kaori.local,Mua thêm tài khoản cho phòng Analytics.
+KH-2026-006,Đỗ Thị Phương,Vinhomes Times City,phuong.do@vhtc.vn,0956789012,180000000,30,Hà Nội,Bất động sản,LOW,sales2@kaori.local,Renew hợp đồng cũ — không đổi điều khoản.
+KH-2026-007,Vũ Đình Giang,Beta Logistics JSC,giang.vu@beta-log.vn,0967890123,4200000000,120,Hải Phòng,Logistics,HIGH,sales3@kaori.local,Credit 120 ngày vượt chính sách (max 90). YÊU CẦU PHÊ DUYỆT đặc biệt.
+KH-2026-008,Bùi Thị Hương,VinFast Showroom Đà Nẵng,huong.bui@vinfast.vn,0978901234,720000000,45,Đà Nẵng,Ô tô,MEDIUM,sales2@kaori.local,Khách hàng B2B — sản phẩm Adoption Intel.
+KH-2026-009,Ngô Văn Inh,Công ty CP XYZ Group,inh.ngo@xyzgroup.vn,0989012345,8800000000,90,TP.HCM,Đầu tư,HIGH,sales3@kaori.local,Deal lớn nhất tháng — cần CFO + Legal duyệt trước khi sign.
+KH-2026-010,Trương Thị Kim,Vincom Mega Mall,kim.truong@vincom.vn,0990123456,420000000,30,Hà Nội,Trung tâm thương mại,LOW,sales1@kaori.local,Gia hạn standard — auto-approve được.
+KH-2026-011,Đặng Văn Long,Vinhomes Ocean Park,long.dang@vhop.vn,0901111222,260000000,30,Hà Nội,Bất động sản,LOW,sales1@kaori.local,Khách quen 2 năm — không bất thường.
+KH-2026-012,Phan Thị Mai,Công ty XYZ Trading (subsidiary),mai.phan@xyz-sub.vn,0912222333,6300000000,75,Bình Dương,Sản xuất,HIGH,sales3@kaori.local,Subsidiary của KH-009 — cùng tập đoàn nhưng pháp nhân riêng. Cần check chéo.
+KH-2026-013,Trịnh Văn Nam,Vinpearl Land Nam Hội An,nam.trinh@vinpearl.vn,0923333444,520000000,45,Quảng Nam,Du lịch,MEDIUM,sales2@kaori.local,Mở rộng phạm vi sang Adoption Intel + NOV.
+KH-2026-014,Lý Thị Oanh,Công ty TNHH MTV Delta,oanh.ly@delta.vn,0934444555,3100000000,60,TP.HCM,Tài chính,MEDIUM,sales2@kaori.local,Đề xuất gói riêng — Sales tự custom giá. Cần Manager review.
+KH-2026-015,Cao Văn Phú,VinMart Đồng Nai,phu.cao@vinmart.vn,0945555666,95000000,30,Đồng Nai,Bán lẻ,LOW,sales1@kaori.local,Pilot 3 tháng — auto-approve.

@@ -323,8 +323,8 @@ INVENTORY_METRICS = {"inventory", "usage", "remaining", "quantity", "amount"}
 #
 # Output (melted Silver schema):
 #   [date, product_name, metric_type, value, store, source_file]
-#   ["1",  "Sake_A",     "inventory", "-1",  "CH_A", "..."]
-#   ["1",  "Sake_A",     "usage",     "0",   "CH_A", "..."]
+#   ["1",  "Sake_A",     "inventory", "-1",  "RJ_BAR", "..."]
+#   ["1",  "Sake_A",     "usage",     "0",   "RJ_BAR", "..."]
 #   ...
 # ---------------------------------------------------------------------------
 
@@ -338,7 +338,7 @@ def melt_to_silver_schema(
     Transform a pivoted intermediate df into Silver inventory schema.
 
     effective_mapping: canonical → raw_col_name  (from SheetReport.effective_mapping)
-    store:             store code, e.g. "CH_A"
+    store:             store code, e.g. "RJ_BAR"
     source_file:       original filename for traceability
 
     Returns a DataFrame with columns:

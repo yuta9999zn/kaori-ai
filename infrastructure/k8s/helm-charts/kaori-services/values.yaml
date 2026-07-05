@@ -1,27 +1,114 @@
 # Default values for kaori-services umbrella chart.
 # Each service has its own block under `services.<name>`. Generic
 # templates iterate over `services` to produce Deployment + Service +
-# ConfigMap + Ingress for each enabled service.
+# ConfigMap + Ingress (+ optional HPA / PDB / NetworkPolicy) for each.
 #
-# Override per environment via kustomize overlays
-# (infrastructure/k8s/kustomize/overlays/{dev,staging,production}/).
+# Base values target an IN-CLUSTER dev cluster (kaori-infra sub-chart
+# provides Postgres/Redis/Kafka under their service DNS names). Override
+# per environment:
+#   • kustomize overlays/{dev,staging,production}/  (FPT / self-managed)
+#   • values-aws-eks.yaml                            (AWS EKS + managed data)
+#
+# Everything added for cloud-readiness (securityContext, serviceAccount/
+# IRSA, HPA, PDB, NetworkPolicy, shared Secret, migration Job) is GATED
+# and defaults OFF, so the existing dev/staging/prod render is unchanged;
+# values-aws-eks.yaml turns them on.
 
 global:
-  # Container image registry. Production points at FPT Cloud Container
-  # Registry; dev points at GHCR (free for public repos).
+  # Container image registry. Dev → GHCR; AWS overlay → ECR; FPT prod
+  # overlay (kustomize) → FPT Cloud Container Registry.
   imageRegistry: ghcr.io/yuta9999zn
   imagePullPolicy: IfNotPresent
   # Tag is set per env overlay — base values has placeholder.
   imageTag: "v4.0-phase1-complete"
 
-  # K-19 — every service must export OpenTelemetry to the cluster
-  # collector. Phase 1.5 P15-S9 deploys the collector via otel-stack
-  # chart; URL points at it.
+  # KAORI_PROFILE — "production" makes crypto.py + MFA/field-key
+  # resolution REFUSE inline/env fallbacks (K-18). Dev/staging allow
+  # transparent fallback with a warning.
+  profile: dev
+
+  # K-19 — every service exports OpenTelemetry to the cluster collector.
   otlpEndpoint: "http://otel-collector.observability.svc.cluster.local:4318"
   tracingSampleRate: "0.1"  # 10% in prod, override to 1.0 in dev
 
   # Vault address — services read secrets from here Phase 1.5+.
   vaultAddr: "http://vault.vault.svc.cluster.local:8200"
+
+  # ---------------------------------------------------------------------
+  # Datastore endpoints — the single place to repoint Postgres/Redis/Kafka.
+  # Base = in-cluster DNS (kaori-infra chart). AWS overlay overrides host
+  # fields to RDS / ElastiCache / MSK. Password comes from the shared
+  # Secret (app-db-password), never inline here.
+  # ---------------------------------------------------------------------
+  datastore:
+    postgresHost: postgres
+    postgresPort: 5432
+    postgresDb: kaori
+    appUser: kaori_app
+    # Superuser Flyway uses for DDL (migration Job / auth-service boot).
+    migrationUser: kaori
+    redisHost: redis
+    redisUrl: "redis://redis:6379"
+    kafkaBootstrap: "kafka:9092"
+
+  # Blob store (ADR-0037). local = shared RWX volume (dev only — EBS is
+  # RWO so this CANNOT span pods on EKS). AWS overlay sets backend=s3;
+  # S3BlobStore already exists in shared/blob_store.py (boto3 lazy).
+  blob:
+    backend: local          # local | s3
+    path: /app/object-store
+    s3Bucket: ""
+    s3Region: ""
+    s3Endpoint: ""          # blank = real AWS S3; set for MinIO-compatible
+
+  # Shared Secret wiring. create=false + optional=true is the safe default
+  # (dev renders without secrets; prod injects via External Secrets /
+  # Vault). AWS overlay sets optional=false so a missing key fails loud.
+  secrets:
+    name: kaori-shared-secret
+    create: false
+    optional: true
+    data: {}               # dev-only inline values; see shared-secret.yaml
+
+  # Pod/container securityContext — off in base (dev clusters run relaxed
+  # PSA); AWS overlay turns it on for the `restricted` profile.
+  securityContext:
+    enabled: false
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+
+  # ServiceAccount — off in base. AWS overlay creates one with the IRSA
+  # annotation so pods assume an IAM role (S3/Secrets Manager) keylessly.
+  serviceAccount:
+    create: false
+    name: kaori-services
+    automountToken: false
+    annotations: {}
+
+  # Cross-AZ spread — off in base (single-AZ dev), on for EKS multi-AZ.
+  topologySpread:
+    enabled: false
+
+  # PodDisruptionBudget — off in base, on for EKS node-group upgrades.
+  podDisruptionBudget:
+    enabled: false
+
+  # NetworkPolicy — off in base (dev flat network); AWS overlay enables
+  # deny-by-default. Requires a policy-enforcing CNI.
+  networkPolicy:
+    enabled: false
+    ingressNamespace: ingress-nginx
+    datastoreCIDRs: []      # AWS: VPC CIDR(s) for RDS/ElastiCache/MSK
+
+  # Schema migration Job — off in base; AWS overlay enables it so the 138
+  # Flyway migrations run once as a pre-upgrade hook, not per-replica.
+  migrationJob:
+    enabled: false
+    image: ""              # kaori-migrations image (flyway + SQL baked)
+    connectRetries: 10
+    backoffLimit: 2
+    timeoutSeconds: 600
 
   # Common pod resources baseline. Per-service overrides below.
   resources:
@@ -32,26 +119,18 @@ global:
       cpu: 1
       memory: 1Gi
 
-  # Network policy default — Phase 2 enables Calico cross-tenant deny.
-  # Phase 1.5 ships permissive (logs only).
-  networkPolicy:
-    enabled: false
-
-  # JWT keypair (RS256) — Phase 1.5 these come from Vault
-  # secret/service/auth-service/jwt_keys. Base values empty.
-  jwtPublicKey: ""
-  jwtPrivateKey: ""  # only for auth-service
-
 # -----------------------------------------------------------------------
-# Per-service config. Each block becomes one Deployment + Service.
+# Per-service config. `runtime` (python|java) selects the datastore-env
+# helper. `env` = non-secret service-specific vars. `extraEnv` = map of
+# ENV_VAR → shared-Secret key (rendered as secretKeyRef).
 # -----------------------------------------------------------------------
 services:
 
   api-gateway:
     enabled: true
+    runtime: java
     image:
       repository: kaori-system/api-gateway
-      # Falls back to global.imageTag when unset.
     replicas: 2
     port: 8080
     containerPort: 8080
@@ -73,6 +152,19 @@ services:
     env:
       LOG_LEVEL: INFO
       SPRING_PROFILES_ACTIVE: production,json
+      CORS_ALLOW_ORIGINS: https://app.kaori.ai
+      AUTH_SERVICE_URL: http://auth-service:8091
+      DATA_PIPELINE_URL: http://data-pipeline:8092
+      AI_ORCHESTRATOR_URL: http://ai-orchestrator:8093
+      RATE_LIMIT_JWT_PER_MIN: "60"
+      RATE_LIMIT_IP_PER_MIN: "300"
+    extraEnv:
+      JWT_PUBLIC_KEY: jwt-public-key
+    hpa:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 6
+      targetCPU: 70
     livenessProbe:
       httpGet: { path: /actuator/health, port: 8080 }
       initialDelaySeconds: 60
@@ -84,6 +176,7 @@ services:
 
   auth-service:
     enabled: true
+    runtime: java
     image:
       repository: kaori-system/auth-service
     replicas: 2
@@ -100,9 +193,32 @@ services:
     env:
       LOG_LEVEL: INFO
       SPRING_PROFILES_ACTIVE: production,json
+      NOTIFICATION_SERVICE_URL: http://notification-service:8094
+      KAORI_ORCHESTRATOR_BASE_URL: http://ai-orchestrator:8093
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: "587"
+      FRONTEND_URL: https://app.kaori.ai
+      # Migrations run via the pre-upgrade Job on EKS; keep Flyway on for
+      # the in-cluster-DB dev path. Production overlay sets these to the
+      # Job-first values (see values-aws-eks.yaml).
+      SPRING_FLYWAY_USER: kaori
+      SPRING_FLYWAY_REPAIR_ON_MIGRATE: "false"
+      SPRING_FLYWAY_VALIDATE_ON_MIGRATE: "true"
+    extraEnv:
+      JWT_PRIVATE_KEY: jwt-private-key
+      JWT_PUBLIC_KEY: jwt-public-key
+      KAORI_MFA_KEY: mfa-key
+      KAORI_INTERNAL_SVC_TOKEN: internal-svc-token
+      SPRING_FLYWAY_PASSWORD: app-db-password
+      SMTP_PASSWORD: smtp-password
+    hpa:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 6
+      targetCPU: 70
     livenessProbe:
       httpGet: { path: /actuator/health, port: 8091 }
-      initialDelaySeconds: 90  # Flyway migration on startup
+      initialDelaySeconds: 90  # Flyway migration on startup (dev path)
       periodSeconds: 30
     readinessProbe:
       httpGet: { path: /actuator/health/readiness, port: 8091 }
@@ -110,6 +226,7 @@ services:
 
   data-pipeline:
     enabled: true
+    runtime: python
     image:
       repository: kaori-system/data-pipeline
     replicas: 2
@@ -121,13 +238,21 @@ services:
     ingress:
       enabled: false
     resources:
-      # Memory bumped per pilot Olist UAT (drift commit 59afe58 — Excel
-      # peak parsing for multi-sheet customer files).
+      # Memory bumped per pilot Olist UAT (Excel peak parsing, multi-sheet).
       requests: { cpu: 200m, memory: 512Mi }
       limits:   { cpu: 2,    memory: 1536Mi }
     env:
       LOG_LEVEL: INFO
       KAORI_BOT_PROVIDER: telegram
+      NOTIFICATION_SERVICE_URL: http://notification-service:8094
+      LANGUAGE_DICT_PATH: /app/config/language_dictionary.json
+      UPLOAD_MAX_SIZE_MB: "100"
+      SCHEMA_LLM_FALLBACK: "1"
+    hpa:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 6
+      targetCPU: 75
     livenessProbe:
       httpGet: { path: /health, port: 8092 }
       initialDelaySeconds: 30
@@ -136,6 +261,7 @@ services:
 
   ai-orchestrator:
     enabled: true
+    runtime: python
     image:
       repository: kaori-system/ai-orchestrator
     replicas: 2
@@ -152,6 +278,20 @@ services:
       limits:   { cpu: 2,    memory: 2Gi }
     env:
       LOG_LEVEL: INFO
+      LLM_GATEWAY_URL: http://llm-gateway:8095
+      KAORI_NARRATIVE_MAX_TOKENS: "400"
+      GOOGLE_REDIRECT_URI: https://api.kaori.ai/api/v1/p2/auth/sso/google/callback
+      MICROSOFT_REDIRECT_URI: https://api.kaori.ai/api/v1/p2/auth/sso/microsoft/callback
+      MICROSOFT_TENANT_ID: ""
+    extraEnv:
+      KAORI_INTERNAL_SVC_TOKEN: internal-svc-token
+      GOOGLE_CLIENT_SECRET: google-client-secret
+      MICROSOFT_CLIENT_SECRET: microsoft-client-secret
+    hpa:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 8
+      targetCPU: 75
     livenessProbe:
       httpGet: { path: /health, port: 8093 }
       initialDelaySeconds: 30
@@ -160,6 +300,7 @@ services:
 
   llm-gateway:
     enabled: true
+    runtime: python
     image:
       repository: kaori-system/llm-gateway
     replicas: 2
@@ -175,6 +316,17 @@ services:
       limits:   { cpu: 1,    memory: 1Gi }
     env:
       LOG_LEVEL: INFO
+      OLLAMA_HOST: http://ollama:11434
+      OLLAMA_MODEL: qwen2.5:14b
+      EXTERNAL_AI_ENABLED: "false"
+    extraEnv:
+      ANTHROPIC_API_KEY: anthropic-api-key
+      OPENAI_API_KEY: openai-api-key
+    hpa:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 6
+      targetCPU: 70
     livenessProbe:
       httpGet: { path: /health, port: 8095 }
       initialDelaySeconds: 30
@@ -183,9 +335,13 @@ services:
 
   notification-service:
     enabled: true
+    runtime: python
     image:
       repository: kaori-system/notification-service
-    replicas: 1  # SMTP outbox poller is single-instance by design
+    replicas: 1  # SMTP outbox poller is single-instance by design (A5)
+    # Recreate avoids two pollers overlapping during a rollout → double-send.
+    strategy:
+      type: Recreate
     port: 8094
     containerPort: 8094
     service:
@@ -208,6 +364,14 @@ services:
     env:
       LOG_LEVEL: INFO
       KAORI_BOT_PROVIDER: telegram
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: "587"
+      FRONTEND_URL: https://app.kaori.ai
+      OUTBOX_POLL_ENABLED: "true"
+      OUTBOX_POLL_INTERVAL_SECONDS: "5"
+      OUTBOX_BATCH_SIZE: "10"
+    extraEnv:
+      SMTP_PASSWORD: smtp-password
     livenessProbe:
       httpGet: { path: /health, port: 8094 }
       initialDelaySeconds: 30

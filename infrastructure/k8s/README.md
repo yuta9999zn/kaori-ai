@@ -1,8 +1,10 @@
 # `infrastructure/k8s/` — Kubernetes manifests (P15-S9 onwards)
 
-> **Status:** D1 scaffolding landed 2026-05-08 (kaori-services umbrella chart + Kustomize overlays). Cluster deploy pending FPT Cloud commercial contract activation.
+> **Status:** D1 scaffolding landed 2026-05-08; **AWS-EKS hardening pass 2026-07-05** — chart wired end-to-end + security/autoscaling/network/migration scaffolding added, validated (helm lint + `helm template` + kubeconform strict; base 20/20, AWS overlay 37/37 valid). Cluster still NOT provisioned. **Read `docs/runbooks/aws-eks-readiness.md` first** — it has the premortem, red-team, feasibility, cost line, cutover checklist, and the open hosting/Vault/LLM decisions.
 > **Sprint:** P15-S9 (Phase 1.5 Sprint 9) — see `docs/archive/sprint/p15-s9/P15-S9_PLAN.md` D1.
-> **Decision:** ADR-0016 (FPT/Viettel VN hosting); ADR-0010 (modular monolith Phase 1 — K8s onboard Phase 1.5 to avoid pilot disruption).
+> **Decision:** ADR-0016 (FPT/Viettel VN hosting) — ⚠️ conflicts with an AWS target (data residency); a superseding ADR is required before a real AWS cutover (see runbook §7 D1). ADR-0010 (modular monolith Phase 1 — K8s onboard Phase 1.5 to avoid pilot disruption).
+>
+> **AWS render:** `helm template kaori helm-charts/kaori-services -f helm-charts/kaori-services/values.yaml -f helm-charts/kaori-services/values-aws-eks.yaml -n kaori`. Everything cloud-specific is gated (default OFF) so the dev/staging/prod render is unchanged; `values-aws-eks.yaml` turns on securityContext, IRSA, HPA, PDB, NetworkPolicy, S3 blobs, and the migration Job.
 
 ## Why deferred to Phase 1.5
 
@@ -68,13 +70,20 @@ OTel Collector DaemonSet trên mỗi node. Jaeger / Prometheus / Loki / Grafana 
 - `docs/BACKLOG_V4.md` P15-S9 (K8s deploy)
 - Memory `project_pilot_deployment.md` (laptop pilot Option C — không touch Phase 1)
 
-## D1 progress (2026-05-08)
+## D1 progress (2026-05-08) + AWS hardening (2026-07-05)
 
-- [x] `helm-charts/kaori-services/` umbrella chart — Chart.yaml, values.yaml, 4 templates, _helpers.tpl, README
+- [x] `helm-charts/kaori-services/` umbrella chart — Chart.yaml, values.yaml, templates, _helpers.tpl, README
 - [x] `kustomize/base/kustomization.yaml` placeholder
 - [x] `kustomize/overlays/{dev,staging,production}/kustomization.yaml`
-- [ ] Per-chart smoke test `helm lint` + `helm template` (deferred until helm CLI installed locally)
-- [ ] Sub-charts for kaori-infra (Postgres/Redis/Kafka), Vault, Temporal, ClickHouse, OTel stack — D2/D3/D8 of P15-S9
+- [x] **`helm lint` + `helm template` smoke test** — passes; `kubeconform -strict` (k8s 1.28) base 20/20, AWS 37/37 valid
+- [x] **End-to-end service wiring** (datastore + service URLs + secrets ported from docker-compose) — was previously LOG_LEVEL-only
+- [x] **Security scaffolding** — PSA-restricted securityContext, IRSA ServiceAccounts, HPA, PDB, deny-by-default NetworkPolicy, topologySpread
+- [x] **Pre-upgrade migration Job** (Flyway hook — decouples the 138 migrations from replica boot)
+- [x] **`values-aws-eks.yaml`** — AWS overlay (ECR, RDS/ElastiCache/MSK/S3, IRSA, prod profile)
+- [x] **`docs/runbooks/aws-eks-readiness.md`** — premortem/red-team/feasibility + cutover checklist
+- [ ] Bake `config/etl/utils/kafka-schemas` into Python images (premortem A1 — CI/Dockerfile change, blocks EKS image build)
+- [ ] CI build+push per-service to ECR by git SHA + `kaori-migrations` image
+- [ ] Sub-charts for kaori-infra — **superseded on AWS by managed RDS/ElastiCache/MSK/S3** (runbook §3)
 - [ ] ArgoCD app-of-apps wiring — later
 
 See `helm-charts/kaori-services/README.md` for chart-specific docs and acceptance checklist.

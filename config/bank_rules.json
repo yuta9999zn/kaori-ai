@@ -1,0 +1,66 @@
+{
+  "CUSTOMER_PAYMENT": [
+    "NATURAL BEAUTY",
+    "NB ",
+    "THANH TOAN DICH VU",
+    "THANH TOAN KH",
+    "TIEN DICH VU",
+    "KHACH HANG",
+    "KH THANH TOAN",
+    "RJ BAR",
+    "BAR MINI",
+    "RJBAR",
+    "BARMINI",
+    "TIEN MAT KH",
+    "CHUYEN KHOAN KH"
+  ],
+  "PAYROLL": [
+    "LUONG",
+    "TIEN LUONG",
+    "TRA LUONG",
+    "SALARY",
+    "THUONG",
+    "PHU CAP",
+    "BHXH",
+    "BAO HIEM"
+  ],
+  "OPERATING_COST": [
+    "TIEN THUE",
+    "THUE MAT BANG",
+    "DIEN NUOC",
+    "TIEN DIEN",
+    "TIEN NUOC",
+    "INTERNET",
+    "VIETTEL",
+    "MOBIFONE",
+    "VINAPHONE",
+    "NGUYEN VAT LIEU",
+    "HANG HOA",
+    "NHAP HANG",
+    "MUA HANG",
+    "CONG CU DUNG CU",
+    "VAN PHONG PHAM",
+    "VAN CHUYEN",
+    "GIAO HANG"
+  ],
+  "TAX": [
+    "THUE GTGT",
+    "THUE TNDN",
+    "THUE THU NHAP",
+    "NOP THUE",
+    "THUE MON BAI",
+    "KHO BAC",
+    "THUE"
+  ],
+  "BANK_FEE": [
+    "PHI DICH VU",
+    "PHI CHUYEN TIEN",
+    "PHI SMS",
+    "PHI NGAN HANG",
+    "LPBANK PHI",
+    "TOAN TAT KHOAN VAY",
+    "TRA NO",
+    "GOC VAY",
+    "LAI VAY"
+  ]
+}

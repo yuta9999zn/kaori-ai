@@ -1,0 +1,40 @@
+{{- range $name, $svc := .Values.services }}
+{{- if and $svc.enabled $svc.hpa $svc.hpa.enabled }}
+{{/*
+HorizontalPodAutoscaler — opt-in per service. notification-service must
+NOT get one (single-instance SMTP outbox poller — two pollers double-send,
+premortem A5), so its hpa block stays absent/disabled. On EKS this pairs
+with Cluster Autoscaler / Karpenter to add nodes under load.
+*/}}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "kaori-services.serviceLabels" (dict "name" $name "root" $) | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ $name }}
+  minReplicas: {{ $svc.hpa.minReplicas | default 2 }}
+  maxReplicas: {{ $svc.hpa.maxReplicas | default 6 }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ $svc.hpa.targetCPU | default 70 }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ $svc.hpa.targetMemory | default 80 }}
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+{{- end }}
+{{- end }}

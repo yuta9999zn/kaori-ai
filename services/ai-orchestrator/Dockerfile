@@ -1,14 +1,27 @@
 FROM python:3.11-slim
 WORKDIR /app
 
-COPY requirements.txt .
+# A1 — build context is the REPO ROOT (set in docker-compose:
+#   build: { context: ., dockerfile: services/ai-orchestrator/Dockerfile }).
+# This lets the image bake the formerly-mounted shared assets so it runs
+# self-contained on any host (EKS / EC2 / VPS), not only a machine that
+# has the repo checked out to volume-mount. See docs/runbooks/aws-eks-readiness.md.
+COPY services/ai-orchestrator/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy service source as the 'ai_orchestrator' Python package
-# Build context is ./services/ai-orchestrator (set in docker-compose)
-COPY . /app/ai_orchestrator/
+# Copy service source as the 'ai_orchestrator' Python package.
+COPY services/ai-orchestrator/ /app/ai_orchestrator/
 
-# config/, utils/, etl/ are volume-mounted from repo root at runtime.
+# A1 — bake config/, etl/, utils/ and the Kafka event-schema registry at
+# the SAME paths the docker-compose volumes used to mount them, so imports
+# and LANGUAGE_DICT_PATH resolve unchanged. Dev compose still mounts these
+# read-write over the baked copies for hot-reload; prod/cloud uses the baked
+# ones (docker-compose.prod.yml drops the mounts).
+COPY config/ /app/config/
+COPY etl/ /app/etl/
+COPY utils/ /app/utils/
+COPY infrastructure/kafka/schemas/ /app/infrastructure/kafka/schemas/
+
 # Adding /app/ai_orchestrator to PYTHONPATH lets sibling-package imports
 # (`from shared.X import ...`) resolve from inside the package the same way
 # they resolve under pytest in CI (cwd=services/ai-orchestrator/). Keeping

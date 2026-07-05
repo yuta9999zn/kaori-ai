@@ -1,0 +1,109 @@
+{{- if .Values.global.networkPolicy.enabled }}
+{{/*
+NetworkPolicy — flips the flat pod network (red-team B1/B2) into a
+deny-by-default mesh. Requires a CNI that enforces policy (Calico /
+Cilium; EKS VPC-CNI needs the network-policy add-on enabled).
+
+Three policies:
+  1. default-deny-all      — no ingress/egress unless a policy allows it.
+  2. allow-dns             — every pod may reach CoreDNS (else nothing resolves).
+  3. allow-intra-namespace — Kaori pods may talk to each other + egress to
+     the datastore ports (Postgres/Redis/Kafka) and HTTPS (vendor LLM /
+     AWS APIs). Cross-tenant / lateral movement to unrelated namespaces is
+     denied. Internal services are never reachable from outside the
+     namespace, so a leaked LoadBalancer can't expose them (K-7/K-12 defence
+     in depth).
+
+Egress intentionally does NOT allow 169.254.169.254 (IMDS) — combined with
+IMDSv2 hop-limit 1 on the node group this blocks the SSRF→node-role path
+(red-team B2; the recent call_api SSRF hardening is the app-layer half).
+*/}}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  labels:
+    {{- include "kaori-services.labels" . | nindent 4 }}
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+  labels:
+    {{- include "kaori-services.labels" . | nindent 4 }}
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-intra-namespace
+  labels:
+    {{- include "kaori-services.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: kaori-ai
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # From the ingress controller (gateway + webhook public entry) ...
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Values.global.networkPolicy.ingressNamespace | default "ingress-nginx" }}
+    # ... and from sibling Kaori pods (service-to-service).
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/part-of: kaori-ai
+  egress:
+    # Sibling Kaori pods.
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/part-of: kaori-ai
+    # Managed datastores (RDS/ElastiCache/MSK) reached by CIDR on AWS;
+    # override global.networkPolicy.datastoreCIDRs per env.
+    {{- with .Values.global.networkPolicy.datastoreCIDRs }}
+    - to:
+        {{- range . }}
+        - ipBlock:
+            cidr: {{ . | quote }}
+        {{- end }}
+      ports:
+        - port: 5432
+          protocol: TCP
+        - port: 6379
+          protocol: TCP
+        - port: 9092
+          protocol: TCP
+    {{- end }}
+    # Outbound HTTPS — vendor LLM (consent path), S3, Secrets Manager.
+    # 169.254.0.0/16 (IMDS + link-local) excluded on purpose.
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 169.254.0.0/16
+      ports:
+        - port: 443
+          protocol: TCP
+{{- end }}

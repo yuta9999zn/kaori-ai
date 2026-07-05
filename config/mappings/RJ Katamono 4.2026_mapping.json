@@ -1,0 +1,1825 @@
+{
+  "file": "D:\\Chuyển đổi số JM\\RJ\\RJ Katamono 4.2026.xlsx",
+  "ingested_at": "2026-04-21T12:00:04",
+  "needs_review": true,
+  "sheets": [
+    {
+      "sheet_name": "uriage",
+      "status": "needs_review",
+      "skip_reason": null,
+      "header_row": 3,
+      "row_count": 31,
+      "needs_review": true,
+      "columns": [
+        {
+          "raw_name": "Day",
+          "canonical": "date",
+          "confidence": "HIGH",
+          "sample_values": [
+            "1/4",
+            "2/4",
+            "3/4"
+          ],
+          "reason": "Matched 'date' — exact match on 'day' [English] (score 100)",
+          "user_override": null
+        },
+        {
+          "raw_name": "Uriage",
+          "canonical": "revenue",
+          "confidence": "HIGH",
+          "sample_values": [
+            "95196750",
+            "94072160",
+            "95011000"
+          ],
+          "reason": "Matched 'revenue' — exact match on 'uriage' [English] (score 100)",
+          "user_override": null
+        },
+        {
+          "raw_name": "Home",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Customer",
+          "canonical": "customer_count",
+          "confidence": "HIGH",
+          "sample_values": [
+            "15",
+            "33",
+            "38"
+          ],
+          "reason": "Matched 'customer_count' — exact match on 'customer' [unknown language] (score 100)",
+          "user_override": null
+        }
+      ]
+    },
+    {
+      "sheet_name": "Kattamono",
+      "status": "needs_review",
+      "skip_reason": null,
+      "header_row": 4,
+      "row_count": 33,
+      "needs_review": true,
+      "columns": [
+        {
+          "raw_name": "No",
+          "canonical": "ref",
+          "confidence": "HIGH",
+          "sample_values": [
+            "1",
+            "2",
+            "3"
+          ],
+          "reason": "Matched 'ref' — exact match on 'no' [English] (score 100)",
+          "user_override": null
+        },
+        {
+          "raw_name": "Day",
+          "canonical": "date",
+          "confidence": "HIGH",
+          "sample_values": [
+            "01/04",
+            "02/04",
+            "03/04"
+          ],
+          "reason": "Matched 'date' — exact match on 'day' [English] (score 100)",
+          "user_override": null
+        },
+        {
+          "raw_name": "Shopping",
+          "canonical": "product",
+          "confidence": "HIGH",
+          "sample_values": [
+            "Veuve",
+            "Ice,soda,tea, lavie",
+            "Chivas 12"
+          ],
+          "reason": "Matched 'product' — exact match on 'shopping' [English] (score 100)",
+          "user_override": null
+        },
+        {
+          "raw_name": "Number",
+          "canonical": "quantity",
+          "confidence": "HIGH",
+          "sample_values": [
+            "6",
+            "5",
+            "2"
+          ],
+          "reason": "Matched 'quantity' — exact match on 'number' [English] (score 100)",
+          "user_override": null
+        },
+        {
+          "raw_name": "Money",
+          "canonical": "amount",
+          "confidence": "HIGH",
+          "sample_values": [
+            "8880000",
+            "480000",
+            "2850000"
+          ],
+          "reason": "Matched 'amount' — exact match on 'money' [English] (score 100)",
+          "user_override": null
+        },
+        {
+          "raw_name": "TOTAL",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "40666420"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        }
+      ]
+    },
+    {
+      "sheet_name": "Zaike Osake",
+      "status": "needs_review",
+      "skip_reason": null,
+      "header_row": 1,
+      "row_count": 33,
+      "needs_review": true,
+      "columns": [
+        {
+          "raw_name": "Unnamed: 0",
+          "canonical": "name",
+          "confidence": "MEDIUM",
+          "sample_values": [
+            "1",
+            "2",
+            "3"
+          ],
+          "reason": "Matched 'name' — substring match on English alias 'name' for column 'Unnamed: 0' (score 80)",
+          "user_override": null
+        },
+        {
+          "raw_name": "Get(Mua)",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "5",
+            "2",
+            "2"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tổng)",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "-1",
+            "4",
+            "4"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử Dụng)",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "2",
+            "2"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru(Còn Lại)",
+          "canonical": "profit",
+          "confidence": "MEDIUM",
+          "sample_values": [
+            "4",
+            "4",
+            "2"
+          ],
+          "reason": "Matched 'profit' — substring match on Vietnamese alias 'lãi' for column 'nokoru(Còn Lại)' (score 80)",
+          "user_override": null
+        },
+        {
+          "raw_name": "total",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "2850000",
+            "1140000",
+            "1140000"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Get(Mua).1",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1",
+            "chưa có hóa đơn nhập"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tổng).1",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "2",
+            "3",
+            "2"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử Dụng).1",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "1",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru(Còn Lại).1",
+          "canonical": "ref",
+          "confidence": "MEDIUM",
+          "sample_values": [
+            "3",
+            "2",
+            "2"
+          ],
+          "reason": "Matched 'ref' — substring match on English alias 'no' for column 'nokoru(Còn Lại).1' (score 80)",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.1",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1000000",
+            "1000000"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Get",
+          "canonical": "quantity",
+          "confidence": "HIGH",
+          "sample_values": [
+            "1"
+          ],
+          "reason": "Matched 'quantity' — exact match on 'get' [English] (score 100)",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫",
+          "canonical": "inventory",
+          "confidence": "HIGH",
+          "sample_values": [
+            "3",
+            "3",
+            "3"
+          ],
+          "reason": "Matched 'inventory' — exact match on '在庫' [Japanese] (score 100)",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う",
+          "canonical": "usage",
+          "confidence": "HIGH",
+          "sample_values": [
+            "0",
+            "0",
+            "1"
+          ],
+          "reason": "Matched 'usage' — exact match on '使う' [Japanese] (score 100)",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru",
+          "canonical": "remaining",
+          "confidence": "HIGH",
+          "sample_values": [
+            "3",
+            "3",
+            "2"
+          ],
+          "reason": "Matched 'remaining' — exact match on 'nokoru' [English] (score 100)",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.2",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1300000",
+            "1300000"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫.1",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1",
+            "1",
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う.1",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.1",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1",
+            "1",
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.3",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Get.2",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "2",
+            "2",
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫.2",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "2",
+            "4",
+            "5"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う.2",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "1",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.2",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "4",
+            "5",
+            "5"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.4",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1100000",
+            "1100000",
+            "550000"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫.3",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "4",
+            "4",
+            "4"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う.3",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.3",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "4",
+            "4",
+            "4"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.5",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Get.4",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫.4",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1",
+            "1",
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う.4",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.4",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1",
+            "1",
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.6",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "400000",
+            "400000"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Get.5",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "2"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫.5",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "3",
+            "2",
+            "3"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う.5",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1",
+            "1",
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.5",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "2",
+            "3",
+            "2"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.7",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1050000",
+            "1050000"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫.6",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1",
+            "1",
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う.6",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.6",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1",
+            "1",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.8",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫.7",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "3",
+            "3",
+            "2"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う.7",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "1",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.7",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "3",
+            "2",
+            "2"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.9",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫.8",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "5",
+            "5",
+            "4"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う.8",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "1",
+            "2(RJ),2(mini)"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.8",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "5",
+            "4",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.10",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Get.9",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "2"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫.9",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1",
+            "3",
+            "2"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う.9",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "1",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.9",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "3",
+            "2",
+            "2"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.11",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "4400000",
+            "4400000"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Get.10",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "72"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn)",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "4",
+            "4",
+            "4"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng)",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.10",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "4",
+            "4",
+            "4"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.12",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).1",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "100",
+            "96",
+            "91"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).1",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "4",
+            "5",
+            "8"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.11",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "96",
+            "91",
+            "83"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.13",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).2",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "5",
+            "5",
+            "5"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).2",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.12",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "5",
+            "5",
+            "5"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.14",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).3",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "11",
+            "11",
+            "11"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).3",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.13",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "11",
+            "11",
+            "11"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.15",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Get.14",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "6"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫.10",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "-1",
+            "5",
+            "5"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う.10",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.14",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "5",
+            "5",
+            "4"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.16",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "8880000",
+            "8880000"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫.11",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "23",
+            "23",
+            "23"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う.11",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.15",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "23",
+            "23",
+            "23"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Total",
+          "canonical": "amount",
+          "confidence": "HIGH",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "Matched 'amount' — exact match on 'total' [English] (score 100)",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).4",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "6",
+            "6",
+            "6"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).4",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.16",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "6",
+            "6",
+            "6"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.17",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).5",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "6",
+            "6",
+            "6"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).5",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.17",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "6",
+            "6",
+            "6"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.18",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).6",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "7",
+            "7",
+            "7"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).6",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.18",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "7",
+            "7",
+            "7"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.19",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).7",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "5",
+            "5",
+            "5"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).7",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.19",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "5",
+            "5",
+            "5"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.20",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).8",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "5",
+            "4",
+            "4"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).8",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.20",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "4",
+            "4",
+            "4"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.21",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).9",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "6",
+            "6",
+            "5"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).9",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "1",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.21",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "6",
+            "5",
+            "5"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.22",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).10",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).10",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.22",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.23",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Get.23",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).11",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).11",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "2",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.23",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.24",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "7200000"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).12",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "-1",
+            "-1",
+            "-1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).12",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.24",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "-1",
+            "-1",
+            "-1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.25",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).13",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "8",
+            "8",
+            "8"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).13",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.25",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "8",
+            "8",
+            "8"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.26",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Get.26",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).14",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1",
+            "1",
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).14",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.26",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1",
+            "1",
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.27",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).15",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "3",
+            "3",
+            "3"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).15",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.27",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "3",
+            "3",
+            "3"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "在庫(Tồn).16",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "2",
+            "2",
+            "2"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "使う(Sử dụng).16",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0",
+            "0",
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "nokoru.28",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "2",
+            "2",
+            "2"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "total.29",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "0"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        }
+      ]
+    },
+    {
+      "sheet_name": "Zaike Juice",
+      "status": "needs_review",
+      "skip_reason": null,
+      "header_row": 1,
+      "row_count": 33,
+      "needs_review": true,
+      "columns": [
+        {
+          "raw_name": "Unnamed: 0",
+          "canonical": "name",
+          "confidence": "MEDIUM",
+          "sample_values": [
+            "1",
+            "2",
+            "3"
+          ],
+          "reason": "Matched 'name' — substring match on English alias 'name' for column 'Unnamed: 0' (score 80)",
+          "user_override": null
+        },
+        {
+          "raw_name": "các loại nước uống（冷蔵庫の水）",
+          "canonical": "service",
+          "confidence": "LOW",
+          "sample_values": [
+            "ginger"
+          ],
+          "reason": "Matched 'service' — partial word match on Vietnamese alias 'loại dịch vụ' for column 'các loại nước uống（冷蔵庫の水）' (score 40)",
+          "user_override": null
+        },
+        {
+          "raw_name": "Unnamed: 2",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "soda",
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Unnamed: 3",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "Coca"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Unnamed: 4",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "redbull"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Tiger",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Lavie",
+          "canonical": null,
+          "confidence": "UNKNOWN",
+          "sample_values": [
+            "1"
+          ],
+          "reason": "No keyword match found in any language — set user_override in mapping file",
+          "user_override": null
+        },
+        {
+          "raw_name": "Ice",
+          "canonical": "amount",
+          "confidence": "MEDIUM",
+          "sample_values": [
+            "9",
+            "19"
+          ],
+          "reason": "Matched 'amount' — substring match on English alias 'price' for column 'Ice' (score 80)",
+          "user_override": null
+        },
+        {
+          "raw_name": "CÁC LOẠI ĐỒ DÙNG KHÁC（他の商品）　　　　　　Unik Mark",
+          "canonical": "product",
+          "confidence": "MEDIUM",
+          "sample_values": [
+            "tea",
+            "túi đen"
+          ],
+          "reason": "Matched 'product' — substring match on Japanese alias '商品' for column 'CÁC LOẠI ĐỒ DÙNG KHÁC（他の商品）　　　　　　Unik Mark' (score 80)",
+          "user_override": null
+        },
+        {
+          "raw_name": "SỐ TIỀN(会計）",
+          "canonical": "quantity",
+          "confidence": "MEDIUM",
+          "sample_values": [
+            "480000",
+            "440000",
+            "190000"
+          ],
+          "reason": "Matched 'quantity' — substring match on Vietnamese alias 'số' for column 'SỐ TIỀN(会計）' (score 80)",
+          "user_override": null
+        }
+      ]
+    }
+  ]
+}

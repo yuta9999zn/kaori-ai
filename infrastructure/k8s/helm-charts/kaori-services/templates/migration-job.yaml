@@ -1,0 +1,66 @@
+{{- if .Values.global.migrationJob.enabled }}
+{{/*
+Schema migration Job — runs ONCE per install/upgrade as a Helm hook,
+BEFORE the app Deployments roll. This decouples the 138 Flyway migrations
+from per-replica startup: on RDS there is no docker-entrypoint-initdb.d,
+and letting N auth-service replicas each run Flyway on boot races the
+schema-history lock (premortem A4/B1). One Job, superuser creds, then the
+app pods start on kaori_app (least-privilege runtime, K-1 RLS intact).
+
+The image (global.migrationJob.image) is a thin Flyway image with the
+repo's infrastructure/postgres/migrations/ baked in — build recipe in
+docs/runbooks/aws-eks-readiness.md. Hook weights: the Job runs after the
+shared Secret exists.
+*/}}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-db-migrate
+  labels:
+    {{- include "kaori-services.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "5"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: {{ .Values.global.migrationJob.backoffLimit | default 2 }}
+  activeDeadlineSeconds: {{ .Values.global.migrationJob.timeoutSeconds | default 600 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kaori-services.labels" . | nindent 8 }}
+        app.kubernetes.io/name: db-migrate
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{ .Values.global.serviceAccount.name | default "kaori-services" }}
+      {{- if .Values.global.securityContext.enabled }}
+      securityContext:
+        {{- include "kaori-services.podSecurityContext" . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: flyway
+          image: {{ .Values.global.migrationJob.image }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          {{- if .Values.global.securityContext.enabled }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          {{- end }}
+          args:
+            - "-url=jdbc:postgresql://{{ .Values.global.datastore.postgresHost }}:{{ .Values.global.datastore.postgresPort }}/{{ .Values.global.datastore.postgresDb }}"
+            - "-user={{ .Values.global.datastore.migrationUser | default .Values.global.datastore.appUser }}"
+            - "-connectRetries={{ .Values.global.migrationJob.connectRetries | default 10 }}"
+            - "migrate"
+          env:
+            - name: FLYWAY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.secrets.name | default "kaori-shared-secret" }}
+                  key: {{ .Values.global.migrationJob.passwordSecretKey | default "app-db-password" }}
+                  optional: {{ .Values.global.secrets.optional }}
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits:   { cpu: 500m, memory: 512Mi }
+{{- end }}

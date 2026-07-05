@@ -1,0 +1,43 @@
+# docker-compose.prod.yml — single-host (EC2 / VPS) production overlay.
+#
+#   cp .env.production.example .env.production   # fill CHANGE_ME values
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml \
+#     --env-file .env.production \
+#     up -d postgres redis vault kafka zookeeper ollama \
+#           auth-service api-gateway data-pipeline ai-orchestrator \
+#           llm-gateway notification-service
+#
+# Bringing up that explicit service list keeps the dev-only UIs
+# (kafka-ui, swagger-ui, grafana, prometheus, tempo) out of a prod host —
+# add them back only if you want the observability stack co-located.
+#
+# The A1 fix means data-pipeline/ai-orchestrator images are self-contained
+# (config/etl/utils baked), so on a fresh host they run without the repo's
+# volume mounts. This overlay only adds restart policies + prod hardening;
+# the base file's mounts stay harmless when the repo is present.
+
+services:
+  api-gateway:
+    restart: unless-stopped
+  auth-service:
+    restart: unless-stopped
+  data-pipeline:
+    restart: unless-stopped
+  ai-orchestrator:
+    restart: unless-stopped
+  llm-gateway:
+    restart: unless-stopped
+  notification-service:
+    restart: unless-stopped
+  postgres:
+    restart: unless-stopped
+  redis:
+    restart: unless-stopped
+  vault:
+    restart: unless-stopped
+  kafka:
+    restart: unless-stopped
+  zookeeper:
+    restart: unless-stopped
+  ollama:
+    restart: unless-stopped

@@ -9,6 +9,10 @@ metadata:
     {{- include "kaori-services.serviceLabels" (dict "name" $name "root" $) | nindent 4 }}
 spec:
   replicas: {{ $svc.replicas | default 1 }}
+  {{- with $svc.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ $name }}
@@ -21,10 +25,37 @@ spec:
         # Force pod restart on configmap change.
         kaori.ai/config-checksum: {{ include (print $.Template.BasePath "/configmaps.yaml") $ | sha256sum }}
     spec:
+      serviceAccountName: {{ include "kaori-services.serviceAccountName" (dict "service" $svc "root" $) }}
+      {{- if $.Values.global.securityContext.enabled }}
+      securityContext:
+        {{- include "kaori-services.podSecurityContext" $ | nindent 8 }}
+      {{- end }}
+      {{- with $svc.nodeSelector | default $.Values.global.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $svc.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.global.topologySpread.enabled }}
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ $name }}
+              app.kubernetes.io/instance: {{ $.Release.Name }}
+      {{- end }}
       containers:
         - name: {{ $name }}
           image: {{ include "kaori-services.image" (dict "service" $svc "root" $) }}
           imagePullPolicy: {{ $.Values.global.imagePullPolicy }}
+          {{- if $.Values.global.securityContext.enabled }}
+          securityContext:
+            {{- include "kaori-services.containerSecurityContext" (dict "service" $svc "root" $) | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: {{ $svc.containerPort }}
@@ -34,9 +65,24 @@ spec:
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
-            # Common observability + secrets injection
-            {{- include "kaori-services.otelEnv" $ | nindent 12 }}
-            {{- include "kaori-services.vaultEnv" $ | nindent 12 }}
+            # Common observability (K-19) + datastore + secrets wiring.
+            {{- include "kaori-services.otelEnv" (dict "Values" $.Values "Release" $.Release "name" $name) | nindent 12 }}
+            {{- include "kaori-services.commonEnv" $ | nindent 12 }}
+            {{- if eq ($svc.runtime | default "python") "java" }}
+            {{- include "kaori-services.javaEnv" $ | nindent 12 }}
+            {{- else }}
+            {{- include "kaori-services.pythonEnv" $ | nindent 12 }}
+            {{- end }}
+            {{- with $svc.extraEnv }}
+            {{- range $key, $value := . }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.global.secrets.name | default "kaori-shared-secret" }}
+                  key: {{ $value | quote }}
+                  optional: {{ $.Values.global.secrets.optional }}
+            {{- end }}
+            {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ $name }}-config
@@ -51,7 +97,17 @@ spec:
           readinessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- if $svc.readOnlyRootFilesystem }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          {{- end }}
           resources:
             {{- toYaml ($svc.resources | default $.Values.global.resources) | nindent 12 }}
+      {{- if $svc.readOnlyRootFilesystem }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+      {{- end }}
 {{- end }}
 {{- end }}

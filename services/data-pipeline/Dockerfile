@@ -5,14 +5,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libmagic1 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
+# A1 — build context is the REPO ROOT (docker-compose:
+#   build: { context: ., dockerfile: services/data-pipeline/Dockerfile }).
+# Bakes the formerly-mounted shared assets so the image runs self-contained
+# on any host (EKS / EC2 / VPS). See docs/runbooks/aws-eks-readiness.md.
+COPY services/data-pipeline/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy service source as the 'data_pipeline' Python package
-# Build context is ./services/data-pipeline (set in docker-compose)
-COPY . /app/data_pipeline/
+# Copy service source as the 'data_pipeline' Python package.
+COPY services/data-pipeline/ /app/data_pipeline/
 
-# config/, etl/, utils/ are volume-mounted from repo root at runtime
+# A1 — bake config/, etl/, utils/ and the Kafka event-schema registry at
+# the same paths the compose volumes used to mount them (LANGUAGE_DICT_PATH
+# + event_schema.py resolve unchanged). Dev compose still mounts over these
+# for hot-reload; prod/cloud uses the baked copies.
+COPY config/ /app/config/
+COPY etl/ /app/etl/
+COPY utils/ /app/utils/
+COPY infrastructure/kafka/schemas/ /app/infrastructure/kafka/schemas/
+
 ENV PYTHONPATH=/app
 
 EXPOSE 8092

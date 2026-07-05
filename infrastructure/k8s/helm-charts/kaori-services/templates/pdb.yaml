@@ -1,0 +1,24 @@
+{{- range $name, $svc := .Values.services }}
+{{- if and $svc.enabled $.Values.global.podDisruptionBudget.enabled (gt (int ($svc.replicas | default 1)) 1) }}
+{{/*
+PodDisruptionBudget — keeps at least one replica up during EKS managed
+node-group upgrades / node drains (premortem A/infra: routine upgrades
+must not take a whole service down). Only emitted for services running
+>1 replica; a single-replica service (notification-service) gets none so
+a drain is never blocked forever.
+*/}}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "kaori-services.serviceLabels" (dict "name" $name "root" $) | nindent 4 }}
+spec:
+  minAvailable: {{ $svc.pdbMinAvailable | default 1 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $name }}
+      app.kubernetes.io/instance: {{ $.Release.Name }}
+{{- end }}
+{{- end }}

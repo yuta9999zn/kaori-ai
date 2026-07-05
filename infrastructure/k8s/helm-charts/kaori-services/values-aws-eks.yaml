@@ -1,0 +1,137 @@
+# values-aws-eks.yaml — AWS EKS overlay for the kaori-services chart.
+#
+#   helm template kaori . -f values.yaml -f values-aws-eks.yaml
+#   helm upgrade --install kaori . -n kaori -f values.yaml -f values-aws-eks.yaml
+#
+# Managed-data-plane posture (feasibility call in docs/runbooks/
+# aws-eks-readiness.md): a 1-dev team does NOT self-run Postgres/Redis/
+# Kafka on the cluster. Data lives in RDS / ElastiCache / MSK / S3; the
+# cluster runs only the 6 stateless app services. Every <FILL_*> is a
+# per-account value wired by Terraform/eksctl outputs, NOT committed.
+
+global:
+  # ECR — one repo per service under the account registry.
+  imageRegistry: "<FILL_ACCOUNT_ID>.dkr.ecr.ap-southeast-1.amazonaws.com/kaori"
+  imagePullPolicy: IfNotPresent
+  # Pin to the git SHA built by CI — never a mutable tag (premortem D3).
+  imageTag: "<FILL_GIT_SHA>"
+
+  profile: production   # K-18: no inline/env secret fallback
+
+  # ADOT Collector (EKS add-on) or self-managed OTel collector.
+  otlpEndpoint: "http://adot-collector.observability.svc.cluster.local:4318"
+  tracingSampleRate: "0.1"
+
+  # Vault path is unused when secrets sync via External Secrets Operator;
+  # kept for services that still resolve field/MFA keys through the Vault
+  # wrapper. Point at the in-cluster Vault HA release or AWS-auth Vault.
+  vaultAddr: "https://vault.kaori.internal:8200"
+
+  datastore:
+    postgresHost: "<FILL_RDS_ENDPOINT>.ap-southeast-1.rds.amazonaws.com"
+    postgresPort: 5432
+    postgresDb: kaori
+    appUser: kaori_app
+    migrationUser: kaori_migrator
+    redisHost: "<FILL_ELASTICACHE_PRIMARY>.cache.amazonaws.com"
+    redisUrl: "rediss://<FILL_ELASTICACHE_PRIMARY>.cache.amazonaws.com:6379"
+    kafkaBootstrap: "<FILL_MSK_BOOTSTRAP>:9098"   # IAM-auth listener
+
+  blob:
+    backend: s3                    # S3BlobStore (shared/blob_store.py)
+    s3Bucket: "kaori-prod-blobs"
+    s3Region: "ap-southeast-1"
+    s3Endpoint: ""                 # real AWS S3
+
+  # Secret is NOT created by the chart — External Secrets Operator syncs
+  # AWS Secrets Manager → kaori-shared-secret. optional=false: a missing
+  # key fails the pod loud instead of silently running degraded (C1).
+  secrets:
+    name: kaori-shared-secret
+    create: false
+    optional: false
+
+  securityContext:
+    enabled: true
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+
+  # IRSA — pods assume this IAM role for S3 + Secrets Manager, keyless.
+  serviceAccount:
+    create: true
+    name: kaori-services
+    automountToken: true           # AWS SDK needs the projected token
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::<FILL_ACCOUNT_ID>:role/kaori-services-irsa"
+
+  topologySpread:
+    enabled: true                  # spread replicas across 3 AZs
+
+  podDisruptionBudget:
+    enabled: true                  # survive managed node-group upgrades
+
+  networkPolicy:
+    enabled: true                  # needs VPC-CNI network-policy add-on
+    ingressNamespace: ingress-nginx
+    datastoreCIDRs:
+      - "<FILL_VPC_CIDR>"          # e.g. 10.0.0.0/16 — RDS/ElastiCache/MSK
+
+  migrationJob:
+    enabled: true
+    image: "<FILL_ACCOUNT_ID>.dkr.ecr.ap-southeast-1.amazonaws.com/kaori/kaori-migrations:<FILL_GIT_SHA>"
+    connectRetries: 20
+    timeoutSeconds: 900
+
+# Per-service AWS tweaks: enable HPA everywhere except the single-instance
+# notification-service; give data-pipeline/ai-orchestrator a narrower IRSA
+# role (they touch S3) and a read-only root FS where the app allows it.
+services:
+  api-gateway:
+    replicas: 3
+    hpa: { enabled: true, minReplicas: 3, maxReplicas: 8, targetCPU: 65 }
+
+  auth-service:
+    replicas: 3
+    hpa: { enabled: true, minReplicas: 3, maxReplicas: 8, targetCPU: 65 }
+    env:
+      # Migrations owned by the pre-upgrade Job — auth-service no longer
+      # migrates on boot (premortem A4). Validate-only keeps it honest.
+      SPRING_FLYWAY_ENABLED: "false"
+      SPRING_PROFILES_ACTIVE: production,json
+      LOG_LEVEL: INFO
+
+  data-pipeline:
+    replicas: 3
+    hpa: { enabled: true, minReplicas: 3, maxReplicas: 8, targetCPU: 70 }
+    serviceAccount:
+      name: kaori-data-pipeline
+      automountToken: true
+      annotations:
+        eks.amazonaws.com/role-arn: "arn:aws:iam::<FILL_ACCOUNT_ID>:role/kaori-data-pipeline-irsa"
+
+  ai-orchestrator:
+    replicas: 3
+    hpa: { enabled: true, minReplicas: 3, maxReplicas: 10, targetCPU: 70 }
+    serviceAccount:
+      name: kaori-ai-orchestrator
+      automountToken: true
+      annotations:
+        eks.amazonaws.com/role-arn: "arn:aws:iam::<FILL_ACCOUNT_ID>:role/kaori-ai-orchestrator-irsa"
+
+  llm-gateway:
+    replicas: 2
+    hpa: { enabled: true, minReplicas: 2, maxReplicas: 6, targetCPU: 70 }
+    env:
+      LOG_LEVEL: INFO
+      # Qwen stays the default (K-4). Ollama runs on a GPU node group
+      # (Karpenter scale-to-zero when idle) exposed as this in-cluster
+      # service; see the runbook for the g5 node group + taint/toleration.
+      OLLAMA_HOST: http://ollama.llm.svc.cluster.local:11434
+      OLLAMA_MODEL: qwen2.5:14b
+      # External vendor path stays OFF until a tenant opts in with consent;
+      # egress NetworkPolicy already allowlists 443 for the consent path.
+      EXTERNAL_AI_ENABLED: "false"
+
+  notification-service:
+    replicas: 1                    # unchanged — no HPA (double-send guard)

@@ -1,0 +1,57 @@
+# Repo-root build context (A1) — only data-pipeline + ai-orchestrator build
+# from here (context: .). Keep the context small: exclude everything the
+# Python images don't need. config/ etl/ utils/ infrastructure/ services/
+# are intentionally NOT excluded (the Dockerfiles COPY them).
+
+# VCS + tooling
+.git
+.github
+.idea
+.vscode
+
+# Secrets — never bake into an image (they'd ship in every layer)
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Frontend (builds separately from ./frontend context)
+frontend
+
+# Big / irrelevant-to-runtime trees
+data
+docs
+tests
+DockerData
+*.bat
+
+# Java build output (api-gateway/auth-service target/ dirs — ~100M+)
+**/target
+
+# Infrastructure is big (ollama/clickhouse/postgres local data). Only the
+# Kafka event-schema registry is COPYed — exclude the rest, keep schemas.
+infrastructure/*
+!infrastructure/kafka
+infrastructure/kafka/*
+!infrastructure/kafka/schemas
+
+# Python / build caches
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/.coverage
+**/htmlcov
+**/.venv
+**/venv
+.venv
+venv
+env
+
+# Node / misc
+**/node_modules
+**/*.log
+kaori-blobs
+object-store

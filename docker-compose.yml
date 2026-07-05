@@ -226,7 +226,11 @@ services:
           cpus: "1.0"
 
   data-pipeline:
-    build: ./services/data-pipeline
+    # A1 — repo-root context so the image bakes config/etl/utils/kafka-schemas
+    # (self-contained for cloud). Mounts below still override for dev hot-reload.
+    build:
+      context: .
+      dockerfile: services/data-pipeline/Dockerfile
     depends_on:
       postgres:
         condition: service_healthy
@@ -235,7 +239,10 @@ services:
       notification-service:
         condition: service_healthy
     volumes:
+      # Mount existing Kaori ETL scripts (read-only)
       - ./config:/app/config:ro
+      - ./etl:/app/etl:ro
+      - ./utils:/app/utils:ro
       # Issue #4 — Kafka event-schema registry, walked up from
       # data_pipeline/shared/event_schema.py at runtime.
       - ./infrastructure/kafka/schemas:/app/infrastructure/kafka/schemas:ro
@@ -272,7 +279,11 @@ services:
       interval: 30s
 
   ai-orchestrator:
-    build: ./services/ai-orchestrator
+    # A1 — repo-root context so the image bakes config/etl/utils/kafka-schemas
+    # (self-contained for cloud). Mounts below still override for dev hot-reload.
+    build:
+      context: .
+      dockerfile: services/ai-orchestrator/Dockerfile
     depends_on:
       postgres:
         condition: service_healthy
@@ -282,6 +293,8 @@ services:
         condition: service_healthy
     volumes:
       - ./config:/app/config:ro
+      - ./utils:/app/utils:ro
+      - ./etl:/app/etl:ro
       - ./infrastructure/kafka/schemas:/app/infrastructure/kafka/schemas:ro
       # ADR-0037 Phase 0 — read raw file bytes (data-pipeline writes, this serves).
       - kaori-blobs:/app/object-store

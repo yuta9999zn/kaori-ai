@@ -306,7 +306,7 @@ anh: "FE resume: nhúng bpmn-js ssr:false + properties panel." Đã ship.
 
 ## Builder constructs — SHIPPED 2026-05-31 → 06-01 (PRs #306–#311)
 
-Tất cả trong `frontend/components/p2/workflow/LinearBuilderView.tsx` (builder ĐANG CHẠY — KHÔNG phải `CardEditor` trong 60-workflow-detail.tsx, đã chết) + `routers/workflow_builder.py` + `workflow_runtime/`. Mỗi mục verified qua UI thật trên tenant demo retailer (anh test trực tiếp từng cái).
+Tất cả trong `frontend/components/p2/workflow/LinearBuilderView.tsx` (builder ĐANG CHẠY — KHÔNG phải `CardEditor` trong 60-workflow-detail.tsx, đã chết) + `routers/workflow_builder.py` + `workflow_runtime/`. Mỗi mục verified qua UI thật trên tenant Natural Beauty (anh test trực tiếp từng cái).
 
 - **Rẽ nhánh thật (if/else).** Action điều khiển (`group:'control'`) hết bị lọc khỏi dropdown "Hành động Kaori"; chọn → `node_type` ← `CATALOG_TO_NODETYPE` (decision_if_else…). `IfElseEditor`: *trường · op · giá trị* → `decision_config.condition {left,op,right}`, 2 nhánh **Đúng/Sai** (token 'có'/'không' runner nhận). `IfElseExecutor` + fork render đã có sẵn.
 - **Switch theo khoảng.** `SwitchEditor`: cases `{label,min,max}` + mặc định; `SwitchExecutor` match khoảng số (`min ≤ v < max` → matched_case=label). Input rộng + hint VNĐ.
