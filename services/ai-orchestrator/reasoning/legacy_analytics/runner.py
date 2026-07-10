@@ -434,9 +434,10 @@ def _dump_result_json(result) -> str:
 
 
 # ISO-8601 date, optionally with a time part ("2026-01-04", "2026-01-04T09:30",
-# "2026-01-04 09:30:00"). The Silver clean rule "Parse dates to ISO" guarantees
-# this shape, so anything else stays text on purpose.
-_ISO_DATE_RE = r"^\d{4}-\d{2}-\d{2}([ T].*)?$"
+# "2026-01-04 09:30:00"), OR a YYYY-MM period ("2026-04") used by monthly /
+# quarterly reports. A bare 4-digit year ("2026") is NOT matched — too
+# ambiguous with plain integers. Anything else stays text on purpose.
+_ISO_DATE_RE = r"^\d{4}-\d{2}(-\d{2})?([ T].*)?$"
 
 
 def _coerce_datetime(df: pd.DataFrame) -> pd.DataFrame:

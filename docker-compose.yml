@@ -435,7 +435,14 @@ services:
       retries: 3
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      # NEXT_PUBLIC_* are inlined by `next build` at BUILD time — they must be
+      # passed as build args, not just runtime env (which Next.js ignores in the
+      # client bundle). Without this the bundle bakes the Dockerfile's localhost
+      # default and a cloud deploy's browser calls the wrong host.
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8080}
     depends_on:
       - api-gateway
     environment:

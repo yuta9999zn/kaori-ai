@@ -135,6 +135,27 @@ def test_iso_datetime_with_time_part_is_coerced():
     assert pd.api.types.is_datetime64_any_dtype(df["created_at"])
 
 
+def test_year_month_column_becomes_datetime():
+    # Monthly/quarterly reports carry a YYYY-MM period column (e.g. the Q2
+    # summary's "Tháng" = "2026-04") — coerce to first-of-month so
+    # time-series trend analysis works on report shapes, not just daily data.
+    df = _coerce_datetime(pd.DataFrame({
+        "thang": ["2026-04", "2026-05", "2026-06", "2026-07"],
+    }))
+    assert pd.api.types.is_datetime64_any_dtype(df["thang"])
+    assert df["thang"].iloc[0] == pd.Timestamp("2026-04-01")
+
+
+def test_year_month_not_confused_with_numeric():
+    # "2026-04" must not be read as a number (the mid-string dash blocks the
+    # numeric coerce), and a plain 4-digit year alone stays text.
+    from ai_orchestrator.reasoning.legacy_analytics.runner import _coerce_numeric
+    df = _coerce_numeric(pd.DataFrame({"thang": ["2026-04", "2026-05"]}))
+    assert df["thang"].dtype == object  # numeric coerce leaves it alone
+    df2 = _coerce_datetime(pd.DataFrame({"year": ["2026", "2027"]}))
+    assert df2["year"].dtype == object  # bare year is not a date period
+
+
 def test_free_text_stays_text():
     df = _coerce_datetime(pd.DataFrame({"product": ["Cà chua beef", "Bơ 034"]}))
     assert df["product"].dtype == object
