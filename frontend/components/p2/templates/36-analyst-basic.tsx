@@ -9,9 +9,10 @@
 // Endpoint:  POST /api/v1/analysis/runs
 //   body: { tier: 'basic', pipeline_run_id, templates: [...], question?, consent_external? }
 //
-// Templates list comes from the legacy /api/v2/enterprise/analysis/templates
-// route (still served via MSW pending the BE catalogue endpoint). The
-// pipeline picker uses the F-022 cursor envelope {data, meta}.
+// Templates list comes from GET /api/v1/analysis/templates (ai-orchestrator
+// multi_tier.py — sourced from the canonical TEMPLATE_REGISTRY). The old
+// /api/v2/enterprise/analysis/templates path was MSW-only and 503'd live.
+// The pipeline picker uses the F-022 cursor envelope {data, meta}.
 // ============================================================================
 
 import React, { useEffect, useState } from 'react';
@@ -46,7 +47,7 @@ export default function AnalystBasicPage() {
     Promise.all([
       // F-022 cursor envelope: {data: [...], meta: {...}}
       api<{ data?: any[]; items?: any[] }>('/api/v1/pipelines?limit=20'),
-      api<{ items: Template[] }>('/api/v2/enterprise/analysis/templates?tier=basic'),
+      api<{ items: Template[] }>('/api/v1/analysis/templates?tier=basic'),
     ])
       .then(([p, t]) => {
         const rows = (p.data || p.items || []).map((r: any) => ({

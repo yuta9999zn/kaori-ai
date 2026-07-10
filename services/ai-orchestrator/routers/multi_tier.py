@@ -139,6 +139,37 @@ class RunListResponse(BaseModel):
 # ─── Endpoints ───────────────────────────────────────────────────
 
 
+class TemplateItem(BaseModel):
+    id:          str
+    name:        str
+    description: str
+
+
+class TemplatesResponse(BaseModel):
+    items: list[TemplateItem]
+
+
+@router.get("/analysis/templates", response_model=TemplatesResponse)
+async def list_analysis_templates(
+    tier: Annotated[
+        str,
+        Query(pattern="^(basic|intermediate|advanced)$"),
+    ] = "basic",
+):
+    """Catalogue the tier picker offers. Sourced from the canonical
+    TEMPLATE_REGISTRY (statistical + LLM-narrative templates) so the FE lists
+    real, runnable templates instead of the retired MSW-only
+    `/api/v2/enterprise/analysis/templates` mock (503 → empty picker on the
+    demo). Tenant-agnostic static catalogue — the gateway JWT still gates it at
+    the edge, so no X-Enterprise-ID is required here. `tier` is accepted for
+    forward-compat; the registry is currently shared across tiers."""
+    from ..reasoning.legacy_analytics.template_registry import TEMPLATE_REGISTRY
+    return TemplatesResponse(items=[
+        TemplateItem(id=t.template_id, name=t.display_name, description=t.description)
+        for t in TEMPLATE_REGISTRY
+    ])
+
+
 @router.get("/analysis/sources", response_model=SourcesResponse)
 async def list_sources(
     x_enterprise_id: Annotated[str, Header()],
