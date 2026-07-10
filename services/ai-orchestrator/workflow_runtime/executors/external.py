@@ -14,6 +14,7 @@ constraint on (enterprise_id, source_ref).
 """
 from __future__ import annotations
 
+import json
 from typing import Any
 
 import structlog
@@ -102,9 +103,12 @@ class SendEmailExecutor(NodeExecutor):
                 """INSERT INTO notification_outbox
                        (enterprise_id, template, recipient_email,
                         context, source_ref)
-                   VALUES ($1, 'workflow-freeform', $2, $3, $4)
+                   VALUES ($1, 'workflow-freeform', $2, $3::jsonb, $4)
                    RETURNING outbox_id""",
-                ctx.enterprise_id, to_addr, context_payload, source_ref,
+                ctx.enterprise_id, to_addr,
+                # asyncpg has no dict→jsonb codec on this pool — send the
+                # JSON string + explicit cast (same pattern as _json elsewhere).
+                json.dumps(context_payload, ensure_ascii=False), source_ref,
             )
 
         log.info("send_email.queued",

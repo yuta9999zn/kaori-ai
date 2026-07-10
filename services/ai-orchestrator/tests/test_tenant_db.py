@@ -44,7 +44,7 @@ def mock_conn() -> AsyncMock:
 @pytest.fixture
 def mock_pool(mock_conn) -> MagicMock:
     @asynccontextmanager
-    async def _acquire():
+    async def _acquire(*, timeout=None):
         yield mock_conn
 
     pool = MagicMock()
@@ -165,7 +165,7 @@ async def test_tenant_conn_forwards_header_to_acquire(mock_pool, mock_conn):
 def mock_pool_for_audit(mock_conn) -> MagicMock:
     """Pool that yields a mock conn with fetchrow returning {id: 42}."""
     @asynccontextmanager
-    async def _acquire():
+    async def _acquire(*, timeout=None):
         yield mock_conn
 
     pool = MagicMock()
@@ -251,3 +251,51 @@ async def test_log_cross_tenant_attempt_accepts_none_tenants(mock_pool_for_audit
     assert args[0] is None
     assert args[1] is None
     assert args[5] == "admin_bypass"
+
+
+# ---------------------------------------------------------------------------
+# Bounded pool acquire (incident 2026-07-10, run d3d2e493)
+# ---------------------------------------------------------------------------
+# pool.acquire() without a timeout parks the caller forever when the pool
+# is exhausted — a workflow-runner coroutine then hangs silently between
+# nodes with no log and no error. The wait must be finite so exhaustion
+# surfaces as TimeoutError, which the runner's DbWriteExhausted machinery
+# already converts into a logged, failed run.
+
+
+class _AcquireCalled(Exception):
+    """Sentinel — aborts acquire_for_tenant right after pool.acquire()."""
+
+
+def _timeout_capturing_pool(captured: dict) -> MagicMock:
+    def _acquire(*, timeout=None):
+        captured["timeout"] = timeout
+        raise _AcquireCalled()
+
+    pool = MagicMock()
+    pool.acquire = _acquire
+    return pool
+
+
+@pytest.mark.asyncio
+async def test_acquire_for_tenant_passes_env_timeout_to_pool_acquire(monkeypatch):
+    monkeypatch.setenv("KAORI_DB_ACQUIRE_TIMEOUT_S", "7.5")
+    captured: dict = {}
+    with patch("ai_orchestrator.shared.db.get_pool",
+               return_value=_timeout_capturing_pool(captured)):
+        with pytest.raises(_AcquireCalled):
+            async with db.acquire_for_tenant(uuid4()):
+                pass
+    assert captured["timeout"] == 7.5
+
+
+@pytest.mark.asyncio
+async def test_acquire_for_tenant_default_timeout_is_30s(monkeypatch):
+    monkeypatch.delenv("KAORI_DB_ACQUIRE_TIMEOUT_S", raising=False)
+    captured: dict = {}
+    with patch("ai_orchestrator.shared.db.get_pool",
+               return_value=_timeout_capturing_pool(captured)):
+        with pytest.raises(_AcquireCalled):
+            async with db.acquire_for_tenant(uuid4()):
+                pass
+    assert captured["timeout"] == 30.0

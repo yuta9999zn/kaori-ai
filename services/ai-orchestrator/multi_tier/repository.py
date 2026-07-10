@@ -352,20 +352,52 @@ async def list_silver_sources(conn: asyncpg.Connection) -> list[dict]:
     ]
 
 
+# Pilot DB carries the v3-era WIDE gold_features (one row per customer,
+# fixed feature columns) instead of the long (feature_name, feature_value)
+# shape — the long query raises UndefinedColumnError there (incident
+# 2026-07-10, /analysis/sources 500). These are the wide columns exposed
+# as picker "features" on that schema.
+_GOLD_WIDE_FEATURE_COLS = (
+    "revenue_at_risk", "total_purchases", "purchase_count", "avg_purchase_value",
+)
+
+
 async def list_gold_sources(conn: asyncpg.Connection) -> list[dict]:
     """Gold features available to the calling tenant. Returns the
     distinct feature names + sample row count so the picker can show
-    coverage."""
-    rows = await conn.fetch(
-        """
-        SELECT feature_name, COUNT(*) AS row_count
-          FROM gold_features                            -- tenant-filter-lint: allow (RLS via acquire_for_tenant)
-         WHERE feature_value IS NOT NULL
-         GROUP BY feature_name
-         ORDER BY row_count DESC
-         LIMIT 100
-        """,
-    )
+    coverage. Handles both gold_features shapes: long (feature_name /
+    feature_value) and the pilot's wide per-customer table."""
+    try:
+        rows = await conn.fetch(
+            """
+            SELECT feature_name, COUNT(*) AS row_count
+              FROM gold_features                            -- tenant-filter-lint: allow (RLS via acquire_for_tenant)
+             WHERE feature_value IS NOT NULL
+             GROUP BY feature_name
+             ORDER BY row_count DESC
+             LIMIT 100
+            """,
+        )
+    except asyncpg.exceptions.UndefinedColumnError:
+        counts = await conn.fetchrow(
+            """
+            SELECT COUNT(revenue_at_risk)    AS revenue_at_risk,
+                   COUNT(total_purchases)    AS total_purchases,
+                   COUNT(purchase_count)     AS purchase_count,
+                   COUNT(avg_purchase_value) AS avg_purchase_value
+              FROM gold_features                            -- tenant-filter-lint: allow (RLS via acquire_for_tenant)
+            """,
+        )
+        return [
+            {
+                "id": col,
+                "label": col,
+                "layer": "gold",
+                "row_count": int(counts[col] or 0),
+            }
+            for col in _GOLD_WIDE_FEATURE_COLS
+            if (counts[col] or 0) > 0
+        ]
     return [
         {
             "id": r["feature_name"],

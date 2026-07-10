@@ -5,8 +5,11 @@ from typing import Annotated
 from fastapi import APIRouter, Header, HTTPException
 from pydantic import BaseModel
 
-from ..reasoning.legacy_analytics.template_registry import get_eligible_templates
-from ..reasoning.legacy_analytics.runner import run_analysis_for_run
+from ..reasoning.legacy_analytics.template_registry import (
+    get_eligible_templates,
+    profile_from_df,
+)
+from ..reasoning.legacy_analytics.runner import _load_silver, run_analysis_for_run
 from ..shared.db import acquire_for_tenant
 
 router = APIRouter()
@@ -25,9 +28,30 @@ async def list_templates(
     detected_types: str = "",          # comma-separated: "date,currency,text"
     detected_purpose: str | None = None,
     row_count: int = 0,
+    run_id: str | None = None,        # profile the run's Silver server-side
+    x_enterprise_id: Annotated[str | None, Header()] = None,
 ):
-    """Return all templates with eligibility flag for the given data profile."""
+    """Return all templates with eligibility flag for the given data profile.
+
+    Two modes:
+      * explicit — caller passes detected_types/detected_purpose/row_count;
+      * run-aware — caller passes run_id (+ X-Enterprise-ID) and the profile
+        is derived from the run's Silver rows. Explicit params, when
+        non-empty, override the derived values.
+    """
     types_set = set(t.strip() for t in detected_types.split(",") if t.strip())
+
+    if run_id and x_enterprise_id:
+        try:
+            df = await _load_silver(run_id, x_enterprise_id, None)
+        except Exception:  # noqa: BLE001 — profiling is best-effort
+            df = None
+        if df is not None:
+            d_types, d_purpose, d_rows = profile_from_df(df)
+            types_set = types_set or d_types
+            detected_purpose = detected_purpose or d_purpose
+            row_count = row_count or d_rows
+
     return get_eligible_templates(types_set, detected_purpose, row_count)
 
 

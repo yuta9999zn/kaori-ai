@@ -172,7 +172,7 @@ async def _run_single_template(
                 INSERT INTO analysis_results
                     (analysis_run_id, enterprise_id, template_id, status, results_payload)
                 VALUES ($1::uuid, $2::uuid, $3::text, 'done', $4::jsonb)
-            """, analysis_run_id, enterprise_id, template_id, json.dumps(result))
+            """, analysis_run_id, enterprise_id, template_id, _dump_result_json(result))
         log.info("orchestrator.template.done",
                  template=template_id, elapsed_s=elapsed)
         # K-6 audit: one row per template execution. Best-effort.
@@ -354,7 +354,9 @@ async def _load_silver(
         if isinstance(rd, str):
             rd = json.loads(rd)
         records.append(rd)
-    return _coerce_numeric(_drop_empty_columns(pd.DataFrame(records)))
+    return _coerce_datetime(
+        _coerce_numeric(_drop_empty_columns(pd.DataFrame(records)))
+    )
 
 
 def _drop_empty_columns(df: pd.DataFrame) -> pd.DataFrame:
@@ -404,6 +406,65 @@ def _coerce_numeric(df: pd.DataFrame) -> pd.DataFrame:
         if pd.to_numeric(non_null, errors="coerce").isna().any():
             continue  # at least one value isn't numeric → leave as text
         df[col] = pd.to_numeric(s, errors="coerce")
+    return df
+
+
+def _json_safe(obj):
+    """Recursively replace non-finite floats (NaN/±Inf) with None.
+
+    Engines hand back pandas ``.to_dict("records")`` payloads where e.g.
+    ``pct_change()`` yields NaN on the first row; ``json.dumps`` emits a
+    bare ``NaN`` token that Postgres JSONB rejects, flipping a successful
+    template run to status='error' (incident 2026-07-10, run b067818e).
+    numpy scalars subclass float so they're covered by the same check.
+    """
+    if isinstance(obj, float):
+        import math
+        return None if not math.isfinite(obj) else obj
+    if isinstance(obj, dict):
+        return {k: _json_safe(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_json_safe(v) for v in obj]
+    return obj
+
+
+def _dump_result_json(result) -> str:
+    """json.dumps for analysis_results.results_payload — strict-JSON safe."""
+    return json.dumps(_json_safe(result), ensure_ascii=False, default=str)
+
+
+# ISO-8601 date, optionally with a time part ("2026-01-04", "2026-01-04T09:30",
+# "2026-01-04 09:30:00"). The Silver clean rule "Parse dates to ISO" guarantees
+# this shape, so anything else stays text on purpose.
+_ISO_DATE_RE = r"^\d{4}-\d{2}-\d{2}([ T].*)?$"
+
+
+def _coerce_datetime(df: pd.DataFrame) -> pd.DataFrame:
+    """Type-infer ISO date columns on read — the datetime twin of
+    _coerce_numeric (same JSONB-strings-in root cause). Engines detect the
+    date axis via ``select_dtypes``/dtype probes ("datetime64"); without
+    this, a perfectly clean ``date`` column arrives as object dtype and
+    time-series/anomaly templates wrongly report the dataset ineligible.
+
+    A column is upgraded only when EVERY non-null value matches the ISO
+    shape — one stray value keeps the whole column text (mirror of the
+    numeric rule; never guess on mixed columns). Runs AFTER _coerce_numeric,
+    so numeric-looking strings are already gone and can't be misread as
+    epoch timestamps.
+    """
+    for col in df.columns:
+        if df[col].dtype != object:
+            continue
+        s = df[col]
+        non_null = s[s.notna()].astype(str).str.strip()
+        if non_null.empty:
+            continue
+        if not non_null.str.match(_ISO_DATE_RE).all():
+            continue
+        parsed = pd.to_datetime(s, errors="coerce", format="mixed")
+        if parsed[s.notna()].isna().any():
+            continue  # ISO-shaped but unparseable (e.g. month 13) → keep text
+        df[col] = parsed
     return df
 
 

@@ -109,3 +109,42 @@ async def test_get_breaker_returns_same_instance():
     a = cb.get_breaker("foo")
     b = cb.get_breaker("foo")
     assert a is b
+
+
+@pytest.mark.asyncio
+async def test_call_with_breaker_max_attempts_overrides_global(monkeypatch):
+    """Per-call max_attempts overrides RETRY_MAX_ATTEMPTS. Incident
+    2026-07-10: an LLM node on pilot CPU inherited 3 × LLM_TIMEOUT_S
+    (≈ 24 min of silent waiting) from the global default — LLM callers
+    need to fail fast without loosening retry for every other upstream."""
+    monkeypatch.setattr(cb, "RETRY_MAX_ATTEMPTS", 3)
+    monkeypatch.setattr(cb, "RETRY_BACKOFF_S", 0.01)
+
+    attempts = 0
+
+    async def _always_timeout():
+        nonlocal attempts
+        attempts += 1
+        raise httpx.TimeoutException("slow upstream")
+
+    with pytest.raises(httpx.TimeoutException):
+        await cb.call_with_breaker("test_breaker", _always_timeout, max_attempts=1)
+    assert attempts == 1
+
+
+@pytest.mark.asyncio
+async def test_call_with_breaker_max_attempts_none_keeps_global(monkeypatch):
+    """max_attempts=None (the default) preserves existing behavior."""
+    monkeypatch.setattr(cb, "RETRY_MAX_ATTEMPTS", 2)
+    monkeypatch.setattr(cb, "RETRY_BACKOFF_S", 0.01)
+
+    attempts = 0
+
+    async def _always_timeout():
+        nonlocal attempts
+        attempts += 1
+        raise httpx.TimeoutException("slow upstream")
+
+    with pytest.raises(httpx.TimeoutException):
+        await cb.call_with_breaker("test_breaker", _always_timeout, max_attempts=None)
+    assert attempts == 2

@@ -1236,7 +1236,12 @@ async def run_in_background(
 ) -> None:
     """Spawn-and-forget entry point for FastAPI BackgroundTasks.
     Catches all exceptions so a failed run never crashes the parent
-    process — the failure already lives in workflow_runs.error_summary."""
+    process — the failure already lives in workflow_runs.error_summary.
+
+    Incident 2026-07-10 (run d3d2e493): CancelledError is a BaseException,
+    so a worker shutdown mid-run used to slip past `except Exception` and
+    leave the run frozen at status='running' forever. Both exits below now
+    best-effort release the row to 'failed' so pollers see a terminal state."""
     try:
         runner = WorkflowRunner()
         await runner.run(
@@ -1244,10 +1249,43 @@ async def run_in_background(
             enterprise_id=enterprise_id,
             user_id=user_id,
         )
-    except Exception:  # noqa: BLE001
+    except asyncio.CancelledError:
+        log.warning("workflow_run.background_cancelled",
+                     run_id=str(run_id),
+                     enterprise_id=str(enterprise_id))
+        await _mark_run_failed_best_effort(
+            run_id, enterprise_id,
+            reason="orchestrator shutdown mid-run (task cancelled)",
+        )
+        raise  # cooperative cancellation must propagate
+    except Exception as exc:  # noqa: BLE001
         log.exception("workflow_run.background_crashed",
                        run_id=str(run_id),
                        enterprise_id=str(enterprise_id))
+        await _mark_run_failed_best_effort(
+            run_id, enterprise_id,
+            reason=f"background crash: {exc}",
+        )
+
+
+async def _mark_run_failed_best_effort(
+    run_id:        UUID,
+    enterprise_id: UUID,
+    *,
+    reason:        str,
+) -> None:
+    """Release an interrupted run to a terminal state. Best-effort: during
+    shutdown the pool may already be closing — never mask the original
+    exit. The state machine rejects the transition if the run already
+    reached a terminal state on its own."""
+    try:
+        await WorkflowRunner._update_run_status(
+            run_id, enterprise_id,
+            status="failed", error_summary=reason, ended=True,
+        )
+    except BaseException:  # noqa: BLE001 — includes CancelledError
+        log.warning("workflow_run.orphan_release_failed",
+                     run_id=str(run_id))
 
 
 async def resume_after_approval(

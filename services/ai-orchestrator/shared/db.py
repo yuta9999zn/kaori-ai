@@ -117,6 +117,16 @@ async def close_db_pool() -> None:
         _pool = None
 
 
+def _acquire_timeout_s() -> float:
+    """Bounded pool-acquire wait (incident 2026-07-10, run d3d2e493):
+    asyncpg's default acquire() waits forever on an exhausted pool — a
+    runner coroutine then parks silently between nodes with no log. A
+    finite wait surfaces exhaustion as TimeoutError, which callers'
+    retry/degrade paths already handle. Read per call so ops can tune
+    without a restart-order trap."""
+    return float(os.getenv("KAORI_DB_ACQUIRE_TIMEOUT_S", "30"))
+
+
 def get_pool() -> asyncpg.Pool:
     if _pool is None:
         raise RuntimeError("DB pool not initialised — call init_db_pool() first.")
@@ -142,7 +152,7 @@ async def acquire_for_tenant(
         eid_str = str(UUID(enterprise_id))
 
     pool = get_pool()
-    async with pool.acquire() as conn:
+    async with pool.acquire(timeout=_acquire_timeout_s()) as conn:
         async with conn.transaction():
             # P15-S11 live-test 2026-05-15: must set BOTH legacy + new-style
             # GUCs. Migs ≤045 use app.enterprise_id; migs 046+ (branches,
@@ -252,7 +262,7 @@ async def log_cross_tenant_attempt(
     """
     try:
         pool = get_pool()
-        async with pool.acquire() as conn:
+        async with pool.acquire(timeout=_acquire_timeout_s()) as conn:
             row = await conn.fetchrow(
                 "SELECT log_rls_attempt($1, $2, $3, $4, $5, $6, $7, $8) AS id",
                 _coerce_uuid(guc_tenant),
@@ -317,7 +327,7 @@ async def acquire_cross_tenant() -> AsyncIterator[asyncpg.Connection]:
     connection returns to the pool with no lingering admin state.
     """
     pool = get_pool()
-    async with pool.acquire() as conn:
+    async with pool.acquire(timeout=_acquire_timeout_s()) as conn:
         async with conn.transaction():
             await conn.execute("SET LOCAL app.is_admin = 'true'")
             yield conn

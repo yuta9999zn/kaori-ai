@@ -135,6 +135,27 @@ async def test_invoke_external_claude_with_key_calls_anthropic(monkeypatch):
 
 
 @pytest.mark.asyncio
+async def test_invoke_anthropic_refusal_raises_clear_error(monkeypatch):
+    """Opus 4.7+ có thể trả HTTP 200 với stop_reason='refusal' và content
+    rỗng — phải nổ lỗi rõ ràng (router 502 có ngữ cảnh) thay vì IndexError."""
+    monkeypatch.setattr(providers, "EXTERNAL_AI_ENABLED", True)
+    monkeypatch.setattr(providers, "ANTHROPIC_API_KEY", "ant-key")
+
+    def handler(url, body):
+        return {"content": [], "stop_reason": "refusal"}
+
+    patcher, _ = _patch_httpx_post(handler)
+    with patcher:
+        with pytest.raises(RuntimeError, match="refusal"):
+            await providers.invoke(
+                model_id="claude-opus-4-8",
+                method="external",
+                prompt="hello",
+                max_tokens=100,
+            )
+
+
+@pytest.mark.asyncio
 async def test_invoke_external_gpt_with_key_calls_openai(monkeypatch):
     monkeypatch.setattr(providers, "EXTERNAL_AI_ENABLED", True)
     monkeypatch.setattr(providers, "ANTHROPIC_API_KEY", "")

@@ -139,6 +139,37 @@ TEMPLATE_REGISTRY: list[AnalysisTemplate] = [
 ]
 
 
+def profile_from_df(df) -> tuple[set[str], str | None, int]:
+    """Derive (detected_types, detected_purpose, row_count) from a loaded
+    Silver DataFrame so /analytics/templates?run_id= can compute eligibility
+    server-side (the FE picker has no profile of its own — incident
+    2026-07-10, every template showed "chưa đủ điều kiện" on clean data).
+
+    Canonical types mirror the registry vocabulary: datetime64 → "date",
+    integer → "integer", float → "decimal", anything else → "text".
+    Purpose is a shape heuristic, not Stage-2 semantics: a date axis plus a
+    numeric measure is the transaction-list shape the churn/cohort
+    templates ask for; without a date axis we claim nothing.
+    """
+    import pandas as pd
+
+    types: set[str] = set()
+    for col in df.columns:
+        dtype = df[col].dtype
+        if pd.api.types.is_datetime64_any_dtype(dtype):
+            types.add("date")
+        elif pd.api.types.is_integer_dtype(dtype):
+            types.add("integer")
+        elif pd.api.types.is_float_dtype(dtype):
+            types.add("decimal")
+        else:
+            types.add("text")
+
+    has_numeric = bool(types & {"integer", "decimal", "currency"})
+    purpose = "transaction_list" if ("date" in types and has_numeric) else None
+    return types, purpose, len(df)
+
+
 def get_eligible_templates(
     detected_types: set[str],
     detected_purpose: str | None,

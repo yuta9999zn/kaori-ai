@@ -95,6 +95,9 @@ async def invoke(
 # Pilot 7B trên CPU dưới tải nặng có thể vượt 120s cho một completion dài —
 # knob env thay vì hằng số (ADR-0042 P2 doc-author là caller dài nhất).
 OLLAMA_TIMEOUT_S = float(os.getenv("OLLAMA_TIMEOUT_S", "120.0"))
+# Embed trên pilot CPU xếp hàng SAU một generate đang chạy (Ollama serialize
+# per-model queue) — 30s cứng từng làm rag_query 502 giữa workflow run.
+OLLAMA_EMBED_TIMEOUT_S = float(os.getenv("OLLAMA_EMBED_TIMEOUT_S", "120.0"))
 
 
 async def _call_ollama(model: str, prompt: str, max_tokens: int) -> str:
@@ -129,7 +132,16 @@ async def _call_anthropic(model: str, prompt: str, max_tokens: int) -> str:
             },
         )
         resp.raise_for_status()
-        return resp.json()["content"][0]["text"]
+        data = resp.json()
+        # Opus 4.7+ safety classifiers có thể trả HTTP 200 với
+        # stop_reason='refusal' và content rỗng — nổ lỗi rõ ràng để router
+        # xử lý (thay vì IndexError vô danh).
+        text_blocks = [b for b in data.get("content", []) if b.get("type") == "text"]
+        if not text_blocks:
+            raise RuntimeError(
+                f"anthropic returned no text (stop_reason={data.get('stop_reason')})"
+            )
+        return text_blocks[0]["text"]
 
 
 async def _call_openai(model: str, prompt: str, max_tokens: int) -> str:
@@ -440,7 +452,7 @@ async def embed_text(text: str) -> list[float]:
         # An empty string would 400 from Ollama; short-circuit with the
         # zero vector so the caller's "no content" handling stays uniform.
         return []
-    async with httpx.AsyncClient(timeout=30.0) as client:
+    async with httpx.AsyncClient(timeout=OLLAMA_EMBED_TIMEOUT_S) as client:
         resp = await client.post(
             f"{OLLAMA_HOST}/api/embeddings",
             json={"model": EMBEDDING_MODEL, "prompt": text},

@@ -261,11 +261,10 @@ class RagQueryExecutor(NodeExecutor):
 
     Config:
       query:     $.upstream.question  or literal string  (required)
-      task_type: 'factual_long_doc' | 'tabular' | 'reasoning' | None
-                 (optional — None lets the router auto-route)
-      top_k:     5   (optional)
+      top_k:     5   (optional, 1..20 — maps to /rag/answer max_citations)
     Output:
-      {answer: str, citations: list[{doc_id, page, snippet}], trace_id: str}
+      {answer: str, citations: list[RAGCitationOut], trace_id: str|None,
+       engine_name: str}
 
     K-3: HTTP call to ai-orchestrator's own /rag/answer endpoint —
          not a direct llm-gateway call (the endpoint itself routes via
@@ -279,18 +278,26 @@ class RagQueryExecutor(NodeExecutor):
         if not query.strip():
             raise NodeExecutorError("rag_query.query required (resolved to empty)")
 
-        task_type = config.get("task_type")
         top_k = int(config.get("top_k") or 5)
-        if top_k < 1 or top_k > 50:
-            raise NodeExecutorError("rag_query.top_k must be 1..50")
+        if top_k < 1 or top_k > 20:
+            raise NodeExecutorError("rag_query.top_k must be 1..20")
 
         base_url = os.getenv("AI_ORCH_INTERNAL_URL", "http://localhost:8093")
-        body: dict[str, Any] = {"query": query, "top_k": top_k}
-        if task_type:
-            body["task_type"] = task_type
+        # /rag/answer contract (routers/rag.py RAGAnswerRequest) —
+        # query_text + max_citations; the old query/top_k shape 422s.
+        # task_type is not part of the endpoint (its router auto-dispatches),
+        # so a configured task_type is accepted but not forwarded.
+        body: dict[str, Any] = {
+            "query_text": query,
+            "max_citations": top_k,
+            "locale": "vi",
+        }
 
+        # Pilot CPU: /rag/answer = embed + synthesis qua Ollama đang bận —
+        # có thể >2 phút; 60s cứng từng giết node giữa run.
+        timeout_s = float(os.getenv("KAORI_RAG_NODE_TIMEOUT_S", "300.0"))
         try:
-            async with httpx.AsyncClient(timeout=60.0) as client:
+            async with httpx.AsyncClient(timeout=timeout_s) as client:
                 resp = await client.post(
                     f"{base_url}/rag/answer",
                     json=body,
@@ -304,9 +311,10 @@ class RagQueryExecutor(NodeExecutor):
         return NodeResult(
             status="completed",
             output_data={
-                "answer":     str(payload.get("answer") or ""),
-                "citations":  payload.get("citations") or [],
-                "trace_id":   payload.get("trace_id"),
+                "answer":      str(payload.get("answer") or ""),
+                "citations":   payload.get("citations") or [],
+                "trace_id":    payload.get("trace_id"),
+                "engine_name": payload.get("engine_name"),
             },
         )
 

@@ -40,6 +40,7 @@ import {
 import { PageHeader } from '@/components/p2/shell';
 import { WizardStepper, PIPELINE_STATUS_BADGE, type PipelineStatus } from '@/components/p2/foundation-wizard';
 import FlexibleChart from '@/components/charts/FlexibleChart';
+import { useT } from '@/lib/i18n/provider';
 
 interface ChartBlock {
   type: 'chart' | 'stats' | 'stats_card' | 'narrative' | 'table' | 'recommendation';
@@ -88,6 +89,7 @@ interface AnalysisRun {
 const NARRATIVE_PLACEHOLDER_PREFIX = 'Nhận xét AI tạm thời chưa khả dụng';
 
 export default function PipelineStep5Results() {
+  const t = useT();
   const params = useParams<{ id: string }>();
   const search = useSearchParams();
   const pipelineId = params?.id ?? '';
@@ -216,7 +218,7 @@ export default function PipelineStep5Results() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err: any) {
-      setProblem({ title: 'Xuất CSV thất bại', detail: String(err?.message ?? err) });
+      setProblem({ title: t('templates24DataPipelineStep5Results.exportCsvFailedTitle'), detail: String(err?.message ?? err) });
     } finally {
       setExporting(false);
     }
@@ -234,8 +236,8 @@ export default function PipelineStep5Results() {
   return (
     <>
       <PageHeader
-        title="Kết quả phân tích"
-        description="Bước 5 / 5 — tóm tắt điều hành, chỉ số chính, và chi tiết từng phân tích."
+        title={t('templates24DataPipelineStep5Results.pageTitle')}
+        description={t('templates24DataPipelineStep5Results.pageDescription')}
       />
 
       <div className="px-6 lg:px-8 py-6 max-w-[1400px] mx-auto space-y-6">
@@ -247,8 +249,7 @@ export default function PipelineStep5Results() {
           <div className="rounded-md-custom bg-[var(--state-warning)]/10 border border-[var(--state-warning)]/30 p-3 flex items-start gap-3">
             <AlertCircle className="w-4 h-4 text-[var(--state-warning)] shrink-0 mt-0.5" />
             <p className="text-sm text-[#9E814D]">
-              Các phân tích đã chạy xong và kết quả hiển thị bên dưới, nhưng hệ thống chưa kịp đánh dấu
-              "hoàn tất". Đây là kết quả thật — bạn có thể tải lại trang sau ít phút nếu trạng thái chưa cập nhật.
+              {t('templates24DataPipelineStep5Results.staleFinalizerNotice')}
             </p>
           </div>
         )}
@@ -287,7 +288,7 @@ export default function PipelineStep5Results() {
               </div>
             ) : isDone ? (
               <div className="p-12 text-center text-[var(--text-secondary)] bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)]">
-                Pipeline hoàn tất nhưng không có kết quả phân tích nào. Vui lòng liên hệ hỗ trợ.
+                {t('templates24DataPipelineStep5Results.noResultsNotice')}
               </div>
             ) : null}
 
@@ -305,8 +306,7 @@ export default function PipelineStep5Results() {
         <div className="flex items-start gap-3 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)] print:hidden">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Biểu đồ render <span className="font-medium text-[var(--text-primary)]">client-side</span> qua chart-registry (F-027).
-            Nhận xét bằng lời do AI nội bộ (Qwen) tổng hợp; số liệu và biểu đồ luôn đầy đủ kể cả khi nhận xét chưa sẵn sàng.
+            {t('templates24DataPipelineStep5Results.footerNoteBeforeClientSide')}<span className="font-medium text-[var(--text-primary)]">client-side</span>{t('templates24DataPipelineStep5Results.footerNoteAfterClientSide')}
           </p>
         </div>
 
@@ -316,10 +316,10 @@ export default function PipelineStep5Results() {
             onClick={() => (window.location.href = `/p2/pipelines/${pipelineId}/step-4-analyze`)}
           >
             <ChevronLeft className="w-4 h-4 mr-1" />
-            Quay lại Bước 4
+            {t('templates24DataPipelineStep5Results.backToStep4')}
           </Button>
           <Button onClick={() => (window.location.href = '/p2/pipelines')}>
-            Về danh sách pipeline
+            {t('templates24DataPipelineStep5Results.backToPipelineList')}
           </Button>
         </div>
       </div>
@@ -332,8 +332,9 @@ export default function PipelineStep5Results() {
 // ----------------------------------------------------------------------------
 
 function StatusStrip({ run }: { run: AnalysisRun }) {
-  const doneCount = run.templates.filter((t) => t.status === 'done').length;
-  const failCount = run.templates.filter((t) => t.status === 'error' || t.status === 'failed').length;
+  const t = useT();
+  const doneCount = run.templates.filter((tr) => tr.status === 'done').length;
+  const failCount = run.templates.filter((tr) => tr.status === 'error' || tr.status === 'failed').length;
   return (
     <div className="flex items-start gap-4 p-4 rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] shadow-soft-sm">
       <div className={cn(
@@ -349,28 +350,28 @@ function StatusStrip({ run }: { run: AnalysisRun }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <Badge variant={PIPELINE_STATUS_BADGE[run.status].variant}>
-            {PIPELINE_STATUS_BADGE[run.status].label}
+            {t(PIPELINE_STATUS_BADGE[run.status].label)}
           </Badge>
           <Badge variant={run.consent_external ? 'warning' : 'success'}>
-            {run.consent_external ? <><Globe className="w-3 h-3 mr-1 inline" /> AI bên ngoài</> : <><Lock className="w-3 h-3 mr-1 inline" /> Qwen nội bộ</>}
+            {run.consent_external ? <><Globe className="w-3 h-3 mr-1 inline" /> {t('templates24DataPipelineStep5Results.externalAi')}</> : <><Lock className="w-3 h-3 mr-1 inline" /> {t('templates24DataPipelineStep5Results.internalQwen')}</>}
           </Badge>
           {run.templates.length > 0 && (
             <span className="text-xs text-[var(--text-secondary)]">
-              {doneCount}/{run.templates.length} phân tích hoàn tất
-              {failCount > 0 && <span className="text-[#9B5050]"> · {failCount} cần xem lại</span>}
+              {t('templates24DataPipelineStep5Results.doneCountOf', { done: doneCount, total: run.templates.length })}
+              {failCount > 0 && <span className="text-[#9B5050]"> · {t('templates24DataPipelineStep5Results.failCountNeedReview', { count: failCount })}</span>}
             </span>
           )}
         </div>
         {run.status === 'analyzing' && (
           <p className="text-sm text-[var(--text-secondary)] mt-2">
-            Đang chạy... Trang sẽ tự cập nhật mỗi 5 giây.
+            {t('templates24DataPipelineStep5Results.runningAutoRefresh')}
           </p>
         )}
         {run.status === 'analysis_complete' && run.finished_at && (
           <p className="text-xs text-[var(--text-secondary)] mt-1">
-            Hoàn tất: {run.finished_at}
+            {t('templates24DataPipelineStep5Results.finishedAt', { time: run.finished_at })}
             {run.decision_audit_log_id && (
-              <> · <a href={`/p2/decisions/${run.decision_audit_log_id}`} className="text-[var(--primary-gold-dark)] underline">Xem audit log</a></>
+              <> · <a href={`/p2/decisions/${run.decision_audit_log_id}`} className="text-[var(--primary-gold-dark)] underline">{t('templates24DataPipelineStep5Results.viewAuditLog')}</a></>
             )}
           </p>
         )}
@@ -389,6 +390,7 @@ function ExecutiveSummary({
   status: PipelineStatus; text: string | null; coverage: number | null;
   rowCount?: number; colCount?: number; onCopy: () => void; copied: boolean;
 }) {
+  const t = useT();
   const analyzing = status === 'analyzing';
   return (
     <div className="rounded-lg-custom bg-gradient-to-br from-[var(--primary-gold)]/8 to-[var(--bg-card)] border border-[var(--primary-gold)]/25 p-5 shadow-soft-sm">
@@ -398,12 +400,12 @@ function ExecutiveSummary({
             <Sparkles className="w-5 h-5 text-[var(--primary-gold-dark)]" />
           </div>
           <div>
-            <h2 className="font-serif text-lg text-[var(--text-primary)]">Tóm tắt phân tích</h2>
+            <h2 className="font-serif text-lg text-[var(--text-primary)]">{t('templates24DataPipelineStep5Results.summaryHeading')}</h2>
             {(rowCount != null || colCount != null) && (
               <p className="text-xs text-[var(--text-secondary)]">
-                {rowCount != null && <>{rowCount.toLocaleString('vi-VN')} dòng</>}
+                {rowCount != null && <>{t('templates24DataPipelineStep5Results.rowCountLabel', { count: rowCount.toLocaleString('vi-VN') })}</>}
                 {rowCount != null && colCount != null && ' · '}
-                {colCount != null && <>{colCount} cột</>}
+                {colCount != null && <>{t('templates24DataPipelineStep5Results.colCountLabel', { count: colCount })}</>}
               </p>
             )}
           </div>
@@ -411,7 +413,7 @@ function ExecutiveSummary({
         <div className="flex items-center gap-2 shrink-0">
           {coverage != null && (
             <Badge variant={coverage >= 0.6 ? 'success' : coverage >= 0.3 ? 'warning' : 'neutral'}>
-              <BookOpen className="w-3 h-3 mr-1 inline" /> Nền tảng {(coverage * 100).toFixed(0)}%
+              <BookOpen className="w-3 h-3 mr-1 inline" /> {t('templates24DataPipelineStep5Results.coverageLabel', { pct: (coverage * 100).toFixed(0) })}
             </Badge>
           )}
           {text && (
@@ -420,7 +422,7 @@ function ExecutiveSummary({
               className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-color)] rounded-md-custom px-2.5 py-1.5 transition-colors bg-[var(--bg-card)]"
             >
               {copied ? <CheckCircle2 className="w-3.5 h-3.5 text-[var(--state-success)]" /> : <Copy className="w-3.5 h-3.5" />}
-              {copied ? 'Đã sao chép' : 'Sao chép'}
+              {copied ? t('templates24DataPipelineStep5Results.copiedLabel') : t('templates24DataPipelineStep5Results.copyLabel')}
             </button>
           )}
         </div>
@@ -433,8 +435,8 @@ function ExecutiveSummary({
           <Loader2 className={cn('w-4 h-4 text-[var(--text-secondary)] shrink-0 mt-0.5', analyzing && 'animate-spin')} />
           <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
             {analyzing
-              ? 'Trợ lý AI đang đọc dữ liệu và viết nhận xét tổng quan…'
-              : 'Các chỉ số và biểu đồ bên dưới đã đầy đủ. Phần nhận xét bằng lời sẽ xuất hiện khi trợ lý AI sẵn sàng — bạn có thể tải lại trang sau ít phút.'}
+              ? t('templates24DataPipelineStep5Results.aiReadingData')
+              : t('templates24DataPipelineStep5Results.metricsReadyNarrativePending')}
           </p>
         </div>
       )}
@@ -446,16 +448,23 @@ function ExecutiveSummary({
 // 2. KPI Highlight bar — real computed stats, business-framed
 // ----------------------------------------------------------------------------
 
-// Friendly VN labels + framing for the common BE stats_card keys.
-const STAT_LABEL: Record<string, string> = {
-  total_rows: 'Số dòng', numeric_columns: 'Cột số',
-  trend: 'Xu hướng', slope_per_period: 'Độ dốc/kỳ', periods_analysed: 'Số kỳ',
-  forecast_horizon_days: 'Dự báo (ngày)', q1: 'Q1', median: 'Trung vị', q3: 'Q3',
-  outlier_count: 'Số ngoại lệ', k: 'Số nhóm', silhouette_score: 'Điểm phân nhóm',
-  rows_clustered: 'Số dòng phân nhóm',
+// Friendly VN labels + framing for the common BE stats_card keys (translation
+// key suffixes — resolved to text via statLabel() inside a component, since
+// this map lives at module scope where hooks like useT() aren't available).
+const STAT_LABEL_KEYS: Record<string, string> = {
+  total_rows: 'statTotalRows', numeric_columns: 'statNumericColumns',
+  trend: 'statTrend', slope_per_period: 'statSlopePerPeriod', periods_analysed: 'statPeriodsAnalysed',
+  forecast_horizon_days: 'statForecastHorizonDays', q1: 'statQ1', median: 'statMedian', q3: 'statQ3',
+  outlier_count: 'statOutlierCount', k: 'statK', silhouette_score: 'statSilhouetteScore',
+  rows_clustered: 'statRowsClustered',
 };
 
-function buildKpis(blocks: ChartBlock[]) {
+function statLabel(t: ReturnType<typeof useT>, key: string): string {
+  const suffix = STAT_LABEL_KEYS[key];
+  return suffix ? t(`templates24DataPipelineStep5Results.${suffix}`) : key;
+}
+
+function buildKpis(blocks: ChartBlock[], t: ReturnType<typeof useT>) {
   const seen = new Set<string>();
   const out: Array<{ name: string; value: string; good?: boolean }> = [];
   const push = (key: string, name: string, value: string, good?: boolean) => {
@@ -476,10 +485,10 @@ function buildKpis(blocks: ChartBlock[]) {
       if (key === 'null_rate') {
         // Reframe the technical "Tỷ lệ trống 0.012" as positive completeness.
         const pct = Math.max(0, Math.min(1, 1 - Number(v)));
-        push('data_complete', 'Dữ liệu đầy đủ', `${(pct * 100).toFixed(1)}%`, pct >= 0.95);
+        push('data_complete', t('templates24DataPipelineStep5Results.statDataComplete'), `${(pct * 100).toFixed(1)}%`, pct >= 0.95);
         continue;
       }
-      const name = STAT_LABEL[key] ?? key;
+      const name = statLabel(t, key);
       const value = typeof v === 'number' ? v.toLocaleString('vi-VN') : String(v);
       push(key, name, value);
     }
@@ -488,7 +497,8 @@ function buildKpis(blocks: ChartBlock[]) {
 }
 
 function KpiBar({ blocks }: { blocks: ChartBlock[] }) {
-  const kpis = useMemo(() => buildKpis(blocks), [blocks]);
+  const t = useT();
+  const kpis = useMemo(() => buildKpis(blocks, t), [blocks, t]);
   if (!kpis.length) return null;
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -509,13 +519,14 @@ function KpiBar({ blocks }: { blocks: ChartBlock[] }) {
 // 3. Per-template section (accordion)
 // ----------------------------------------------------------------------------
 
-function TemplateSection({ template: t, pipelineId }: { template: TemplateResult; pipelineId: string }) {
-  const failed = t.status === 'error' || t.status === 'failed';
+function TemplateSection({ template: tpl, pipelineId }: { template: TemplateResult; pipelineId: string }) {
+  const t = useT();
+  const failed = tpl.status === 'error' || tpl.status === 'failed';
   const [open, setOpen] = useState<boolean>(!failed);   // failed sections start collapsed but flagged
 
   // Non-narrative, non-empty content blocks decide if there's anything to show.
-  const contentBlocks = t.blocks.filter((b) => b.type !== 'narrative');
-  const narrative = t.blocks.find((b) => b.type === 'narrative');
+  const contentBlocks = tpl.blocks.filter((b) => b.type !== 'narrative');
+  const narrative = tpl.blocks.find((b) => b.type === 'narrative');
 
   return (
     <div className="rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
@@ -526,12 +537,12 @@ function TemplateSection({ template: t, pipelineId }: { template: TemplateResult
         {open ? <ChevronDown className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
               : <ChevronRight className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />}
         <span className="font-serif text-base text-[var(--text-primary)] flex-1 min-w-0 truncate">
-          {t.display_name}
+          {tpl.display_name}
         </span>
         {failed ? (
-          <Badge variant="warning"><AlertCircle className="w-3 h-3 mr-1 inline" /> Chưa đủ điều kiện</Badge>
+          <Badge variant="warning"><AlertCircle className="w-3 h-3 mr-1 inline" /> {t('templates24DataPipelineStep5Results.notEligibleBadge')}</Badge>
         ) : (
-          <Badge variant="success"><CheckCircle2 className="w-3 h-3 mr-1 inline" /> Hoàn tất</Badge>
+          <Badge variant="success"><CheckCircle2 className="w-3 h-3 mr-1 inline" /> {t('templates24DataPipelineStep5Results.doneBadge')}</Badge>
         )}
       </button>
 
@@ -540,19 +551,19 @@ function TemplateSection({ template: t, pipelineId }: { template: TemplateResult
           {failed ? (
             <div className="rounded-md-custom bg-[var(--state-warning)]/8 border border-[var(--state-warning)]/25 p-4">
               <p className="text-sm text-[var(--text-primary)]">
-                Phân tích "{t.display_name}" chưa chạy được vì dữ liệu chưa đủ điều kiện.
+                {t('templates24DataPipelineStep5Results.notEligibleDetail', { name: tpl.display_name })}
               </p>
-              {t.error_message && (
-                <p className="text-xs text-[var(--text-secondary)] mt-1.5">Chi tiết: {t.error_message}</p>
+              {tpl.error_message && (
+                <p className="text-xs text-[var(--text-secondary)] mt-1.5">{t('templates24DataPipelineStep5Results.errorDetailLabel', { detail: tpl.error_message })}</p>
               )}
-              {t.description && (
-                <p className="text-xs text-[var(--text-secondary)] mt-1.5">Yêu cầu: {t.description}</p>
+              {tpl.description && (
+                <p className="text-xs text-[var(--text-secondary)] mt-1.5">{t('templates24DataPipelineStep5Results.requirementLabel', { detail: tpl.description })}</p>
               )}
               <a
                 href={`/p2/pipelines/${pipelineId}/step-2-columns`}
                 className="inline-flex items-center gap-1.5 text-sm text-[var(--primary-gold-dark)] font-medium mt-3 hover:underline"
               >
-                <ArrowLeftCircle className="w-4 h-4" /> Quay lại Bước 2 để xác nhận cột
+                <ArrowLeftCircle className="w-4 h-4" /> {t('templates24DataPipelineStep5Results.backToStep2')}
               </a>
             </div>
           ) : (
@@ -561,7 +572,7 @@ function TemplateSection({ template: t, pipelineId }: { template: TemplateResult
               {contentBlocks.length > 0 ? (
                 contentBlocks.map((b, idx) => <BlockRenderer key={idx} block={b} />)
               ) : (
-                <p className="text-sm text-[var(--text-secondary)] py-2">Phân tích hoàn tất, không có biểu đồ để hiển thị.</p>
+                <p className="text-sm text-[var(--text-secondary)] py-2">{t('templates24DataPipelineStep5Results.noChartToShow')}</p>
               )}
             </>
           )}
@@ -580,21 +591,22 @@ function NextStepsBar({
 }: {
   onExportCsv: () => void; exporting: boolean; onCopySummary: (() => void) | null;
 }) {
+  const t = useT();
   return (
     <div className="flex flex-wrap items-center gap-2 p-4 rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] shadow-soft-sm print:hidden">
-      <span className="text-sm text-[var(--text-secondary)] mr-1">Bước tiếp theo:</span>
+      <span className="text-sm text-[var(--text-secondary)] mr-1">{t('templates24DataPipelineStep5Results.nextStepsLabel')}</span>
       <Button variant="secondary" onClick={onExportCsv} isLoading={exporting}>
-        <Download className="w-4 h-4 mr-2" /> Xuất CSV
+        <Download className="w-4 h-4 mr-2" /> {t('templates24DataPipelineStep5Results.exportCsv')}
       </Button>
       <Button variant="secondary" onClick={() => window.print()}>
-        <Printer className="w-4 h-4 mr-2" /> Xuất PDF / In
+        <Printer className="w-4 h-4 mr-2" /> {t('templates24DataPipelineStep5Results.exportPdfPrint')}
       </Button>
       <Button variant="secondary" onClick={() => navigator.clipboard.writeText(window.location.href)}>
-        <Share2 className="w-4 h-4 mr-2" /> Chia sẻ link
+        <Share2 className="w-4 h-4 mr-2" /> {t('templates24DataPipelineStep5Results.shareLink')}
       </Button>
       {onCopySummary && (
         <Button variant="secondary" onClick={onCopySummary}>
-          <Copy className="w-4 h-4 mr-2" /> Sao chép tóm tắt
+          <Copy className="w-4 h-4 mr-2" /> {t('templates24DataPipelineStep5Results.copySummary')}
         </Button>
       )}
     </div>
@@ -615,6 +627,7 @@ function BlockRenderer({ block: b }: { block: ChartBlock }) {
 }
 
 function StatsBlock({ block: b }: { block: ChartBlock }) {
+  const t = useT();
   // Two shapes feed this: FE kpis[] (name/value/trend) or the BE 'stats_card'
   // data object. Normalise both; skip nested object/array metadata.
   const kpis: any[] = (b.kpis && b.kpis.length)
@@ -625,7 +638,7 @@ function StatsBlock({ block: b }: { block: ChartBlock }) {
           (v === null || v === undefined ||
            typeof v === 'number' || typeof v === 'string' || typeof v === 'boolean'))
         .map(([k, v]) => ({
-          name: STAT_LABEL[k] ?? k,
+          name: statLabel(t, k),
           value: v === null || v === undefined ? '—'
                : typeof v === 'number' ? v.toLocaleString('vi-VN') : String(v),
         }));
@@ -654,7 +667,7 @@ function StatsBlock({ block: b }: { block: ChartBlock }) {
 
 // Factual, data-derived caption (NOT an invented business conclusion — K-3).
 // Only for simple [{label,value}] charts: states group count + the top value.
-function chartFactCaption(b: ChartBlock): string | null {
+function chartFactCaption(b: ChartBlock, t: ReturnType<typeof useT>): string | null {
   const data = Array.isArray((b as any).data) ? (b as any).data : null;
   if (!data || data.length === 0) return null;
   const row0 = data[0];
@@ -666,10 +679,13 @@ function chartFactCaption(b: ChartBlock): string | null {
   for (const r of data) if (Number(r[valueKey]) > Number(top[valueKey])) top = r;
   const topVal = Number(top[valueKey]);
   if (!Number.isFinite(topVal)) return null;
-  return `${data.length} nhóm · cao nhất: ${String(top[labelKey])} (${topVal.toLocaleString('vi-VN')})`;
+  return t('templates24DataPipelineStep5Results.chartFactCaption', {
+    count: data.length, label: String(top[labelKey]), value: topVal.toLocaleString('vi-VN'),
+  });
 }
 
 function ChartBlockCard({ block: b }: { block: ChartBlock }) {
+  const t = useT();
   // Empty-chart collapse: a chart with no data points (e.g. IQR-outlier with no
   // outliers) collapses to a one-line positive badge instead of an empty frame.
   const rows = Array.isArray((b as any).data) ? (b as any).data : null;
@@ -680,12 +696,12 @@ function ChartBlockCard({ block: b }: { block: ChartBlock }) {
         <CheckCircle2 className="w-4 h-4 text-[var(--state-success)] shrink-0" />
         <span className="text-[var(--text-secondary)]">
           {b.title && <span className="font-medium text-[var(--text-primary)]">{b.title}: </span>}
-          {isOutlier ? 'Không phát hiện giá trị bất thường trong dữ liệu.' : 'Không có dữ liệu để hiển thị.'}
+          {isOutlier ? t('templates24DataPipelineStep5Results.noOutliersDetected') : t('templates24DataPipelineStep5Results.noDataToShow')}
         </span>
       </div>
     );
   }
-  const caption = chartFactCaption(b);
+  const caption = chartFactCaption(b, t);
   return (
     <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm">
       {b.title && <h3 className="font-serif text-base text-[var(--text-primary)] mb-1">{b.title}</h3>}
@@ -696,6 +712,7 @@ function ChartBlockCard({ block: b }: { block: ChartBlock }) {
 }
 
 function NarrativeBlock({ block: b }: { block: ChartBlock }) {
+  const t = useT();
   // Degraded path: AI summary couldn't be generated (LLM timeout/offline). The
   // numbers are complete; render a calm muted notice, NOT a red placeholder.
   const degraded = b.degraded || (b.text ?? '').startsWith(NARRATIVE_PLACEHOLDER_PREFIX);
@@ -703,15 +720,15 @@ function NarrativeBlock({ block: b }: { block: ChartBlock }) {
     return (
       <div
         className="flex items-start gap-3 p-4 rounded-lg-custom bg-[var(--bg-app)]/40 border border-dashed border-[var(--border-color)]"
-        title={b.reason ? `AI narrative skipped: ${b.reason}` : undefined}
+        title={b.reason ? t('templates24DataPipelineStep5Results.narrativeSkippedReason', { reason: b.reason }) : undefined}
       >
         <div className="w-8 h-8 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center justify-center shrink-0">
           <Loader2 className="w-4 h-4 text-[var(--text-secondary)]" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-[var(--text-secondary)]">Nhận xét AI đang được tổng hợp</p>
+          <p className="text-sm font-medium text-[var(--text-secondary)]">{t('templates24DataPipelineStep5Results.narrativeBeingComposed')}</p>
           <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">
-            Các số liệu và biểu đồ bên dưới đã đầy đủ. Phần nhận xét bằng lời sẽ xuất hiện khi trợ lý AI sẵn sàng — bạn có thể tải lại trang sau ít phút.
+            {t('templates24DataPipelineStep5Results.metricsReadyNarrativePending')}
           </p>
         </div>
       </div>
@@ -727,7 +744,7 @@ function NarrativeBlock({ block: b }: { block: ChartBlock }) {
           {b.title && <h3 className="font-serif text-base text-[var(--text-primary)]">{b.title}</h3>}
           {b.confidence != null && (
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-              Độ tin cậy: <span className="font-medium text-[var(--text-primary)]">{(b.confidence * 100).toFixed(0)}%</span>
+              {t('templates24DataPipelineStep5Results.confidenceLabel')} <span className="font-medium text-[var(--text-primary)]">{(b.confidence * 100).toFixed(0)}%</span>
             </p>
           )}
         </div>
@@ -768,11 +785,12 @@ function TableBlock({ block: b }: { block: ChartBlock }) {
 }
 
 function RecommendationBlock({ block: b }: { block: ChartBlock }) {
+  const t = useT();
   return (
     <div className="bg-[var(--primary-gold)]/4 rounded-lg-custom border border-[var(--primary-gold)]/30 p-5 shadow-soft-sm">
       <div className="flex items-center gap-2 mb-4">
         <Sparkles className="w-5 h-5 text-[var(--primary-gold-dark)]" />
-        <h3 className="font-serif text-base text-[var(--text-primary)]">{b.title ?? 'Khuyến nghị hành động'}</h3>
+        <h3 className="font-serif text-base text-[var(--text-primary)]">{b.title ?? t('templates24DataPipelineStep5Results.defaultRecommendationTitle')}</h3>
       </div>
       <div className="space-y-3">
         {(b.actions ?? []).map((a, i) => (
@@ -781,7 +799,7 @@ function RecommendationBlock({ block: b }: { block: ChartBlock }) {
             <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">{a.description}</p>
             {a.impact_vnd != null && (
               <p className="text-xs mt-2 text-[var(--primary-gold-dark)] font-medium">
-                Tác động ước tính: {formatVND(a.impact_vnd)}
+                {t('templates24DataPipelineStep5Results.estimatedImpact', { amount: formatVND(a.impact_vnd) })}
               </p>
             )}
           </div>

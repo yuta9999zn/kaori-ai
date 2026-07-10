@@ -233,19 +233,23 @@ class TestRagQuery:
 
     @pytest.mark.asyncio
     async def test_successful_call(self, monkeypatch):
+        sent = {}
+
         class _Resp:
             def raise_for_status(self): pass
             def json(self): return {
                 "answer": "VIP onboarded.",
                 "citations": [{"doc_id": "X", "page": 1, "snippet": "..."}],
-                "trace_id": "t-abc",
+                "engine_name": "pgvector",
             }
 
         class _Client:
             def __init__(self, *a, **k): pass
             async def __aenter__(self): return self
             async def __aexit__(self, *a): return False
-            async def post(self, *a, **k): return _Resp()
+            async def post(self, *a, **k):
+                sent.update(k.get("json") or {})
+                return _Resp()
 
         import workflow_runtime.executors.ai as _ai_mod
         monkeypatch.setattr(_ai_mod, "httpx", type("M", (), {"AsyncClient": _Client, "HTTPError": Exception}))
@@ -254,6 +258,10 @@ class TestRagQuery:
         result = await ex.execute(_ctx(), {"query": "Is VIP X activated?", "top_k": 3})
         assert result.output_data["answer"] == "VIP onboarded."
         assert len(result.output_data["citations"]) == 1
+        assert result.output_data["engine_name"] == "pgvector"
+        # /rag/answer contract — RAGAnswerRequest fields, not query/top_k
+        assert sent == {"query_text": "Is VIP X activated?",
+                        "max_citations": 3, "locale": "vi"}
 
 
 # ─── call_insight_engine ────────────────────────────────────────────

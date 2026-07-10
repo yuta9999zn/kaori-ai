@@ -61,8 +61,10 @@ log = structlog.get_logger()
 
 LLM_GATEWAY_URL = os.getenv("LLM_GATEWAY_URL", "http://llm-gateway:8095")
 MAX_CORPUS_DOCS = 50
-EMBED_TIMEOUT_S = 30.0
-INFER_TIMEOUT_S = 120.0
+# Pilot CPU: embed/infer xếp hàng sau generate đang chạy trong Ollama —
+# 30s cứng từng làm rag_query fail giữa workflow run. Env-configurable.
+EMBED_TIMEOUT_S = float(os.getenv("KAORI_RAG_EMBED_TIMEOUT_S", "120.0"))
+INFER_TIMEOUT_S = float(os.getenv("KAORI_RAG_INFER_TIMEOUT_S", "180.0"))
 
 
 def _cosine(a: list[float], b: list[float]) -> float:

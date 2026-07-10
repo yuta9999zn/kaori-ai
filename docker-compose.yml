@@ -316,6 +316,13 @@ services:
       # document author. Pilot 7B box (~6.7 tok/s): .env sets 120s/300 tok
       # so one section (~45s) fits the timeout; production keeps defaults.
       LLM_TIMEOUT_S: ${LLM_TIMEOUT_S:-30.0}
+      # Incident 2026-07-10 — LLM-specific retry budget (empty = keep the
+      # global RETRY_MAX_ATTEMPTS). Pilot .env sets 1 so a busy Ollama
+      # fails an AI node in minutes, not 3 x LLM_TIMEOUT_S of silence.
+      KAORI_LLM_RETRY_MAX_ATTEMPTS: ${KAORI_LLM_RETRY_MAX_ATTEMPTS:-}
+      # Bounded DB pool acquire (default 30s) — pool exhaustion surfaces
+      # as TimeoutError instead of parking runner coroutines forever.
+      KAORI_DB_ACQUIRE_TIMEOUT_S: ${KAORI_DB_ACQUIRE_TIMEOUT_S:-30}
       KAORI_DOCGEN_MAX_TOKENS: ${KAORI_DOCGEN_MAX_TOKENS:-600}
       KAORI_TPLGEN_MAX_CHARS: ${KAORI_TPLGEN_MAX_CHARS:-7000}
       KAORI_TPLGEN_MAX_TOKENS: ${KAORI_TPLGEN_MAX_TOKENS:-800}

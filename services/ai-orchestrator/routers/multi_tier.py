@@ -47,6 +47,9 @@ class SourceItem(BaseModel):
 
 class SourcesResponse(BaseModel):
     items: list[SourceItem]
+    # Degraded-envelope (tenet 13): layers that failed to list are named
+    # here instead of 500-ing the whole picker. Additive — FE may ignore.
+    warnings: list[str] = []
 
 
 class WorkspaceItem(BaseModel):
@@ -151,13 +154,25 @@ async def list_sources(
         raise HTTPException(status_code=400, detail="layer must be 'silver', 'gold', or both")
 
     items: list[dict] = []
+    warnings: list[str] = []
     async with acquire_for_tenant(x_enterprise_id) as conn:
+        # Per-layer degrade (tenet 13): one layer's schema drift must not
+        # blank the whole picker (incident 2026-07-10 — pilot's wide
+        # gold_features 500'd the endpoint while silver was fine).
         if "silver" in layers:
-            items.extend(await repository.list_silver_sources(conn))
+            try:
+                items.extend(await repository.list_silver_sources(conn))
+            except Exception as exc:  # noqa: BLE001
+                log.error("analysis.sources.layer_failed", layer="silver", error=str(exc))
+                warnings.append("silver layer unavailable")
         if "gold" in layers:
-            items.extend(await repository.list_gold_sources(conn))
+            try:
+                items.extend(await repository.list_gold_sources(conn))
+            except Exception as exc:  # noqa: BLE001
+                log.error("analysis.sources.layer_failed", layer="gold", error=str(exc))
+                warnings.append("gold layer unavailable")
 
-    return SourcesResponse(items=[SourceItem(**i) for i in items])
+    return SourcesResponse(items=[SourceItem(**i) for i in items], warnings=warnings)
 
 
 @router.get("/analysis/cross-workspaces", response_model=WorkspacesResponse)

@@ -63,6 +63,19 @@ LLM_TIMEOUT_S = float(os.getenv("LLM_TIMEOUT_S", "30.0"))
 NARRATIVE_MAX_TOKENS = int(os.getenv("KAORI_NARRATIVE_MAX_TOKENS", "400"))
 _BREAKER_NAME = "llm_gateway"
 
+
+def _llm_retry_attempts() -> Optional[int]:
+    """LLM-specific retry budget (incident 2026-07-10, run d3d2e493).
+    The global RETRY_MAX_ATTEMPTS=3 × LLM_TIMEOUT_S can mean 20+ minutes
+    of silent waiting per LLM node on the pilot CPU box. Read per call so
+    ops can tighten without a restart-order trap; unset/0 → None → keep
+    the global default."""
+    raw = os.getenv("KAORI_LLM_RETRY_MAX_ATTEMPTS", "").strip()
+    if not raw:
+        return None
+    val = int(raw)
+    return val if val > 0 else None
+
 # Kept exported because routers/health.py reads it for the readiness
 # check. After the cutover the orchestrator no longer talks to Ollama
 # directly, so the readiness probe pings the gateway instead — but
@@ -192,7 +205,7 @@ class LLMRouter:
                 return resp.json()
 
         try:
-            payload = await call_with_breaker(_BREAKER_NAME, _call)
+            payload = await call_with_breaker(_BREAKER_NAME, _call, max_attempts=_llm_retry_attempts())
         except httpx.HTTPError as exc:
             log.error("llm_router.gateway_call_failed",
                       task=task, error=str(exc))
@@ -257,7 +270,7 @@ class LLMRouter:
                 return resp.json()
 
         try:
-            payload = await call_with_breaker(_BREAKER_NAME, _call)
+            payload = await call_with_breaker(_BREAKER_NAME, _call, max_attempts=_llm_retry_attempts())
         except httpx.HTTPError as exc:
             log.error("llm_router.structured_call_failed",
                       task=task, error=str(exc))
@@ -333,7 +346,7 @@ class LLMRouter:
                 return resp.json()
 
         try:
-            return await call_with_breaker(_BREAKER_NAME, _call)
+            return await call_with_breaker(_BREAKER_NAME, _call, max_attempts=_llm_retry_attempts())
         except httpx.HTTPError as exc:
             log.error("llm_router.chat_call_failed",
                       task=task, error=str(exc))

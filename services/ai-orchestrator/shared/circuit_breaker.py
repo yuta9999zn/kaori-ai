@@ -30,7 +30,7 @@ from __future__ import annotations
 import asyncio
 import os
 import random
-from typing import Awaitable, Callable, TypeVar
+from typing import Awaitable, Callable, Optional, TypeVar
 
 import httpx
 import pybreaker
@@ -117,13 +117,18 @@ _TRANSIENT_EXCEPTIONS = (
 )
 
 
-async def _retry_async(work: Callable[[], Awaitable[T]]) -> T:
+async def _retry_async(
+    work: Callable[[], Awaitable[T]],
+    max_attempts: Optional[int] = None,
+) -> T:
     """Run ``work`` with bounded retry. Caller passes a no-arg coroutine
     factory so each attempt re-creates the request (httpx clients can't
-    be shared across awaits in some scenarios)."""
+    be shared across awaits in some scenarios). ``max_attempts`` overrides
+    the global RETRY_MAX_ATTEMPTS for callers whose worst-case wait is
+    dominated by a long per-attempt timeout (LLM calls on pilot CPU)."""
     try:
         async for attempt in AsyncRetrying(
-            stop=stop_after_attempt(RETRY_MAX_ATTEMPTS),
+            stop=stop_after_attempt(max_attempts or RETRY_MAX_ATTEMPTS),
             wait=wait_exponential_jitter(initial=RETRY_BACKOFF_S, max=8.0, jitter=1.0),
             retry=retry_if_exception_type(_TRANSIENT_EXCEPTIONS),
             reraise=True,
@@ -141,8 +146,12 @@ async def _retry_async(work: Callable[[], Awaitable[T]]) -> T:
 async def call_with_breaker(
     breaker_name: str,
     work: Callable[[], Awaitable[T]],
+    *,
+    max_attempts: Optional[int] = None,
 ) -> T:
     """Execute ``work()`` under a circuit breaker + bounded retry.
+    ``max_attempts`` (optional) caps retry attempts for THIS call only;
+    None keeps the global RETRY_MAX_ATTEMPTS.
 
     Usage::
 
@@ -174,7 +183,7 @@ async def call_with_breaker(
         )
 
     try:
-        result = await _retry_async(work)
+        result = await _retry_async(work, max_attempts=max_attempts)
     except Exception as exc:
         # Ratchet the breaker's failure counter via its sync .call API
         # so the threshold honours the same fail_max as direct callers.

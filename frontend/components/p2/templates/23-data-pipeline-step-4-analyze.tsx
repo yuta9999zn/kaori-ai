@@ -34,6 +34,7 @@ import {
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
 import { WizardStepper } from '@/components/p2/foundation-wizard';
+import { useT } from '@/lib/i18n/provider';
 
 interface AnalysisTemplate {
   id:          string;
@@ -47,14 +48,15 @@ interface AnalysisTemplate {
   is_recommended:    boolean;
 }
 
-const CATEGORY_LABEL: Record<string, string> = {
-  statistical: 'Thống kê',
-  ml:          'Machine Learning',
-  forecasting: 'Dự báo',
-  anomaly:     'Phát hiện bất thường',
+const CATEGORY_KEY: Record<string, string> = {
+  statistical: 'templates23DataPipelineStep4Analyze.categoryStatistical',
+  ml:          'templates23DataPipelineStep4Analyze.categoryMl',
+  forecasting: 'templates23DataPipelineStep4Analyze.categoryForecasting',
+  anomaly:     'templates23DataPipelineStep4Analyze.categoryAnomaly',
 };
 
 export default function PipelineStep4Analyze() {
+  const t = useT();
   const params = useParams<{ id: string }>();
   const pipelineId = params?.id ?? '';
 
@@ -72,7 +74,11 @@ export default function PipelineStep4Analyze() {
     try {
       // Real BE: GET /analytics/templates → ARRAY of
       // {template_id, display_name, description, eligible, min_rows, ...}.
-      const res = await api<any[]>('/api/v1/analytics/templates');
+      // Run-aware eligibility: BE profiles this run's Silver (types + rows)
+      // so the picker stops warning "chưa đủ điều kiện" on clean data.
+      const res = await api<any[]>(
+        `/api/v1/analytics/templates?run_id=${encodeURIComponent(pipelineId)}`
+      );
       const mapped: AnalysisTemplate[] = (res ?? []).map((t: any) => ({
         id:                t.template_id,
         category:          (['statistical', 'ml', 'forecasting', 'anomaly'].includes(t.category) ? t.category : 'statistical'),
@@ -141,8 +147,8 @@ export default function PipelineStep4Analyze() {
   return (
     <>
       <PageHeader
-        title="Phân tích"
-        description="Bước 4 / 5 — chọn template phân tích và quyết định nguồn AI."
+        title={t('templates23DataPipelineStep4Analyze.title')}
+        description={t('templates23DataPipelineStep4Analyze.description')}
       />
 
       <div className="px-6 lg:px-8 py-6 max-w-[1200px] mx-auto space-y-6">
@@ -168,28 +174,27 @@ export default function PipelineStep4Analyze() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
                 <h3 className="font-serif text-lg text-[var(--text-primary)]">
-                  Nguồn AI: {consentExt ? 'Bên ngoài (Claude / GPT-4o)' : 'Qwen 14B nội bộ'}
+                  {t('templates23DataPipelineStep4Analyze.aiSourceLabel')} {consentExt ? t('templates23DataPipelineStep4Analyze.aiSourceExternal') : t('templates23DataPipelineStep4Analyze.aiSourceInternal')}
                 </h3>
                 <Button
                   size="sm"
                   variant={consentExt ? 'destructive' : 'secondary'}
                   onClick={handleConsentToggle}
                 >
-                  {consentExt ? 'Tắt AI bên ngoài' : 'Bật AI bên ngoài'}
+                  {consentExt ? t('templates23DataPipelineStep4Analyze.disableExternalAi') : t('templates23DataPipelineStep4Analyze.enableExternalAi')}
                 </Button>
               </div>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
                 {consentExt ? (
                   <>
-                    <span className="text-[#9E814D] font-medium">Đang gửi dữ liệu ra ngoài:</span>{' '}
-                    PII đã được che (K-5) trước khi rời khỏi server Kaori. Mọi quyết định gửi external sẽ ghi vào{' '}
-                    <a href="/p2/decisions" className="underline">decision audit log</a> với cờ <span className="font-mono">consent_external=true</span>.
+                    <span className="text-[#9E814D] font-medium">{t('templates23DataPipelineStep4Analyze.consentBannerExternalLabel')}</span>{' '}
+                    {t('templates23DataPipelineStep4Analyze.consentBannerExternalBody')}{' '}
+                    <a href="/p2/decisions" className="underline">{t('templates23DataPipelineStep4Analyze.decisionAuditLogLinkText')}</a> {t('templates23DataPipelineStep4Analyze.consentBannerFlagPrefix')} <span className="font-mono">consent_external=true</span>.
                   </>
                 ) : (
                   <>
-                    <span className="text-[var(--text-primary)] font-medium">Riêng tư mặc định:</span>{' '}
-                    100% phân tích chạy bằng Qwen 14B trên server Kaori. Dữ liệu không rời khỏi workspace của bạn.
-                    Chất lượng đủ tốt cho hầu hết template thống kê / ML cơ bản.
+                    <span className="text-[var(--text-primary)] font-medium">{t('templates23DataPipelineStep4Analyze.consentBannerPrivateLabel')}</span>{' '}
+                    {t('templates23DataPipelineStep4Analyze.consentBannerPrivateBody')}
                   </>
                 )}
               </p>
@@ -201,14 +206,14 @@ export default function PipelineStep4Analyze() {
           <div className="rounded-md-custom bg-[var(--state-error)]/10 border border-[var(--state-error)]/30 p-3 flex items-start gap-3">
             <AlertTriangle className="w-4 h-4 text-[var(--state-error)] shrink-0 mt-0.5" />
             <p className="text-sm text-[#9B5050]">
-              {blockedSelections.length} template đang chọn yêu cầu AI bên ngoài (Claude/GPT). Bật consent ở trên hoặc bỏ chọn.
+              {t('templates23DataPipelineStep4Analyze.blockedSelectionsWarning', { count: blockedSelections.length })}
             </p>
           </div>
         )}
 
         <div>
           <h3 className="font-serif text-base text-[var(--text-primary)] mb-3">
-            Template phân tích {selected.size > 0 && <span className="text-sm text-[var(--text-secondary)] font-sans">({selected.size} đang chọn)</span>}
+            {t('templates23DataPipelineStep4Analyze.templatesSectionTitle')} {selected.size > 0 && <span className="text-sm text-[var(--text-secondary)] font-sans">{t('templates23DataPipelineStep4Analyze.selectedCountSuffix', { count: selected.size })}</span>}
           </h3>
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -232,9 +237,7 @@ export default function PipelineStep4Analyze() {
         <div className="flex items-start gap-3 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Mọi LLM call đi qua <span className="font-medium text-[var(--text-primary)]">llm_router</span> (K-3) — không bao giờ gọi trực tiếp SDK.
-            Khi bật consent, PII vẫn được redact (K-5: <span className="font-mono">&lt;EMAIL_1&gt;</span>, <span className="font-mono">&lt;PHONE_1&gt;</span>) trước khi gửi.
-            Mỗi run tạo entry trong decision_audit_log (K-6).
+            {t('templates23DataPipelineStep4Analyze.footerLlmRouterPart1')} <span className="font-medium text-[var(--text-primary)]">llm_router</span> {t('templates23DataPipelineStep4Analyze.footerLlmRouterPart2')} <span className="font-mono">&lt;EMAIL_1&gt;</span>, <span className="font-mono">&lt;PHONE_1&gt;</span>{t('templates23DataPipelineStep4Analyze.footerLlmRouterPart3')}
           </p>
         </div>
 
@@ -245,7 +248,7 @@ export default function PipelineStep4Analyze() {
             disabled={submitting}
           >
             <ChevronLeft className="w-4 h-4 mr-1" />
-            Quay lại
+            {t('templates23DataPipelineStep4Analyze.backButton')}
           </Button>
           <Button
             onClick={startAnalysis}
@@ -253,7 +256,7 @@ export default function PipelineStep4Analyze() {
             disabled={selected.size === 0 || blockedSelections.length > 0}
           >
             <Sparkles className="w-4 h-4 mr-2" />
-            Bắt đầu phân tích {selected.size} template
+            {t('templates23DataPipelineStep4Analyze.startAnalysisButton', { count: selected.size })}
           </Button>
         </div>
       </div>
@@ -268,7 +271,8 @@ export default function PipelineStep4Analyze() {
   );
 }
 
-function TemplateCard({ template: t, selected, blocked, onToggle }: any) {
+function TemplateCard({ template: tpl, selected, blocked, onToggle }: any) {
+  const t = useT();
   return (
     <button
       type="button"
@@ -283,13 +287,13 @@ function TemplateCard({ template: t, selected, blocked, onToggle }: any) {
     >
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex items-center gap-2 flex-wrap">
-          <h4 className="font-medium text-[var(--text-primary)]">{t.name}</h4>
-          <Badge variant="default" className="text-[10px]">{CATEGORY_LABEL[t.category] ?? t.category}</Badge>
-          {t.is_recommended && <Badge variant="success" className="text-[10px]">Khuyến nghị</Badge>}
-          {t.needs_external_ai && (
+          <h4 className="font-medium text-[var(--text-primary)]">{tpl.name}</h4>
+          <Badge variant="default" className="text-[10px]">{t(CATEGORY_KEY[tpl.category] ?? CATEGORY_KEY.statistical)}</Badge>
+          {tpl.is_recommended && <Badge variant="success" className="text-[10px]">{t('templates23DataPipelineStep4Analyze.recommendedBadge')}</Badge>}
+          {tpl.needs_external_ai && (
             <Badge variant="warning" className="text-[10px]">
               <Globe className="w-2.5 h-2.5 mr-0.5 inline" />
-              Cần AI bên ngoài
+              {t('templates23DataPipelineStep4Analyze.needsExternalAiBadge')}
             </Badge>
           )}
         </div>
@@ -300,21 +304,21 @@ function TemplateCard({ template: t, selected, blocked, onToggle }: any) {
           {selected && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
         </div>
       </div>
-      <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-3">{t.description}</p>
+      <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-3">{tpl.description}</p>
       <div className="flex items-center justify-between text-[11px] text-[var(--text-secondary)]">
-        <span>≈ {t.estimated_minutes} phút</span>
-        {t.min_rows > 0 && <span>Cần ≥ {t.min_rows.toLocaleString('vi-VN')} dòng</span>}
+        <span>{t('templates23DataPipelineStep4Analyze.estimatedMinutes', { minutes: tpl.estimated_minutes })}</span>
+        {tpl.min_rows > 0 && <span>{t('templates23DataPipelineStep4Analyze.minRowsRequired', { rows: tpl.min_rows.toLocaleString('vi-VN') })}</span>}
       </div>
-      {!t.eligible && !blocked && (
+      {!tpl.eligible && !blocked && (
         <p className="text-[11px] text-[#9E814D] mt-2 flex items-center gap-1">
           <AlertTriangle className="w-3 h-3" />
-          Dữ liệu hiện tại có thể chưa đủ điều kiện cho phân tích này
+          {t('templates23DataPipelineStep4Analyze.notEligibleHint')}
         </p>
       )}
       {blocked && (
         <p className="text-[11px] text-[#9B5050] mt-2 flex items-center gap-1">
           <AlertTriangle className="w-3 h-3" />
-          Bật consent AI bên ngoài để chọn template này
+          {t('templates23DataPipelineStep4Analyze.blockedHint')}
         </p>
       )}
     </button>
@@ -322,6 +326,7 @@ function TemplateCard({ template: t, selected, blocked, onToggle }: any) {
 }
 
 function ConsentModal({ onCancel, onConfirm }: any) {
+  const t = useT();
   const [acked, setAcked] = useState(false);
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm" onClick={onCancel}>
@@ -334,7 +339,7 @@ function ConsentModal({ onCancel, onConfirm }: any) {
             <div className="w-10 h-10 rounded-full bg-[var(--state-warning)]/15 flex items-center justify-center">
               <Globe className="w-5 h-5 text-[var(--state-warning)]" />
             </div>
-            <h3 className="font-serif text-lg text-[var(--text-primary)]">Bật AI bên ngoài</h3>
+            <h3 className="font-serif text-lg text-[var(--text-primary)]">{t('templates23DataPipelineStep4Analyze.enableExternalAi')}</h3>
           </div>
           <button onClick={onCancel} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
             <X className="w-5 h-5" />
@@ -342,15 +347,15 @@ function ConsentModal({ onCancel, onConfirm }: any) {
         </div>
 
         <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
-          Khi bật, một số template sẽ gửi dữ liệu (đã che PII) sang Claude Sonnet hoặc GPT-4o để phân tích phức tạp hơn. Vui lòng đọc kỹ:
+          {t('templates23DataPipelineStep4Analyze.consentModalIntro')}
         </p>
 
         <ul className="space-y-2 mb-5 text-sm">
           {[
-            { icon: Lock,        text: 'Email / SĐT / Tên / Địa chỉ / CCCD đã được redact thành <EMAIL_1>, <PHONE_1>... (K-5).' },
-            { icon: ShieldCheck, text: 'Output từ AI bên ngoài được Guardrails kiểm tra trước khi unmask + hiển thị.' },
-            { icon: BarChart3,   text: 'Mỗi quyết định ghi vào decision_audit_log (K-6) với consent flag — bạn xem được tại /p2/decisions.' },
-            { icon: Zap,         text: 'External call tốn hạn mức gói cước riêng (xem Subscription).' },
+            { icon: Lock,        text: t('templates23DataPipelineStep4Analyze.consentModalItem1') },
+            { icon: ShieldCheck, text: t('templates23DataPipelineStep4Analyze.consentModalItem2') },
+            { icon: BarChart3,   text: t('templates23DataPipelineStep4Analyze.consentModalItem3') },
+            { icon: Zap,         text: t('templates23DataPipelineStep4Analyze.consentModalItem4') },
           ].map((item, i) => {
             const Icon = item.icon;
             return (
@@ -366,14 +371,14 @@ function ConsentModal({ onCancel, onConfirm }: any) {
           <Checkbox
             checked={acked}
             onChange={(e) => setAcked(e.target.checked)}
-            label={<span className="text-[#9E814D]">Tôi hiểu rằng dữ liệu (đã che PII) sẽ rời khỏi server Kaori và được Claude / OpenAI xử lý.</span>}
+            label={<span className="text-[#9E814D]">{t('templates23DataPipelineStep4Analyze.consentModalAckLabel')}</span>}
           />
         </div>
 
         <div className="flex justify-end gap-3">
-          <Button variant="secondary" onClick={onCancel}>Huỷ</Button>
+          <Button variant="secondary" onClick={onCancel}>{t('templates23DataPipelineStep4Analyze.cancelButton')}</Button>
           <Button variant="destructive" onClick={onConfirm} disabled={!acked}>
-            Bật AI bên ngoài
+            {t('templates23DataPipelineStep4Analyze.enableExternalAi')}
           </Button>
         </div>
       </div>

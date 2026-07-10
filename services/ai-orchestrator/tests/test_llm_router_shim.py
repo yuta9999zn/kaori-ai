@@ -184,3 +184,60 @@ def test_OLLAMA_HOST_constant_still_exported_for_backward_compat():
     shim doesn't itself talk to Ollama anymore."""
     assert hasattr(shim, "OLLAMA_HOST")
     assert isinstance(shim.OLLAMA_HOST, str)
+
+
+# ---------------------------------------------------------------------------
+# KAORI_LLM_RETRY_MAX_ATTEMPTS knob (incident 2026-07-10, run d3d2e493)
+# ---------------------------------------------------------------------------
+# The gateway hop inherits RETRY_MAX_ATTEMPTS=3 from the global retry
+# wrapper; with LLM_TIMEOUT_S=480 on the pilot that is ~24 min of silent
+# waiting per LLM node. The shim must forward an LLM-specific attempt
+# budget (env KAORI_LLM_RETRY_MAX_ATTEMPTS, read per call) so ops can
+# tighten LLM retries without touching other upstreams.
+
+
+def _breaker_capture(captured: dict, payload: dict):
+    async def _fake_breaker(name, work, *, max_attempts=None, **kw):
+        captured["max_attempts"] = max_attempts
+        return payload
+    return _fake_breaker
+
+
+@pytest.mark.asyncio
+async def test_complete_forwards_llm_retry_attempts_from_env(monkeypatch):
+    monkeypatch.setenv("KAORI_LLM_RETRY_MAX_ATTEMPTS", "1")
+    captured: dict = {}
+    with patch("ai_orchestrator.engine.llm_router.call_with_breaker",
+               _breaker_capture(captured, {"completion": "ok"})):
+        out = await shim.llm_router.complete(
+            "p", task="t", enterprise_id=str(uuid4())
+        )
+    assert out == "ok"
+    assert captured["max_attempts"] == 1
+
+
+@pytest.mark.asyncio
+async def test_complete_defaults_to_global_retry_when_env_unset(monkeypatch):
+    monkeypatch.delenv("KAORI_LLM_RETRY_MAX_ATTEMPTS", raising=False)
+    captured: dict = {}
+    with patch("ai_orchestrator.engine.llm_router.call_with_breaker",
+               _breaker_capture(captured, {"completion": "ok"})):
+        await shim.llm_router.complete(
+            "p", task="t", enterprise_id=str(uuid4())
+        )
+    assert captured["max_attempts"] is None
+
+
+@pytest.mark.asyncio
+async def test_complete_structured_forwards_llm_retry_attempts(monkeypatch):
+    monkeypatch.setenv("KAORI_LLM_RETRY_MAX_ATTEMPTS", "2")
+    captured: dict = {}
+    payload = {"output_validation": {"parsed_json": {"entities": {}}}}
+    with patch("ai_orchestrator.engine.llm_router.call_with_breaker",
+               _breaker_capture(captured, payload)):
+        out = await shim.llm_router.complete_structured(
+            "p", task="t", output_schema={"type": "object"},
+            enterprise_id=str(uuid4()),
+        )
+    assert out == {"entities": {}}
+    assert captured["max_attempts"] == 2

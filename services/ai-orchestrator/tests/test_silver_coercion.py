@@ -11,7 +11,7 @@ import pandas as pd
 import pytest
 
 from ai_orchestrator.reasoning.legacy_analytics.runner import (
-    _coerce_numeric, _drop_empty_columns,
+    _coerce_datetime, _coerce_numeric, _drop_empty_columns,
 )
 
 
@@ -102,3 +102,62 @@ def test_mixed_dataframe_only_numeric_columns_coerced():
     assert df["phone"].dtype == object
     # Exactly the two real numeric columns are visible to the engine.
     assert df.select_dtypes(include="number").columns.tolist() == ["amount", "quantity"]
+
+
+# ── _coerce_datetime ─────────────────────────────────────────────────────────
+# Incident 2026-07-10 (pipeline run 9e7dc45c, demo AABW): Silver JSONB hands
+# every value over as a string. Numbers get re-typed by _coerce_numeric but
+# ISO date strings stayed object dtype, so time_series/anomaly engines
+# (_find_col(df, "datetime64")) declared the dataset ineligible ("Cần cột
+# ngày và ít nhất 1 cột số") even though a clean `date` column existed.
+
+
+def test_iso_date_string_column_becomes_datetime():
+    df = _coerce_datetime(pd.DataFrame({
+        "date": ["2026-01-04", "2026-01-11", "2026-02-18"],
+    }))
+    assert pd.api.types.is_datetime64_any_dtype(df["date"])
+
+
+def test_datetime_visible_to_engine_dtype_probe():
+    # The exact probe the engines use must find the coerced column.
+    df = _coerce_datetime(pd.DataFrame({
+        "date":    ["2026-01-04", "2026-01-11"],
+        "product": ["Cà chua", "Xà lách"],
+    }))
+    assert df.select_dtypes(include="datetime64").columns.tolist() == ["date"]
+
+
+def test_iso_datetime_with_time_part_is_coerced():
+    df = _coerce_datetime(pd.DataFrame({
+        "created_at": ["2026-01-04T09:30:00", "2026-01-11 14:00:00"],
+    }))
+    assert pd.api.types.is_datetime64_any_dtype(df["created_at"])
+
+
+def test_free_text_stays_text():
+    df = _coerce_datetime(pd.DataFrame({"product": ["Cà chua beef", "Bơ 034"]}))
+    assert df["product"].dtype == object
+
+
+def test_numeric_string_column_not_parsed_as_date():
+    # "8395" must never become 1970-01-01T00:00:00.000008395.
+    df = _coerce_datetime(pd.DataFrame({"amount": ["8395", "5052"]}))
+    assert df["amount"].dtype == object
+
+
+def test_mixed_dates_and_garbage_stays_text():
+    df = _coerce_datetime(pd.DataFrame({"col": ["2026-01-04", "N/A", "2026-02-01"]}))
+    assert df["col"].dtype == object
+
+
+def test_date_column_with_nulls_coerced_with_nat():
+    df = _coerce_datetime(pd.DataFrame({"date": ["2026-01-04", None, "2026-03-09"]}))
+    assert pd.api.types.is_datetime64_any_dtype(df["date"])
+    assert pd.isna(df["date"].iloc[1])
+
+
+def test_already_datetime_column_unchanged():
+    src = pd.DataFrame({"d": pd.to_datetime(["2026-01-04", "2026-01-11"])})
+    df = _coerce_datetime(src)
+    assert pd.api.types.is_datetime64_any_dtype(df["d"])

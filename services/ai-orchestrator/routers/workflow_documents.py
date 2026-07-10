@@ -430,6 +430,108 @@ async def get_workflow_document_analysis(
 
 
 # ─────────────────────── download bytes (Phase 0) ───────────────────────
+_TABULAR_EXTS = {".csv", ".tsv", ".xlsx", ".xls"}
+
+
+async def _cleanliness_narrative(verdict: dict, filename: str, enterprise_id: str) -> Optional[str]:
+    """Qwen viết 2-3 câu nhận xét tiếng Việt về verdict — bounded + best-effort
+    (LLM in request path must be bounded); verdict là của heuristics, LLM
+    không quyết định."""
+    import asyncio
+    import os as _os
+
+    from ..engine.llm_router import llm_router
+
+    issues_txt = "; ".join(i["label"] for i in verdict["issues"][:6]) or "không phát hiện lỗi"
+    prompt = (
+        f"File bảng '{filename}' được chấm điểm sạch {verdict['score']:.2f}/1. "
+        f"Các vấn đề: {issues_txt}. "
+        "Viết 2 câu tiếng Việt cho người dùng doanh nghiệp: dữ liệu có dùng "
+        "ngay được không và vì sao. Không markdown."
+    )
+    # FE api client cắt ở 30s — deadline ở đây phải NHỎ HƠN hẳn để verdict
+    # (heuristics, tức thời) luôn về tới người dùng; model lạnh thì nhận xét
+    # degrade còn None thay vì kéo sập cả response.
+    timeout_s = float(_os.getenv("KAORI_DOC_CLEAN_LLM_TIMEOUT_S", "18"))
+    return await asyncio.wait_for(
+        llm_router.complete(prompt, task="doc_cleanliness",
+                            enterprise_id=enterprise_id, max_tokens=80),
+        timeout=timeout_s,
+    )
+
+
+@router.post("/workflow-documents/{attachment_id}/cleanliness")
+async def check_document_cleanliness(
+    attachment_id: UUID = Path(...),
+    x_enterprise_id: UUID = Header(..., alias="X-Enterprise-ID"),
+):
+    """Chấm độ sạch một tài liệu BẢNG trong Cây tài liệu (demo AABW).
+
+    Heuristics tất định (mirror quy tắc Bước 3) quyết định verdict;
+    Qwen chỉ viết nhận xét (best-effort, bounded). Bẩn → recommendation
+    'run_pipeline' (đi 5 bước làm sạch); sạch → 'analyze'."""
+    import io
+
+    import pandas as pd
+
+    from ..reasoning.doc_cleanliness import assess_cleanliness
+
+    async with acquire_for_tenant(x_enterprise_id) as conn:
+        row = await conn.fetchrow(
+            """SELECT pr.file_sha256, pr.mime_type, pr.filename
+               FROM workflow_step_documents sd
+               JOIN bronze_files bf ON bf.file_id = sd.file_id  -- tenant-filter-lint: allow
+               JOIN pipeline_runs pr ON pr.run_id = bf.run_id   -- tenant-filter-lint: allow
+               WHERE sd.attachment_id = $1""",
+            attachment_id)
+    if row is None or not row["file_sha256"]:
+        raise HTTPException(status_code=404, detail="document not found")
+
+    fname = (row["filename"] or "").lower()
+    ext = next((e for e in _TABULAR_EXTS if fname.endswith(e)), None)
+    if ext is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Kiểm tra sạch chỉ áp dụng cho file bảng (csv/tsv/xlsx/xls)")
+
+    content = await get_blob_store().get(blob_key(str(x_enterprise_id), row["file_sha256"]))
+    if content is None:
+        raise HTTPException(status_code=409,
+                            detail="file bytes chưa được lưu trữ cho tài liệu này")
+
+    try:
+        if ext in (".xlsx", ".xls"):
+            df = pd.read_excel(io.BytesIO(content))
+        else:
+            sep = "\t" if ext == ".tsv" else ","
+            try:
+                df = pd.read_csv(io.BytesIO(content), sep=sep, encoding="utf-8-sig", dtype=str)
+            except UnicodeDecodeError:
+                df = pd.read_csv(io.BytesIO(content), sep=sep, encoding="cp1258", dtype=str)
+    except Exception as exc:  # noqa: BLE001 — parse failure = not clean, not a 500
+        log.warning("doc_cleanliness.parse_failed",
+                    attachment_id=str(attachment_id), error=str(exc))
+        return {
+            "is_clean": False, "score": 0.0, "recommendation": "run_pipeline",
+            "issues": [{"code": "parse_failed",
+                        "label": "Không đọc được bảng — cần chuẩn hóa qua 5 bước",
+                        "count": 0}],
+            "narrative": None, "filename": row["filename"], "row_count": 0,
+        }
+
+    verdict = assess_cleanliness(df)
+
+    narrative: Optional[str] = None
+    try:
+        narrative = await _cleanliness_narrative(verdict, row["filename"] or "file",
+                                                 str(x_enterprise_id))
+    except Exception as exc:  # noqa: BLE001 — nhận xét là phụ, verdict là chính
+        log.warning("doc_cleanliness.narrative_failed", error=str(exc))
+
+    return {**verdict, "narrative": narrative,
+            "filename": row["filename"], "row_count": int(len(df))}
+
+
 @router.get("/workflow-documents/{attachment_id}/download")
 async def download_document(
     attachment_id: UUID = Path(...),
