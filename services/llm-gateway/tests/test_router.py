@@ -334,6 +334,68 @@ def test_provider_failure_returns_502_bad_gateway(client):
     assert "upstream" in (body.get("detail") or body.get("title", "")).lower()
 
 
+# ─── ADR-0015 Rule 5 — external failure degrades to local Qwen ───────
+
+def test_external_failure_falls_back_to_internal_ollama(client):
+    """A vendor error (Anthropic 5xx, rate-limit, refusal) must degrade
+    to local Qwen rather than 5xx. The demo's analysis path routes to
+    Claude; a transient vendor hiccup must not hard-fail the request.
+    First invoke (external) raises; the router retries once via internal
+    Ollama and returns 200 with the fallback model surfaced."""
+    mocks = _patch_router_internals(
+        model="claude-sonnet-4-6", method="external",
+        invoke_side_effect=[Exception("anthropic 529 overloaded"),
+                            ("Qwen local answer", "qwen2.5:7b")],
+    )
+    _enter(mocks)
+    try:
+        resp = client.post("/v1/infer", json=_payload(consent_external=True))
+    finally:
+        _exit(mocks)
+
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["completion"] == "Qwen local answer"
+    assert body["model_used"] == "qwen2.5:7b"
+    assert body["method"] == "internal"        # surfaced as internal post-fallback
+    assert mocks["invoke"].await_count == 2     # external attempt + internal retry
+
+
+def test_external_failure_and_fallback_failure_still_502(client):
+    """If the local fallback ALSO fails, there's nothing left to serve —
+    surface the 502 (fail loud, tenet #3)."""
+    mocks = _patch_router_internals(
+        model="claude-sonnet-4-6", method="external",
+        invoke_side_effect=[Exception("anthropic down"),
+                            Exception("ollama also down")],
+    )
+    _enter(mocks)
+    try:
+        resp = client.post("/v1/infer", json=_payload(consent_external=True))
+    finally:
+        _exit(mocks)
+
+    assert resp.status_code == 502
+    assert mocks["invoke"].await_count == 2
+
+
+def test_internal_failure_does_not_retry(client):
+    """An already-internal call that fails must NOT loop back into
+    another internal attempt — one failure, one 502."""
+    mocks = _patch_router_internals(
+        method="internal",
+        invoke_side_effect=Exception("ollama timeout"),
+    )
+    _enter(mocks)
+    try:
+        resp = client.post("/v1/infer", json=_payload())
+    finally:
+        _exit(mocks)
+
+    assert resp.status_code == 502
+    assert mocks["invoke"].await_count == 1
+
+
 # ─── K-6 audit ───────────────────────────────────────────────────────
 
 def test_audit_log_decision_called_with_request_context(client):

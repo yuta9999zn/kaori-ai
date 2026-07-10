@@ -29,6 +29,7 @@ Deliberately not in this PR (P-1 follow-ups):
 from __future__ import annotations
 
 import json
+import os
 import time
 
 import structlog
@@ -278,7 +279,57 @@ async def infer(req: InferRequest) -> InferResponse:
             tenant_id=str(req.enterprise_id),
             status="upstream_error",
         )
-        raise HTTPException(status_code=502, detail="upstream LLM call failed") from exc
+        # ADR-0015 Rule 5 — a vendor (external) failure degrades to local
+        # Qwen rather than 5xx, so a transient Anthropic error/refusal never
+        # hard-fails a request (the demo's analysis path routes to Claude).
+        # An already-internal failure has nothing to fall back to.
+        if method != "external":
+            raise HTTPException(status_code=502, detail="upstream LLM call failed") from exc
+        fallback_model = os.getenv("OLLAMA_MODEL", "qwen2.5:14b")
+        log.warning(
+            "llm_gateway.external_fallback_to_internal",
+            requested=model_id,
+            fallback=fallback_model,
+            error=str(exc),
+        )
+        try:
+            # Internal Ollama is local — no external boundary crossed, so the
+            # ORIGINAL (unredacted) prompt/messages give the best answer (K-4/K-5
+            # only mask on the way out to a vendor).
+            if has_messages:
+                completion, model_used, tool_calls, finish_reason = await providers.invoke_chat(
+                    model_id=fallback_model,
+                    method="internal",
+                    messages=[m.model_dump() for m in (req.messages or [])],
+                    tools=req.tools,
+                    tool_choice=req.tool_choice,
+                    max_tokens=req.max_tokens,
+                )
+            else:
+                completion, model_used = await providers.invoke(
+                    model_id=fallback_model,
+                    method="internal",
+                    prompt=req.prompt,
+                    max_tokens=req.max_tokens,
+                )
+                tool_calls = None
+                finish_reason = "stop"
+            method = "internal"  # surface the fallback in the response + audit
+            _emit_call_metric(
+                provider="ollama",
+                model=model_used,
+                tenant_id=str(req.enterprise_id),
+                status="external_fallback",
+            )
+        except Exception as exc2:
+            log.error("llm_gateway.external_fallback_failed", error=str(exc2))
+            _emit_call_metric(
+                provider="ollama",
+                model=fallback_model,
+                tenant_id=str(req.enterprise_id),
+                status="upstream_error",
+            )
+            raise HTTPException(status_code=502, detail="upstream LLM call failed") from exc2
 
     # Issue #3 — when the caller supplied output_schema, validate the
     # completion. On failure we make ONE repair attempt with an
