@@ -36,6 +36,7 @@ import {
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
 import { WizardStepper } from '@/components/p2/foundation-wizard';
+import { useT } from '@/lib/i18n/provider';
 
 type ColumnType = 'string' | 'integer' | 'numeric' | 'date' | 'boolean' | 'email' | 'phone' | 'currency' | 'category';
 type Tier = 'confirm' | 'review' | 'ok' | 'empty';
@@ -70,9 +71,9 @@ interface ColumnMapping {
 const CUSTOM = '__custom__';
 
 // Business-language type tags — never show "string"/"numeric".
-const TYPE_VI: Record<ColumnType, string> = {
-  string: 'Chữ', integer: 'Số', numeric: 'Số', currency: 'Tiền',
-  date: 'Ngày', phone: 'SĐT', email: 'Email', boolean: 'Đúng/Sai', category: 'Phân loại',
+const TYPE_KEY: Record<ColumnType, string> = {
+  string: 'typeString', integer: 'typeNumber', numeric: 'typeNumber', currency: 'typeCurrency',
+  date: 'typeDate', phone: 'typePhone', email: 'typeEmail', boolean: 'typeBoolean', category: 'typeCategory',
 };
 const TYPE_ICON: Record<ColumnType, any> = {
   string: Type, integer: Hash, numeric: Hash, currency: Coins,
@@ -97,29 +98,44 @@ function _computeTier(m: { method: string; is_empty: boolean; looks_unnamed: boo
   return 'review';
 }
 
-const TIER_META: Record<Tier, { label: string; hint: string; dot: string }> = {
-  confirm: { label: '🔴 Cần bạn xác nhận', hint: 'Kaori chưa nhận diện chắc chắn — chọn đúng loại thông tin', dot: 'bg-[var(--state-error)]' },
-  review:  { label: '🟡 Kiểm tra nhanh',   hint: 'Kaori đã đoán — liếc qua, sai thì sửa, đúng thì xác nhận', dot: 'bg-[#C9A227]' },
-  ok:      { label: '🟢 Đã nhận diện tự động', hint: 'Khớp chính xác — thường không cần đụng đến', dot: 'bg-[var(--state-success)]' },
-  empty:   { label: '⚪ Cột trống / không tên', hint: 'Cột rỗng trong file gốc — có thể bỏ qua an toàn', dot: 'bg-[var(--text-secondary)]' },
+const TIER_DOT: Record<Tier, string> = {
+  confirm: 'bg-[var(--state-error)]',
+  review:  'bg-[#C9A227]',
+  ok:      'bg-[var(--state-success)]',
+  empty:   'bg-[var(--text-secondary)]',
 };
+const TIER_KEYS: Record<Tier, { labelKey: string; hintKey: string }> = {
+  confirm: { labelKey: 'tierConfirmLabel', hintKey: 'tierConfirmHint' },
+  review:  { labelKey: 'tierReviewLabel', hintKey: 'tierReviewHint' },
+  ok:      { labelKey: 'tierOkLabel', hintKey: 'tierOkHint' },
+  empty:   { labelKey: 'tierEmptyLabel', hintKey: 'tierEmptyHint' },
+};
+function tierMeta(t: (key: string, params?: Record<string, any>) => string, tier: Tier): { label: string; hint: string; dot: string } {
+  const { labelKey, hintKey } = TIER_KEYS[tier];
+  return {
+    label: t(`templates21DataPipelineStep2ConfigureColumns.${labelKey}`),
+    hint: t(`templates21DataPipelineStep2ConfigureColumns.${hintKey}`),
+    dot: TIER_DOT[tier],
+  };
+}
 
 // Impact Preview — which analyses unlock from the confirmed fields. This is a
 // UX guidance panel (product capabilities), evaluated against the REAL confirmed
 // canonicals; it mirrors the analytics template requirements. `need` = all
 // required; `any` = at least one of.
-const CAPABILITIES: { name: string; need: string[]; any?: string[] }[] = [
-  { name: 'Doanh thu theo thời gian', need: ['date'], any: ['amount', 'revenue', 'unit_price'] },
-  { name: 'Phân khúc khách hàng',     need: [], any: ['gender', 'age', 'customer_external_id'] },
-  { name: 'Nguy cơ rời bỏ (Churn)',   need: ['customer_external_id', 'date'] },
-  { name: 'Phương thức thanh toán',   need: ['payment_method'] },
-  { name: 'Sản phẩm bán chạy',        need: ['product'], any: ['quantity', 'amount', 'revenue'] },
+const CAPABILITIES: { key: string; need: string[]; any?: string[] }[] = [
+  { key: 'capRevenueByTime',    need: ['date'], any: ['amount', 'revenue', 'unit_price'] },
+  { key: 'capCustomerSegment',  need: [], any: ['gender', 'age', 'customer_external_id'] },
+  { key: 'capChurnRisk',        need: ['customer_external_id', 'date'] },
+  { key: 'capPaymentMethod',    need: ['payment_method'] },
+  { key: 'capTopProducts',      need: ['product'], any: ['quantity', 'amount', 'revenue'] },
 ];
 
 // Canonicals that must map from at most ONE column (a hard conflict if two claim it).
 const UNIQUE_CANONICALS = new Set(['customer_external_id', 'date', 'order_id']);
 
 export default function PipelineStep2Columns() {
+  const t = useT();
   const params = useParams<{ id: string }>();
   const pipelineId = params?.id ?? '';
 
@@ -279,8 +295,8 @@ export default function PipelineStep2Columns() {
   return (
     <>
       <PageHeader
-        title="Xác nhận cột"
-        description="Bước 2 / 5 — AI đã đọc file và nhận diện ý nghĩa từng cột. Xác nhận nhanh để báo cáo chính xác."
+        title={t('templates21DataPipelineStep2ConfigureColumns.pageTitle')}
+        description={t('templates21DataPipelineStep2ConfigureColumns.pageDescription')}
       />
 
       <div className="px-6 lg:px-8 py-6 max-w-[1280px] mx-auto space-y-5">
@@ -291,22 +307,22 @@ export default function PipelineStep2Columns() {
         {!loading && total > 0 && (
           <div className="rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-4 shadow-soft-sm space-y-3">
             <p className="text-sm text-[var(--text-primary)]">
-              AI đã nhận diện <b>{total} cột</b>. Xác nhận để đảm bảo phân tích đúng — khoảng <b>2 phút</b>.
+              {t('templates21DataPipelineStep2ConfigureColumns.headerIntro')} <b>{t('templates21DataPipelineStep2ConfigureColumns.headerCount', { total })}</b>{t('templates21DataPipelineStep2ConfigureColumns.headerMid')} <b>{t('templates21DataPipelineStep2ConfigureColumns.headerMinutes')}</b>
             </p>
             <div className="flex items-center gap-3">
               <div className="flex-1 h-2.5 rounded-full bg-[var(--bg-app)] overflow-hidden">
                 <div className="h-2.5 rounded-full bg-[var(--state-success)] transition-all" style={{ width: `${pct}%` }} />
               </div>
-              <span className="text-xs font-medium text-[var(--text-secondary)] shrink-0">{resolved}/{total} cột đã xác nhận</span>
+              <span className="text-xs font-medium text-[var(--text-secondary)] shrink-0">{t('templates21DataPipelineStep2ConfigureColumns.progressLabel', { resolved, total })}</span>
             </div>
             <div className="flex items-center justify-between gap-2 flex-wrap">
               <button
                 onClick={confirmAllAI}
                 className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md-custom border border-[var(--primary-gold)]/40 bg-[var(--primary-gold)]/8 text-[var(--primary-gold-dark)] hover:bg-[var(--primary-gold)]/15 transition-colors"
               >
-                <CheckCheck className="w-3.5 h-3.5" /> Xác nhận tất cả đề xuất của AI
+                <CheckCheck className="w-3.5 h-3.5" /> {t('templates21DataPipelineStep2ConfigureColumns.confirmAllAi')}
               </button>
-              <span className="text-xs text-[var(--text-secondary)]">Bạn vẫn có thể sửa từng cột bên dưới.</span>
+              <span className="text-xs text-[var(--text-secondary)]">{t('templates21DataPipelineStep2ConfigureColumns.editBelowHint')}</span>
             </div>
           </div>
         )}
@@ -316,14 +332,14 @@ export default function PipelineStep2Columns() {
           <div className="rounded-md-custom bg-[var(--state-warning)]/10 border border-[var(--state-warning)]/35 p-3 flex items-start gap-3">
             <AlertTriangle className="w-4 h-4 text-[var(--state-warning)] shrink-0 mt-0.5" />
             <div className="text-sm text-[#9E814D]">
-              <b>Một số loại thông tin đang bị gán cho nhiều cột.</b>{' '}
+              <b>{t('templates21DataPipelineStep2ConfigureColumns.conflictHeading')}</b>{' '}
               {Object.entries(conflicts).map(([c, cols]) => (
                 <span key={c} className="block text-xs mt-1">
                   «{labelFor[c] ?? c}»: {cols.join(', ')}
-                  {UNIQUE_CANONICALS.has(c) && <span className="text-[var(--state-error)]"> — chỉ được chọn 1 cột</span>}
+                  {UNIQUE_CANONICALS.has(c) && <span className="text-[var(--state-error)]"> — {t('templates21DataPipelineStep2ConfigureColumns.conflictUniqueOnly')}</span>}
                 </span>
               ))}
-              {hardConflicts.length > 0 && <p className="text-xs mt-1.5">Hãy sửa các xung đột bắt buộc trước khi tiếp tục.</p>}
+              {hardConflicts.length > 0 && <p className="text-xs mt-1.5">{t('templates21DataPipelineStep2ConfigureColumns.conflictFixBeforeContinue')}</p>}
             </div>
           </div>
         )}
@@ -337,7 +353,7 @@ export default function PipelineStep2Columns() {
               </div>
             ) : total === 0 ? (
               <p className="p-12 text-center text-[var(--text-secondary)] bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)]">
-                Chưa có cột nào được phát hiện. Kiểm tra lại file ở Bước 1.
+                {t('templates21DataPipelineStep2ConfigureColumns.noColumnsDetected')}
               </p>
             ) : (
               (['confirm', 'review', 'ok', 'empty'] as Tier[]).map((tier) => {
@@ -373,8 +389,7 @@ export default function PipelineStep2Columns() {
         <div className="flex items-start gap-3 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <CheckCircle2 className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Mỗi lựa chọn được lưu lại. Nếu kết quả ở Bước 4 chưa đúng, bạn có thể quay lại đây chỉnh sửa và chạy lại —
-            dữ liệu gốc luôn được giữ nguyên.
+            {t('templates21DataPipelineStep2ConfigureColumns.footerNote')}
           </p>
         </div>
 
@@ -384,10 +399,10 @@ export default function PipelineStep2Columns() {
             onClick={() => (window.location.href = `/p2/pipelines/${pipelineId}/step-1-upload`)}
             disabled={confirming}
           >
-            <ChevronLeft className="w-4 h-4 mr-1" /> Quay lại
+            <ChevronLeft className="w-4 h-4 mr-1" /> {t('templates21DataPipelineStep2ConfigureColumns.back')}
           </Button>
           <Button onClick={confirm} isLoading={confirming} disabled={total === 0 || hardConflicts.length > 0}>
-            {hardConflicts.length > 0 ? 'Hãy sửa xung đột bắt buộc' : 'Xác nhận + sang Bước 3'}
+            {hardConflicts.length > 0 ? t('templates21DataPipelineStep2ConfigureColumns.fixConflictsFirst') : t('templates21DataPipelineStep2ConfigureColumns.confirmAndNext')}
             <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
         </div>
@@ -398,7 +413,8 @@ export default function PipelineStep2Columns() {
 
 // ── Tier group (header + card grid) ──────────────────────────────────────────
 function TierGroup({ tier, rows, isOpen, onToggle, fields, onPick, onUpdate, onConfirm, onSkip, onUnskip, onSkipAll, conflictCols }: any) {
-  const meta = TIER_META[tier as Tier];
+  const t = useT();
+  const meta = tierMeta(t, tier as Tier);
   return (
     <div>
       <button onClick={onToggle} className="w-full flex items-center gap-3 mb-3 text-left">
@@ -412,7 +428,7 @@ function TierGroup({ tier, rows, isOpen, onToggle, fields, onPick, onUpdate, onC
           <span role="button" tabIndex={0}
             onClick={(e) => { e.stopPropagation(); onSkipAll(); }}
             className="text-xs px-3 py-1.5 rounded-md-custom border border-[var(--border-color)] bg-white hover:bg-[var(--bg-app)] text-[var(--text-secondary)] inline-flex items-center gap-1.5 shrink-0">
-            <Trash2 className="w-3 h-3" /> Bỏ qua tất cả
+            <Trash2 className="w-3 h-3" /> {t('templates21DataPipelineStep2ConfigureColumns.skipAll')}
           </span>
         )}
         <ChevronDown className={cn('w-4 h-4 text-[var(--text-secondary)] shrink-0 transition-transform', isOpen ? '' : '-rotate-90')} />
@@ -433,8 +449,9 @@ function TierGroup({ tier, rows, isOpen, onToggle, fields, onPick, onUpdate, onC
 
 // ── Single column card ────────────────────────────────────────────────────────
 function ColumnCard({ m, fields, onPick, onUpdate, onConfirm, onSkip, onUnskip, conflicted }: any) {
+  const t = useT();
   const TypeIcon = TYPE_ICON[m.type] ?? Type;
-  const ai = aiBadge(m);
+  const ai = aiBadge(t, m);
   const selectValue = m.custom ? CUSTOM : (m.canonical_name || '');
 
   return (
@@ -448,15 +465,15 @@ function ColumnCard({ m, fields, onPick, onUpdate, onConfirm, onSkip, onUnskip, 
       {/* Header: detected name + type tag + flags */}
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="font-medium text-[var(--text-primary)] break-all leading-tight">{m.detected_name || '(trống)'}</p>
+          <p className="font-medium text-[var(--text-primary)] break-all leading-tight">{m.detected_name || t('templates21DataPipelineStep2ConfigureColumns.emptyPlaceholder')}</p>
           <div className="flex items-center gap-1.5 mt-1 flex-wrap">
             <span className="inline-flex items-center gap-1 text-[11px] text-[var(--text-secondary)] bg-[var(--bg-app)]/60 rounded px-1.5 py-0.5">
-              <TypeIcon className="w-3 h-3" /> {TYPE_VI[m.type]}
+              <TypeIcon className="w-3 h-3" /> {t(`templates21DataPipelineStep2ConfigureColumns.${TYPE_KEY[m.type]}`)}
             </span>
-            {m.is_pii && <Badge variant="current" className="text-[10px]"><Lock className="w-2.5 h-2.5 mr-0.5 inline" /> Nhạy cảm</Badge>}
+            {m.is_pii && <Badge variant="current" className="text-[10px]"><Lock className="w-2.5 h-2.5 mr-0.5 inline" /> {t('templates21DataPipelineStep2ConfigureColumns.sensitive')}</Badge>}
             {m.null_pct >= 5 && (
               <span className={cn('text-[11px]', m.null_pct >= 25 ? 'text-[var(--state-error)]' : 'text-[#9E814D]')}>
-                {m.null_pct.toFixed(0)}% trống
+                {t('templates21DataPipelineStep2ConfigureColumns.nullPct', { pct: m.null_pct.toFixed(0) })}
               </span>
             )}
           </div>
@@ -467,15 +484,15 @@ function ColumnCard({ m, fields, onPick, onUpdate, onConfirm, onSkip, onUnskip, 
       {/* Sample values */}
       {m.sample_values.length > 0 && (
         <p className="text-xs text-[var(--text-secondary)] truncate" title={m.sample_values.join(' | ')}>
-          Ví dụ: <span className="text-[var(--text-primary)]">{m.sample_values.slice(0, 3).join(' · ')}</span>
+          {t('templates21DataPipelineStep2ConfigureColumns.exampleLabel')} <span className="text-[var(--text-primary)]">{m.sample_values.slice(0, 3).join(' · ')}</span>
         </p>
       )}
 
       {/* "Đây là thông tin gì?" */}
       <div>
         <label className="text-[11px] text-[var(--text-secondary)] flex items-center gap-1 mb-1">
-          Đây là thông tin gì?
-          <HelpTip text="Chọn ý nghĩa kinh doanh của cột. Ví dụ 'Họ tên', 'Full name' trong file đều quy về cùng một loại để phân tích nhất quán." />
+          {t('templates21DataPipelineStep2ConfigureColumns.whatIsThisLabel')}
+          <HelpTip text={t('templates21DataPipelineStep2ConfigureColumns.whatIsThisHelp')} />
         </label>
         <select
           value={selectValue}
@@ -486,17 +503,17 @@ function ColumnCard({ m, fields, onPick, onUpdate, onConfirm, onSkip, onUnskip, 
             !selectValue && !m.custom ? 'border-[var(--state-error)]/50 text-[var(--state-error)]' : 'border-[var(--border-color)]',
           )}
         >
-          <option value="">— Chọn loại thông tin —</option>
+          <option value="">{t('templates21DataPipelineStep2ConfigureColumns.selectFieldPlaceholder')}</option>
           {fields.map((f: CanonicalField) => (
             <option key={f.canonical} value={f.canonical}>{f.label}</option>
           ))}
-          <option value={CUSTOM}>Khác — nhập tên khác…</option>
+          <option value={CUSTOM}>{t('templates21DataPipelineStep2ConfigureColumns.selectFieldCustom')}</option>
         </select>
         {m.custom && (
           <input
             type="text"
             value={m.canonical_name}
-            placeholder="Nhập tên cho cột này…"
+            placeholder={t('templates21DataPipelineStep2ConfigureColumns.customFieldPlaceholder')}
             disabled={m.skipped}
             onChange={(e) => onUpdate(m.detected_name, { canonical_name: e.target.value, confirmed: !!e.target.value })}
             className="w-full h-9 mt-2 rounded-md-custom border border-[var(--border-color)] bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
@@ -509,7 +526,7 @@ function ColumnCard({ m, fields, onPick, onUpdate, onConfirm, onSkip, onUnskip, 
         {m.skipped ? (
           <button onClick={() => onUnskip(m.detected_name)}
             className="text-xs inline-flex items-center gap-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
-            <Undo2 className="w-3.5 h-3.5" /> Khôi phục
+            <Undo2 className="w-3.5 h-3.5" /> {t('templates21DataPipelineStep2ConfigureColumns.restore')}
           </button>
         ) : (
           <>
@@ -525,11 +542,11 @@ function ColumnCard({ m, fields, onPick, onUpdate, onConfirm, onSkip, onUnskip, 
                     : 'border-[var(--border-color)] text-[var(--text-secondary)]/50 cursor-not-allowed',
               )}
             >
-              {m.confirmed ? <><Check className="w-3.5 h-3.5" /> Đã xác nhận</> : <><Check className="w-3.5 h-3.5" /> Xác nhận</>}
+              {m.confirmed ? <><Check className="w-3.5 h-3.5" /> {t('templates21DataPipelineStep2ConfigureColumns.confirmed')}</> : <><Check className="w-3.5 h-3.5" /> {t('templates21DataPipelineStep2ConfigureColumns.confirm')}</>}
             </button>
             <button onClick={() => onSkip(m.detected_name)}
               className="text-xs inline-flex items-center gap-1 h-8 px-2.5 rounded-md-custom border border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-app)]">
-              <X className="w-3.5 h-3.5" /> Bỏ qua
+              <X className="w-3.5 h-3.5" /> {t('templates21DataPipelineStep2ConfigureColumns.skip')}
             </button>
           </>
         )}
@@ -539,21 +556,23 @@ function ColumnCard({ m, fields, onPick, onUpdate, onConfirm, onSkip, onUnskip, 
 }
 
 // AI suggestion badge: 🟢 tự tin cao / 🟡 chưa chắc / 🔴 cần bạn chọn.
-function aiBadge(m: ColumnMapping): { variant: any; label: string } {
-  if (m.method === 'no_match' || !m.canonical_name) return { variant: 'warning', label: 'Cần bạn chọn' };
-  if (m.method === 'exact_match' && m.confidence >= 0.9 && !m.sniffed) return { variant: 'success', label: 'AI tự tin cao' };
-  if (m.sniffed) return { variant: 'info', label: 'Đoán từ dữ liệu' };
-  if (m.confidence >= 0.6) return { variant: 'current', label: 'AI chưa chắc — kiểm tra' };
-  return { variant: 'warning', label: 'Cần bạn chọn' };
+function aiBadge(t: (key: string, params?: Record<string, any>) => string, m: ColumnMapping): { variant: any; label: string } {
+  if (m.method === 'no_match' || !m.canonical_name) return { variant: 'warning', label: t('templates21DataPipelineStep2ConfigureColumns.aiNeedsPick') };
+  if (m.method === 'exact_match' && m.confidence >= 0.9 && !m.sniffed) return { variant: 'success', label: t('templates21DataPipelineStep2ConfigureColumns.aiHighConfidence') };
+  if (m.sniffed) return { variant: 'info', label: t('templates21DataPipelineStep2ConfigureColumns.aiGuessedFromData') };
+  if (m.confidence >= 0.6) return { variant: 'current', label: t('templates21DataPipelineStep2ConfigureColumns.aiUncertain') };
+  return { variant: 'warning', label: t('templates21DataPipelineStep2ConfigureColumns.aiNeedsPick') };
 }
 
 function AiTag({ ai, confirmed }: { ai: { variant: any; label: string }; confirmed: boolean }) {
-  if (confirmed) return <Badge variant="success" className="text-[10px] shrink-0"><Check className="w-2.5 h-2.5 mr-0.5 inline" /> Đã xác nhận</Badge>;
+  const t = useT();
+  if (confirmed) return <Badge variant="success" className="text-[10px] shrink-0"><Check className="w-2.5 h-2.5 mr-0.5 inline" /> {t('templates21DataPipelineStep2ConfigureColumns.confirmed')}</Badge>;
   return <Badge variant={ai.variant} className="text-[10px] shrink-0">{ai.label}</Badge>;
 }
 
 // ── Impact preview ────────────────────────────────────────────────────────────
 function ImpactPreview({ active, fields }: { active: Set<string>; fields: CanonicalField[] }) {
+  const t = useT();
   const labelFor: Record<string, string> = {};
   fields.forEach((f) => { labelFor[f.canonical] = f.label; });
 
@@ -570,19 +589,19 @@ function ImpactPreview({ active, fields }: { active: Set<string>; fields: Canoni
 
   return (
     <div className="rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-4 shadow-soft-sm lg:sticky lg:top-4">
-      <h3 className="font-serif text-sm text-[var(--text-primary)] mb-1">Xác nhận xong, bạn sẽ phân tích được</h3>
-      <p className="text-[11px] text-[var(--text-secondary)] mb-3">Cập nhật theo các cột bạn xác nhận.</p>
+      <h3 className="font-serif text-sm text-[var(--text-primary)] mb-1">{t('templates21DataPipelineStep2ConfigureColumns.impactHeading')}</h3>
+      <p className="text-[11px] text-[var(--text-secondary)] mb-3">{t('templates21DataPipelineStep2ConfigureColumns.impactSubheading')}</p>
       <div className="space-y-2.5">
         {rows.map((c) => (
-          <div key={c.name} className="flex items-start gap-2">
+          <div key={c.key} className="flex items-start gap-2">
             {c.ready
               ? <CheckCircle2 className="w-4 h-4 text-[var(--state-success)] shrink-0 mt-0.5" />
               : <AlertCircle className="w-4 h-4 text-[var(--text-secondary)]/50 shrink-0 mt-0.5" />}
             <div className="min-w-0">
-              <p className={cn('text-sm', c.ready ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]')}>{c.name}</p>
+              <p className={cn('text-sm', c.ready ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]')}>{t(`templates21DataPipelineStep2ConfigureColumns.${c.key}`)}</p>
               {!c.ready && c.missing.length > 0 && (
                 <p className="text-[11px] text-[var(--text-secondary)]">
-                  cần: {c.missing.map((x) => labelFor[x] ?? x).join(' + ')}
+                  {t('templates21DataPipelineStep2ConfigureColumns.impactNeeds', { items: c.missing.map((x) => labelFor[x] ?? x).join(' + ') })}
                 </p>
               )}
             </div>

@@ -19,6 +19,7 @@ import {
   api, formatVND, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type Granularity = 'mom' | 'yoy';
 
 interface MetricChoice { id: string; label: string; unit: 'vnd' | 'count' | 'pct'; }
@@ -34,6 +35,7 @@ interface MoMYoYResult {
 }
 
 export default function MoMYoYPage() {
+  const t = useT();
   const [granularity, setGranularity] = useState<Granularity>('mom');
   const [metrics, setMetrics] = useState<MetricChoice[]>([]);
   const [metricId, setMetricId] = useState('');
@@ -77,14 +79,14 @@ export default function MoMYoYPage() {
   return (
     <>
       <PageHeader
-        title="MoM / YoY"
-        description="So sánh tháng-trên-tháng + năm-trên-năm cho 1 metric với AI narrative."
+        title={t('templates45FrameworksMomYoyAnalysis.title')}
+        description={t('templates45FrameworksMomYoyAnalysis.pageDescription')}
         actions={
           <>
-            <Badge variant="info">Phase 2 · F-034</Badge>
+            <Badge variant="info">{t('templates45FrameworksMomYoyAnalysis.badgePhase')}</Badge>
             <Button variant="tertiary" onClick={() => (window.location.href = '/p2/frameworks')}>
               <ChevronLeft className="w-4 h-4 mr-1" />
-              Khung khác
+              {t('templates45FrameworksMomYoyAnalysis.backButton')}
             </Button>
           </>
         }
@@ -96,7 +98,7 @@ export default function MoMYoYPage() {
         <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="text-sm font-medium text-[var(--text-primary)]">Loại so sánh</label>
+              <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates45FrameworksMomYoyAnalysis.comparisonTypeLabel')}</label>
               <div className="mt-1 flex gap-1.5">
                 {(['mom', 'yoy'] as Granularity[]).map((g) => (
                   <button
@@ -110,17 +112,17 @@ export default function MoMYoYPage() {
                         : 'border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]',
                     )}
                   >
-                    {g === 'mom' ? 'Month-over-Month' : 'Year-over-Year'}
+                    {g === 'mom' ? t('templates45FrameworksMomYoyAnalysis.momLabel') : t('templates45FrameworksMomYoyAnalysis.yoyLabel')}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium text-[var(--text-primary)]">Metric</label>
+              <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates45FrameworksMomYoyAnalysis.metricLabel')}</label>
               <div className="relative mt-1">
                 <Database className="w-4 h-4 text-[var(--text-secondary)] absolute left-3 top-1/2 -translate-y-1/2" />
                 <select value={metricId} onChange={(e) => setMetricId(e.target.value)} className="w-full pl-9 pr-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30">
-                  {metrics.length === 0 && <option value="">— Chưa có metric —</option>}
+                  {metrics.length === 0 && <option value="">{t('templates45FrameworksMomYoyAnalysis.noMetricOption')}</option>}
                   {metrics.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
                 </select>
               </div>
@@ -134,40 +136,40 @@ export default function MoMYoYPage() {
               label={
                 <span className="inline-flex items-center gap-2">
                   {consentExternal ? <Globe className="w-4 h-4 text-[var(--state-warning)]" /> : <Lock className="w-4 h-4 text-[var(--state-success)]" />}
-                  {consentExternal ? 'AI bên ngoài (PII đã mask)' : 'Qwen nội bộ'}
+                  {consentExternal ? t('templates45FrameworksMomYoyAnalysis.consentExternalLabel') : t('templates45FrameworksMomYoyAnalysis.consentInternalLabel')}
                 </span>
               }
             />
           </div>
 
-          <Button onClick={generate} isLoading={running} disabled={!metricId || true} className="w-full" title="Phase 2 — Sắp ra mắt">
+          <Button onClick={generate} isLoading={running} disabled={!metricId || true} className="w-full" title={t('templates45FrameworksMomYoyAnalysis.runButtonTitle')}>
             <Sparkles className="w-4 h-4 mr-2" />
-            Chạy {granularity.toUpperCase()}
+            {t('templates45FrameworksMomYoyAnalysis.runButtonLabel', { granularity: granularity.toUpperCase() })}
           </Button>
         </div>
 
         {/* Result */}
         <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-[var(--border-color)]/60">
-            <h3 className="font-serif text-base text-[var(--text-primary)]">Kết quả</h3>
+            <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates45FrameworksMomYoyAnalysis.resultHeading')}</h3>
           </div>
           <div className="p-5 space-y-4">
             {result ? (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)]/40 p-3">
-                    <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Kỳ này · {result.current_period.label}</p>
+                    <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates45FrameworksMomYoyAnalysis.currentPeriodLabel', { label: result.current_period.label })}</p>
                     <p className="font-serif text-xl text-[var(--text-primary)] mt-1">{formatValue(result.current_period.value)}</p>
                   </div>
                   <div className="rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)]/40 p-3">
-                    <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Kỳ trước · {result.previous_period.label}</p>
+                    <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates45FrameworksMomYoyAnalysis.previousPeriodLabel', { label: result.previous_period.label })}</p>
                     <p className="font-serif text-xl text-[var(--text-primary)] mt-1">{formatValue(result.previous_period.value)}</p>
                   </div>
                   <div className={cn(
                     'rounded-md-custom p-3 border',
                     trendUp ? 'bg-[var(--state-success)]/8 border-[var(--state-success)]/30' : 'bg-[var(--state-error)]/8 border-[var(--state-error)]/30',
                   )}>
-                    <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Biến động</p>
+                    <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates45FrameworksMomYoyAnalysis.deltaLabel')}</p>
                     <p className={cn(
                       'font-serif text-xl mt-1 inline-flex items-center gap-1',
                       trendUp ? 'text-[#5C856A]' : 'text-[#9B5050]',
@@ -179,23 +181,23 @@ export default function MoMYoYPage() {
                 </div>
 
                 <div>
-                  <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">Narrative</p>
+                  <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">{t('templates45FrameworksMomYoyAnalysis.narrativeLabel')}</p>
                   <p className="text-sm text-[var(--text-primary)] leading-relaxed whitespace-pre-line">{result.narrative}</p>
                 </div>
 
                 <div>
-                  <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">Drivers nghi ngờ</p>
+                  <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">{t('templates45FrameworksMomYoyAnalysis.driversLabel')}</p>
                   <ul className="space-y-1 text-sm text-[var(--text-primary)] list-disc list-inside">
                     {result.drivers.map((d, i) => <li key={i}>{d}</li>)}
                   </ul>
                 </div>
 
-                <Badge variant="default">Confidence {(result.confidence * 100).toFixed(0)}%</Badge>
+                <Badge variant="default">{t('templates45FrameworksMomYoyAnalysis.confidenceLabel', { pct: (result.confidence * 100).toFixed(0) })}</Badge>
               </>
             ) : (
               <div className="rounded-md-custom border border-dashed border-[var(--border-color)] p-8 text-center text-[var(--text-secondary)]">
                 <BarChart2 className="w-10 h-10 mx-auto mb-2 text-[var(--primary-gold-dark)]" />
-                <p className="text-sm">Chọn metric + chạy để xem so sánh.</p>
+                <p className="text-sm">{t('templates45FrameworksMomYoyAnalysis.emptyStateText')}</p>
               </div>
             )}
           </div>
@@ -203,7 +205,7 @@ export default function MoMYoYPage() {
 
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <Calendar className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
-          <p>MoM / YoY luôn chạy trên Gold feature đã aggregated (F-032). Stale &gt; 24h sẽ cảnh báo.</p>
+          <p>{t('templates45FrameworksMomYoyAnalysis.footerNote')}</p>
         </div>
       </div>
     </>

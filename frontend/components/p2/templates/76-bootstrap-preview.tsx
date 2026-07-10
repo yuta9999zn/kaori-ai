@@ -29,6 +29,7 @@ import {
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
 import { useAuth } from '@/lib/auth-store';
+import { useT } from '@/lib/i18n/provider';
 
 // ─── Types ───────────────────────────────────────────────────────────
 
@@ -49,6 +50,7 @@ interface DryRunResult {
 // ─── Page component ──────────────────────────────────────────────────
 
 export default function BootstrapPreviewPage() {
+  const t = useT();
   const searchParams = useSearchParams();
   const industryId   = searchParams?.get('industry_id') ?? '';
   const enterpriseId = useAuth((s) => s.user?.enterprise_id ?? '');
@@ -82,7 +84,7 @@ export default function BootstrapPreviewPage() {
   // created-count + any BE warning.
   async function loadPreview(skips: string[] = []) {
     if (!industryId) {
-      setProblem({ title: 'Thiếu ngành', detail: 'Không có industry_id trong URL. Quay lại Thư viện ngành để chọn ngành.' });
+      setProblem({ title: t('templates76BootstrapPreview.errNoIndustryTitle'), detail: t('templates76BootstrapPreview.errNoIndustryDetail') });
       setLoading(false);
       return;
     }
@@ -126,7 +128,7 @@ export default function BootstrapPreviewPage() {
 
   async function commit() {
     if (!enterpriseId) {
-      setProblem({ title: 'Thiếu phiên đăng nhập', detail: 'Không xác định được doanh nghiệp. Đăng nhập lại.' });
+      setProblem({ title: t('templates76BootstrapPreview.errNoSessionTitle'), detail: t('templates76BootstrapPreview.errNoSessionDetail') });
       return;
     }
     setCommitting(true);
@@ -160,7 +162,7 @@ export default function BootstrapPreviewPage() {
   if (loading) {
     return (
       <>
-        <PageHeader title="Xem trước bootstrap" description="Đang tải cấu hình ngành…" />
+        <PageHeader title={t('templates76BootstrapPreview.pageTitle')} description={t('templates76BootstrapPreview.pageDescLoading')} />
         <div className="px-6 lg:px-8 py-6 max-w-[1400px] mx-auto">
           <div className="h-64 animate-pulse rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)]" />
         </div>
@@ -171,8 +173,8 @@ export default function BootstrapPreviewPage() {
   return (
     <>
       <PageHeader
-        title="Xem trước bootstrap"
-        description={industryName ? `Ngành: ${industryName} — xem trước hệ thống sẽ tạo gì cho doanh nghiệp anh.` : 'Xem trước cấu hình ngành.'}
+        title={t('templates76BootstrapPreview.pageTitle')}
+        description={industryName ? t('templates76BootstrapPreview.pageDescWithIndustry', { name: industryName }) : t('templates76BootstrapPreview.pageDescDefault')}
       />
 
       <div className="px-6 lg:px-8 py-6 max-w-[1400px] mx-auto space-y-6">
@@ -181,16 +183,16 @@ export default function BootstrapPreviewPage() {
         {/* Header summary — counts come from the dry-run when available. */}
         <div className="rounded-lg-custom border border-[var(--border-color)] bg-[var(--bg-card)] p-4 shadow-soft-sm">
           <div className="flex flex-wrap gap-6 text-sm text-[var(--text-primary)]">
-            <div><FolderTree className="inline w-4 h-4 mr-1" /><strong>{dryRun?.depts_created ?? depts.length}</strong> phòng ban</div>
+            <div><FolderTree className="inline w-4 h-4 mr-1" /><strong>{dryRun?.depts_created ?? depts.length}</strong> {t('templates76BootstrapPreview.summaryDepts')}</div>
             <div>
               <Workflow className="inline w-4 h-4 mr-1" />
-              <strong>{dryRun?.workflows_created ?? coreWfCount}</strong> workflow lõi (tự tạo)
+              <strong>{dryRun?.workflows_created ?? coreWfCount}</strong> {t('templates76BootstrapPreview.summaryWorkflowsCore')}
               {suggestedWfCount > 0 && (
-                <span className="text-[var(--text-secondary)]"> · {suggestedWfCount} gợi ý (thêm sau)</span>
+                <span className="text-[var(--text-secondary)]"> {t('templates76BootstrapPreview.summaryWorkflowsSuggested', { count: suggestedWfCount })}</span>
               )}
             </div>
-            <div><BarChart3 className="inline w-4 h-4 mr-1" /><strong>{kpis.length}</strong> KPI</div>
-            <div><Database className="inline w-4 h-4 mr-1" /><strong>{schemas.length}</strong> data schema</div>
+            <div><BarChart3 className="inline w-4 h-4 mr-1" /><strong>{kpis.length}</strong> {t('templates76BootstrapPreview.kpiLabel')}</div>
+            <div><Database className="inline w-4 h-4 mr-1" /><strong>{schemas.length}</strong> {t('templates76BootstrapPreview.summaryDataSchema')}</div>
           </div>
         </div>
 
@@ -198,23 +200,22 @@ export default function BootstrapPreviewPage() {
         <div className="flex gap-3 rounded-lg-custom border border-[var(--state-warning)]/30 bg-[var(--state-warning)]/10 p-4 text-sm">
           <AlertTriangle className="w-5 h-5 shrink-0 text-[#9E814D]" />
           <div>
-            <div className="font-medium text-[var(--text-primary)]">Lưu ý không thể hoàn tác</div>
+            <div className="font-medium text-[var(--text-primary)]">{t('templates76BootstrapPreview.cautionTitle')}</div>
             <div className="text-[var(--text-secondary)]">
-              Sau khi tạo, không thể bootstrap lại trừ khi admin chạy lại với chế độ ghi đè.
-              Toàn bộ phòng ban + workflow + KPI + schema sẽ được khởi tạo cho doanh nghiệp anh.
+              {t('templates76BootstrapPreview.cautionBody')}
             </div>
           </div>
         </div>
 
         {/* 4-panel preview grid */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <PreviewPanel title="Phòng ban" icon={<FolderTree className="w-4 h-4" />}
+          <PreviewPanel title={t('templates76BootstrapPreview.panelTitleDepts')} icon={<FolderTree className="w-4 h-4" />}
             entities={depts} selectedSkips={selectedSkips} toggleSkip={toggleSkip} canSkip />
-          <PreviewPanel title="Workflow mẫu" icon={<Workflow className="w-4 h-4" />}
+          <PreviewPanel title={t('templates76BootstrapPreview.panelTitleWorkflows')} icon={<Workflow className="w-4 h-4" />}
             entities={workflows} selectedSkips={selectedSkips} toggleSkip={toggleSkip} />
-          <PreviewPanel title="KPI" icon={<BarChart3 className="w-4 h-4" />}
+          <PreviewPanel title={t('templates76BootstrapPreview.kpiLabel')} icon={<BarChart3 className="w-4 h-4" />}
             entities={kpis} selectedSkips={selectedSkips} toggleSkip={toggleSkip} />
-          <PreviewPanel title="Data schema" icon={<Database className="w-4 h-4" />}
+          <PreviewPanel title={t('templates76BootstrapPreview.panelTitleDataSchema')} icon={<Database className="w-4 h-4" />}
             entities={schemas} selectedSkips={selectedSkips} toggleSkip={toggleSkip} />
         </div>
 
@@ -222,9 +223,9 @@ export default function BootstrapPreviewPage() {
         <div className="sticky bottom-0 -mx-6 border-t border-[var(--border-color)] bg-[var(--bg-card)] px-6 py-4 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="text-sm text-[var(--text-secondary)]">
-              {skipCount > 0 ? `${skipCount} mục đã bỏ chọn` : 'Bootstrap với cấu hình mặc định'}
+              {skipCount > 0 ? t('templates76BootstrapPreview.footerSkipCount', { count: skipCount }) : t('templates76BootstrapPreview.footerDefault')}
             </div>
-            <Button onClick={() => setConfirmStep(1)} disabled={!enterpriseId}>Tiếp tục → Xác nhận</Button>
+            <Button onClick={() => setConfirmStep(1)} disabled={!enterpriseId}>{t('templates76BootstrapPreview.continueButton')}</Button>
           </div>
         </div>
       </div>
@@ -255,6 +256,7 @@ function PreviewPanel({
   title: string; icon: React.ReactNode; entities: PreviewEntity[];
   selectedSkips: Set<string>; toggleSkip: (k: string) => void; canSkip?: boolean;
 }) {
+  const t = useT();
   return (
     <div className="rounded-lg-custom border border-[var(--border-color)] bg-[var(--bg-card)]">
       <div className="flex items-center gap-2 border-b border-[var(--border-color)] px-4 py-3">
@@ -263,7 +265,7 @@ function PreviewPanel({
         <Badge variant="default">{entities.length}</Badge>
       </div>
       {entities.length === 0 ? (
-        <p className="px-4 py-3 text-sm text-[var(--text-secondary)]">Không có mục nào.</p>
+        <p className="px-4 py-3 text-sm text-[var(--text-secondary)]">{t('templates76BootstrapPreview.panelEmpty')}</p>
       ) : (
         <ul className="divide-y divide-[var(--border-color)]/60">
           {entities.map((e) => {
@@ -276,7 +278,7 @@ function PreviewPanel({
                   )}
                   <span className="text-sm text-[var(--text-primary)]">{e.name_vi}</span>
                   <Badge variant={e.recommendation_level === 'core' ? 'success' : 'default'}>
-                    {e.recommendation_level === 'core' ? 'lõi' : 'gợi ý'}
+                    {e.recommendation_level === 'core' ? t('templates76BootstrapPreview.levelCore') : t('templates76BootstrapPreview.levelSuggested')}
                   </Badge>
                 </div>
               </li>
@@ -289,17 +291,17 @@ function PreviewPanel({
 }
 
 function ConfirmModalStep1({ onCancel, onNext }: { onCancel: () => void; onNext: () => void }) {
+  const t = useT();
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="w-full max-w-md rounded-lg-custom bg-[var(--bg-card)] p-6 shadow-lg">
-        <h3 className="text-lg font-medium text-[var(--text-primary)]">Xác nhận hành động</h3>
+        <h3 className="text-lg font-medium text-[var(--text-primary)]">{t('templates76BootstrapPreview.confirm1Title')}</h3>
         <p className="mt-2 text-sm text-[var(--text-secondary)]">
-          Bước 1/2 — Em sẽ tạo toàn bộ phòng ban + workflow + KPI + schema cho doanh nghiệp anh.
-          Hành động này không thể hoàn tác. Tiếp tục?
+          {t('templates76BootstrapPreview.confirm1Body')}
         </p>
         <div className="mt-6 flex justify-end gap-2">
-          <Button variant="tertiary" onClick={onCancel}>Huỷ</Button>
-          <Button onClick={onNext}>Tiếp →</Button>
+          <Button variant="tertiary" onClick={onCancel}>{t('templates76BootstrapPreview.cancelButton')}</Button>
+          <Button onClick={onNext}>{t('templates76BootstrapPreview.nextButton')}</Button>
         </div>
       </div>
     </div>
@@ -313,13 +315,14 @@ function ConfirmModalStep2({
   onTypedNameChange: (v: string) => void;
   onCancel: () => void; onConfirm: () => void; committing: boolean;
 }) {
+  const t = useT();
   const match = !!enterpriseName && typedName.trim() === enterpriseName.trim();
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="w-full max-w-md rounded-lg-custom bg-[var(--bg-card)] p-6 shadow-lg">
-        <h3 className="text-lg font-medium text-[var(--text-primary)]">Gõ tên doanh nghiệp</h3>
+        <h3 className="text-lg font-medium text-[var(--text-primary)]">{t('templates76BootstrapPreview.confirm2Title')}</h3>
         <p className="mt-2 text-sm text-[var(--text-secondary)]">
-          Bước 2/2 — Gõ chính xác tên <strong>{enterpriseName || '(doanh nghiệp)'}</strong> để xác nhận.
+          {t('templates76BootstrapPreview.confirm2DescPre')} <strong>{enterpriseName || t('templates76BootstrapPreview.confirm2NoNameFallback')}</strong> {t('templates76BootstrapPreview.confirm2DescPost')}
         </p>
         <Input
           className="mt-4"
@@ -328,9 +331,9 @@ function ConfirmModalStep2({
           placeholder={enterpriseName}
         />
         <div className="mt-6 flex justify-end gap-2">
-          <Button variant="tertiary" onClick={onCancel}>Huỷ</Button>
+          <Button variant="tertiary" onClick={onCancel}>{t('templates76BootstrapPreview.cancelButton')}</Button>
           <Button disabled={!match || committing} isLoading={committing} onClick={onConfirm}>
-            Xác nhận Bootstrap
+            {t('templates76BootstrapPreview.confirmBootstrapButton')}
           </Button>
         </div>
       </div>

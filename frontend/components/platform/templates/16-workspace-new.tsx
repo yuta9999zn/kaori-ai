@@ -6,7 +6,8 @@
 // the script to regenerate. Lazy `any` types added; not meant for strict tsc.
 
 import React, { useState, useEffect, useRef } from 'react';
-import { 
+import { useT } from '@/lib/i18n/provider';
+import {
   LayoutDashboard, 
   Briefcase, 
   Key, 
@@ -64,6 +65,28 @@ import {
 
 // --- UTILS ---
 const cn = (...classes) => classes.filter(Boolean).join(' ');
+
+// Raw enum value -> i18n key, so mock/status data can render translated
+// text without changing the underlying value used in comparisons/filters.
+const STATUS_LABEL_KEYS: Record<string, string> = {
+  Active: 'templates16WorkspaceNew.statusActive',
+  Suspended: 'templates16WorkspaceNew.statusSuspended',
+  Pending: 'templates16WorkspaceNew.statusPending',
+  Paid: 'templates16WorkspaceNew.statusPaid',
+  Healthy: 'templates16WorkspaceNew.statusHealthy',
+  Degraded: 'templates16WorkspaceNew.statusDegraded',
+};
+const ROLE_LABEL_KEYS: Record<string, string> = {
+  Owner: 'templates16WorkspaceNew.roleOwner',
+  Admin: 'templates16WorkspaceNew.roleAdmin',
+  Member: 'templates16WorkspaceNew.roleMember',
+  Viewer: 'templates16WorkspaceNew.roleViewer',
+};
+const PLAN_LABEL_KEYS: Record<string, string> = {
+  Free: 'templates16WorkspaceNew.planFree',
+  Pro: 'templates16WorkspaceNew.planPro',
+  Enterprise: 'templates16WorkspaceNew.planEnterprise',
+};
 
 // --- DESIGN TOKENS & STYLES ---
 const GlobalStyles = () => (
@@ -241,7 +264,9 @@ const Input = React.forwardRef<any, any>(({ className, label, error, helperText,
 Input.displayName = "Input";
 
 // --- SELECT (Simulated Radix Select) ---
-const Select = ({  label, placeholder = "Select an option", options = [], value, onChange, error  }: any) => {
+const Select = ({  label, placeholder, options = [], value, onChange, error  }: any) => {
+  const t = useT();
+  const resolvedPlaceholder = placeholder || t('templates16WorkspaceNew.selectPlaceholderDefault');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -267,7 +292,7 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
           !selectedOption ? "text-[var(--text-secondary)]/60" : "text-[var(--text-primary)]"
         )}
       >
-        {selectedOption ? selectedOption.label : placeholder}
+        {selectedOption ? selectedOption.label : resolvedPlaceholder}
         <ChevronDown className="h-4 w-4 opacity-50" />
       </button>
       {isOpen && (
@@ -293,7 +318,9 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
 };
 
 // --- DATEPICKER (Simulated) ---
-const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any) => {
+const DatePicker = ({  label, placeholder, date, setDate  }: any) => {
+  const t = useT();
+  const resolvedPlaceholder = placeholder || t('templates16WorkspaceNew.datePickerPlaceholderDefault');
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
   useEffect(() => {
@@ -314,7 +341,7 @@ const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any
         )}
       >
         <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
-        {date ? date : placeholder}
+        {date ? date : resolvedPlaceholder}
       </button>
       {isOpen && (
         <div className="absolute top-full left-0 z-50 mt-1 p-3 bg-white rounded-md-custom border border-[var(--border-color)] shadow-soft-md animate-in fade-in zoom-in-95 duration-150 w-[280px]">
@@ -351,6 +378,7 @@ const Card = ({  className, ...props  }: any) => (
 );
 
 const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className  }: any) => {
+  const t = useT();
   const isPositive = (isUp && !inverseGood) || (!isUp && inverseGood);
   const trendColor = trend === '0%' ? 'text-[var(--text-secondary)]' : isPositive ? 'text-[#5C856A]' : 'text-[#9B5050]';
   return (
@@ -366,7 +394,7 @@ const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className
             </div>
           )}
         </div>
-        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">vs yesterday</div>
+        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">{t('templates16WorkspaceNew.vsYesterday')}</div>
       </div>
     </Card>
   );
@@ -385,6 +413,7 @@ const TableHead = ({  className, ...props  }: any) => <th className={cn("h-12 px
 const TableCell = ({  className, ...props  }: any) => <td className={cn("p-4 align-middle text-[var(--text-primary)]", className)} {...props} />;
 
 const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
+  const t = useT();
   return (
     <div className="rounded-lg-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm overflow-hidden w-full">
       <Table>
@@ -409,8 +438,8 @@ const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
                   <div className="w-10 h-10 rounded-full bg-[var(--bg-app)] flex items-center justify-center mb-2">
                     <Search className="w-5 h-5 text-[var(--text-secondary)]" />
                   </div>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">No results found</span>
-                  <span className="text-xs text-[var(--text-secondary)]">Try adjusting your filters</span>
+                  <span className="text-sm font-medium text-[var(--text-primary)]">{t('templates16WorkspaceNew.noResultsFound')}</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{t('templates16WorkspaceNew.tryAdjustingFilters')}</span>
                 </div>
               </TableCell>
             </TableRow>
@@ -425,10 +454,10 @@ const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
       </Table>
       {pagination && data.length > 0 && (
         <div className="border-t border-[var(--border-color)] px-4 py-3 flex items-center justify-between bg-[#FCFBF9]">
-          <span className="text-xs text-[var(--text-secondary)]">Showing 1 to {data.length} of {data.length} results</span>
+          <span className="text-xs text-[var(--text-secondary)]">{t('templates16WorkspaceNew.showingResults', { count: data.length })}</span>
           <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled>Previous</Button>
-              <Button variant="outline" size="sm">Next</Button>
+              <Button variant="outline" size="sm" disabled>{t('templates16WorkspaceNew.previous')}</Button>
+              <Button variant="outline" size="sm">{t('templates16WorkspaceNew.next')}</Button>
           </div>
         </div>
       )}
@@ -581,24 +610,27 @@ const Section = ({  title, description, actions, children, className = ''  }: an
 const NAVIGATION_CONFIG = [
   {
     group: 'Main',
+    groupKey: 'templates16WorkspaceNew.navGroupMain',
     items: [
-      { id: 'overview', label: 'Platform Health', icon: LayoutDashboard, route: '/platform' },
-      { id: 'workspaces', label: 'Workspaces', icon: Briefcase, route: '/platform/workspaces', badge: '4' },
+      { id: 'overview', label: 'Platform Health', labelKey: 'templates16WorkspaceNew.navPlatformHealth', icon: LayoutDashboard, route: '/platform' },
+      { id: 'workspaces', label: 'Workspaces', labelKey: 'templates16WorkspaceNew.navWorkspaces', icon: Briefcase, route: '/platform/workspaces', badge: '4' },
     ]
   },
   {
     group: 'Management',
+    groupKey: 'templates16WorkspaceNew.navGroupManagement',
     items: [
-      { id: 'keys', label: 'API Keys', icon: Key, route: '/platform/keys' },
-      { id: 'billing', label: 'Billing', icon: CreditCard, route: '/platform/billing' },
-      { id: 'admin', label: 'Admins', icon: Shield, route: '/platform/admins', role: 'admin' },
+      { id: 'keys', label: 'API Keys', labelKey: 'templates16WorkspaceNew.navApiKeys', icon: Key, route: '/platform/keys' },
+      { id: 'billing', label: 'Billing', labelKey: 'templates16WorkspaceNew.navBilling', icon: CreditCard, route: '/platform/billing' },
+      { id: 'admin', label: 'Admins', labelKey: 'templates16WorkspaceNew.navAdmins', icon: Shield, route: '/platform/admins', role: 'admin' },
     ]
   },
   {
     group: 'System',
+    groupKey: 'templates16WorkspaceNew.navGroupSystem',
     items: [
-      { id: 'components', label: 'Component Library', icon: Component, route: '/platform/components' },
-      { id: 'sessions', label: 'Security & Sessions', icon: Settings, route: '/p1/auth/sessions' },
+      { id: 'components', label: 'Component Library', labelKey: 'templates16WorkspaceNew.navComponentLibrary', icon: Component, route: '/platform/components' },
+      { id: 'sessions', label: 'Security & Sessions', labelKey: 'templates16WorkspaceNew.securityAndSessions', icon: Settings, route: '/p1/auth/sessions' },
     ]
   }
 ];
@@ -618,6 +650,7 @@ const EnvBadge = ({  env = 'production'  }: any) => {
 };
 
 const NotificationDropdown = () => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -627,7 +660,7 @@ const NotificationDropdown = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const notifications = [{ id: 1, title: 'Data sync completed successfully', time: '10m ago', read: false }];
+  const notifications = [{ id: 1, title: t('templates16WorkspaceNew.notifDataSyncComplete'), time: '10m ago', read: false }];
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -638,7 +671,7 @@ const NotificationDropdown = () => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-[320px] bg-[var(--bg-card)] rounded-lg-custom shadow-soft-md border border-[var(--border-color)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 z-50">
           <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] bg-[#FCFBF9]">
-            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Notifications</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates16WorkspaceNew.notifications')}</h3>
           </div>
           <div className="max-h-[300px] overflow-y-auto">
             {notifications.map((n) => (
@@ -658,6 +691,7 @@ const NotificationDropdown = () => {
 };
 
 const HeaderUserMenu = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -680,13 +714,13 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
           </div>
           <div className="p-1.5">
             <button onClick={() => { setActiveRoute('sessions'); setIsOpen(false); }} className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> Security & Sessions
+              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> {t('templates16WorkspaceNew.securityAndSessions')}
             </button>
           </div>
           <div className="h-[1px] bg-[var(--border-color)]/50 mx-1.5" />
           <div className="p-1.5">
             <button className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] transition-colors flex items-center gap-2 font-medium">
-              <LogOut className="w-4 h-4" /> Sign out
+              <LogOut className="w-4 h-4" /> {t('templates16WorkspaceNew.signOut')}
             </button>
           </div>
         </div>
@@ -696,13 +730,15 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
 };
 
 const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: any) => {
+  const t = useT();
   // If the route is a detail route, show custom label.
-  let routeLabel = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label;
-  if (activeRoute === 'workspace-details') routeLabel = 'Workspaces / Overview';
-  else if (activeRoute === 'workspace-members') routeLabel = 'Workspaces / Members';
-  else if (activeRoute === 'billing') routeLabel = 'Workspaces / Billing';
-  else if (activeRoute === 'audit-logs') routeLabel = 'Workspaces / Audit Logs';
-  else if (activeRoute === 'workspace-new') routeLabel = 'Workspaces / New Workspace';
+  const navItem = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute);
+  let routeLabel = navItem ? t(navItem.labelKey) : undefined;
+  if (activeRoute === 'workspace-details') routeLabel = t('templates16WorkspaceNew.breadcrumbWorkspacesOverview');
+  else if (activeRoute === 'workspace-members') routeLabel = t('templates16WorkspaceNew.breadcrumbWorkspacesMembers');
+  else if (activeRoute === 'billing') routeLabel = t('templates16WorkspaceNew.breadcrumbWorkspacesBilling');
+  else if (activeRoute === 'audit-logs') routeLabel = t('templates16WorkspaceNew.breadcrumbWorkspacesAuditLogs');
+  else if (activeRoute === 'workspace-new') routeLabel = t('templates16WorkspaceNew.breadcrumbWorkspacesNew');
   else if (!routeLabel) routeLabel = activeRoute;
 
   return (
@@ -712,7 +748,7 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
           <Menu className="w-5 h-5" />
         </button>
         <div className="hidden sm:flex items-center text-sm font-medium">
-          <span className="text-[var(--text-secondary)]">Platform</span>
+          <span className="text-[var(--text-secondary)]">{t('templates16WorkspaceNew.breadcrumbPlatform')}</span>
           <ChevronRight className="w-4 h-4 mx-2 text-[var(--border-color)] shrink-0 opacity-50" />
           <span className="text-[var(--text-primary)] capitalize">{routeLabel}</span>
         </div>
@@ -723,9 +759,9 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
         <div className="hidden sm:flex items-center gap-2">
            <div className="relative group hidden lg:block">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-[var(--text-secondary)] group-focus-within:text-[var(--primary-gold)] transition-colors" />
-              <input type="text" placeholder="Search..." className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
+              <input type="text" placeholder={t('templates16WorkspaceNew.searchPlaceholder')} className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
             </div>
-            <Button variant="outline" size="sm" onClick={() => setActiveRoute('workspace-new')} className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> Workspace</Button>
+            <Button variant="outline" size="sm" onClick={() => setActiveRoute('workspace-new')} className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> {t('templates16WorkspaceNew.headerNewWorkspace')}</Button>
         </div>
         <NotificationDropdown />
         <HeaderUserMenu setActiveRoute={setActiveRoute} />
@@ -749,6 +785,7 @@ const SidebarTooltip = ({  children, content, isCollapsed  }: any) => {
 };
 
 const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, setIsCollapsed  }: any) => {
+  const t = useT();
   const collapsed = isCollapsed && !isMobile;
   // Keep Workspaces highlighted for any workspace sub-route or billing
   const currentHighlight = (activeRoute === 'workspace-details' || activeRoute === 'workspace-members' || activeRoute === 'billing' || activeRoute === 'audit-logs' || activeRoute === 'workspace-new') ? 'workspaces' : activeRoute;
@@ -765,16 +802,16 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
         {!collapsed && (
           <div className="flex flex-col overflow-hidden animate-in fade-in duration-300">
             <span className="font-serif text-[17px] leading-none font-semibold text-[var(--text-primary)] tracking-wide">Kaori</span>
-            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">Platform</span>
+            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">{t('templates16WorkspaceNew.sidebarPlatformLabel')}</span>
           </div>
         )}
       </div>
 
-      <nav aria-label="Main Navigation" className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-6">
+      <nav aria-label={t('templates16WorkspaceNew.navAriaLabel')} className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-6">
         {NAVIGATION_CONFIG.map((group, idx) => (
           <div key={idx} className="flex flex-col">
             {!collapsed ? (
-              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{group.group}</div>
+              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{t(group.groupKey)}</div>
             ) : (
               <div className="w-full h-[1px] bg-[var(--border-color)]/60 my-2 rounded-full" />
             )}
@@ -783,7 +820,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
                 const isActive = currentHighlight === item.id;
                 const Icon = item.icon;
                 return (
-                  <SidebarTooltip key={item.id} content={item.label} isCollapsed={collapsed}>
+                  <SidebarTooltip key={item.id} content={t(item.labelKey)} isCollapsed={collapsed}>
                     <button
                       onClick={() => setActiveRoute(item.id)}
                       className={cn(
@@ -794,7 +831,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
                     >
                       {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[var(--primary-gold)] rounded-r-md transition-all" />}
                       <Icon className={`shrink-0 transition-colors ${isActive ? 'text-[var(--primary-gold)] w-5 h-5' : 'w-[18px] h-[18px] group-hover:text-[var(--text-primary)]'}`} />
-                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{item.label}</span>}
+                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{t(item.labelKey)}</span>}
                       {!collapsed && item.badge && (
                         <span className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[var(--primary-gold)] text-white text-[10px] font-bold shadow-sm ml-2">
                           {item.badge}
@@ -819,7 +856,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
             className={cn("w-full flex items-center h-8 rounded-md-custom text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors border border-transparent hover:border-[var(--border-color)]/50", collapsed ? 'justify-center' : 'px-3 gap-3')}
           >
             {collapsed ? <PanelLeftOpen className="w-[18px] h-[18px]" /> : <PanelLeftClose className="w-[18px] h-[18px]" />}
-            {!collapsed && <span className="text-xs font-medium">Collapse sidebar</span>}
+            {!collapsed && <span className="text-xs font-medium">{t('templates16WorkspaceNew.collapseSidebar')}</span>}
           </button>
         )}
       </div>
@@ -834,107 +871,108 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
 
 // --- COMPONENTS PAGE ---
 const ComponentsPage = () => {
+  const t = useT();
   const [date, setDate] = useState("");
   const [selectVal, setSelectVal] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  
+
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Component Library" 
-        subtitle="Foundational UI system for Kaori Platform following strict design tokens."
-        actions={<Button>Deploy System</Button>}
+      <PageHeader
+        title={t('templates16WorkspaceNew.componentsTitle')}
+        subtitle={t('templates16WorkspaceNew.componentsSubtitle')}
+        actions={<Button>{t('templates16WorkspaceNew.componentsDeploySystem')}</Button>}
       />
-      
+
       <Tabs defaultValue="form" tabs={[
-        { id: 'form', label: 'Forms & Inputs', content: (
+        { id: 'form', label: t('templates16WorkspaceNew.tabFormsInputs'), content: (
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <Section title="Buttons" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)]">
+             <Section title={t('templates16WorkspaceNew.sectionButtons')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)]">
                <div className="flex flex-wrap gap-4 mb-4">
-                 <Button variant="primary">Primary Button</Button>
-                 <Button variant="secondary">Secondary Button</Button>
-                 <Button variant="tertiary">Tertiary Ghost</Button>
+                 <Button variant="primary">{t('templates16WorkspaceNew.btnPrimary')}</Button>
+                 <Button variant="secondary">{t('templates16WorkspaceNew.btnSecondary')}</Button>
+                 <Button variant="tertiary">{t('templates16WorkspaceNew.btnTertiaryGhost')}</Button>
                </div>
                <div className="flex flex-wrap gap-4 items-center">
-                 <Button variant="primary" isLoading>Loading</Button>
-                 <Button variant="destructive">Destructive Action</Button>
+                 <Button variant="primary" isLoading>{t('templates16WorkspaceNew.btnLoading')}</Button>
+                 <Button variant="destructive">{t('templates16WorkspaceNew.btnDestructiveAction')}</Button>
                  <Button variant="primary" size="icon"><Plus className="w-4 h-4"/></Button>
                </div>
              </Section>
-             
-             <Section title="Inputs & Selects" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] space-y-4">
-                <Input label="Email Address" placeholder="admin@kaori.io" helperText="We will never share your email." />
-                <Input label="Workspace Name" placeholder="e.g. Production AI" error="This workspace name is already taken." />
-                <Select 
-                  label="Environment" 
-                  placeholder="Select environment..." 
-                  options={[{label: 'Production', value: 'prod'}, {label: 'Staging', value: 'stage'}]}
+
+             <Section title={t('templates16WorkspaceNew.sectionInputsSelects')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] space-y-4">
+                <Input label={t('templates16WorkspaceNew.labelEmailAddress')} placeholder="admin@kaori.io" helperText={t('templates16WorkspaceNew.helperNeverShareEmail')} />
+                <Input label={t('templates16WorkspaceNew.labelWorkspaceName')} placeholder="e.g. Production AI" error={t('templates16WorkspaceNew.errWorkspaceNameTaken')} />
+                <Select
+                  label={t('templates16WorkspaceNew.labelEnvironment')}
+                  placeholder={t('templates16WorkspaceNew.selectEnvironmentPlaceholder')}
+                  options={[{label: t('templates16WorkspaceNew.envProduction'), value: 'prod'}, {label: t('templates16WorkspaceNew.envStaging'), value: 'stage'}]}
                   value={selectVal}
                   onChange={setSelectVal}
                 />
-                <DatePicker label="Billing Cycle Start" date={date} setDate={setDate} />
+                <DatePicker label={t('templates16WorkspaceNew.labelBillingCycleStart')} date={date} setDate={setDate} />
              </Section>
            </div>
         )},
-        { id: 'data', label: 'Data Display', content: (
+        { id: 'data', label: t('templates16WorkspaceNew.tabDataDisplay'), content: (
            <div className="space-y-8">
-             <Section title="Metric Cards">
+             <Section title={t('templates16WorkspaceNew.sectionMetricCards')}>
                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                 <MetricCard title="Total Revenue" value="$45,231" trend="+20.1%" isUp={true} />
-                 <MetricCard title="Active Workspaces" value="12" trend="0%" />
-                 <MetricCard title="Error Rate" value="1.2%" trend="+0.4%" isUp={false} inverseGood={true} />
+                 <MetricCard title={t('templates16WorkspaceNew.metricTotalRevenue')} value="$45,231" trend="+20.1%" isUp={true} />
+                 <MetricCard title={t('templates16WorkspaceNew.metricActiveWorkspaces')} value="12" trend="0%" />
+                 <MetricCard title={t('templates16WorkspaceNew.metricErrorRate')} value="1.2%" trend="+0.4%" isUp={false} inverseGood={true} />
                </div>
              </Section>
-             
-             <Section title="Data Table">
-                <DataTable 
-                  columns={["Workspace", "Environment", "Status", "Created"]}
+
+             <Section title={t('templates16WorkspaceNew.sectionDataTable')}>
+                <DataTable
+                  columns={[t('templates16WorkspaceNew.colWorkspace'), t('templates16WorkspaceNew.envColumnHeader'), t('templates16WorkspaceNew.colStatus'), t('templates16WorkspaceNew.colCreated')]}
                   data={[
-                    ["Production AI", "Production", <Badge variant="operational" key="1">Healthy</Badge>, "Oct 12, 2026"],
-                    ["Staging Data", "Staging", <Badge variant="degraded" key="2">Degraded</Badge>, "Oct 14, 2026"],
-                    ["Dev Cluster", "Development", <Badge variant="operational" key="3">Healthy</Badge>, "Oct 15, 2026"]
+                    ["Production AI", t('templates16WorkspaceNew.envProduction'), <Badge variant="operational" key="1">{t(STATUS_LABEL_KEYS.Healthy)}</Badge>, "Oct 12, 2026"],
+                    ["Staging Data", t('templates16WorkspaceNew.envStaging'), <Badge variant="degraded" key="2">{t(STATUS_LABEL_KEYS.Degraded)}</Badge>, "Oct 14, 2026"],
+                    ["Dev Cluster", t('templates16WorkspaceNew.envDevelopment'), <Badge variant="operational" key="3">{t(STATUS_LABEL_KEYS.Healthy)}</Badge>, "Oct 15, 2026"]
                   ]}
                   loading={false}
                 />
              </Section>
            </div>
         )},
-        { id: 'feedback', label: 'Feedback & Overlays', content: (
+        { id: 'feedback', label: t('templates16WorkspaceNew.tabFeedbackOverlays'), content: (
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <Section title="Alerts" className="space-y-4">
-               <Alert variant="info" title="System Update">A new version of the platform shell is available.</Alert>
-               <Alert variant="success" title="Backup Complete">All workspace data has been successfully backed up.</Alert>
-               <Alert variant="warning" title="High Latency">We are detecting high latency in the EU-Central region.</Alert>
-               <Alert variant="error" title="Payment Failed">Your last invoice could not be processed.</Alert>
+             <Section title={t('templates16WorkspaceNew.sectionAlerts')} className="space-y-4">
+               <Alert variant="info" title={t('templates16WorkspaceNew.alertSystemUpdateTitle')}>{t('templates16WorkspaceNew.alertSystemUpdateBody')}</Alert>
+               <Alert variant="success" title={t('templates16WorkspaceNew.alertBackupCompleteTitle')}>{t('templates16WorkspaceNew.alertBackupCompleteBody')}</Alert>
+               <Alert variant="warning" title={t('templates16WorkspaceNew.alertHighLatencyTitle')}>{t('templates16WorkspaceNew.alertHighLatencyBody')}</Alert>
+               <Alert variant="error" title={t('templates16WorkspaceNew.alertPaymentFailedTitle')}>{t('templates16WorkspaceNew.alertPaymentFailedBody')}</Alert>
              </Section>
-             
-             <Section title="Modals & Drawers" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] flex flex-col gap-4 items-start">
-               <Button variant="secondary" onClick={() => setIsModalOpen(true)}>Open Modal</Button>
-               <Button variant="secondary" onClick={() => setIsDrawerOpen(true)}>Open Drawer</Button>
-               
-               <Modal 
-                 isOpen={isModalOpen} 
+
+             <Section title={t('templates16WorkspaceNew.sectionModalsDrawers')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] flex flex-col gap-4 items-start">
+               <Button variant="secondary" onClick={() => setIsModalOpen(true)}>{t('templates16WorkspaceNew.btnOpenModal')}</Button>
+               <Button variant="secondary" onClick={() => setIsDrawerOpen(true)}>{t('templates16WorkspaceNew.btnOpenDrawer')}</Button>
+
+               <Modal
+                 isOpen={isModalOpen}
                  onClose={() => setIsModalOpen(false)}
-                 title="Delete Workspace"
-                 description="Are you sure you want to delete this workspace? This action cannot be undone."
-                 footer={<><Button variant="outline" onClick={()=>setIsModalOpen(false)}>Cancel</Button><Button variant="destructive">Confirm Delete</Button></>}
+                 title={t('templates16WorkspaceNew.modalDeleteWorkspaceTitle')}
+                 description={t('templates16WorkspaceNew.modalDeleteWorkspaceDesc')}
+                 footer={<><Button variant="outline" onClick={()=>setIsModalOpen(false)}>{t('templates16WorkspaceNew.cancel')}</Button><Button variant="destructive">{t('templates16WorkspaceNew.confirmDelete')}</Button></>}
                >
                  <div className="space-y-4">
-                    <Input label="Type workspace name to confirm" placeholder="Production AI" />
+                    <Input label={t('templates16WorkspaceNew.labelTypeWorkspaceNameConfirm')} placeholder="Production AI" />
                  </div>
                </Modal>
 
                <Drawer
                  isOpen={isDrawerOpen}
                  onClose={() => setIsDrawerOpen(false)}
-                 title="Edit Profile"
-                 footer={<><Button variant="outline" className="w-full" onClick={()=>setIsDrawerOpen(false)}>Cancel</Button><Button className="w-full">Save Changes</Button></>}
+                 title={t('templates16WorkspaceNew.drawerEditProfileTitle')}
+                 footer={<><Button variant="outline" className="w-full" onClick={()=>setIsDrawerOpen(false)}>{t('templates16WorkspaceNew.cancel')}</Button><Button className="w-full">{t('templates16WorkspaceNew.saveChanges')}</Button></>}
                >
                  <div className="space-y-4">
-                    <Input label="Full Name" placeholder="Admin User" />
-                    <Input label="Email" placeholder="admin@kaori.io" disabled />
-                    <Select label="Role" options={[{label:'Admin', value:'admin'}, {label:'Member', value:'member'}]} value="admin" onChange={()=>{}} />
+                    <Input label={t('templates16WorkspaceNew.labelFullName')} placeholder="Admin User" />
+                    <Input label={t('templates16WorkspaceNew.labelEmail')} placeholder="admin@kaori.io" disabled />
+                    <Select label={t('templates16WorkspaceNew.labelRole')} options={[{label: t(ROLE_LABEL_KEYS.Admin), value:'admin'}, {label: t(ROLE_LABEL_KEYS.Member), value:'member'}]} value="admin" onChange={()=>{}} />
                  </div>
                </Drawer>
              </Section>
@@ -947,24 +985,25 @@ const ComponentsPage = () => {
 
 // --- PLATFORM OVERVIEW PAGE ---
 const PlatformOverview = () => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader title="Platform Overview" subtitle="Monitor system health, usage, and recent activity." actions={<Button variant="outline"><RefreshCw className="w-4 h-4 mr-2" /> Refresh Data</Button>} />
+      <PageHeader title={t('templates16WorkspaceNew.platformOverviewTitle')} subtitle={t('templates16WorkspaceNew.platformOverviewSubtitle')} actions={<Button variant="outline"><RefreshCw className="w-4 h-4 mr-2" /> {t('templates16WorkspaceNew.btnRefreshData')}</Button>} />
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="Total Workspaces" value="124" trend="+4" isUp={true} />
-          <MetricCard title="Active Users" value="1,892" trend="+12.5%" isUp={true} />
-          <MetricCard title="API Requests" value="2.4M" trend="+5.2%" isUp={true} />
-          <MetricCard title="Failed Requests" value="482" trend="-18%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates16WorkspaceNew.metricTotalWorkspaces')} value="124" trend="+4" isUp={true} />
+          <MetricCard title={t('templates16WorkspaceNew.metricActiveUsers')} value="1,892" trend="+12.5%" isUp={true} />
+          <MetricCard title={t('templates16WorkspaceNew.metricApiRequests')} value="2.4M" trend="+5.2%" isUp={true} />
+          <MetricCard title={t('templates16WorkspaceNew.metricFailedRequests')} value="482" trend="-18%" isUp={false} inverseGood={true} />
         </div>
       </Section>
-      <Section title="Recent Activity">
-         <DataTable 
-            columns={["Event", "Workspace", "Time"]}
+      <Section title={t('templates16WorkspaceNew.sectionRecentActivity')}>
+         <DataTable
+            columns={[t('templates16WorkspaceNew.colEvent'), t('templates16WorkspaceNew.colWorkspace'), t('templates16WorkspaceNew.colTime')]}
             data={[
-              ["API Key Generated", "Production AI", "2 mins ago"],
-              ["Workspace Created", "Staging Env", "1 hour ago"],
-              ["User Invited", "Design System", "Yesterday"]
+              [t('templates16WorkspaceNew.eventApiKeyGenerated'), "Production AI", "2 mins ago"],
+              [t('templates16WorkspaceNew.eventWorkspaceCreated'), "Staging Env", "1 hour ago"],
+              [t('templates16WorkspaceNew.eventUserInvited'), "Design System", "Yesterday"]
             ]}
             loading={false}
           />
@@ -975,14 +1014,15 @@ const PlatformOverview = () => {
 
 // --- SESSIONS PAGE ---
 const SessionsPage = () => {
+  const t = useT();
   return (
     <PageContainer maxWidth="narrow">
-      <PageHeader title="Active Sessions" subtitle="Manage devices where your account is currently signed in." actions={<Button variant="outline">Sign out all</Button>} />
-      <Section title="Security & Sessions">
+      <PageHeader title={t('templates16WorkspaceNew.activeSessionsTitle')} subtitle={t('templates16WorkspaceNew.activeSessionsSubtitle')} actions={<Button variant="outline">{t('templates16WorkspaceNew.btnSignOutAll')}</Button>} />
+      <Section title={t('templates16WorkspaceNew.securityAndSessions')}>
         <Card className="p-8 text-center flex flex-col items-center">
           <Shield className="w-8 h-8 text-[var(--text-secondary)] mb-3" />
-          <h3 className="text-sm font-medium text-[var(--text-primary)]">Security & Sessions</h3>
-          <p className="text-xs text-[var(--text-secondary)] mt-1">Manage active logins here.</p>
+          <h3 className="text-sm font-medium text-[var(--text-primary)]">{t('templates16WorkspaceNew.securityAndSessions')}</h3>
+          <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates16WorkspaceNew.manageActiveLoginsHere')}</p>
         </Card>
       </Section>
     </PageContainer>
@@ -991,10 +1031,11 @@ const SessionsPage = () => {
 
 // --- CREATE WORKSPACE WIZARD ---
 const Stepper = ({  currentStep  }: any) => {
+  const t = useT();
   const steps = [
-    { num: 1, label: 'Workspace Info' },
-    { num: 2, label: 'Plan Selection' },
-    { num: 3, label: 'Review & Create' }
+    { num: 1, label: t('templates16WorkspaceNew.stepWorkspaceInfo') },
+    { num: 2, label: t('templates16WorkspaceNew.stepPlanSelection') },
+    { num: 3, label: t('templates16WorkspaceNew.stepReviewCreate') }
   ];
 
   return (
@@ -1039,6 +1080,7 @@ const Stepper = ({  currentStep  }: any) => {
 };
 
 const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [step, setStep] = useState(1);
   const [isCreating, setIsCreating] = useState(false);
   const [formData, setFormData] = useState({
@@ -1051,11 +1093,11 @@ const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
 
   const validateStep1 = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Workspace name is required';
-    else if (formData.name.length < 3) newErrors.name = 'Name must be at least 3 characters';
-    
-    if (!formData.region) newErrors.region = 'Please select a deployment region';
-    
+    if (!formData.name.trim()) newErrors.name = t('templates16WorkspaceNew.errWorkspaceNameRequired');
+    else if (formData.name.length < 3) newErrors.name = t('templates16WorkspaceNew.errNameMinLength');
+
+    if (!formData.region) newErrors.region = t('templates16WorkspaceNew.errRegionRequired');
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -1076,8 +1118,8 @@ const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
   return (
     <PageContainer maxWidth="narrow" className="pt-8">
       <div className="mb-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <h1 className="text-3xl font-serif font-semibold text-[var(--text-primary)] mb-2">Create a Workspace</h1>
-        <p className="text-sm text-[var(--text-secondary)]">Set up a new isolated environment for your team in minutes.</p>
+        <h1 className="text-3xl font-serif font-semibold text-[var(--text-primary)] mb-2">{t('templates16WorkspaceNew.wizardCreateWorkspaceTitle')}</h1>
+        <p className="text-sm text-[var(--text-secondary)]">{t('templates16WorkspaceNew.wizardCreateWorkspaceSubtitle')}</p>
       </div>
 
       <Stepper currentStep={step} />
@@ -1086,13 +1128,13 @@ const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
         {step === 1 && (
           <div className="space-y-6 animate-step">
             <div>
-              <h2 className="text-lg font-semibold text-[var(--text-primary)]">Workspace Details</h2>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">Provide the basic information for your new tenant environment.</p>
+              <h2 className="text-lg font-semibold text-[var(--text-primary)]">{t('templates16WorkspaceNew.step1Heading')}</h2>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates16WorkspaceNew.step1Desc')}</p>
             </div>
             <div className="space-y-5">
-              <Input label="Workspace Name" placeholder="e.g. Acme Corp Production" value={formData.name} onChange={(e: any) => { setFormData({...formData, name: e.target.value}); if (errors.name) setErrors({...errors, name: ''}); }} error={errors.name} autoFocus />
-              <Input label="Description (Optional)" placeholder="Briefly describe the purpose of this workspace..." value={formData.description} onChange={(e: any) => setFormData({...formData, description: e.target.value})} />
-              <Select label="Data Region" placeholder="Select deployment region..." options={[{label: 'US East (N. Virginia)', value: 'us-east'}, {label: 'EU Central (Frankfurt)', value: 'eu-central'}, {label: 'Asia Pacific (Singapore)', value: 'ap-southeast'}]} value={formData.region} onChange={(v: any) => { setFormData({...formData, region: v}); if (errors.region) setErrors({...errors, region: ''}); }} error={errors.region} />
+              <Input label={t('templates16WorkspaceNew.labelWorkspaceName')} placeholder="e.g. Acme Corp Production" value={formData.name} onChange={(e: any) => { setFormData({...formData, name: e.target.value}); if (errors.name) setErrors({...errors, name: ''}); }} error={errors.name} autoFocus />
+              <Input label={t('templates16WorkspaceNew.labelDescriptionOptional')} placeholder={t('templates16WorkspaceNew.placeholderDescribeWorkspace')} value={formData.description} onChange={(e: any) => setFormData({...formData, description: e.target.value})} />
+              <Select label={t('templates16WorkspaceNew.labelDataRegion')} placeholder={t('templates16WorkspaceNew.selectRegionPlaceholder')} options={[{label: t('templates16WorkspaceNew.regionUsEast'), value: 'us-east'}, {label: t('templates16WorkspaceNew.regionEuCentral'), value: 'eu-central'}, {label: t('templates16WorkspaceNew.regionApSoutheast'), value: 'ap-southeast'}]} value={formData.region} onChange={(v: any) => { setFormData({...formData, region: v}); if (errors.region) setErrors({...errors, region: ''}); }} error={errors.region} />
             </div>
           </div>
         )}
@@ -1100,20 +1142,20 @@ const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
         {step === 2 && (
           <div className="space-y-6 animate-step">
             <div>
-              <h2 className="text-lg font-semibold text-[var(--text-primary)]">Select a Plan</h2>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">Choose the right tier for your workspace requirements.</p>
+              <h2 className="text-lg font-semibold text-[var(--text-primary)]">{t('templates16WorkspaceNew.step2Heading')}</h2>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates16WorkspaceNew.step2Desc')}</p>
             </div>
             <div className="grid grid-cols-1 gap-4">
               {[
-                { id: 'free', name: 'Free Tier', price: '$0', desc: '10,000 API reqs/mo, 5GB storage. Best for testing.' },
-                { id: 'pro', name: 'Pro', price: '$49', desc: '50,000 API reqs/mo, 50GB storage, email support.', recommended: true },
-                { id: 'enterprise', name: 'Enterprise', price: '$249', desc: 'Unlimited reqs, 500GB storage, 24/7 priority SLA.' }
+                { id: 'free', name: t('templates16WorkspaceNew.tierFreeTierName'), price: '$0', desc: t('templates16WorkspaceNew.tierFreeDesc') },
+                { id: 'pro', name: t('templates16WorkspaceNew.tierProName'), price: '$49', desc: t('templates16WorkspaceNew.tierProDesc'), recommended: true },
+                { id: 'enterprise', name: t('templates16WorkspaceNew.tierEnterpriseName'), price: '$249', desc: t('templates16WorkspaceNew.tierEnterpriseDesc') }
               ].map(plan => (
                 <div key={plan.id} onClick={() => setFormData({...formData, plan: plan.id})} className={cn("relative flex items-center p-4 rounded-md-custom border cursor-pointer transition-all duration-200", formData.plan === plan.id ? "border-[var(--primary-gold)] bg-[var(--primary-gold)]/5 shadow-soft-sm" : "border-[var(--border-color)] bg-white hover:border-[var(--primary-gold)]/40 hover:bg-[var(--bg-app)]")}>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <h4 className="text-sm font-semibold text-[var(--text-primary)]">{plan.name}</h4>
-                      {plan.recommended && <Badge variant="current">Recommended</Badge>}
+                      {plan.recommended && <Badge variant="current">{t('templates16WorkspaceNew.badgeRecommended')}</Badge>}
                     </div>
                     <p className="text-xs text-[var(--text-secondary)] mt-1">{plan.desc}</p>
                   </div>
@@ -1132,37 +1174,37 @@ const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
         {step === 3 && (
           <div className="space-y-6 animate-step">
             <div>
-              <h2 className="text-lg font-semibold text-[var(--text-primary)]">Review & Create</h2>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">Please confirm your workspace configuration before provisioning.</p>
+              <h2 className="text-lg font-semibold text-[var(--text-primary)]">{t('templates16WorkspaceNew.step3Heading')}</h2>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates16WorkspaceNew.step3Desc')}</p>
             </div>
             <div className="bg-[var(--bg-app)] rounded-md-custom border border-[var(--border-color)] p-5 space-y-4">
               <div className="flex justify-between items-center border-b border-[var(--border-color)] pb-3">
-                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Workspace Name</span>
+                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t('templates16WorkspaceNew.labelWorkspaceName')}</span>
                 <span className="text-sm font-medium text-[var(--text-primary)]">{formData.name}</span>
               </div>
               <div className="flex justify-between items-center border-b border-[var(--border-color)] pb-3">
-                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Description</span>
-                <span className="text-sm text-[var(--text-primary)] text-right truncate max-w-[200px]">{formData.description || 'None provided'}</span>
+                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t('templates16WorkspaceNew.reviewDescriptionLabel')}</span>
+                <span className="text-sm text-[var(--text-primary)] text-right truncate max-w-[200px]">{formData.description || t('templates16WorkspaceNew.noneProvided')}</span>
               </div>
               <div className="flex justify-between items-center border-b border-[var(--border-color)] pb-3">
-                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Region</span>
-                <span className="text-sm font-medium text-[var(--text-primary)]">{formData.region === 'us-east' ? 'US East (N. Virginia)' : formData.region === 'eu-central' ? 'EU Central (Frankfurt)' : formData.region === 'ap-southeast' ? 'Asia Pacific (Singapore)' : 'None'}</span>
+                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t('templates16WorkspaceNew.reviewRegionLabel')}</span>
+                <span className="text-sm font-medium text-[var(--text-primary)]">{formData.region === 'us-east' ? t('templates16WorkspaceNew.regionUsEast') : formData.region === 'eu-central' ? t('templates16WorkspaceNew.regionEuCentral') : formData.region === 'ap-southeast' ? t('templates16WorkspaceNew.regionApSoutheast') : t('templates16WorkspaceNew.none')}</span>
               </div>
               <div className="flex justify-between items-center pt-1">
-                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Selected Plan</span>
-                <Badge variant={formData.plan === 'pro' ? 'current' : 'operational'} className="capitalize">{formData.plan} Tier</Badge>
+                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t('templates16WorkspaceNew.reviewSelectedPlanLabel')}</span>
+                <Badge variant={formData.plan === 'pro' ? 'current' : 'operational'} className="capitalize">{formData.plan === 'free' ? t('templates16WorkspaceNew.tierFreeTierName') : formData.plan === 'pro' ? t('templates16WorkspaceNew.tierProName') : t('templates16WorkspaceNew.tierEnterpriseName')} {t('templates16WorkspaceNew.tierSuffix')}</Badge>
               </div>
             </div>
-            <Alert variant="info" title="Ready to provision">Creating a workspace will instantly provision isolated infrastructure in your selected region.</Alert>
+            <Alert variant="info" title={t('templates16WorkspaceNew.alertReadyToProvisionTitle')}>{t('templates16WorkspaceNew.alertReadyToProvisionBody')}</Alert>
           </div>
         )}
 
         <div className="mt-8 pt-6 border-t border-[var(--border-color)] flex items-center justify-between">
-          <Button variant="tertiary" onClick={step === 1 ? () => setActiveRoute('workspaces') : handleBack} disabled={isCreating}>{step === 1 ? 'Cancel' : 'Back'}</Button>
+          <Button variant="tertiary" onClick={step === 1 ? () => setActiveRoute('workspaces') : handleBack} disabled={isCreating}>{step === 1 ? t('templates16WorkspaceNew.cancel') : t('templates16WorkspaceNew.back')}</Button>
           {step < 3 ? (
-            <Button onClick={handleNext}>Continue <ChevronRight className="w-4 h-4 ml-1" /></Button>
+            <Button onClick={handleNext}>{t('templates16WorkspaceNew.continue')} <ChevronRight className="w-4 h-4 ml-1" /></Button>
           ) : (
-            <Button onClick={handleCreate} isLoading={isCreating}>Create Workspace</Button>
+            <Button onClick={handleCreate} isLoading={isCreating}>{t('templates16WorkspaceNew.btnCreateWorkspace')}</Button>
           )}
         </div>
       </Card>
@@ -1172,6 +1214,7 @@ const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
 
 // --- WORKSPACE OVERVIEW PAGE ---
 const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -1188,35 +1231,35 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
       <PageHeader 
         showBack 
         onBack={() => setActiveRoute('workspaces')}
-        title="Production AI" 
-        subtitle="ws_prod_01 • Main production environment for ML models" 
+        title="Production AI"
+        subtitle="ws_prod_01 • Main production environment for ML models"
         actions={
           <>
-            <Button variant="outline" className="hidden sm:flex"><Edit2 className="w-4 h-4 mr-2"/> Edit details</Button>
-            <Button variant="outline" className="hidden sm:flex" onClick={() => setActiveRoute('workspace-members')}><Users className="w-4 h-4 mr-2"/> Manage members</Button>
+            <Button variant="outline" className="hidden sm:flex"><Edit2 className="w-4 h-4 mr-2"/> {t('templates16WorkspaceNew.btnEditDetails')}</Button>
+            <Button variant="outline" className="hidden sm:flex" onClick={() => setActiveRoute('workspace-members')}><Users className="w-4 h-4 mr-2"/> {t('templates16WorkspaceNew.btnManageMembers')}</Button>
             <div className="relative" ref={dropdownRef}>
                <Button variant="tertiary" size="icon" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                  <MoreVertical className="w-4 h-4" />
                </Button>
                {isDropdownOpen && (
                   <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 animate-in fade-in zoom-in-95 duration-100">
-                    <button 
+                    <button
                       onClick={() => { setActiveRoute('audit-logs'); setIsDropdownOpen(false); }}
                       className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors"
                     >
-                      <Activity className="w-4 h-4 text-[var(--text-secondary)]"/> Audit logs
+                      <Activity className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates16WorkspaceNew.menuAuditLogs')}
                     </button>
-                    <button 
+                    <button
                       onClick={() => { setActiveRoute('billing'); setIsDropdownOpen(false); }}
                       className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors"
                     >
-                      <CreditCard className="w-4 h-4 text-[var(--text-secondary)]"/> Billing
+                      <CreditCard className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates16WorkspaceNew.navBilling')}
                     </button>
                   </div>
                )}
             </div>
           </>
-        } 
+        }
       />
 
       <Section>
@@ -1224,23 +1267,23 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
            <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-[var(--primary-gold)]/5 to-transparent pointer-events-none" />
            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 relative z-10">
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Status</p>
-                <Badge variant="operational" className="py-1">Active</Badge>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates16WorkspaceNew.colStatus')}</p>
+                <Badge variant="operational" className="py-1">{t(STATUS_LABEL_KEYS.Active)}</Badge>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Plan</p>
-                <div className="text-sm font-medium text-[var(--text-primary)]">Enterprise</div>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates16WorkspaceNew.overviewPlanLabel')}</p>
+                <div className="text-sm font-medium text-[var(--text-primary)]">{t(PLAN_LABEL_KEYS.Enterprise)}</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Region</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates16WorkspaceNew.overviewRegionLabel')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">US-East</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Created</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates16WorkspaceNew.colCreated')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">Oct 12, 2026</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Owner</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates16WorkspaceNew.overviewOwnerLabel')}</p>
                 <div className="flex items-center gap-2">
                    <div className="w-5 h-5 rounded bg-[var(--bg-app)] border border-[var(--border-color)] flex items-center justify-center text-[10px] font-bold text-[var(--primary-gold)]">A</div>
                    <div className="text-sm font-medium text-[var(--text-primary)]">Admin User</div>
@@ -1252,72 +1295,72 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
 
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="API Requests (Today)" value="124.5K" trend="+5.2%" isUp={true} />
-          <MetricCard title="Active Users" value="14" trend="0%" />
-          <MetricCard title="Error Rate" value="0.01%" trend="-0.04%" isUp={false} inverseGood={true} />
-          <MetricCard title="Storage Used" value="84 GB" trend="+2.1%" isUp={true} />
+          <MetricCard title={t('templates16WorkspaceNew.metricApiRequestsToday')} value="124.5K" trend="+5.2%" isUp={true} />
+          <MetricCard title={t('templates16WorkspaceNew.metricActiveUsers')} value="14" trend="0%" />
+          <MetricCard title={t('templates16WorkspaceNew.metricErrorRate')} value="0.01%" trend="-0.04%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates16WorkspaceNew.metricStorageUsed')} value="84 GB" trend="+2.1%" isUp={true} />
         </div>
       </Section>
 
       <Section>
         <Tabs defaultValue="overview" tabs={[
-          { 
-            id: 'overview', 
-            label: 'Overview', 
+          {
+            id: 'overview',
+            label: t('templates16WorkspaceNew.tabOverview'),
             content: (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
                 <div className="lg:col-span-2 space-y-4">
                   <div className="flex items-center justify-between">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Recent Activity</h3>
-                     <Button variant="tertiary" size="sm" onClick={() => setActiveRoute('audit-logs')}>View all logs</Button>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates16WorkspaceNew.sectionRecentActivity')}</h3>
+                     <Button variant="tertiary" size="sm" onClick={() => setActiveRoute('audit-logs')}>{t('templates16WorkspaceNew.btnViewAllLogs')}</Button>
                   </div>
-                  <DataTable 
+                  <DataTable
                     pagination={false}
-                    columns={["Event", "Actor", "Time"]}
+                    columns={[t('templates16WorkspaceNew.colEvent'), t('templates16WorkspaceNew.colActor'), t('templates16WorkspaceNew.colTime')]}
                     data={[
-                      ["Billing updated to Enterprise", "Admin User", "2 days ago"],
-                      ["API Key 'Prod Token' generated", "System", "Oct 18, 2026"],
-                      ["User 'Sarah Jenkins' invited", "Admin User", "Oct 15, 2026"]
+                      [t('templates16WorkspaceNew.eventBillingUpdatedToEnterprise'), "Admin User", "2 days ago"],
+                      [t('templates16WorkspaceNew.eventApiKeyNamedGenerated', { name: 'Prod Token' }), t('templates16WorkspaceNew.actorSystem'), "Oct 18, 2026"],
+                      [t('templates16WorkspaceNew.eventUserNamedInvited', { name: 'Sarah Jenkins' }), "Admin User", "Oct 15, 2026"]
                     ]}
                     loading={false}
                   />
                 </div>
                 <div className="space-y-6 sm:space-y-8">
                    <div className="space-y-4">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Alerts</h3>
-                     <Alert variant="success" title="Healthy">No issues detected for this workspace.</Alert>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates16WorkspaceNew.sectionAlerts')}</h3>
+                     <Alert variant="success" title={t(STATUS_LABEL_KEYS.Healthy)}>{t('templates16WorkspaceNew.alertNoIssuesDetected')}</Alert>
                    </div>
                    <div className="space-y-4">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Quick Actions</h3>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates16WorkspaceNew.sectionQuickActions')}</h3>
                      <div className="bg-[var(--bg-card)] rounded-md-custom border border-[var(--border-color)] p-4 shadow-soft-sm flex flex-col gap-2">
-                        <Button variant="outline" className="w-full justify-start"><Key className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> Generate API Key</Button>
-                        <Button variant="outline" className="w-full justify-start" onClick={() => setActiveRoute('workspace-members')}><UserPlus className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> Invite User</Button>
-                        <Button variant="outline" className="w-full justify-start" onClick={() => setActiveRoute('billing')}><CreditCard className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> Manage Billing</Button>
+                        <Button variant="outline" className="w-full justify-start"><Key className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> {t('templates16WorkspaceNew.btnGenerateApiKey')}</Button>
+                        <Button variant="outline" className="w-full justify-start" onClick={() => setActiveRoute('workspace-members')}><UserPlus className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> {t('templates16WorkspaceNew.btnInviteUser')}</Button>
+                        <Button variant="outline" className="w-full justify-start" onClick={() => setActiveRoute('billing')}><CreditCard className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> {t('templates16WorkspaceNew.btnManageBilling')}</Button>
                      </div>
                    </div>
                 </div>
               </div>
             )
           },
-          { 
-            id: 'activity', 
-            label: 'Activity', 
+          {
+            id: 'activity',
+            label: t('templates16WorkspaceNew.tabActivity'),
             content: (
-               <DataTable 
-                columns={["Event", "Resource", "Actor", "Time"]}
+               <DataTable
+                columns={[t('templates16WorkspaceNew.colEvent'), t('templates16WorkspaceNew.colResource'), t('templates16WorkspaceNew.colActor'), t('templates16WorkspaceNew.colTime')]}
                 data={[
-                  ["Billing updated", "Plan: Enterprise", "Admin User", "2 days ago"],
-                  ["Key generated", "Prod Token", "System", "Oct 18, 2026"],
-                  ["User invited", "sarah@kaori.io", "Admin User", "Oct 15, 2026"],
-                  ["Workspace created", "Production AI", "Admin User", "Oct 12, 2026"],
+                  [t('templates16WorkspaceNew.eventBillingUpdated'), t('templates16WorkspaceNew.resourcePlanEnterprise'), "Admin User", "2 days ago"],
+                  [t('templates16WorkspaceNew.eventKeyGenerated'), "Prod Token", t('templates16WorkspaceNew.actorSystem'), "Oct 18, 2026"],
+                  [t('templates16WorkspaceNew.eventUserInvitedShort'), "sarah@kaori.io", "Admin User", "Oct 15, 2026"],
+                  [t('templates16WorkspaceNew.eventWorkspaceCreatedShort'), "Production AI", "Admin User", "Oct 12, 2026"],
                 ]}
                 loading={false}
               />
             )
           },
-          { 
-            id: 'usage', 
-            label: 'Usage', 
+          {
+            id: 'usage',
+            label: t('templates16WorkspaceNew.tabUsage'),
             content: (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="p-6">
@@ -1326,12 +1369,12 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
                       <Zap className="w-5 h-5 text-[var(--text-secondary)]" />
                     </div>
                     <div>
-                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">API Calls</h3>
-                       <p className="text-xs text-[var(--text-secondary)]">Last 30 days</p>
+                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates16WorkspaceNew.usageApiCallsTitle')}</h3>
+                       <p className="text-xs text-[var(--text-secondary)]">{t('templates16WorkspaceNew.usageLast30Days')}</p>
                     </div>
                   </div>
                   <div className="text-3xl font-semibold text-[var(--text-primary)]">2.4M</div>
-                  <div className="text-sm text-[var(--text-secondary)] mt-2">12% of Enterprise Limit (20M)</div>
+                  <div className="text-sm text-[var(--text-secondary)] mt-2">{t('templates16WorkspaceNew.usagePercentOfEnterpriseLimit', { percent: '12', limit: '20M' })}</div>
                   <div className="w-full bg-[var(--bg-app)] rounded-full h-2 mt-4 border border-[var(--border-color)] overflow-hidden">
                      <div className="bg-[var(--primary-gold)] h-2 rounded-full" style={{width: '12%'}}></div>
                   </div>
@@ -1342,12 +1385,12 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
                       <Server className="w-5 h-5 text-[var(--text-secondary)]" />
                     </div>
                     <div>
-                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">Storage</h3>
-                       <p className="text-xs text-[var(--text-secondary)]">Current usage</p>
+                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates16WorkspaceNew.usageStorageTitle')}</h3>
+                       <p className="text-xs text-[var(--text-secondary)]">{t('templates16WorkspaceNew.usageCurrentUsage')}</p>
                     </div>
                   </div>
                   <div className="text-3xl font-semibold text-[var(--text-primary)]">84 GB</div>
-                  <div className="text-sm text-[var(--text-secondary)] mt-2">16% of Enterprise Limit (500 GB)</div>
+                  <div className="text-sm text-[var(--text-secondary)] mt-2">{t('templates16WorkspaceNew.usagePercentOfEnterpriseLimit', { percent: '16', limit: '500 GB' })}</div>
                   <div className="w-full bg-[var(--bg-app)] rounded-full h-2 mt-4 border border-[var(--border-color)] overflow-hidden">
                      <div className="bg-[#5C856A] h-2 rounded-full" style={{width: '16%'}}></div>
                   </div>
@@ -1355,13 +1398,13 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
               </div>
             )
           },
-          { id: 'keys', label: 'API Keys', content: <Alert variant="info" title="Keys">Manage API keys here.</Alert> },
-          { id: 'members', label: 'Members', content: (
+          { id: 'keys', label: t('templates16WorkspaceNew.navApiKeys'), content: <Alert variant="info" title={t('templates16WorkspaceNew.alertKeysTitle')}>{t('templates16WorkspaceNew.alertKeysBody')}</Alert> },
+          { id: 'members', label: t('templates16WorkspaceNew.tabMembers'), content: (
             <Card className="p-8 text-center flex flex-col items-center">
               <Users className="w-8 h-8 text-[var(--text-secondary)] mb-3" />
-              <h3 className="text-sm font-medium text-[var(--text-primary)]">Workspace Members</h3>
-              <p className="text-xs text-[var(--text-secondary)] mt-1 mb-4">Manage active members and roles.</p>
-              <Button onClick={() => setActiveRoute('workspace-members')}>Open Members Management</Button>
+              <h3 className="text-sm font-medium text-[var(--text-primary)]">{t('templates16WorkspaceNew.workspaceMembersTitle')}</h3>
+              <p className="text-xs text-[var(--text-secondary)] mt-1 mb-4">{t('templates16WorkspaceNew.workspaceMembersDesc')}</p>
+              <Button onClick={() => setActiveRoute('workspace-members')}>{t('templates16WorkspaceNew.btnOpenMembersManagement')}</Button>
             </Card>
           )}
         ]} />
@@ -1379,6 +1422,7 @@ const MOCK_WORKSPACES = [
 ];
 
 const RowActionsDropdown = ({  workspaceId, onViewDetails  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
 
@@ -1398,20 +1442,20 @@ const RowActionsDropdown = ({  workspaceId, onViewDetails  }: any) => {
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 animate-in fade-in zoom-in-95 duration-100">
           <button onClick={() => { onViewDetails(); setIsOpen(false); }} className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> View details
+            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates16WorkspaceNew.menuViewDetails')}
           </button>
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Edit2 className="w-4 h-4 text-[var(--text-secondary)]"/> Edit workspace
+            <Edit2 className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates16WorkspaceNew.menuEditWorkspace')}
           </button>
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Users className="w-4 h-4 text-[var(--text-secondary)]"/> Manage members
+            <Users className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates16WorkspaceNew.btnManageMembers')}
           </button>
           <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2" />
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-warning)] hover:bg-[#FDF9F0] flex items-center gap-2 transition-colors font-medium">
-            <Ban className="w-4 h-4 opacity-80"/> Suspend
+            <Ban className="w-4 h-4 opacity-80"/> {t('templates16WorkspaceNew.menuSuspend')}
           </button>
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] flex items-center gap-2 transition-colors font-medium">
-            <Trash2 className="w-4 h-4 opacity-80"/> Delete
+            <Trash2 className="w-4 h-4 opacity-80"/> {t('templates16WorkspaceNew.menuDelete')}
           </button>
         </div>
       )}
@@ -1420,6 +1464,7 @@ const RowActionsDropdown = ({  workspaceId, onViewDetails  }: any) => {
 };
 
 const WorkspacesPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
   const [plan, setPlan] = useState('all');
@@ -1452,27 +1497,27 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
       <div className="text-sm text-[var(--text-primary)]">{ws.ownerName}</div>
       <div className="text-xs text-[var(--text-secondary)] mt-0.5">{ws.ownerEmail}</div>
     </div>,
-    <Badge key="ws-plan" variant={getPlanBadgeVariant(ws.plan)}>{ws.plan}</Badge>,
+    <Badge key="ws-plan" variant={getPlanBadgeVariant(ws.plan)}>{t(PLAN_LABEL_KEYS[ws.plan] || ws.plan)}</Badge>,
     <div key="ws-members" className="flex items-center gap-1.5 text-[var(--text-secondary)]">
       <Users className="w-3.5 h-3.5"/> {ws.members}
     </div>,
     <span key="ws-usage" className="tabular-nums text-[var(--text-secondary)]">{ws.usage}</span>,
-    <Badge key="ws-status" variant={ws.status === 'Active' ? 'operational' : 'warning'}>{ws.status}</Badge>,
+    <Badge key="ws-status" variant={ws.status === 'Active' ? 'operational' : 'warning'}>{t(STATUS_LABEL_KEYS[ws.status] || ws.status)}</Badge>,
     <span key="ws-created" className="text-[var(--text-secondary)] whitespace-nowrap">{ws.created}</span>,
     <RowActionsDropdown key="ws-actions" workspaceId={ws.id} onViewDetails={() => setActiveRoute('workspace-details')} />
   ]);
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Workspaces" 
-        subtitle="Manage all tenant environments and access." 
+      <PageHeader
+        title={t('templates16WorkspaceNew.navWorkspaces')}
+        subtitle={t('templates16WorkspaceNew.workspacesSubtitle')}
         actions={
           <>
-            <Button variant="outline" className="hidden sm:flex"><Search className="w-4 h-4 mr-2"/> Import</Button>
-            <Button onClick={() => setActiveRoute('workspace-new')}><Plus className="w-4 h-4 mr-2"/> Create workspace</Button>
+            <Button variant="outline" className="hidden sm:flex"><Search className="w-4 h-4 mr-2"/> {t('templates16WorkspaceNew.btnImport')}</Button>
+            <Button onClick={() => setActiveRoute('workspace-new')}><Plus className="w-4 h-4 mr-2"/> {t('templates16WorkspaceNew.btnCreateWorkspaceLower')}</Button>
           </>
-        } 
+        }
       />
 
       <Section>
@@ -1481,27 +1526,27 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               className="h-10 w-full pl-9 pr-3 rounded-md-custom border border-[var(--border-color)] bg-white text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
-              placeholder="Search workspaces..."
+              placeholder={t('templates16WorkspaceNew.searchWorkspacesPlaceholder')}
               value={search}
               onChange={(e: any) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex w-full sm:w-auto gap-3 shrink-0">
             <div className="w-full sm:w-36">
-              <Select value={status} onChange={setStatus} options={[{label: 'All Statuses', value: 'all'}, {label: 'Active', value: 'Active'}, {label: 'Suspended', value: 'Suspended'}]} placeholder="Status" />
+              <Select value={status} onChange={setStatus} options={[{label: t('templates16WorkspaceNew.filterAllStatuses'), value: 'all'}, {label: t(STATUS_LABEL_KEYS.Active), value: 'Active'}, {label: t(STATUS_LABEL_KEYS.Suspended), value: 'Suspended'}]} placeholder={t('templates16WorkspaceNew.colStatus')} />
             </div>
             <div className="w-full sm:w-36">
-              <Select value={plan} onChange={setPlan} options={[{label: 'All Plans', value: 'all'}, {label: 'Free', value: 'Free'}, {label: 'Pro', value: 'Pro'}, {label: 'Enterprise', value: 'Enterprise'}]} placeholder="Plan" />
+              <Select value={plan} onChange={setPlan} options={[{label: t('templates16WorkspaceNew.filterAllPlans'), value: 'all'}, {label: t(PLAN_LABEL_KEYS.Free), value: 'Free'}, {label: t(PLAN_LABEL_KEYS.Pro), value: 'Pro'}, {label: t(PLAN_LABEL_KEYS.Enterprise), value: 'Enterprise'}]} placeholder={t('templates16WorkspaceNew.overviewPlanLabel')} />
             </div>
           </div>
           {(search || status !== 'all' || plan !== 'all') && (
-            <Button variant="tertiary" onClick={() => {setSearch(''); setStatus('all'); setPlan('all');}} className="px-3">Clear filters</Button>
+            <Button variant="tertiary" onClick={() => {setSearch(''); setStatus('all'); setPlan('all');}} className="px-3">{t('templates16WorkspaceNew.btnClearFilters')}</Button>
           )}
         </div>
       </Section>
 
       <Section>
-        <DataTable columns={["Workspace", "Owner", "Plan", "Members", "Usage", "Status", "Created", ""]} data={mappedData} loading={isLoading} />
+        <DataTable columns={[t('templates16WorkspaceNew.colWorkspace'), t('templates16WorkspaceNew.colOwner'), t('templates16WorkspaceNew.overviewPlanLabel'), t('templates16WorkspaceNew.colMembers'), t('templates16WorkspaceNew.colUsage'), t('templates16WorkspaceNew.colStatus'), t('templates16WorkspaceNew.colCreated'), ""]} data={mappedData} loading={isLoading} />
       </Section>
     </PageContainer>
   );
@@ -1509,6 +1554,7 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
 
 // --- WORKSPACE BILLING PAGE ---
 const UsageCard = ({  title, current, max, unit, icon: Icon  }: any) => {
+  const t = useT();
   const percent = Math.min((current / max) * 100, 100);
   const isWarning = percent >= 80;
 
@@ -1527,14 +1573,15 @@ const UsageCard = ({  title, current, max, unit, icon: Icon  }: any) => {
          <div className={cn("h-2 rounded-full transition-all duration-500", isWarning ? "bg-[#D97C7C]" : "bg-[#5C856A]")} style={{ width: `${percent}%` }}></div>
       </div>
       <div className="flex items-center justify-between mt-2">
-        <span className="text-[11px] font-medium text-[var(--text-secondary)]">{percent.toFixed(1)}% used</span>
-        {isWarning && <span className="text-[11px] text-[#9B5050] font-medium flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> Approaching limit</span>}
+        <span className="text-[11px] font-medium text-[var(--text-secondary)]">{t('templates16WorkspaceNew.usagePercentUsed', { percent: percent.toFixed(1) })}</span>
+        {isWarning && <span className="text-[11px] text-[#9B5050] font-medium flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> {t('templates16WorkspaceNew.approachingLimit')}</span>}
       </div>
     </Card>
   );
 };
 
 const WorkspaceBillingPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [isLoadingInvoices, setIsLoadingInvoices] = useState(true);
@@ -1555,62 +1602,62 @@ const WorkspaceBillingPage = ({  setActiveRoute  }: any) => {
     <span key="id" className="font-medium text-[var(--text-primary)]">{inv.id}</span>,
     <span key="date" className="text-[var(--text-secondary)]">{inv.date}</span>,
     <span key="amount" className="tabular-nums text-[var(--text-primary)]">{inv.amount}</span>,
-    <Badge key="status" variant={inv.status === 'Paid' ? 'operational' : 'default'}>{inv.status}</Badge>,
+    <Badge key="status" variant={inv.status === 'Paid' ? 'operational' : 'default'}>{t(STATUS_LABEL_KEYS[inv.status] || inv.status)}</Badge>,
     <Button key="download" variant="tertiary" size="sm" className="h-8 px-2"><Download className="w-4 h-4 text-[var(--text-secondary)] hover:text-[var(--text-primary)]" /></Button>
   ]);
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        showBack 
+      <PageHeader
+        showBack
         onBack={() => setActiveRoute('workspace-details')}
-        title="Billing & Usage" 
-        subtitle="Manage your subscription, monitor usage, and view invoices."
+        title={t('templates16WorkspaceNew.billingUsageTitle')}
+        subtitle={t('templates16WorkspaceNew.billingUsageSubtitle')}
         actions={
           <>
-            <Button variant="outline" className="hidden sm:flex"><Download className="w-4 h-4 mr-2" /> Download all</Button>
-            <Button onClick={() => setIsUpgradeOpen(true)}>Upgrade plan</Button>
+            <Button variant="outline" className="hidden sm:flex"><Download className="w-4 h-4 mr-2" /> {t('templates16WorkspaceNew.btnDownloadAll')}</Button>
+            <Button onClick={() => setIsUpgradeOpen(true)}>{t('templates16WorkspaceNew.btnUpgradePlan')}</Button>
           </>
         }
       />
 
-      <Section title="Current Plan">
+      <Section title={t('templates16WorkspaceNew.sectionCurrentPlan')}>
         <Card className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border-[var(--primary-gold)]/40 bg-[#FAF7F2]/30 relative overflow-hidden">
           <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-[var(--primary-gold)]/5 to-transparent pointer-events-none" />
           <div className="relative z-10 flex flex-col gap-1">
             <div className="flex items-center gap-3">
-              <h3 className="text-lg font-semibold text-[var(--text-primary)]">Pro Tier</h3>
-              <Badge variant="current">Active</Badge>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)]">{t('templates16WorkspaceNew.currentPlanProTier')}</h3>
+              <Badge variant="current">{t(STATUS_LABEL_KEYS.Active)}</Badge>
             </div>
             <p className="text-sm text-[var(--text-secondary)]">
-              $49.00 / month, billed monthly.
+              {t('templates16WorkspaceNew.currentPlanPriceLine')}
             </p>
             <p className="text-xs text-[var(--text-secondary)] mt-2">
-              Next billing date is <strong className="font-medium text-[var(--text-primary)]">Nov 01, 2026</strong>.
+              {t('templates16WorkspaceNew.nextBillingDateLabel')} <strong className="font-medium text-[var(--text-primary)]">Nov 01, 2026</strong>.
             </p>
           </div>
           <div className="relative z-10 flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-            <Button variant="outline" onClick={() => setIsCancelOpen(true)}>Cancel Plan</Button>
-            <Button onClick={() => setIsUpgradeOpen(true)}>Change Plan</Button>
+            <Button variant="outline" onClick={() => setIsCancelOpen(true)}>{t('templates16WorkspaceNew.btnCancelPlan')}</Button>
+            <Button onClick={() => setIsUpgradeOpen(true)}>{t('templates16WorkspaceNew.btnChangePlan')}</Button>
           </div>
         </Card>
       </Section>
 
-      <Section title="Current Usage">
+      <Section title={t('templates16WorkspaceNew.sectionCurrentUsage')}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-           <UsageCard title="API Requests" icon={Zap} current={42150} max={50000} unit="reqs" />
-           <UsageCard title="Storage Used" icon={HardDrive} current={8.4} max={50} unit="GB" />
-           <UsageCard title="Active Users" icon={Users} current={8} max={10} unit="seats" />
+           <UsageCard title={t('templates16WorkspaceNew.usageApiRequestsTitle')} icon={Zap} current={42150} max={50000} unit="reqs" />
+           <UsageCard title={t('templates16WorkspaceNew.metricStorageUsed')} icon={HardDrive} current={8.4} max={50} unit="GB" />
+           <UsageCard title={t('templates16WorkspaceNew.metricActiveUsers')} icon={Users} current={8} max={10} unit="seats" />
         </div>
       </Section>
 
-      <Section title="Invoices" actions={
+      <Section title={t('templates16WorkspaceNew.sectionInvoices')} actions={
         <div className="w-32">
-          <Select value="2026" onChange={() => {}} options={[{label: '2026', value: '2026'}, {label: '2025', value: '2025'}]} placeholder="Year" />
+          <Select value="2026" onChange={() => {}} options={[{label: '2026', value: '2026'}, {label: '2025', value: '2025'}]} placeholder={t('templates16WorkspaceNew.filterYear')} />
         </div>
       }>
-        <DataTable 
-          columns={["Invoice ID", "Date", "Amount", "Status", ""]}
+        <DataTable
+          columns={[t('templates16WorkspaceNew.colInvoiceId'), t('templates16WorkspaceNew.colDate'), t('templates16WorkspaceNew.colAmount'), t('templates16WorkspaceNew.colStatus'), ""]}
           data={invoiceData}
           loading={isLoadingInvoices}
           pagination={false}
@@ -1618,77 +1665,77 @@ const WorkspaceBillingPage = ({  setActiveRoute  }: any) => {
       </Section>
 
       {/* Upgrade Modal */}
-      <Modal 
-        isOpen={isUpgradeOpen} 
+      <Modal
+        isOpen={isUpgradeOpen}
         onClose={() => setIsUpgradeOpen(false)}
-        title="Upgrade Plan"
-        description="Select a tier that best suits your team's needs."
+        title={t('templates16WorkspaceNew.upgradePlanTitle')}
+        description={t('templates16WorkspaceNew.upgradePlanDesc')}
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
           {/* Free Tier */}
           <div className="border border-[var(--border-color)] rounded-lg-custom p-4 bg-[var(--bg-app)] flex flex-col">
             <div className="mb-4">
-              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">Free</h4>
+              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">{t(PLAN_LABEL_KEYS.Free)}</h4>
               <div className="text-2xl font-bold text-[var(--text-primary)]">$0<span className="text-sm text-[var(--text-secondary)] font-normal">/mo</span></div>
             </div>
             <ul className="text-xs text-[var(--text-secondary)] space-y-2 mb-6 flex-1">
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> 10,000 API reqs/mo</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> 5 GB Storage</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> 3 Team Members</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> {t('templates16WorkspaceNew.featureFreeApiReqs')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> {t('templates16WorkspaceNew.featureFreeStorage')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> {t('templates16WorkspaceNew.featureFreeTeamMembers')}</li>
             </ul>
-            <Button variant="outline" className="w-full" disabled>Downgrade</Button>
+            <Button variant="outline" className="w-full" disabled>{t('templates16WorkspaceNew.btnDowngrade')}</Button>
           </div>
 
           {/* Pro Tier (Current) */}
           <div className="border-2 border-[var(--primary-gold)] rounded-lg-custom p-4 bg-white flex flex-col relative shadow-soft-md scale-[1.02]">
             <div className="absolute top-0 right-0 bg-[var(--primary-gold)] text-[var(--bg-card)] text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded-bl-lg rounded-tr-[14px]">
-              Current
+              {t('templates16WorkspaceNew.badgeCurrent')}
             </div>
             <div className="mb-4">
-              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">Pro</h4>
+              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">{t(PLAN_LABEL_KEYS.Pro)}</h4>
               <div className="text-2xl font-bold text-[var(--text-primary)]">$49<span className="text-sm text-[var(--text-secondary)] font-normal">/mo</span></div>
             </div>
             <ul className="text-xs text-[var(--text-secondary)] space-y-2 mb-6 flex-1">
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> 50,000 API reqs/mo</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> 50 GB Storage</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> 10 Team Members</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> Email Support</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> {t('templates16WorkspaceNew.featureProApiReqs')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> {t('templates16WorkspaceNew.featureProStorage')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> {t('templates16WorkspaceNew.featureProTeamMembers')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> {t('templates16WorkspaceNew.featureProEmailSupport')}</li>
             </ul>
-            <Button variant="outline" className="w-full border-[var(--primary-gold)] text-[#9E814D]" disabled>Current Plan</Button>
+            <Button variant="outline" className="w-full border-[var(--primary-gold)] text-[#9E814D]" disabled>{t('templates16WorkspaceNew.btnCurrentPlan')}</Button>
           </div>
 
           {/* Enterprise Tier */}
           <div className="border border-[var(--border-color)] rounded-lg-custom p-4 bg-white flex flex-col">
             <div className="mb-4">
-              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">Enterprise</h4>
+              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">{t(PLAN_LABEL_KEYS.Enterprise)}</h4>
               <div className="text-2xl font-bold text-[var(--text-primary)]">$249<span className="text-sm text-[var(--text-secondary)] font-normal">/mo</span></div>
             </div>
             <ul className="text-xs text-[var(--text-secondary)] space-y-2 mb-6 flex-1">
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> Unlimited API reqs</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> 500 GB Storage</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> Unlimited Members</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> Priority Support & SLAs</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> {t('templates16WorkspaceNew.featureEntApiReqs')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> {t('templates16WorkspaceNew.featureEntStorage')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> {t('templates16WorkspaceNew.featureEntMembers')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> {t('templates16WorkspaceNew.featureEntPrioritySupport')}</li>
             </ul>
-            <Button className="w-full">Upgrade</Button>
+            <Button className="w-full">{t('templates16WorkspaceNew.btnUpgrade')}</Button>
           </div>
         </div>
       </Modal>
 
       {/* Cancel Plan Modal */}
-      <Modal 
-        isOpen={isCancelOpen} 
+      <Modal
+        isOpen={isCancelOpen}
         onClose={() => setIsCancelOpen(false)}
-        title="Cancel Subscription"
-        description="Are you sure you want to cancel your Pro plan? Your workspace will be downgraded to the Free tier at the end of the current billing cycle."
+        title={t('templates16WorkspaceNew.cancelSubscriptionTitle')}
+        description={t('templates16WorkspaceNew.cancelSubscriptionDesc')}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsCancelOpen(false)}>Keep Plan</Button>
-            <Button variant="destructive" onClick={() => setIsCancelOpen(false)}>Confirm Cancellation</Button>
+            <Button variant="outline" onClick={() => setIsCancelOpen(false)}>{t('templates16WorkspaceNew.btnKeepPlan')}</Button>
+            <Button variant="destructive" onClick={() => setIsCancelOpen(false)}>{t('templates16WorkspaceNew.btnConfirmCancellation')}</Button>
           </>
         }
       >
-         <Alert variant="warning" title="Warning">
-           Downgrading will reduce your limits to 10,000 API requests and 5 GB storage. Any resources exceeding these limits may become unavailable.
+         <Alert variant="warning" title={t('templates16WorkspaceNew.warningTitle')}>
+           {t('templates16WorkspaceNew.cancelWarningBody')}
          </Alert>
       </Modal>
 
@@ -1705,6 +1752,7 @@ const MOCK_MEMBERS = [
 ];
 
 const MemberActionsDropdown = ({  member, onRemove  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
 
@@ -1727,27 +1775,27 @@ const MemberActionsDropdown = ({  member, onRemove  }: any) => {
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 animate-in fade-in zoom-in-95 duration-100">
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> Change role
+            <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates16WorkspaceNew.menuChangeRole')}
           </button>
-          
+
           {member.status === 'Pending' && (
             <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-              <Send className="w-4 h-4 text-[var(--text-secondary)]"/> Resend invite
+              <Send className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates16WorkspaceNew.menuResendInvite')}
             </button>
           )}
 
           {member.role === 'Owner' && (
             <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-              <Key className="w-4 h-4 text-[var(--text-secondary)]"/> Transfer ownership
+              <Key className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates16WorkspaceNew.menuTransferOwnership')}
             </button>
           )}
 
           <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2" />
-          <button 
+          <button
             onClick={() => { onRemove(member); setIsOpen(false); }}
             className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] flex items-center gap-2 transition-colors font-medium"
           >
-            <Trash2 className="w-4 h-4 opacity-80"/> Remove member
+            <Trash2 className="w-4 h-4 opacity-80"/> {t('templates16WorkspaceNew.menuRemoveMember')}
           </button>
         </div>
       )}
@@ -1756,6 +1804,7 @@ const MemberActionsDropdown = ({  member, onRemove  }: any) => {
 };
 
 const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -1778,7 +1827,7 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
     if (memberToRemove?.role === 'Owner') {
       const ownerCount = members.filter(m => m.role === 'Owner').length;
       if (ownerCount <= 1) {
-        setRemoveError("You cannot remove the last owner. Please transfer ownership first.");
+        setRemoveError(t('templates16WorkspaceNew.errCannotRemoveLastOwner'));
         return;
       }
     }
@@ -1824,14 +1873,14 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
        </div>
        <div>
          <div className="font-medium text-[var(--text-primary)] flex items-center gap-2">
-           {m.name} 
-           {m.id === 'm1' && <span className="text-[10px] bg-[var(--bg-app)] border border-[var(--border-color)] px-1.5 py-0.5 rounded text-[var(--text-secondary)]">You</span>}
+           {m.name}
+           {m.id === 'm1' && <span className="text-[10px] bg-[var(--bg-app)] border border-[var(--border-color)] px-1.5 py-0.5 rounded text-[var(--text-secondary)]">{t('templates16WorkspaceNew.badgeYou')}</span>}
          </div>
          <div className="text-xs text-[var(--text-secondary)] mt-0.5">{m.email}</div>
        </div>
     </div>,
-    <Badge key="member-role" variant={getRoleBadgeVariant(m.role)}>{m.role}</Badge>,
-    <Badge key="member-status" variant={m.status === 'Active' ? 'operational' : 'warning'}>{m.status}</Badge>,
+    <Badge key="member-role" variant={getRoleBadgeVariant(m.role)}>{t(ROLE_LABEL_KEYS[m.role] || m.role)}</Badge>,
+    <Badge key="member-status" variant={m.status === 'Active' ? 'operational' : 'warning'}>{t(STATUS_LABEL_KEYS[m.status] || m.status)}</Badge>,
     <span key="member-last" className="text-[var(--text-secondary)] whitespace-nowrap">{m.lastActive}</span>,
     <span key="member-joined" className="text-[var(--text-secondary)] whitespace-nowrap">{m.joinedAt}</span>,
     <MemberActionsDropdown key="member-actions" member={m} onRemove={setMemberToRemove} />
@@ -1839,16 +1888,16 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        showBack 
+      <PageHeader
+        showBack
         onBack={() => setActiveRoute('workspace-details')}
-        title="Members" 
-        subtitle="Manage users and access levels for Production AI workspace." 
+        title={t('templates16WorkspaceNew.membersTitle')}
+        subtitle={t('templates16WorkspaceNew.membersSubtitle')}
         actions={
           <Button onClick={() => setIsInviteOpen(true)}>
-            <UserPlus className="w-4 h-4 mr-2"/> Invite member
+            <UserPlus className="w-4 h-4 mr-2"/> {t('templates16WorkspaceNew.btnInviteMember')}
           </Button>
-        } 
+        }
       />
 
       <Section>
@@ -1858,98 +1907,98 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               className="h-10 w-full pl-9 pr-3 rounded-md-custom border border-[var(--border-color)] bg-white text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
-              placeholder="Search by name or email..."
+              placeholder={t('templates16WorkspaceNew.searchMembersPlaceholder')}
               value={search}
               onChange={(e: any) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex w-full sm:w-auto gap-3 shrink-0">
             <div className="w-full sm:w-36">
-              <Select 
-                value={roleFilter} 
-                onChange={setRoleFilter} 
+              <Select
+                value={roleFilter}
+                onChange={setRoleFilter}
                 options={[
-                  {label: 'All Roles', value: 'all'}, 
-                  {label: 'Owner', value: 'Owner'}, 
-                  {label: 'Admin', value: 'Admin'},
-                  {label: 'Member', value: 'Member'},
-                  {label: 'Viewer', value: 'Viewer'}
-                ]} 
-                placeholder="Role" 
+                  {label: t('templates16WorkspaceNew.filterAllRoles'), value: 'all'},
+                  {label: t(ROLE_LABEL_KEYS.Owner), value: 'Owner'},
+                  {label: t(ROLE_LABEL_KEYS.Admin), value: 'Admin'},
+                  {label: t(ROLE_LABEL_KEYS.Member), value: 'Member'},
+                  {label: t(ROLE_LABEL_KEYS.Viewer), value: 'Viewer'}
+                ]}
+                placeholder={t('templates16WorkspaceNew.colRole')}
               />
             </div>
             <div className="w-full sm:w-36">
-              <Select 
-                value={statusFilter} 
-                onChange={setStatusFilter} 
-                options={[{label: 'All Statuses', value: 'all'}, {label: 'Active', value: 'Active'}, {label: 'Pending', value: 'Pending'}]} 
-                placeholder="Status" 
+              <Select
+                value={statusFilter}
+                onChange={setStatusFilter}
+                options={[{label: t('templates16WorkspaceNew.filterAllStatuses'), value: 'all'}, {label: t(STATUS_LABEL_KEYS.Active), value: 'Active'}, {label: t(STATUS_LABEL_KEYS.Pending), value: 'Pending'}]}
+                placeholder={t('templates16WorkspaceNew.colStatus')}
               />
             </div>
           </div>
           {(search || roleFilter !== 'all' || statusFilter !== 'all') && (
             <Button variant="tertiary" onClick={() => {setSearch(''); setRoleFilter('all'); setStatusFilter('all');}} className="px-3">
-              Clear filters
+              {t('templates16WorkspaceNew.btnClearFilters')}
             </Button>
           )}
         </div>
       </Section>
 
       <Section>
-        <DataTable 
-          columns={["Name", "Role", "Status", "Last Active", "Joined", ""]} 
-          data={mappedData} 
-          loading={isLoading} 
+        <DataTable
+          columns={[t('templates16WorkspaceNew.colName'), t('templates16WorkspaceNew.colRole'), t('templates16WorkspaceNew.colStatus'), t('templates16WorkspaceNew.colLastActive'), t('templates16WorkspaceNew.colJoined'), ""]}
+          data={mappedData}
+          loading={isLoading}
         />
       </Section>
 
       {/* Invite Modal */}
-      <Modal 
-        isOpen={isInviteOpen} 
+      <Modal
+        isOpen={isInviteOpen}
         onClose={() => setIsInviteOpen(false)}
-        title="Invite Member"
-        description="Send an email invitation to join this workspace."
+        title={t('templates16WorkspaceNew.inviteMemberTitle')}
+        description={t('templates16WorkspaceNew.inviteMemberDesc')}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsInviteOpen(false)}>Cancel</Button>
-            <Button onClick={handleInvite}><Mail className="w-4 h-4 mr-2"/> Send Invite</Button>
+            <Button variant="outline" onClick={() => setIsInviteOpen(false)}>{t('templates16WorkspaceNew.cancel')}</Button>
+            <Button onClick={handleInvite}><Mail className="w-4 h-4 mr-2"/> {t('templates16WorkspaceNew.btnSendInvite')}</Button>
           </>
         }
       >
         <div className="space-y-4">
-          <Input 
-            label="Email Address" 
-            placeholder="colleague@company.com" 
+          <Input
+            label={t('templates16WorkspaceNew.labelEmailAddress')}
+            placeholder="colleague@company.com"
             value={inviteEmail}
             onChange={e => setInviteEmail(e.target.value)}
           />
-          <Select 
-            label="Workspace Role" 
-            placeholder="Select a role..."
+          <Select
+            label={t('templates16WorkspaceNew.labelWorkspaceRole')}
+            placeholder={t('templates16WorkspaceNew.selectRolePlaceholder')}
             options={[
-              {label: 'Admin', value: 'admin'}, 
-              {label: 'Member', value: 'member'}, 
-              {label: 'Viewer', value: 'viewer'}
+              {label: t(ROLE_LABEL_KEYS.Admin), value: 'admin'},
+              {label: t(ROLE_LABEL_KEYS.Member), value: 'member'},
+              {label: t(ROLE_LABEL_KEYS.Viewer), value: 'viewer'}
             ]}
             value="member"
             onChange={() => {}}
           />
           <Alert variant="info" className="mt-2">
-            Members can view and interact with all resources, but cannot manage billing or workspace settings.
+            {t('templates16WorkspaceNew.inviteMemberInfoBody')}
           </Alert>
         </div>
       </Modal>
 
       {/* Remove Confirmation Modal */}
-      <Modal 
-        isOpen={!!memberToRemove} 
+      <Modal
+        isOpen={!!memberToRemove}
         onClose={() => { setMemberToRemove(null); setRemoveError(''); }}
-        title="Remove Member"
-        description={`Are you sure you want to remove ${memberToRemove?.name} from this workspace? They will lose access immediately.`}
+        title={t('templates16WorkspaceNew.removeMemberTitle')}
+        description={t('templates16WorkspaceNew.removeMemberDesc', { name: memberToRemove?.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => { setMemberToRemove(null); setRemoveError(''); }}>Cancel</Button>
-            <Button variant="destructive" onClick={handleRemove}>Remove Member</Button>
+            <Button variant="outline" onClick={() => { setMemberToRemove(null); setRemoveError(''); }}>{t('templates16WorkspaceNew.cancel')}</Button>
+            <Button variant="destructive" onClick={handleRemove}>{t('templates16WorkspaceNew.btnRemoveMember')}</Button>
           </>
         }
       >
@@ -1959,7 +2008,7 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
           </Alert>
         )}
         <div className="text-sm text-[var(--text-secondary)]">
-          This action cannot be undone. To restore access later, you will need to send a new invitation.
+          {t('templates16WorkspaceNew.removeMemberIrreversibleNote')}
         </div>
       </Modal>
 
@@ -1973,7 +2022,8 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
 // ==========================================
 
 export default function KaoriPlatformShell() {
-  const [activeRoute, setActiveRoute] = useState('workspace-new'); 
+  const t = useT();
+  const [activeRoute, setActiveRoute] = useState('workspace-new');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const [isCollapsed, setIsCollapsed] = useState(() => {
@@ -2021,14 +2071,14 @@ export default function KaoriPlatformShell() {
              activeRoute === 'overview' ? <PlatformOverview /> : 
              activeRoute === 'sessions' ? <SessionsPage /> : (
               <PageContainer maxWidth="narrow">
-                <PageHeader title={`${NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label} module`} subtitle="This section of the platform is currently being designed." />
+                <PageHeader title={t('templates16WorkspaceNew.moduleTitle', { label: NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.labelKey ? t(NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)!.labelKey) : activeRoute })} subtitle={t('templates16WorkspaceNew.moduleSubtitle')} />
                 <Section>
                   <Card className="flex flex-col items-center justify-center py-20 px-4 text-center border-dashed bg-[var(--bg-card)]/50 mx-auto w-full animate-in fade-in duration-300">
                     <div className="w-12 h-12 rounded-lg-custom bg-[var(--bg-sidebar)] flex items-center justify-center border border-[var(--border-color)] mb-4">
                       {React.createElement(NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.icon || LayoutDashboard, { className: 'w-6 h-6 text-[var(--text-secondary)]' })}
                     </div>
-                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">Work in Progress</h3>
-                    <p className="text-sm text-[var(--text-secondary)] max-w-sm">Content for {activeRoute} will populate here inside the Shell Wrapper.</p>
+                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">{t('templates16WorkspaceNew.workInProgressTitle')}</h3>
+                    <p className="text-sm text-[var(--text-secondary)] max-w-sm">{t('templates16WorkspaceNew.workInProgressBody', { route: activeRoute })}</p>
                   </Card>
                 </Section>
               </PageContainer>

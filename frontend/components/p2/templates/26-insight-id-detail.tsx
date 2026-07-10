@@ -31,6 +31,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type Impact   = 'HIGH' | 'MEDIUM' | 'LOW';
 type Status   = 'NEW' | 'REVIEWED' | 'CONVERTED' | 'DISMISSED';
 type Source   = 'bronze' | 'silver' | 'gold';
@@ -76,20 +77,28 @@ interface Insight {
   created_at:           string;
 }
 
-const IMPACT_BADGE: Record<Impact, { variant: any; label: string }> = {
-  HIGH:   { variant: 'error',   label: 'Tác động cao' },
-  MEDIUM: { variant: 'warning', label: 'Tác động vừa' },
-  LOW:    { variant: 'default', label: 'Tác động thấp' },
-};
+function getImpactBadge(t: (key: string) => string): Record<Impact, { variant: any; label: string }> {
+  return {
+    HIGH:   { variant: 'error',   label: t('templates26InsightIdDetail.impactHigh') },
+    MEDIUM: { variant: 'warning', label: t('templates26InsightIdDetail.impactMedium') },
+    LOW:    { variant: 'default', label: t('templates26InsightIdDetail.impactLow') },
+  };
+}
 
-const STATUS_BADGE: Record<Status, { variant: any; label: string }> = {
-  NEW:       { variant: 'info',    label: 'Mới' },
-  REVIEWED:  { variant: 'default', label: 'Đã xem' },
-  CONVERTED: { variant: 'success', label: 'Đã ra quyết định' },
-  DISMISSED: { variant: 'default', label: 'Đã bỏ qua' },
-};
+function getStatusBadge(t: (key: string) => string): Record<Status, { variant: any; label: string }> {
+  return {
+    NEW:       { variant: 'info',    label: t('templates26InsightIdDetail.statusNew') },
+    REVIEWED:  { variant: 'default', label: t('templates26InsightIdDetail.statusReviewed') },
+    CONVERTED: { variant: 'success', label: t('templates26InsightIdDetail.statusConverted') },
+    DISMISSED: { variant: 'default', label: t('templates26InsightIdDetail.statusDismissed') },
+  };
+}
 
 export default function InsightDetailPage() {
+  const t = useT();
+  const IMPACT_BADGE = getImpactBadge(t);
+  const STATUS_BADGE = getStatusBadge(t);
+
   // usePathname() works in SSR + client; reading `window.location.pathname`
   // at component body crashes Next prerender with "window is not defined".
   const pathname  = usePathname() ?? '';
@@ -134,7 +143,7 @@ export default function InsightDetailPage() {
         method: 'POST',
         body:   JSON.stringify({}),
       });
-      setSuccess('Đã tạo quyết định mới — chuyển trang...');
+      setSuccess(t('templates26InsightIdDetail.msgConverted'));
       setTimeout(() => { window.location.href = `/p2/decisions/${res.decision_id}`; }, 600);
     } catch (err: any) {
       setProblem(err);
@@ -151,7 +160,7 @@ export default function InsightDetailPage() {
         body:   JSON.stringify({ status: 'DISMISSED', dismissed_reason: dismissReason.trim() }),
       });
       setShowDismiss(false);
-      setSuccess('Đã bỏ qua insight');
+      setSuccess(t('templates26InsightIdDetail.msgDismissed'));
       load();
     } catch (err: any) {
       setProblem(err);
@@ -176,12 +185,12 @@ export default function InsightDetailPage() {
   return (
     <>
       <PageHeader
-        title={ins?.title ?? 'Insight'}
-        description={ins ? `Khám phá ${ins.created_at} từ ${ins.source_table}` : 'Đang tải...'}
+        title={ins?.title ?? t('templates26InsightIdDetail.defaultTitle')}
+        description={ins ? t('templates26InsightIdDetail.headerDesc', { createdAt: ins.created_at, sourceTable: ins.source_table }) : t('templates26InsightIdDetail.loading')}
         actions={
           <Button variant="tertiary" onClick={() => (window.location.href = '/p2/insights')}>
             <ChevronLeft className="w-4 h-4 mr-1" />
-            Quay lại
+            {t('templates26InsightIdDetail.btnBack')}
           </Button>
         }
       />
@@ -211,13 +220,13 @@ export default function InsightDetailPage() {
                     {ins.churn_risk_label === 'HIGH' && (
                       <Badge variant="error">
                         <AlertTriangle className="w-3 h-3 mr-1 inline" />
-                        Churn cao
+                        {t('templates26InsightIdDetail.badgeChurnHigh')}
                       </Badge>
                     )}
                     {ins.is_actioned && (
                       <Badge variant="success">
                         <CheckCircle2 className="w-3 h-3 mr-1 inline" />
-                        Đã hành động
+                        {t('templates26InsightIdDetail.badgeActioned')}
                       </Badge>
                     )}
                   </div>
@@ -232,7 +241,7 @@ export default function InsightDetailPage() {
                       ? 'border-[var(--primary-gold)]/40 bg-[var(--primary-gold)]/10 text-[var(--primary-gold-dark)]'
                       : 'border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]',
                   )}
-                  aria-label={ins.bookmarked ? 'Bỏ đánh dấu' : 'Đánh dấu'}
+                  aria-label={ins.bookmarked ? t('templates26InsightIdDetail.ariaUnbookmark') : t('templates26InsightIdDetail.ariaBookmark')}
                 >
                   <Bookmark className={cn('w-4 h-4', ins.bookmarked && 'fill-current')} />
                 </button>
@@ -240,16 +249,16 @@ export default function InsightDetailPage() {
 
               {ins.revenue_at_risk_vnd > 0 && (
                 <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <KpiTile label="Metric" value={`${ins.metric_value}`} secondary={ins.metric_name} />
+                  <KpiTile label={t('templates26InsightIdDetail.kpiMetricLabel')} value={`${ins.metric_value}`} secondary={ins.metric_name} />
                   <KpiTile
-                    label="Cửa sổ thời gian"
+                    label={t('templates26InsightIdDetail.kpiWindowLabel')}
                     value={ins.metric_window}
-                    secondary={ins.trend_pct != null ? `${ins.trend_pct >= 0 ? '+' : ''}${ins.trend_pct.toFixed(1)}% so với kỳ trước` : undefined}
+                    secondary={ins.trend_pct != null ? t('templates26InsightIdDetail.kpiWindowSecondary', { sign: ins.trend_pct >= 0 ? '+' : '', pct: ins.trend_pct.toFixed(1) }) : undefined}
                   />
                   <KpiTile
-                    label="Doanh thu rủi ro"
+                    label={t('templates26InsightIdDetail.kpiRevenueLabel')}
                     value={formatVND(ins.revenue_at_risk_vnd)}
-                    secondary="Đóng góp vào North Star"
+                    secondary={t('templates26InsightIdDetail.kpiRevenueSecondary')}
                     highlight
                   />
                 </div>
@@ -260,16 +269,16 @@ export default function InsightDetailPage() {
             <Tuyen
               num={1}
               icon={Activity}
-              title="Chuyện gì đang xảy ra"
-              subtitle="Quan sát từ dữ liệu — đã được audit (K-6)"
+              title={t('templates26InsightIdDetail.tuyen1Title')}
+              subtitle={t('templates26InsightIdDetail.tuyen1Subtitle')}
             >
               <p className="text-sm text-[var(--text-primary)] leading-relaxed whitespace-pre-line">
                 {ins.what_observed}
               </p>
               <div className="mt-4 rounded-md-custom bg-[var(--bg-app)]/40 border border-dashed border-[var(--border-color)] h-48 flex flex-col items-center justify-center text-[var(--text-secondary)]">
                 <BarChart2 className="w-10 h-10 text-[var(--primary-gold-dark)] mb-2" />
-                <p className="text-sm font-medium text-[var(--text-primary)]">Biểu đồ supporting</p>
-                <p className="text-xs mt-1">Render qua chart-registry (F-027)</p>
+                <p className="text-sm font-medium text-[var(--text-primary)]">{t('templates26InsightIdDetail.chartPlaceholder')}</p>
+                <p className="text-xs mt-1">{t('templates26InsightIdDetail.chartRegistryNote')}</p>
               </div>
             </Tuyen>
 
@@ -277,14 +286,14 @@ export default function InsightDetailPage() {
             <Tuyen
               num={2}
               icon={Lightbulb}
-              title="Vì sao xảy ra"
-              subtitle={`Giả thuyết AI · Độ tin cậy ${(ins.why_confidence * 100).toFixed(0)}%`}
+              title={t('templates26InsightIdDetail.tuyen2Title')}
+              subtitle={t('templates26InsightIdDetail.tuyen2Subtitle', { pct: (ins.why_confidence * 100).toFixed(0) })}
             >
               <p className="text-sm text-[var(--text-primary)] leading-relaxed whitespace-pre-line mb-4">
                 {ins.why_hypothesis}
               </p>
               <div className="space-y-2">
-                <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Bằng chứng hỗ trợ</p>
+                <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates26InsightIdDetail.evidenceLabel')}</p>
                 <ul className="space-y-1.5">
                   {ins.why_evidence.map((ev, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-[var(--text-primary)]">
@@ -297,8 +306,8 @@ export default function InsightDetailPage() {
               <div className="mt-3 flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
                 <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
                 <p>
-                  Giả thuyết do Qwen 2.5 nội bộ tạo (K-3), không gửi dữ liệu ra ngoài.
-                  Cần xác nhận của con người trước khi hành động — đây <span className="font-medium text-[var(--text-primary)]">không phải</span> chẩn đoán cuối cùng.
+                  {t('templates26InsightIdDetail.disclosurePrefix')}
+                  {t('templates26InsightIdDetail.disclosureMid')} <span className="font-medium text-[var(--text-primary)]">{t('templates26InsightIdDetail.disclosureNot')}</span> {t('templates26InsightIdDetail.disclosureSuffix')}
                 </p>
               </div>
             </Tuyen>
@@ -307,8 +316,8 @@ export default function InsightDetailPage() {
             <Tuyen
               num={3}
               icon={Target}
-              title="Nên làm gì"
-              subtitle={`${ins.recommendations.length} khuyến nghị có thể chuyển thành quyết định`}
+              title={t('templates26InsightIdDetail.tuyen3Title')}
+              subtitle={t('templates26InsightIdDetail.tuyen3Subtitle', { count: ins.recommendations.length })}
             >
               <div className="space-y-3">
                 {ins.recommendations.map((r, i) => (
@@ -326,10 +335,10 @@ export default function InsightDetailPage() {
                     </div>
                     <div className="mt-2 flex items-center gap-3 text-[11px] text-[var(--text-secondary)]">
                       {r.owner_role && (
-                        <span>Người phụ trách: <span className="font-medium text-[var(--text-primary)]">{r.owner_role}</span></span>
+                        <span>{t('templates26InsightIdDetail.ownerLabel')} <span className="font-medium text-[var(--text-primary)]">{r.owner_role}</span></span>
                       )}
                       {r.framework && (
-                        <span>Khung: <span className="font-medium text-[var(--text-primary)]">{r.framework}</span></span>
+                        <span>{t('templates26InsightIdDetail.frameworkLabel')} <span className="font-medium text-[var(--text-primary)]">{r.framework}</span></span>
                       )}
                     </div>
                   </div>
@@ -345,7 +354,7 @@ export default function InsightDetailPage() {
                       className="flex-1"
                     >
                       <Gavel className="w-4 h-4 mr-2" />
-                      Chuyển thành quyết định
+                      {t('templates26InsightIdDetail.btnConvert')}
                     </Button>
                     <Button
                       variant="secondary"
@@ -353,14 +362,14 @@ export default function InsightDetailPage() {
                       className="sm:w-auto"
                     >
                       <X className="w-4 h-4 mr-2" />
-                      Bỏ qua
+                      {t('templates26InsightIdDetail.btnDismiss')}
                     </Button>
                   </>
                 )}
                 {ins.status === 'CONVERTED' && ins.decision_id && (
                   <Button onClick={() => (window.location.href = `/p2/decisions/${ins.decision_id}`)} className="flex-1">
                     <Gavel className="w-4 h-4 mr-2" />
-                    Xem quyết định liên kết
+                    {t('templates26InsightIdDetail.btnViewDecision')}
                   </Button>
                 )}
               </div>
@@ -368,23 +377,23 @@ export default function InsightDetailPage() {
 
             {/* Linkage / audit */}
             <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-4 shadow-soft-sm">
-              <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-2">Liên kết & nguồn gốc</p>
+              <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-2">{t('templates26InsightIdDetail.linkageTitle')}</p>
               <ul className="space-y-1.5 text-sm">
                 <li className="flex items-center gap-2">
                   <Database className="w-4 h-4 text-[var(--text-secondary)]" />
-                  Nguồn dữ liệu: <span className="font-mono text-xs text-[var(--text-primary)]">{ins.source_table}</span>
+                  {t('templates26InsightIdDetail.sourceLabel')} <span className="font-mono text-xs text-[var(--text-primary)]">{ins.source_table}</span>
                   <Badge variant="default" className="ml-1">{ins.source.toUpperCase()}</Badge>
                 </li>
                 {ins.pipeline_id && (
                   <li className="flex items-center gap-2">
                     <Activity className="w-4 h-4 text-[var(--text-secondary)]" />
-                    Pipeline: <a href={`/p2/pipelines/${ins.pipeline_id}`} className="text-[var(--primary-gold-dark)] hover:underline">{ins.pipeline_title ?? ins.pipeline_id}</a>
+                    {t('templates26InsightIdDetail.pipelineLabel')} <a href={`/p2/pipelines/${ins.pipeline_id}`} className="text-[var(--primary-gold-dark)] hover:underline">{ins.pipeline_title ?? ins.pipeline_id}</a>
                   </li>
                 )}
                 {ins.audit_log_link && (
                   <li className="flex items-center gap-2">
                     <FileText className="w-4 h-4 text-[var(--text-secondary)]" />
-                    <a href={ins.audit_log_link} className="text-[var(--primary-gold-dark)] hover:underline">Xem audit log (K-6)</a>
+                    <a href={ins.audit_log_link} className="text-[var(--primary-gold-dark)] hover:underline">{t('templates26InsightIdDetail.auditLogLink')}</a>
                   </li>
                 )}
                 <li className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
@@ -400,26 +409,26 @@ export default function InsightDetailPage() {
         {showDismiss && (
           <div className="fixed inset-0 z-50 bg-[var(--text-primary)]/40 backdrop-blur-sm flex items-center justify-center p-4">
             <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-lg w-full max-w-md p-5 animate-slide-up-fade">
-              <h3 className="font-serif text-lg text-[var(--text-primary)]">Bỏ qua insight này?</h3>
+              <h3 className="font-serif text-lg text-[var(--text-primary)]">{t('templates26InsightIdDetail.dismissModalTitle')}</h3>
               <p className="text-sm text-[var(--text-secondary)] mt-1">
-                Vui lòng nhập lý do để team có context cho lần phân tích sau.
+                {t('templates26InsightIdDetail.dismissModalDesc')}
               </p>
               <textarea
                 value={dismissReason}
                 onChange={(e) => setDismissReason(e.target.value)}
                 rows={3}
-                placeholder="Ví dụ: Đã xử lý ngoài hệ thống, dữ liệu sai, không liên quan kinh doanh..."
+                placeholder={t('templates26InsightIdDetail.dismissModalPlaceholder')}
                 className="mt-3 w-full px-3 py-2 text-sm bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)]"
               />
               <div className="mt-4 flex items-center gap-2 justify-end">
-                <Button variant="tertiary" onClick={() => setShowDismiss(false)}>Huỷ</Button>
+                <Button variant="tertiary" onClick={() => setShowDismiss(false)}>{t('templates26InsightIdDetail.btnCancel')}</Button>
                 <Button
                   variant="destructive"
                   onClick={dismiss}
                   isLoading={converting}
                   disabled={!dismissReason.trim()}
                 >
-                  Xác nhận bỏ qua
+                  {t('templates26InsightIdDetail.btnConfirmDismiss')}
                 </Button>
               </div>
             </div>

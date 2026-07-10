@@ -1,0 +1,100 @@
+{
+  "dmsInsightPanel.errLoadResult": {
+    "vi": "Không tải được kết quả phân tích",
+    "en": "Could not load analysis results",
+    "ja": "分析結果を読み込めませんでした",
+    "ko": "분석 결과를 불러오지 못했습니다",
+    "zh": "无法加载分析结果"
+  },
+  "dmsInsightPanel.errCreate": {
+    "vi": "Không tạo được phân tích",
+    "en": "Could not create analysis",
+    "ja": "分析を作成できませんでした",
+    "ko": "분석을 생성하지 못했습니다",
+    "zh": "无法创建分析"
+  },
+  "dmsInsightPanel.headerTitle": {
+    "vi": "Phân tích: {title}",
+    "en": "Analysis: {title}",
+    "ja": "分析：{title}",
+    "ko": "분석: {title}",
+    "zh": "分析：{title}"
+  },
+  "dmsInsightPanel.aiBadge": {
+    "vi": "AI tạo — Qwen nội bộ",
+    "en": "AI-generated — Qwen (local)",
+    "ja": "AI生成 — Qwen（ローカル）",
+    "ko": "AI 생성 — Qwen(로컬)",
+    "zh": "AI 生成 — Qwen（本地）"
+  },
+  "dmsInsightPanel.analyzing": {
+    "vi": "Đang phân tích",
+    "en": "Analyzing",
+    "ja": "分析中",
+    "ko": "분석 중",
+    "zh": "正在分析"
+  },
+  "dmsInsightPanel.statusRunning": {
+    "vi": "(đang chạy)",
+    "en": "(running)",
+    "ja": "（実行中）",
+    "ko": "(실행 중)",
+    "zh": "（运行中）"
+  },
+  "dmsInsightPanel.statusPending": {
+    "vi": "(đang chờ)",
+    "en": "(pending)",
+    "ja": "（待機中）",
+    "ko": "(대기 중)",
+    "zh": "（等待中）"
+  },
+  "dmsInsightPanel.recheck": {
+    "vi": "Kiểm tra lại",
+    "en": "Check again",
+    "ja": "再確認",
+    "ko": "다시 확인",
+    "zh": "重新检查"
+  },
+  "dmsInsightPanel.failed": {
+    "vi": "Phân tích thất bại: {error}",
+    "en": "Analysis failed: {error}",
+    "ja": "分析に失敗しました：{error}",
+    "ko": "분석 실패: {error}",
+    "zh": "分析失败：{error}"
+  },
+  "dmsInsightPanel.errUnknown": {
+    "vi": "lỗi không rõ",
+    "en": "unknown error",
+    "ja": "不明なエラー",
+    "ko": "알 수 없는 오류",
+    "zh": "未知错误"
+  },
+  "dmsInsightPanel.docCountLabel": {
+    "vi": "tài liệu",
+    "en": "documents",
+    "ja": "件のドキュメント",
+    "ko": "문서",
+    "zh": "份文档"
+  },
+  "dmsInsightPanel.incompleteLabel": {
+    "vi": "thiếu thông tin",
+    "en": "missing information",
+    "ja": "情報不足",
+    "ko": "정보 누락",
+    "zh": "信息缺失"
+  },
+  "dmsInsightPanel.overdueLabel": {
+    "vi": "quá «{k}»",
+    "en": "overdue «{k}»",
+    "ja": "「{k}」超過",
+    "ko": "«{k}» 초과",
+    "zh": "超过「{k}」"
+  },
+  "dmsInsightPanel.truncatedNotice": {
+    "vi": "Lát cắt vượt giới hạn — kết quả tính trên một phần tài liệu.",
+    "en": "Slice exceeded the limit — results computed on a subset of documents.",
+    "ja": "件数が上限を超えたため、一部の文書のみで結果を算出しています。",
+    "ko": "범위가 한도를 초과하여 일부 문서만으로 결과를 계산했습니다.",
+    "zh": "切片超出限制 — 结果基于部分文档计算。"
+  }
+}

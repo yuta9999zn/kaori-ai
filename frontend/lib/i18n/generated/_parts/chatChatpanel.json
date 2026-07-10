@@ -1,0 +1,114 @@
+{
+  "chatChatpanel.buttonLabel": {
+    "vi": "Hỏi Kaori",
+    "en": "Ask Kaori",
+    "ja": "Kaoriに聞く",
+    "ko": "Kaori에게 물어보기",
+    "zh": "问 Kaori"
+  },
+  "chatChatpanel.introEnterpriseGreeting": {
+    "vi": "Chào anh chị 👋 — Kaori đây. Có thể hỏi về tồn kho dữ liệu, decisions gần đây, top khách hàng rủi ro, hạn mức billing.",
+    "en": "Hi there 👋 — this is Kaori. Ask me about your data inventory, recent decisions, top at-risk customers, or your billing quota.",
+    "ja": "こんにちは 👋 — Kaoriです。データの在庫状況、最近のDecision、リスクの高い顧客トップ、請求枠についてお尋ねください。",
+    "ko": "안녕하세요 👋 — Kaori입니다. 데이터 현황, 최근 Decision, 위험 고객 상위, 청구 한도에 대해 물어보세요.",
+    "zh": "您好 👋 — 我是 Kaori。可以问我数据库存、近期决策、风险客户排行、账单额度等问题。"
+  },
+  "chatChatpanel.introEnterpriseSug1": {
+    "vi": "Tóm tắt quyết định AI tuần này",
+    "en": "Summarize this week's AI decisions",
+    "ja": "今週のAI Decisionを要約",
+    "ko": "이번 주 AI Decision 요약",
+    "zh": "汇总本周的 AI 决策"
+  },
+  "chatChatpanel.introEnterpriseSug2": {
+    "vi": "Top 5 khách hàng đang rủi ro",
+    "en": "Top 5 at-risk customers",
+    "ja": "リスクの高い顧客トップ5",
+    "ko": "위험 고객 상위 5",
+    "zh": "风险最高的5位客户"
+  },
+  "chatChatpanel.introEnterpriseSug3": {
+    "vi": "Hạn mức tháng này còn bao nhiêu?",
+    "en": "How much of this month's quota is left?",
+    "ja": "今月の請求枠は残りどれくらい？",
+    "ko": "이번 달 한도가 얼마나 남았나요?",
+    "zh": "本月账单额度还剩多少？"
+  },
+  "chatChatpanel.introPlatformGreeting": {
+    "vi": "Chào admin 👋 — Kaori Ops đây. Có thể hỏi tổng quan platform, tenant đang vượt quota, signup gần đây.",
+    "en": "Hi admin 👋 — this is Kaori Ops. Ask me about the platform overview, tenants over quota, or recent signups.",
+    "ja": "こんにちは 👋 — Kaori Opsです。プラットフォーム概要、クォータ超過テナント、最近のサインアップについてお尋ねください。",
+    "ko": "안녕하세요 👋 — Kaori Ops입니다. 플랫폼 개요, 할당량 초과 테넌트, 최근 가입에 대해 물어보세요.",
+    "zh": "您好 👋 — 我是 Kaori Ops。可以问我平台概览、超额租户、近期注册等信息。"
+  },
+  "chatChatpanel.introPlatformSug1": {
+    "vi": "Tổng quan platform hiện tại",
+    "en": "Current platform overview",
+    "ja": "現在のプラットフォーム概要",
+    "ko": "현재 플랫폼 개요",
+    "zh": "当前平台概览"
+  },
+  "chatChatpanel.introPlatformSug2": {
+    "vi": "Workspace nào đang vượt 95% quota?",
+    "en": "Which workspace is over 95% of quota?",
+    "ja": "どのワークスペースがクォータの95%を超えていますか？",
+    "ko": "어느 워크스페이스가 할당량 95%를 초과했나요?",
+    "zh": "哪个工作区已超过95%配额？"
+  },
+  "chatChatpanel.introPlatformSug3": {
+    "vi": "Số signup mới 30 ngày qua",
+    "en": "New signups in the last 30 days",
+    "ja": "過去30日間の新規サインアップ数",
+    "ko": "지난 30일간 신규 가입 수",
+    "zh": "过去30天的新注册数"
+  },
+  "chatChatpanel.platformOpsLabel": {
+    "vi": "Platform Ops",
+    "en": "Platform Ops",
+    "ja": "Platform Ops",
+    "ko": "Platform Ops",
+    "zh": "Platform Ops"
+  },
+  "chatChatpanel.enterpriseAssistantLabel": {
+    "vi": "Trợ lý doanh nghiệp",
+    "en": "Enterprise assistant",
+    "ja": "エンタープライズアシスタント",
+    "ko": "엔터프라이즈 어시스턴트",
+    "zh": "企业助手"
+  },
+  "chatChatpanel.ariaClearChat": {
+    "vi": "Xoá hội thoại",
+    "en": "Clear conversation",
+    "ja": "会話を削除",
+    "ko": "대화 삭제",
+    "zh": "清除对话"
+  },
+  "chatChatpanel.ariaCloseChat": {
+    "vi": "Đóng chat",
+    "en": "Close chat",
+    "ja": "チャットを閉じる",
+    "ko": "채팅 닫기",
+    "zh": "关闭聊天"
+  },
+  "chatChatpanel.placeholderStreaming": {
+    "vi": "Đang trả lời…",
+    "en": "Replying…",
+    "ja": "回答中…",
+    "ko": "응답 중…",
+    "zh": "正在回复…"
+  },
+  "chatChatpanel.placeholderIdle": {
+    "vi": "Hỏi Kaori bất kỳ điều gì…",
+    "en": "Ask Kaori anything…",
+    "ja": "Kaoriに何でも聞いてください…",
+    "ko": "Kaori에게 무엇이든 물어보세요…",
+    "zh": "问 Kaori 任何问题…"
+  },
+  "chatChatpanel.ariaSend": {
+    "vi": "Gửi",
+    "en": "Send",
+    "ja": "送信",
+    "ko": "전송",
+    "zh": "发送"
+  }
+}

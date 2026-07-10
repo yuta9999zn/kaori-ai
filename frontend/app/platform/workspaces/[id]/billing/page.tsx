@@ -4,6 +4,7 @@ import { use } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Receipt, Users, AlertTriangle, Calendar } from 'lucide-react';
 
+import { useT } from '@/lib/i18n/provider';
 import { workspaceBillingApi } from '@/lib/api/platform';
 import {
   Badge, ErrorBanner, QuotaBar, type ProblemDetails,
@@ -18,11 +19,11 @@ const STATUS_VARIANT: Record<BillingStatus, 'operational' | 'warning' | 'error'>
   critical: 'warning',
   overage:  'error',
 };
-const STATUS_LABEL: Record<BillingStatus, string> = {
-  normal:   'Bình thường',
-  warn:     'Cảnh báo (≥80%)',
-  critical: 'Nghiêm trọng (≥95%)',
-  overage:  'Vượt hạn mức',
+const STATUS_LABEL_KEY: Record<BillingStatus, string> = {
+  normal:   'billingPage.statusNormal',
+  warn:     'billingPage.statusWarn',
+  critical: 'billingPage.statusCritical',
+  overage:  'billingPage.statusOverage',
 };
 
 export default function WorkspaceBillingPage({
@@ -31,6 +32,7 @@ export default function WorkspaceBillingPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const t = useT();
 
   const query = useQuery({
     queryKey: ['workspace-billing', id],
@@ -55,7 +57,7 @@ export default function WorkspaceBillingPage({
     return (
       <ErrorBanner
         problem={query.error ? (query.error as unknown as ProblemDetails) : null}
-        message={`Backend billing cho workspace ${id} chưa sẵn sàng.`}
+        message={t('billingPage.errNotReady', { id })}
       />
     );
   }
@@ -64,29 +66,34 @@ export default function WorkspaceBillingPage({
   const usagePct = b.quota > 0 ? Math.min(100, (b.unique_customers / b.quota) * 100) : 0;
   const isOver   = b.unique_customers > b.quota;
   const variant  = STATUS_VARIANT[b.status as BillingStatus] ?? 'operational';
-  const label    = STATUS_LABEL[b.status as BillingStatus] ?? b.status;
+  const label    = STATUS_LABEL_KEY[b.status as BillingStatus]
+    ? t(STATUS_LABEL_KEY[b.status as BillingStatus])
+    : b.status;
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <BillingKpi
-          label="Khách hàng duy nhất tháng này"
+          label={t('billingPage.kpiUniqueCustomers')}
           value={fmtInt(b.unique_customers)}
-          hint={`Hạn mức: ${fmtInt(b.quota)} (gói ${b.plan_code})`}
+          hint={t('billingPage.kpiQuotaHint', { quota: fmtInt(b.quota), plan: b.plan_code })}
           icon={<Users className="w-5 h-5" />}
           tone={isOver ? 'error' : usagePct >= 80 ? 'warning' : 'gold'}
         />
         <BillingKpi
-          label="Tổng cước tháng này"
+          label={t('billingPage.kpiTotalAmount')}
           value={fmtVND(b.total_amount_vnd)}
-          hint={`Cơ bản ${fmtVND(b.base_amount_vnd)} + vượt mức ${fmtVND(b.overage_amount_vnd)}`}
+          hint={t('billingPage.kpiAmountBreakdown', {
+            base: fmtVND(b.base_amount_vnd),
+            overage: fmtVND(b.overage_amount_vnd),
+          })}
           icon={<Receipt className="w-5 h-5" />}
           tone="gold"
         />
         <BillingKpi
-          label="Đơn vị vượt mức"
+          label={t('billingPage.kpiOverageUnits')}
           value={fmtInt(b.overage_units)}
-          hint={b.overage_units > 0 ? 'Đã tính cước vượt' : 'Trong hạn mức'}
+          hint={b.overage_units > 0 ? t('billingPage.hintOverageCharged') : t('billingPage.hintWithinQuota')}
           icon={<AlertTriangle className="w-5 h-5" />}
           tone={b.overage_units > 0 ? 'warning' : 'gold'}
         />
@@ -95,10 +102,11 @@ export default function WorkspaceBillingPage({
       <section className="rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm p-5 space-y-4">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div>
-            <h2 className="font-serif text-lg text-[var(--text-primary)]">Kỳ thanh toán {b.billing_month}</h2>
+            <h2 className="font-serif text-lg text-[var(--text-primary)]">
+              {t('billingPage.periodTitle', { month: b.billing_month })}
+            </h2>
             <p className="text-sm text-[var(--text-secondary)] mt-1">
-              Tính theo SỐ LƯỢNG khách hàng duy nhất (K-11). Cảnh báo tự động ở mốc{' '}
-              {b.quota_warn_at_pct}% hạn mức.
+              {t('billingPage.periodDesc', { pct: b.quota_warn_at_pct })}
             </p>
           </div>
           <Badge variant={variant}>{label}</Badge>
@@ -107,13 +115,13 @@ export default function WorkspaceBillingPage({
         <QuotaBar
           current={b.unique_customers}
           limit={b.quota}
-          unit="khách hàng duy nhất"
+          unit={t('billingPage.unitUniqueCustomers')}
         />
 
         {b.next_invoice_date && (
           <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)] pt-2 border-t border-[var(--border-color)]/60">
             <Calendar className="w-4 h-4" />
-            Ngày phát hành hóa đơn kế tiếp:{' '}
+            {t('billingPage.nextInvoiceLabel')}{' '}
             <span className="text-[var(--text-primary)] font-medium">{fmtDate(b.next_invoice_date)}</span>
           </div>
         )}

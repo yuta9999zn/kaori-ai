@@ -7,6 +7,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Loader2, ArrowLeft, Mail, CheckCircle2 } from 'lucide-react';
+import { useT } from '@/lib/i18n/provider';
 
 // --- STYLES & FONTS ---
 const GlobalStyles = () => (
@@ -106,6 +107,7 @@ Label.displayName = "Label";
 // --- MAIN PAGE COMPONENT ---
 
 export default function KaoriForgotPassword() {
+  const t = useT();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
   const [countdown, setCountdown] = useState(0);
@@ -174,20 +176,19 @@ export default function KaoriForgotPassword() {
           {/* Copy */}
           <div className="relative z-10 flex flex-col max-w-lg mb-20 animate-fade-in">
             <h1 className="font-serif text-5xl leading-[1.15] text-[#2F2F2F] font-medium mb-6">
-              Intelligence,<br/>
-              <span className="text-[#8C8173] italic">Calmly Delivered.</span>
+              {t('templates03ForgotPassword.heroTitleLine1')}<br/>
+              <span className="text-[#8C8173] italic">{t('templates03ForgotPassword.heroTitleLine2')}</span>
             </h1>
             <p className="text-[#8C8173] text-lg leading-relaxed">
-              Experience the next generation of multi-tenant data intelligence. 
-              Built for scale, designed for clarity, and engineered to bring peace to your workflows.
+              {t('templates03ForgotPassword.heroDesc')}
             </p>
           </div>
           
           {/* Footer */}
           <div className="relative z-10 flex items-center gap-4 text-sm text-[#8C8173]">
-            <span>© 2026 Kaori Platform</span>
+            <span>{t('templates03ForgotPassword.footerCopyright')}</span>
             <span className="w-1 h-1 rounded-full bg-[#D4B88A]" />
-            <a href="#" className="hover:text-[#2F2F2F] transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-[#2F2F2F] transition-colors">{t('templates03ForgotPassword.privacyPolicy')}</a>
           </div>
         </div>
 
@@ -213,23 +214,23 @@ export default function KaoriForgotPassword() {
               <div className="animate-fade-in w-full h-full flex flex-col justify-center">
                 <div className="flex flex-col space-y-2 mb-8">
                   <h2 className="font-serif text-3xl font-semibold tracking-tight text-[#2F2F2F]">
-                    Forgot your password?
+                    {t('templates03ForgotPassword.title')}
                   </h2>
                   <p className="text-sm text-[#8C8173] leading-relaxed pr-4">
-                    Enter your email and we’ll send you a link to reset your password securely.
+                    {t('templates03ForgotPassword.subtitle')}
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Email Field */}
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">{t('templates03ForgotPassword.emailLabel')}</Label>
                     <div className="relative">
                       <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#8C8173]" />
                       <Input
                         id="email"
                         type="email"
-                        placeholder="you@company.com"
+                        placeholder={t('templates03ForgotPassword.emailPlaceholder')}
                         value={email}
                         onChange={(e: any) => setEmail(e.target.value)}
                         required
@@ -241,17 +242,17 @@ export default function KaoriForgotPassword() {
 
                   {status === 'error' && (
                     <div className="text-sm text-red-600 font-medium">
-                      Something went wrong. Please try again.
+                      {t('templates03ForgotPassword.errGeneric')}
                     </div>
                   )}
 
                   {/* Submit Button */}
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
+                  <Button
+                    type="submit"
+                    className="w-full"
                     isLoading={status === 'loading'}
                   >
-                    Send reset link
+                    {t('templates03ForgotPassword.submitBtn')}
                   </Button>
                 </form>
               </div>
@@ -265,24 +266,24 @@ export default function KaoriForgotPassword() {
                 </div>
                 
                 <h2 className="font-serif text-2xl font-semibold tracking-tight text-[#2F2F2F] mb-3">
-                  Check your email
+                  {t('templates03ForgotPassword.successTitle')}
                 </h2>
-                
+
                 <p className="text-sm text-[#8C8173] leading-relaxed mb-8">
-                  If an account exists for <span className="font-medium text-[#2F2F2F]">{email}</span>, you’ll receive a password reset link shortly.
+                  {t('templates03ForgotPassword.successDescPrefix')} <span className="font-medium text-[#2F2F2F]">{email}</span>{t('templates03ForgotPassword.successDescSuffix')}
                 </p>
 
                 <div className="flex flex-col items-center gap-3">
                   <p className="text-sm text-[#8C8173]">
-                    Didn't receive it?
+                    {t('templates03ForgotPassword.notReceived')}
                   </p>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={handleResend}
                     disabled={countdown > 0}
                     className="w-full sm:w-auto min-w-[140px]"
                   >
-                    {countdown > 0 ? `Resend in ${countdown}s` : 'Resend link'}
+                    {countdown > 0 ? t('templates03ForgotPassword.resendCountdown', { seconds: countdown }) : t('templates03ForgotPassword.resendBtn')}
                   </Button>
                 </div>
               </div>
@@ -296,7 +297,7 @@ export default function KaoriForgotPassword() {
               className="inline-flex items-center text-sm font-medium text-[#8C8173] hover:text-[#2F2F2F] transition-colors group"
             >
               <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-              Back to login
+              {t('templates03ForgotPassword.backToLogin')}
             </a>
           </div>
 

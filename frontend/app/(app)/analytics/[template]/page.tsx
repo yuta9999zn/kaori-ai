@@ -35,12 +35,12 @@ interface AnalysisResult {
   };
 }
 
-const TEMPLATE_LABEL: Record<string, string> = {
-  summary_stats:  "Thống kê tổng quan",   time_series:   "Chuỗi thời gian",
-  distribution:   "Phân phối dữ liệu",     correlation:   "Tương quan",
-  clustering:     "Phân cụm",              cohort:        "Cohort",
-  churn:          "Churn",                 anomaly:       "Dị thường",
-  regression:     "Hồi quy",               bank_classify: "Giao dịch",
+const TEMPLATE_LABEL_KEYS: Record<string, string> = {
+  summary_stats:  "templatePage.labelSummaryStats",   time_series:   "templatePage.labelTimeSeries",
+  distribution:   "templatePage.labelDistribution",   correlation:   "templatePage.labelCorrelation",
+  clustering:     "templatePage.labelClustering",     cohort:        "templatePage.labelCohort",
+  churn:          "templatePage.labelChurn",           anomaly:       "templatePage.labelAnomaly",
+  regression:     "templatePage.labelRegression",     bank_classify: "templatePage.labelBankClassify",
 };
 
 export default function AnalysisTemplatePage({
@@ -58,6 +58,7 @@ export default function AnalysisTemplatePage({
   });
 
   const run = data?.data?.[0];
+  const templateLabelKey = TEMPLATE_LABEL_KEYS[template];
 
   return (
     <div className="space-y-6">
@@ -68,17 +69,17 @@ export default function AnalysisTemplatePage({
         </Link>
         <div>
           <h1 className="text-h2 font-serif text-ink">
-            {TEMPLATE_LABEL[template] ?? template}
+            {templateLabelKey ? t(templateLabelKey) : template}
           </h1>
           {run && (
             <p className="text-tiny text-[#B0A698] mt-0.5">
-              Lần chạy gần nhất: {fmtDateTime(run.created_at)}
+              {t("templatePage.lastRun", { time: fmtDateTime(run.created_at) })}
             </p>
           )}
         </div>
         {run && (
           <Badge tone={run.status === "done" ? "success" : run.status === "error" ? "danger" : "info"}>
-            {run.status === "done" ? "Hoàn tất" : run.status === "error" ? "Lỗi" : "Đang chạy"}
+            {run.status === "done" ? t("templatePage.statusDone") : run.status === "error" ? t("templatePage.statusError") : t("templatePage.statusRunning")}
           </Badge>
         )}
       </div>
@@ -108,7 +109,7 @@ export default function AnalysisTemplatePage({
         <Card>
           <CardContent className="py-12 flex flex-col items-center gap-3">
             <Loader2 className="w-8 h-8 text-brand-400 animate-spin" />
-            <p className="text-small text-ink-muted">Phân tích đang chạy, vui lòng chờ…</p>
+            <p className="text-small text-ink-muted">{t("templatePage.runningMsg")}</p>
           </CardContent>
         </Card>
       )}
@@ -122,7 +123,7 @@ export default function AnalysisTemplatePage({
       {run?.status === "error" && (
         <Card className="border-danger-200">
           <CardContent className="pt-6">
-            <p className="text-small text-danger-700">Phân tích gặp lỗi. Vui lòng chạy lại.</p>
+            <p className="text-small text-danger-700">{t("templatePage.errorRunMsg")}</p>
           </CardContent>
         </Card>
       )}
@@ -131,9 +132,9 @@ export default function AnalysisTemplatePage({
       {!isLoading && !isError && !run && (
         <Card>
           <CardContent className="py-10 text-center text-small text-ink-muted">
-            Chưa có lần phân tích nào cho template này.{" "}
+            {t("templatePage.noRuns")}{" "}
             <Link href="/pipeline/new" className="text-brand-600 hover:underline">
-              Tạo pipeline mới →
+              {t("templatePage.createPipeline")} →
             </Link>
           </CardContent>
         </Card>

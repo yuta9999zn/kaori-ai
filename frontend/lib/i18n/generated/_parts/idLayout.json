@@ -1,0 +1,13 @@
+{
+  "idLayout.statusActive": { "vi": "Đang hoạt động", "en": "Active", "ja": "稼働中", "ko": "활성", "zh": "运行中" },
+  "idLayout.statusInactive": { "vi": "Ngừng hoạt động", "en": "Inactive", "ja": "停止中", "ko": "비활성", "zh": "已停用" },
+  "idLayout.statusSuspended": { "vi": "Tạm ngưng", "en": "Suspended", "ja": "一時停止", "ko": "일시 중지", "zh": "已暂停" },
+  "idLayout.allWorkspaces": { "vi": "Tất cả workspaces", "en": "All workspaces", "ja": "すべてのワークスペース", "ko": "모든 워크스페이스", "zh": "所有工作区" },
+  "idLayout.notFound": { "vi": "Workspace không tồn tại", "en": "Workspace not found", "ja": "ワークスペースが見つかりません", "ko": "워크스페이스를 찾을 수 없습니다", "zh": "工作区不存在" },
+  "idLayout.tabOverview": { "vi": "Tổng quan", "en": "Overview", "ja": "概要", "ko": "개요", "zh": "概览" },
+  "idLayout.tabMembers": { "vi": "Thành viên", "en": "Members", "ja": "メンバー", "ko": "멤버", "zh": "成员" },
+  "idLayout.tabApiKeys": { "vi": "Khoá API", "en": "API keys", "ja": "APIキー", "ko": "API 키", "zh": "API 密钥" },
+  "idLayout.tabBilling": { "vi": "Thanh toán", "en": "Billing", "ja": "請求", "ko": "청구", "zh": "账单" },
+  "idLayout.tabAuditLog": { "vi": "Nhật ký kiểm toán", "en": "Audit log", "ja": "監査ログ", "ko": "감사 로그", "zh": "审计日志" },
+  "idLayout.tabEdit": { "vi": "Chỉnh sửa", "en": "Edit", "ja": "編集", "ko": "편집", "zh": "编辑" }
+}

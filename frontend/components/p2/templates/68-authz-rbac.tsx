@@ -37,6 +37,7 @@ import {
   api, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type Role  = 'MANAGER' | 'OPERATOR' | 'ANALYST' | 'VIEWER';
 type State = 'active' | 'invited' | 'suspended';
 
@@ -56,18 +57,22 @@ interface MeContext {
   role:  Role;
 }
 
-const ROLE_META: Record<Role, { label: string; icon: any; tone: 'current' | 'success' | 'info' | 'default'; description: string }> = {
-  MANAGER:  { label: 'MANAGER',  icon: Crown,        tone: 'current', description: 'Toàn quyền — quản trị member, gói cước, tích hợp. Mỗi workspace cần ≥ 1 MANAGER.' },
-  OPERATOR: { label: 'OPERATOR', icon: Wrench,       tone: 'success', description: 'Chạy pipeline, edit cảnh báo, quản lý workflow.' },
-  ANALYST:  { label: 'ANALYST',  icon: FlaskConical, tone: 'info',    description: 'Đọc/ghi insight + decision. Chỉ-đọc cài đặt + billing.' },
-  VIEWER:   { label: 'VIEWER',   icon: Eye,          tone: 'default', description: 'Chỉ-đọc mọi thứ — phù hợp stakeholder ngoài team data.' },
-};
+function getRoleMeta(t: (key: string, params?: Record<string, any>) => string): Record<Role, { label: string; icon: any; tone: 'current' | 'success' | 'info' | 'default'; description: string }> {
+  return {
+    MANAGER:  { label: 'MANAGER',  icon: Crown,        tone: 'current', description: t('templates68AuthzRbac.roleDescManager') },
+    OPERATOR: { label: 'OPERATOR', icon: Wrench,       tone: 'success', description: t('templates68AuthzRbac.roleDescOperator') },
+    ANALYST:  { label: 'ANALYST',  icon: FlaskConical, tone: 'info',    description: t('templates68AuthzRbac.roleDescAnalyst') },
+    VIEWER:   { label: 'VIEWER',   icon: Eye,          tone: 'default', description: t('templates68AuthzRbac.roleDescViewer') },
+  };
+}
 
-const STATE_META: Record<State, { label: string; tone: 'success' | 'warning' | 'error' | 'default' }> = {
-  active:    { label: 'Hoạt động', tone: 'success' },
-  invited:   { label: 'Chờ xác nhận', tone: 'warning' },
-  suspended: { label: 'Tạm khoá', tone: 'error' },
-};
+function getStateMeta(t: (key: string, params?: Record<string, any>) => string): Record<State, { label: string; tone: 'success' | 'warning' | 'error' | 'default' }> {
+  return {
+    active:    { label: t('templates68AuthzRbac.stateActive'),    tone: 'success' },
+    invited:   { label: t('templates68AuthzRbac.stateInvited'),   tone: 'warning' },
+    suspended: { label: t('templates68AuthzRbac.stateSuspended'), tone: 'error' },
+  };
+}
 
 // There is no /api/v1/me endpoint — the JWT already carries who we are
 // (sub = user_id, role). Decode it from the canonical token key.
@@ -98,6 +103,9 @@ function mapMember(d: any, meId: string): Member {
 }
 
 export default function RbacPage() {
+  const t = useT();
+  const ROLE_META = useMemo(() => getRoleMeta(t), [t]);
+
   const [me,        setMe]        = useState<MeContext | null>(null);
   const [members,   setMembers]   = useState<Member[]>([]);
   const [loading,   setLoading]   = useState(true);
@@ -151,8 +159,8 @@ export default function RbacPage() {
     // Min-1-MANAGER guard (client-side; server is authoritative)
     if (member.role === 'MANAGER' && nextRole !== 'MANAGER' && managerCount <= 1) {
       setProblem({
-        title:  'Không thể hạ vai trò',
-        detail: 'Workspace cần ít nhất 1 MANAGER hoạt động. Chỉ định MANAGER mới trước khi hạ vai trò người này.',
+        title:  t('templates68AuthzRbac.errCannotDemoteTitle'),
+        detail: t('templates68AuthzRbac.errCannotDemoteDetail'),
         status: 409,
       });
       return;
@@ -164,7 +172,7 @@ export default function RbacPage() {
         body:   JSON.stringify({ role: nextRole }),
       });
       setMembers((prev) => prev.map((m) => m.id === member.id ? { ...m, role: nextRole } : m));
-      setSuccess(`Đã đổi vai trò ${member.email} → ${nextRole}`);
+      setSuccess(t('templates68AuthzRbac.successRoleChanged', { email: member.email, role: nextRole }));
     } catch (err: any) {
       setProblem(err);
     }
@@ -173,20 +181,20 @@ export default function RbacPage() {
   async function suspend(member: Member) {
     if (member.role === 'MANAGER' && managerCount <= 1) {
       setProblem({
-        title:  'Không thể khoá MANAGER cuối cùng',
-        detail: 'Hãy chỉ định MANAGER khác trước khi khoá người này.',
+        title:  t('templates68AuthzRbac.errCannotSuspendLastManagerTitle'),
+        detail: t('templates68AuthzRbac.errCannotSuspendLastManagerDetail'),
         status: 409,
       });
       return;
     }
-    if (!confirm(`Tạm khoá ${member.email}? Họ sẽ không đăng nhập được cho đến khi mở lại.`)) return;
+    if (!confirm(t('templates68AuthzRbac.confirmSuspend', { email: member.email }))) return;
     try {
       await api(`/api/v1/enterprises/users/${member.id}`, {
         method: 'PATCH',
         body:   JSON.stringify({ status: 'suspended' }),
       });
       setMembers((prev) => prev.map((m) => m.id === member.id ? { ...m, state: 'suspended' } : m));
-      setSuccess(`Đã tạm khoá ${member.email}`);
+      setSuccess(t('templates68AuthzRbac.successSuspended', { email: member.email }));
     } catch (err: any) {
       setProblem(err);
     }
@@ -199,7 +207,7 @@ export default function RbacPage() {
         body:   JSON.stringify({ status: 'active' }),
       });
       setMembers((prev) => prev.map((m) => m.id === member.id ? { ...m, state: 'active' } : m));
-      setSuccess(`Đã mở lại ${member.email}`);
+      setSuccess(t('templates68AuthzRbac.successReactivated', { email: member.email }));
     } catch (err: any) {
       setProblem(err);
     }
@@ -207,22 +215,22 @@ export default function RbacPage() {
 
   async function remove(member: Member) {
     if (member.is_self) {
-      setProblem({ title: 'Không thể tự xoá', detail: 'Bạn không thể tự xoá khỏi workspace.', status: 409 });
+      setProblem({ title: t('templates68AuthzRbac.errCannotSelfRemoveTitle'), detail: t('templates68AuthzRbac.errCannotSelfRemoveDetail'), status: 409 });
       return;
     }
     if (member.role === 'MANAGER' && managerCount <= 1) {
       setProblem({
-        title:  'Không thể xoá MANAGER cuối cùng',
-        detail: 'Hãy chỉ định MANAGER khác trước khi xoá người này.',
+        title:  t('templates68AuthzRbac.errCannotRemoveLastManagerTitle'),
+        detail: t('templates68AuthzRbac.errCannotRemoveLastManagerDetail'),
         status: 409,
       });
       return;
     }
-    if (!confirm(`Xoá ${member.email} khỏi workspace? Hành động này không thể hoàn tác.`)) return;
+    if (!confirm(t('templates68AuthzRbac.confirmRemove', { email: member.email }))) return;
     try {
       await api(`/api/v1/enterprises/users/${member.id}`, { method: 'DELETE' });  // soft-delete → status='deleted'
       setMembers((prev) => prev.filter((m) => m.id !== member.id));
-      setSuccess(`Đã xoá ${member.email} khỏi workspace`);
+      setSuccess(t('templates68AuthzRbac.successRemoved', { email: member.email }));
     } catch (err: any) {
       setProblem(err);
     }
@@ -231,18 +239,18 @@ export default function RbacPage() {
   return (
     <>
       <PageHeader
-        title="RBAC · Vai trò & thành viên"
-        description="Quản lý 4 vai trò chuẩn cho workspace. Chỉ MANAGER chỉnh sửa được."
+        title={t('templates68AuthzRbac.pageTitle')}
+        description={t('templates68AuthzRbac.pageDescription')}
         actions={
           <>
             <Button variant="secondary" onClick={load}>
               <RefreshCw className="w-4 h-4 mr-2" />
-              Làm mới
+              {t('templates68AuthzRbac.btnRefresh')}
             </Button>
             {isManager && (
               <Button onClick={() => setShowInvite(true)}>
                 <UserPlus className="w-4 h-4 mr-2" />
-                Mời thành viên
+                {t('templates68AuthzRbac.btnInviteMember')}
               </Button>
             )}
           </>
@@ -258,8 +266,7 @@ export default function RbacPage() {
           <div className="bg-[var(--state-warning)]/10 border border-[var(--state-warning)]/30 rounded-md-custom p-3 flex items-start gap-3">
             <AlertTriangle className="w-4 h-4 text-[var(--state-warning)] shrink-0 mt-0.5" />
             <p className="text-sm text-[#9E814D]">
-              <span className="font-medium text-[var(--text-primary)]">Cảnh báo min-1-MANAGER:</span> workspace chỉ còn 1 MANAGER hoạt động.
-              Hệ thống sẽ chặn mọi thao tác hạ/khoá/xoá người này (HTTP 409).
+              <span className="font-medium text-[var(--text-primary)]">{t('templates68AuthzRbac.warnMin1ManagerLabel')}</span> {t('templates68AuthzRbac.warnMin1ManagerText')}
             </p>
           </div>
         )}
@@ -268,7 +275,7 @@ export default function RbacPage() {
           <div className="bg-[var(--bg-app)]/40 border border-[var(--border-color)] rounded-md-custom p-3 flex items-start gap-2">
             <Lock className="w-4 h-4 text-[var(--text-secondary)] shrink-0 mt-0.5" />
             <p className="text-xs text-[var(--text-secondary)]">
-              Bạn đang ở vai trò <span className="font-medium text-[var(--text-primary)]">{me?.role}</span>. Chỉ MANAGER mới có thể mời, đổi vai trò, hoặc xoá thành viên.
+              {t('templates68AuthzRbac.notManagerPrefix')} <span className="font-medium text-[var(--text-primary)]">{me?.role}</span>{t('templates68AuthzRbac.notManagerSuffix')}
             </p>
           </div>
         )}
@@ -304,7 +311,7 @@ export default function RbacPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm theo email hoặc tên..."
+              placeholder={t('templates68AuthzRbac.searchPlaceholder')}
               className="w-full pl-9 pr-4 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
             />
           </div>
@@ -313,7 +320,7 @@ export default function RbacPage() {
             onChange={(e) => setRoleFilter(e.target.value as any)}
             className="px-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-xs font-medium focus:outline-none"
           >
-            <option value="ALL">Mọi vai trò</option>
+            <option value="ALL">{t('templates68AuthzRbac.optionAllRoles')}</option>
             {(Object.keys(ROLE_META) as Role[]).map((r) => (
               <option key={r} value={r}>{r}</option>
             ))}
@@ -326,10 +333,10 @@ export default function RbacPage() {
             <table className="w-full text-sm">
               <thead className="bg-[var(--bg-app)]/50 border-b border-[var(--border-color)]/60">
                 <tr>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Thành viên</th>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-44">Vai trò</th>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-32">Trạng thái</th>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-44">Hoạt động gần nhất</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">{t('templates68AuthzRbac.colMember')}</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-44">{t('templates68AuthzRbac.colRole')}</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-32">{t('templates68AuthzRbac.colState')}</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-44">{t('templates68AuthzRbac.colLastActive')}</th>
                   <th className="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-20" />
                 </tr>
               </thead>
@@ -344,7 +351,7 @@ export default function RbacPage() {
                   <tr>
                     <td colSpan={5} className="px-4 py-12 text-center text-[var(--text-secondary)]">
                       <Shield className="w-10 h-10 mx-auto mb-2 text-[var(--text-secondary)]/40" />
-                      Không có thành viên phù hợp.
+                      {t('templates68AuthzRbac.emptyNoMembers')}
                     </td>
                   </tr>
                 ) : filtered.map((m) => (
@@ -368,9 +375,9 @@ export default function RbacPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            <span className="font-medium text-[var(--text-primary)]">K-12:</span> Mọi thao tác lấy <span className="font-mono">user_id</span> từ path param, không bao giờ từ query string.
-            <span className="font-medium text-[var(--text-primary)]"> K-13:</span> Idempotency-Key tự thêm vào mọi POST/PATCH/DELETE (TTL 24h Redis).
-            <span className="font-medium text-[var(--text-primary)]"> K-14:</span> Lỗi server trả về <span className="font-mono">application/problem+json</span>, hiển thị qua ErrorBanner.
+            <span className="font-medium text-[var(--text-primary)]">K-12:</span> {t('templates68AuthzRbac.k12Prefix')} <span className="font-mono">user_id</span> {t('templates68AuthzRbac.k12Suffix')}
+            <span className="font-medium text-[var(--text-primary)]"> K-13:</span> {t('templates68AuthzRbac.k13Text')}
+            <span className="font-medium text-[var(--text-primary)]"> K-14:</span> {t('templates68AuthzRbac.k14Prefix')} <span className="font-mono">application/problem+json</span>{t('templates68AuthzRbac.k14Suffix')}
           </p>
         </div>
       </div>
@@ -402,6 +409,10 @@ function MemberRow({
   onReactivate: () => void;
   onRemove: () => void;
 }) {
+  const t = useT();
+  const ROLE_META  = useMemo(() => getRoleMeta(t), [t]);
+  const STATE_META = useMemo(() => getStateMeta(t), [t]);
+
   const [menuOpen, setMenuOpen] = useState(false);
   const roleMeta  = ROLE_META[m.role];
   const stateMeta = STATE_META[m.state];
@@ -416,7 +427,7 @@ function MemberRow({
           <div>
             <p className="font-medium text-sm text-[var(--text-primary)]">
               {m.display_name ?? m.email.split('@')[0]}
-              {m.is_self && <Badge variant="default" className="ml-2">bạn</Badge>}
+              {m.is_self && <Badge variant="default" className="ml-2">{t('templates68AuthzRbac.labelYou')}</Badge>}
             </p>
             <p className="text-xs text-[var(--text-secondary)]">{m.email}</p>
           </div>
@@ -429,7 +440,7 @@ function MemberRow({
             onChange={(e) => onChangeRole(e.target.value as Role)}
             disabled={isLastManager && m.role === 'MANAGER'}
             className="px-2 py-1.5 bg-white border border-[var(--border-color)] rounded-sm-custom text-xs focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 disabled:opacity-60 disabled:cursor-not-allowed"
-            title={isLastManager && m.role === 'MANAGER' ? 'Không thể hạ MANAGER cuối cùng' : ''}
+            title={isLastManager && m.role === 'MANAGER' ? t('templates68AuthzRbac.tooltipCannotDemoteLastManager') : ''}
           >
             {(Object.keys(ROLE_META) as Role[]).map((r) => (
               <option key={r} value={r}>{r}</option>
@@ -455,7 +466,7 @@ function MemberRow({
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
               className="p-1.5 rounded-sm-custom text-[var(--text-secondary)] hover:bg-[var(--bg-app)] hover:text-[var(--text-primary)]"
-              aria-label="Thao tác khác"
+              aria-label={t('templates68AuthzRbac.ariaMoreActions')}
             >
               <MoreVertical className="w-4 h-4" />
             </button>
@@ -467,7 +478,7 @@ function MemberRow({
                     className="w-full text-left px-3 py-2 text-xs text-[var(--text-primary)] hover:bg-[var(--bg-app)] inline-flex items-center"
                   >
                     <Ban className="w-3.5 h-3.5 mr-2 text-[var(--state-warning)]" />
-                    Tạm khoá
+                    {t('templates68AuthzRbac.actionSuspend')}
                   </button>
                 ) : m.state === 'suspended' ? (
                   <button
@@ -475,7 +486,7 @@ function MemberRow({
                     className="w-full text-left px-3 py-2 text-xs text-[var(--text-primary)] hover:bg-[var(--bg-app)] inline-flex items-center"
                   >
                     <CheckCircle2 className="w-3.5 h-3.5 mr-2 text-[var(--state-success)]" />
-                    Mở khoá lại
+                    {t('templates68AuthzRbac.actionReactivate')}
                   </button>
                 ) : null}
                 <button
@@ -483,7 +494,7 @@ function MemberRow({
                   className="w-full text-left px-3 py-2 text-xs text-[var(--state-error)] hover:bg-[var(--state-error)]/8 inline-flex items-center"
                 >
                   <Trash2 className="w-3.5 h-3.5 mr-2" />
-                  Xoá khỏi workspace
+                  {t('templates68AuthzRbac.actionRemoveFromWorkspace')}
                 </button>
               </div>
             )}
@@ -505,6 +516,9 @@ function InviteModal({
   onSuccess: (msg: string) => void;
   onError:   (p: ProblemDetails) => void;
 }) {
+  const t = useT();
+  const ROLE_META = useMemo(() => getRoleMeta(t), [t]);
+
   const [email,    setEmail]    = useState('');
   const [role,     setRole]     = useState<Role>('VIEWER');
   const [sending,  setSending]  = useState(false);
@@ -521,7 +535,7 @@ function InviteModal({
           full_name: email.trim().split('@')[0],  // sensible default; full_name optional on BE
         }),
       });
-      onSuccess(`Đã gửi lời mời tới ${email.trim()} với vai trò ${role}`);
+      onSuccess(t('templates68AuthzRbac.successInviteSent', { email: email.trim(), role }));
       onClose();
     } catch (err: any) {
       onError(err);
@@ -534,30 +548,30 @@ function InviteModal({
     <div className="fixed inset-0 z-50 bg-[var(--text-primary)]/40 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-lg w-full max-w-md p-5 animate-slide-up-fade">
         <div className="flex items-center justify-between mb-1">
-          <h3 className="font-serif text-lg text-[var(--text-primary)]">Mời thành viên</h3>
+          <h3 className="font-serif text-lg text-[var(--text-primary)]">{t('templates68AuthzRbac.btnInviteMember')}</h3>
           <button onClick={onClose} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]"><X className="w-4 h-4" /></button>
         </div>
         <p className="text-xs text-[var(--text-secondary)] mb-4">
-          Lời mời gửi qua email (notification-service · F-NEW1). Người được mời cần xác nhận trước khi vào workspace.
+          {t('templates68AuthzRbac.modalInviteHint')}
         </p>
 
         <div className="space-y-3">
           <div>
-            <label className="text-sm font-medium text-[var(--text-primary)]">Email</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates68AuthzRbac.labelEmail')}</label>
             <div className="relative mt-1">
               <Mail className="w-4 h-4 text-[var(--text-secondary)] absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ten@cong-ty.com"
+                placeholder={t('templates68AuthzRbac.placeholderEmailExample')}
                 className="w-full pl-9 pr-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-sm font-medium text-[var(--text-primary)]">Vai trò</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates68AuthzRbac.labelRoleField')}</label>
             <div className="mt-1.5 space-y-1.5">
               {(Object.keys(ROLE_META) as Role[]).map((r) => {
                 const meta = ROLE_META[r];
@@ -593,10 +607,10 @@ function InviteModal({
         </div>
 
         <div className="mt-5 flex items-center gap-2 justify-end">
-          <Button variant="tertiary" onClick={onClose} disabled={sending}>Huỷ</Button>
+          <Button variant="tertiary" onClick={onClose} disabled={sending}>{t('templates68AuthzRbac.btnCancel')}</Button>
           <Button onClick={send} isLoading={sending} disabled={!email.trim()}>
             <UserPlus className="w-4 h-4 mr-2" />
-            Gửi lời mời
+            {t('templates68AuthzRbac.btnSendInvite')}
           </Button>
         </div>
       </div>

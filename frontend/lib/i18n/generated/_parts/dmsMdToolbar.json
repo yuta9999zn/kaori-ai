@@ -1,0 +1,20 @@
+{
+  "dmsMdToolbar.h2Title": { "vi": "Tiêu đề phụ", "en": "Subheading", "ja": "見出し2", "ko": "부제목", "zh": "副标题" },
+  "dmsMdToolbar.h2Placeholder": { "vi": "Tiêu đề", "en": "Heading", "ja": "見出し", "ko": "제목", "zh": "标题" },
+  "dmsMdToolbar.boldTitle": { "vi": "Đậm", "en": "Bold", "ja": "太字", "ko": "굵게", "zh": "加粗" },
+  "dmsMdToolbar.boldPlaceholder": { "vi": "chữ đậm", "en": "bold text", "ja": "太字テキスト", "ko": "굵은 텍스트", "zh": "加粗文字" },
+  "dmsMdToolbar.italicTitle": { "vi": "Nghiêng", "en": "Italic", "ja": "斜体", "ko": "기울임꼴", "zh": "斜体" },
+  "dmsMdToolbar.italicPlaceholder": { "vi": "chữ nghiêng", "en": "italic text", "ja": "斜体テキスト", "ko": "기울임 텍스트", "zh": "斜体文字" },
+  "dmsMdToolbar.upperTitle": { "vi": "VIẾT HOA vùng chọn", "en": "UPPERCASE selection", "ja": "選択範囲を大文字に", "ko": "선택 영역 대문자로", "zh": "选中内容转大写" },
+  "dmsMdToolbar.upperPlaceholder": { "vi": "VIẾT HOA", "en": "UPPERCASE", "ja": "大文字", "ko": "대문자", "zh": "大写" },
+  "dmsMdToolbar.highlightTitle": { "vi": "Đánh dấu quan trọng", "en": "Highlight", "ja": "重要マーク", "ko": "강조 표시", "zh": "高亮标记" },
+  "dmsMdToolbar.highlightPlaceholder": { "vi": "nội dung quan trọng", "en": "important content", "ja": "重要な内容", "ko": "중요한 내용", "zh": "重要内容" },
+  "dmsMdToolbar.bulletTitle": { "vi": "Gạch đầu dòng", "en": "Bullet list", "ja": "箇条書き", "ko": "글머리 기호", "zh": "项目符号" },
+  "dmsMdToolbar.bulletPlaceholder": { "vi": "nội dung", "en": "content", "ja": "内容", "ko": "내용", "zh": "内容" },
+  "dmsMdToolbar.checklistTitle": { "vi": "Checklist", "en": "Checklist", "ja": "チェックリスト", "ko": "체크리스트", "zh": "清单" },
+  "dmsMdToolbar.checklistPlaceholder": { "vi": "việc cần làm", "en": "task to do", "ja": "やること", "ko": "할 일", "zh": "待办事项" },
+  "dmsMdToolbar.linkTitle": { "vi": "Chèn link", "en": "Insert link", "ja": "リンク挿入", "ko": "링크 삽입", "zh": "插入链接" },
+  "dmsMdToolbar.linkPlaceholder": { "vi": "tên link", "en": "link text", "ja": "リンク名", "ko": "링크 이름", "zh": "链接名称" },
+  "dmsMdToolbar.hashtagTitle": { "vi": "Hashtag", "en": "Hashtag", "ja": "ハッシュタグ", "ko": "해시태그", "zh": "话题标签" },
+  "dmsMdToolbar.hashtagPlaceholder": { "vi": "tag", "en": "tag", "ja": "タグ", "ko": "태그", "zh": "标签" }
+}

@@ -1,0 +1,156 @@
+{
+  "templates45FrameworksMomYoyAnalysis.title": {
+    "vi": "MoM / YoY",
+    "en": "MoM / YoY",
+    "ja": "MoM / YoY",
+    "ko": "MoM / YoY",
+    "zh": "MoM / YoY"
+  },
+  "templates45FrameworksMomYoyAnalysis.pageDescription": {
+    "vi": "So sánh tháng-trên-tháng + năm-trên-năm cho 1 metric với AI narrative.",
+    "en": "Compare month-over-month + year-over-year for one metric with an AI narrative.",
+    "ja": "1つの指標について前月比・前年比を比較し、AIが解説します。",
+    "ko": "하나의 지표에 대해 전월 대비 + 전년 대비를 비교하고 AI가 설명합니다.",
+    "zh": "针对单个指标比较环比与同比,并由 AI 生成叙述说明。"
+  },
+  "templates45FrameworksMomYoyAnalysis.badgePhase": {
+    "vi": "Phase 2 · F-034",
+    "en": "Phase 2 · F-034",
+    "ja": "Phase 2 · F-034",
+    "ko": "Phase 2 · F-034",
+    "zh": "Phase 2 · F-034"
+  },
+  "templates45FrameworksMomYoyAnalysis.backButton": {
+    "vi": "Khung khác",
+    "en": "Other framework",
+    "ja": "他のフレームワーク",
+    "ko": "다른 프레임워크",
+    "zh": "其他框架"
+  },
+  "templates45FrameworksMomYoyAnalysis.comparisonTypeLabel": {
+    "vi": "Loại so sánh",
+    "en": "Comparison type",
+    "ja": "比較タイプ",
+    "ko": "비교 유형",
+    "zh": "比较类型"
+  },
+  "templates45FrameworksMomYoyAnalysis.momLabel": {
+    "vi": "Month-over-Month",
+    "en": "Month-over-Month",
+    "ja": "前月比 (Month-over-Month)",
+    "ko": "전월 대비 (Month-over-Month)",
+    "zh": "环比 (Month-over-Month)"
+  },
+  "templates45FrameworksMomYoyAnalysis.yoyLabel": {
+    "vi": "Year-over-Year",
+    "en": "Year-over-Year",
+    "ja": "前年比 (Year-over-Year)",
+    "ko": "전년 대비 (Year-over-Year)",
+    "zh": "同比 (Year-over-Year)"
+  },
+  "templates45FrameworksMomYoyAnalysis.metricLabel": {
+    "vi": "Metric",
+    "en": "Metric",
+    "ja": "指標",
+    "ko": "지표",
+    "zh": "指标"
+  },
+  "templates45FrameworksMomYoyAnalysis.noMetricOption": {
+    "vi": "— Chưa có metric —",
+    "en": "— No metric yet —",
+    "ja": "— 指標がありません —",
+    "ko": "— 아직 지표 없음 —",
+    "zh": "— 暂无指标 —"
+  },
+  "templates45FrameworksMomYoyAnalysis.consentExternalLabel": {
+    "vi": "AI bên ngoài (PII đã mask)",
+    "en": "External AI (PII masked)",
+    "ja": "外部AI（PIIマスク済み）",
+    "ko": "외부 AI (PII 마스킹됨)",
+    "zh": "外部 AI(已脱敏 PII)"
+  },
+  "templates45FrameworksMomYoyAnalysis.consentInternalLabel": {
+    "vi": "Qwen nội bộ",
+    "en": "Qwen (internal)",
+    "ja": "Qwen（内部）",
+    "ko": "Qwen (내부)",
+    "zh": "Qwen(内部)"
+  },
+  "templates45FrameworksMomYoyAnalysis.runButtonTitle": {
+    "vi": "Phase 2 — Sắp ra mắt",
+    "en": "Phase 2 — Coming soon",
+    "ja": "Phase 2 — 近日公開",
+    "ko": "Phase 2 — 출시 예정",
+    "zh": "Phase 2 — 即将推出"
+  },
+  "templates45FrameworksMomYoyAnalysis.runButtonLabel": {
+    "vi": "Chạy {granularity}",
+    "en": "Run {granularity}",
+    "ja": "{granularity} を実行",
+    "ko": "{granularity} 실행",
+    "zh": "运行 {granularity}"
+  },
+  "templates45FrameworksMomYoyAnalysis.resultHeading": {
+    "vi": "Kết quả",
+    "en": "Result",
+    "ja": "結果",
+    "ko": "결과",
+    "zh": "结果"
+  },
+  "templates45FrameworksMomYoyAnalysis.currentPeriodLabel": {
+    "vi": "Kỳ này · {label}",
+    "en": "Current period · {label}",
+    "ja": "今期 · {label}",
+    "ko": "이번 기간 · {label}",
+    "zh": "本期 · {label}"
+  },
+  "templates45FrameworksMomYoyAnalysis.previousPeriodLabel": {
+    "vi": "Kỳ trước · {label}",
+    "en": "Previous period · {label}",
+    "ja": "前期 · {label}",
+    "ko": "이전 기간 · {label}",
+    "zh": "上期 · {label}"
+  },
+  "templates45FrameworksMomYoyAnalysis.deltaLabel": {
+    "vi": "Biến động",
+    "en": "Change",
+    "ja": "変動",
+    "ko": "변동",
+    "zh": "变动"
+  },
+  "templates45FrameworksMomYoyAnalysis.narrativeLabel": {
+    "vi": "Narrative",
+    "en": "Narrative",
+    "ja": "ナラティブ",
+    "ko": "내러티브",
+    "zh": "叙述说明"
+  },
+  "templates45FrameworksMomYoyAnalysis.driversLabel": {
+    "vi": "Drivers nghi ngờ",
+    "en": "Suspected drivers",
+    "ja": "推定要因",
+    "ko": "추정 요인",
+    "zh": "疑似驱动因素"
+  },
+  "templates45FrameworksMomYoyAnalysis.confidenceLabel": {
+    "vi": "Confidence {pct}%",
+    "en": "Confidence {pct}%",
+    "ja": "信頼度 {pct}%",
+    "ko": "신뢰도 {pct}%",
+    "zh": "置信度 {pct}%"
+  },
+  "templates45FrameworksMomYoyAnalysis.emptyStateText": {
+    "vi": "Chọn metric + chạy để xem so sánh.",
+    "en": "Select a metric + run to see the comparison.",
+    "ja": "指標を選択して実行すると比較が表示されます。",
+    "ko": "지표를 선택하고 실행하면 비교 결과가 표시됩니다.",
+    "zh": "选择指标并运行以查看比较结果。"
+  },
+  "templates45FrameworksMomYoyAnalysis.footerNote": {
+    "vi": "MoM / YoY luôn chạy trên Gold feature đã aggregated (F-032). Stale > 24h sẽ cảnh báo.",
+    "en": "MoM / YoY always runs on aggregated Gold features (F-032). A staleness warning triggers after 24h.",
+    "ja": "MoM / YoYは常に集計済みGold特徴量（F-032）上で実行されます。24時間を超えると鮮度警告が表示されます。",
+    "ko": "MoM / YoY는 항상 집계된 Gold 피처(F-032)에서 실행됩니다. 24시간이 지나면 오래됨 경고가 표시됩니다.",
+    "zh": "MoM / YoY 始终基于已聚合的 Gold 特征运行(F-032)。超过 24 小时将触发过期提醒。"
+  }
+}

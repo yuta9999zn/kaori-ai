@@ -30,6 +30,7 @@ import {
   api, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types — mirror BE Pydantic shape
 // ============================================================================
@@ -83,6 +84,7 @@ interface DetailResponse { data: DecisionDetail }
 // ============================================================================
 
 export default function DecisionDetailWiredPage({ decisionId }: { decisionId: string }) {
+  const t = useT();
   const [d, setD]              = useState<DecisionDetail | null>(null);
   const [loading, setLoading]  = useState(true);
   const [problem, setProblem]  = useState<ProblemDetails | null>(null);
@@ -121,8 +123,8 @@ export default function DecisionDetailWiredPage({ decisionId }: { decisionId: st
         actioned_at: next ? new Date().toISOString() : null,
       });
       setSuccess(next
-        ? 'Đã đánh dấu đã hành động — tính vào North Star.'
-        : 'Đã bỏ đánh dấu hành động.',
+        ? t('templates32bDecisionsIdWired.msgActionedOn')
+        : t('templates32bDecisionsIdWired.msgActionedOff'),
       );
     } catch (e: any) {
       setProblem(e);
@@ -132,7 +134,7 @@ export default function DecisionDetailWiredPage({ decisionId }: { decisionId: st
   }
 
   async function revokeOverride(o: OverrideRow) {
-    const reason = window.prompt('Lý do thu hồi (tuỳ chọn — sẽ ghi vào audit):', '');
+    const reason = window.prompt(t('templates32bDecisionsIdWired.promptRevokeReason'), '');
     if (reason === null) return;     // cancelled
     setProblem(null);
     try {
@@ -140,7 +142,7 @@ export default function DecisionDetailWiredPage({ decisionId }: { decisionId: st
         method: 'POST',
         body:   JSON.stringify({ reason: reason.trim() || undefined }),
       });
-      setSuccess(`Đã thu hồi override ${o.override_id.slice(0, 8)}…`);
+      setSuccess(t('templates32bDecisionsIdWired.msgOverrideRevoked', { id: o.override_id.slice(0, 8) }));
       await load();
     } catch (e: any) {
       setProblem(e);
@@ -149,18 +151,18 @@ export default function DecisionDetailWiredPage({ decisionId }: { decisionId: st
 
   async function onOverrideSaved() {
     setOverrideOpen(false);
-    setSuccess('Đã ghi nhận override — feedback đã đẩy vào kaori.feedback.actions.');
+    setSuccess(t('templates32bDecisionsIdWired.msgOverrideSaved'));
     await load();
   }
 
   return (
     <>
       <PageHeader
-        title={d?.subject ?? 'Quyết định'}
-        description={d ? `${d.decision_type} · ${formatDateTime(d.created_at)}` : 'Đang tải...'}
+        title={d?.subject ?? t('templates32bDecisionsIdWired.pageTitleFallback')}
+        description={d ? `${d.decision_type} · ${formatDateTime(d.created_at)}` : t('templates32bDecisionsIdWired.pageLoading')}
         actions={
           <Button variant="tertiary" onClick={() => (window.location.href = '/decisions')}>
-            <ChevronLeft className="w-4 h-4 mr-1" /> Quay lại danh sách
+            <ChevronLeft className="w-4 h-4 mr-1" /> {t('templates32bDecisionsIdWired.backToList')}
           </Button>
         }
       />
@@ -170,7 +172,7 @@ export default function DecisionDetailWiredPage({ decisionId }: { decisionId: st
           <ErrorBanner
             problem={{
               ...problem,
-              title:  problem.title ?? 'Không tải được quyết định',
+              title:  problem.title ?? t('templates32bDecisionsIdWired.errLoadTitle'),
               detail: problem.detail ?? '',
             }}
           />
@@ -188,7 +190,7 @@ export default function DecisionDetailWiredPage({ decisionId }: { decisionId: st
             />
 
             {d.reasoning && (
-              <Section icon={FileText} title="Lý do AI chọn">
+              <Section icon={FileText} title={t('templates32bDecisionsIdWired.reasoningTitle')}>
                 <p className="text-sm text-[var(--text-primary)] leading-relaxed whitespace-pre-line">
                   {d.reasoning}
                 </p>
@@ -233,6 +235,7 @@ function HeaderCard({
   pendingAction: boolean;
   onToggleActioned: () => void;
 }) {
+  const t = useT();
   const hasActiveOverride = d.overrides.some((o) => o.is_active);
   const activeOverride = d.overrides.find((o) => o.is_active);
 
@@ -248,17 +251,17 @@ function HeaderCard({
             {d.method && <Badge variant="default">{d.method}</Badge>}
             {d.needs_user_confirm && (
               <Badge variant="warning">
-                <AlertTriangle className="w-3 h-3 mr-1 inline" /> Cần xác nhận
+                <AlertTriangle className="w-3 h-3 mr-1 inline" /> {t('templates32bDecisionsIdWired.badgeNeedsConfirm')}
               </Badge>
             )}
             {d.is_actioned && (
               <Badge variant="success">
-                <CheckCircle2 className="w-3 h-3 mr-1 inline" /> Đã hành động
+                <CheckCircle2 className="w-3 h-3 mr-1 inline" /> {t('templates32bDecisionsIdWired.badgeActioned')}
               </Badge>
             )}
             {hasActiveOverride && (
               <Badge variant="error">
-                <RotateCcw className="w-3 h-3 mr-1 inline" /> Đã override
+                <RotateCcw className="w-3 h-3 mr-1 inline" /> {t('templates32bDecisionsIdWired.badgeOverridden')}
               </Badge>
             )}
           </div>
@@ -271,7 +274,7 @@ function HeaderCard({
             </p>
           ) : (
             <p className="text-sm text-[var(--text-secondary)] mt-1 leading-relaxed">
-              AI chọn: <span className="font-medium text-[var(--text-primary)]">{d.chosen_value}</span>
+              {t('templates32bDecisionsIdWired.aiChosePrefix')} <span className="font-medium text-[var(--text-primary)]">{d.chosen_value}</span>
             </p>
           )}
         </div>
@@ -279,21 +282,21 @@ function HeaderCard({
 
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
         <KpiTile
-          label="Độ tin cậy AI"
+          label={t('templates32bDecisionsIdWired.kpiConfidenceLabel')}
           value={d.confidence != null ? `${Math.round((d.confidence ?? 0) * 100)}%` : '—'}
           secondary={
             d.confidence == null ? undefined :
-            d.confidence >= 0.8 ? 'Cao' :
-            d.confidence >= 0.6 ? 'Vừa' : 'Thấp'
+            d.confidence >= 0.8 ? t('templates32bDecisionsIdWired.confidenceHigh') :
+            d.confidence >= 0.6 ? t('templates32bDecisionsIdWired.confidenceMedium') : t('templates32bDecisionsIdWired.confidenceLow')
           }
         />
         <KpiTile
-          label="Cờ bất định"
+          label={t('templates32bDecisionsIdWired.kpiUncertaintyLabel')}
           value={d.uncertainty_flags.length > 0 ? d.uncertainty_flags.join(' · ') : '—'}
           highlight={d.uncertainty_flags.length > 0}
         />
         <div className="rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)]/40 p-3">
-          <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Trạng thái hành động</p>
+          <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates32bDecisionsIdWired.kpiActionStatusLabel')}</p>
           <button
             type="button"
             onClick={onToggleActioned}
@@ -309,7 +312,7 @@ function HeaderCard({
             {pendingAction
               ? <Loader2 className="w-4 h-4 animate-spin" />
               : d.is_actioned ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
-            {d.is_actioned ? 'Bỏ đánh dấu' : 'Đánh dấu đã hành động'}
+            {d.is_actioned ? t('templates32bDecisionsIdWired.actionUnmark') : t('templates32bDecisionsIdWired.actionMark')}
           </button>
           {d.is_actioned && d.actioned_at && (
             <p className="text-[11px] text-[var(--text-secondary)] mt-1.5 text-center">
@@ -327,14 +330,15 @@ function HeaderCard({
 // ============================================================================
 
 function AlternativesSection({ alternatives }: { alternatives: AlternativeConsidered[] }) {
+  const t = useT();
   return (
     <Section
       icon={Activity}
-      title="Phương án đã cân nhắc"
-      subtitle={`${alternatives.length} phương án · audit log K-6`}
+      title={t('templates32bDecisionsIdWired.altSectionTitle')}
+      subtitle={t('templates32bDecisionsIdWired.altSectionSubtitle', { count: alternatives.length })}
     >
       {alternatives.length === 0 ? (
-        <p className="text-sm text-[var(--text-secondary)]">Không có phương án thay thế ghi nhận.</p>
+        <p className="text-sm text-[var(--text-secondary)]">{t('templates32bDecisionsIdWired.altNone')}</p>
       ) : (
         <div className="space-y-3">
           {alternatives.map((alt, i) => (
@@ -344,17 +348,17 @@ function AlternativesSection({ alternatives }: { alternatives: AlternativeConsid
             >
               <div className="flex items-start justify-between gap-3 flex-wrap">
                 <p className="font-medium text-sm text-[var(--text-primary)]">
-                  {String(alt.title ?? alt.value ?? `Phương án ${i + 1}`)}
+                  {String(alt.title ?? alt.value ?? t('templates32bDecisionsIdWired.altFallbackTitle', { n: i + 1 }))}
                 </p>
                 {typeof alt.confidence === 'number' && (
                   <Badge variant="default">
-                    Confidence {Math.round(alt.confidence * 100)}%
+                    {t('templates32bDecisionsIdWired.altConfidenceBadge', { pct: Math.round(alt.confidence * 100) })}
                   </Badge>
                 )}
               </div>
               {alt.rejected_reason && (
                 <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed">
-                  <span className="font-medium text-[var(--text-primary)]">Bị từ chối:</span> {String(alt.rejected_reason)}
+                  <span className="font-medium text-[var(--text-primary)]">{t('templates32bDecisionsIdWired.altRejectedLabel')}</span> {String(alt.rejected_reason)}
                 </p>
               )}
             </div>
@@ -376,6 +380,7 @@ function OverrideSection({
   onCreate: () => void;
   onRevoke: (o: OverrideRow) => void;
 }) {
+  const t = useT();
   const sorted = useMemo(
     () => [...overrides].sort((a, b) =>
       (b.overridden_at ?? '').localeCompare(a.overridden_at ?? '')),
@@ -387,14 +392,13 @@ function OverrideSection({
       <div className="px-5 py-3 border-b border-[var(--border-color)]/60 bg-[var(--primary-gold)]/4 flex items-center gap-3">
         <Sparkles className="w-4 h-4 text-[var(--primary-gold-dark)]" />
         <div className="flex-1 min-w-0">
-          <h3 className="font-serif text-base text-[var(--text-primary)]">Override (F-036)</h3>
+          <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates32bDecisionsIdWired.overrideSectionTitle')}</h3>
           <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-            Ghi đè quyết định AI — mỗi lần override sẽ phát Kafka <span className="font-mono">kaori.feedback.actions</span> để
-            F-074 fine-tuning + F-060 ROI rollup pick up.
+            {t('templates32bDecisionsIdWired.overrideSectionDescPre')} <span className="font-mono">kaori.feedback.actions</span> {t('templates32bDecisionsIdWired.overrideSectionDescPost')}
           </p>
         </div>
         <Button variant="primary" size="sm" onClick={onCreate}>
-          <Plus className="w-4 h-4 mr-1.5" /> Override mới
+          <Plus className="w-4 h-4 mr-1.5" /> {t('templates32bDecisionsIdWired.overrideNewBtn')}
         </Button>
       </div>
 
@@ -402,7 +406,7 @@ function OverrideSection({
         <div className="p-5 text-center">
           <Sparkles className="w-8 h-8 mx-auto text-[var(--text-secondary)]/30 mb-2" />
           <p className="text-sm text-[var(--text-secondary)]">
-            Chưa có override nào. Bấm "Override mới" nếu bạn không đồng ý với lựa chọn AI.
+            {t('templates32bDecisionsIdWired.overrideEmpty')}
           </p>
         </div>
       ) : (
@@ -419,15 +423,16 @@ function OverrideSection({
 function OverrideRowItem({
   row: o, onRevoke,
 }: { row: OverrideRow; onRevoke: () => void }) {
+  const t = useT();
   return (
     <li className="px-5 py-4 hover:bg-[var(--bg-app)]/40 transition-colors">
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
             {o.is_active ? (
-              <Badge variant="success">Đang hiệu lực</Badge>
+              <Badge variant="success">{t('templates32bDecisionsIdWired.overrideActive')}</Badge>
             ) : (
-              <Badge variant="default">Đã thu hồi</Badge>
+              <Badge variant="default">{t('templates32bDecisionsIdWired.overrideRevoked')}</Badge>
             )}
             <span className="text-xs text-[var(--text-secondary)]">
               {formatRelative(o.overridden_at)} · {o.overridden_by_user?.slice(0, 8) ?? 'system'}…
@@ -441,17 +446,17 @@ function OverrideRowItem({
             <span className="font-mono font-medium">{o.override_value}</span>
           </p>
           <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">
-            <span className="font-medium text-[var(--text-primary)]">Lý do:</span> {o.reason}
+            <span className="font-medium text-[var(--text-primary)]">{t('templates32bDecisionsIdWired.reasonLabel')}</span> {o.reason}
           </p>
           {!o.is_active && o.revoke_reason && (
             <p className="text-xs text-[var(--text-secondary)] mt-1 italic">
-              <span className="font-medium text-[var(--text-primary)]">Thu hồi:</span> {o.revoke_reason}
+              <span className="font-medium text-[var(--text-primary)]">{t('templates32bDecisionsIdWired.revokeLabel')}</span> {o.revoke_reason}
             </p>
           )}
         </div>
         {o.is_active && (
           <Button variant="tertiary" size="sm" onClick={onRevoke}>
-            <RotateCcw className="w-3.5 h-3.5 mr-1" /> Thu hồi
+            <RotateCcw className="w-3.5 h-3.5 mr-1" /> {t('templates32bDecisionsIdWired.revokeBtn')}
           </Button>
         )}
       </div>
@@ -471,6 +476,7 @@ function OverrideEditor({
   onClose: () => void;
   onSaved: () => void | Promise<void>;
 }) {
+  const t = useT();
   const [overrideValue, setOverrideValue] = useState('');
   const [reason, setReason] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -505,11 +511,11 @@ function OverrideEditor({
     <div className="fixed inset-0 z-40 bg-[var(--text-primary)]/40 flex items-center justify-center p-4">
       <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom shadow-soft-lg max-w-lg w-full max-h-[90vh] overflow-auto">
         <div className="px-6 py-4 border-b border-[var(--border-color)] flex items-center justify-between">
-          <h2 className="font-serif text-xl text-[var(--text-primary)]">Override quyết định AI</h2>
+          <h2 className="font-serif text-xl text-[var(--text-primary)]">{t('templates32bDecisionsIdWired.editorTitle')}</h2>
           <button
             onClick={onClose}
             className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-sm-custom"
-            aria-label="Đóng"
+            aria-label={t('templates32bDecisionsIdWired.closeAriaLabel')}
           >
             <X className="w-5 h-5" />
           </button>
@@ -520,63 +526,62 @@ function OverrideEditor({
             <ErrorBanner
               problem={{
                 ...problem,
-                title:  problem.title ?? 'Không lưu được override',
+                title:  problem.title ?? t('templates32bDecisionsIdWired.errSaveTitle'),
                 detail: problem.detail ?? '',
               }}
             />
           )}
 
           <div className="rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)]/40 p-3">
-            <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">AI hiện chọn</p>
+            <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">{t('templates32bDecisionsIdWired.aiCurrentChoiceLabel')}</p>
             <p className="font-mono text-sm text-[var(--text-primary)]">{originalValue}</p>
           </div>
 
           <label className="block">
             <span className="text-[11px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mb-1.5 block">
-              Giá trị đúng (theo bạn) *
+              {t('templates32bDecisionsIdWired.correctValueLabel')}
             </span>
             <input
               type="text"
               value={overrideValue}
               onChange={(e) => setOverrideValue(e.target.value.slice(0, 500))}
               maxLength={500}
-              placeholder="vd. non-churn"
+              placeholder={t('templates32bDecisionsIdWired.correctValuePlaceholder')}
               className="w-full px-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm placeholder:text-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all"
             />
           </label>
 
           <label className="block">
             <span className="text-[11px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mb-1.5 block">
-              Lý do bạn không đồng ý * — sẽ feed vào fine-tuning
+              {t('templates32bDecisionsIdWired.disagreeReasonLabel')}
             </span>
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value.slice(0, 2000))}
               rows={4}
               maxLength={2000}
-              placeholder="vd. Khách VIP vừa ký lại hợp đồng năm — AI chưa thấy event mới."
+              placeholder={t('templates32bDecisionsIdWired.disagreeReasonPlaceholder')}
               className="w-full px-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm placeholder:text-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] resize-none transition-all"
             />
             <p className="text-xs text-[var(--text-secondary)] mt-1">
-              {reason.length}/2000 ký tự — tối thiểu 1.
+              {t('templates32bDecisionsIdWired.reasonCharCount', { count: reason.length })}
             </p>
           </label>
 
           <div className="rounded-md-custom bg-[var(--primary-gold)]/8 border border-[var(--primary-gold)]/30 p-3 text-xs text-[var(--text-primary)] flex items-start gap-2">
             <Sparkles className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
             <p>
-              Override được ghi vào <span className="font-mono">decision_overrides</span> + phát Kafka <span className="font-mono">kaori.feedback.actions</span>.
-              Hệ thống sẽ dùng feedback này để fine-tune AI trong tương lai (F-074).
+              {t('templates32bDecisionsIdWired.editorNoticePre')} <span className="font-mono">decision_overrides</span> {t('templates32bDecisionsIdWired.editorNoticeMid')} <span className="font-mono">kaori.feedback.actions</span>{t('templates32bDecisionsIdWired.editorNoticePost')}
             </p>
           </div>
         </div>
 
         <div className="px-6 py-4 border-t border-[var(--border-color)] flex items-center justify-end gap-2">
-          <Button variant="secondary" onClick={onClose} disabled={submitting}>Huỷ</Button>
+          <Button variant="secondary" onClick={onClose} disabled={submitting}>{t('templates32bDecisionsIdWired.cancelBtn')}</Button>
           <Button variant="primary" onClick={submit} disabled={!valid || submitting}>
             {submitting
-              ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> Đang lưu...</>
-              : <><Save className="w-4 h-4 mr-1.5" /> Lưu override</>}
+              ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> {t('templates32bDecisionsIdWired.savingBtn')}</>
+              : <><Save className="w-4 h-4 mr-1.5" /> {t('templates32bDecisionsIdWired.saveOverrideBtn')}</>}
           </Button>
         </div>
       </div>
@@ -589,8 +594,9 @@ function OverrideEditor({
 // ============================================================================
 
 function AuditSection({ decision: d }: { decision: DecisionDetail }) {
+  const t = useT();
   return (
-    <Section icon={ShieldCheck} title="Audit (K-6)">
+    <Section icon={ShieldCheck} title={t('templates32bDecisionsIdWired.auditSectionTitle')}>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
         <AuditField label="decision_id" value={d.decision_id} mono />
         {d.run_id && <AuditField label="run_id" value={d.run_id} mono />}
@@ -600,8 +606,8 @@ function AuditSection({ decision: d }: { decision: DecisionDetail }) {
       <p className="text-xs text-[var(--text-secondary)] mt-3 flex items-start gap-1.5">
         <Lock className="w-3.5 h-3.5 mt-0.5 shrink-0" />
         <span>
-          Bản ghi này append-only ở rule layer (K-2). Override không sửa hàng gốc — tạo dòng mới trong{' '}
-          <span className="font-mono">decision_overrides</span> để giữ audit trail.
+          {t('templates32bDecisionsIdWired.auditNoticePre')}{' '}
+          <span className="font-mono">decision_overrides</span> {t('templates32bDecisionsIdWired.auditNoticePost')}
         </span>
       </p>
     </Section>
@@ -710,6 +716,7 @@ interface ExplainResp {
 }
 
 function ExplainabilitySection({ decisionId }: { decisionId: string }) {
+  const t = useT();
   const [data, setData]       = useState<ExplainResp | null>(null);
   const [loading, setLoading] = useState(false);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -735,19 +742,19 @@ function ExplainabilitySection({ decisionId }: { decisionId: string }) {
       <div className="flex items-center justify-between mb-3 gap-3">
         <div className="flex items-center gap-2">
           <Brain className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-          <h3 className="font-serif text-sm text-[var(--text-primary)]">Vì sao Kaori quyết định thế?</h3>
+          <h3 className="font-serif text-sm text-[var(--text-primary)]">{t('templates32bDecisionsIdWired.explainTitle')}</h3>
           <Badge variant="info">F-041</Badge>
         </div>
         {!data && (
           <Button onClick={generate} disabled={loading} isLoading={loading} size="sm">
             <Sparkles className="w-3.5 h-3.5 mr-1" />
-            {loading ? 'Đang phân tích...' : 'Tạo giải thích'}
+            {loading ? t('templates32bDecisionsIdWired.explainGenerating') : t('templates32bDecisionsIdWired.explainGenerateBtn')}
           </Button>
         )}
         {data && (
           <Button onClick={generate} disabled={loading} isLoading={loading} variant="tertiary" size="sm">
             <RotateCcw className="w-3.5 h-3.5 mr-1" />
-            Tạo lại
+            {t('templates32bDecisionsIdWired.explainRegenerateBtn')}
           </Button>
         )}
       </div>
@@ -756,9 +763,9 @@ function ExplainabilitySection({ decisionId }: { decisionId: string }) {
 
       {!data && !problem && !loading && (
         <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-          Kaori sẽ đọc nhật ký quyết định, sinh top-3 yếu tố ảnh hưởng + 1 đoạn giải thích bằng tiếng Việt qua llm_router (Qwen nội bộ, không gọi AI ngoài).
+          {t('templates32bDecisionsIdWired.explainIntroPre')}
           <br />
-          <span className="font-mono text-[10px]">Lưu ý: đây là giải thích dựa trên nhật ký — không phải SHAP value thực thụ. SHAP yêu cầu lưu model object (Phase 3 / F-073).</span>
+          <span className="font-mono text-[10px]">{t('templates32bDecisionsIdWired.explainIntroNote')}</span>
         </p>
       )}
 
@@ -767,7 +774,7 @@ function ExplainabilitySection({ decisionId }: { decisionId: string }) {
           <p className="text-sm text-[var(--text-primary)] leading-relaxed">{data.narrative}</p>
 
           <div className="space-y-2">
-            <p className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] font-medium">Top yếu tố</p>
+            <p className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] font-medium">{t('templates32bDecisionsIdWired.explainTopFactorsLabel')}</p>
             {data.top_factors.map((f, i) => (
               <ExplainFactorRow key={i} factor={f} />
             ))}
@@ -775,7 +782,7 @@ function ExplainabilitySection({ decisionId }: { decisionId: string }) {
 
           <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
             <Lightbulb className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
-            <p><span className="font-medium text-[var(--text-primary)]">Confidence: </span>{data.confidence_explanation}</p>
+            <p><span className="font-medium text-[var(--text-primary)]">{t('templates32bDecisionsIdWired.explainConfidenceLabel')} </span>{data.confidence_explanation}</p>
           </div>
         </div>
       )}
@@ -784,6 +791,7 @@ function ExplainabilitySection({ decisionId }: { decisionId: string }) {
 }
 
 function ExplainFactorRow({ factor }: { factor: ExplainTopFactor }) {
+  const t = useT();
   const Icon = factor.direction === 'positive' ? TrendingUp
     : factor.direction === 'negative' ? TrendingDown
     : Minus;
@@ -797,7 +805,7 @@ function ExplainFactorRow({ factor }: { factor: ExplainTopFactor }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline justify-between gap-2 flex-wrap">
           <p className="text-sm font-medium text-[var(--text-primary)]">{factor.factor_name}</p>
-          <span className="text-[10px] font-mono text-[var(--text-secondary)]">trọng số {weightPct}%</span>
+          <span className="text-[10px] font-mono text-[var(--text-secondary)]">{t('templates32bDecisionsIdWired.explainFactorWeight', { pct: weightPct })}</span>
         </div>
         <p className="text-xs text-[var(--text-secondary)] mt-1 leading-snug">{factor.evidence}</p>
         <div className="mt-1.5 h-1 w-full rounded-full bg-[var(--border-color)]/40 overflow-hidden">

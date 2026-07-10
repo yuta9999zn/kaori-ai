@@ -31,6 +31,7 @@ import {
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
 import LineageModal from '@/components/p2/templates/fnew3v1-lineage-modal';
+import { useT } from '@/lib/i18n/provider';
 
 // ============================================================================
 // Types — mirror BE data_explorer.py response
@@ -87,15 +88,15 @@ const STATUS_VARIANT: Record<string, 'success' | 'warning' | 'error' | 'info' | 
   failed:            'error',
   cancelled:         'error',
 };
-const STATUS_LABEL: Record<string, string> = {
-  uploading:         'Đang tải lên',
-  bronze_complete:   'Đã ingest',
-  schema_review:     'Xác nhận schema',
-  silver_complete:   'Đã làm sạch',
-  analyzing:         'Đang phân tích',
-  analysis_complete: 'Hoàn thành',
-  failed:            'Thất bại',
-  cancelled:         'Đã huỷ',
+const STATUS_LABEL_KEY: Record<string, string> = {
+  uploading:         'templatesFnew3v1Bronze.statusUploading',
+  bronze_complete:   'templatesFnew3v1Bronze.statusBronzeComplete',
+  schema_review:     'templatesFnew3v1Bronze.statusSchemaReview',
+  silver_complete:   'templatesFnew3v1Bronze.statusSilverComplete',
+  analyzing:         'templatesFnew3v1Bronze.statusAnalyzing',
+  analysis_complete: 'templatesFnew3v1Bronze.statusAnalysisComplete',
+  failed:            'templatesFnew3v1Bronze.statusFailed',
+  cancelled:         'templatesFnew3v1Bronze.statusCancelled',
 };
 
 // ============================================================================
@@ -103,6 +104,7 @@ const STATUS_LABEL: Record<string, string> = {
 // ============================================================================
 
 export default function BronzeDrillDownPage() {
+  const t = useT();
   const [files, setFiles]               = useState<BronzeFile[]>([]);
   const [loading, setLoading]           = useState(true);
   const [problem, setProblem]           = useState<ProblemDetails | null>(null);
@@ -148,13 +150,13 @@ export default function BronzeDrillDownPage() {
   return (
     <>
       <PageHeader
-        title="Bronze — dữ liệu thô"
-        description="Append-only · Parquet/CSV/XLSX · K-2 không sửa, không xoá."
+        title={t('templatesFnew3v1Bronze.title')}
+        description={t('templatesFnew3v1Bronze.description')}
         actions={
           <>
             <Badge variant="info">F-NEW3 v1</Badge>
             <a href="/p2/data">
-              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> Khám phá</Button>
+              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> {t('templatesFnew3v1Bronze.backToExplore')}</Button>
             </a>
           </>
         }
@@ -168,27 +170,27 @@ export default function BronzeDrillDownPage() {
             <table className="w-full text-sm text-left">
               <thead className="bg-[var(--bg-app)] border-b border-[var(--border-color)] text-[11px] font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                 <tr>
-                  <th className="px-5 py-3">File nguồn · sheet</th>
-                  <th className="px-5 py-3">Định dạng</th>
-                  <th className="px-5 py-3 text-right">Hàng</th>
-                  <th className="px-5 py-3 text-right">Cột</th>
-                  <th className="px-5 py-3">Trạng thái pipeline</th>
-                  <th className="px-5 py-3">Ingest lúc</th>
-                  <th className="px-5 py-3 text-right">Xem mẫu</th>
+                  <th className="px-5 py-3">{t('templatesFnew3v1Bronze.colSourceFile')}</th>
+                  <th className="px-5 py-3">{t('templatesFnew3v1Bronze.colFormat')}</th>
+                  <th className="px-5 py-3 text-right">{t('templatesFnew3v1Bronze.colRows')}</th>
+                  <th className="px-5 py-3 text-right">{t('templatesFnew3v1Bronze.colCols')}</th>
+                  <th className="px-5 py-3">{t('templatesFnew3v1Bronze.colStatus')}</th>
+                  <th className="px-5 py-3">{t('templatesFnew3v1Bronze.colIngestedAt')}</th>
+                  <th className="px-5 py-3 text-right">{t('templatesFnew3v1Bronze.colViewSample')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-color)]/60">
                 {loading && files.length === 0 ? (
                   <tr><td colSpan={7} className="px-5 py-12 text-center text-[var(--text-secondary)]">
-                    <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> Đang tải...
+                    <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> {t('templatesFnew3v1Bronze.loadingFiles')}
                   </td></tr>
                 ) : files.length === 0 ? (
                   <tr><td colSpan={7} className="px-5 py-12 text-center">
                     <Database className="w-10 h-10 mx-auto text-[var(--text-secondary)]/40 mb-3" />
                     <p className="text-sm text-[var(--text-secondary)]">
-                      Chưa có file Bronze nào — tải file đầu tiên qua{' '}
+                      {t('templatesFnew3v1Bronze.emptyStatePrefix')}{' '}
                       <a href="/p2/pipelines/new" className="text-[var(--primary-gold-dark)] hover:underline">
-                        Pipeline → Upload
+                        {t('templatesFnew3v1Bronze.linkPipelineUpload')}
                       </a>.
                     </p>
                   </td></tr>
@@ -212,16 +214,16 @@ export default function BronzeDrillDownPage() {
                 variant="tertiary" size="sm" onClick={pagePrev}
                 disabled={cursorStack.length === 0 || loading}
               >
-                <ChevronLeft className="w-3.5 h-3.5 mr-1" /> Trang trước
+                <ChevronLeft className="w-3.5 h-3.5 mr-1" /> {t('templatesFnew3v1Bronze.pagePrev')}
               </Button>
               <span className="text-xs text-[var(--text-secondary)]">
-                Trang {cursorStack.length + 1}
+                {t('templatesFnew3v1Bronze.pageIndicator', { page: cursorStack.length + 1 })}
               </span>
               <Button
                 variant="tertiary" size="sm" onClick={pageNext}
                 disabled={!nextCursor || loading}
               >
-                Trang sau <ChevronRight className="w-3.5 h-3.5 ml-1" />
+                {t('templatesFnew3v1Bronze.pageNext')} <ChevronRight className="w-3.5 h-3.5 ml-1" />
               </Button>
             </div>
           )}
@@ -230,10 +232,9 @@ export default function BronzeDrillDownPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <HardDrive className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            K-2 — Bronze append-only: trang này chỉ đọc. Để chỉnh sửa hoặc làm
-            sạch dữ liệu, dùng{' '}
-            <a href="/p2/data" className="text-[var(--primary-gold-dark)] hover:underline">Pipeline</a>.
-            Mẫu sample tối đa 50 dòng/file (BE giới hạn 200, đủ để hình dung shape mà không nặng request).
+            {t('templatesFnew3v1Bronze.footerNotePrefix')}{' '}
+            <a href="/p2/data" className="text-[var(--primary-gold-dark)] hover:underline">{t('templatesFnew3v1Bronze.linkPipeline')}</a>.
+            {' '}{t('templatesFnew3v1Bronze.footerNoteSuffix')}
           </p>
         </div>
       </div>
@@ -256,8 +257,9 @@ export default function BronzeDrillDownPage() {
 function BronzeFileRow({
   file: f, onView, onLineage,
 }: { file: BronzeFile; onView: () => void; onLineage: () => void }) {
+  const t = useT();
   const variant = STATUS_VARIANT[f.run_status] ?? 'default';
-  const label   = STATUS_LABEL[f.run_status]   ?? f.run_status;
+  const label   = STATUS_LABEL_KEY[f.run_status] ? t(STATUS_LABEL_KEY[f.run_status]) : f.run_status;
   const ingested = formatRelative(f.created_at);
 
   return (
@@ -283,11 +285,11 @@ function BronzeFileRow({
       <td className="px-5 py-4 text-xs text-[var(--text-secondary)]">{ingested}</td>
       <td className="px-5 py-4 text-right">
         <div className="inline-flex items-center gap-1">
-          <Button variant="tertiary" size="sm" onClick={onLineage} title="Truy theo file qua các lớp">
+          <Button variant="tertiary" size="sm" onClick={onLineage} title={t('templatesFnew3v1Bronze.lineageTooltip')}>
             <Link2 className="w-3.5 h-3.5" />
           </Button>
           <Button variant="tertiary" size="sm" onClick={onView}>
-            <Eye className="w-3.5 h-3.5 mr-1.5" /> Xem
+            <Eye className="w-3.5 h-3.5 mr-1.5" /> {t('templatesFnew3v1Bronze.viewButton')}
           </Button>
         </div>
       </td>
@@ -296,6 +298,7 @@ function BronzeFileRow({
 }
 
 function SampleModal({ file, onClose }: { file: BronzeFile; onClose: () => void }) {
+  const t = useT();
   const [data, setData]       = useState<SampleResponse['data'] | null>(null);
   const [loading, setLoading] = useState(true);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -347,7 +350,7 @@ function SampleModal({ file, onClose }: { file: BronzeFile; onClose: () => void 
               {file.source_filename}
             </h3>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-              {file.row_count.toLocaleString('vi-VN')} hàng × {file.col_count} cột ·{' '}
+              {t('templatesFnew3v1Bronze.rowsColsSummary', { rows: file.row_count.toLocaleString('vi-VN'), cols: file.col_count })} ·{' '}
               {file.file_format.toUpperCase()}
               {file.sheet_name && ` · sheet "${file.sheet_name}"`}
             </p>
@@ -357,9 +360,9 @@ function SampleModal({ file, onClose }: { file: BronzeFile; onClose: () => void 
               variant="tertiary" size="sm" onClick={downloadCsv}
               disabled={!data || data.rows.length === 0}
             >
-              <Download className="w-3.5 h-3.5 mr-1" /> CSV mẫu
+              <Download className="w-3.5 h-3.5 mr-1" /> {t('templatesFnew3v1Bronze.csvSampleButton')}
             </Button>
-            <button onClick={onClose} aria-label="Đóng" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+            <button onClick={onClose} aria-label={t('templatesFnew3v1Bronze.closeModal')} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
               <XIcon className="w-5 h-5" />
             </button>
           </div>
@@ -370,7 +373,7 @@ function SampleModal({ file, onClose }: { file: BronzeFile; onClose: () => void 
 
           {loading ? (
             <div className="text-center py-12 text-[var(--text-secondary)]">
-              <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> Đang tải mẫu dữ liệu...
+              <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> {t('templatesFnew3v1Bronze.loadingSample')}
             </div>
           ) : data && data.rows.length > 0 ? (
             <>
@@ -401,13 +404,16 @@ function SampleModal({ file, onClose }: { file: BronzeFile; onClose: () => void 
                 </table>
               </div>
               <p className="text-[11px] text-[var(--text-secondary)] mt-3">
-                Hiển thị {data.rows.length}/{data.file.row_count.toLocaleString('vi-VN')} dòng (giới hạn {data.limit}).
-                Tải xuống mẫu để mở trong Excel.
+                {t('templatesFnew3v1Bronze.sampleFooter', {
+                  shown: data.rows.length,
+                  total: data.file.row_count.toLocaleString('vi-VN'),
+                  limit: data.limit,
+                })}
               </p>
             </>
           ) : (
             <div className="text-center py-12 text-[var(--text-secondary)]">
-              File không có dòng nào (có thể ingest đã fail). Kiểm tra trang pipeline.
+              {t('templatesFnew3v1Bronze.noRowsMessage')}
             </div>
           )}
         </div>

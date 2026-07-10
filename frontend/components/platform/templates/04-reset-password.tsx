@@ -7,6 +7,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Loader2, ArrowLeft, Eye, EyeOff, CheckCircle2, AlertCircle, Check } from 'lucide-react';
+import { useT } from '@/lib/i18n/provider';
 
 // --- STYLES & FONTS ---
 const GlobalStyles = () => (
@@ -106,6 +107,7 @@ Label.displayName = "Label";
 // --- MAIN PAGE COMPONENT ---
 
 export default function KaoriResetPassword() {
+  const t = useT();
   const [tokenState, setTokenState] = useState('validating'); // 'validating' | 'valid' | 'invalid'
   const [formState, setFormState] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
   
@@ -195,20 +197,19 @@ export default function KaoriResetPassword() {
           {/* Copy */}
           <div className="relative z-10 flex flex-col max-w-lg mb-20 animate-fade-in">
             <h1 className="font-serif text-5xl leading-[1.15] text-[#2F2F2F] font-medium mb-6">
-              Intelligence,<br/>
-              <span className="text-[#8C8173] italic">Calmly Delivered.</span>
+              {t('templates04ResetPassword.heroTitleLine1')}<br/>
+              <span className="text-[#8C8173] italic">{t('templates04ResetPassword.heroTitleLine2')}</span>
             </h1>
             <p className="text-[#8C8173] text-lg leading-relaxed">
-              Experience the next generation of multi-tenant data intelligence. 
-              Built for scale, designed for clarity, and engineered to bring peace to your workflows.
+              {t('templates04ResetPassword.heroBody')}
             </p>
           </div>
-          
+
           {/* Footer */}
           <div className="relative z-10 flex items-center gap-4 text-sm text-[#8C8173]">
-            <span>© 2026 Kaori Platform</span>
+            <span>{t('templates04ResetPassword.footerCopyright')}</span>
             <span className="w-1 h-1 rounded-full bg-[#D4B88A]" />
-            <a href="#" className="hover:text-[#2F2F2F] transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-[#2F2F2F] transition-colors">{t('templates04ResetPassword.privacyPolicy')}</a>
           </div>
         </div>
 
@@ -233,7 +234,7 @@ export default function KaoriResetPassword() {
             {tokenState === 'validating' && (
               <div className="animate-fade-in flex flex-col items-center justify-center h-full text-center space-y-4">
                 <Loader2 className="w-8 h-8 text-[#D4B88A] animate-spin" />
-                <p className="text-sm text-[#8C8173] font-medium">Validating your secure link...</p>
+                <p className="text-sm text-[#8C8173] font-medium">{t('templates04ResetPassword.validatingLink')}</p>
               </div>
             )}
 
@@ -247,18 +248,18 @@ export default function KaoriResetPassword() {
                 </div>
                 
                 <h2 className="font-serif text-2xl font-semibold tracking-tight text-[#2F2F2F] mb-3">
-                  Link expired or invalid
+                  {t('templates04ResetPassword.linkExpiredTitle')}
                 </h2>
-                
+
                 <p className="text-sm text-[#8C8173] leading-relaxed mb-8">
-                  This password reset link is no longer valid. For your security, reset links expire after a short period.
+                  {t('templates04ResetPassword.linkExpiredBody')}
                 </p>
 
-                <Button 
+                <Button
                   onClick={() => window.location.href = '#forgot-password'}
                   className="w-full"
                 >
-                  Request a new link
+                  {t('templates04ResetPassword.requestNewLink')}
                 </Button>
               </div>
             )}
@@ -268,23 +269,23 @@ export default function KaoriResetPassword() {
               <div className="animate-fade-in w-full h-full flex flex-col justify-center">
                 <div className="flex flex-col space-y-2 mb-8">
                   <h2 className="font-serif text-3xl font-semibold tracking-tight text-[#2F2F2F]">
-                    Set a new password
+                    {t('templates04ResetPassword.formTitle')}
                   </h2>
                   <p className="text-sm text-[#8C8173] leading-relaxed">
-                    Choose a secure password for your account
+                    {t('templates04ResetPassword.formSubtitle')}
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  
+
                   {/* Password Field */}
                   <div className="space-y-2">
-                    <Label htmlFor="password">New password</Label>
+                    <Label htmlFor="password">{t('templates04ResetPassword.newPasswordLabel')}</Label>
                     <div className="relative">
                       <Input
                         id="password"
                         type={showPassword ? "text" : "password"}
-                        placeholder="Enter new password"
+                        placeholder={t('templates04ResetPassword.newPasswordPlaceholder')}
                         value={password}
                         onChange={(e: any) => setPassword(e.target.value)}
                         required
@@ -306,26 +307,26 @@ export default function KaoriResetPassword() {
                   <div className="bg-[#FAF7F2] rounded-xl p-4 space-y-2.5 border border-[#E9E7E2]/60">
                     <div className="flex items-center gap-2 text-sm">
                       {rules.length ? <Check className="w-3.5 h-3.5 text-[#AFC3B1]" /> : <div className="w-1.5 h-1.5 rounded-full bg-[#D9C6C6] ml-1" />}
-                      <span className={rules.length ? "text-[#2F2F2F]" : "text-[#8C8173]"}>At least 8 characters</span>
+                      <span className={rules.length ? "text-[#2F2F2F]" : "text-[#8C8173]"}>{t('templates04ResetPassword.ruleLength')}</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
                       {rules.uppercase ? <Check className="w-3.5 h-3.5 text-[#AFC3B1]" /> : <div className="w-1.5 h-1.5 rounded-full bg-[#D9C6C6] ml-1" />}
-                      <span className={rules.uppercase ? "text-[#2F2F2F]" : "text-[#8C8173]"}>1 uppercase letter</span>
+                      <span className={rules.uppercase ? "text-[#2F2F2F]" : "text-[#8C8173]"}>{t('templates04ResetPassword.ruleUppercase')}</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
                       {rules.number ? <Check className="w-3.5 h-3.5 text-[#AFC3B1]" /> : <div className="w-1.5 h-1.5 rounded-full bg-[#D9C6C6] ml-1" />}
-                      <span className={rules.number ? "text-[#2F2F2F]" : "text-[#8C8173]"}>1 number</span>
+                      <span className={rules.number ? "text-[#2F2F2F]" : "text-[#8C8173]"}>{t('templates04ResetPassword.ruleNumber')}</span>
                     </div>
                   </div>
 
                   {/* Confirm Password Field */}
                   <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">Confirm password</Label>
+                    <Label htmlFor="confirmPassword">{t('templates04ResetPassword.confirmPasswordLabel')}</Label>
                     <div className="relative">
                       <Input
                         id="confirmPassword"
                         type={showConfirmPassword ? "text" : "password"}
-                        placeholder="Re-enter password"
+                        placeholder={t('templates04ResetPassword.confirmPasswordPlaceholder')}
                         value={confirmPassword}
                         onChange={(e: any) => setConfirmPassword(e.target.value)}
                         required
@@ -342,24 +343,24 @@ export default function KaoriResetPassword() {
                       </button>
                     </div>
                     {confirmPassword && !passwordsMatch && (
-                      <p className="text-xs text-red-600 mt-1.5 font-medium animate-fade-in">Passwords do not match</p>
+                      <p className="text-xs text-red-600 mt-1.5 font-medium animate-fade-in">{t('templates04ResetPassword.passwordsDoNotMatch')}</p>
                     )}
                   </div>
 
                   {formState === 'error' && (
                     <div className="text-sm text-red-600 font-medium">
-                      Something went wrong. Please try again.
+                      {t('templates04ResetPassword.genericError')}
                     </div>
                   )}
 
                   {/* Submit Button */}
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
+                  <Button
+                    type="submit"
+                    className="w-full"
                     disabled={!canSubmit}
                     isLoading={formState === 'loading'}
                   >
-                    Reset password
+                    {t('templates04ResetPassword.resetPasswordButton')}
                   </Button>
                 </form>
               </div>
@@ -375,18 +376,18 @@ export default function KaoriResetPassword() {
                 </div>
                 
                 <h2 className="font-serif text-2xl font-semibold tracking-tight text-[#2F2F2F] mb-3">
-                  Password updated
+                  {t('templates04ResetPassword.successTitle')}
                 </h2>
-                
+
                 <p className="text-sm text-[#8C8173] leading-relaxed mb-8">
-                  You can now sign in with your new password. Redirecting to login shortly...
+                  {t('templates04ResetPassword.successBody')}
                 </p>
 
-                <Button 
+                <Button
                   onClick={() => window.location.href = '#login'}
                   className="w-full"
                 >
-                  Back to login
+                  {t('templates04ResetPassword.backToLogin')}
                 </Button>
               </div>
             )}
@@ -401,7 +402,7 @@ export default function KaoriResetPassword() {
                 className="inline-flex items-center text-sm font-medium text-[#8C8173] hover:text-[#2F2F2F] transition-colors group"
               >
                 <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-                Back to login
+                {t('templates04ResetPassword.backToLogin')}
               </a>
             </div>
           )}

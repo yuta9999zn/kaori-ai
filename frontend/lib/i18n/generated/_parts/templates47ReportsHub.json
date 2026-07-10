@@ -1,0 +1,296 @@
+{
+  "templates47ReportsHub.pageTitle": {
+    "vi": "Báo cáo",
+    "en": "Reports",
+    "ja": "レポート",
+    "ko": "보고서",
+    "zh": "报告"
+  },
+  "templates47ReportsHub.pageDescription": {
+    "vi": "Tạo, lên lịch và chia sẻ báo cáo BI đa-section. Phase 2 (F-038).",
+    "en": "Create, schedule, and share multi-section BI reports. Phase 2 (F-038).",
+    "ja": "マルチセクションのBIレポートを作成・スケジュール・共有します。Phase 2（F-038）。",
+    "ko": "다중 섹션 BI 보고서를 생성, 예약 및 공유하세요. Phase 2(F-038).",
+    "zh": "创建、排程并分享多板块 BI 报告。Phase 2（F-038）。"
+  },
+  "templates47ReportsHub.typeAuto": {
+    "vi": "Tự động",
+    "en": "Auto",
+    "ja": "自動",
+    "ko": "자동",
+    "zh": "自动"
+  },
+  "templates47ReportsHub.typeCustom": {
+    "vi": "Tuỳ chỉnh",
+    "en": "Custom",
+    "ja": "カスタム",
+    "ko": "맞춤",
+    "zh": "自定义"
+  },
+  "templates47ReportsHub.typeTemplate": {
+    "vi": "Từ mẫu",
+    "en": "From template",
+    "ja": "テンプレートから",
+    "ko": "템플릿에서",
+    "zh": "来自模板"
+  },
+  "templates47ReportsHub.typeFilterAll": {
+    "vi": "Tất cả",
+    "en": "All",
+    "ja": "すべて",
+    "ko": "전체",
+    "zh": "全部"
+  },
+  "templates47ReportsHub.btnCreate": {
+    "vi": "Tạo báo cáo",
+    "en": "Create report",
+    "ja": "レポートを作成",
+    "ko": "보고서 만들기",
+    "zh": "创建报告"
+  },
+  "templates47ReportsHub.errFallbackTitle": {
+    "vi": "Đang dùng dữ liệu mẫu",
+    "en": "Using sample data",
+    "ja": "サンプルデータを使用中",
+    "ko": "샘플 데이터 사용 중",
+    "zh": "正在使用示例数据"
+  },
+  "templates47ReportsHub.errFallbackDetail": {
+    "vi": "Bảng dưới hiển thị fixture demo — kiểm tra ai-orchestrator (8093) hoặc gateway routing.",
+    "en": "The table below shows demo fixture data — check ai-orchestrator (8093) or gateway routing.",
+    "ja": "以下の表はデモ用フィクスチャデータを表示しています — ai-orchestrator (8093) またはゲートウェイのルーティングを確認してください。",
+    "ko": "아래 표는 데모 픽스처 데이터를 표시합니다 — ai-orchestrator (8093) 또는 게이트웨이 라우팅을 확인하세요.",
+    "zh": "下表显示的是演示用固定数据 — 请检查 ai-orchestrator (8093) 或网关路由。"
+  },
+  "templates47ReportsHub.statTotal": {
+    "vi": "Tổng báo cáo",
+    "en": "Total reports",
+    "ja": "レポート合計",
+    "ko": "총 보고서",
+    "zh": "报告总数"
+  },
+  "templates47ReportsHub.statusDraft": {
+    "vi": "Bản nháp",
+    "en": "Draft",
+    "ja": "下書き",
+    "ko": "초안",
+    "zh": "草稿"
+  },
+  "templates47ReportsHub.statusScheduled": {
+    "vi": "Đã lên lịch",
+    "en": "Scheduled",
+    "ja": "予定済み",
+    "ko": "예약됨",
+    "zh": "已排程"
+  },
+  "templates47ReportsHub.statusPublished": {
+    "vi": "Đã phát hành",
+    "en": "Published",
+    "ja": "公開済み",
+    "ko": "게시됨",
+    "zh": "已发布"
+  },
+  "templates47ReportsHub.statusFailed": {
+    "vi": "Thất bại",
+    "en": "Failed",
+    "ja": "失敗",
+    "ko": "실패",
+    "zh": "失败"
+  },
+  "templates47ReportsHub.aiSuggestionTitle": {
+    "vi": "Gợi ý từ Kaori",
+    "en": "Suggestion from Kaori",
+    "ja": "Kaoriからの提案",
+    "ko": "Kaori의 제안",
+    "zh": "来自 Kaori 的建议"
+  },
+  "templates47ReportsHub.aiSuggestionText1": {
+    "vi": "Dữ liệu tháng 4 cho thấy tỷ lệ churn vùng APAC tăng",
+    "en": "April data shows the APAC churn rate rose",
+    "ja": "4月のデータによると、APAC地域のチャーン率が上昇しています",
+    "ko": "4월 데이터에 따르면 APAC 지역 이탈률이",
+    "zh": "4月数据显示APAC地区流失率上升了"
+  },
+  "templates47ReportsHub.aiSuggestionText2": {
+    "vi": ". Nên tạo báo cáo",
+    "en": ". Consider creating a report",
+    "ja": "。レポートの作成をお勧めします",
+    "ko": ". 보고서 생성을 권장합니다",
+    "zh": "。建议创建报告"
+  },
+  "templates47ReportsHub.aiSuggestionReportName": {
+    "vi": "\"ROI theo vùng — APAC\"",
+    "en": "\"ROI by Region — APAC\"",
+    "ja": "「地域別ROI — APAC」",
+    "ko": "\"지역별 ROI — APAC\"",
+    "zh": "\"按地区 ROI — APAC\""
+  },
+  "templates47ReportsHub.aiSuggestionText3": {
+    "vi": "để soi điểm rò rỉ chi phí.",
+    "en": "to pinpoint cost leakage.",
+    "ja": "コストの漏れを特定するために。",
+    "ko": "비용 누수 지점을 파악하세요.",
+    "zh": "以便找出成本流失点。"
+  },
+  "templates47ReportsHub.btnCreateNow": {
+    "vi": "Tạo ngay",
+    "en": "Create now",
+    "ja": "今すぐ作成",
+    "ko": "지금 만들기",
+    "zh": "立即创建"
+  },
+  "templates47ReportsHub.searchPlaceholder": {
+    "vi": "Tìm theo tên báo cáo hoặc người tạo...",
+    "en": "Search by report name or creator...",
+    "ja": "レポート名または作成者で検索...",
+    "ko": "보고서 이름 또는 작성자로 검색...",
+    "zh": "按报告名称或创建者搜索..."
+  },
+  "templates47ReportsHub.tooltipDistribution": {
+    "vi": "Lịch phát hành",
+    "en": "Distribution schedule",
+    "ja": "配信スケジュール",
+    "ko": "배포 일정",
+    "zh": "分发日程"
+  },
+  "templates47ReportsHub.tooltipTemplates": {
+    "vi": "Mẫu báo cáo",
+    "en": "Report templates",
+    "ja": "レポートテンプレート",
+    "ko": "보고서 템플릿",
+    "zh": "报告模板"
+  },
+  "templates47ReportsHub.tooltipAdvancedFilter": {
+    "vi": "Bộ lọc nâng cao",
+    "en": "Advanced filter",
+    "ja": "詳細フィルター",
+    "ko": "고급 필터",
+    "zh": "高级筛选"
+  },
+  "templates47ReportsHub.colTitle": {
+    "vi": "Tên báo cáo",
+    "en": "Report name",
+    "ja": "レポート名",
+    "ko": "보고서 이름",
+    "zh": "报告名称"
+  },
+  "templates47ReportsHub.colType": {
+    "vi": "Loại",
+    "en": "Type",
+    "ja": "種類",
+    "ko": "유형",
+    "zh": "类型"
+  },
+  "templates47ReportsHub.colFormat": {
+    "vi": "Định dạng",
+    "en": "Format",
+    "ja": "形式",
+    "ko": "형식",
+    "zh": "格式"
+  },
+  "templates47ReportsHub.colOwner": {
+    "vi": "Người tạo",
+    "en": "Creator",
+    "ja": "作成者",
+    "ko": "작성자",
+    "zh": "创建者"
+  },
+  "templates47ReportsHub.colUpdated": {
+    "vi": "Cập nhật",
+    "en": "Updated",
+    "ja": "更新日時",
+    "ko": "업데이트",
+    "zh": "更新时间"
+  },
+  "templates47ReportsHub.colStatus": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "templates47ReportsHub.colActions": {
+    "vi": "Thao tác",
+    "en": "Actions",
+    "ja": "操作",
+    "ko": "작업",
+    "zh": "操作"
+  },
+  "templates47ReportsHub.loading": {
+    "vi": "Đang tải...",
+    "en": "Loading...",
+    "ja": "読み込み中...",
+    "ko": "불러오는 중...",
+    "zh": "加载中..."
+  },
+  "templates47ReportsHub.emptyState": {
+    "vi": "Chưa có báo cáo nào khớp bộ lọc.",
+    "en": "No reports match the filter.",
+    "ja": "フィルターに一致するレポートはありません。",
+    "ko": "필터와 일치하는 보고서가 없습니다.",
+    "zh": "没有符合筛选条件的报告。"
+  },
+  "templates47ReportsHub.emptyCreateFirst": {
+    "vi": "Tạo báo cáo đầu tiên",
+    "en": "Create your first report",
+    "ja": "最初のレポートを作成",
+    "ko": "첫 보고서 만들기",
+    "zh": "创建第一份报告"
+  },
+  "templates47ReportsHub.footerText1": {
+    "vi": "Báo cáo \"Tự động\" gọi",
+    "en": "The \"Auto\" report calls",
+    "ja": "「自動」レポートは",
+    "ko": "\"자동\" 보고서는",
+    "zh": "\"自动\"报告调用"
+  },
+  "templates47ReportsHub.footerText2": {
+    "vi": "để tóm tắt insight (K-3). Mặc định Qwen 2.5 nội bộ; chỉ chuyển AI ngoài khi workspace bật",
+    "en": "to summarize insights (K-3). Default is internal Qwen 2.5; it only switches to external AI when the workspace enables",
+    "ja": "インサイトを要約するために呼び出します（K-3）。デフォルトは社内Qwen 2.5で、ワークスペースが以下を有効にした場合のみ外部AIに切り替わります",
+    "ko": "인사이트를 요약하기 위해 호출합니다(K-3). 기본값은 내부 Qwen 2.5이며, 워크스페이스에서 다음을 활성화한 경우에만 외부 AI로 전환됩니다",
+    "zh": "以汇总洞察（K-3）。默认使用内部 Qwen 2.5；仅当工作区启用以下选项时才会切换到外部 AI"
+  },
+  "templates47ReportsHub.footerText3": {
+    "vi": "(K-4) và không có PII (K-5).",
+    "en": "(K-4) and no PII is present (K-5).",
+    "ja": "（K-4）、かつPIIが含まれない場合のみです（K-5）。",
+    "ko": "(K-4) 그리고 PII가 없을 때만입니다(K-5).",
+    "zh": "（K-4）且不含PII（K-5）。"
+  },
+  "templates47ReportsHub.idLabel": {
+    "vi": "ID: {id}",
+    "en": "ID: {id}",
+    "ja": "ID: {id}",
+    "ko": "ID: {id}",
+    "zh": "ID: {id}"
+  },
+  "templates47ReportsHub.tooltipPublish": {
+    "vi": "Phát hành / gửi cho người khác",
+    "en": "Publish / send to others",
+    "ja": "公開・共有",
+    "ko": "게시 / 다른 사람에게 보내기",
+    "zh": "发布 / 发送给他人"
+  },
+  "templates47ReportsHub.tooltipPublishDisabled": {
+    "vi": "Chỉ phát hành được khi báo cáo ở trạng thái '{status}'",
+    "en": "Can only publish when the report status is '{status}'",
+    "ja": "レポートのステータスが「{status}」の場合のみ公開できます",
+    "ko": "보고서 상태가 '{status}'일 때만 게시할 수 있습니다",
+    "zh": "仅当报告状态为“{status}”时才能发布"
+  },
+  "templates47ReportsHub.tooltipDelete": {
+    "vi": "Xoá",
+    "en": "Delete",
+    "ja": "削除",
+    "ko": "삭제",
+    "zh": "删除"
+  },
+  "templates47ReportsHub.viewLink": {
+    "vi": "Xem",
+    "en": "View",
+    "ja": "表示",
+    "ko": "보기",
+    "zh": "查看"
+  }
+}

@@ -31,6 +31,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type SourceKind = 'gold_feature' | 'pipeline_run';
 type Framework  = 'NONE' | 'SWOT' | '6W' | '2H' | 'Fishbone' | 'MoM' | 'YoY';
 
@@ -43,17 +44,22 @@ interface SourceSelection {
   source_label: string;
 }
 
-const FRAMEWORK_OPTIONS: Array<{ value: Framework; title: string; description: string }> = [
-  { value: 'NONE',     title: 'Tự do',     description: 'AI chọn cách phân tích phù hợp nhất với câu hỏi' },
-  { value: 'SWOT',     title: 'SWOT',      description: 'Strengths · Weaknesses · Opportunities · Threats' },
-  { value: '6W',       title: '6W',        description: 'Who · What · When · Where · Why · How' },
-  { value: '2H',       title: '2H',        description: 'How · How much (deep dive định lượng)' },
-  { value: 'Fishbone', title: 'Fishbone',  description: 'Ishikawa — root-cause cho dị thường' },
-  { value: 'MoM',      title: 'MoM',       description: 'So sánh tháng-trên-tháng' },
-  { value: 'YoY',      title: 'YoY',       description: 'So sánh năm-trên-năm' },
-];
+function getFrameworkOptions(
+  t: (key: string, params?: Record<string, string | number>) => string,
+): Array<{ value: Framework; title: string; description: string }> {
+  return [
+    { value: 'NONE',     title: t('templates27InsightsGenerate.frameworkFreeTitle'), description: t('templates27InsightsGenerate.frameworkFreeDesc') },
+    { value: 'SWOT',     title: 'SWOT',      description: 'Strengths · Weaknesses · Opportunities · Threats' },
+    { value: '6W',       title: '6W',        description: 'Who · What · When · Where · Why · How' },
+    { value: '2H',       title: '2H',        description: t('templates27InsightsGenerate.framework2hDesc') },
+    { value: 'Fishbone', title: 'Fishbone',  description: t('templates27InsightsGenerate.frameworkFishboneDesc') },
+    { value: 'MoM',      title: 'MoM',       description: t('templates27InsightsGenerate.frameworkMomDesc') },
+    { value: 'YoY',      title: 'YoY',       description: t('templates27InsightsGenerate.frameworkYoyDesc') },
+  ];
+}
 
 export default function InsightGeneratePage() {
+  const t = useT();
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
   const [source,    setSource]    = useState<SourceSelection | null>(null);
@@ -91,8 +97,8 @@ export default function InsightGeneratePage() {
   return (
     <>
       <PageHeader
-        title="Tạo insight mới"
-        description="Hỏi câu hỏi kinh doanh — Kaori chọn framework + chạy phân tích bằng Qwen 2.5 nội bộ."
+        title={t('templates27InsightsGenerate.title')}
+        description={t('templates27InsightsGenerate.pageDescription')}
       />
 
       <div className="px-6 lg:px-8 py-6 max-w-[900px] mx-auto space-y-6">
@@ -136,7 +142,7 @@ export default function InsightGeneratePage() {
             disabled={step === 1 || submitting}
           >
             <ChevronLeft className="w-4 h-4 mr-1" />
-            Quay lại
+            {t('templates27InsightsGenerate.btnBack')}
           </Button>
           {step < 4 ? (
             <Button
@@ -146,13 +152,13 @@ export default function InsightGeneratePage() {
                 (step === 2 && !question.trim())
               }
             >
-              Tiếp tục
+              {t('templates27InsightsGenerate.btnNext')}
               <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           ) : (
             <Button onClick={submit} isLoading={submitting}>
               <Sparkles className="w-4 h-4 mr-2" />
-              Tạo insight
+              {t('templates27InsightsGenerate.btnSubmit')}
             </Button>
           )}
         </div>
@@ -166,11 +172,12 @@ export default function InsightGeneratePage() {
 // ----------------------------------------------------------------------------
 
 function Stepper({ current }: { current: 1 | 2 | 3 | 4 }) {
+  const t = useT();
   const STEPS = [
-    { n: 1, title: 'Nguồn' },
-    { n: 2, title: 'Câu hỏi' },
-    { n: 3, title: 'Quyền riêng tư' },
-    { n: 4, title: 'Xác nhận' },
+    { n: 1, title: t('templates27InsightsGenerate.stepSourceLabel') },
+    { n: 2, title: t('templates27InsightsGenerate.stepQuestionLabel') },
+    { n: 3, title: t('templates27InsightsGenerate.stepPrivacyLabel') },
+    { n: 4, title: t('templates27InsightsGenerate.stepReviewLabel') },
   ];
   return (
     <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-4 shadow-soft-sm">
@@ -217,6 +224,7 @@ function StepSource({
   value: SourceSelection | null;
   onChange: (s: SourceSelection) => void;
 }) {
+  const t = useT();
   const [tab,      setTab]      = useState<SourceKind>('gold_feature');
   const [features, setFeatures] = useState<GoldFeature[]>([]);
   const [runs,     setRuns]     = useState<PipelineRun[]>([]);
@@ -240,20 +248,20 @@ function StepSource({
   return (
     <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
       <div className="px-5 py-4 border-b border-[var(--border-color)]/60">
-        <h3 className="font-serif text-base text-[var(--text-primary)]">Bước 1 · Chọn nguồn dữ liệu</h3>
+        <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates27InsightsGenerate.step1Title')}</h3>
         <p className="text-xs text-[var(--text-secondary)] mt-1">
-          Insight tạo từ Gold feature đã aggregate hoặc pipeline đã chạy xong.
+          {t('templates27InsightsGenerate.step1Desc')}
         </p>
       </div>
 
       <div className="px-5 py-3 border-b border-[var(--border-color)]/60 flex gap-1">
         <TabButton active={tab === 'gold_feature'} onClick={() => setTab('gold_feature')}>
           <Layers className="w-4 h-4 mr-2" />
-          Gold feature
+          {t('templates27InsightsGenerate.tabGoldFeature')}
         </TabButton>
         <TabButton active={tab === 'pipeline_run'} onClick={() => setTab('pipeline_run')}>
           <Database className="w-4 h-4 mr-2" />
-          Pipeline đã chạy
+          {t('templates27InsightsGenerate.tabPipelineRun')}
         </TabButton>
       </div>
 
@@ -265,7 +273,7 @@ function StepSource({
         ) : tab === 'gold_feature' ? (
           features.length === 0 ? (
             <p className="text-sm text-[var(--text-secondary)] text-center py-8">
-              Chưa có Gold feature nào. Hãy chạy pipeline trước để aggregator tạo feature.
+              {t('templates27InsightsGenerate.emptyGoldFeatures')}
             </p>
           ) : features.map((f) => (
             <button
@@ -283,16 +291,16 @@ function StepSource({
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-sm text-[var(--text-primary)]">{f.name}</p>
                   <p className="text-xs text-[var(--text-secondary)] mt-0.5">{f.description}</p>
-                  <p className="text-[11px] text-[var(--text-secondary)] mt-1">Cập nhật: {f.last_aggregated_at}</p>
+                  <p className="text-[11px] text-[var(--text-secondary)] mt-1">{t('templates27InsightsGenerate.updatedAt', { date: f.last_aggregated_at })}</p>
                 </div>
-                {f.is_stale && <Badge variant="warning">Stale &gt; 24h</Badge>}
+                {f.is_stale && <Badge variant="warning">{t('templates27InsightsGenerate.badgeStale')}</Badge>}
               </div>
             </button>
           ))
         ) : (
           runs.length === 0 ? (
             <p className="text-sm text-[var(--text-secondary)] text-center py-8">
-              Chưa có pipeline nào chạy xong.
+              {t('templates27InsightsGenerate.emptyPipelineRuns')}
             </p>
           ) : runs.map((r) => (
             <button
@@ -307,7 +315,7 @@ function StepSource({
               )}
             >
               <p className="font-medium text-sm text-[var(--text-primary)]">{r.title}</p>
-              <p className="text-xs text-[var(--text-secondary)] mt-0.5">{r.row_count.toLocaleString('vi-VN')} hàng · {r.finished_at}</p>
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5">{t('templates27InsightsGenerate.rowsSummary', { count: r.row_count.toLocaleString('vi-VN'), date: r.finished_at })}</p>
             </button>
           ))
         )}
@@ -347,34 +355,36 @@ function StepQuestion({
   onQuestionChange: (q: string) => void;
   onFrameworkChange: (f: Framework) => void;
 }) {
+  const t = useT();
+  const FRAMEWORK_OPTIONS = getFrameworkOptions(t);
   return (
     <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
       <div className="px-5 py-4 border-b border-[var(--border-color)]/60">
-        <h3 className="font-serif text-base text-[var(--text-primary)]">Bước 2 · Đặt câu hỏi</h3>
+        <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates27InsightsGenerate.step2Title')}</h3>
         <p className="text-xs text-[var(--text-secondary)] mt-1">
-          1 câu hỏi = 1 khung phân tích (K-10). Bạn không thể chạy SWOT + Fishbone song song.
+          {t('templates27InsightsGenerate.step2Desc')}
         </p>
       </div>
 
       <div className="p-5 space-y-5">
         <div className="space-y-2">
-          <label className="text-sm font-medium text-[var(--text-primary)]">Câu hỏi kinh doanh</label>
+          <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates27InsightsGenerate.questionLabel')}</label>
           <textarea
             value={question}
             onChange={(e) => onQuestionChange(e.target.value)}
-            placeholder="Ví dụ: Vì sao doanh thu khách VIP tháng 4 giảm 15%?"
+            placeholder={t('templates27InsightsGenerate.questionPlaceholder')}
             rows={3}
             className="w-full px-3 py-2 text-sm bg-white border border-[var(--border-color)] rounded-md-custom focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)]"
           />
           <p className="text-xs text-[var(--text-secondary)]">
-            Hãy viết bằng tiếng Việt tự nhiên. Tránh thuật ngữ "ETL", "dtype", "inference".
+            {t('templates27InsightsGenerate.questionHint')}
           </p>
         </div>
 
         <div className="space-y-3">
           <div>
-            <label className="text-sm font-medium text-[var(--text-primary)]">Khung phân tích</label>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5">Chọn 1 khung — Kaori sẽ chạy theo cấu trúc khung đó.</p>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates27InsightsGenerate.frameworkLabel')}</label>
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">{t('templates27InsightsGenerate.frameworkHint')}</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {FRAMEWORK_OPTIONS.map((opt) => (
@@ -414,12 +424,13 @@ function StepQuestion({
 function StepPrivacy({
   consentExternal, onChange,
 }: { consentExternal: boolean; onChange: (v: boolean) => void }) {
+  const t = useT();
   return (
     <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
       <div className="px-5 py-4 border-b border-[var(--border-color)]/60">
-        <h3 className="font-serif text-base text-[var(--text-primary)]">Bước 3 · Quyền riêng tư</h3>
+        <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates27InsightsGenerate.step3Title')}</h3>
         <p className="text-xs text-[var(--text-secondary)] mt-1">
-          Chọn nơi chạy LLM. Mặc định: Qwen 2.5 nội bộ — không gửi dữ liệu ra ngoài.
+          {t('templates27InsightsGenerate.step3Desc')}
         </p>
       </div>
 
@@ -441,16 +452,16 @@ function StepPrivacy({
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <p className="font-medium text-sm text-[var(--text-primary)]">Qwen 2.5 nội bộ</p>
-                <Badge variant="success">Khuyến nghị</Badge>
+                <p className="font-medium text-sm text-[var(--text-primary)]">{t('templates27InsightsGenerate.qwenTitle')}</p>
+                <Badge variant="success">{t('templates27InsightsGenerate.badgeRecommended')}</Badge>
               </div>
               <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">
-                Toàn bộ dữ liệu giữ trong Kaori — không gửi ra ngoài. Phù hợp với mọi câu hỏi kinh doanh thông thường.
+                {t('templates27InsightsGenerate.qwenDesc')}
               </p>
               <ul className="mt-2 space-y-1 text-[11px] text-[var(--text-secondary)]">
-                <li className="flex items-center gap-1.5"><Check className="w-3 h-3 text-[var(--state-success)]" /> 0₫ chi phí AI bên ngoài</li>
-                <li className="flex items-center gap-1.5"><Check className="w-3 h-3 text-[var(--state-success)]" /> Không ảnh hưởng quota external AI</li>
-                <li className="flex items-center gap-1.5"><Check className="w-3 h-3 text-[var(--state-success)]" /> An toàn cho dữ liệu khách hàng cuối</li>
+                <li className="flex items-center gap-1.5"><Check className="w-3 h-3 text-[var(--state-success)]" /> {t('templates27InsightsGenerate.qwenBenefit1')}</li>
+                <li className="flex items-center gap-1.5"><Check className="w-3 h-3 text-[var(--state-success)]" /> {t('templates27InsightsGenerate.qwenBenefit2')}</li>
+                <li className="flex items-center gap-1.5"><Check className="w-3 h-3 text-[var(--state-success)]" /> {t('templates27InsightsGenerate.qwenBenefit3')}</li>
               </ul>
             </div>
             {!consentExternal && <Check className="w-5 h-5 text-[var(--state-success)] shrink-0" />}
@@ -474,17 +485,17 @@ function StepPrivacy({
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <p className="font-medium text-sm text-[var(--text-primary)]">AI bên ngoài (Claude / GPT-4o)</p>
-                <Badge variant="warning">Cần đồng ý</Badge>
+                <p className="font-medium text-sm text-[var(--text-primary)]">{t('templates27InsightsGenerate.externalTitle')}</p>
+                <Badge variant="warning">{t('templates27InsightsGenerate.badgeConsentRequired')}</Badge>
               </div>
               <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">
-                Câu hỏi phức tạp đôi khi cần model mạnh hơn. Kaori sẽ <span className="font-medium text-[var(--text-primary)]">PII-mask</span> trước
-                (email/SĐT/ID → <span className="font-mono text-[10px]">[redacted]</span>) — K-5.
+                {t('templates27InsightsGenerate.externalDescPre')} <span className="font-medium text-[var(--text-primary)]">PII-mask</span> {t('templates27InsightsGenerate.externalDescMid')}
+                (email/{t('templates27InsightsGenerate.externalDescPhone')}/ID → <span className="font-mono text-[10px]">[redacted]</span>) — K-5.
               </p>
               <ul className="mt-2 space-y-1 text-[11px] text-[var(--text-secondary)]">
-                <li className="flex items-center gap-1.5"><AlertTriangle className="w-3 h-3 text-[var(--state-warning)]" /> Trừ vào quota external AI tháng này</li>
-                <li className="flex items-center gap-1.5"><AlertTriangle className="w-3 h-3 text-[var(--state-warning)]" /> Mỗi lần gọi đều ghi audit log (K-6)</li>
-                <li className="flex items-center gap-1.5"><AlertTriangle className="w-3 h-3 text-[var(--state-warning)]" /> Không khả dụng nếu workspace ở chế độ <span className="font-mono">privacy=strict</span></li>
+                <li className="flex items-center gap-1.5"><AlertTriangle className="w-3 h-3 text-[var(--state-warning)]" /> {t('templates27InsightsGenerate.externalRisk1')}</li>
+                <li className="flex items-center gap-1.5"><AlertTriangle className="w-3 h-3 text-[var(--state-warning)]" /> {t('templates27InsightsGenerate.externalRisk2')}</li>
+                <li className="flex items-center gap-1.5"><AlertTriangle className="w-3 h-3 text-[var(--state-warning)]" /> {t('templates27InsightsGenerate.externalRisk3Pre')} <span className="font-mono">privacy=strict</span></li>
               </ul>
             </div>
             {consentExternal && <Check className="w-5 h-5 text-[var(--state-warning)] shrink-0" />}
@@ -494,8 +505,7 @@ function StepPrivacy({
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Mọi cuộc gọi LLM đều đi qua <span className="font-mono">llm_router.py</span> (K-3). Kaori
-            không bao giờ gọi SDK trực tiếp — đảm bảo cost governance + consent enforcement tại biên duy nhất.
+            {t('templates27InsightsGenerate.footerPre')} <span className="font-mono">llm_router.py</span> (K-3). {t('templates27InsightsGenerate.footerPost')}
           </p>
         </div>
       </div>
@@ -515,26 +525,28 @@ function StepReview({
   framework: Framework;
   consentExternal: boolean;
 }) {
+  const t = useT();
+  const FRAMEWORK_OPTIONS = getFrameworkOptions(t);
   return (
     <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
       <div className="px-5 py-4 border-b border-[var(--border-color)]/60">
-        <h3 className="font-serif text-base text-[var(--text-primary)]">Bước 4 · Xác nhận</h3>
-        <p className="text-xs text-[var(--text-secondary)] mt-1">Kiểm tra rồi dispatch — Kaori sẽ chạy trong nền và mở insight ngay khi xong.</p>
+        <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates27InsightsGenerate.step4Title')}</h3>
+        <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates27InsightsGenerate.step4Desc')}</p>
       </div>
 
       <div className="p-5 space-y-4">
-        <ReviewRow icon={Database} label="Nguồn">
+        <ReviewRow icon={Database} label={t('templates27InsightsGenerate.labelSource')}>
           <p className="font-medium text-sm text-[var(--text-primary)]">{source.source_label}</p>
           <p className="text-[11px] text-[var(--text-secondary)] font-mono">
             {source.kind === 'gold_feature' ? 'gold_feature' : 'pipeline_run'} · {source.source_id}
           </p>
         </ReviewRow>
 
-        <ReviewRow icon={Lightbulb} label="Câu hỏi">
+        <ReviewRow icon={Lightbulb} label={t('templates27InsightsGenerate.labelQuestion')}>
           <p className="text-sm text-[var(--text-primary)] whitespace-pre-line">{question}</p>
         </ReviewRow>
 
-        <ReviewRow icon={Layers} label="Khung phân tích">
+        <ReviewRow icon={Layers} label={t('templates27InsightsGenerate.frameworkLabel')}>
           <Badge variant="current">
             {FRAMEWORK_OPTIONS.find((f) => f.value === framework)?.title ?? framework}
           </Badge>
@@ -543,10 +555,10 @@ function StepReview({
         <ReviewRow icon={consentExternal ? Globe : Lock} label="LLM">
           <div className="flex items-center gap-2">
             <Badge variant={consentExternal ? 'warning' : 'success'}>
-              {consentExternal ? 'AI bên ngoài (đã đồng ý)' : 'Qwen 2.5 nội bộ'}
+              {consentExternal ? t('templates27InsightsGenerate.reviewExternalConsented') : t('templates27InsightsGenerate.qwenTitle')}
             </Badge>
             {consentExternal && (
-              <span className="text-[11px] text-[var(--text-secondary)]">PII sẽ được mask trước khi gửi (K-5)</span>
+              <span className="text-[11px] text-[var(--text-secondary)]">{t('templates27InsightsGenerate.piiMaskNotice')}</span>
             )}
           </div>
         </ReviewRow>
@@ -554,7 +566,7 @@ function StepReview({
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--primary-gold)]/8 border border-[var(--primary-gold)]/30 text-xs text-[var(--text-primary)]">
           <Eye className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Bạn sẽ thấy 3 tuyến (Chuyện gì / Vì sao / Nên làm gì) trên trang detail. Có thể chuyển insight thành quyết định ở đó.
+            {t('templates27InsightsGenerate.reviewFooter')}
           </p>
         </div>
       </div>

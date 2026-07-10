@@ -25,6 +25,7 @@ import {
   Button, Badge, Input, ErrorBanner, SuccessBanner, cn,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types
 // ============================================================================
@@ -42,28 +43,28 @@ interface TestStep {
   error?:     string;
 }
 
-const KIND_META: Record<StepKind, { label: string; icon: any }> = {
-  data_query:   { label: 'Truy vấn',     icon: Database },
-  llm_call:     { label: 'LLM call',     icon: Brain },
-  condition:    { label: 'Điều kiện',    icon: GitBranch },
-  notification: { label: 'Thông báo',    icon: Bell },
-  wait:         { label: 'Chờ',           icon: Clock },
+const KIND_META: Record<StepKind, { labelKey: string; icon: any }> = {
+  data_query:   { labelKey: 'templates61WorkflowIdTest.kindDataQuery',   icon: Database },
+  llm_call:     { labelKey: 'templates61WorkflowIdTest.kindLlmCall',     icon: Brain },
+  condition:    { labelKey: 'templates61WorkflowIdTest.kindCondition',   icon: GitBranch },
+  notification: { labelKey: 'templates61WorkflowIdTest.kindNotification', icon: Bell },
+  wait:         { labelKey: 'templates61WorkflowIdTest.kindWait',        icon: Clock },
 };
 
-const STATE_META: Record<RunState, { label: string; variant: 'default' | 'info' | 'success' | 'error' | 'warning'; icon: any }> = {
-  pending: { label: 'Chờ',         variant: 'default', icon: Clock },
-  running: { label: 'Đang chạy',   variant: 'info',    icon: Loader2 },
-  success: { label: 'Thành công',  variant: 'success', icon: CheckCircle2 },
-  failed:  { label: 'Lỗi',          variant: 'error',   icon: AlertTriangle },
-  skipped: { label: 'Bỏ qua',       variant: 'warning', icon: AlertTriangle },
+const STATE_META: Record<RunState, { labelKey: string; variant: 'default' | 'info' | 'success' | 'error' | 'warning'; icon: any }> = {
+  pending: { labelKey: 'templates61WorkflowIdTest.statePending', variant: 'default', icon: Clock },
+  running: { labelKey: 'templates61WorkflowIdTest.stateRunning', variant: 'info',    icon: Loader2 },
+  success: { labelKey: 'templates61WorkflowIdTest.stateSuccess', variant: 'success', icon: CheckCircle2 },
+  failed:  { labelKey: 'templates61WorkflowIdTest.stateFailed',  variant: 'error',   icon: AlertTriangle },
+  skipped: { labelKey: 'templates61WorkflowIdTest.stateSkipped', variant: 'warning', icon: AlertTriangle },
 };
 
 // Initial step list — copy y nguyên từ workflow detail (file 60).
-function initialSteps(): TestStep[] {
+function initialSteps(t: (key: string, params?: Record<string, any>) => string): TestStep[] {
   return [
-    { id: 'st_1', kind: 'data_query',   name: 'Lấy insight 24h',         state: 'pending' },
-    { id: 'st_2', kind: 'llm_call',     name: 'Tóm tắt 3 insight chính', state: 'pending' },
-    { id: 'st_3', kind: 'notification', name: 'Email MANAGER',            state: 'pending' },
+    { id: 'st_1', kind: 'data_query',   name: t('templates61WorkflowIdTest.stepNameInsight'),   state: 'pending' },
+    { id: 'st_2', kind: 'llm_call',     name: t('templates61WorkflowIdTest.stepNameSummarize'), state: 'pending' },
+    { id: 'st_3', kind: 'notification', name: t('templates61WorkflowIdTest.stepNameEmailManager'), state: 'pending' },
   ];
 }
 
@@ -72,7 +73,8 @@ function initialSteps(): TestStep[] {
 // ============================================================================
 
 export default function WorkflowTestPage() {
-  const [steps, setSteps] = useState<TestStep[]>(initialSteps());
+  const t = useT();
+  const [steps, setSteps] = useState<TestStep[]>(initialSteps(t));
   const [running, setRunning] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
@@ -83,7 +85,7 @@ export default function WorkflowTestPage() {
   const [forceFailStep, setForceFailStep] = useState<string>('');
 
   function reset() {
-    setSteps(initialSteps());
+    setSteps(initialSteps(t));
     setRunning(false);
     setCompleted(false);
     setProblem(null);
@@ -94,7 +96,7 @@ export default function WorkflowTestPage() {
     setRunning(true);
     setCompleted(false);
     setProblem(null);
-    setSteps(initialSteps());
+    setSteps(initialSteps(t));
 
     // Simulate sequential execution.
     for (let i = 0; i < steps.length; i += 1) {
@@ -107,22 +109,22 @@ export default function WorkflowTestPage() {
       // Force-fail toggle
       if (forceFailStep === cur.id) {
         setSteps((prev) => prev.map((s, j) =>
-          j === i  ? { ...s, state: 'failed',  duration_ms: 600, error: 'Mô phỏng lỗi: forceFailStep được bật.' } :
+          j === i  ? { ...s, state: 'failed',  duration_ms: 600, error: t('templates61WorkflowIdTest.errForceFail') } :
           j > i    ? { ...s, state: 'skipped' } :
           s,
         ));
-        setProblem(`Bước "${cur.name}" thất bại. Phase 2 retry 5 lần trước khi đẩy DLQ.`);
+        setProblem(t('templates61WorkflowIdTest.problemStepFailed', { name: cur.name }));
         setRunning(false);
         return;
       }
 
       // Generate fake output
       const outputByKind: Record<StepKind, string> = {
-        data_query:   `Trả về 12 dòng insight (cutoff: ${insightCutoff})`,
-        llm_call:     `[Qwen 2.5 - 1.243 token] Top 3 insight: 1) Doanh thu SME +18% tuần này · 2) Churn APAC tăng 0.4 điểm · 3) Pilot khách số 5 trễ approval.`,
-        condition:    'Điều kiện đúng → đi nhánh true.',
-        notification: `Dry-run: KHÔNG gửi email thật. Sẽ gửi tới ${recipientEmail} trong production.`,
-        wait:         'Đã chờ 5s (mô phỏng).',
+        data_query:   t('templates61WorkflowIdTest.outDataQuery', { cutoff: insightCutoff }),
+        llm_call:     t('templates61WorkflowIdTest.outLlmCall'),
+        condition:    t('templates61WorkflowIdTest.outCondition'),
+        notification: t('templates61WorkflowIdTest.outNotification', { email: recipientEmail }),
+        wait:         t('templates61WorkflowIdTest.outWait'),
       };
 
       setSteps((prev) => prev.map((s, j) => j === i ? {
@@ -137,21 +139,21 @@ export default function WorkflowTestPage() {
   return (
     <>
       <PageHeader
-        title="Test workflow"
-        description="Chạy thử trong sandbox — KHÔNG ghi Kafka, KHÔNG gửi email thật."
+        title={t('templates61WorkflowIdTest.pageTitle')}
+        description={t('templates61WorkflowIdTest.pageDescription')}
         actions={
           <>
             <Badge variant="info">Phase 2 · F-065</Badge>
             <a href="/p2/workflows/wf_002">
-              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> Quay lại builder</Button>
+              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> {t('templates61WorkflowIdTest.backToBuilder')}</Button>
             </a>
           </>
         }
       />
 
       <div className="px-6 lg:px-8 py-6 max-w-[1300px] mx-auto space-y-4">
-        {problem && <ErrorBanner problem={{ title: 'Test thất bại', detail: problem }} />}
-        {completed && !problem && <SuccessBanner message="Test chạy xong tất cả bước. Không có lỗi." />}
+        {problem && <ErrorBanner problem={{ title: t('templates61WorkflowIdTest.testFailedTitle'), detail: problem }} />}
+        {completed && !problem && <SuccessBanner message={t('templates61WorkflowIdTest.testSuccessMsg')} />}
 
         <div className="grid grid-cols-1 xl:grid-cols-[360px_1fr] gap-4">
           {/* Left: input form */}
@@ -159,53 +161,53 @@ export default function WorkflowTestPage() {
             <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-5 shadow-soft-sm">
               <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[var(--border-color)]/60">
                 <FlaskConical className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-                <h3 className="font-serif text-base text-[var(--text-primary)]">Biến input</h3>
+                <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates61WorkflowIdTest.inputVarsHeading')}</h3>
               </div>
 
               <div className="space-y-3">
                 <Input
-                  label="Insight cutoff"
+                  label={t('templates61WorkflowIdTest.insightCutoffLabel')}
                   value={insightCutoff}
                   onChange={(e) => setInsightCutoff(e.target.value)}
                   placeholder="24h"
-                  helperText="Thời gian lùi để lấy insight."
+                  helperText={t('templates61WorkflowIdTest.insightCutoffHelper')}
                 />
                 <Input
-                  label="Email người nhận (mock)"
+                  label={t('templates61WorkflowIdTest.recipientEmailLabel')}
                   value={recipientEmail}
                   onChange={(e) => setRecipientEmail(e.target.value)}
                   placeholder="manager@acme.vn"
                 />
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-[var(--text-primary)]">Mô phỏng lỗi tại bước</label>
+                  <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates61WorkflowIdTest.forceFailLabel')}</label>
                   <select
                     value={forceFailStep}
                     onChange={(e) => setForceFailStep(e.target.value)}
                     className="w-full h-10 px-3 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)]"
                   >
-                    <option value="">Không (chạy bình thường)</option>
+                    <option value="">{t('templates61WorkflowIdTest.forceFailNone')}</option>
                     {steps.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
                   </select>
-                  <p className="text-xs text-[var(--text-secondary)]">Để test retry policy + DLQ flow.</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{t('templates61WorkflowIdTest.forceFailHelper')}</p>
                 </div>
               </div>
             </div>
 
             <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-5 shadow-soft-sm space-y-2">
               <Button variant="primary" size="md" onClick={runTest} disabled={running} isLoading={running} className="w-full">
-                <Play className="w-4 h-4 mr-2" /> Chạy thử
+                <Play className="w-4 h-4 mr-2" /> {t('templates61WorkflowIdTest.runTestBtn')}
               </Button>
               <Button variant="secondary" size="md" onClick={reset} disabled={running} className="w-full">
-                <RotateCcw className="w-4 h-4 mr-2" /> Reset
+                <RotateCcw className="w-4 h-4 mr-2" /> {t('templates61WorkflowIdTest.resetBtn')}
               </Button>
             </div>
 
             <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
               <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
               <p>
-                Sandbox dry-run: <span className="font-medium text-[var(--text-primary)]">không</span> ghi Kafka,
-                <span className="font-medium text-[var(--text-primary)]"> không</span> gửi email,
-                <span className="font-medium text-[var(--text-primary)]"> không</span> tính billing token.
+                {t('templates61WorkflowIdTest.sandboxPrefix')} <span className="font-medium text-[var(--text-primary)]">{t('templates61WorkflowIdTest.no')}</span> {t('templates61WorkflowIdTest.sandboxKafka')}
+                <span className="font-medium text-[var(--text-primary)]"> {t('templates61WorkflowIdTest.no')}</span> {t('templates61WorkflowIdTest.sandboxEmail')}
+                <span className="font-medium text-[var(--text-primary)]"> {t('templates61WorkflowIdTest.no')}</span> {t('templates61WorkflowIdTest.sandboxBilling')}
               </p>
             </div>
           </div>
@@ -216,11 +218,11 @@ export default function WorkflowTestPage() {
               <div className="flex items-center justify-between gap-3 mb-4 pb-3 border-b border-[var(--border-color)]/60">
                 <div className="flex items-center gap-2">
                   <Eye className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-                  <h3 className="font-serif text-base text-[var(--text-primary)]">Tiến trình thực thi</h3>
+                  <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates61WorkflowIdTest.executionProgressHeading')}</h3>
                 </div>
                 {running && (
                   <span className="inline-flex items-center gap-1 text-xs text-[var(--primary-gold-dark)]">
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" /> Đang chạy...
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" /> {t('templates61WorkflowIdTest.runningEllipsis')}
                   </span>
                 )}
               </div>
@@ -241,6 +243,7 @@ export default function WorkflowTestPage() {
 // ============================================================================
 
 function StepRow({ step: s, index }: { step: TestStep; index: number }) {
+  const t = useT();
   const kindMeta = KIND_META[s.kind];
   const stMeta = STATE_META[s.state];
   const KindIcon = kindMeta.icon;
@@ -263,7 +266,7 @@ function StepRow({ step: s, index }: { step: TestStep; index: number }) {
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] font-medium">
-                Bước {index + 1} · {kindMeta.label}
+                {t('templates61WorkflowIdTest.stepIndexKind', { n: index + 1, kind: t(kindMeta.labelKey) })}
               </p>
               <p className="text-sm font-medium text-[var(--text-primary)]">{s.name}</p>
             </div>
@@ -272,7 +275,7 @@ function StepRow({ step: s, index }: { step: TestStep; index: number }) {
                 <span className="text-[11px] text-[var(--text-secondary)] font-mono">{s.duration_ms}ms</span>
               )}
               <Badge variant={stMeta.variant}>
-                <StateIcon className={cn('w-3 h-3 mr-1', s.state === 'running' && 'animate-spin')} /> {stMeta.label}
+                <StateIcon className={cn('w-3 h-3 mr-1', s.state === 'running' && 'animate-spin')} /> {t(stMeta.labelKey)}
               </Badge>
             </div>
           </div>

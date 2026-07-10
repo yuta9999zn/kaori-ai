@@ -25,6 +25,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types
 // ============================================================================
@@ -60,30 +61,38 @@ interface ListResponse {
   meta: { total: number; page: number; limit: number };
 }
 
-const CATEGORY_LABEL: Record<Category, string> = {
-  operational:  'Vận hành',
-  financial:    'Tài chính',
-  regulatory:   'Pháp lý',
-  reputational: 'Thương hiệu',
-  strategic:    'Chiến lược',
-  technical:    'Kỹ thuật',
-};
+type TFunc = (key: string, params?: Record<string, string | number>) => string;
 
-const SEVERITY_LABEL: Record<Severity, string> = {
-  low:      'Thấp',
-  medium:   'Trung',
-  high:     'Cao',
-  critical: 'Nghiêm trọng',
-};
+function getCategoryLabel(t: TFunc): Record<Category, string> {
+  return {
+    operational:  t('templatesF039RisksExport.categoryOperational'),
+    financial:    t('templatesF039RisksExport.categoryFinancial'),
+    regulatory:   t('templatesF039RisksExport.categoryRegulatory'),
+    reputational: t('templatesF039RisksExport.categoryReputational'),
+    strategic:    t('templatesF039RisksExport.categoryStrategic'),
+    technical:    t('templatesF039RisksExport.categoryTechnical'),
+  };
+}
 
-const STATUS_LABEL: Record<Status, string> = {
-  open:       'Mở',
-  mitigating: 'Đang xử lý',
-  closed:     'Đã đóng',
-};
+function getSeverityLabel(t: TFunc): Record<Severity, string> {
+  return {
+    low:      t('templatesF039RisksExport.severityLow'),
+    medium:   t('templatesF039RisksExport.severityMedium'),
+    high:     t('templatesF039RisksExport.severityHigh'),
+    critical: t('templatesF039RisksExport.severityCritical'),
+  };
+}
+
+function getStatusLabel(t: TFunc): Record<Status, string> {
+  return {
+    open:       t('templatesF039RisksExport.statusOpen'),
+    mitigating: t('templatesF039RisksExport.statusMitigating'),
+    closed:     t('templatesF039RisksExport.statusClosed'),
+  };
+}
 
 // ============================================================================
-// Columns — fixed Vietnamese headers, deterministic order
+// Columns — headers translated per locale, deterministic order
 // ============================================================================
 
 interface ColumnDef {
@@ -92,28 +101,41 @@ interface ColumnDef {
   format: (r: RiskRow) => string;
 }
 
-const COLUMNS: ColumnDef[] = [
-  { key: 'risk_id',             header: 'Risk ID',           format: (r) => r.risk_id },
-  { key: 'title',               header: 'Tên rủi ro',         format: (r) => r.title },
-  { key: 'category_label',      header: 'Danh mục',           format: (r) => CATEGORY_LABEL[r.category] },
-  { key: 'likelihood',          header: 'Khả năng',           format: (r) => String(r.likelihood) },
-  { key: 'impact',              header: 'Tác động',           format: (r) => String(r.impact) },
-  { key: 'score',               header: 'Score',             format: (r) => String(r.score) },
-  { key: 'severity_label',      header: 'Mức độ',            format: (r) => SEVERITY_LABEL[r.severity] },
-  { key: 'status_label',        header: 'Trạng thái',         format: (r) => STATUS_LABEL[r.status] },
-  { key: 'mitigation_progress', header: 'Tiến độ (%)',        format: (r) => String(r.mitigation_progress) },
-  { key: 'mitigation_plan',     header: 'Kế hoạch xử lý',     format: (r) => r.mitigation_plan ?? '' },
-  { key: 'owner_user_id',       header: 'Owner UUID',         format: (r) => r.owner_user_id ?? '' },
-  { key: 'due_date',            header: 'Hạn xử lý',          format: (r) => r.due_date ?? '' },
-  { key: 'description',         header: 'Mô tả',             format: (r) => r.description ?? '' },
-  { key: 'updated_at',          header: 'Cập nhật lần cuối', format: (r) => r.updated_at },
-];
+function getColumns(t: TFunc): ColumnDef[] {
+  const categoryLabel = getCategoryLabel(t);
+  const severityLabel = getSeverityLabel(t);
+  const statusLabel   = getStatusLabel(t);
+
+  return [
+    { key: 'risk_id',             header: t('templatesF039RisksExport.colRiskId'),         format: (r) => r.risk_id },
+    { key: 'title',               header: t('templatesF039RisksExport.colTitle'),           format: (r) => r.title },
+    { key: 'category_label',      header: t('templatesF039RisksExport.fieldCategory'),      format: (r) => categoryLabel[r.category] },
+    { key: 'likelihood',          header: t('templatesF039RisksExport.colLikelihood'),      format: (r) => String(r.likelihood) },
+    { key: 'impact',              header: t('templatesF039RisksExport.colImpact'),          format: (r) => String(r.impact) },
+    { key: 'score',               header: t('templatesF039RisksExport.colScore'),           format: (r) => String(r.score) },
+    { key: 'severity_label',      header: t('templatesF039RisksExport.fieldSeverity'),      format: (r) => severityLabel[r.severity] },
+    { key: 'status_label',        header: t('templatesF039RisksExport.fieldStatus'),        format: (r) => statusLabel[r.status] },
+    { key: 'mitigation_progress', header: t('templatesF039RisksExport.colProgress'),        format: (r) => String(r.mitigation_progress) },
+    { key: 'mitigation_plan',     header: t('templatesF039RisksExport.colMitigationPlan'),  format: (r) => r.mitigation_plan ?? '' },
+    { key: 'owner_user_id',       header: t('templatesF039RisksExport.colOwnerUuid'),       format: (r) => r.owner_user_id ?? '' },
+    { key: 'due_date',            header: t('templatesF039RisksExport.colDueDate'),         format: (r) => r.due_date ?? '' },
+    { key: 'description',         header: t('templatesF039RisksExport.colDescription'),     format: (r) => r.description ?? '' },
+    { key: 'updated_at',          header: t('templatesF039RisksExport.colUpdatedAt'),       format: (r) => r.updated_at },
+  ];
+}
 
 // ============================================================================
 // Page
 // ============================================================================
 
 export default function RisksExportPage() {
+  const t = useT();
+
+  const COLUMNS = getColumns(t);
+  const categoryLabel = getCategoryLabel(t);
+  const severityLabel = getSeverityLabel(t);
+  const statusLabel   = getStatusLabel(t);
+
   const [statusFilter,   setStatusFilter]   = useState<'all' | Status>('all');
   const [severityFilter, setSeverityFilter] = useState<'all' | Severity>('all');
   const [categoryFilter, setCategoryFilter] = useState<'all' | Category>('all');
@@ -130,7 +152,7 @@ export default function RisksExportPage() {
 
   async function onExport() {
     if (selected.length === 0) {
-      setProblem({ title: 'Chọn ít nhất 1 cột để xuất.' });
+      setProblem({ title: t('templatesF039RisksExport.errPickColumn') });
       return;
     }
     setSubmitting(true);
@@ -157,8 +179,10 @@ export default function RisksExportPage() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      setSuccess(`Đã tạo ${rows.length} dòng × ${selected.length} cột.`
-        + (rows.length === 200 ? ' Đã chạm trần 200 dòng — hẹp filter để lọc.' : ''));
+      setSuccess(
+        t('templatesF039RisksExport.successBase', { rows: rows.length, cols: selected.length })
+        + (rows.length === 200 ? t('templatesF039RisksExport.successCapped') : ''),
+      );
     } catch (e) {
       setProblem(e as ProblemDetails);
     } finally {
@@ -169,13 +193,13 @@ export default function RisksExportPage() {
   return (
     <>
       <PageHeader
-        title="Xuất risk register"
-        description="CSV (UTF-8 BOM) cho Excel Việt Nam. Lọc + chọn cột rồi tải về."
+        title={t('templatesF039RisksExport.title')}
+        description={t('templatesF039RisksExport.description')}
         actions={
           <>
             <Badge variant="info">F-039</Badge>
             <a href="/p2/risks">
-              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> Về danh sách</Button>
+              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> {t('templatesF039RisksExport.backToList')}</Button>
             </a>
           </>
         }
@@ -185,43 +209,43 @@ export default function RisksExportPage() {
         {problem && <ErrorBanner problem={problem} />}
         {success && <SuccessBanner message={success} />}
 
-        <Section title="Phạm vi dữ liệu" icon={Calendar}>
+        <Section title={t('templatesF039RisksExport.sectionScope')} icon={Calendar}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <SelectField
-              label="Trạng thái" value={statusFilter} onChange={setStatusFilter}
+              label={t('templatesF039RisksExport.fieldStatus')} value={statusFilter} onChange={setStatusFilter}
               options={[
-                { value: 'all',        label: 'Tất cả' },
-                { value: 'open',       label: 'Mở' },
-                { value: 'mitigating', label: 'Đang xử lý' },
-                { value: 'closed',     label: 'Đã đóng' },
+                { value: 'all',        label: t('templatesF039RisksExport.all') },
+                { value: 'open',       label: statusLabel.open },
+                { value: 'mitigating', label: statusLabel.mitigating },
+                { value: 'closed',     label: statusLabel.closed },
               ]}
             />
             <SelectField
-              label="Mức độ" value={severityFilter} onChange={setSeverityFilter}
+              label={t('templatesF039RisksExport.fieldSeverity')} value={severityFilter} onChange={setSeverityFilter}
               options={[
-                { value: 'all',      label: 'Tất cả' },
-                { value: 'critical', label: 'Nghiêm trọng' },
-                { value: 'high',     label: 'Cao' },
-                { value: 'medium',   label: 'Trung' },
-                { value: 'low',      label: 'Thấp' },
+                { value: 'all',      label: t('templatesF039RisksExport.all') },
+                { value: 'critical', label: severityLabel.critical },
+                { value: 'high',     label: severityLabel.high },
+                { value: 'medium',   label: severityLabel.medium },
+                { value: 'low',      label: severityLabel.low },
               ]}
             />
             <SelectField
-              label="Danh mục" value={categoryFilter} onChange={setCategoryFilter}
+              label={t('templatesF039RisksExport.fieldCategory')} value={categoryFilter} onChange={setCategoryFilter}
               options={[
-                { value: 'all', label: 'Tất cả' },
-                { value: 'operational',  label: 'Vận hành' },
-                { value: 'financial',    label: 'Tài chính' },
-                { value: 'regulatory',   label: 'Pháp lý' },
-                { value: 'reputational', label: 'Thương hiệu' },
-                { value: 'strategic',    label: 'Chiến lược' },
-                { value: 'technical',    label: 'Kỹ thuật' },
+                { value: 'all', label: t('templatesF039RisksExport.all') },
+                { value: 'operational',  label: categoryLabel.operational },
+                { value: 'financial',    label: categoryLabel.financial },
+                { value: 'regulatory',   label: categoryLabel.regulatory },
+                { value: 'reputational', label: categoryLabel.reputational },
+                { value: 'strategic',    label: categoryLabel.strategic },
+                { value: 'technical',    label: categoryLabel.technical },
               ]}
             />
           </div>
         </Section>
 
-        <Section title="Cột muốn xuất" icon={FileSpreadsheet}>
+        <Section title={t('templatesF039RisksExport.sectionColumns')} icon={FileSpreadsheet}>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {COLUMNS.map((c) => (
               <Checkbox
@@ -233,14 +257,14 @@ export default function RisksExportPage() {
             ))}
           </div>
           <p className="text-xs text-[var(--text-secondary)] mt-3">
-            {selected.length}/{COLUMNS.length} cột được chọn.
+            {t('templatesF039RisksExport.columnsSelected', { selected: selected.length, total: COLUMNS.length })}
           </p>
         </Section>
 
         <div className="sticky bottom-0 bg-[var(--bg-card)]/95 backdrop-blur-sm border-t border-[var(--border-color)] -mx-6 lg:-mx-8 px-6 lg:px-8 py-4 flex items-center justify-between">
           <p className="text-xs text-[var(--text-secondary)] flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-            CSV được sinh client-side từ list endpoint (≤ 200 dòng/lần). PDF + email là Phase 2.
+            {t('templatesF039RisksExport.footerNote')}
           </p>
           <Button
             variant="primary" size="md" onClick={onExport}
@@ -248,9 +272,9 @@ export default function RisksExportPage() {
             isLoading={submitting}
           >
             {submitting ? (
-              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Đang tạo...</>
+              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t('templatesF039RisksExport.creating')}</>
             ) : (
-              <><Download className="w-4 h-4 mr-2" /> Tải CSV</>
+              <><Download className="w-4 h-4 mr-2" /> {t('templatesF039RisksExport.downloadCsv')}</>
             )}
           </Button>
         </div>

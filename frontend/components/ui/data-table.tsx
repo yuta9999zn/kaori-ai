@@ -1,7 +1,9 @@
+'use client';
 import * as React from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/cn';
 import { Button } from '@/components/ui/button';
+import { useT } from '@/lib/i18n/provider';
 
 export interface Column<T> {
   key: keyof T | string;
@@ -20,7 +22,7 @@ export function DataTable<T extends Record<string, any>>({
   onPageChange,
   onRowClick,
   rowHref,
-  emptyMessage = 'Chưa có dữ liệu',
+  emptyMessage,
   className,
 }: {
   columns: Column<T>[];
@@ -35,6 +37,7 @@ export function DataTable<T extends Record<string, any>>({
   emptyMessage?: string;
   className?: string;
 }) {
+  const t = useT();
   const _size = pageSize ?? limit ?? 20;
   const totalPages = Math.max(1, Math.ceil(total / _size));
   return (
@@ -51,7 +54,7 @@ export function DataTable<T extends Record<string, any>>({
           <tbody className="divide-y divide-[#F1EADF]">
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="py-10 text-center text-[#7A7266]">{emptyMessage}</td>
+                <td colSpan={columns.length} className="py-10 text-center text-[#7A7266]">{emptyMessage ?? t('uiDataTable.empty')}</td>
               </tr>
             ) : (
               rows.map((row, ri) => {
@@ -83,7 +86,7 @@ export function DataTable<T extends Record<string, any>>({
       </div>
       {total > _size && (
         <div className="flex items-center justify-between px-4 py-3 border-t border-subtle text-small text-[#7A7266]">
-          <span>Trang {page} / {totalPages} · {total.toLocaleString('vi-VN')} dòng</span>
+          <span>{t('uiDataTable.pageInfo', { page, totalPages, total: total.toLocaleString('vi-VN') })}</span>
           <div className="flex gap-2">
             <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => onPageChange?.(page - 1)}>←</Button>
             <Button size="sm" variant="outline" disabled={page >= totalPages} onClick={() => onPageChange?.(page + 1)}>→</Button>

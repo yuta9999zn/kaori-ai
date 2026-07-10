@@ -5,19 +5,21 @@ import { usePathname } from 'next/navigation';
 import { Wallet } from 'lucide-react';
 
 import { cn } from '@/components/platform/foundation';
-
-const TABS = [
-  { href: '/platform/billing/overview', label: 'Tổng quan' },
-  { href: '/platform/billing/quota',    label: 'Hạn mức' },
-  { href: '/platform/billing/export',   label: 'Xuất CSV' },
-];
+import { useT } from '@/lib/i18n/provider';
 
 export default function PlatformBillingLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const t = useT();
   const pathname = usePathname() ?? '';
+
+  const TABS = [
+    { href: '/platform/billing/overview', label: t('billingLayout.tabOverview') },
+    { href: '/platform/billing/quota',    label: t('billingLayout.tabQuota') },
+    { href: '/platform/billing/export',   label: t('billingLayout.tabExport') },
+  ];
 
   return (
     <>
@@ -27,9 +29,9 @@ export default function PlatformBillingLayout({
             <Wallet className="w-6 h-6 text-[var(--primary-gold-dark)]" strokeWidth={1.5} />
           </div>
           <div>
-            <h1 className="font-serif text-2xl text-[var(--text-primary)]">Thanh toán & Hạn mức</h1>
+            <h1 className="font-serif text-2xl text-[var(--text-primary)]">{t('billingLayout.title')}</h1>
             <p className="text-sm text-[var(--text-secondary)] mt-1">
-              Tổng hợp doanh thu, hạn mức và trạng thái sử dụng theo doanh nghiệp.
+              {t('billingLayout.subtitle')}
             </p>
           </div>
         </div>

@@ -34,6 +34,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type Framework = 'NONE' | 'SWOT' | '6W' | '2H' | 'Fishbone' | 'MoM' | 'YoY';
 type RiskLabel = 'HIGH' | 'MEDIUM' | 'LOW';
 
@@ -70,6 +71,7 @@ interface Decision {
   created_at:               string;
 }
 
+// NONE is display-translated at render time (t('templates32DecisionsId.frameworkFree'));
 const FRAMEWORK_LABEL: Record<Framework, string> = {
   NONE:     'Tự do',
   SWOT:     'SWOT',
@@ -80,19 +82,20 @@ const FRAMEWORK_LABEL: Record<Framework, string> = {
   YoY:      'YoY',
 };
 
-const RISK_BADGE: Record<RiskLabel, { variant: any; label: string }> = {
-  HIGH:   { variant: 'error',   label: 'Churn cao' },
-  MEDIUM: { variant: 'warning', label: 'Churn vừa' },
-  LOW:    { variant: 'default', label: 'Churn thấp' },
+const RISK_BADGE: Record<RiskLabel, { variant: any; tKey: string }> = {
+  HIGH:   { variant: 'error',   tKey: 'templates32DecisionsId.churnHigh' },
+  MEDIUM: { variant: 'warning', tKey: 'templates32DecisionsId.churnMedium' },
+  LOW:    { variant: 'default', tKey: 'templates32DecisionsId.churnLow' },
 };
 
-const PROVIDER_BADGE: Record<Decision['llm_provider'], { variant: any; label: string; icon: any }> = {
-  'qwen-2.5-internal': { variant: 'success', label: 'Qwen 2.5 nội bộ', icon: Lock },
-  'claude-sonnet':     { variant: 'warning', label: 'Claude Sonnet',  icon: Globe },
-  'gpt-4o':            { variant: 'warning', label: 'GPT-4o',          icon: Globe },
+const PROVIDER_BADGE: Record<Decision['llm_provider'], { variant: any; tKey: string; icon: any }> = {
+  'qwen-2.5-internal': { variant: 'success', tKey: 'templates32DecisionsId.providerQwenInternal', icon: Lock },
+  'claude-sonnet':     { variant: 'warning', tKey: 'templates32DecisionsId.providerClaudeSonnet',  icon: Globe },
+  'gpt-4o':            { variant: 'warning', tKey: 'templates32DecisionsId.providerGpt4o',          icon: Globe },
 };
 
 export default function DecisionDetailPage() {
+  const t = useT();
   // usePathname() works in SSR + client; reading `window.location.pathname`
   // at component body crashes Next prerender with "window is not defined".
   const pathname   = usePathname() ?? '';
@@ -131,7 +134,7 @@ export default function DecisionDetailPage() {
         body:   JSON.stringify({ is_actioned: next }),
       });
       setD({ ...d, is_actioned: next, actioned_at: next ? new Date().toISOString() : undefined });
-      setSuccess(next ? 'Đã đánh dấu đã hành động — tính vào North Star' : 'Đã bỏ đánh dấu');
+      setSuccess(next ? t('templates32DecisionsId.toastMarkedDone') : t('templates32DecisionsId.toastMarkedUndo'));
     } catch (err: any) {
       setProblem(err);
     } finally {
@@ -147,7 +150,7 @@ export default function DecisionDetailPage() {
         body:   JSON.stringify({ kind }),
       });
       setFeedbackSent(kind);
-      setSuccess('Cảm ơn bạn — feedback sẽ vào hàng đợi retrain (F-036, Phase 2)');
+      setSuccess(t('templates32DecisionsId.toastFeedbackThanks'));
     } catch (err: any) {
       setProblem(err);
     }
@@ -156,12 +159,17 @@ export default function DecisionDetailPage() {
   return (
     <>
       <PageHeader
-        title={d?.title ?? 'Quyết định'}
-        description={d ? `Tạo lúc ${d.created_at} · ${FRAMEWORK_LABEL[d.framework]}` : 'Đang tải...'}
+        title={d?.title ?? t('templates32DecisionsId.fallbackTitle')}
+        description={d
+          ? t('templates32DecisionsId.createdAtFramework', {
+              date: d.created_at,
+              framework: d.framework === 'NONE' ? t('templates32DecisionsId.frameworkFree') : FRAMEWORK_LABEL[d.framework],
+            })
+          : t('templates32DecisionsId.loadingEllipsis')}
         actions={
           <Button variant="tertiary" onClick={() => (window.location.href = '/p2/decisions')}>
             <ChevronLeft className="w-4 h-4 mr-1" />
-            Quay lại
+            {t('templates32DecisionsId.back')}
           </Button>
         }
       />
@@ -186,20 +194,20 @@ export default function DecisionDetailPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <Badge variant="current">{FRAMEWORK_LABEL[d.framework]}</Badge>
+                    <Badge variant="current">{d.framework === 'NONE' ? t('templates32DecisionsId.frameworkFree') : FRAMEWORK_LABEL[d.framework]}</Badge>
                     {d.churn_risk_label && (
                       <Badge variant={RISK_BADGE[d.churn_risk_label].variant}>
-                        {RISK_BADGE[d.churn_risk_label].label}
+                        {t(RISK_BADGE[d.churn_risk_label].tKey)}
                       </Badge>
                     )}
                     <Badge variant={PROVIDER_BADGE[d.llm_provider].variant}>
                       {React.createElement(PROVIDER_BADGE[d.llm_provider].icon, { className: 'w-3 h-3 mr-1 inline' })}
-                      {PROVIDER_BADGE[d.llm_provider].label}
+                      {t(PROVIDER_BADGE[d.llm_provider].tKey)}
                     </Badge>
                     {d.is_actioned && (
                       <Badge variant="success">
                         <CheckCircle2 className="w-3 h-3 mr-1 inline" />
-                        Đã hành động
+                        {t('templates32DecisionsId.actioned')}
                       </Badge>
                     )}
                   </div>
@@ -209,15 +217,19 @@ export default function DecisionDetailPage() {
               </div>
 
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <KpiTile label="Độ tin cậy AI" value={`${Math.round(d.confidence * 100)}%`} secondary={d.confidence >= 0.8 ? 'Cao' : d.confidence >= 0.6 ? 'Vừa' : 'Thấp'} />
                 <KpiTile
-                  label="Doanh thu rủi ro"
+                  label={t('templates32DecisionsId.confidenceAi')}
+                  value={`${Math.round(d.confidence * 100)}%`}
+                  secondary={d.confidence >= 0.8 ? t('templates32DecisionsId.confHigh') : d.confidence >= 0.6 ? t('templates32DecisionsId.confMedium') : t('templates32DecisionsId.confLow')}
+                />
+                <KpiTile
+                  label={t('templates32DecisionsId.revenueAtRisk')}
                   value={d.revenue_at_risk_vnd > 0 ? formatVND(d.revenue_at_risk_vnd) : '—'}
-                  secondary={d.revenue_at_risk_vnd > 0 ? 'Đóng góp North Star khi đã hành động' : undefined}
+                  secondary={d.revenue_at_risk_vnd > 0 ? t('templates32DecisionsId.northStarContribution') : undefined}
                   highlight={d.revenue_at_risk_vnd > 0}
                 />
                 <div className="rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)]/40 p-3">
-                  <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Trạng thái hành động</p>
+                  <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates32DecisionsId.actionStatus')}</p>
                   <button
                     type="button"
                     onClick={toggleActioned}
@@ -233,11 +245,11 @@ export default function DecisionDetailPage() {
                     {pendingAction
                       ? <Loader2 className="w-4 h-4 animate-spin" />
                       : d.is_actioned ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
-                    {d.is_actioned ? 'Bỏ đánh dấu' : 'Đánh dấu đã hành động'}
+                    {d.is_actioned ? t('templates32DecisionsId.markUndo') : t('templates32DecisionsId.markDone')}
                   </button>
                   {d.is_actioned && d.actioned_at && (
                     <p className="text-[11px] text-[var(--text-secondary)] mt-1.5 text-center">
-                      {d.actioned_by ?? 'Bạn'} · {d.actioned_at}
+                      {d.actioned_by ?? t('templates32DecisionsId.youFallback')} · {d.actioned_at}
                     </p>
                   )}
                 </div>
@@ -245,28 +257,28 @@ export default function DecisionDetailPage() {
             </div>
 
             {/* Recommendation */}
-            <Section icon={Lightbulb} title="Khuyến nghị chi tiết">
+            <Section icon={Lightbulb} title={t('templates32DecisionsId.recommendationTitle')}>
               <p className="text-sm text-[var(--text-primary)] leading-relaxed whitespace-pre-line">{d.long_recommendation}</p>
             </Section>
 
             {/* Alternatives considered (K-6) */}
             <Section
               icon={Activity}
-              title="Phương án đã cân nhắc"
-              subtitle={`${d.alternatives_considered.length} phương án bị từ chối · audit log K-6`}
+              title={t('templates32DecisionsId.alternativesTitle')}
+              subtitle={t('templates32DecisionsId.alternativesSubtitle', { count: d.alternatives_considered.length })}
             >
               {d.alternatives_considered.length === 0 ? (
-                <p className="text-sm text-[var(--text-secondary)]">Không có phương án thay thế ghi nhận.</p>
+                <p className="text-sm text-[var(--text-secondary)]">{t('templates32DecisionsId.noAlternatives')}</p>
               ) : (
                 <div className="space-y-3">
                   {d.alternatives_considered.map((alt, i) => (
                     <div key={i} className="rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-app)]/30 p-3">
                       <div className="flex items-start justify-between gap-3 flex-wrap">
                         <p className="font-medium text-sm text-[var(--text-primary)]">{alt.title}</p>
-                        <Badge variant="default">Confidence {(alt.confidence * 100).toFixed(0)}%</Badge>
+                        <Badge variant="default">{t('templates32DecisionsId.altConfidence', { pct: (alt.confidence * 100).toFixed(0) })}</Badge>
                       </div>
                       <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed">
-                        <span className="font-medium text-[var(--text-primary)]">Bị từ chối:</span> {alt.rejected_reason}
+                        <span className="font-medium text-[var(--text-primary)]">{t('templates32DecisionsId.rejectedLabel')}</span> {alt.rejected_reason}
                       </p>
                     </div>
                   ))}
@@ -275,7 +287,7 @@ export default function DecisionDetailPage() {
             </Section>
 
             {/* Audit panel (K-6) */}
-            <Section icon={ShieldCheck} title="Audit log (K-6)">
+            <Section icon={ShieldCheck} title={t('templates32DecisionsId.auditLogTitle')}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                 <AuditField label="audit_log_id" value={d.audit_log_id} mono />
                 <AuditField label="prompt_hash" value={d.prompt_hash} mono />
@@ -291,17 +303,17 @@ export default function DecisionDetailPage() {
                 className="mt-3 inline-flex items-center text-xs font-medium text-[var(--primary-gold-dark)] hover:underline"
               >
                 <FileText className="w-3.5 h-3.5 mr-1" />
-                Xem raw audit log
+                {t('templates32DecisionsId.viewRawAuditLog')}
               </a>
             </Section>
 
             {/* Linkage */}
-            <Section icon={Database} title="Nguồn gốc">
+            <Section icon={Database} title={t('templates32DecisionsId.originTitle')}>
               <ul className="space-y-1.5 text-sm">
                 {d.insight_id && (
                   <li className="flex items-center gap-2">
                     <Lightbulb className="w-4 h-4 text-[var(--text-secondary)]" />
-                    Insight nguồn:
+                    {t('templates32DecisionsId.insightSource')}
                     <a href={`/p2/insights/${d.insight_id}`} className="text-[var(--primary-gold-dark)] hover:underline">
                       {d.insight_title ?? d.insight_id}
                     </a>
@@ -310,7 +322,7 @@ export default function DecisionDetailPage() {
                 {d.pipeline_id && (
                   <li className="flex items-center gap-2">
                     <Activity className="w-4 h-4 text-[var(--text-secondary)]" />
-                    Pipeline:
+                    {t('templates32DecisionsId.pipelineLabel')}
                     <a href={`/p2/pipelines/${d.pipeline_id}`} className="text-[var(--primary-gold-dark)] hover:underline">
                       {d.pipeline_id}
                     </a>
@@ -328,10 +340,10 @@ export default function DecisionDetailPage() {
               <div className="px-5 py-3 border-b border-[var(--border-color)]/60 bg-[var(--primary-gold)]/4 flex items-center gap-3">
                 <Sparkles className="w-4 h-4 text-[var(--primary-gold-dark)]" />
                 <div className="flex-1">
-                  <h3 className="font-serif text-base text-[var(--text-primary)]">SHAP + Override</h3>
-                  <p className="text-xs text-[var(--text-secondary)] mt-0.5">F-036 · Phase 2 — sẽ giải thích AI ra quyết định bằng feature attribution</p>
+                  <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates32DecisionsId.shapOverrideTitle')}</h3>
+                  <p className="text-xs text-[var(--text-secondary)] mt-0.5">{t('templates32DecisionsId.shapOverrideDesc')}</p>
                 </div>
-                <Badge variant="info">Sắp ra mắt</Badge>
+                <Badge variant="info">{t('templates32DecisionsId.comingSoon')}</Badge>
               </div>
               <div className="p-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {['Feature 1', 'Feature 2', 'Feature 3'].map((f) => (
@@ -346,8 +358,8 @@ export default function DecisionDetailPage() {
             {/* Feedback bar */}
             <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-4 shadow-soft-sm flex items-center justify-between gap-3 flex-wrap">
               <div>
-                <p className="font-serif text-base text-[var(--text-primary)]">Khuyến nghị này có hữu ích không?</p>
-                <p className="text-xs text-[var(--text-secondary)] mt-0.5">Feedback của bạn sẽ vào hàng đợi retrain Phase 2 (F-036).</p>
+                <p className="font-serif text-base text-[var(--text-primary)]">{t('templates32DecisionsId.feedbackQuestion')}</p>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">{t('templates32DecisionsId.feedbackHint')}</p>
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -357,7 +369,7 @@ export default function DecisionDetailPage() {
                   disabled={feedbackSent !== null}
                 >
                   <ThumbsUp className="w-3.5 h-3.5 mr-1.5" />
-                  Hữu ích
+                  {t('templates32DecisionsId.helpful')}
                 </Button>
                 <Button
                   variant={feedbackSent === 'unhelpful' ? 'destructive' : 'secondary'}
@@ -366,7 +378,7 @@ export default function DecisionDetailPage() {
                   disabled={feedbackSent !== null}
                 >
                   <ThumbsDown className="w-3.5 h-3.5 mr-1.5" />
-                  Chưa phù hợp
+                  {t('templates32DecisionsId.notHelpful')}
                 </Button>
               </div>
             </div>

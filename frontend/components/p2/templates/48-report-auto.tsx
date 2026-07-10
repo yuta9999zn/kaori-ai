@@ -30,6 +30,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types
 // ============================================================================
@@ -53,12 +54,14 @@ interface GoalMeta {
   icon:        any;
 }
 
-const GOALS: GoalMeta[] = [
-  { code: 'performance', label: 'Tổng hợp KPI',         description: 'Snapshot KPI chính + delta so kỳ trước.',          icon: Activity },
-  { code: 'trend',       label: 'Phân tích xu hướng',   description: 'Trend dài hạn + dự báo đơn giản (linear).',         icon: TrendingUp },
-  { code: 'segment',     label: 'So sánh phân khúc',     description: 'Biến thiên theo vùng / nhóm khách / kênh.',         icon: LayoutGrid },
-  { code: 'executive',   label: 'Tóm tắt cho ban GĐ',   description: 'Narrative ngắn + 3 đề xuất hành động.',             icon: Crown },
-];
+function buildGoals(t: (key: string, params?: Record<string, any>) => string): GoalMeta[] {
+  return [
+    { code: 'performance', label: t('templates48ReportAuto.goalPerformanceLabel'), description: t('templates48ReportAuto.goalPerformanceDesc'), icon: Activity },
+    { code: 'trend',       label: t('templates48ReportAuto.goalTrendLabel'),       description: t('templates48ReportAuto.goalTrendDesc'),       icon: TrendingUp },
+    { code: 'segment',     label: t('templates48ReportAuto.goalSegmentLabel'),     description: t('templates48ReportAuto.goalSegmentDesc'),     icon: LayoutGrid },
+    { code: 'executive',   label: t('templates48ReportAuto.goalExecutiveLabel'),   description: t('templates48ReportAuto.goalExecutiveDesc'),   icon: Crown },
+  ];
+}
 
 type Cadence = 'daily' | 'weekly' | 'monthly';
 
@@ -69,31 +72,40 @@ interface CadenceMeta {
   helper:  string;
 }
 
-const CADENCES: CadenceMeta[] = [
-  { code: 'daily',   label: 'Hàng ngày',  cron: '0 7 * * *',  helper: 'Mỗi sáng 07:00 ICT.' },
-  { code: 'weekly',  label: 'Hàng tuần',  cron: '0 7 * * 1',  helper: 'Mỗi sáng thứ Hai 07:00 ICT.' },
-  { code: 'monthly', label: 'Hàng tháng', cron: '0 7 1 * *',  helper: 'Ngày 1 hàng tháng, 07:00 ICT.' },
-];
+function buildCadences(t: (key: string, params?: Record<string, any>) => string): CadenceMeta[] {
+  return [
+    { code: 'daily',   label: t('templates48ReportAuto.cadenceDailyLabel'),   cron: '0 7 * * *',  helper: t('templates48ReportAuto.cadenceDailyHelper') },
+    { code: 'weekly',  label: t('templates48ReportAuto.cadenceWeeklyLabel'),  cron: '0 7 * * 1',  helper: t('templates48ReportAuto.cadenceWeeklyHelper') },
+    { code: 'monthly', label: t('templates48ReportAuto.cadenceMonthlyLabel'), cron: '0 7 1 * *',  helper: t('templates48ReportAuto.cadenceMonthlyHelper') },
+  ];
+}
 
-const MOCK_DATASETS: GoldDataset[] = [
-  { id: 'ds_revenue',  name: 'monthly_revenue_gold',       domain: 'Tài chính',  rows: 124_530 },
-  { id: 'ds_customer', name: 'customer_behavior_metrics',  domain: 'Sản phẩm',   rows:  68_242 },
-  { id: 'ds_market',   name: 'marketing_roi_performance',  domain: 'Marketing',  rows:  41_088 },
-  { id: 'ds_ops',      name: 'operations_kpi_daily',       domain: 'Vận hành',   rows: 312_104 },
-];
+function buildMockDatasets(t: (key: string, params?: Record<string, any>) => string): GoldDataset[] {
+  return [
+    { id: 'ds_revenue',  name: 'monthly_revenue_gold',       domain: t('templates48ReportAuto.domainFinance'),   rows: 124_530 },
+    { id: 'ds_customer', name: 'customer_behavior_metrics',  domain: t('templates48ReportAuto.domainProduct'),   rows:  68_242 },
+    { id: 'ds_market',   name: 'marketing_roi_performance',  domain: t('templates48ReportAuto.domainMarketing'), rows:  41_088 },
+    { id: 'ds_ops',      name: 'operations_kpi_daily',       domain: t('templates48ReportAuto.domainOps'),       rows: 312_104 },
+  ];
+}
 
 // ============================================================================
 // Page
 // ============================================================================
 
 export default function ReportAutoPage() {
+  const t = useT();
   const [datasets, setDatasets] = useState<GoldDataset[]>([]);
   const [loading,  setLoading]  = useState(true);
   const [problem,  setProblem]  = useState<ProblemDetails | null>(null);
   const [success,  setSuccess]  = useState<string | null>(null);
 
+  const GOALS = useMemo(() => buildGoals(t), [t]);
+  const CADENCES = useMemo(() => buildCadences(t), [t]);
+  const MOCK_DATASETS = useMemo(() => buildMockDatasets(t), [t]);
+
   // Form state
-  const [name,      setName]      = useState('Báo cáo doanh thu hàng tuần');
+  const [name,      setName]      = useState(t('templates48ReportAuto.defaultReportName'));
   const [datasetId, setDatasetId] = useState<string>('');
   const [goal,      setGoal]      = useState<ReportGoal>('performance');
   const [cadence,   setCadence]   = useState<Cadence>('weekly');
@@ -121,9 +133,10 @@ export default function ReportAutoPage() {
       }
     })();
     return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const cadenceMeta = useMemo(() => CADENCES.find((c) => c.code === cadence)!, [cadence]);
+  const cadenceMeta = useMemo(() => CADENCES.find((c) => c.code === cadence)!, [cadence, CADENCES]);
   const recipientList = useMemo(
     () => recipients.split(/[,\n]/).map((s) => s.trim()).filter(Boolean),
     [recipients],
@@ -163,11 +176,16 @@ export default function ReportAutoPage() {
       // yet, so every submission queues one report immediately. Phase 2 follow-up
       // wires schedule_cron to a runner.
       setSuccess(
-        `Đã xếp hàng báo cáo (id: ${resp.report_id}). Trạng thái sẽ chuyển ` +
-        `queued → running → ready trong 10–30 giây. Email gửi tới ${primaryRecipient}` +
-        (additionalRecipients.length > 0
-          ? ` (fan-out tới ${additionalRecipients.length} người nhận khác sẽ wire ở PR phân phối kế tiếp).`
-          : '.'),
+        additionalRecipients.length > 0
+          ? t('templates48ReportAuto.successMsgWithFanout', {
+              reportId: resp.report_id,
+              email: primaryRecipient,
+              count: additionalRecipients.length,
+            })
+          : t('templates48ReportAuto.successMsg', {
+              reportId: resp.report_id,
+              email: primaryRecipient,
+            }),
       );
     } catch (e: any) {
       setProblem(e);
@@ -179,14 +197,14 @@ export default function ReportAutoPage() {
   return (
     <>
       <PageHeader
-        title="Báo cáo tự động"
-        description="Cấu hình AI sinh báo cáo định kỳ. Phase 2 (F-038)."
+        title={t('templates48ReportAuto.pageTitle')}
+        description={t('templates48ReportAuto.pageDescription')}
         actions={
           <>
             <Badge variant="info">Phase 2 · F-038</Badge>
             <a href="/p2/reports">
               <Button variant="tertiary" size="md">
-                <ArrowLeft className="w-4 h-4 mr-2" /> Về danh sách
+                <ArrowLeft className="w-4 h-4 mr-2" /> {t('templates48ReportAuto.backToList')}
               </Button>
             </a>
           </>
@@ -198,8 +216,8 @@ export default function ReportAutoPage() {
           <ErrorBanner
             problem={{
               ...problem,
-              title:  problem.status && problem.status >= 500 ? 'Lỗi máy chủ' : problem.title,
-              detail: `${problem.detail ?? ''} (Form vẫn hoạt động — gold dataset picker fallback dùng MOCK_DATASETS; submit sẽ thử lại endpoint thật.)`.trim(),
+              title:  problem.status && problem.status >= 500 ? t('templates48ReportAuto.serverErrorTitle') : problem.title,
+              detail: `${problem.detail ?? ''} ${t('templates48ReportAuto.errBannerDetailSuffix')}`.trim(),
             }}
           />
         )}
@@ -208,22 +226,22 @@ export default function ReportAutoPage() {
         {/* Section 1 — Tên báo cáo + nguồn */}
         <Section
           step={1}
-          title="Nguồn dữ liệu"
-          description="Chọn Gold dataset làm cơ sở. Bronze/Silver không dùng được — cần đã đi qua engineering Gold (K-2)."
+          title={t('templates48ReportAuto.section1Title')}
+          description={t('templates48ReportAuto.section1Description')}
         >
           <Input
-            label="Tên báo cáo"
+            label={t('templates48ReportAuto.reportNameLabel')}
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="VD: Doanh thu tuần khu vực miền Nam"
-            helperText="Tối thiểu 3 ký tự."
+            placeholder={t('templates48ReportAuto.reportNamePlaceholder')}
+            helperText={t('templates48ReportAuto.reportNameHelper')}
             error={name.length > 0 && name.length < 3}
           />
           <div className="mt-4 space-y-2">
-            <label className="text-sm font-medium text-[var(--text-primary)]">Gold dataset</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates48ReportAuto.goldDatasetLabel')}</label>
             {loading ? (
               <div className="flex items-center text-sm text-[var(--text-secondary)] py-3">
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Đang tải dataset...
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t('templates48ReportAuto.loadingDatasets')}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -241,7 +259,7 @@ export default function ReportAutoPage() {
         </Section>
 
         {/* Section 2 — Mục tiêu */}
-        <Section step={2} title="Mục tiêu báo cáo" description="Kaori AI sẽ chọn template narrative + chart phù hợp.">
+        <Section step={2} title={t('templates48ReportAuto.section2Title')} description={t('templates48ReportAuto.section2Description')}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {GOALS.map((g) => (
               <GoalCard key={g.code} goal={g} selected={goal === g.code} onSelect={() => setGoal(g.code)} />
@@ -250,7 +268,7 @@ export default function ReportAutoPage() {
         </Section>
 
         {/* Section 3 — Lịch chạy */}
-        <Section step={3} title="Lịch chạy" description="Cron expression hiển thị bên dưới. Kaori cron-runner xử lý lúc 02:00-08:00 ICT (idle window).">
+        <Section step={3} title={t('templates48ReportAuto.section3Title')} description={t('templates48ReportAuto.section3Description')}>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {CADENCES.map((c) => (
               <button
@@ -275,9 +293,9 @@ export default function ReportAutoPage() {
         </Section>
 
         {/* Section 4 — Người nhận */}
-        <Section step={4} title="Người nhận" description="Email cá nhân cách nhau bởi dấu phẩy hoặc xuống dòng.">
+        <Section step={4} title={t('templates48ReportAuto.section4Title')} description={t('templates48ReportAuto.section4Description')}>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-[var(--text-primary)]">Danh sách email</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates48ReportAuto.emailListLabel')}</label>
             <textarea
               value={recipients}
               onChange={(e) => setRecipients(e.target.value)}
@@ -288,7 +306,7 @@ export default function ReportAutoPage() {
             {recipientList.length > 0 && (
               <p className="text-xs text-[var(--text-secondary)]">
                 <Mail className="w-3.5 h-3.5 inline mr-1" />
-                Sẽ gửi tới {recipientList.length} người: {recipientList.join(', ')}
+                {t('templates48ReportAuto.recipientSummary', { count: recipientList.length, list: recipientList.join(', ') })}
               </p>
             )}
           </div>
@@ -297,8 +315,8 @@ export default function ReportAutoPage() {
         {/* Section 5 — Consent */}
         <Section
           step={5}
-          title="Quyền truy cập AI ngoài"
-          description="Mặc định Qwen 2.5 nội bộ — không gửi dữ liệu ra ngoài. Chỉ bật khi cần narrative chất lượng cao."
+          title={t('templates48ReportAuto.section5Title')}
+          description={t('templates48ReportAuto.section5Description')}
         >
           <label className="flex items-start gap-3 p-3 rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] cursor-pointer hover:border-[var(--primary-gold)]/40 transition-colors">
             <input
@@ -309,12 +327,12 @@ export default function ReportAutoPage() {
             />
             <div>
               <p className="text-sm font-medium text-[var(--text-primary)]">
-                Cho phép gọi AI ngoài (Claude / GPT-4o) sau khi che PII
+                {t('templates48ReportAuto.consentCheckboxLabel')}
               </p>
               <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">
-                K-4: workspace cần bật <code>consent_external=true</code>. K-5: PII (email · số ĐT · CCCD)
-                được mask thành <span className="font-mono">&lt;EMAIL_1&gt;</span> trước khi gửi. K-3: mọi
-                call vẫn đi qua <span className="font-mono">llm_router.py</span> để audit.
+                {t('templates48ReportAuto.consentDetailPart1')} <code>consent_external=true</code>. {t('templates48ReportAuto.consentDetailPart2')}
+                {' '}<span className="font-mono">&lt;EMAIL_1&gt;</span> {t('templates48ReportAuto.consentDetailPart3')}
+                {' '}<span className="font-mono">llm_router.py</span> {t('templates48ReportAuto.consentDetailPart4')}
               </p>
             </div>
           </label>
@@ -324,7 +342,7 @@ export default function ReportAutoPage() {
         <div className="sticky bottom-0 bg-[var(--bg-card)]/95 backdrop-blur-sm border-t border-[var(--border-color)] -mx-6 lg:-mx-8 px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
             <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-            Đã ký theo K-13 Idempotency-Key — gửi lại an toàn.
+            {t('templates48ReportAuto.idempotencyNote')}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -334,7 +352,7 @@ export default function ReportAutoPage() {
               disabled={!formValid || submitting}
               isLoading={submitting}
             >
-              <Save className="w-4 h-4 mr-2" /> Lưu cấu hình
+              <Save className="w-4 h-4 mr-2" /> {t('templates48ReportAuto.saveConfigButton')}
             </Button>
             <Button
               variant="primary"
@@ -343,7 +361,7 @@ export default function ReportAutoPage() {
               disabled={!formValid || submitting}
               isLoading={submitting}
             >
-              <Play className="w-4 h-4 mr-2" /> Lưu + chạy ngay
+              <Play className="w-4 h-4 mr-2" /> {t('templates48ReportAuto.saveRunNowButton')}
             </Button>
           </div>
         </div>
@@ -381,6 +399,7 @@ function Section({
 function DatasetCard({
   dataset, selected, onSelect,
 }: { dataset: GoldDataset; selected: boolean; onSelect: () => void }) {
+  const t = useT();
   return (
     <button
       onClick={onSelect}
@@ -395,7 +414,7 @@ function DatasetCard({
         <div>
           <p className="font-mono text-sm text-[var(--text-primary)]">{dataset.name}</p>
           <p className="text-xs text-[var(--text-secondary)] mt-1">
-            {dataset.domain} · {dataset.rows.toLocaleString('vi-VN')} dòng
+            {t('templates48ReportAuto.datasetRowsSummary', { domain: dataset.domain, rows: dataset.rows.toLocaleString('vi-VN') })}
           </p>
         </div>
         {selected && <CheckCircle2 className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0" />}
@@ -428,6 +447,7 @@ function GoalCard({
 }
 
 function RecentRunsPreview() {
+  const t = useT();
   const RUNS = [
     { id: 'run_99', cadence: 'weekly', status: 'success', when: '2026-04-29 07:00', delivered: 4 },
     { id: 'run_98', cadence: 'weekly', status: 'success', when: '2026-04-22 07:00', delivered: 4 },
@@ -437,8 +457,8 @@ function RecentRunsPreview() {
     <section className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-5 shadow-soft-sm">
       <div className="flex items-center gap-2 mb-3">
         <CalendarCheck className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-        <h3 className="font-serif text-base text-[var(--text-primary)]">Lần chạy gần đây</h3>
-        <Badge variant="default">3 lần</Badge>
+        <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates48ReportAuto.recentRunsTitle')}</h3>
+        <Badge variant="default">{t('templates48ReportAuto.recentRunsCount', { count: RUNS.length })}</Badge>
       </div>
       <div className="divide-y divide-[var(--border-color)]/60">
         {RUNS.map((r) => (
@@ -452,20 +472,20 @@ function RecentRunsPreview() {
               <div className="min-w-0">
                 <p className="text-sm text-[var(--text-primary)]">{r.when}</p>
                 <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                  {r.cadence === 'weekly' ? 'Hàng tuần' : r.cadence}
-                  {r.status === 'success' && ` · gửi tới ${r.delivered} người nhận`}
+                  {r.cadence === 'weekly' ? t('templates48ReportAuto.cadenceWeeklyLabel') : r.cadence}
+                  {r.status === 'success' && ` · ${t('templates48ReportAuto.deliveredToCount', { count: r.delivered })}`}
                 </p>
               </div>
             </div>
             <Badge variant={r.status === 'success' ? 'success' : 'error'}>
-              {r.status === 'success' ? 'Thành công' : 'Thất bại'}
+              {r.status === 'success' ? t('templates48ReportAuto.statusSuccess') : t('templates48ReportAuto.statusFailed')}
             </Badge>
           </div>
         ))}
       </div>
       <p className="text-xs text-[var(--text-secondary)] mt-3">
         <Sparkles className="w-3.5 h-3.5 inline mr-1 text-[var(--primary-gold-dark)]" />
-        Mọi lần chạy ghi vào <span className="font-mono">decision_audit_log</span> theo K-6 (cấu hình + output hash + tokens).
+        {t('templates48ReportAuto.auditLogNotePart1')} <span className="font-mono">decision_audit_log</span> {t('templates48ReportAuto.auditLogNotePart2')}
       </p>
     </section>
   );

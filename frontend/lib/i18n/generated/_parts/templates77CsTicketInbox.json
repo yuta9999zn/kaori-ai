@@ -1,0 +1,268 @@
+{
+  "templates77CsTicketInbox.pageTitle": {
+    "vi": "CS Ticket Inbox",
+    "en": "CS Ticket Inbox",
+    "ja": "CSチケット受信箱",
+    "ko": "CS 티켓 수신함",
+    "zh": "客服工单收件箱"
+  },
+  "templates77CsTicketInbox.pageSubtitle": {
+    "vi": "Triage tickets từ mọi kênh — email · Zalo · web form · phone log.",
+    "en": "Triage tickets from every channel — email · Zalo · web form · phone log.",
+    "ja": "あらゆるチャネルのチケットをトリアージ — メール · Zalo · Webフォーム · 電話ログ。",
+    "ko": "모든 채널의 티켓을 분류합니다 — 이메일 · Zalo · 웹 양식 · 전화 로그.",
+    "zh": "对来自各渠道的工单进行分诊 — 邮件 · Zalo · 网页表单 · 电话记录。"
+  },
+  "templates77CsTicketInbox.viewMyQueue": {
+    "vi": "My queue",
+    "en": "My queue",
+    "ja": "自分のキュー",
+    "ko": "내 대기열",
+    "zh": "我的队列"
+  },
+  "templates77CsTicketInbox.viewUnassigned": {
+    "vi": "Unassigned",
+    "en": "Unassigned",
+    "ja": "未割り当て",
+    "ko": "미배정",
+    "zh": "未分配"
+  },
+  "templates77CsTicketInbox.viewHighPriority": {
+    "vi": "High priority",
+    "en": "High priority",
+    "ja": "優先度高",
+    "ko": "우선순위 높음",
+    "zh": "高优先级"
+  },
+  "templates77CsTicketInbox.viewSlaRisk": {
+    "vi": "SLA breach risk",
+    "en": "SLA breach risk",
+    "ja": "SLA違反リスク",
+    "ko": "SLA 위반 위험",
+    "zh": "SLA 违约风险"
+  },
+  "templates77CsTicketInbox.statusAll": {
+    "vi": "Tất cả status",
+    "en": "All statuses",
+    "ja": "すべてのステータス",
+    "ko": "모든 상태",
+    "zh": "所有状态"
+  },
+  "templates77CsTicketInbox.statusOpen": {
+    "vi": "Open",
+    "en": "Open",
+    "ja": "オープン",
+    "ko": "열림",
+    "zh": "待处理"
+  },
+  "templates77CsTicketInbox.statusPending": {
+    "vi": "Pending",
+    "en": "Pending",
+    "ja": "保留中",
+    "ko": "대기 중",
+    "zh": "处理中"
+  },
+  "templates77CsTicketInbox.statusResolved": {
+    "vi": "Resolved",
+    "en": "Resolved",
+    "ja": "解決済み",
+    "ko": "해결됨",
+    "zh": "已解决"
+  },
+  "templates77CsTicketInbox.priorityAll": {
+    "vi": "Tất cả priority",
+    "en": "All priorities",
+    "ja": "すべての優先度",
+    "ko": "모든 우선순위",
+    "zh": "所有优先级"
+  },
+  "templates77CsTicketInbox.priorityUrgentOpt": {
+    "vi": "Urgent",
+    "en": "Urgent",
+    "ja": "緊急",
+    "ko": "긴급",
+    "zh": "紧急"
+  },
+  "templates77CsTicketInbox.priorityHighOpt": {
+    "vi": "High",
+    "en": "High",
+    "ja": "高",
+    "ko": "높음",
+    "zh": "高"
+  },
+  "templates77CsTicketInbox.channelAll": {
+    "vi": "Tất cả channel",
+    "en": "All channels",
+    "ja": "すべてのチャネル",
+    "ko": "모든 채널",
+    "zh": "所有渠道"
+  },
+  "templates77CsTicketInbox.channelEmail": {
+    "vi": "Email",
+    "en": "Email",
+    "ja": "メール",
+    "ko": "이메일",
+    "zh": "邮件"
+  },
+  "templates77CsTicketInbox.channelZalo": {
+    "vi": "Zalo",
+    "en": "Zalo",
+    "ja": "Zalo",
+    "ko": "Zalo",
+    "zh": "Zalo"
+  },
+  "templates77CsTicketInbox.channelWeb": {
+    "vi": "Web form",
+    "en": "Web form",
+    "ja": "Webフォーム",
+    "ko": "웹 양식",
+    "zh": "网页表单"
+  },
+  "templates77CsTicketInbox.channelPhone": {
+    "vi": "Phone log",
+    "en": "Phone log",
+    "ja": "電話ログ",
+    "ko": "전화 로그",
+    "zh": "电话记录"
+  },
+  "templates77CsTicketInbox.newTicketBtn": {
+    "vi": "+ Ticket mới",
+    "en": "+ New ticket",
+    "ja": "+ 新規チケット",
+    "ko": "+ 새 티켓",
+    "zh": "+ 新建工单"
+  },
+  "templates77CsTicketInbox.bulkSelectedCount": {
+    "vi": "{count} ticket đã chọn",
+    "en": "{count} tickets selected",
+    "ja": "{count} 件のチケットを選択中",
+    "ko": "티켓 {count}건 선택됨",
+    "zh": "已选择 {count} 个工单"
+  },
+  "templates77CsTicketInbox.bulkAssign": {
+    "vi": "Assign",
+    "en": "Assign",
+    "ja": "割り当て",
+    "ko": "배정",
+    "zh": "分配"
+  },
+  "templates77CsTicketInbox.bulkSnooze": {
+    "vi": "Snooze",
+    "en": "Snooze",
+    "ja": "スヌーズ",
+    "ko": "미루기",
+    "zh": "延后"
+  },
+  "templates77CsTicketInbox.bulkResolve": {
+    "vi": "Resolve",
+    "en": "Resolve",
+    "ja": "解決",
+    "ko": "해결",
+    "zh": "解决"
+  },
+  "templates77CsTicketInbox.bulkEscalate": {
+    "vi": "Escalate",
+    "en": "Escalate",
+    "ja": "エスカレーション",
+    "ko": "에스컬레이션",
+    "zh": "升级"
+  },
+  "templates77CsTicketInbox.errLoadTickets": {
+    "vi": "Không tải được tickets.",
+    "en": "Couldn't load tickets.",
+    "ja": "チケットを読み込めませんでした。",
+    "ko": "티켓을 불러오지 못했습니다.",
+    "zh": "无法加载工单。"
+  },
+  "templates77CsTicketInbox.emptyInbox": {
+    "vi": "Inbox sạch — chưa có ticket nào.",
+    "en": "Inbox zero — no tickets yet.",
+    "ja": "受信箱は空です — チケットはまだありません。",
+    "ko": "받은편지함이 비어 있습니다 — 아직 티켓이 없습니다.",
+    "zh": "收件箱已清空 — 暂无工单。"
+  },
+  "templates77CsTicketInbox.emptyResolvedThisMonth": {
+    "vi": "Tháng này resolved 0 tickets.",
+    "en": "0 tickets resolved this month.",
+    "ja": "今月の解決件数は0件です。",
+    "ko": "이번 달 해결된 티켓 0건.",
+    "zh": "本月已解决 0 个工单。"
+  },
+  "templates77CsTicketInbox.thChannel": {
+    "vi": "Channel",
+    "en": "Channel",
+    "ja": "チャネル",
+    "ko": "채널",
+    "zh": "渠道"
+  },
+  "templates77CsTicketInbox.thPriority": {
+    "vi": "Priority",
+    "en": "Priority",
+    "ja": "優先度",
+    "ko": "우선순위",
+    "zh": "优先级"
+  },
+  "templates77CsTicketInbox.thSubject": {
+    "vi": "Subject",
+    "en": "Subject",
+    "ja": "件名",
+    "ko": "제목",
+    "zh": "主题"
+  },
+  "templates77CsTicketInbox.thCustomer": {
+    "vi": "Customer",
+    "en": "Customer",
+    "ja": "顧客",
+    "ko": "고객",
+    "zh": "客户"
+  },
+  "templates77CsTicketInbox.thAssignee": {
+    "vi": "Assignee",
+    "en": "Assignee",
+    "ja": "担当者",
+    "ko": "담당자",
+    "zh": "受理人"
+  },
+  "templates77CsTicketInbox.thSla": {
+    "vi": "SLA",
+    "en": "SLA",
+    "ja": "SLA",
+    "ko": "SLA",
+    "zh": "SLA"
+  },
+  "templates77CsTicketInbox.unassignedLabel": {
+    "vi": "Unassigned",
+    "en": "Unassigned",
+    "ja": "未割り当て",
+    "ko": "미배정",
+    "zh": "未分配"
+  },
+  "templates77CsTicketInbox.priorityUrgent": {
+    "vi": "Urgent",
+    "en": "Urgent",
+    "ja": "緊急",
+    "ko": "긴급",
+    "zh": "紧急"
+  },
+  "templates77CsTicketInbox.priorityHigh": {
+    "vi": "High",
+    "en": "High",
+    "ja": "高",
+    "ko": "높음",
+    "zh": "高"
+  },
+  "templates77CsTicketInbox.priorityNormal": {
+    "vi": "Normal",
+    "en": "Normal",
+    "ja": "通常",
+    "ko": "보통",
+    "zh": "普通"
+  },
+  "templates77CsTicketInbox.priorityLow": {
+    "vi": "Low",
+    "en": "Low",
+    "ja": "低",
+    "ko": "낮음",
+    "zh": "低"
+  }
+}

@@ -1,0 +1,282 @@
+{
+  "templates69AuthzCustomRole.title": {
+    "vi": "Vai trò tuỳ chỉnh",
+    "en": "Custom roles",
+    "ja": "カスタムロール",
+    "ko": "커스텀 역할",
+    "zh": "自定义角色"
+  },
+  "templates69AuthzCustomRole.description": {
+    "vi": "Định nghĩa role hẹp hơn 4 vai trò chuẩn — phù hợp policy nội bộ doanh nghiệp.",
+    "en": "Define narrower roles than the 4 standard roles — matching your organization's internal policy.",
+    "ja": "標準の4ロールより細かい役割を定義 — 組織内部のポリシーに合わせて。",
+    "ko": "표준 4개 역할보다 세분화된 역할 정의 — 조직 내부 정책에 맞춤.",
+    "zh": "定义比 4 个标准角色更精细的角色 — 符合企业内部政策。"
+  },
+  "templates69AuthzCustomRole.badgePhase2": {
+    "vi": "Phase 2 · F-007 mở rộng",
+    "en": "Phase 2 · F-007 extension",
+    "ja": "Phase 2 · F-007 拡張",
+    "ko": "Phase 2 · F-007 확장",
+    "zh": "Phase 2 · F-007 扩展"
+  },
+  "templates69AuthzCustomRole.btnRbacStandard": {
+    "vi": "RBAC chuẩn",
+    "en": "Standard RBAC",
+    "ja": "標準RBAC",
+    "ko": "표준 RBAC",
+    "zh": "标准 RBAC"
+  },
+  "templates69AuthzCustomRole.btnCreateRoleTitle": {
+    "vi": "Phase 2 — Sắp ra mắt",
+    "en": "Phase 2 — Coming soon",
+    "ja": "Phase 2 — 近日公開",
+    "ko": "Phase 2 — 출시 예정",
+    "zh": "Phase 2 — 即将推出"
+  },
+  "templates69AuthzCustomRole.btnCreateRole": {
+    "vi": "Tạo vai trò mới",
+    "en": "Create new role",
+    "ja": "新しいロールを作成",
+    "ko": "새 역할 만들기",
+    "zh": "创建新角色"
+  },
+  "templates69AuthzCustomRole.comingSoonTitle": {
+    "vi": "Sắp ra mắt",
+    "en": "Coming soon",
+    "ja": "近日公開",
+    "ko": "출시 예정",
+    "zh": "即将推出"
+  },
+  "templates69AuthzCustomRole.introText": {
+    "vi": "Phase 1 đã đủ 4 vai trò chuẩn (MANAGER/OPERATOR/ANALYST/VIEWER). Phase 2 thêm builder tuỳ chỉnh — đặt tên role, kế thừa từ 1 vai trò chuẩn, ghi đè permission set, gắn scope tag (vd:",
+    "en": "Phase 1 already has the 4 standard roles (MANAGER/OPERATOR/ANALYST/VIEWER). Phase 2 adds a custom builder — name the role, inherit from a standard role, override the permission set, attach a scope tag (e.g.:",
+    "ja": "Phase 1 は標準4ロール(MANAGER/OPERATOR/ANALYST/VIEWER)で十分です。Phase 2 ではカスタムビルダーを追加 — ロール名を付け、標準ロールから継承し、権限セットを上書きし、スコープタグを付与(例:",
+    "ko": "Phase 1은 표준 4개 역할(MANAGER/OPERATOR/ANALYST/VIEWER)로 충분합니다. Phase 2에서는 커스텀 빌더를 추가 — 역할 이름 지정, 표준 역할 상속, 권한 세트 재정의, 범위 태그 부착(예:",
+    "zh": "Phase 1 已具备 4 个标准角色(MANAGER/OPERATOR/ANALYST/VIEWER)。Phase 2 新增自定义构建器 — 命名角色、从某个标准角色继承、覆盖权限集、附加范围标签(例如:"
+  },
+  "templates69AuthzCustomRole.btnUseRbacNow": {
+    "vi": "Dùng RBAC chuẩn ngay (Phase 1)",
+    "en": "Use standard RBAC now (Phase 1)",
+    "ja": "今すぐ標準RBACを使用(Phase 1)",
+    "ko": "지금 표준 RBAC 사용(Phase 1)",
+    "zh": "立即使用标准 RBAC(Phase 1)"
+  },
+  "templates69AuthzCustomRole.existingRolesTitle": {
+    "vi": "Vai trò tuỳ chỉnh đã có ({count})",
+    "en": "Existing custom roles ({count})",
+    "ja": "既存のカスタムロール ({count})",
+    "ko": "기존 커스텀 역할 ({count})",
+    "zh": "已有的自定义角色({count})"
+  },
+  "templates69AuthzCustomRole.emptyState": {
+    "vi": "Chưa có vai trò tuỳ chỉnh nào.",
+    "en": "No custom roles yet.",
+    "ja": "カスタムロールはまだありません。",
+    "ko": "아직 커스텀 역할이 없습니다.",
+    "zh": "尚无自定义角色。"
+  },
+  "templates69AuthzCustomRole.permCatalogTitle": {
+    "vi": "Bảng quyền dự kiến",
+    "en": "Planned permission catalogue",
+    "ja": "予定の権限カタログ",
+    "ko": "예정된 권한 카탈로그",
+    "zh": "预定权限目录"
+  },
+  "templates69AuthzCustomRole.permCatalogDesc": {
+    "vi": "Phase 2 sẽ cho phép pick từng quyền sau đây.",
+    "en": "Phase 2 will let you pick each of the permissions below.",
+    "ja": "Phase 2 では以下の各権限を選択できるようになります。",
+    "ko": "Phase 2에서는 아래 각 권한을 선택할 수 있습니다.",
+    "zh": "Phase 2 将允许勾选以下每项权限。"
+  },
+  "templates69AuthzCustomRole.groupPipeline": {
+    "vi": "Pipeline",
+    "en": "Pipeline",
+    "ja": "データパイプライン",
+    "ko": "데이터 파이프라인",
+    "zh": "数据管道"
+  },
+  "templates69AuthzCustomRole.groupInsightsDecisions": {
+    "vi": "Insight & Quyết định",
+    "en": "Insights & Decisions",
+    "ja": "インサイトと決定",
+    "ko": "인사이트 및 결정",
+    "zh": "洞察与决策"
+  },
+  "templates69AuthzCustomRole.groupDataLayers": {
+    "vi": "Tầng dữ liệu",
+    "en": "Data layers",
+    "ja": "データ層",
+    "ko": "데이터 계층",
+    "zh": "数据层"
+  },
+  "templates69AuthzCustomRole.groupSettings": {
+    "vi": "Cài đặt",
+    "en": "Settings",
+    "ja": "設定",
+    "ko": "설정",
+    "zh": "设置"
+  },
+  "templates69AuthzCustomRole.permPipelineRead": {
+    "vi": "Xem pipeline",
+    "en": "View pipeline",
+    "ja": "パイプラインを表示",
+    "ko": "파이프라인 보기",
+    "zh": "查看数据管道"
+  },
+  "templates69AuthzCustomRole.permPipelineCreate": {
+    "vi": "Tạo pipeline mới",
+    "en": "Create new pipeline",
+    "ja": "新しいパイプラインを作成",
+    "ko": "새 파이프라인 생성",
+    "zh": "创建新数据管道"
+  },
+  "templates69AuthzCustomRole.permPipelineRun": {
+    "vi": "Chạy pipeline",
+    "en": "Run pipeline",
+    "ja": "パイプラインを実行",
+    "ko": "파이프라인 실행",
+    "zh": "运行数据管道"
+  },
+  "templates69AuthzCustomRole.permPipelineDelete": {
+    "vi": "Xoá pipeline",
+    "en": "Delete pipeline",
+    "ja": "パイプラインを削除",
+    "ko": "파이프라인 삭제",
+    "zh": "删除数据管道"
+  },
+  "templates69AuthzCustomRole.permInsightRead": {
+    "vi": "Xem insight",
+    "en": "View insight",
+    "ja": "インサイトを表示",
+    "ko": "인사이트 보기",
+    "zh": "查看洞察"
+  },
+  "templates69AuthzCustomRole.permInsightGenerate": {
+    "vi": "Tạo insight mới",
+    "en": "Generate new insight",
+    "ja": "新しいインサイトを生成",
+    "ko": "새 인사이트 생성",
+    "zh": "生成新洞察"
+  },
+  "templates69AuthzCustomRole.permDecisionRead": {
+    "vi": "Xem quyết định",
+    "en": "View decision",
+    "ja": "決定を表示",
+    "ko": "결정 보기",
+    "zh": "查看决策"
+  },
+  "templates69AuthzCustomRole.permDecisionAction": {
+    "vi": "Đánh dấu đã hành động",
+    "en": "Mark as actioned",
+    "ja": "対応済みとしてマーク",
+    "ko": "조치 완료로 표시",
+    "zh": "标记为已处理"
+  },
+  "templates69AuthzCustomRole.permDataBronzeRead": {
+    "vi": "Xem Bronze",
+    "en": "View Bronze",
+    "ja": "Bronzeを表示",
+    "ko": "Bronze 보기",
+    "zh": "查看 Bronze"
+  },
+  "templates69AuthzCustomRole.permDataSilverRead": {
+    "vi": "Xem Silver",
+    "en": "View Silver",
+    "ja": "Silverを表示",
+    "ko": "Silver 보기",
+    "zh": "查看 Silver"
+  },
+  "templates69AuthzCustomRole.permDataGoldRead": {
+    "vi": "Xem Gold",
+    "en": "View Gold",
+    "ja": "Goldを表示",
+    "ko": "Gold 보기",
+    "zh": "查看 Gold"
+  },
+  "templates69AuthzCustomRole.permSettingsRead": {
+    "vi": "Xem cài đặt workspace",
+    "en": "View workspace settings",
+    "ja": "ワークスペース設定を表示",
+    "ko": "워크스페이스 설정 보기",
+    "zh": "查看工作区设置"
+  },
+  "templates69AuthzCustomRole.permSettingsWrite": {
+    "vi": "Chỉnh sửa cài đặt",
+    "en": "Edit settings",
+    "ja": "設定を編集",
+    "ko": "설정 수정",
+    "zh": "编辑设置"
+  },
+  "templates69AuthzCustomRole.permBillingRead": {
+    "vi": "Xem gói cước + hoá đơn",
+    "en": "View plan + invoices",
+    "ja": "プラン+請求書を表示",
+    "ko": "요금제 + 청구서 보기",
+    "zh": "查看套餐+发票"
+  },
+  "templates69AuthzCustomRole.pdpNoteBefore": {
+    "vi": "Phase 2 sẽ chuyển PDP sang Hybrid (RBAC + ABAC) trả về",
+    "en": "Phase 2 will switch the PDP to Hybrid (RBAC + ABAC) returning",
+    "ja": "Phase 2 では PDP を Hybrid(RBAC + ABAC)に切り替え、次を返します",
+    "ko": "Phase 2에서는 PDP를 Hybrid(RBAC + ABAC)로 전환하여 다음을 반환합니다",
+    "zh": "Phase 2 将把 PDP 切换为 Hybrid(RBAC + ABAC),返回"
+  },
+  "templates69AuthzCustomRole.pdpNoteAfter": {
+    "vi": "theo CLAUDE.md §9.",
+    "en": "per CLAUDE.md §9.",
+    "ja": "CLAUDE.md §9 に準拠。",
+    "ko": "CLAUDE.md §9 기준.",
+    "zh": "依据 CLAUDE.md §9。"
+  },
+  "templates69AuthzCustomRole.inheritsFrom": {
+    "vi": "kế thừa {baseRole}",
+    "en": "inherits {baseRole}",
+    "ja": "{baseRole} を継承",
+    "ko": "{baseRole} 상속",
+    "zh": "继承自 {baseRole}"
+  },
+  "templates69AuthzCustomRole.memberCount": {
+    "vi": "{count} thành viên",
+    "en": "{count} members",
+    "ja": "{count} 名のメンバー",
+    "ko": "{count}명의 멤버",
+    "zh": "{count} 名成员"
+  },
+  "templates69AuthzCustomRole.editBtn": {
+    "vi": "Sửa",
+    "en": "Edit",
+    "ja": "編集",
+    "ko": "수정",
+    "zh": "编辑"
+  },
+  "templates69AuthzCustomRole.editBtnTitle": {
+    "vi": "Phase 2",
+    "en": "Phase 2",
+    "ja": "Phase 2",
+    "ko": "Phase 2",
+    "zh": "Phase 2"
+  },
+  "templates69AuthzCustomRole.builderTitle": {
+    "vi": "Tạo vai trò",
+    "en": "Create role",
+    "ja": "ロールを作成",
+    "ko": "역할 생성",
+    "zh": "创建角色"
+  },
+  "templates69AuthzCustomRole.builderDesc": {
+    "vi": "Builder Phase 2 — chưa khả dụng.",
+    "en": "Phase 2 builder — not yet available.",
+    "ja": "Phase 2 ビルダー — まだ利用できません。",
+    "ko": "Phase 2 빌더 — 아직 사용할 수 없습니다.",
+    "zh": "Phase 2 构建器 — 尚不可用。"
+  },
+  "templates69AuthzCustomRole.closeBtn": {
+    "vi": "Đóng",
+    "en": "Close",
+    "ja": "閉じる",
+    "ko": "닫기",
+    "zh": "关闭"
+  }
+}

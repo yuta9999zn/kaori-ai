@@ -1,0 +1,226 @@
+{
+  "templatesFnew3v1Silver.title": {
+    "vi": "Silver — dữ liệu sạch",
+    "en": "Silver — clean data",
+    "ja": "Silver — クレンジング済みデータ",
+    "ko": "Silver — 정제된 데이터",
+    "zh": "Silver — 清洗后的数据"
+  },
+  "templatesFnew3v1Silver.description": {
+    "vi": "Đã làm sạch + che PII (K-5) · áp dụng cleaning rules · điểm chất lượng /dòng.",
+    "en": "Cleaned + PII masked (K-5) · cleaning rules applied · quality score per row.",
+    "ja": "クレンジング済み+PIIマスク済み(K-5)・クレンジングルール適用済み・行ごとの品質スコア。",
+    "ko": "정제 완료 + PII 마스킹(K-5) · 정제 규칙 적용 · 행별 품질 점수.",
+    "zh": "已清洗 + 已脱敏PII(K-5)· 已应用清洗规则 · 逐行质量评分。"
+  },
+  "templatesFnew3v1Silver.btnExplore": {
+    "vi": "Khám phá",
+    "en": "Explore",
+    "ja": "探索",
+    "ko": "탐색",
+    "zh": "浏览"
+  },
+  "templatesFnew3v1Silver.thFileSheet": {
+    "vi": "File nguồn · sheet",
+    "en": "Source file · sheet",
+    "ja": "元ファイル・シート",
+    "ko": "원본 파일 · 시트",
+    "zh": "源文件 · 工作表"
+  },
+  "templatesFnew3v1Silver.thRowsCleaned": {
+    "vi": "Hàng đã sạch",
+    "en": "Cleaned rows",
+    "ja": "クレンジング済み行数",
+    "ko": "정제된 행",
+    "zh": "已清洗行数"
+  },
+  "templatesFnew3v1Silver.thQualityAvg": {
+    "vi": "Chất lượng TB",
+    "en": "Avg quality",
+    "ja": "平均品質",
+    "ko": "평균 품질",
+    "zh": "平均质量"
+  },
+  "templatesFnew3v1Silver.thRulesApplied": {
+    "vi": "Rules áp dụng nhiều nhất",
+    "en": "Most-applied rules",
+    "ja": "適用回数の多いルール",
+    "ko": "가장 많이 적용된 규칙",
+    "zh": "应用最多的规则"
+  },
+  "templatesFnew3v1Silver.thLastProcessed": {
+    "vi": "Xử lý lần cuối",
+    "en": "Last processed",
+    "ja": "最終処理",
+    "ko": "마지막 처리",
+    "zh": "最后处理时间"
+  },
+  "templatesFnew3v1Silver.thViewSample": {
+    "vi": "Xem mẫu",
+    "en": "View sample",
+    "ja": "サンプルを見る",
+    "ko": "샘플 보기",
+    "zh": "查看样本"
+  },
+  "templatesFnew3v1Silver.loadingList": {
+    "vi": "Đang tải...",
+    "en": "Loading...",
+    "ja": "読み込み中...",
+    "ko": "로딩 중...",
+    "zh": "加载中..."
+  },
+  "templatesFnew3v1Silver.emptyTitle": {
+    "vi": "Chưa có dataset Silver nào — chạy bước Cleaning trên một pipeline để tạo dataset đầu tiên.",
+    "en": "No Silver dataset yet — run the Cleaning step on a pipeline to create the first dataset.",
+    "ja": "Silverデータセットはまだありません — パイプラインでクレンジングステップを実行して最初のデータセットを作成してください。",
+    "ko": "아직 Silver 데이터셋이 없습니다 — 파이프라인에서 정제 단계를 실행하여 첫 데이터셋을 만드세요.",
+    "zh": "尚无Silver数据集 — 在数据管道上运行清洗步骤以创建第一个数据集。"
+  },
+  "templatesFnew3v1Silver.pagePrev": {
+    "vi": "Trang trước",
+    "en": "Previous page",
+    "ja": "前のページ",
+    "ko": "이전 페이지",
+    "zh": "上一页"
+  },
+  "templatesFnew3v1Silver.pageLabel": {
+    "vi": "Trang {page}",
+    "en": "Page {page}",
+    "ja": "{page}ページ目",
+    "ko": "{page}페이지",
+    "zh": "第{page}页"
+  },
+  "templatesFnew3v1Silver.pageNext": {
+    "vi": "Trang sau",
+    "en": "Next page",
+    "ja": "次のページ",
+    "ko": "다음 페이지",
+    "zh": "下一页"
+  },
+  "templatesFnew3v1Silver.footnotePart1": {
+    "vi": "K-5 — Silver đã che PII trước khi lưu (email/phone/ID hiện dạng",
+    "en": "K-5 — Silver already masks PII before saving (email/phone/ID appear as",
+    "ja": "K-5 — Silverは保存前にPIIをマスクします(email/phone/IDは次の形式で表示",
+    "ko": "K-5 — Silver는 저장 전에 PII를 마스킹합니다(이메일/전화/ID는 다음 형식으로 표시",
+    "zh": "K-5 — Silver在保存前已对PII脱敏(邮箱/电话/ID显示为"
+  },
+  "templatesFnew3v1Silver.footnotePart2": {
+    "vi": "); FE chỉ render những gì cleaning step đã ghi. Mẫu sample tối đa 50 dòng/dataset.",
+    "en": "); FE only renders what the cleaning step wrote. Sample preview is capped at 50 rows/dataset.",
+    "ja": ");FEはクレンジングステップが書き込んだものだけを表示します。サンプルは1データセットあたり最大50行です。",
+    "ko": "); FE는 정제 단계가 기록한 내용만 렌더링합니다. 샘플 미리보기는 데이터셋당 최대 50행입니다.",
+    "zh": ");前端仅渲染清洗步骤写入的内容。样本预览每个数据集最多50行。"
+  },
+  "templatesFnew3v1Silver.noRule": {
+    "vi": "— chưa có rule",
+    "en": "— no rule yet",
+    "ja": "— ルールなし",
+    "ko": "— 규칙 없음",
+    "zh": "— 尚无规则"
+  },
+  "templatesFnew3v1Silver.lineageTooltip": {
+    "vi": "Truy theo file qua các lớp",
+    "en": "Trace the file across layers",
+    "ja": "ファイルを各レイヤーで追跡",
+    "ko": "레이어 전반에서 파일 추적",
+    "zh": "追踪文件在各层的流转"
+  },
+  "templatesFnew3v1Silver.viewBtn": {
+    "vi": "Xem",
+    "en": "View",
+    "ja": "表示",
+    "ko": "보기",
+    "zh": "查看"
+  },
+  "templatesFnew3v1Silver.modalSubtitle": {
+    "vi": "{count} hàng đã sạch · chất lượng TB {pct}%",
+    "en": "{count} cleaned rows · avg quality {pct}%",
+    "ja": "クレンジング済み{count}行・平均品質{pct}%",
+    "ko": "정제된 {count}행 · 평균 품질 {pct}%",
+    "zh": "已清洗{count}行 · 平均质量{pct}%"
+  },
+  "templatesFnew3v1Silver.csvSample": {
+    "vi": "CSV mẫu",
+    "en": "Sample CSV",
+    "ja": "サンプルCSV",
+    "ko": "샘플 CSV",
+    "zh": "样本CSV"
+  },
+  "templatesFnew3v1Silver.closeAria": {
+    "vi": "Đóng",
+    "en": "Close",
+    "ja": "閉じる",
+    "ko": "닫기",
+    "zh": "关闭"
+  },
+  "templatesFnew3v1Silver.loadingSample": {
+    "vi": "Đang tải mẫu dữ liệu...",
+    "en": "Loading data sample...",
+    "ja": "データサンプルを読み込み中...",
+    "ko": "데이터 샘플 로딩 중...",
+    "zh": "正在加载数据样本..."
+  },
+  "templatesFnew3v1Silver.thRules": {
+    "vi": "rules",
+    "en": "rules",
+    "ja": "ルール",
+    "ko": "규칙",
+    "zh": "规则"
+  },
+  "templatesFnew3v1Silver.thQuality": {
+    "vi": "quality",
+    "en": "quality",
+    "ja": "品質",
+    "ko": "품질",
+    "zh": "质量"
+  },
+  "templatesFnew3v1Silver.sampleFooter": {
+    "vi": "Hiển thị {shown}/{total} dòng (giới hạn {limit}).",
+    "en": "Showing {shown}/{total} rows (limit {limit}).",
+    "ja": "{shown}/{total}行を表示中(上限{limit})。",
+    "ko": "{shown}/{total}행 표시 중(제한 {limit}).",
+    "zh": "显示{shown}/{total}行(上限{limit})。"
+  },
+  "templatesFnew3v1Silver.sampleFooterPart2": {
+    "vi": "PII đã che ở bước cleaning trước khi lưu.",
+    "en": "PII was masked at the cleaning step before saving.",
+    "ja": "PIIは保存前のクレンジングステップでマスクされています。",
+    "ko": "PII는 저장 전 정제 단계에서 마스킹되었습니다.",
+    "zh": "PII已在保存前的清洗步骤中脱敏。"
+  },
+  "templatesFnew3v1Silver.noRows": {
+    "vi": "Dataset không có dòng nào.",
+    "en": "This dataset has no rows.",
+    "ja": "このデータセットには行がありません。",
+    "ko": "이 데이터셋에는 행이 없습니다.",
+    "zh": "该数据集没有任何行。"
+  },
+  "templatesFnew3v1Silver.relJustNow": {
+    "vi": "vừa xong",
+    "en": "just now",
+    "ja": "たった今",
+    "ko": "방금",
+    "zh": "刚刚"
+  },
+  "templatesFnew3v1Silver.relMinutesAgo": {
+    "vi": "{count} phút trước",
+    "en": "{count} min ago",
+    "ja": "{count}分前",
+    "ko": "{count}분 전",
+    "zh": "{count}分钟前"
+  },
+  "templatesFnew3v1Silver.relHoursAgo": {
+    "vi": "{count} giờ trước",
+    "en": "{count} hr ago",
+    "ja": "{count}時間前",
+    "ko": "{count}시간 전",
+    "zh": "{count}小时前"
+  },
+  "templatesFnew3v1Silver.relDaysAgo": {
+    "vi": "{count} ngày trước",
+    "en": "{count} days ago",
+    "ja": "{count}日前",
+    "ko": "{count}일 전",
+    "zh": "{count}天前"
+  }
+}

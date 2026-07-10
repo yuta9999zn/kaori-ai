@@ -25,6 +25,7 @@ import {
   Button, Badge, ErrorBanner, api, cn, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types
 // ============================================================================
@@ -67,9 +68,9 @@ const MOCK_SUMMARY: AutoDbSummary = {
 };
 
 const MODULES = [
-  { code: 'schema',  title: 'Đề xuất schema',     description: 'AI quét file/dataset → đề xuất bảng + cột + kiểu.', href: '/p2/auto-db/schema-suggestion', icon: Database },
-  { code: 'form',    title: 'Sinh form CRUD',     description: 'Tự sinh form Create/Read/Update/Delete từ schema.',  href: '/p2/auto-db/forms/generate',    icon: FileText },
-  { code: 'quality', title: 'Chất lượng dữ liệu', description: 'Score chất lượng theo thời gian + drill-down.',     href: '/p2/auto-db/quality-trend',     icon: TrendingUp },
+  { code: 'schema',  titleKey: 'templates64Autodb.moduleSchemaTitle',  descKey: 'templates64Autodb.moduleSchemaDesc',  href: '/p2/auto-db/schema-suggestion', icon: Database },
+  { code: 'form',    titleKey: 'templates64Autodb.moduleFormTitle',    descKey: 'templates64Autodb.moduleFormDesc',    href: '/p2/auto-db/forms/generate',    icon: FileText },
+  { code: 'quality', titleKey: 'templates64Autodb.moduleQualityTitle', descKey: 'templates64Autodb.moduleQualityDesc', href: '/p2/auto-db/quality-trend',     icon: TrendingUp },
 ];
 
 // ============================================================================
@@ -77,6 +78,7 @@ const MODULES = [
 // ============================================================================
 
 export default function AutoDbHubPage() {
+  const t = useT();
   const [summary, setSummary] = useState<AutoDbSummary>(MOCK_SUMMARY);
   const [loading, setLoading] = useState(true);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -104,9 +106,9 @@ export default function AutoDbHubPage() {
   return (
     <>
       <PageHeader
-        title="Auto DB"
-        description="AI tự đề xuất schema, sinh form CRUD và theo dõi chất lượng dữ liệu."
-        actions={<Badge variant="info">Phase 2 · F-057</Badge>}
+        title={t('templates64Autodb.pageTitle')}
+        description={t('templates64Autodb.pageDescription')}
+        actions={<Badge variant="info">{t('templates64Autodb.badgePhase')}</Badge>}
       />
 
       <div className="px-6 lg:px-8 py-6 max-w-[1300px] mx-auto space-y-6">
@@ -114,18 +116,18 @@ export default function AutoDbHubPage() {
           <ErrorBanner
             problem={{
               ...problem,
-              title:  'Đang dùng dữ liệu mẫu',
-              detail: `${problem.title}${problem.detail ? ' — ' + problem.detail : ''}. Hub hiển thị fixture cho tới khi /api/v1/auto-db/summary sẵn sàng.`,
+              title:  t('templates64Autodb.errFallbackTitle'),
+              detail: t('templates64Autodb.errFallbackDetail', { prefix: `${problem.title}${problem.detail ? ' — ' + problem.detail : ''}` }),
             }}
           />
         )}
 
         {/* KPI tiles */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatTile label="Schema đang active"    value={summary.schemas_active}       icon={Database}     tone="text-[var(--text-primary)]" />
-          <StatTile label="Đề xuất chờ duyệt"     value={summary.suggestions_pending}  icon={Sparkles}     tone="text-[var(--primary-gold-dark)]" />
-          <StatTile label="Form đã sinh"          value={summary.forms_generated}      icon={FileText}     tone="text-[var(--state-info)]" />
-          <StatTile label="Quality trung bình"    value={summary.quality_avg}          icon={CheckCircle2} tone="text-[var(--state-success)]" suffix="%" />
+          <StatTile label={t('templates64Autodb.statSchemasActive')}    value={summary.schemas_active}       icon={Database}     tone="text-[var(--text-primary)]" />
+          <StatTile label={t('templates64Autodb.statSuggestionsPending')}     value={summary.suggestions_pending}  icon={Sparkles}     tone="text-[var(--primary-gold-dark)]" />
+          <StatTile label={t('templates64Autodb.statFormsGenerated')}          value={summary.forms_generated}      icon={FileText}     tone="text-[var(--state-info)]" />
+          <StatTile label={t('templates64Autodb.statQualityAvg')}    value={summary.quality_avg}          icon={CheckCircle2} tone="text-[var(--state-success)]" suffix="%" />
         </div>
 
         {/* AI cost gauge + 3 module */}
@@ -137,10 +139,9 @@ export default function AutoDbHubPage() {
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-5 shadow-soft-sm">
           <div className="flex items-center justify-between gap-3 mb-3">
             <div>
-              <h3 className="font-serif text-base text-[var(--text-primary)]">Hạn mức AI ngoài tháng này</h3>
+              <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates64Autodb.aiQuotaTitle')}</h3>
               <p className="text-xs text-[var(--text-secondary)] mt-1">
-                Áp dụng cho schema suggestion + form generation khi <code>consent_external=true</code> (K-4).
-                Mặc định Qwen 2.5 nội bộ — không tính vào hạn mức.
+                {t('templates64Autodb.aiQuotaDescPrefix')}<code>consent_external=true</code>{t('templates64Autodb.aiQuotaDescSuffix')}
               </p>
             </div>
             <Badge variant={aiUsageVariant}>{summary.ai_external_usage_pct}%</Badge>
@@ -163,26 +164,26 @@ export default function AutoDbHubPage() {
           <div className="px-5 py-4 border-b border-[var(--border-color)] flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Database className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-              <h3 className="font-serif text-base text-[var(--text-primary)]">Schema đang active</h3>
+              <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates64Autodb.statSchemasActive')}</h3>
               <Badge variant="default">{summary.active_schemas.length}</Badge>
             </div>
-            <a href="/p2/data" className="text-xs font-medium text-[var(--primary-gold-dark)] hover:underline">Xem tất cả →</a>
+            <a href="/p2/data" className="text-xs font-medium text-[var(--primary-gold-dark)] hover:underline">{t('templates64Autodb.viewAll')}</a>
           </div>
           <div className="overflow-auto">
             {loading ? (
               <div className="px-5 py-12 text-center text-[var(--text-secondary)]">
-                <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> Đang tải...
+                <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> {t('templates64Autodb.loading')}
               </div>
             ) : (
               <table className="w-full text-sm text-left">
                 <thead className="bg-[var(--bg-app)] border-b border-[var(--border-color)] text-[11px] font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   <tr>
-                    <th className="px-5 py-3">Schema</th>
-                    <th className="px-5 py-3">Domain</th>
-                    <th className="px-5 py-3">Số dòng</th>
-                    <th className="px-5 py-3">Quality</th>
-                    <th className="px-5 py-3">Forms</th>
-                    <th className="px-5 py-3">Cập nhật</th>
+                    <th className="px-5 py-3">{t('templates64Autodb.thSchema')}</th>
+                    <th className="px-5 py-3">{t('templates64Autodb.thDomain')}</th>
+                    <th className="px-5 py-3">{t('templates64Autodb.thRows')}</th>
+                    <th className="px-5 py-3">{t('templates64Autodb.thQuality')}</th>
+                    <th className="px-5 py-3">{t('templates64Autodb.thForms')}</th>
+                    <th className="px-5 py-3">{t('templates64Autodb.thUpdated')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--border-color)]/60">
@@ -196,8 +197,7 @@ export default function AutoDbHubPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Schema thay đổi tự kích hoạt workflow cập nhật form (K-6 audit). Quality score tính từ:
-            null rate, type compliance, uniqueness key fields, freshness.
+            {t('templates64Autodb.footNote')}
           </p>
         </div>
       </div>
@@ -226,6 +226,7 @@ function StatTile({
 }
 
 function ModuleCard({ module: m }: { module: any }) {
+  const t = useT();
   const Icon = m.icon;
   return (
     <a
@@ -238,10 +239,10 @@ function ModuleCard({ module: m }: { module: any }) {
         </div>
         <Badge variant="info">P2</Badge>
       </div>
-      <h3 className="font-serif text-base text-[var(--text-primary)] group-hover:text-[var(--primary-gold-dark)] transition-colors">{m.title}</h3>
-      <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">{m.description}</p>
+      <h3 className="font-serif text-base text-[var(--text-primary)] group-hover:text-[var(--primary-gold-dark)] transition-colors">{t(m.titleKey)}</h3>
+      <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">{t(m.descKey)}</p>
       <div className="mt-3 inline-flex items-center text-xs font-medium text-[var(--primary-gold-dark)] group-hover:translate-x-0.5 transition-transform">
-        Vào module <ArrowRight className="w-3 h-3 ml-1" />
+        {t('templates64Autodb.moduleEnter')} <ArrowRight className="w-3 h-3 ml-1" />
       </div>
     </a>
   );

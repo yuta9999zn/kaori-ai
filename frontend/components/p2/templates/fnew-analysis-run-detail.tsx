@@ -30,6 +30,7 @@ import {
 import { Button, Badge, ErrorBanner, cn, api, type ProblemDetails } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
 import FlexibleChart from '@/components/charts/FlexibleChart';
+import { useT } from '@/lib/i18n/provider';
 
 type Tier   = 'basic' | 'intermediate' | 'advanced';
 type Status = 'queued' | 'running' | 'done' | 'error';
@@ -58,22 +59,23 @@ interface RunDetail {
   created_at:       string;
 }
 
-const TIER_LABEL: Record<Tier, string> = {
-  basic:        'Cơ bản',
-  intermediate: 'Trung cấp',
-  advanced:     'Nâng cao',
-};
-
-const STATUS_META: Record<Status, { variant: any; label: string }> = {
-  queued:  { variant: 'default', label: 'Chờ' },
-  running: { variant: 'warning', label: 'Đang chạy' },
-  done:    { variant: 'success', label: 'Hoàn tất' },
-  error:   { variant: 'error',   label: 'Lỗi' },
-};
-
 export default function AnalysisRunDetailPage() {
+  const t = useT();
   const params = useParams<{ id: string }>();
   const runId = params?.id ?? '';
+
+  const TIER_LABEL: Record<Tier, string> = {
+    basic:        t('templatesFnewAnalysisRunDetail.tierBasic'),
+    intermediate: t('templatesFnewAnalysisRunDetail.tierIntermediate'),
+    advanced:     t('templatesFnewAnalysisRunDetail.tierAdvanced'),
+  };
+
+  const STATUS_META: Record<Status, { variant: any; label: string }> = {
+    queued:  { variant: 'default', label: t('templatesFnewAnalysisRunDetail.statusQueued') },
+    running: { variant: 'warning', label: t('templatesFnewAnalysisRunDetail.statusRunning') },
+    done:    { variant: 'success', label: t('templatesFnewAnalysisRunDetail.statusDone') },
+    error:   { variant: 'error',   label: t('templatesFnewAnalysisRunDetail.statusError') },
+  };
   const [run, setRun]         = useState<RunDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -139,17 +141,17 @@ export default function AnalysisRunDetailPage() {
   return (
     <>
       <PageHeader
-        title="Kết quả phân tích"
+        title={t('templatesFnewAnalysisRunDetail.title')}
         description={run ? `${TIER_LABEL[run.tier]} · ${run.scope}${run.framework ? ` · ${run.framework.toUpperCase()}` : ''}` : '—'}
         actions={
           <>
             <Button variant="tertiary" onClick={() => (window.location.href = '/p2/analysis')}>
               <ChevronLeft className="w-4 h-4 mr-1" />
-              Hub
+              {t('templatesFnewAnalysisRunDetail.hubButton')}
             </Button>
             <Button variant="secondary" onClick={load} disabled={loading}>
               <RefreshCw className={cn('w-4 h-4 mr-1', loading && 'animate-spin')} />
-              Làm mới
+              {t('templatesFnewAnalysisRunDetail.refreshButton')}
             </Button>
           </>
         }
@@ -179,26 +181,26 @@ export default function AnalysisRunDetailPage() {
                 </Badge>
                 <Badge variant={run.consent_external ? 'warning' : 'success'}>
                   {run.consent_external
-                    ? <><Globe className="w-3 h-3 mr-1 inline" />External AI</>
-                    : <><Lock className="w-3 h-3 mr-1 inline" />Qwen nội bộ</>}
+                    ? <><Globe className="w-3 h-3 mr-1 inline" />{t('templatesFnewAnalysisRunDetail.externalAiBadge')}</>
+                    : <><Lock className="w-3 h-3 mr-1 inline" />{t('templatesFnewAnalysisRunDetail.qwenInternalBadge')}</>}
                 </Badge>
                 {run.output_schema_repaired === true && (
-                  <Badge variant="info" title="Issue #3 — gateway repaired the LLM output once">Schema repaired</Badge>
+                  <Badge variant="info" title={t('templatesFnewAnalysisRunDetail.schemaRepairedTooltip')}>{t('templatesFnewAnalysisRunDetail.schemaRepairedBadge')}</Badge>
                 )}
               </div>
               {run.question && (
                 <p className="text-sm text-[var(--text-primary)] leading-relaxed">
-                  <span className="font-medium">Câu hỏi:</span> {run.question}
+                  <span className="font-medium">{t('templatesFnewAnalysisRunDetail.questionLabel')}</span> {run.question}
                 </p>
               )}
               {run.tier === 'basic' && run.pipeline_run_id && (
                 <p className="text-xs text-[var(--text-secondary)]">
-                  Pipeline: <a href={`/p2/pipelines/${run.pipeline_run_id}`} className="text-[var(--primary-gold-dark)] underline">{run.pipeline_run_id}</a>
+                  {t('templatesFnewAnalysisRunDetail.pipelineLabel')} <a href={`/p2/pipelines/${run.pipeline_run_id}`} className="text-[var(--primary-gold-dark)] underline">{run.pipeline_run_id}</a>
                 </p>
               )}
               {run.source_ids && run.source_ids.length > 0 && (
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-xs text-[var(--text-secondary)]">Nguồn:</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{t('templatesFnewAnalysisRunDetail.sourceLabel')}</span>
                   {run.source_ids.map((s) => (
                     <Badge key={`${s.layer}-${s.id}`} variant={s.layer === 'gold' ? 'current' : 'default'}>
                       {(s.label || s.id) as string} · {s.layer.toUpperCase()}
@@ -208,8 +210,8 @@ export default function AnalysisRunDetailPage() {
               )}
               {run.tier === 'basic' && run.templates.length > 0 && (
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-xs text-[var(--text-secondary)]">Template:</span>
-                  {run.templates.map((t) => <Badge key={t} variant="default">{t}</Badge>)}
+                  <span className="text-xs text-[var(--text-secondary)]">{t('templatesFnewAnalysisRunDetail.templateLabel')}</span>
+                  {run.templates.map((tpl) => <Badge key={tpl} variant="default">{tpl}</Badge>)}
                 </div>
               )}
             </div>
@@ -218,25 +220,25 @@ export default function AnalysisRunDetailPage() {
             {isPendingApproval && (
               <div className="bg-[var(--state-warning)]/10 rounded-lg-custom border border-[var(--state-warning)]/30 p-5 shadow-soft-sm">
                 <p className="font-serif text-sm text-[var(--text-primary)] mb-2">
-                  Đang chờ MANAGER duyệt
+                  {t('templatesFnewAnalysisRunDetail.pendingApprovalTitle')}
                 </p>
                 <p className="text-xs text-[#9E814D] mb-3 leading-relaxed">
-                  Workspace của bạn chưa bật <span className="font-mono">consent_external_ai</span> ở Settings, nên mỗi lần dispatch advanced cần MANAGER duyệt từng run riêng. Một MANAGER có thể bấm nút bên dưới để cho phép dispatch.
+                  {t('templatesFnewAnalysisRunDetail.pendingApprovalDescPre')} <span className="font-mono">consent_external_ai</span> {t('templatesFnewAnalysisRunDetail.pendingApprovalDescPost')}
                 </p>
                 <Button onClick={handleApprove} disabled={approving} isLoading={approving} variant="primary">
                   <CheckCircle2 className="w-4 h-4 mr-2" />
-                  Duyệt + dispatch
+                  {t('templatesFnewAnalysisRunDetail.approveDispatchButton')}
                 </Button>
                 <p className="text-[11px] text-[var(--text-secondary)] mt-2">
-                  (BE 403 nếu vai trò bạn không phải MANAGER.)
+                  {t('templatesFnewAnalysisRunDetail.approveHintBe403')}
                 </p>
               </div>
             )}
             {run.tier === 'advanced' && run.approved_at && (
               <div className="text-xs text-[var(--text-secondary)] flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-[var(--state-success)]" />
-                Duyệt lúc <span className="font-mono">{formatTime(run.approved_at)}</span>
-                {run.approved_by && <> · bởi <span className="font-mono">{run.approved_by.slice(0, 8)}…</span></>}
+                {t('templatesFnewAnalysisRunDetail.approvedAtLabel')} <span className="font-mono">{formatTime(run.approved_at)}</span>
+                {run.approved_by && <> · {t('templatesFnewAnalysisRunDetail.approvedByLabel')} <span className="font-mono">{run.approved_by.slice(0, 8)}…</span></>}
               </div>
             )}
 
@@ -246,7 +248,7 @@ export default function AnalysisRunDetailPage() {
                 <div className="flex items-start gap-3">
                   <Lightbulb className="w-5 h-5 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-serif text-sm text-[var(--text-primary)] mb-1">Tóm tắt</p>
+                    <p className="font-serif text-sm text-[var(--text-primary)] mb-1">{t('templatesFnewAnalysisRunDetail.narrativeTitle')}</p>
                     <p className="text-sm text-[var(--text-primary)] leading-relaxed">{run.narrative}</p>
                   </div>
                 </div>
@@ -257,7 +259,7 @@ export default function AnalysisRunDetailPage() {
             {run.status === 'done' && run.overview && (
               <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm">
                 <h3 className="font-serif text-base text-[var(--text-primary)] mb-3">
-                  {run.framework ? `${run.framework.toUpperCase()} — kết quả` : 'Tổng quan'}
+                  {run.framework ? t('templatesFnewAnalysisRunDetail.overviewFrameworkResult', { framework: run.framework.toUpperCase() }) : t('templatesFnewAnalysisRunDetail.overviewDefaultTitle')}
                 </h3>
                 {run.framework === 'swot' ? <SwotView c={run.overview} />
                   : run.framework === '6w' ? <ListView c={run.overview} keys={['who','what','when','where','why','how','summary']} />
@@ -270,7 +272,7 @@ export default function AnalysisRunDetailPage() {
 
             {run.status === 'error' && (
               <div className="bg-[var(--state-error)]/10 rounded-lg-custom border border-[var(--state-error)]/30 p-5 text-sm text-[#9B5050]">
-                <p className="font-medium mb-1">Phân tích thất bại</p>
+                <p className="font-medium mb-1">{t('templatesFnewAnalysisRunDetail.analysisFailedTitle')}</p>
                 <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(run.overview, null, 2)}</pre>
               </div>
             )}
@@ -279,13 +281,12 @@ export default function AnalysisRunDetailPage() {
             <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
               <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
               <p>
-                Tạo: <span className="font-mono">{formatTime(run.created_at)}</span>
+                {t('templatesFnewAnalysisRunDetail.createdAtLabel')} <span className="font-mono">{formatTime(run.created_at)}</span>
                 {run.completed_at && (
-                  <> · Xong: <span className="font-mono">{formatTime(run.completed_at)}</span></>
+                  <> · {t('templatesFnewAnalysisRunDetail.completedAtLabel')} <span className="font-mono">{formatTime(run.completed_at)}</span></>
                 )}
                 {' · '}
-                Mọi LLM call qua <span className="font-mono">llm_router</span> (K-3) ·
-                Audit ghi vào <span className="font-mono">decision_audit_log</span> (K-6).
+                {t('templatesFnewAnalysisRunDetail.auditLlmPre')} <span className="font-mono">llm_router</span> {t('templatesFnewAnalysisRunDetail.auditLlmMid')} <span className="font-mono">decision_audit_log</span> {t('templatesFnewAnalysisRunDetail.auditLlmPost')}
               </p>
             </div>
           </>
@@ -298,6 +299,7 @@ export default function AnalysisRunDetailPage() {
 // ─── Framework-shaped views ──────────────────────────────────────
 
 function SwotView({ c }: { c: any }) {
+  const t = useT();
   if (!c?.strengths || !c?.weaknesses || !c?.opportunities || !c?.threats) {
     return <pre className="text-xs">{JSON.stringify(c, null, 2)}</pre>;
   }
@@ -323,14 +325,14 @@ function SwotView({ c }: { c: any }) {
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <Q title="Điểm mạnh"   items={c.strengths.items   ?? []} tone="good" />
-        <Q title="Điểm yếu"    items={c.weaknesses.items  ?? []} tone="bad" />
-        <Q title="Cơ hội"      items={c.opportunities.items ?? []} tone="good" />
-        <Q title="Nguy cơ"     items={c.threats.items     ?? []} tone="bad" />
+        <Q title={t('templatesFnewAnalysisRunDetail.swotStrengths')}   items={c.strengths.items   ?? []} tone="good" />
+        <Q title={t('templatesFnewAnalysisRunDetail.swotWeaknesses')}  items={c.weaknesses.items  ?? []} tone="bad" />
+        <Q title={t('templatesFnewAnalysisRunDetail.swotOpportunities')} items={c.opportunities.items ?? []} tone="good" />
+        <Q title={t('templatesFnewAnalysisRunDetail.swotThreats')}     items={c.threats.items     ?? []} tone="bad" />
       </div>
       {c.summary && (
         <div className="p-3 rounded-md-custom bg-[var(--primary-gold)]/8 border border-[var(--primary-gold)]/30 text-sm text-[var(--text-primary)]">
-          <span className="font-medium">Tổng kết: </span>{c.summary}
+          <span className="font-medium">{t('templatesFnewAnalysisRunDetail.summaryLabel')}</span>{c.summary}
         </div>
       )}
     </div>
@@ -351,11 +353,12 @@ function ListView({ c, keys }: { c: any; keys: string[] }) {
 }
 
 function TwoHView({ c }: { c: any }) {
+  const t = useT();
   return (
     <div className="space-y-3 text-sm">
       {c?.how && (
         <div className="p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)]/60">
-          <p className="font-medium text-[var(--text-primary)] mb-1">How — {c.how.approach}</p>
+          <p className="font-medium text-[var(--text-primary)] mb-1">{t('templatesFnewAnalysisRunDetail.twoHHowLabel')} — {c.how.approach}</p>
           <ol className="list-decimal pl-5 space-y-1 text-[var(--text-primary)]">
             {(c.how.steps ?? []).map((s: string, i: number) => <li key={i}>{s}</li>)}
           </ol>
@@ -364,10 +367,10 @@ function TwoHView({ c }: { c: any }) {
       {c?.how_much && (
         <div className="p-3 rounded-md-custom bg-[var(--primary-gold)]/8 border border-[var(--primary-gold)]/30">
           <p className="font-medium text-[var(--text-primary)] mb-1">
-            How much: {c.how_much.estimate} {c.how_much.unit}
+            {t('templatesFnewAnalysisRunDetail.twoHHowMuchLabel')}: {c.how_much.estimate} {c.how_much.unit}
             {typeof c.how_much.confidence === 'number' && (
               <span className="ml-2 text-[10px] text-[var(--text-secondary)] font-mono">
-                conf {Math.round(c.how_much.confidence * 100)}%
+                {t('templatesFnewAnalysisRunDetail.confidenceLabel')} {Math.round(c.how_much.confidence * 100)}%
               </span>
             )}
           </p>
@@ -378,17 +381,18 @@ function TwoHView({ c }: { c: any }) {
           )}
         </div>
       )}
-      {c?.summary && <p className="text-sm text-[var(--text-primary)]"><span className="font-medium">Tổng kết: </span>{c.summary}</p>}
+      {c?.summary && <p className="text-sm text-[var(--text-primary)]"><span className="font-medium">{t('templatesFnewAnalysisRunDetail.summaryLabel')}</span>{c.summary}</p>}
     </div>
   );
 }
 
 function FishboneView({ c }: { c: any }) {
+  const t = useT();
   return (
     <div className="space-y-3 text-sm">
       {c?.problem && (
         <p className="p-3 rounded-md-custom bg-[var(--state-error)]/10 border border-[var(--state-error)]/30">
-          <span className="font-medium">Vấn đề: </span>{c.problem}
+          <span className="font-medium">{t('templatesFnewAnalysisRunDetail.problemLabel')}</span>{c.problem}
         </p>
       )}
       {Array.isArray(c?.categories) && (
@@ -410,7 +414,7 @@ function FishboneView({ c }: { c: any }) {
       )}
       {c?.root_cause_hypothesis && (
         <p className="p-3 rounded-md-custom bg-[var(--primary-gold)]/8 border border-[var(--primary-gold)]/30">
-          <span className="font-medium">Giả thuyết gốc rễ: </span>{c.root_cause_hypothesis}
+          <span className="font-medium">{t('templatesFnewAnalysisRunDetail.rootCauseLabel')}</span>{c.root_cause_hypothesis}
         </p>
       )}
     </div>

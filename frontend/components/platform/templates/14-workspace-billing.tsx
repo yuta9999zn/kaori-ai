@@ -6,7 +6,8 @@
 // the script to regenerate. Lazy `any` types added; not meant for strict tsc.
 
 import React, { useState, useEffect, useRef } from 'react';
-import { 
+import { useT } from '@/lib/i18n/provider';
+import {
   LayoutDashboard, 
   Briefcase, 
   Key, 
@@ -231,9 +232,11 @@ const Input = React.forwardRef<any, any>(({ className, label, error, helperText,
 Input.displayName = "Input";
 
 // --- SELECT (Simulated Radix Select) ---
-const Select = ({  label, placeholder = "Select an option", options = [], value, onChange, error  }: any) => {
+const Select = ({  label, placeholder, options = [], value, onChange, error  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
+  const resolvedPlaceholder = placeholder ?? t('templates14WorkspaceBilling.selectAnOption');
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -257,7 +260,7 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
           !selectedOption ? "text-[var(--text-secondary)]/60" : "text-[var(--text-primary)]"
         )}
       >
-        {selectedOption ? selectedOption.label : placeholder}
+        {selectedOption ? selectedOption.label : resolvedPlaceholder}
         <ChevronDown className="h-4 w-4 opacity-50" />
       </button>
       {isOpen && (
@@ -283,9 +286,20 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
 };
 
 // --- DATEPICKER (Simulated) ---
-const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any) => {
+const DatePicker = ({  label, placeholder, date, setDate  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
+  const resolvedPlaceholder = placeholder ?? t('templates14WorkspaceBilling.pickADate');
+  const weekdayLabels = [
+    t('templates14WorkspaceBilling.dayShortSun'),
+    t('templates14WorkspaceBilling.dayShortMon'),
+    t('templates14WorkspaceBilling.dayShortTue'),
+    t('templates14WorkspaceBilling.dayShortWed'),
+    t('templates14WorkspaceBilling.dayShortThu'),
+    t('templates14WorkspaceBilling.dayShortFri'),
+    t('templates14WorkspaceBilling.dayShortSat'),
+  ];
   useEffect(() => {
     const handleClickOutside = (e) => { if (ref.current && !ref.current.contains(e.target)) setIsOpen(false); };
     document.addEventListener('mousedown', handleClickOutside);
@@ -304,19 +318,19 @@ const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any
         )}
       >
         <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
-        {date ? date : placeholder}
+        {date ? date : resolvedPlaceholder}
       </button>
       {isOpen && (
         <div className="absolute top-full left-0 z-50 mt-1 p-3 bg-white rounded-md-custom border border-[var(--border-color)] shadow-soft-md animate-in fade-in zoom-in-95 duration-150 w-[280px]">
            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm font-semibold text-[var(--text-primary)]">October 2026</span>
+              <span className="text-sm font-semibold text-[var(--text-primary)]">{t('templates14WorkspaceBilling.calendarMonthDemo')}</span>
               <div className="flex gap-1">
                 <button className="p-1 hover:bg-[var(--bg-app)] rounded"><ChevronRight className="w-4 h-4 rotate-180 text-[var(--text-secondary)]"/></button>
                 <button className="p-1 hover:bg-[var(--bg-app)] rounded"><ChevronRight className="w-4 h-4 text-[var(--text-secondary)]"/></button>
               </div>
            </div>
            <div className="grid grid-cols-7 gap-1 text-center text-xs text-[var(--text-secondary)] mb-2">
-             {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => <div key={d}>{d}</div>)}
+             {weekdayLabels.map(d => <div key={d}>{d}</div>)}
            </div>
            <div className="grid grid-cols-7 gap-1 text-sm">
              {Array.from({length: 31}).map((_, i) => (
@@ -341,6 +355,7 @@ const Card = ({  className, ...props  }: any) => (
 );
 
 const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className  }: any) => {
+  const t = useT();
   const isPositive = (isUp && !inverseGood) || (!isUp && inverseGood);
   const trendColor = trend === '0%' ? 'text-[var(--text-secondary)]' : isPositive ? 'text-[#5C856A]' : 'text-[#9B5050]';
   return (
@@ -356,7 +371,7 @@ const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className
             </div>
           )}
         </div>
-        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">vs yesterday</div>
+        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">{t('templates14WorkspaceBilling.vsYesterday')}</div>
       </div>
     </Card>
   );
@@ -375,6 +390,7 @@ const TableHead = ({  className, ...props  }: any) => <th className={cn("h-12 px
 const TableCell = ({  className, ...props  }: any) => <td className={cn("p-4 align-middle text-[var(--text-primary)]", className)} {...props} />;
 
 const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
+  const t = useT();
   return (
     <div className="rounded-lg-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm overflow-hidden w-full">
       <Table>
@@ -399,8 +415,8 @@ const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
                   <div className="w-10 h-10 rounded-full bg-[var(--bg-app)] flex items-center justify-center mb-2">
                     <Search className="w-5 h-5 text-[var(--text-secondary)]" />
                   </div>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">No results found</span>
-                  <span className="text-xs text-[var(--text-secondary)]">Try adjusting your filters</span>
+                  <span className="text-sm font-medium text-[var(--text-primary)]">{t('templates14WorkspaceBilling.noResultsFound')}</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{t('templates14WorkspaceBilling.tryAdjustingFilters')}</span>
                 </div>
               </TableCell>
             </TableRow>
@@ -415,10 +431,10 @@ const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
       </Table>
       {pagination && data.length > 0 && (
         <div className="border-t border-[var(--border-color)] px-4 py-3 flex items-center justify-between bg-[#FCFBF9]">
-          <span className="text-xs text-[var(--text-secondary)]">Showing 1 to {data.length} of {data.length} results</span>
+          <span className="text-xs text-[var(--text-secondary)]">{t('templates14WorkspaceBilling.showingResults', { count: data.length })}</span>
           <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled>Previous</Button>
-              <Button variant="outline" size="sm">Next</Button>
+              <Button variant="outline" size="sm" disabled>{t('templates14WorkspaceBilling.previous')}</Button>
+              <Button variant="outline" size="sm">{t('templates14WorkspaceBilling.next')}</Button>
           </div>
         </div>
       )}
@@ -568,27 +584,27 @@ const Section = ({  title, description, actions, children, className = ''  }: an
 // ==========================================
 
 // --- CONFIG ---
-const NAVIGATION_CONFIG = [
+const getNavigationConfig = (t: any) => [
   {
-    group: 'Main',
+    group: t('templates14WorkspaceBilling.navGroupMain'),
     items: [
-      { id: 'overview', label: 'Platform Health', icon: LayoutDashboard, route: '/platform' },
-      { id: 'workspaces', label: 'Workspaces', icon: Briefcase, route: '/platform/workspaces', badge: '4' },
+      { id: 'overview', label: t('templates14WorkspaceBilling.navPlatformHealth'), icon: LayoutDashboard, route: '/platform' },
+      { id: 'workspaces', label: t('templates14WorkspaceBilling.navWorkspaces'), icon: Briefcase, route: '/platform/workspaces', badge: '4' },
     ]
   },
   {
-    group: 'Management',
+    group: t('templates14WorkspaceBilling.navGroupManagement'),
     items: [
-      { id: 'keys', label: 'API Keys', icon: Key, route: '/platform/keys' },
-      { id: 'billing', label: 'Billing', icon: CreditCard, route: '/platform/billing' },
-      { id: 'admin', label: 'Admins', icon: Shield, route: '/platform/admins', role: 'admin' },
+      { id: 'keys', label: t('templates14WorkspaceBilling.navApiKeys'), icon: Key, route: '/platform/keys' },
+      { id: 'billing', label: t('templates14WorkspaceBilling.navBilling'), icon: CreditCard, route: '/platform/billing' },
+      { id: 'admin', label: t('templates14WorkspaceBilling.navAdmins'), icon: Shield, route: '/platform/admins', role: 'admin' },
     ]
   },
   {
-    group: 'System',
+    group: t('templates14WorkspaceBilling.navGroupSystem'),
     items: [
-      { id: 'components', label: 'Component Library', icon: Component, route: '/platform/components' },
-      { id: 'sessions', label: 'Security & Sessions', icon: Settings, route: '/p1/auth/sessions' },
+      { id: 'components', label: t('templates14WorkspaceBilling.navComponentLibrary'), icon: Component, route: '/platform/components' },
+      { id: 'sessions', label: t('templates14WorkspaceBilling.navSecuritySessions'), icon: Settings, route: '/p1/auth/sessions' },
     ]
   }
 ];
@@ -608,6 +624,7 @@ const EnvBadge = ({  env = 'production'  }: any) => {
 };
 
 const NotificationDropdown = () => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -628,7 +645,7 @@ const NotificationDropdown = () => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-[320px] bg-[var(--bg-card)] rounded-lg-custom shadow-soft-md border border-[var(--border-color)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 z-50">
           <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] bg-[#FCFBF9]">
-            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Notifications</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates14WorkspaceBilling.notifications')}</h3>
           </div>
           <div className="max-h-[300px] overflow-y-auto">
             {notifications.map((n) => (
@@ -648,6 +665,7 @@ const NotificationDropdown = () => {
 };
 
 const HeaderUserMenu = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -670,13 +688,13 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
           </div>
           <div className="p-1.5">
             <button onClick={() => { setActiveRoute('sessions'); setIsOpen(false); }} className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> Security & Sessions
+              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> {t('templates14WorkspaceBilling.navSecuritySessions')}
             </button>
           </div>
           <div className="h-[1px] bg-[var(--border-color)]/50 mx-1.5" />
           <div className="p-1.5">
             <button className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] transition-colors flex items-center gap-2 font-medium">
-              <LogOut className="w-4 h-4" /> Sign out
+              <LogOut className="w-4 h-4" /> {t('templates14WorkspaceBilling.signOut')}
             </button>
           </div>
         </div>
@@ -686,11 +704,13 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
 };
 
 const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: any) => {
+  const t = useT();
+  const NAVIGATION_CONFIG = getNavigationConfig(t);
   // If the route is a detail route, show custom label.
   let routeLabel = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label;
-  if (activeRoute === 'workspace-details') routeLabel = 'Workspaces / Overview';
-  else if (activeRoute === 'workspace-members') routeLabel = 'Workspaces / Members';
-  else if (activeRoute === 'billing') routeLabel = 'Workspaces / Billing';
+  if (activeRoute === 'workspace-details') routeLabel = t('templates14WorkspaceBilling.routeWorkspacesOverview');
+  else if (activeRoute === 'workspace-members') routeLabel = t('templates14WorkspaceBilling.routeWorkspacesMembers');
+  else if (activeRoute === 'billing') routeLabel = t('templates14WorkspaceBilling.routeWorkspacesBilling');
   else if (!routeLabel) routeLabel = activeRoute;
 
   return (
@@ -700,7 +720,7 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
           <Menu className="w-5 h-5" />
         </button>
         <div className="hidden sm:flex items-center text-sm font-medium">
-          <span className="text-[var(--text-secondary)]">Platform</span>
+          <span className="text-[var(--text-secondary)]">{t('templates14WorkspaceBilling.platformLabel')}</span>
           <ChevronRight className="w-4 h-4 mx-2 text-[var(--border-color)] shrink-0 opacity-50" />
           <span className="text-[var(--text-primary)] capitalize">{routeLabel}</span>
         </div>
@@ -711,9 +731,9 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
         <div className="hidden sm:flex items-center gap-2">
            <div className="relative group hidden lg:block">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-[var(--text-secondary)] group-focus-within:text-[var(--primary-gold)] transition-colors" />
-              <input type="text" placeholder="Search..." className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
+              <input type="text" placeholder={t('templates14WorkspaceBilling.headerSearchPlaceholder')} className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
             </div>
-            <Button variant="outline" size="sm" className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> Workspace</Button>
+            <Button variant="outline" size="sm" className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> {t('templates14WorkspaceBilling.colWorkspace')}</Button>
         </div>
         <NotificationDropdown />
         <HeaderUserMenu setActiveRoute={setActiveRoute} />
@@ -737,6 +757,8 @@ const SidebarTooltip = ({  children, content, isCollapsed  }: any) => {
 };
 
 const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, setIsCollapsed  }: any) => {
+  const t = useT();
+  const NAVIGATION_CONFIG = getNavigationConfig(t);
   const collapsed = isCollapsed && !isMobile;
   // Keep Workspaces highlighted for any workspace sub-route or billing
   const currentHighlight = (activeRoute === 'workspace-details' || activeRoute === 'workspace-members' || activeRoute === 'billing') ? 'workspaces' : activeRoute;
@@ -753,12 +775,12 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
         {!collapsed && (
           <div className="flex flex-col overflow-hidden animate-in fade-in duration-300">
             <span className="font-serif text-[17px] leading-none font-semibold text-[var(--text-primary)] tracking-wide">Kaori</span>
-            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">Platform</span>
+            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">{t('templates14WorkspaceBilling.platformLabel')}</span>
           </div>
         )}
       </div>
 
-      <nav aria-label="Main Navigation" className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-6">
+      <nav aria-label={t('templates14WorkspaceBilling.ariaMainNavigation')} className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-6">
         {NAVIGATION_CONFIG.map((group, idx) => (
           <div key={idx} className="flex flex-col">
             {!collapsed ? (
@@ -807,7 +829,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
             className={cn("w-full flex items-center h-8 rounded-md-custom text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors border border-transparent hover:border-[var(--border-color)]/50", collapsed ? 'justify-center' : 'px-3 gap-3')}
           >
             {collapsed ? <PanelLeftOpen className="w-[18px] h-[18px]" /> : <PanelLeftClose className="w-[18px] h-[18px]" />}
-            {!collapsed && <span className="text-xs font-medium">Collapse sidebar</span>}
+            {!collapsed && <span className="text-xs font-medium">{t('templates14WorkspaceBilling.collapseSidebar')}</span>}
           </button>
         )}
       </div>
@@ -822,6 +844,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
 
 // --- WORKSPACE BILLING PAGE ---
 const UsageCard = ({  title, current, max, unit, icon: Icon  }: any) => {
+  const t = useT();
   const percent = Math.min((current / max) * 100, 100);
   const isWarning = percent >= 80;
 
@@ -840,14 +863,15 @@ const UsageCard = ({  title, current, max, unit, icon: Icon  }: any) => {
          <div className={cn("h-2 rounded-full transition-all duration-500", isWarning ? "bg-[#D97C7C]" : "bg-[#5C856A]")} style={{ width: `${percent}%` }}></div>
       </div>
       <div className="flex items-center justify-between mt-2">
-        <span className="text-[11px] font-medium text-[var(--text-secondary)]">{percent.toFixed(1)}% used</span>
-        {isWarning && <span className="text-[11px] text-[#9B5050] font-medium flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> Approaching limit</span>}
+        <span className="text-[11px] font-medium text-[var(--text-secondary)]">{t('templates14WorkspaceBilling.percentUsed', { percent: percent.toFixed(1) })}</span>
+        {isWarning && <span className="text-[11px] text-[#9B5050] font-medium flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> {t('templates14WorkspaceBilling.approachingLimit')}</span>}
       </div>
     </Card>
   );
 };
 
 const WorkspaceBillingPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [isLoadingInvoices, setIsLoadingInvoices] = useState(true);
@@ -875,55 +899,55 @@ const WorkspaceBillingPage = ({  setActiveRoute  }: any) => {
   return (
     <PageContainer maxWidth="default">
       <PageHeader 
-        showBack 
+        showBack
         onBack={() => setActiveRoute('workspace-details')}
-        title="Billing & Usage" 
-        subtitle="Manage your subscription, monitor usage, and view invoices."
+        title={t('templates14WorkspaceBilling.billingTitle')}
+        subtitle={t('templates14WorkspaceBilling.billingSubtitle')}
         actions={
           <>
-            <Button variant="outline" className="hidden sm:flex"><Download className="w-4 h-4 mr-2" /> Download all</Button>
-            <Button onClick={() => setIsUpgradeOpen(true)}>Upgrade plan</Button>
+            <Button variant="outline" className="hidden sm:flex"><Download className="w-4 h-4 mr-2" /> {t('templates14WorkspaceBilling.downloadAll')}</Button>
+            <Button onClick={() => setIsUpgradeOpen(true)}>{t('templates14WorkspaceBilling.upgradePlan')}</Button>
           </>
         }
       />
 
-      <Section title="Current Plan">
+      <Section title={t('templates14WorkspaceBilling.currentPlanSectionTitle')}>
         <Card className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border-[var(--primary-gold)]/40 bg-[#FAF7F2]/30 relative overflow-hidden">
           <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-[var(--primary-gold)]/5 to-transparent pointer-events-none" />
           <div className="relative z-10 flex flex-col gap-1">
             <div className="flex items-center gap-3">
-              <h3 className="text-lg font-semibold text-[var(--text-primary)]">Pro Tier</h3>
-              <Badge variant="current">Active</Badge>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)]">{t('templates14WorkspaceBilling.proTier')}</h3>
+              <Badge variant="current">{t('templates14WorkspaceBilling.statusActive')}</Badge>
             </div>
             <p className="text-sm text-[var(--text-secondary)]">
-              $49.00 / month, billed monthly.
+              {t('templates14WorkspaceBilling.planPriceMonthly')}
             </p>
             <p className="text-xs text-[var(--text-secondary)] mt-2">
-              Next billing date is <strong className="font-medium text-[var(--text-primary)]">Nov 01, 2026</strong>.
+              {t('templates14WorkspaceBilling.nextBillingDateLead')} <strong className="font-medium text-[var(--text-primary)]">Nov 01, 2026</strong>.
             </p>
           </div>
           <div className="relative z-10 flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-            <Button variant="outline" onClick={() => setIsCancelOpen(true)}>Cancel Plan</Button>
-            <Button onClick={() => setIsUpgradeOpen(true)}>Change Plan</Button>
+            <Button variant="outline" onClick={() => setIsCancelOpen(true)}>{t('templates14WorkspaceBilling.cancelPlan')}</Button>
+            <Button onClick={() => setIsUpgradeOpen(true)}>{t('templates14WorkspaceBilling.changePlan')}</Button>
           </div>
         </Card>
       </Section>
 
-      <Section title="Current Usage">
+      <Section title={t('templates14WorkspaceBilling.currentUsageSectionTitle')}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-           <UsageCard title="API Requests" icon={Zap} current={42150} max={50000} unit="reqs" />
-           <UsageCard title="Storage Used" icon={HardDrive} current={8.4} max={50} unit="GB" />
-           <UsageCard title="Active Users" icon={Users} current={8} max={10} unit="seats" />
+           <UsageCard title={t('templates14WorkspaceBilling.apiRequestsTitle')} icon={Zap} current={42150} max={50000} unit={t('templates14WorkspaceBilling.unitReqs')} />
+           <UsageCard title={t('templates14WorkspaceBilling.storageUsedTitle')} icon={HardDrive} current={8.4} max={50} unit="GB" />
+           <UsageCard title={t('templates14WorkspaceBilling.activeUsersTitle')} icon={Users} current={8} max={10} unit={t('templates14WorkspaceBilling.unitSeats')} />
         </div>
       </Section>
 
-      <Section title="Invoices" actions={
+      <Section title={t('templates14WorkspaceBilling.invoicesSectionTitle')} actions={
         <div className="w-32">
-          <Select value="2026" onChange={() => {}} options={[{label: '2026', value: '2026'}, {label: '2025', value: '2025'}]} placeholder="Year" />
+          <Select value="2026" onChange={() => {}} options={[{label: '2026', value: '2026'}, {label: '2025', value: '2025'}]} placeholder={t('templates14WorkspaceBilling.yearSelectPlaceholder')} />
         </div>
       }>
-        <DataTable 
-          columns={["Invoice ID", "Date", "Amount", "Status", ""]}
+        <DataTable
+          columns={[t('templates14WorkspaceBilling.colInvoiceId'), t('templates14WorkspaceBilling.colDate'), t('templates14WorkspaceBilling.colAmount'), t('templates14WorkspaceBilling.labelStatus'), ""]}
           data={invoiceData}
           loading={isLoadingInvoices}
           pagination={false}
@@ -931,77 +955,77 @@ const WorkspaceBillingPage = ({  setActiveRoute  }: any) => {
       </Section>
 
       {/* Upgrade Modal */}
-      <Modal 
-        isOpen={isUpgradeOpen} 
+      <Modal
+        isOpen={isUpgradeOpen}
         onClose={() => setIsUpgradeOpen(false)}
-        title="Upgrade Plan"
-        description="Select a tier that best suits your team's needs."
+        title={t('templates14WorkspaceBilling.upgradePlanModalTitle')}
+        description={t('templates14WorkspaceBilling.upgradePlanModalDesc')}
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
           {/* Free Tier */}
           <div className="border border-[var(--border-color)] rounded-lg-custom p-4 bg-[var(--bg-app)] flex flex-col">
             <div className="mb-4">
-              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">Free</h4>
+              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">{t('templates14WorkspaceBilling.planFree')}</h4>
               <div className="text-2xl font-bold text-[var(--text-primary)]">$0<span className="text-sm text-[var(--text-secondary)] font-normal">/mo</span></div>
             </div>
             <ul className="text-xs text-[var(--text-secondary)] space-y-2 mb-6 flex-1">
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> 10,000 API reqs/mo</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> 5 GB Storage</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> 3 Team Members</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> {t('templates14WorkspaceBilling.featureFreeReqs')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> {t('templates14WorkspaceBilling.featureFreeStorage')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> {t('templates14WorkspaceBilling.featureFreeMembers')}</li>
             </ul>
-            <Button variant="outline" className="w-full" disabled>Downgrade</Button>
+            <Button variant="outline" className="w-full" disabled>{t('templates14WorkspaceBilling.downgrade')}</Button>
           </div>
 
           {/* Pro Tier (Current) */}
           <div className="border-2 border-[var(--primary-gold)] rounded-lg-custom p-4 bg-white flex flex-col relative shadow-soft-md scale-[1.02]">
             <div className="absolute top-0 right-0 bg-[var(--primary-gold)] text-[var(--bg-card)] text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded-bl-lg rounded-tr-[14px]">
-              Current
+              {t('templates14WorkspaceBilling.currentBadge')}
             </div>
             <div className="mb-4">
-              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">Pro</h4>
+              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">{t('templates14WorkspaceBilling.planPro')}</h4>
               <div className="text-2xl font-bold text-[var(--text-primary)]">$49<span className="text-sm text-[var(--text-secondary)] font-normal">/mo</span></div>
             </div>
             <ul className="text-xs text-[var(--text-secondary)] space-y-2 mb-6 flex-1">
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> 50,000 API reqs/mo</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> 50 GB Storage</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> 10 Team Members</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> Email Support</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> {t('templates14WorkspaceBilling.featureProReqs')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> {t('templates14WorkspaceBilling.featureProStorage')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> {t('templates14WorkspaceBilling.featureProMembers')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> {t('templates14WorkspaceBilling.featureProSupport')}</li>
             </ul>
-            <Button variant="outline" className="w-full border-[var(--primary-gold)] text-[#9E814D]" disabled>Current Plan</Button>
+            <Button variant="outline" className="w-full border-[var(--primary-gold)] text-[#9E814D]" disabled>{t('templates14WorkspaceBilling.currentPlanButton')}</Button>
           </div>
 
           {/* Enterprise Tier */}
           <div className="border border-[var(--border-color)] rounded-lg-custom p-4 bg-white flex flex-col">
             <div className="mb-4">
-              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">Enterprise</h4>
+              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">{t('templates14WorkspaceBilling.planEnterprise')}</h4>
               <div className="text-2xl font-bold text-[var(--text-primary)]">$249<span className="text-sm text-[var(--text-secondary)] font-normal">/mo</span></div>
             </div>
             <ul className="text-xs text-[var(--text-secondary)] space-y-2 mb-6 flex-1">
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> Unlimited API reqs</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> 500 GB Storage</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> Unlimited Members</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> Priority Support & SLAs</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> {t('templates14WorkspaceBilling.featureEntReqs')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> {t('templates14WorkspaceBilling.featureEntStorage')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> {t('templates14WorkspaceBilling.featureEntMembers')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> {t('templates14WorkspaceBilling.featureEntSupport')}</li>
             </ul>
-            <Button className="w-full">Upgrade</Button>
+            <Button className="w-full">{t('templates14WorkspaceBilling.upgradeButton')}</Button>
           </div>
         </div>
       </Modal>
 
       {/* Cancel Plan Modal */}
-      <Modal 
-        isOpen={isCancelOpen} 
+      <Modal
+        isOpen={isCancelOpen}
         onClose={() => setIsCancelOpen(false)}
-        title="Cancel Subscription"
-        description="Are you sure you want to cancel your Pro plan? Your workspace will be downgraded to the Free tier at the end of the current billing cycle."
+        title={t('templates14WorkspaceBilling.cancelSubscriptionTitle')}
+        description={t('templates14WorkspaceBilling.cancelSubscriptionDesc')}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsCancelOpen(false)}>Keep Plan</Button>
-            <Button variant="destructive" onClick={() => setIsCancelOpen(false)}>Confirm Cancellation</Button>
+            <Button variant="outline" onClick={() => setIsCancelOpen(false)}>{t('templates14WorkspaceBilling.keepPlan')}</Button>
+            <Button variant="destructive" onClick={() => setIsCancelOpen(false)}>{t('templates14WorkspaceBilling.confirmCancellation')}</Button>
           </>
         }
       >
-         <Alert variant="warning" title="Warning">
-           Downgrading will reduce your limits to 10,000 API requests and 5 GB storage. Any resources exceeding these limits may become unavailable.
+         <Alert variant="warning" title={t('templates14WorkspaceBilling.warningTitle')}>
+           {t('templates14WorkspaceBilling.downgradeWarningBody')}
          </Alert>
       </Modal>
 
@@ -1019,6 +1043,7 @@ const MOCK_MEMBERS = [
 ];
 
 const MemberActionsDropdown = ({  member, onRemove  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
 
@@ -1041,27 +1066,27 @@ const MemberActionsDropdown = ({  member, onRemove  }: any) => {
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 animate-in fade-in zoom-in-95 duration-100">
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> Change role
+            <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates14WorkspaceBilling.changeRole')}
           </button>
-          
+
           {member.status === 'Pending' && (
             <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-              <Send className="w-4 h-4 text-[var(--text-secondary)]"/> Resend invite
+              <Send className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates14WorkspaceBilling.resendInvite')}
             </button>
           )}
 
           {member.role === 'Owner' && (
             <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-              <Key className="w-4 h-4 text-[var(--text-secondary)]"/> Transfer ownership
+              <Key className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates14WorkspaceBilling.transferOwnership')}
             </button>
           )}
 
           <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2" />
-          <button 
+          <button
             onClick={() => { onRemove(member); setIsOpen(false); }}
             className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] flex items-center gap-2 transition-colors font-medium"
           >
-            <Trash2 className="w-4 h-4 opacity-80"/> Remove member
+            <Trash2 className="w-4 h-4 opacity-80"/> {t('templates14WorkspaceBilling.removeMemberAction')}
           </button>
         </div>
       )}
@@ -1070,6 +1095,7 @@ const MemberActionsDropdown = ({  member, onRemove  }: any) => {
 };
 
 const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -1092,7 +1118,7 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
     if (memberToRemove?.role === 'Owner') {
       const ownerCount = members.filter(m => m.role === 'Owner').length;
       if (ownerCount <= 1) {
-        setRemoveError("You cannot remove the last owner. Please transfer ownership first.");
+        setRemoveError(t('templates14WorkspaceBilling.errCannotRemoveLastOwner'));
         return;
       }
     }
@@ -1139,7 +1165,7 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
        <div>
          <div className="font-medium text-[var(--text-primary)] flex items-center gap-2">
            {m.name} 
-           {m.id === 'm1' && <span className="text-[10px] bg-[var(--bg-app)] border border-[var(--border-color)] px-1.5 py-0.5 rounded text-[var(--text-secondary)]">You</span>}
+           {m.id === 'm1' && <span className="text-[10px] bg-[var(--bg-app)] border border-[var(--border-color)] px-1.5 py-0.5 rounded text-[var(--text-secondary)]">{t('templates14WorkspaceBilling.youBadge')}</span>}
          </div>
          <div className="text-xs text-[var(--text-secondary)] mt-0.5">{m.email}</div>
        </div>
@@ -1153,16 +1179,16 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        showBack 
+      <PageHeader
+        showBack
         onBack={() => setActiveRoute('workspace-details')}
-        title="Members" 
-        subtitle="Manage users and access levels for Production AI workspace." 
+        title={t('templates14WorkspaceBilling.membersTitle')}
+        subtitle={t('templates14WorkspaceBilling.membersSubtitle', { workspace: 'Production AI' })}
         actions={
           <Button onClick={() => setIsInviteOpen(true)}>
-            <UserPlus className="w-4 h-4 mr-2"/> Invite member
+            <UserPlus className="w-4 h-4 mr-2"/> {t('templates14WorkspaceBilling.inviteMember')}
           </Button>
-        } 
+        }
       />
 
       <Section>
@@ -1172,98 +1198,98 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               className="h-10 w-full pl-9 pr-3 rounded-md-custom border border-[var(--border-color)] bg-white text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
-              placeholder="Search by name or email..."
+              placeholder={t('templates14WorkspaceBilling.searchByNameEmail')}
               value={search}
               onChange={(e: any) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex w-full sm:w-auto gap-3 shrink-0">
             <div className="w-full sm:w-36">
-              <Select 
-                value={roleFilter} 
-                onChange={setRoleFilter} 
+              <Select
+                value={roleFilter}
+                onChange={setRoleFilter}
                 options={[
-                  {label: 'All Roles', value: 'all'}, 
-                  {label: 'Owner', value: 'Owner'}, 
-                  {label: 'Admin', value: 'Admin'},
-                  {label: 'Member', value: 'Member'},
-                  {label: 'Viewer', value: 'Viewer'}
-                ]} 
-                placeholder="Role" 
+                  {label: t('templates14WorkspaceBilling.allRoles'), value: 'all'},
+                  {label: t('templates14WorkspaceBilling.roleOwner'), value: 'Owner'},
+                  {label: t('templates14WorkspaceBilling.roleAdmin'), value: 'Admin'},
+                  {label: t('templates14WorkspaceBilling.roleMember'), value: 'Member'},
+                  {label: t('templates14WorkspaceBilling.roleViewer'), value: 'Viewer'}
+                ]}
+                placeholder={t('templates14WorkspaceBilling.rolePlaceholder')}
               />
             </div>
             <div className="w-full sm:w-36">
-              <Select 
-                value={statusFilter} 
-                onChange={setStatusFilter} 
-                options={[{label: 'All Statuses', value: 'all'}, {label: 'Active', value: 'Active'}, {label: 'Pending', value: 'Pending'}]} 
-                placeholder="Status" 
+              <Select
+                value={statusFilter}
+                onChange={setStatusFilter}
+                options={[{label: t('templates14WorkspaceBilling.allStatuses'), value: 'all'}, {label: t('templates14WorkspaceBilling.statusActive'), value: 'Active'}, {label: t('templates14WorkspaceBilling.statusPending'), value: 'Pending'}]}
+                placeholder={t('templates14WorkspaceBilling.statusPlaceholder')}
               />
             </div>
           </div>
           {(search || roleFilter !== 'all' || statusFilter !== 'all') && (
             <Button variant="tertiary" onClick={() => {setSearch(''); setRoleFilter('all'); setStatusFilter('all');}} className="px-3">
-              Clear filters
+              {t('templates14WorkspaceBilling.clearFilters')}
             </Button>
           )}
         </div>
       </Section>
 
       <Section>
-        <DataTable 
-          columns={["Name", "Role", "Status", "Last Active", "Joined", ""]} 
-          data={mappedData} 
-          loading={isLoading} 
+        <DataTable
+          columns={[t('templates14WorkspaceBilling.colName'), t('templates14WorkspaceBilling.rolePlaceholder'), t('templates14WorkspaceBilling.labelStatus'), t('templates14WorkspaceBilling.colLastActive'), t('templates14WorkspaceBilling.colJoined'), ""]}
+          data={mappedData}
+          loading={isLoading}
         />
       </Section>
 
       {/* Invite Modal */}
-      <Modal 
-        isOpen={isInviteOpen} 
+      <Modal
+        isOpen={isInviteOpen}
         onClose={() => setIsInviteOpen(false)}
-        title="Invite Member"
-        description="Send an email invitation to join this workspace."
+        title={t('templates14WorkspaceBilling.inviteMemberModalTitle')}
+        description={t('templates14WorkspaceBilling.inviteMemberModalDesc')}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsInviteOpen(false)}>Cancel</Button>
-            <Button onClick={handleInvite}><Mail className="w-4 h-4 mr-2"/> Send Invite</Button>
+            <Button variant="outline" onClick={() => setIsInviteOpen(false)}>{t('templates14WorkspaceBilling.cancel')}</Button>
+            <Button onClick={handleInvite}><Mail className="w-4 h-4 mr-2"/> {t('templates14WorkspaceBilling.sendInvite')}</Button>
           </>
         }
       >
         <div className="space-y-4">
-          <Input 
-            label="Email Address" 
-            placeholder="colleague@company.com" 
+          <Input
+            label={t('templates14WorkspaceBilling.emailAddress')}
+            placeholder="colleague@company.com"
             value={inviteEmail}
             onChange={e => setInviteEmail(e.target.value)}
           />
-          <Select 
-            label="Workspace Role" 
-            placeholder="Select a role..."
+          <Select
+            label={t('templates14WorkspaceBilling.workspaceRole')}
+            placeholder={t('templates14WorkspaceBilling.selectARole')}
             options={[
-              {label: 'Admin', value: 'admin'}, 
-              {label: 'Member', value: 'member'}, 
-              {label: 'Viewer', value: 'viewer'}
+              {label: t('templates14WorkspaceBilling.roleAdmin'), value: 'admin'},
+              {label: t('templates14WorkspaceBilling.roleMember'), value: 'member'},
+              {label: t('templates14WorkspaceBilling.roleViewer'), value: 'viewer'}
             ]}
             value="member"
             onChange={() => {}}
           />
           <Alert variant="info" className="mt-2">
-            Members can view and interact with all resources, but cannot manage billing or workspace settings.
+            {t('templates14WorkspaceBilling.inviteInfoAlert')}
           </Alert>
         </div>
       </Modal>
 
       {/* Remove Confirmation Modal */}
-      <Modal 
-        isOpen={!!memberToRemove} 
+      <Modal
+        isOpen={!!memberToRemove}
         onClose={() => { setMemberToRemove(null); setRemoveError(''); }}
-        title="Remove Member"
-        description={`Are you sure you want to remove ${memberToRemove?.name} from this workspace? They will lose access immediately.`}
+        title={t('templates14WorkspaceBilling.removeMemberTitle')}
+        description={t('templates14WorkspaceBilling.removeMemberDesc', { name: memberToRemove?.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => { setMemberToRemove(null); setRemoveError(''); }}>Cancel</Button>
-            <Button variant="destructive" onClick={handleRemove}>Remove Member</Button>
+            <Button variant="outline" onClick={() => { setMemberToRemove(null); setRemoveError(''); }}>{t('templates14WorkspaceBilling.cancel')}</Button>
+            <Button variant="destructive" onClick={handleRemove}>{t('templates14WorkspaceBilling.removeMemberTitle')}</Button>
           </>
         }
       >
@@ -1273,7 +1299,7 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
           </Alert>
         )}
         <div className="text-sm text-[var(--text-secondary)]">
-          This action cannot be undone. To restore access later, you will need to send a new invitation.
+          {t('templates14WorkspaceBilling.removeMemberUndoNotice')}
         </div>
       </Modal>
 
@@ -1283,20 +1309,21 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
 
 // --- WORKSPACE OVERVIEW PAGE ---
 const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        showBack 
+      <PageHeader
+        showBack
         onBack={() => setActiveRoute('workspaces')}
-        title="Production AI" 
-        subtitle="ws_prod_01 • Main production environment for ML models" 
+        title="Production AI"
+        subtitle={t('templates14WorkspaceBilling.workspaceOverviewSubtitle', { wsId: 'ws_prod_01' })}
         actions={
           <>
-            <Button variant="outline" className="hidden sm:flex"><Edit2 className="w-4 h-4 mr-2"/> Edit details</Button>
-            <Button variant="outline" className="hidden sm:flex" onClick={() => setActiveRoute('workspace-members')}><Users className="w-4 h-4 mr-2"/> Manage members</Button>
+            <Button variant="outline" className="hidden sm:flex"><Edit2 className="w-4 h-4 mr-2"/> {t('templates14WorkspaceBilling.editDetails')}</Button>
+            <Button variant="outline" className="hidden sm:flex" onClick={() => setActiveRoute('workspace-members')}><Users className="w-4 h-4 mr-2"/> {t('templates14WorkspaceBilling.manageMembers')}</Button>
             <Button variant="tertiary" size="icon"><MoreVertical className="w-4 h-4" /></Button>
           </>
-        } 
+        }
       />
 
       <Section>
@@ -1304,23 +1331,23 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
            <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-[var(--primary-gold)]/5 to-transparent pointer-events-none" />
            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 relative z-10">
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Status</p>
-                <Badge variant="operational" className="py-1">Active</Badge>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates14WorkspaceBilling.labelStatus')}</p>
+                <Badge variant="operational" className="py-1">{t('templates14WorkspaceBilling.statusActive')}</Badge>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Plan</p>
-                <div className="text-sm font-medium text-[var(--text-primary)]">Enterprise</div>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates14WorkspaceBilling.labelPlan')}</p>
+                <div className="text-sm font-medium text-[var(--text-primary)]">{t('templates14WorkspaceBilling.planEnterprise')}</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Region</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates14WorkspaceBilling.labelRegion')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">US-East</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Created</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates14WorkspaceBilling.labelCreated')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">Oct 12, 2026</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Owner</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates14WorkspaceBilling.labelOwner')}</p>
                 <div className="flex items-center gap-2">
                    <div className="w-5 h-5 rounded bg-[var(--bg-app)] border border-[var(--border-color)] flex items-center justify-center text-[10px] font-bold text-[var(--primary-gold)]">A</div>
                    <div className="text-sm font-medium text-[var(--text-primary)]">Admin User</div>
@@ -1332,28 +1359,28 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
 
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="API Requests (Today)" value="124.5K" trend="+5.2%" isUp={true} />
-          <MetricCard title="Active Users" value="14" trend="0%" />
-          <MetricCard title="Error Rate" value="0.01%" trend="-0.04%" isUp={false} inverseGood={true} />
-          <MetricCard title="Storage Used" value="84 GB" trend="+2.1%" isUp={true} />
+          <MetricCard title={t('templates14WorkspaceBilling.metricApiRequestsToday')} value="124.5K" trend="+5.2%" isUp={true} />
+          <MetricCard title={t('templates14WorkspaceBilling.activeUsersTitle')} value="14" trend="0%" />
+          <MetricCard title={t('templates14WorkspaceBilling.metricErrorRate')} value="0.01%" trend="-0.04%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates14WorkspaceBilling.storageUsedTitle')} value="84 GB" trend="+2.1%" isUp={true} />
         </div>
       </Section>
 
       <Section>
         <Tabs defaultValue="overview" tabs={[
-          { 
-            id: 'overview', 
-            label: 'Overview', 
+          {
+            id: 'overview',
+            label: t('templates14WorkspaceBilling.tabOverview'),
             content: (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
                 <div className="lg:col-span-2 space-y-4">
                   <div className="flex items-center justify-between">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Recent Activity</h3>
-                     <Button variant="tertiary" size="sm">View all</Button>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates14WorkspaceBilling.recentActivity')}</h3>
+                     <Button variant="tertiary" size="sm">{t('templates14WorkspaceBilling.viewAll')}</Button>
                   </div>
-                  <DataTable 
+                  <DataTable
                     pagination={false}
-                    columns={["Event", "Actor", "Time"]}
+                    columns={[t('templates14WorkspaceBilling.colEvent'), t('templates14WorkspaceBilling.colActor'), t('templates14WorkspaceBilling.colTime')]}
                     data={[
                       ["Billing updated to Enterprise", "Admin User", "2 days ago"],
                       ["API Key 'Prod Token' generated", "System", "Oct 18, 2026"],
@@ -1364,27 +1391,27 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
                 </div>
                 <div className="space-y-6 sm:space-y-8">
                    <div className="space-y-4">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Alerts</h3>
-                     <Alert variant="success" title="Healthy">No issues detected for this workspace.</Alert>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates14WorkspaceBilling.alertsHeading')}</h3>
+                     <Alert variant="success" title={t('templates14WorkspaceBilling.healthyTitle')}>{t('templates14WorkspaceBilling.noIssuesDetected')}</Alert>
                    </div>
                    <div className="space-y-4">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Quick Actions</h3>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates14WorkspaceBilling.quickActionsHeading')}</h3>
                      <div className="bg-[var(--bg-card)] rounded-md-custom border border-[var(--border-color)] p-4 shadow-soft-sm flex flex-col gap-2">
-                        <Button variant="outline" className="w-full justify-start"><Key className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> Generate API Key</Button>
-                        <Button variant="outline" className="w-full justify-start" onClick={() => setActiveRoute('workspace-members')}><UserPlus className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> Invite User</Button>
-                        <Button variant="outline" className="w-full justify-start" onClick={() => setActiveRoute('billing')}><CreditCard className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> Manage Billing</Button>
+                        <Button variant="outline" className="w-full justify-start"><Key className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> {t('templates14WorkspaceBilling.generateApiKey')}</Button>
+                        <Button variant="outline" className="w-full justify-start" onClick={() => setActiveRoute('workspace-members')}><UserPlus className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> {t('templates14WorkspaceBilling.inviteUser')}</Button>
+                        <Button variant="outline" className="w-full justify-start" onClick={() => setActiveRoute('billing')}><CreditCard className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> {t('templates14WorkspaceBilling.manageBilling')}</Button>
                      </div>
                    </div>
                 </div>
               </div>
             )
           },
-          { 
-            id: 'activity', 
-            label: 'Activity', 
+          {
+            id: 'activity',
+            label: t('templates14WorkspaceBilling.tabActivity'),
             content: (
-               <DataTable 
-                columns={["Event", "Resource", "Actor", "Time"]}
+               <DataTable
+                columns={[t('templates14WorkspaceBilling.colEvent'), t('templates14WorkspaceBilling.colResource'), t('templates14WorkspaceBilling.colActor'), t('templates14WorkspaceBilling.colTime')]}
                 data={[
                   ["Billing updated", "Plan: Enterprise", "Admin User", "2 days ago"],
                   ["Key generated", "Prod Token", "System", "Oct 18, 2026"],
@@ -1395,9 +1422,9 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
               />
             )
           },
-          { 
-            id: 'usage', 
-            label: 'Usage', 
+          {
+            id: 'usage',
+            label: t('templates14WorkspaceBilling.tabUsage'),
             content: (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="p-6">
@@ -1406,12 +1433,12 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
                       <Zap className="w-5 h-5 text-[var(--text-secondary)]" />
                     </div>
                     <div>
-                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">API Calls</h3>
-                       <p className="text-xs text-[var(--text-secondary)]">Last 30 days</p>
+                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates14WorkspaceBilling.apiCallsTitle')}</h3>
+                       <p className="text-xs text-[var(--text-secondary)]">{t('templates14WorkspaceBilling.last30Days')}</p>
                     </div>
                   </div>
                   <div className="text-3xl font-semibold text-[var(--text-primary)]">2.4M</div>
-                  <div className="text-sm text-[var(--text-secondary)] mt-2">12% of Enterprise Limit (20M)</div>
+                  <div className="text-sm text-[var(--text-secondary)] mt-2">{t('templates14WorkspaceBilling.enterpriseLimitPercent20M')}</div>
                   <div className="w-full bg-[var(--bg-app)] rounded-full h-2 mt-4 border border-[var(--border-color)] overflow-hidden">
                      <div className="bg-[var(--primary-gold)] h-2 rounded-full" style={{width: '12%'}}></div>
                   </div>
@@ -1422,12 +1449,12 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
                       <Server className="w-5 h-5 text-[var(--text-secondary)]" />
                     </div>
                     <div>
-                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">Storage</h3>
-                       <p className="text-xs text-[var(--text-secondary)]">Current usage</p>
+                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates14WorkspaceBilling.storageTitle')}</h3>
+                       <p className="text-xs text-[var(--text-secondary)]">{t('templates14WorkspaceBilling.currentUsageLabel')}</p>
                     </div>
                   </div>
                   <div className="text-3xl font-semibold text-[var(--text-primary)]">84 GB</div>
-                  <div className="text-sm text-[var(--text-secondary)] mt-2">16% of Enterprise Limit (500 GB)</div>
+                  <div className="text-sm text-[var(--text-secondary)] mt-2">{t('templates14WorkspaceBilling.enterpriseLimitPercent500GB')}</div>
                   <div className="w-full bg-[var(--bg-app)] rounded-full h-2 mt-4 border border-[var(--border-color)] overflow-hidden">
                      <div className="bg-[#5C856A] h-2 rounded-full" style={{width: '16%'}}></div>
                   </div>
@@ -1435,13 +1462,13 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
               </div>
             )
           },
-          { id: 'keys', label: 'API Keys', content: <Alert variant="info" title="Keys">Manage API keys here.</Alert> },
-          { id: 'members', label: 'Members', content: (
+          { id: 'keys', label: t('templates14WorkspaceBilling.navApiKeys'), content: <Alert variant="info" title={t('templates14WorkspaceBilling.keysTabTitle')}>{t('templates14WorkspaceBilling.manageApiKeysHere')}</Alert> },
+          { id: 'members', label: t('templates14WorkspaceBilling.membersTitle'), content: (
             <Card className="p-8 text-center flex flex-col items-center">
               <Users className="w-8 h-8 text-[var(--text-secondary)] mb-3" />
-              <h3 className="text-sm font-medium text-[var(--text-primary)]">Workspace Members</h3>
-              <p className="text-xs text-[var(--text-secondary)] mt-1 mb-4">Manage active members and roles.</p>
-              <Button onClick={() => setActiveRoute('workspace-members')}>Open Members Management</Button>
+              <h3 className="text-sm font-medium text-[var(--text-primary)]">{t('templates14WorkspaceBilling.workspaceMembersHeading')}</h3>
+              <p className="text-xs text-[var(--text-secondary)] mt-1 mb-4">{t('templates14WorkspaceBilling.manageActiveMembersRoles')}</p>
+              <Button onClick={() => setActiveRoute('workspace-members')}>{t('templates14WorkspaceBilling.openMembersManagement')}</Button>
             </Card>
           )}
         ]} />
@@ -1459,6 +1486,7 @@ const MOCK_WORKSPACES = [
 ];
 
 const RowActionsDropdown = ({  workspaceId, onViewDetails  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
 
@@ -1478,20 +1506,20 @@ const RowActionsDropdown = ({  workspaceId, onViewDetails  }: any) => {
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 animate-in fade-in zoom-in-95 duration-100">
           <button onClick={() => { onViewDetails(); setIsOpen(false); }} className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> View details
+            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates14WorkspaceBilling.viewDetails')}
           </button>
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Edit2 className="w-4 h-4 text-[var(--text-secondary)]"/> Edit workspace
+            <Edit2 className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates14WorkspaceBilling.editWorkspace')}
           </button>
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Users className="w-4 h-4 text-[var(--text-secondary)]"/> Manage members
+            <Users className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates14WorkspaceBilling.manageMembers')}
           </button>
           <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2" />
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-warning)] hover:bg-[#FDF9F0] flex items-center gap-2 transition-colors font-medium">
-            <Ban className="w-4 h-4 opacity-80"/> Suspend
+            <Ban className="w-4 h-4 opacity-80"/> {t('templates14WorkspaceBilling.suspend')}
           </button>
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] flex items-center gap-2 transition-colors font-medium">
-            <Trash2 className="w-4 h-4 opacity-80"/> Delete
+            <Trash2 className="w-4 h-4 opacity-80"/> {t('templates14WorkspaceBilling.deleteAction')}
           </button>
         </div>
       )}
@@ -1500,6 +1528,7 @@ const RowActionsDropdown = ({  workspaceId, onViewDetails  }: any) => {
 };
 
 const WorkspacesPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
   const [plan, setPlan] = useState('all');
@@ -1545,15 +1574,15 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Workspaces" 
-        subtitle="Manage all tenant environments and access." 
+      <PageHeader
+        title={t('templates14WorkspaceBilling.navWorkspaces')}
+        subtitle={t('templates14WorkspaceBilling.workspacesSubtitle')}
         actions={
           <>
-            <Button variant="outline" className="hidden sm:flex"><Search className="w-4 h-4 mr-2"/> Import</Button>
-            <Button onClick={() => setIsCreateOpen(true)}><Plus className="w-4 h-4 mr-2"/> Create workspace</Button>
+            <Button variant="outline" className="hidden sm:flex"><Search className="w-4 h-4 mr-2"/> {t('templates14WorkspaceBilling.importAction')}</Button>
+            <Button onClick={() => setIsCreateOpen(true)}><Plus className="w-4 h-4 mr-2"/> {t('templates14WorkspaceBilling.createWorkspace')}</Button>
           </>
-        } 
+        }
       />
 
       <Section>
@@ -1562,40 +1591,40 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               className="h-10 w-full pl-9 pr-3 rounded-md-custom border border-[var(--border-color)] bg-white text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
-              placeholder="Search workspaces..."
+              placeholder={t('templates14WorkspaceBilling.searchWorkspacesPlaceholder')}
               value={search}
               onChange={(e: any) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex w-full sm:w-auto gap-3 shrink-0">
             <div className="w-full sm:w-36">
-              <Select value={status} onChange={setStatus} options={[{label: 'All Statuses', value: 'all'}, {label: 'Active', value: 'Active'}, {label: 'Suspended', value: 'Suspended'}]} placeholder="Status" />
+              <Select value={status} onChange={setStatus} options={[{label: t('templates14WorkspaceBilling.allStatuses'), value: 'all'}, {label: t('templates14WorkspaceBilling.statusActive'), value: 'Active'}, {label: t('templates14WorkspaceBilling.statusSuspended'), value: 'Suspended'}]} placeholder={t('templates14WorkspaceBilling.statusPlaceholder')} />
             </div>
             <div className="w-full sm:w-36">
-              <Select value={plan} onChange={setPlan} options={[{label: 'All Plans', value: 'all'}, {label: 'Free', value: 'Free'}, {label: 'Pro', value: 'Pro'}, {label: 'Enterprise', value: 'Enterprise'}]} placeholder="Plan" />
+              <Select value={plan} onChange={setPlan} options={[{label: t('templates14WorkspaceBilling.allPlans'), value: 'all'}, {label: t('templates14WorkspaceBilling.planFree'), value: 'Free'}, {label: t('templates14WorkspaceBilling.planPro'), value: 'Pro'}, {label: t('templates14WorkspaceBilling.planEnterprise'), value: 'Enterprise'}]} placeholder={t('templates14WorkspaceBilling.labelPlan')} />
             </div>
           </div>
           {(search || status !== 'all' || plan !== 'all') && (
-            <Button variant="tertiary" onClick={() => {setSearch(''); setStatus('all'); setPlan('all');}} className="px-3">Clear filters</Button>
+            <Button variant="tertiary" onClick={() => {setSearch(''); setStatus('all'); setPlan('all');}} className="px-3">{t('templates14WorkspaceBilling.clearFilters')}</Button>
           )}
         </div>
       </Section>
 
       <Section>
-        <DataTable columns={["Workspace", "Owner", "Plan", "Members", "Usage", "Status", "Created", ""]} data={mappedData} loading={isLoading} />
+        <DataTable columns={[t('templates14WorkspaceBilling.colWorkspace'), t('templates14WorkspaceBilling.labelOwner'), t('templates14WorkspaceBilling.labelPlan'), t('templates14WorkspaceBilling.membersTitle'), t('templates14WorkspaceBilling.colUsage'), t('templates14WorkspaceBilling.labelStatus'), t('templates14WorkspaceBilling.labelCreated'), ""]} data={mappedData} loading={isLoading} />
       </Section>
 
-      <Modal 
-        isOpen={isCreateOpen} 
+      <Modal
+        isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
-        title="Create Workspace"
-        description="Provision a new tenant environment."
-        footer={<><Button variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button><Button onClick={() => setIsCreateOpen(false)}>Create Environment</Button></>}
+        title={t('templates14WorkspaceBilling.createWorkspaceModalTitle')}
+        description={t('templates14WorkspaceBilling.createWorkspaceModalDesc')}
+        footer={<><Button variant="outline" onClick={() => setIsCreateOpen(false)}>{t('templates14WorkspaceBilling.cancel')}</Button><Button onClick={() => setIsCreateOpen(false)}>{t('templates14WorkspaceBilling.createEnvironment')}</Button></>}
       >
         <div className="space-y-4">
-          <Input label="Workspace Name" placeholder="e.g. Acme Corp Production" />
-          <Select label="Plan Tier" placeholder="Select plan..." options={[{label: 'Free Tier', value: 'free'}, {label: 'Pro', value: 'pro'}, {label: 'Enterprise', value: 'enterprise'}]} value="free" onChange={() => {}} />
-          <Input label="Admin Email" placeholder="owner@company.com" helperText="An invitation will be sent to this email." />
+          <Input label={t('templates14WorkspaceBilling.workspaceNameLabel')} placeholder={t('templates14WorkspaceBilling.workspaceNamePlaceholder', { example: 'Acme Corp Production' })} />
+          <Select label={t('templates14WorkspaceBilling.planTierLabel')} placeholder={t('templates14WorkspaceBilling.selectPlanPlaceholder')} options={[{label: t('templates14WorkspaceBilling.planFreeTier'), value: 'free'}, {label: t('templates14WorkspaceBilling.planPro'), value: 'pro'}, {label: t('templates14WorkspaceBilling.planEnterprise'), value: 'enterprise'}]} value="free" onChange={() => {}} />
+          <Input label={t('templates14WorkspaceBilling.adminEmailLabel')} placeholder="owner@company.com" helperText={t('templates14WorkspaceBilling.adminEmailHelper')} />
         </div>
       </Modal>
 
@@ -1605,49 +1634,51 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
 
 // --- REMAINING PREVIOUS PAGES ---
 const ComponentsPage = () => {
+  const t = useT();
   const [date, setDate] = useState("");
   const [selectVal, setSelectVal] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  
+
   return (
     <PageContainer maxWidth="default">
-      <PageHeader title="Component Library" subtitle="Foundational UI system for Kaori Platform following strict design tokens." actions={<Button>Deploy System</Button>} />
+      <PageHeader title={t('templates14WorkspaceBilling.navComponentLibrary')} subtitle={t('templates14WorkspaceBilling.componentLibrarySubtitle')} actions={<Button>{t('templates14WorkspaceBilling.deploySystem')}</Button>} />
       <Tabs defaultValue="form" tabs={[
-        { id: 'form', label: 'Forms & Inputs', content: (
+        { id: 'form', label: t('templates14WorkspaceBilling.tabFormsInputs'), content: (
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <Section title="Buttons" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)]">
-               <div className="flex flex-wrap gap-4 mb-4"><Button variant="primary">Primary</Button><Button variant="secondary">Secondary</Button><Button variant="tertiary">Ghost</Button></div>
-               <div className="flex flex-wrap gap-4 items-center"><Button variant="primary" isLoading>Loading</Button><Button variant="destructive">Destructive</Button><Button variant="primary" size="icon"><Plus className="w-4 h-4"/></Button></div>
+             <Section title={t('templates14WorkspaceBilling.buttonsSectionTitle')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)]">
+               <div className="flex flex-wrap gap-4 mb-4"><Button variant="primary">{t('templates14WorkspaceBilling.demoPrimary')}</Button><Button variant="secondary">{t('templates14WorkspaceBilling.demoSecondary')}</Button><Button variant="tertiary">{t('templates14WorkspaceBilling.demoGhost')}</Button></div>
+               <div className="flex flex-wrap gap-4 items-center"><Button variant="primary" isLoading>{t('templates14WorkspaceBilling.demoLoading')}</Button><Button variant="destructive">{t('templates14WorkspaceBilling.demoDestructive')}</Button><Button variant="primary" size="icon"><Plus className="w-4 h-4"/></Button></div>
              </Section>
-             <Section title="Inputs & Selects" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] space-y-4">
-                <Input label="Email Address" placeholder="admin@kaori.io" helperText="We will never share your email." />
-                <Select label="Environment" placeholder="Select environment..." options={[{label: 'Production', value: 'prod'}]} value={selectVal} onChange={setSelectVal} />
+             <Section title={t('templates14WorkspaceBilling.inputsSelectsSectionTitle')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] space-y-4">
+                <Input label={t('templates14WorkspaceBilling.emailAddress')} placeholder="admin@kaori.io" helperText={t('templates14WorkspaceBilling.neverShareEmailHelper')} />
+                <Select label={t('templates14WorkspaceBilling.environmentLabel')} placeholder={t('templates14WorkspaceBilling.selectEnvironmentPlaceholder')} options={[{label: t('templates14WorkspaceBilling.optionProduction'), value: 'prod'}]} value={selectVal} onChange={setSelectVal} />
              </Section>
            </div>
         )},
-        { id: 'data', label: 'Data Display', content: ( <Alert variant="info" title="Data Components">Use Data Tables & Metric Cards for display.</Alert> )},
-        { id: 'feedback', label: 'Feedback & Overlays', content: ( <Alert variant="info" title="Feedback Components">Modals, Drawers and Alerts provide user feedback.</Alert> )}
+        { id: 'data', label: t('templates14WorkspaceBilling.tabDataDisplay'), content: ( <Alert variant="info" title={t('templates14WorkspaceBilling.dataComponentsTitle')}>{t('templates14WorkspaceBilling.dataComponentsBody')}</Alert> )},
+        { id: 'feedback', label: t('templates14WorkspaceBilling.tabFeedbackOverlays'), content: ( <Alert variant="info" title={t('templates14WorkspaceBilling.feedbackComponentsTitle')}>{t('templates14WorkspaceBilling.feedbackComponentsBody')}</Alert> )}
       ]} />
     </PageContainer>
   );
 };
 
 const PlatformOverview = () => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader title="Platform Overview" subtitle="Monitor system health, usage, and recent activity." actions={<Button variant="outline"><RefreshCw className="w-4 h-4 mr-2" /> Refresh Data</Button>} />
+      <PageHeader title={t('templates14WorkspaceBilling.platformOverviewTitle')} subtitle={t('templates14WorkspaceBilling.platformOverviewSubtitle')} actions={<Button variant="outline"><RefreshCw className="w-4 h-4 mr-2" /> {t('templates14WorkspaceBilling.refreshData')}</Button>} />
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="Total Workspaces" value="124" trend="+4" isUp={true} />
-          <MetricCard title="Active Users" value="1,892" trend="+12.5%" isUp={true} />
-          <MetricCard title="API Requests" value="2.4M" trend="+5.2%" isUp={true} />
-          <MetricCard title="Failed Requests" value="482" trend="-18%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates14WorkspaceBilling.metricTotalWorkspaces')} value="124" trend="+4" isUp={true} />
+          <MetricCard title={t('templates14WorkspaceBilling.activeUsersTitle')} value="1,892" trend="+12.5%" isUp={true} />
+          <MetricCard title={t('templates14WorkspaceBilling.apiRequestsTitle')} value="2.4M" trend="+5.2%" isUp={true} />
+          <MetricCard title={t('templates14WorkspaceBilling.metricFailedRequests')} value="482" trend="-18%" isUp={false} inverseGood={true} />
         </div>
       </Section>
-      <Section title="Recent Activity">
-         <DataTable 
-            columns={["Event", "Workspace", "Time"]}
+      <Section title={t('templates14WorkspaceBilling.recentActivity')}>
+         <DataTable
+            columns={[t('templates14WorkspaceBilling.colEvent'), t('templates14WorkspaceBilling.colWorkspace'), t('templates14WorkspaceBilling.colTime')]}
             data={[
               ["API Key Generated", "Production AI", "2 mins ago"],
               ["Workspace Created", "Staging Env", "1 hour ago"],
@@ -1661,14 +1692,15 @@ const PlatformOverview = () => {
 };
 
 const SessionsPage = () => {
+  const t = useT();
   return (
     <PageContainer maxWidth="narrow">
-      <PageHeader title="Active Sessions" subtitle="Manage devices where your account is currently signed in." actions={<Button variant="outline">Sign out all</Button>} />
-      <Section title="Security & Sessions">
+      <PageHeader title={t('templates14WorkspaceBilling.activeSessionsTitle')} subtitle={t('templates14WorkspaceBilling.activeSessionsSubtitle')} actions={<Button variant="outline">{t('templates14WorkspaceBilling.signOutAll')}</Button>} />
+      <Section title={t('templates14WorkspaceBilling.navSecuritySessions')}>
         <Card className="p-8 text-center flex flex-col items-center">
           <Shield className="w-8 h-8 text-[var(--text-secondary)] mb-3" />
-          <h3 className="text-sm font-medium text-[var(--text-primary)]">Security & Sessions</h3>
-          <p className="text-xs text-[var(--text-secondary)] mt-1">Manage active logins here.</p>
+          <h3 className="text-sm font-medium text-[var(--text-primary)]">{t('templates14WorkspaceBilling.navSecuritySessions')}</h3>
+          <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates14WorkspaceBilling.manageActiveLoginsHere')}</p>
         </Card>
       </Section>
     </PageContainer>
@@ -1681,7 +1713,9 @@ const SessionsPage = () => {
 // ==========================================
 
 export default function KaoriPlatformShell() {
-  const [activeRoute, setActiveRoute] = useState('billing'); 
+  const t = useT();
+  const NAVIGATION_CONFIG = getNavigationConfig(t);
+  const [activeRoute, setActiveRoute] = useState('billing');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const [isCollapsed, setIsCollapsed] = useState(() => {
@@ -1727,14 +1761,14 @@ export default function KaoriPlatformShell() {
              activeRoute === 'overview' ? <PlatformOverview /> : 
              activeRoute === 'sessions' ? <SessionsPage /> : (
               <PageContainer maxWidth="narrow">
-                <PageHeader title={`${NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label} module`} subtitle="This section of the platform is currently being designed." />
+                <PageHeader title={t('templates14WorkspaceBilling.moduleSuffix', { label: NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label })} subtitle={t('templates14WorkspaceBilling.moduleBuildingSubtitle')} />
                 <Section>
                   <Card className="flex flex-col items-center justify-center py-20 px-4 text-center border-dashed bg-[var(--bg-card)]/50 mx-auto w-full animate-in fade-in duration-300">
                     <div className="w-12 h-12 rounded-lg-custom bg-[var(--bg-sidebar)] flex items-center justify-center border border-[var(--border-color)] mb-4">
                       {React.createElement(NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.icon || LayoutDashboard, { className: 'w-6 h-6 text-[var(--text-secondary)]' })}
                     </div>
-                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">Work in Progress</h3>
-                    <p className="text-sm text-[var(--text-secondary)] max-w-sm">Content for {activeRoute} will populate here inside the Shell Wrapper.</p>
+                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">{t('templates14WorkspaceBilling.workInProgress')}</h3>
+                    <p className="text-sm text-[var(--text-secondary)] max-w-sm">{t('templates14WorkspaceBilling.contentWillPopulate', { route: activeRoute })}</p>
                   </Card>
                 </Section>
               </PageContainer>

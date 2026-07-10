@@ -1,0 +1,219 @@
+{
+  "departmentsPage.title": {
+    "vi": "Phòng ban",
+    "en": "Departments",
+    "ja": "部門",
+    "ko": "부서",
+    "zh": "部门"
+  },
+  "departmentsPage.description": {
+    "vi": "Cơ cấu phòng ban của doanh nghiệp. Mỗi phòng ban có thể có nhiều workflow.",
+    "en": "Your organization's department structure. Each department can have multiple workflows.",
+    "ja": "企業の部門構成です。各部門は複数のワークフローを持つことができます。",
+    "ko": "기업의 부서 구조입니다. 각 부서는 여러 워크플로우를 가질 수 있습니다.",
+    "zh": "企业的部门架构。每个部门可以拥有多个工作流。"
+  },
+  "departmentsPage.createDept": {
+    "vi": "Tạo phòng ban",
+    "en": "Create department",
+    "ja": "部門を作成",
+    "ko": "부서 만들기",
+    "zh": "创建部门"
+  },
+  "departmentsPage.loadingList": {
+    "vi": "Đang tải danh sách phòng ban…",
+    "en": "Loading department list…",
+    "ja": "部門一覧を読み込み中…",
+    "ko": "부서 목록을 불러오는 중…",
+    "zh": "正在加载部门列表…"
+  },
+  "departmentsPage.emptyTitle": {
+    "vi": "Chưa có phòng ban nào",
+    "en": "No departments yet",
+    "ja": "部門はまだありません",
+    "ko": "아직 부서가 없습니다",
+    "zh": "暂无部门"
+  },
+  "departmentsPage.emptyHint": {
+    "vi": "Tạo phòng ban đầu tiên để bắt đầu xây workflow theo từng bộ phận.",
+    "en": "Create your first department to start building workflows for each team.",
+    "ja": "最初の部門を作成して、部門ごとのワークフロー作成を始めましょう。",
+    "ko": "첫 부서를 만들어 부서별 워크플로우 구축을 시작하세요.",
+    "zh": "创建第一个部门,开始为各团队构建工作流。"
+  },
+  "departmentsPage.createFirstDept": {
+    "vi": "Tạo phòng ban đầu tiên",
+    "en": "Create first department",
+    "ja": "最初の部門を作成",
+    "ko": "첫 부서 만들기",
+    "zh": "创建第一个部门"
+  },
+  "departmentsPage.deptMarketing": {
+    "vi": "Marketing",
+    "en": "Marketing",
+    "ja": "マーケティング",
+    "ko": "마케팅",
+    "zh": "市场营销"
+  },
+  "departmentsPage.deptSales": {
+    "vi": "Kinh doanh",
+    "en": "Sales",
+    "ja": "営業",
+    "ko": "영업",
+    "zh": "销售"
+  },
+  "departmentsPage.deptCustomerService": {
+    "vi": "Chăm sóc khách hàng",
+    "en": "Customer service",
+    "ja": "カスタマーサポート",
+    "ko": "고객 서비스",
+    "zh": "客户服务"
+  },
+  "departmentsPage.deptWarehouse": {
+    "vi": "Kho vận",
+    "en": "Warehouse",
+    "ja": "倉庫・物流",
+    "ko": "창고/물류",
+    "zh": "仓储物流"
+  },
+  "departmentsPage.deptHr": {
+    "vi": "Nhân sự",
+    "en": "HR",
+    "ja": "人事",
+    "ko": "인사",
+    "zh": "人力资源"
+  },
+  "departmentsPage.deptFinance": {
+    "vi": "Tài chính",
+    "en": "Finance",
+    "ja": "財務",
+    "ko": "재무",
+    "zh": "财务"
+  },
+  "departmentsPage.deptCustom": {
+    "vi": "Tùy chỉnh",
+    "en": "Custom",
+    "ja": "カスタム",
+    "ko": "사용자 지정",
+    "zh": "自定义"
+  },
+  "departmentsPage.piiLow": {
+    "vi": "Thấp",
+    "en": "Low",
+    "ja": "低",
+    "ko": "낮음",
+    "zh": "低"
+  },
+  "departmentsPage.piiNormal": {
+    "vi": "Bình thường",
+    "en": "Normal",
+    "ja": "標準",
+    "ko": "보통",
+    "zh": "一般"
+  },
+  "departmentsPage.piiHigh": {
+    "vi": "Cao",
+    "en": "High",
+    "ja": "高",
+    "ko": "높음",
+    "zh": "高"
+  },
+  "departmentsPage.piiRestricted": {
+    "vi": "Hạn chế",
+    "en": "Restricted",
+    "ja": "制限付き",
+    "ko": "제한됨",
+    "zh": "受限"
+  },
+  "departmentsPage.piiPrefix": {
+    "vi": "PII: {level}",
+    "en": "PII: {level}",
+    "ja": "個人情報: {level}",
+    "ko": "개인정보: {level}",
+    "zh": "个人信息: {level}"
+  },
+  "departmentsPage.workflowCount": {
+    "vi": "{count} workflow",
+    "en": "{count} workflow",
+    "ja": "{count} 件のワークフロー",
+    "ko": "워크플로우 {count}개",
+    "zh": "{count} 个工作流"
+  },
+  "departmentsPage.workflowLink": {
+    "vi": "Workflow",
+    "en": "Workflow",
+    "ja": "ワークフロー",
+    "ko": "워크플로우",
+    "zh": "工作流"
+  },
+  "departmentsPage.createModalTitle": {
+    "vi": "Tạo phòng ban mới",
+    "en": "Create new department",
+    "ja": "新しい部門を作成",
+    "ko": "새 부서 만들기",
+    "zh": "创建新部门"
+  },
+  "departmentsPage.fieldName": {
+    "vi": "Tên phòng ban",
+    "en": "Department name",
+    "ja": "部門名",
+    "ko": "부서 이름",
+    "zh": "部门名称"
+  },
+  "departmentsPage.fieldNamePlaceholder": {
+    "vi": "VD: Phòng kinh doanh khu vực miền Bắc",
+    "en": "e.g. Northern region sales department",
+    "ja": "例：北部営業部",
+    "ko": "예: 북부 영업부",
+    "zh": "例如:华北区销售部"
+  },
+  "departmentsPage.fieldDeptType": {
+    "vi": "Loại phòng ban",
+    "en": "Department type",
+    "ja": "部門タイプ",
+    "ko": "부서 유형",
+    "zh": "部门类型"
+  },
+  "departmentsPage.fieldPiiLevel": {
+    "vi": "Mức độ nhạy cảm PII",
+    "en": "PII sensitivity level",
+    "ja": "個人情報の機密レベル",
+    "ko": "개인정보 민감도",
+    "zh": "个人信息敏感度"
+  },
+  "departmentsPage.piiHint": {
+    "vi": "Phòng có nhiều dữ liệu cá nhân (CSKH, HR) nên đặt \"Cao\". Marketing thường đặt \"Thấp\".",
+    "en": "Departments with lots of personal data (customer service, HR) should be set to \"High\". Marketing is usually \"Low\".",
+    "ja": "個人データを多く扱う部門（カスタマーサポート、人事）は「高」に設定してください。マーケティングは通常「低」で構いません。",
+    "ko": "개인정보가 많은 부서(고객 서비스, 인사)는 \"높음\"으로 설정하세요. 마케팅은 보통 \"낮음\"입니다.",
+    "zh": "个人数据较多的部门(客服、人力资源)应设为\"高\"。市场营销通常设为\"低\"。"
+  },
+  "departmentsPage.fieldDescription": {
+    "vi": "Mô tả",
+    "en": "Description",
+    "ja": "説明",
+    "ko": "설명",
+    "zh": "描述"
+  },
+  "departmentsPage.fieldDescriptionPlaceholder": {
+    "vi": "Mục tiêu của phòng ban, phạm vi công việc…",
+    "en": "Department goals, scope of work…",
+    "ja": "部門の目標、業務範囲…",
+    "ko": "부서 목표, 업무 범위…",
+    "zh": "部门目标、工作范围…"
+  },
+  "departmentsPage.cancel": {
+    "vi": "Huỷ",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "departmentsPage.submitCreate": {
+    "vi": "Tạo",
+    "en": "Create",
+    "ja": "作成",
+    "ko": "만들기",
+    "zh": "创建"
+  }
+}

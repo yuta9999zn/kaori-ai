@@ -1,0 +1,478 @@
+{
+  "templatesF039RisksHub.title": {
+    "vi": "Rủi ro",
+    "en": "Risks",
+    "ja": "リスク",
+    "ko": "리스크",
+    "zh": "风险"
+  },
+  "templatesF039RisksHub.description": {
+    "vi": "Risk register theo doanh nghiệp. Score = likelihood × impact, severity tự suy ra.",
+    "en": "Risk register per enterprise. Score = likelihood × impact, severity is auto-derived.",
+    "ja": "企業単位のリスク登録簿。スコア = likelihood × impact、severityは自動算出されます。",
+    "ko": "기업별 리스크 등록부입니다. Score = likelihood × impact, severity는 자동으로 산출됩니다.",
+    "zh": "按企业维护的风险登记簿。Score = likelihood × impact,severity 自动推导。"
+  },
+  "templatesF039RisksHub.exportCsv": {
+    "vi": "Xuất CSV",
+    "en": "Export CSV",
+    "ja": "CSVを書き出す",
+    "ko": "CSV 내보내기",
+    "zh": "导出 CSV"
+  },
+  "templatesF039RisksHub.addRisk": {
+    "vi": "Thêm rủi ro",
+    "en": "Add risk",
+    "ja": "リスクを追加",
+    "ko": "리스크 추가",
+    "zh": "新增风险"
+  },
+  "templatesF039RisksHub.kpiTotalOpen": {
+    "vi": "Tổng đang mở",
+    "en": "Total open",
+    "ja": "オープン合計",
+    "ko": "전체 미해결",
+    "zh": "未结总数"
+  },
+  "templatesF039RisksHub.kpiCritical": {
+    "vi": "Nghiêm trọng (chưa đóng)",
+    "en": "Critical (not closed)",
+    "ja": "重大(未クローズ)",
+    "ko": "심각(미종료)",
+    "zh": "严重(未关闭)"
+  },
+  "templatesF039RisksHub.kpiOverdue": {
+    "vi": "Hạn mitigation đã quá",
+    "en": "Mitigation past due",
+    "ja": "対応期限超過",
+    "ko": "완화 기한 초과",
+    "zh": "缓解措施已逾期"
+  },
+  "templatesF039RisksHub.kpiNoOwner": {
+    "vi": "Chưa có owner",
+    "en": "No owner",
+    "ja": "担当者未設定",
+    "ko": "담당자 없음",
+    "zh": "尚无负责人"
+  },
+  "templatesF039RisksHub.searchPlaceholder": {
+    "vi": "Tìm theo tên rủi ro...",
+    "en": "Search by risk name...",
+    "ja": "リスク名で検索...",
+    "ko": "리스크 이름으로 검색...",
+    "zh": "按风险名称搜索..."
+  },
+  "templatesF039RisksHub.filterStatus": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "templatesF039RisksHub.filterSeverity": {
+    "vi": "Mức",
+    "en": "Severity",
+    "ja": "重大度",
+    "ko": "심각도",
+    "zh": "严重程度"
+  },
+  "templatesF039RisksHub.filterCategory": {
+    "vi": "Danh mục",
+    "en": "Category",
+    "ja": "カテゴリー",
+    "ko": "카테고리",
+    "zh": "分类"
+  },
+  "templatesF039RisksHub.optAll": {
+    "vi": "Tất cả",
+    "en": "All",
+    "ja": "すべて",
+    "ko": "전체",
+    "zh": "全部"
+  },
+  "templatesF039RisksHub.statusOpen": {
+    "vi": "Mở",
+    "en": "Open",
+    "ja": "オープン",
+    "ko": "미해결",
+    "zh": "开放"
+  },
+  "templatesF039RisksHub.statusMitigating": {
+    "vi": "Đang xử lý",
+    "en": "Mitigating",
+    "ja": "対応中",
+    "ko": "완화 진행 중",
+    "zh": "处理中"
+  },
+  "templatesF039RisksHub.statusClosed": {
+    "vi": "Đã đóng",
+    "en": "Closed",
+    "ja": "クローズ",
+    "ko": "종료",
+    "zh": "已关闭"
+  },
+  "templatesF039RisksHub.sevCritical": {
+    "vi": "Nghiêm trọng",
+    "en": "Critical",
+    "ja": "重大",
+    "ko": "심각",
+    "zh": "严重"
+  },
+  "templatesF039RisksHub.sevHigh": {
+    "vi": "Cao",
+    "en": "High",
+    "ja": "高",
+    "ko": "높음",
+    "zh": "高"
+  },
+  "templatesF039RisksHub.sevMedium": {
+    "vi": "Trung",
+    "en": "Medium",
+    "ja": "中",
+    "ko": "중간",
+    "zh": "中"
+  },
+  "templatesF039RisksHub.sevLow": {
+    "vi": "Thấp",
+    "en": "Low",
+    "ja": "低",
+    "ko": "낮음",
+    "zh": "低"
+  },
+  "templatesF039RisksHub.catOperational": {
+    "vi": "Vận hành",
+    "en": "Operational",
+    "ja": "運用",
+    "ko": "운영",
+    "zh": "运营"
+  },
+  "templatesF039RisksHub.catFinancial": {
+    "vi": "Tài chính",
+    "en": "Financial",
+    "ja": "財務",
+    "ko": "재무",
+    "zh": "财务"
+  },
+  "templatesF039RisksHub.catRegulatory": {
+    "vi": "Pháp lý",
+    "en": "Regulatory",
+    "ja": "法規制",
+    "ko": "규제",
+    "zh": "合规"
+  },
+  "templatesF039RisksHub.catReputational": {
+    "vi": "Thương hiệu",
+    "en": "Reputational",
+    "ja": "レピュテーション",
+    "ko": "평판",
+    "zh": "声誉"
+  },
+  "templatesF039RisksHub.catStrategic": {
+    "vi": "Chiến lược",
+    "en": "Strategic",
+    "ja": "戦略",
+    "ko": "전략",
+    "zh": "战略"
+  },
+  "templatesF039RisksHub.catTechnical": {
+    "vi": "Kỹ thuật",
+    "en": "Technical",
+    "ja": "技術",
+    "ko": "기술",
+    "zh": "技术"
+  },
+  "templatesF039RisksHub.thRisk": {
+    "vi": "Rủi ro",
+    "en": "Risk",
+    "ja": "リスク",
+    "ko": "리스크",
+    "zh": "风险"
+  },
+  "templatesF039RisksHub.thCategory": {
+    "vi": "Danh mục",
+    "en": "Category",
+    "ja": "カテゴリー",
+    "ko": "카테고리",
+    "zh": "分类"
+  },
+  "templatesF039RisksHub.thSeverity": {
+    "vi": "Mức độ",
+    "en": "Severity",
+    "ja": "重大度",
+    "ko": "심각도",
+    "zh": "严重程度"
+  },
+  "templatesF039RisksHub.thStatus": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "templatesF039RisksHub.thProgress": {
+    "vi": "Tiến độ",
+    "en": "Progress",
+    "ja": "進捗",
+    "ko": "진행률",
+    "zh": "进度"
+  },
+  "templatesF039RisksHub.thDueDate": {
+    "vi": "Hạn xử lý",
+    "en": "Due date",
+    "ja": "期限",
+    "ko": "기한",
+    "zh": "截止日期"
+  },
+  "templatesF039RisksHub.thView": {
+    "vi": "Xem",
+    "en": "View",
+    "ja": "表示",
+    "ko": "보기",
+    "zh": "查看"
+  },
+  "templatesF039RisksHub.loading": {
+    "vi": "Đang tải...",
+    "en": "Loading...",
+    "ja": "読み込み中...",
+    "ko": "불러오는 중...",
+    "zh": "加载中..."
+  },
+  "templatesF039RisksHub.emptyFiltered": {
+    "vi": "Không có rủi ro nào khớp bộ lọc.",
+    "en": "No risks match the current filters.",
+    "ja": "フィルター条件に一致するリスクはありません。",
+    "ko": "필터 조건에 맞는 리스크가 없습니다.",
+    "zh": "没有符合筛选条件的风险。"
+  },
+  "templatesF039RisksHub.footerNote1": {
+    "vi": "Severity tự suy ra từ likelihood × impact: ≥15 nghiêm trọng, ≥9 cao, ≥5 trung, còn lại thấp.",
+    "en": "Severity is auto-derived from likelihood × impact: ≥15 critical, ≥9 high, ≥5 medium, otherwise low.",
+    "ja": "Severityはlikelihood × impactから自動算出されます: ≥15は重大、≥9は高、≥5は中、それ以外は低です。",
+    "ko": "Severity는 likelihood × impact로 자동 산출됩니다: ≥15는 심각, ≥9는 높음, ≥5는 중간, 나머지는 낮음입니다.",
+    "zh": "Severity 由 likelihood × impact 自动推导:≥15 为严重,≥9 为高,≥5 为中,其余为低。"
+  },
+  "templatesF039RisksHub.footerNote2": {
+    "vi": "DB trigger ghi sẵn trên mỗi insert/update — FE chỉ render.",
+    "en": "A DB trigger writes it on every insert/update — the FE just renders it.",
+    "ja": "各insert/update時にDBトリガーが自動反映します — FEは表示するだけです。",
+    "ko": "각 insert/update 시 DB 트리거가 자동으로 기록합니다 — FE는 표시만 합니다.",
+    "zh": "每次 insert/update 时由数据库触发器写入 — 前端仅负责渲染。"
+  },
+  "templatesF039RisksHub.createdSuccess": {
+    "vi": "Đã thêm rủi ro: {title}",
+    "en": "Risk added: {title}",
+    "ja": "リスクを追加しました: {title}",
+    "ko": "리스크가 추가되었습니다: {title}",
+    "zh": "已新增风险:{title}"
+  },
+  "templatesF039RisksHub.detail": {
+    "vi": "Chi tiết",
+    "en": "Details",
+    "ja": "詳細",
+    "ko": "상세",
+    "zh": "详情"
+  },
+  "templatesF039RisksHub.matrixTitle": {
+    "vi": "Ma trận khả năng × tác động",
+    "en": "Likelihood × impact matrix",
+    "ja": "Likelihood × Impact マトリクス",
+    "ko": "Likelihood × Impact 매트릭스",
+    "zh": "Likelihood × Impact 矩阵"
+  },
+  "templatesF039RisksHub.matrixOpenCount": {
+    "vi": "{count} rủi ro mở",
+    "en": "{count} open risks",
+    "ja": "オープンなリスク {count} 件",
+    "ko": "미해결 리스크 {count}건",
+    "zh": "{count} 个未结风险"
+  },
+  "templatesF039RisksHub.matrixAxis": {
+    "vi": "Khả năng \\ Tác động",
+    "en": "Likelihood \\ Impact",
+    "ja": "Likelihood \\ Impact",
+    "ko": "Likelihood \\ Impact",
+    "zh": "Likelihood \\ Impact"
+  },
+  "templatesF039RisksHub.levelVeryLow": {
+    "vi": "Rất thấp",
+    "en": "Very low",
+    "ja": "非常に低い",
+    "ko": "매우 낮음",
+    "zh": "非常低"
+  },
+  "templatesF039RisksHub.levelLow": {
+    "vi": "Thấp",
+    "en": "Low",
+    "ja": "低い",
+    "ko": "낮음",
+    "zh": "低"
+  },
+  "templatesF039RisksHub.levelMedium": {
+    "vi": "Trung",
+    "en": "Medium",
+    "ja": "中",
+    "ko": "중간",
+    "zh": "中"
+  },
+  "templatesF039RisksHub.levelHigh": {
+    "vi": "Cao",
+    "en": "High",
+    "ja": "高い",
+    "ko": "높음",
+    "zh": "高"
+  },
+  "templatesF039RisksHub.levelVeryHigh": {
+    "vi": "Rất cao",
+    "en": "Very high",
+    "ja": "非常に高い",
+    "ko": "매우 높음",
+    "zh": "非常高"
+  },
+  "templatesF039RisksHub.legendLow": {
+    "vi": "Thấp (≤4)",
+    "en": "Low (≤4)",
+    "ja": "低 (≤4)",
+    "ko": "낮음 (≤4)",
+    "zh": "低 (≤4)"
+  },
+  "templatesF039RisksHub.legendMedium": {
+    "vi": "Trung (5-8)",
+    "en": "Medium (5-8)",
+    "ja": "中 (5-8)",
+    "ko": "중간 (5-8)",
+    "zh": "中 (5-8)"
+  },
+  "templatesF039RisksHub.legendHigh": {
+    "vi": "Cao (9-14)",
+    "en": "High (9-14)",
+    "ja": "高 (9-14)",
+    "ko": "높음 (9-14)",
+    "zh": "高 (9-14)"
+  },
+  "templatesF039RisksHub.legendCritical": {
+    "vi": "Nghiêm trọng (≥15)",
+    "en": "Critical (≥15)",
+    "ja": "重大 (≥15)",
+    "ko": "심각 (≥15)",
+    "zh": "严重 (≥15)"
+  },
+  "templatesF039RisksHub.modalTitle": {
+    "vi": "Thêm rủi ro mới",
+    "en": "Add new risk",
+    "ja": "新しいリスクを追加",
+    "ko": "새 리스크 추가",
+    "zh": "新增风险"
+  },
+  "templatesF039RisksHub.close": {
+    "vi": "Đóng",
+    "en": "Close",
+    "ja": "閉じる",
+    "ko": "닫기",
+    "zh": "关闭"
+  },
+  "templatesF039RisksHub.fieldTitle": {
+    "vi": "Tên rủi ro *",
+    "en": "Risk name *",
+    "ja": "リスク名 *",
+    "ko": "리스크 이름 *",
+    "zh": "风险名称 *"
+  },
+  "templatesF039RisksHub.fieldTitlePlaceholder": {
+    "vi": "Ví dụ: Phụ thuộc vào 1 nhà cung cấp duy nhất",
+    "en": "e.g. Dependency on a single supplier",
+    "ja": "例: 単一サプライヤーへの依存",
+    "ko": "예: 단일 공급업체 의존",
+    "zh": "例如:依赖单一供应商"
+  },
+  "templatesF039RisksHub.fieldDescription": {
+    "vi": "Mô tả",
+    "en": "Description",
+    "ja": "説明",
+    "ko": "설명",
+    "zh": "描述"
+  },
+  "templatesF039RisksHub.fieldDescriptionPlaceholder": {
+    "vi": "Mô tả chi tiết hoàn cảnh, nguy cơ...",
+    "en": "Describe the context and the threat in detail...",
+    "ja": "背景やリスクの詳細を記入してください...",
+    "ko": "상황과 위험 요소를 자세히 설명하세요...",
+    "zh": "详细描述背景与风险..."
+  },
+  "templatesF039RisksHub.fieldCategory": {
+    "vi": "Danh mục *",
+    "en": "Category *",
+    "ja": "カテゴリー *",
+    "ko": "카테고리 *",
+    "zh": "分类 *"
+  },
+  "templatesF039RisksHub.fieldStatus": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "templatesF039RisksHub.fieldLikelihood": {
+    "vi": "Khả năng (likelihood) *",
+    "en": "Likelihood *",
+    "ja": "Likelihood *",
+    "ko": "Likelihood *",
+    "zh": "Likelihood *"
+  },
+  "templatesF039RisksHub.fieldImpact": {
+    "vi": "Tác động (impact) *",
+    "en": "Impact *",
+    "ja": "Impact *",
+    "ko": "Impact *",
+    "zh": "Impact *"
+  },
+  "templatesF039RisksHub.scoreAuto": {
+    "vi": "Score tự tính",
+    "en": "Auto-calculated score",
+    "ja": "自動計算スコア",
+    "ko": "자동 계산 점수",
+    "zh": "自动计算的分数"
+  },
+  "templatesF039RisksHub.fieldMitigationPlan": {
+    "vi": "Kế hoạch xử lý",
+    "en": "Mitigation plan",
+    "ja": "対応計画",
+    "ko": "완화 계획",
+    "zh": "缓解计划"
+  },
+  "templatesF039RisksHub.fieldMitigationPlanPlaceholder": {
+    "vi": "Bước cụ thể để giảm rủi ro...",
+    "en": "Concrete steps to reduce the risk...",
+    "ja": "リスクを低減するための具体的なステップ...",
+    "ko": "리스크를 줄이기 위한 구체적인 단계...",
+    "zh": "降低风险的具体步骤..."
+  },
+  "templatesF039RisksHub.fieldProgress": {
+    "vi": "Tiến độ xử lý ({progress}%)",
+    "en": "Mitigation progress ({progress}%)",
+    "ja": "対応進捗 ({progress}%)",
+    "ko": "완화 진행률 ({progress}%)",
+    "zh": "处理进度({progress}%)"
+  },
+  "templatesF039RisksHub.fieldDueDate": {
+    "vi": "Hạn xử lý",
+    "en": "Due date",
+    "ja": "期限",
+    "ko": "기한",
+    "zh": "截止日期"
+  },
+  "templatesF039RisksHub.cancel": {
+    "vi": "Huỷ",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "templatesF039RisksHub.createRisk": {
+    "vi": "Tạo rủi ro",
+    "en": "Create risk",
+    "ja": "リスクを作成",
+    "ko": "리스크 생성",
+    "zh": "创建风险"
+  }
+}

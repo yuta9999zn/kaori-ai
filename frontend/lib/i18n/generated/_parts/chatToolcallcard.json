@@ -1,0 +1,16 @@
+{
+  "chatToolcallcard.paramsLabel": {
+    "vi": "Tham số",
+    "en": "Parameters",
+    "ja": "パラメータ",
+    "ko": "파라미터",
+    "zh": "参数"
+  },
+  "chatToolcallcard.resultLabel": {
+    "vi": "Kết quả",
+    "en": "Result",
+    "ja": "結果",
+    "ko": "결과",
+    "zh": "结果"
+  }
+}

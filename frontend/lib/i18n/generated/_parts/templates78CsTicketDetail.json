@@ -1,0 +1,205 @@
+{
+  "templates78CsTicketDetail.errLoadFailed": {
+    "vi": "Không tải được ticket.",
+    "en": "Couldn't load the ticket.",
+    "ja": "チケットを読み込めませんでした。",
+    "ko": "티켓을 불러오지 못했습니다.",
+    "zh": "无法加载工单。"
+  },
+  "templates78CsTicketDetail.errNotFound": {
+    "vi": "Ticket không tồn tại hoặc đã xoá.",
+    "en": "This ticket doesn't exist or has been deleted.",
+    "ja": "このチケットは存在しないか、削除されています。",
+    "ko": "이 티켓은 존재하지 않거나 삭제되었습니다.",
+    "zh": "该工单不存在或已被删除。"
+  },
+  "templates78CsTicketDetail.assigneeLabel": {
+    "vi": "Người phụ trách: {name}",
+    "en": "Assignee: {name}",
+    "ja": "担当者: {name}",
+    "ko": "담당자: {name}",
+    "zh": "负责人：{name}"
+  },
+  "templates78CsTicketDetail.unassigned": {
+    "vi": "Chưa gán",
+    "en": "Unassigned",
+    "ja": "未割り当て",
+    "ko": "미배정",
+    "zh": "未分配"
+  },
+  "templates78CsTicketDetail.slaBreachWarning": {
+    "vi": "SLA breach trong < 2h — cân nhắc escalate D.2 workflow.",
+    "en": "SLA breach in < 2h — consider escalating the D.2 workflow.",
+    "ja": "2時間未満でSLA違反 — D.2ワークフローへのエスカレーションを検討してください。",
+    "ko": "2시간 이내 SLA 위반 — D.2 워크플로우로 에스컬레이션을 검토하세요.",
+    "zh": "SLA 将在不到 2 小时内违约 — 请考虑升级至 D.2 工作流。"
+  },
+  "templates78CsTicketDetail.escalate": {
+    "vi": "Escalate",
+    "en": "Escalate",
+    "ja": "エスカレーション",
+    "ko": "에스컬레이션",
+    "zh": "升级"
+  },
+  "templates78CsTicketDetail.conversation": {
+    "vi": "Hội thoại",
+    "en": "Conversation",
+    "ja": "会話",
+    "ko": "대화",
+    "zh": "对话"
+  },
+  "templates78CsTicketDetail.noMessages": {
+    "vi": "Chưa có tin nhắn.",
+    "en": "No messages yet.",
+    "ja": "まだメッセージはありません。",
+    "ko": "아직 메시지가 없습니다.",
+    "zh": "暂无消息。"
+  },
+  "templates78CsTicketDetail.reply": {
+    "vi": "Trả lời",
+    "en": "Reply",
+    "ja": "返信",
+    "ko": "답장",
+    "zh": "回复"
+  },
+  "templates78CsTicketDetail.aiSuggestion": {
+    "vi": "AI gợi ý",
+    "en": "AI suggestion",
+    "ja": "AI提案",
+    "ko": "AI 제안",
+    "zh": "AI 建议"
+  },
+  "templates78CsTicketDetail.replyTemplate": {
+    "vi": "Mẫu trả lời",
+    "en": "Reply template",
+    "ja": "返信テンプレート",
+    "ko": "답장 템플릿",
+    "zh": "回复模板"
+  },
+  "templates78CsTicketDetail.replyPlaceholder": {
+    "vi": "Nhập nội dung trả lời...",
+    "en": "Enter your reply...",
+    "ja": "返信内容を入力...",
+    "ko": "답장 내용을 입력하세요...",
+    "zh": "输入回复内容…"
+  },
+  "templates78CsTicketDetail.send": {
+    "vi": "Gửi",
+    "en": "Send",
+    "ja": "送信",
+    "ko": "보내기",
+    "zh": "发送"
+  },
+  "templates78CsTicketDetail.railInternalNotes": {
+    "vi": "Nội bộ ghi chú",
+    "en": "Internal notes",
+    "ja": "内部メモ",
+    "ko": "내부 메모",
+    "zh": "内部备注"
+  },
+  "templates78CsTicketDetail.railSimilarTickets": {
+    "vi": "Ticket tương tự (T-Cube)",
+    "en": "Similar tickets (T-Cube)",
+    "ja": "類似チケット（T-Cube）",
+    "ko": "유사 티켓 (T-Cube)",
+    "zh": "相似工单（T-Cube）"
+  },
+  "templates78CsTicketDetail.railAiSuggestedAction": {
+    "vi": "AI gợi ý hành động",
+    "en": "AI suggested action",
+    "ja": "AI推奨アクション",
+    "ko": "AI 제안 조치",
+    "zh": "AI 建议操作"
+  },
+  "templates78CsTicketDetail.railSlaEscalationPath": {
+    "vi": "SLA Escalation Path (D.2)",
+    "en": "SLA escalation path (D.2)",
+    "ja": "SLAエスカレーション経路（D.2）",
+    "ko": "SLA 에스컬레이션 경로 (D.2)",
+    "zh": "SLA 升级路径（D.2）"
+  },
+  "templates78CsTicketDetail.snooze": {
+    "vi": "Tạm hoãn",
+    "en": "Snooze",
+    "ja": "スヌーズ",
+    "ko": "일시 보류",
+    "zh": "暂缓"
+  },
+  "templates78CsTicketDetail.reassign": {
+    "vi": "Chuyển giao",
+    "en": "Reassign",
+    "ja": "再割り当て",
+    "ko": "재배정",
+    "zh": "重新分配"
+  },
+  "templates78CsTicketDetail.merge": {
+    "vi": "Gộp",
+    "en": "Merge",
+    "ja": "統合",
+    "ko": "병합",
+    "zh": "合并"
+  },
+  "templates78CsTicketDetail.linkInsight": {
+    "vi": "Liên kết insight",
+    "en": "Link insight",
+    "ja": "インサイトをリンク",
+    "ko": "인사이트 연결",
+    "zh": "关联洞察"
+  },
+  "templates78CsTicketDetail.resolve": {
+    "vi": "Giải quyết",
+    "en": "Resolve",
+    "ja": "解決",
+    "ko": "해결",
+    "zh": "解决"
+  },
+  "templates78CsTicketDetail.loading": {
+    "vi": "Đang tải...",
+    "en": "Loading...",
+    "ja": "読み込み中...",
+    "ko": "불러오는 중...",
+    "zh": "加载中…"
+  },
+  "templates78CsTicketDetail.customer": {
+    "vi": "Khách hàng",
+    "en": "Customer",
+    "ja": "顧客",
+    "ko": "고객",
+    "zh": "客户"
+  },
+  "templates78CsTicketDetail.ltv": {
+    "vi": "LTV",
+    "en": "LTV",
+    "ja": "LTV",
+    "ko": "LTV",
+    "zh": "LTV"
+  },
+  "templates78CsTicketDetail.churnRisk": {
+    "vi": "Rủi ro rời bỏ",
+    "en": "Churn risk",
+    "ja": "解約リスク",
+    "ko": "이탈 위험",
+    "zh": "流失风险"
+  },
+  "templates78CsTicketDetail.openTickets": {
+    "vi": "Ticket đang mở",
+    "en": "Open tickets",
+    "ja": "未解決チケット",
+    "ko": "미해결 티켓",
+    "zh": "未结工单"
+  },
+  "templates78CsTicketDetail.churnHighWarning": {
+    "vi": "Khách HIGH risk churn — link sang Churn Save?",
+    "en": "Customer is HIGH churn risk — link to Churn Save?",
+    "ja": "解約リスクHIGHの顧客です — Churn Saveにリンクしますか？",
+    "ko": "이탈 위험 HIGH 고객입니다 — Churn Save로 연결할까요?",
+    "zh": "该客户流失风险为高 — 是否关联到 Churn Save？"
+  },
+  "templates78CsTicketDetail.linkToChurnSave": {
+    "vi": "Liên kết → P2-37",
+    "en": "Link → P2-37",
+    "ja": "リンク → P2-37",
+    "ko": "연결 → P2-37",
+    "zh": "关联 → P2-37"
+  }
+}

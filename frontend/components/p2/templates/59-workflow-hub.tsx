@@ -28,6 +28,7 @@ import {
 import { PageHeader } from '@/components/p2/shell';
 import { SkeletonCardGrid, SkeletonStatTiles } from '@/components/p2/skeleton';
 import { formatProblem } from '@/lib/i18n/messages';
+import { useT } from '@/lib/i18n/provider';
 
 // ─── Types ─────────────────────────────────────────────────────────
 
@@ -62,27 +63,28 @@ interface WorkflowTemplate {
   edge_count:         number;
 }
 
-const DEPT_META: Record<DeptType, { label_vi: string; color: string }> = {
-  marketing:        { label_vi: 'Marketing',  color: 'text-pink-700 bg-pink-50' },
-  sales:            { label_vi: 'Sales',      color: 'text-blue-700 bg-blue-50' },
-  customer_service: { label_vi: 'CSKH',       color: 'text-purple-700 bg-purple-50' },
-  warehouse:        { label_vi: 'Kho vận',    color: 'text-green-700 bg-green-50' },
-  hr:               { label_vi: 'Nhân sự',    color: 'text-amber-700 bg-amber-50' },
-  finance:          { label_vi: 'Tài chính',  color: 'text-teal-700 bg-teal-50' },
-  custom:           { label_vi: 'Tùy chỉnh', color: 'text-gray-700 bg-gray-50' },
+const DEPT_META: Record<DeptType, { labelKey: string; color: string }> = {
+  marketing:        { labelKey: 'templates59WorkflowHub.deptMarketing',       color: 'text-pink-700 bg-pink-50' },
+  sales:            { labelKey: 'templates59WorkflowHub.deptSales',          color: 'text-blue-700 bg-blue-50' },
+  customer_service: { labelKey: 'templates59WorkflowHub.deptCustomerService', color: 'text-purple-700 bg-purple-50' },
+  warehouse:        { labelKey: 'templates59WorkflowHub.deptWarehouse',      color: 'text-green-700 bg-green-50' },
+  hr:               { labelKey: 'templates59WorkflowHub.deptHr',             color: 'text-amber-700 bg-amber-50' },
+  finance:          { labelKey: 'templates59WorkflowHub.deptFinance',        color: 'text-teal-700 bg-teal-50' },
+  custom:           { labelKey: 'templates59WorkflowHub.deptCustom',         color: 'text-gray-700 bg-gray-50' },
 };
 
-const STATE_META: Record<WorkflowState, { label_vi: string; variant: 'default' | 'success' | 'warning' | 'destructive' }> = {
-  DRAFT:           { label_vi: 'Bản nháp',  variant: 'default' },
-  TESTING:         { label_vi: 'Đang test', variant: 'warning' },
-  ACTIVE_BASELINE: { label_vi: 'Đang chạy', variant: 'success' },
-  ARCHIVED:        { label_vi: 'Lưu trữ',   variant: 'default' },
-  BROKEN:          { label_vi: 'Lỗi',       variant: 'destructive' },
+const STATE_META: Record<WorkflowState, { labelKey: string; variant: 'default' | 'success' | 'warning' | 'destructive' }> = {
+  DRAFT:           { labelKey: 'templates59WorkflowHub.stateDraft',   variant: 'default' },
+  TESTING:         { labelKey: 'templates59WorkflowHub.stateTesting', variant: 'warning' },
+  ACTIVE_BASELINE: { labelKey: 'templates59WorkflowHub.stateActive',  variant: 'success' },
+  ARCHIVED:        { labelKey: 'templates59WorkflowHub.stateArchived', variant: 'default' },
+  BROKEN:          { labelKey: 'templates59WorkflowHub.stateBroken',  variant: 'destructive' },
 };
 
 // ─── Page ──────────────────────────────────────────────────────────
 
 export default function WorkflowsHubPage() {
+  const t = useT();
   const [workflows, setWorkflows] = useState<WorkflowRow[]>([]);
   const [templates, setTemplates] = useState<WorkflowTemplate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -170,7 +172,7 @@ export default function WorkflowsHubPage() {
         body: JSON.stringify({ template_id: t.template_id, department_id: departmentId }),
       });
       setWorkflows((prev) => [created, ...prev]);
-      setSuccess(`Đã tạo workflow "${created.name}" từ template.`);
+      setSuccess(t('templates59WorkflowHub.createdFromTemplate', { name: created.name }));
       setPickerOpen(false);
     } catch (e: any) {
       setProblem(e);
@@ -180,16 +182,16 @@ export default function WorkflowsHubPage() {
   return (
     <>
       <PageHeader
-        title="Workflow"
-        description="Số hóa quy trình phòng ban — kéo các bước, gắn tài liệu, hệ thống tự lưu theo cây workflow → bước → file."
+        title={t('templates59WorkflowHub.title')}
+        description={t('templates59WorkflowHub.pageDescription')}
         actions={
           <>
             <Button variant="secondary" size="md" onClick={() => setPickerOpen(true)}>
-              <Sparkles className="w-4 h-4 mr-2" /> Từ template
+              <Sparkles className="w-4 h-4 mr-2" /> {t('templates59WorkflowHub.fromTemplate')}
             </Button>
             <a href="/p2/workflows/new">
               <Button variant="primary" size="md">
-                <Plus className="w-4 h-4 mr-2" /> Tạo workflow
+                <Plus className="w-4 h-4 mr-2" /> {t('templates59WorkflowHub.createWorkflow')}
               </Button>
             </a>
           </>
@@ -201,10 +203,10 @@ export default function WorkflowsHubPage() {
         {success && <SuccessBanner message={success} />}
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatTile label="Tổng workflow" value={stats.total} icon={Workflow} />
-          <StatTile label="Đang chạy"     value={stats.active}    icon={CheckCircle2} tone="text-emerald-700" />
-          <StatTile label="Bản nháp"      value={stats.drafts}    icon={FileText}     tone="text-amber-700" />
-          <StatTile label="Template sẵn"  value={stats.templates} icon={Layers}       tone="text-blue-700" />
+          <StatTile label={t('templates59WorkflowHub.statTotal')} value={stats.total} icon={Workflow} />
+          <StatTile label={t('templates59WorkflowHub.statActive')}     value={stats.active}    icon={CheckCircle2} tone="text-emerald-700" />
+          <StatTile label={t('templates59WorkflowHub.statDrafts')}      value={stats.drafts}    icon={FileText}     tone="text-amber-700" />
+          <StatTile label={t('templates59WorkflowHub.statTemplates')}  value={stats.templates} icon={Layers}       tone="text-blue-700" />
         </div>
 
         <Toolbar
@@ -275,6 +277,7 @@ function Toolbar({
   search, onSearch, deptFilter, onDeptFilter, stateFilter, onStateFilter,
   viewMode, onViewMode,
 }: any) {
+  const t = useT();
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-3 flex flex-col lg:flex-row gap-3 shadow-soft-sm">
       <div className="relative flex-1 min-w-[200px]">
@@ -283,25 +286,25 @@ function Toolbar({
           type="text"
           value={search}
           onChange={(e) => onSearch(e.target.value)}
-          placeholder="Tìm workflow theo tên / mô tả…"
+          placeholder={t('templates59WorkflowHub.searchPlaceholder')}
           className="w-full pl-9 pr-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
         />
       </div>
-      <FilterPill label="Phòng ban" value={deptFilter} onChange={onDeptFilter} options={[
-        { value: 'all', label: 'Tất cả' },
-        { value: 'marketing', label: 'Marketing' },
-        { value: 'sales', label: 'Sales' },
-        { value: 'customer_service', label: 'CSKH' },
-        { value: 'warehouse', label: 'Kho vận' },
-        { value: 'hr', label: 'Nhân sự' },
-        { value: 'finance', label: 'Tài chính' },
+      <FilterPill label={t('templates59WorkflowHub.filterDept')} value={deptFilter} onChange={onDeptFilter} options={[
+        { value: 'all', label: t('templates59WorkflowHub.filterAll') },
+        { value: 'marketing', label: t('templates59WorkflowHub.deptMarketing') },
+        { value: 'sales', label: t('templates59WorkflowHub.deptSales') },
+        { value: 'customer_service', label: t('templates59WorkflowHub.deptCustomerService') },
+        { value: 'warehouse', label: t('templates59WorkflowHub.deptWarehouse') },
+        { value: 'hr', label: t('templates59WorkflowHub.deptHr') },
+        { value: 'finance', label: t('templates59WorkflowHub.deptFinance') },
       ]} />
-      <FilterPill label="Trạng thái" value={stateFilter} onChange={onStateFilter} options={[
-        { value: 'all', label: 'Tất cả' },
-        { value: 'DRAFT', label: 'Bản nháp' },
-        { value: 'TESTING', label: 'Đang test' },
-        { value: 'ACTIVE_BASELINE', label: 'Đang chạy' },
-        { value: 'ARCHIVED', label: 'Lưu trữ' },
+      <FilterPill label={t('templates59WorkflowHub.filterState')} value={stateFilter} onChange={onStateFilter} options={[
+        { value: 'all', label: t('templates59WorkflowHub.filterAll') },
+        { value: 'DRAFT', label: t('templates59WorkflowHub.stateDraft') },
+        { value: 'TESTING', label: t('templates59WorkflowHub.stateTesting') },
+        { value: 'ACTIVE_BASELINE', label: t('templates59WorkflowHub.stateActive') },
+        { value: 'ARCHIVED', label: t('templates59WorkflowHub.stateArchived') },
       ]} />
       <div className="inline-flex bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom p-0.5">
         <button onClick={() => onViewMode('by_dept')}
@@ -311,7 +314,7 @@ function Toolbar({
                     ? 'bg-white text-[var(--primary-gold-dark)] shadow-soft-sm'
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]',
                 )}>
-          <Layers className="w-3.5 h-3.5" /> Theo phòng ban
+          <Layers className="w-3.5 h-3.5" /> {t('templates59WorkflowHub.viewByDept')}
         </button>
         <button onClick={() => onViewMode('grid')}
                 className={cn(
@@ -320,7 +323,7 @@ function Toolbar({
                     ? 'bg-white text-[var(--primary-gold-dark)] shadow-soft-sm'
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]',
                 )}>
-          <LayoutGrid className="w-3.5 h-3.5" /> Tất cả
+          <LayoutGrid className="w-3.5 h-3.5" /> {t('templates59WorkflowHub.viewAll')}
         </button>
       </div>
     </div>
@@ -339,7 +342,9 @@ function DeptSection({
   departmentId: string | null;
   onPickTemplate: () => void;
 }) {
+  const t = useT();
   const meta = DEPT_META[dept] ?? DEPT_META.custom;
+  const deptLabel = t(meta.labelKey);
   const newHref = departmentId
     ? `/p2/workflows/new?department_id=${encodeURIComponent(departmentId)}`
     : '/p2/workflows/new';
@@ -354,30 +359,30 @@ function DeptSection({
           {deptHref ? (
             <a href={deptHref}
                className={cn('text-sm font-medium px-2 py-0.5 rounded hover:underline', meta.color)}>
-              {meta.label_vi}
+              {deptLabel}
             </a>
           ) : (
-            <span className={cn('text-sm font-medium px-2 py-0.5 rounded', meta.color)}>{meta.label_vi}</span>
+            <span className={cn('text-sm font-medium px-2 py-0.5 rounded', meta.color)}>{deptLabel}</span>
           )}
           <span className="text-xs text-[var(--text-secondary)]">
-            {workflows.length} workflow{workflows.length >= 2 ? ' (có thể nối chéo)' : ''}
+            {workflows.length} workflow{workflows.length >= 2 ? ` (${t('templates59WorkflowHub.crossLinkable')})` : ''}
           </span>
           {deptHref && workflows.length > 0 && (
             <a href={deptHref}
                className="text-[11px] font-medium text-[var(--primary-gold-dark)] hover:underline">
-              Xem trang phòng này →
+              {t('templates59WorkflowHub.viewDeptPage')} →
             </a>
           )}
         </div>
         <div className="flex items-center gap-2">
           {workflows.length >= 2 && (
             <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-medium text-violet-700 bg-violet-50 border border-violet-200 px-1.5 py-0.5 rounded">
-              <GitBranch className="w-3 h-3" /> Cross-link sẵn sàng
+              <GitBranch className="w-3 h-3" /> {t('templates59WorkflowHub.crossLinkReady')}
             </span>
           )}
           <a href={newHref}>
             <Button variant="secondary" size="sm">
-              <Plus className="w-3.5 h-3.5 mr-1" /> Thêm vào phòng này
+              <Plus className="w-3.5 h-3.5 mr-1" /> {t('templates59WorkflowHub.addToThisDept')}
             </Button>
           </a>
         </div>
@@ -386,14 +391,14 @@ function DeptSection({
       {workflows.length === 0 ? (
         <div className="px-5 py-8 text-center">
           <p className="text-sm text-[var(--text-secondary)] mb-2">
-            {meta.label_vi} chưa có workflow.
+            {t('templates59WorkflowHub.deptNoWorkflow', { dept: deptLabel })}
           </p>
           <div className="flex items-center justify-center gap-2">
             <a href={newHref}>
-              <Button variant="primary" size="sm"><Plus className="w-3.5 h-3.5 mr-1" /> Tạo trắng</Button>
+              <Button variant="primary" size="sm"><Plus className="w-3.5 h-3.5 mr-1" /> {t('templates59WorkflowHub.createBlank')}</Button>
             </a>
             <Button variant="tertiary" size="sm" onClick={onPickTemplate}>
-              <Sparkles className="w-3.5 h-3.5 mr-1" /> Từ template
+              <Sparkles className="w-3.5 h-3.5 mr-1" /> {t('templates59WorkflowHub.fromTemplate')}
             </Button>
           </div>
         </div>
@@ -422,6 +427,7 @@ function FilterPill({ label, value, onChange, options }: any) {
 }
 
 function WorkflowCard({ wf }: { wf: WorkflowRow }) {
+  const t = useT();
   const dept = DEPT_META[deptKeyOf(wf)] ?? DEPT_META.custom;
   const state = STATE_META[wf.state] ?? STATE_META.DRAFT;
   return (
@@ -433,7 +439,7 @@ function WorkflowCard({ wf }: { wf: WorkflowRow }) {
         <div className="w-10 h-10 rounded-md-custom bg-[var(--primary-gold)]/10 flex items-center justify-center shrink-0">
           <Workflow className="w-5 h-5 text-[var(--primary-gold-dark)]" />
         </div>
-        <Badge variant={state.variant}>{state.label_vi}</Badge>
+        <Badge variant={state.variant}>{t(state.labelKey)}</Badge>
       </div>
       <h3 className="font-serif text-base text-[var(--text-primary)] group-hover:text-[var(--primary-gold-dark)] transition-colors line-clamp-1">
         {wf.name_vi || wf.name}
@@ -442,26 +448,27 @@ function WorkflowCard({ wf }: { wf: WorkflowRow }) {
         <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed line-clamp-2">{wf.description}</p>
       )}
       <div className="mt-3 pt-3 border-t border-[var(--border-color)]/60 flex items-center justify-between text-[11px]">
-        <span className={cn('px-2 py-0.5 rounded text-xs font-medium', dept.color)}>{dept.label_vi}</span>
+        <span className={cn('px-2 py-0.5 rounded text-xs font-medium', dept.color)}>{t(dept.labelKey)}</span>
         <span className="text-[var(--text-secondary)]">v{wf.version}</span>
       </div>
       <div className="mt-3 inline-flex items-center text-xs font-medium text-[var(--primary-gold-dark)] group-hover:translate-x-0.5 transition-transform">
-        Mở workflow <ArrowRight className="w-3 h-3 ml-1" />
+        {t('templates59WorkflowHub.openWorkflow')} <ArrowRight className="w-3 h-3 ml-1" />
       </div>
     </a>
   );
 }
 
 function EmptyState({ onPickTemplate }: { onPickTemplate: () => void }) {
+  const t = useT();
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom py-16 text-center px-6">
       <Workflow className="w-12 h-12 mx-auto text-[var(--text-secondary)]/40 mb-3" />
-      <h3 className="font-serif text-lg text-[var(--text-primary)] mb-2">Chưa có workflow nào</h3>
+      <h3 className="font-serif text-lg text-[var(--text-primary)] mb-2">{t('templates59WorkflowHub.emptyTitle')}</h3>
       <p className="text-sm text-[var(--text-secondary)] max-w-md mx-auto mb-4">
-        Tạo workflow từ template (Sales / Marketing / CSKH / Kho vận / HR / Tài chính) hoặc bắt đầu trắng.
+        {t('templates59WorkflowHub.emptyDescription')}
       </p>
       <Button variant="primary" size="md" onClick={onPickTemplate}>
-        <Sparkles className="w-4 h-4 mr-2" /> Xem template
+        <Sparkles className="w-4 h-4 mr-2" /> {t('templates59WorkflowHub.viewTemplates')}
       </Button>
     </div>
   );
@@ -477,6 +484,7 @@ function TemplatePicker({
   onClose: () => void;
   onClone: (t: WorkflowTemplate, departmentId: string) => void;
 }) {
+  const t = useT();
   // Map dept_type → department_id from existing workflows. The first
   // workflow we see for a given dept tells us the UUID. For depts the
   // tenant has no workflow yet, we surface a guidance message.
@@ -493,17 +501,17 @@ function TemplatePicker({
 
   const grouped = useMemo(() => {
     const g: Record<DeptType, WorkflowTemplate[]> = {} as any;
-    for (const t of templates) {
-      if (!g[t.department_type]) g[t.department_type] = [];
-      g[t.department_type].push(t);
+    for (const tpl of templates) {
+      if (!g[tpl.department_type]) g[tpl.department_type] = [];
+      g[tpl.department_type].push(tpl);
     }
     return g;
   }, [templates]);
 
-  function handlePick(t: WorkflowTemplate) {
-    const did = deptIdByType[t.department_type];
-    if (!did) { setSelected(t); return; }
-    onClone(t, did);
+  function handlePick(tpl: WorkflowTemplate) {
+    const did = deptIdByType[tpl.department_type];
+    if (!did) { setSelected(tpl); return; }
+    onClone(tpl, did);
   }
 
   return (
@@ -514,9 +522,9 @@ function TemplatePicker({
       >
         <div className="px-6 py-4 border-b border-[var(--border-color)] flex items-center justify-between">
           <div>
-            <h3 className="font-serif text-lg text-[var(--text-primary)]">Chọn template workflow</h3>
+            <h3 className="font-serif text-lg text-[var(--text-primary)]">{t('templates59WorkflowHub.pickerTitle')}</h3>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-              {templates.length} template — 3 cho mỗi phòng ban × 6 phòng ban
+              {t('templates59WorkflowHub.pickerSubtitle', { count: templates.length })}
             </p>
           </div>
           <button onClick={onClose} className="p-1 hover:bg-[var(--bg-app)] rounded-md-custom">
@@ -526,22 +534,23 @@ function TemplatePicker({
         <div className="overflow-y-auto p-6 space-y-6 flex-1">
           {Object.entries(grouped).map(([dept, items]) => {
             const meta = DEPT_META[dept as DeptType];
+            const deptLabel = meta ? t(meta.labelKey) : dept;
             return (
               <div key={dept}>
                 <h4 className={cn('text-sm font-medium mb-3 inline-block px-2 py-0.5 rounded', meta?.color)}>
-                  {meta?.label_vi || dept}
+                  {deptLabel}
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  {(items as WorkflowTemplate[]).map((t) => (
+                  {(items as WorkflowTemplate[]).map((tpl) => (
                     <button
-                      key={t.template_id}
-                      onClick={() => handlePick(t)}
+                      key={tpl.template_id}
+                      onClick={() => handlePick(tpl)}
                       className="text-left p-4 rounded-md-custom border border-[var(--border-color)] hover:border-[var(--primary-gold)] hover:bg-[var(--primary-gold)]/5 transition-all"
                     >
-                      <h5 className="font-serif text-sm text-[var(--text-primary)] mb-1">{t.display_name_vi}</h5>
-                      <p className="text-[11px] text-[var(--text-secondary)] line-clamp-2 mb-2">{t.description}</p>
+                      <h5 className="font-serif text-sm text-[var(--text-primary)] mb-1">{tpl.display_name_vi}</h5>
+                      <p className="text-[11px] text-[var(--text-secondary)] line-clamp-2 mb-2">{tpl.description}</p>
                       <div className="flex items-center gap-2 text-[10px] text-[var(--text-secondary)]">
-                        <Layers className="w-3 h-3" /> {t.node_count} bước · ~{t.estimated_setup_minutes} phút
+                        <Layers className="w-3 h-3" /> {t('templates59WorkflowHub.templateStepsSetup', { steps: tpl.node_count, minutes: tpl.estimated_setup_minutes })}
                       </div>
                     </button>
                   ))}
@@ -551,9 +560,10 @@ function TemplatePicker({
           })}
           {selected && !deptIdByType[selected.department_type] && (
             <ErrorBanner problem={{
-              title: 'Chưa có phòng ban',
-              detail: `Workspace chưa có phòng ban ${DEPT_META[selected.department_type]?.label_vi}. ` +
-                      `Yêu cầu MANAGER tạo phòng ban trước khi clone template.`,
+              title: t('templates59WorkflowHub.errNoDeptTitle'),
+              detail: t('templates59WorkflowHub.errNoDeptDetail', {
+                dept: DEPT_META[selected.department_type] ? t(DEPT_META[selected.department_type].labelKey) : selected.department_type,
+              }),
             }} />
           )}
         </div>

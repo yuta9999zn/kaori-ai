@@ -21,6 +21,7 @@ import {
   Badge, ErrorBanner, type ProblemDetails,
 } from '@/components/platform/foundation';
 import { PageHeader } from '@/components/platform/shell';
+import { useT } from '@/lib/i18n/provider';
 
 interface PlatformStats {
   total_workspaces:  number;
@@ -36,6 +37,7 @@ interface PlatformStats {
 type InfraStatus = 'ok' | 'warn' | 'error';
 
 export default function PlatformDashboardPage() {
+  const t = useT();
   const query = useQuery<{ data: PlatformStats }>({
     queryKey:        ['platform-stats'],
     queryFn:         () => api('/api/v1/platform/stats'),
@@ -49,8 +51,8 @@ export default function PlatformDashboardPage() {
   return (
     <>
       <PageHeader
-        title="Tổng quan nền tảng"
-        description="Sức khoẻ hạ tầng + đếm tăng trưởng workspace, người dùng, pipeline runs."
+        title={t('platformPage.pageTitle')}
+        description={t('platformPage.pageDescription')}
       />
 
       <div className="px-6 lg:px-8 py-6 space-y-6">
@@ -71,23 +73,23 @@ export default function PlatformDashboardPage() {
           <>
             <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
               <KpiCard
-                label="Tổng workspaces"
+                label={t('platformPage.kpiTotalWorkspaces')}
                 value={stats.total_workspaces}
                 icon={<Building2 className="w-5 h-5" />}
               />
               <KpiCard
-                label="Đang hoạt động"
+                label={t('platformPage.kpiActiveWorkspaces')}
                 value={stats.active_workspaces}
                 icon={<Activity className="w-5 h-5" />}
                 accent="success"
               />
               <KpiCard
-                label="Tổng người dùng"
+                label={t('platformPage.kpiTotalUsers')}
                 value={stats.total_users}
                 icon={<Users className="w-5 h-5" />}
               />
               <KpiCard
-                label="Runs hôm nay"
+                label={t('platformPage.kpiRunsToday')}
                 value={stats.runs_today}
                 icon={<PlayCircle className="w-5 h-5" />}
               />
@@ -95,26 +97,26 @@ export default function PlatformDashboardPage() {
 
             <section className="rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm overflow-hidden">
               <header className="px-5 py-4 border-b border-[var(--border-color)]/60">
-                <h2 className="font-serif text-lg text-[var(--text-primary)]">Trạng thái hạ tầng</h2>
+                <h2 className="font-serif text-lg text-[var(--text-primary)]">{t('platformPage.infraSectionTitle')}</h2>
                 <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                  Refresh mỗi 60s — cảnh báo khi vượt ngưỡng.
+                  {t('platformPage.infraSectionDescription')}
                 </p>
               </header>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-[var(--border-color)]/60">
                 <InfraItem
-                  label="Ollama (Qwen2.5)"
+                  label={t('platformPage.infraOllamaLabel')}
                   icon={Cpu}
                   status={stats.ollama_online ? 'ok' : 'error'}
-                  detail={stats.ollama_online ? 'Online' : 'Offline'}
+                  detail={stats.ollama_online ? t('platformPage.statusOnline') : t('platformPage.statusOffline')}
                 />
                 <InfraItem
-                  label="Kafka consumer lag"
+                  label={t('platformPage.infraKafkaLabel')}
                   icon={Wifi}
                   status={stats.kafka_lag > 1000 ? 'warn' : 'ok'}
-                  detail={`${stats.kafka_lag.toLocaleString('vi-VN')} messages`}
+                  detail={t('platformPage.kafkaLagDetail', { count: stats.kafka_lag.toLocaleString('vi-VN') })}
                 />
                 <InfraItem
-                  label="P95 latency"
+                  label={t('platformPage.infraP95Label')}
                   icon={Activity}
                   status={stats.p95_latency_ms > 2000 ? 'warn' : 'ok'}
                   detail={`${stats.p95_latency_ms} ms`}
@@ -123,7 +125,7 @@ export default function PlatformDashboardPage() {
             </section>
 
             <div className="text-xs text-[var(--text-secondary)] flex items-center gap-2">
-              <span>Tổng pipeline runs tất cả thời gian:</span>
+              <span>{t('platformPage.totalRunsAllTime')}</span>
               <span className="font-semibold text-[var(--text-primary)] tabular-nums">
                 {stats.total_runs.toLocaleString('vi-VN')}
               </span>
@@ -176,10 +178,11 @@ function InfraItem({
   status: InfraStatus;
   detail: string;
 }) {
+  const t = useT();
   const variant = status === 'ok' ? 'operational' : status === 'warn' ? 'warning' : 'error';
   const StatusIcon =
     status === 'ok' ? CheckCircle2 : status === 'warn' ? AlertTriangle : XCircle;
-  const statusText = status === 'ok' ? 'OK' : status === 'warn' ? 'Chú ý' : 'Lỗi';
+  const statusText = status === 'ok' ? t('platformPage.statusOk') : status === 'warn' ? t('platformPage.statusWarn') : t('platformPage.statusError');
 
   return (
     <div className="flex items-center gap-3 p-4 bg-[var(--bg-card)]">

@@ -1,0 +1,84 @@
+{
+  "templates30ChartCategories.pageTitle": { "vi": "Biểu đồ theo loại", "en": "Charts by category", "ja": "カテゴリー別チャート", "ko": "카테고리별 차트", "zh": "按类别分类的图表" },
+  "templates30ChartCategories.pageDescription": { "vi": "Tài liệu 15 loại biểu đồ chia theo mục đích phân tích. Phase 2 sẽ thêm tính năng lưu template.", "en": "Documentation of 15 chart kinds grouped by analytical purpose. Phase 2 will add the ability to save templates.", "ja": "分析目的別に分類された15種類のチャートのドキュメントです。Phase 2ではテンプレート保存機能を追加予定です。", "ko": "분석 목적별로 분류된 15가지 차트 유형 문서입니다. Phase 2에서 템플릿 저장 기능이 추가됩니다.", "zh": "按分析目的分类的 15 种图表类型说明文档。Phase 2 将新增保存模板功能。" },
+  "templates30ChartCategories.phase2Badge": { "vi": "Phase 2 · Lưu template", "en": "Phase 2 · Save template", "ja": "Phase 2・テンプレート保存", "ko": "Phase 2 · 템플릿 저장", "zh": "Phase 2 · 保存模板" },
+
+  "templates30ChartCategories.catComparisonTitle": { "vi": "So sánh", "en": "Comparison", "ja": "比較", "ko": "비교", "zh": "比较" },
+  "templates30ChartCategories.catComparisonDesc": { "vi": "Đối chiếu giá trị giữa các nhóm hoặc theo thời gian", "en": "Compare values across groups or over time", "ja": "グループ間または時系列で値を比較", "ko": "그룹 간 또는 시간에 따라 값 비교", "zh": "在分组之间或随时间比较数值" },
+  "templates30ChartCategories.catCompositionTitle": { "vi": "Tỉ trọng", "en": "Composition", "ja": "構成比", "ko": "구성비", "zh": "构成比" },
+  "templates30ChartCategories.catCompositionDesc": { "vi": "Một tổng thể được chia thành các phần như thế nào", "en": "How a whole is divided into parts", "ja": "全体がどのように部分に分かれているか", "ko": "전체가 부분으로 어떻게 나뉘는지", "zh": "整体如何划分为各部分" },
+  "templates30ChartCategories.catDistributionTitle": { "vi": "Phân phối", "en": "Distribution", "ja": "分布", "ko": "분포", "zh": "分布" },
+  "templates30ChartCategories.catDistributionDesc": { "vi": "Cách giá trị phân bố trên một dải số", "en": "How values are spread across a numeric range", "ja": "数値範囲における値の広がり方", "ko": "값이 숫자 범위에 걸쳐 분포하는 방식", "zh": "数值在数值区间上的分布方式" },
+  "templates30ChartCategories.catRelationshipTitle": { "vi": "Tương quan", "en": "Relationship", "ja": "相関関係", "ko": "상관관계", "zh": "相关性" },
+  "templates30ChartCategories.catRelationshipDesc": { "vi": "Hai (hoặc ba) biến quan hệ với nhau ra sao", "en": "How two (or three) variables relate to each other", "ja": "2つ（または3つ）の変数がどう関連するか", "ko": "두 개(또는 세 개)의 변수가 서로 어떤 관계인지", "zh": "两个（或三个）变量之间的关系" },
+
+  "templates30ChartCategories.barLabel": { "vi": "Cột ngang", "en": "Horizontal bar", "ja": "横棒グラフ", "ko": "가로 막대", "zh": "横向柱状图" },
+  "templates30ChartCategories.barDesc": { "vi": "So sánh giá trị giữa các category", "en": "Compare values across categories", "ja": "カテゴリー間で値を比較", "ko": "카테고리 간 값 비교", "zh": "比较各类别之间的数值" },
+  "templates30ChartCategories.barUseCase": { "vi": "Doanh thu theo chi nhánh", "en": "Revenue by branch", "ja": "支店別売上", "ko": "지점별 매출", "zh": "按分支机构统计营收" },
+
+  "templates30ChartCategories.columnLabel": { "vi": "Cột dọc", "en": "Column", "ja": "縦棒グラフ", "ko": "세로 막대", "zh": "柱状图" },
+  "templates30ChartCategories.columnDesc": { "vi": "Cột dọc — mặc định cho category", "en": "Vertical bar — default for categories", "ja": "縦棒 — カテゴリーのデフォルト", "ko": "세로 막대 — 카테고리 기본값", "zh": "纵向柱状图 — 类别默认图表" },
+  "templates30ChartCategories.columnUseCase": { "vi": "Số khách theo tháng", "en": "Customer count by month", "ja": "月別顧客数", "ko": "월별 고객 수", "zh": "按月客户数" },
+
+  "templates30ChartCategories.stackedBarLabel": { "vi": "Cột chồng", "en": "Stacked bar", "ja": "積み上げ棒グラフ", "ko": "누적 막대", "zh": "堆叠柱状图" },
+  "templates30ChartCategories.stackedBarDesc": { "vi": "Nhiều series cùng trục", "en": "Multiple series on the same axis", "ja": "同じ軸上の複数系列", "ko": "동일 축의 여러 시리즈", "zh": "同轴多个系列" },
+  "templates30ChartCategories.stackedBarUseCase": { "vi": "Doanh thu theo product line × tháng", "en": "Revenue by product line × month", "ja": "製品ライン×月別売上", "ko": "제품 라인 × 월별 매출", "zh": "按产品线×月份统计营收" },
+
+  "templates30ChartCategories.lineLabel": { "vi": "Đường", "en": "Line", "ja": "折れ線", "ko": "라인", "zh": "折线图" },
+  "templates30ChartCategories.lineDesc": { "vi": "Xu hướng theo thời gian", "en": "Trend over time", "ja": "時間の経過による傾向", "ko": "시간에 따른 추세", "zh": "随时间变化的趋势" },
+  "templates30ChartCategories.lineUseCase": { "vi": "MAU 12 tháng", "en": "12-month MAU", "ja": "12ヶ月間のMAU", "ko": "12개월 MAU", "zh": "12个月 MAU" },
+
+  "templates30ChartCategories.areaLabel": { "vi": "Vùng", "en": "Area", "ja": "面グラフ", "ko": "영역", "zh": "面积图" },
+  "templates30ChartCategories.areaDesc": { "vi": "Xu hướng cumulative", "en": "Cumulative trend", "ja": "累積トレンド", "ko": "누적 추세", "zh": "累计趋势" },
+  "templates30ChartCategories.areaUseCase": { "vi": "Khách lũy kế", "en": "Cumulative customers", "ja": "累積顧客数", "ko": "누적 고객 수", "zh": "累计客户数" },
+
+  "templates30ChartCategories.pieLabel": { "vi": "Tròn", "en": "Pie", "ja": "円グラフ", "ko": "파이", "zh": "饼图" },
+  "templates30ChartCategories.pieDesc": { "vi": "Tỉ trọng cho ≤6 nhóm", "en": "Share for ≤6 groups", "ja": "6グループ以下の割合", "ko": "6개 이하 그룹의 비중", "zh": "≤6 个分组的占比" },
+  "templates30ChartCategories.pieUseCase": { "vi": "Cơ cấu doanh thu theo segment", "en": "Revenue composition by segment", "ja": "セグメント別売上構成", "ko": "세그먼트별 매출 구성", "zh": "按细分市场划分的营收构成" },
+
+  "templates30ChartCategories.donutLabel": { "vi": "Tròn rỗng", "en": "Donut", "ja": "ドーナツ", "ko": "도넛", "zh": "环形图" },
+  "templates30ChartCategories.donutDesc": { "vi": "Pie + tổng giữa", "en": "Pie + total in the center", "ja": "円グラフ + 中央に合計", "ko": "파이 + 중앙 합계", "zh": "饼图 + 中心显示总计" },
+  "templates30ChartCategories.donutUseCase": { "vi": "Cơ cấu khách + tổng", "en": "Customer composition + total", "ja": "顧客構成 + 合計", "ko": "고객 구성 + 합계", "zh": "客户构成 + 总计" },
+
+  "templates30ChartCategories.treemapLabel": { "vi": "Treemap", "en": "Treemap", "ja": "ツリーマップ", "ko": "트리맵", "zh": "矩形树图" },
+  "templates30ChartCategories.treemapDesc": { "vi": "Phân cấp theo diện tích", "en": "Hierarchy by area", "ja": "面積による階層構造", "ko": "면적 기반 계층 구조", "zh": "按面积展示层级" },
+  "templates30ChartCategories.treemapUseCase": { "vi": "Cơ cấu chi phí phòng ban", "en": "Department cost composition", "ja": "部門別コスト構成", "ko": "부서별 비용 구성", "zh": "部门成本构成" },
+
+  "templates30ChartCategories.funnelLabel": { "vi": "Funnel", "en": "Funnel", "ja": "ファネル", "ko": "퍼널", "zh": "漏斗图" },
+  "templates30ChartCategories.funnelDesc": { "vi": "Conversion qua các bước", "en": "Conversion across steps", "ja": "ステップごとのコンバージョン", "ko": "단계별 전환율", "zh": "各步骤的转化率" },
+  "templates30ChartCategories.funnelUseCase": { "vi": "Bước trong sales funnel", "en": "Steps in the sales funnel", "ja": "セールスファネルの各ステップ", "ko": "영업 퍼널 단계", "zh": "销售漏斗各步骤" },
+
+  "templates30ChartCategories.histogramLabel": { "vi": "Histogram", "en": "Histogram", "ja": "ヒストグラム", "ko": "히스토그램", "zh": "直方图" },
+  "templates30ChartCategories.histogramDesc": { "vi": "Tần suất theo bin", "en": "Frequency by bin", "ja": "ビン別の頻度", "ko": "구간별 빈도", "zh": "按区间统计频率" },
+  "templates30ChartCategories.histogramUseCase": { "vi": "Phân phối giá trị đơn hàng", "en": "Order value distribution", "ja": "注文金額の分布", "ko": "주문 금액 분포", "zh": "订单金额分布" },
+
+  "templates30ChartCategories.boxPlotLabel": { "vi": "Box plot", "en": "Box plot", "ja": "箱ひげ図", "ko": "박스플롯", "zh": "箱线图" },
+  "templates30ChartCategories.boxPlotDesc": { "vi": "Median + quartiles + outlier", "en": "Median + quartiles + outliers", "ja": "中央値 + 四分位数 + 外れ値", "ko": "중앙값 + 사분위수 + 이상치", "zh": "中位数 + 四分位数 + 异常值" },
+  "templates30ChartCategories.boxPlotUseCase": { "vi": "So sánh phân phối lương", "en": "Compare salary distributions", "ja": "給与分布の比較", "ko": "급여 분포 비교", "zh": "比较薪资分布" },
+
+  "templates30ChartCategories.densityLabel": { "vi": "Density", "en": "Density", "ja": "密度プロット", "ko": "밀도 플롯", "zh": "密度图" },
+  "templates30ChartCategories.densityDesc": { "vi": "Phân phối liên tục (KDE)", "en": "Continuous distribution (KDE)", "ja": "連続分布（KDE）", "ko": "연속 분포 (KDE)", "zh": "连续分布 (KDE)" },
+  "templates30ChartCategories.densityUseCase": { "vi": "Phân phối tuổi khách", "en": "Customer age distribution", "ja": "顧客年齢の分布", "ko": "고객 연령 분포", "zh": "客户年龄分布" },
+
+  "templates30ChartCategories.scatterLabel": { "vi": "Scatter", "en": "Scatter", "ja": "散布図", "ko": "산점도", "zh": "散点图" },
+  "templates30ChartCategories.scatterDesc": { "vi": "Tương quan 2 biến", "en": "Correlation between 2 variables", "ja": "2変数の相関", "ko": "두 변수 간 상관관계", "zh": "两个变量之间的相关性" },
+  "templates30ChartCategories.scatterUseCase": { "vi": "Marketing spend vs conversion", "en": "Marketing spend vs conversion", "ja": "マーケティング費用 vs コンバージョン", "ko": "마케팅 지출 vs 전환율", "zh": "营销支出 vs 转化率" },
+
+  "templates30ChartCategories.bubbleLabel": { "vi": "Bubble", "en": "Bubble", "ja": "バブルチャート", "ko": "버블차트", "zh": "气泡图" },
+  "templates30ChartCategories.bubbleDesc": { "vi": "Scatter + size theo biến thứ 3", "en": "Scatter + size by a 3rd variable", "ja": "散布図 + 3つ目の変数によるサイズ", "ko": "산점도 + 세 번째 변수로 크기 표현", "zh": "散点图 + 按第三个变量调整大小" },
+  "templates30ChartCategories.bubbleUseCase": { "vi": "Spend × ROI × volume", "en": "Spend × ROI × volume", "ja": "費用×ROI×ボリューム", "ko": "지출 × ROI × 볼륨", "zh": "支出×ROI×数量" },
+
+  "templates30ChartCategories.heatmapLabel": { "vi": "Heatmap", "en": "Heatmap", "ja": "ヒートマップ", "ko": "히트맵", "zh": "热力图" },
+  "templates30ChartCategories.heatmapDesc": { "vi": "Mật độ theo 2 chiều rời rạc", "en": "Density across 2 discrete dimensions", "ja": "2つの離散次元での密度", "ko": "두 개의 이산 차원에 따른 밀도", "zh": "按两个离散维度展示密度" },
+  "templates30ChartCategories.heatmapUseCase": { "vi": "Hour-of-day × day-of-week", "en": "Hour-of-day × day-of-week", "ja": "時間帯×曜日", "ko": "시간대×요일", "zh": "时段×星期" },
+
+  "templates30ChartCategories.exampleLabel": { "vi": "Ví dụ", "en": "Example", "ja": "例", "ko": "예시", "zh": "示例" },
+  "templates30ChartCategories.openInPicker": { "vi": "Mở trong picker", "en": "Open in picker", "ja": "ピッカーで開く", "ko": "피커에서 열기", "zh": "在选择器中打开" },
+
+  "templates30ChartCategories.teaserTitle": { "vi": "Phase 2 — Chart Templates", "en": "Phase 2 — Chart Templates", "ja": "Phase 2 — チャートテンプレート", "ko": "Phase 2 — 차트 템플릿", "zh": "Phase 2 — 图表模板" },
+  "templates30ChartCategories.teaserPre": { "vi": "Sắp tới bạn sẽ lưu được tổ hợp", "en": "Soon you'll be able to save the combination of", "ja": "近日、次の組み合わせを", "ko": "곧 다음 조합을", "zh": "很快您将可以把" },
+  "templates30ChartCategories.teaserSpan": { "vi": "loại + cột mặc định + theme", "en": "kind + default columns + theme", "ja": "種類 + デフォルト列 + テーマ", "ko": "유형 + 기본 열 + 테마", "zh": "类型 + 默认字段 + 主题" },
+  "templates30ChartCategories.teaserPost": { "vi": "thành template, dùng lại cho mọi pipeline mới mà không cần config từ đầu.", "en": "as a template, reusable for every new pipeline without configuring from scratch.", "ja": "をテンプレートとして保存でき、新しいパイプラインで最初から設定せずに再利用できます。", "ko": "템플릿으로 저장할 수 있게 되어, 처음부터 설정하지 않고도 모든 새 파이프라인에서 재사용할 수 있습니다.", "zh": "的组合保存为模板，无需从头配置即可在任何新的数据管道中重复使用。" },
+
+  "templates30ChartCategories.openChartPicker": { "vi": "Mở Chart Picker", "en": "Open Chart Picker", "ja": "チャートピッカーを開く", "ko": "차트 피커 열기", "zh": "打开图表选择器" }
+}

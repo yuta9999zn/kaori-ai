@@ -25,6 +25,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types
 // ============================================================================
@@ -55,27 +56,33 @@ interface RiskDetail {
   updated_at:          string;
 }
 
-const SEVERITY_META: Record<Severity, { label: string; variant: 'success' | 'info' | 'warning' | 'error' }> = {
-  low:      { label: 'Thấp',         variant: 'success' },
-  medium:   { label: 'Trung',        variant: 'info' },
-  high:     { label: 'Cao',          variant: 'warning' },
-  critical: { label: 'Nghiêm trọng', variant: 'error' },
-};
+function getSeverityMeta(t: ReturnType<typeof useT>): Record<Severity, { label: string; variant: 'success' | 'info' | 'warning' | 'error' }> {
+  return {
+    low:      { label: t('templatesF039RisksDetail.sevLow'),      variant: 'success' },
+    medium:   { label: t('templatesF039RisksDetail.sevMedium'),   variant: 'info' },
+    high:     { label: t('templatesF039RisksDetail.sevHigh'),     variant: 'warning' },
+    critical: { label: t('templatesF039RisksDetail.sevCritical'), variant: 'error' },
+  };
+}
 
-const STATUS_META: Record<Status, { label: string; variant: 'current' | 'warning' | 'success' }> = {
-  open:       { label: 'Mở',         variant: 'current' },
-  mitigating: { label: 'Đang xử lý', variant: 'warning' },
-  closed:     { label: 'Đã đóng',    variant: 'success' },
-};
+function getStatusMeta(t: ReturnType<typeof useT>): Record<Status, { label: string; variant: 'current' | 'warning' | 'success' }> {
+  return {
+    open:       { label: t('templatesF039RisksDetail.statusOpen'),       variant: 'current' },
+    mitigating: { label: t('templatesF039RisksDetail.statusMitigating'), variant: 'warning' },
+    closed:     { label: t('templatesF039RisksDetail.statusClosed'),     variant: 'success' },
+  };
+}
 
-const CATEGORY_LABEL: Record<Category, string> = {
-  operational:  'Vận hành',
-  financial:    'Tài chính',
-  regulatory:   'Pháp lý',
-  reputational: 'Thương hiệu',
-  strategic:    'Chiến lược',
-  technical:    'Kỹ thuật',
-};
+function getCategoryLabel(t: ReturnType<typeof useT>): Record<Category, string> {
+  return {
+    operational:  t('templatesF039RisksDetail.catOperational'),
+    financial:    t('templatesF039RisksDetail.catFinancial'),
+    regulatory:   t('templatesF039RisksDetail.catRegulatory'),
+    reputational: t('templatesF039RisksDetail.catReputational'),
+    strategic:    t('templatesF039RisksDetail.catStrategic'),
+    technical:    t('templatesF039RisksDetail.catTechnical'),
+  };
+}
 
 const CATEGORIES: Category[] = [
   'operational', 'financial', 'regulatory',
@@ -87,6 +94,7 @@ const CATEGORIES: Category[] = [
 // ============================================================================
 
 export default function RiskDetailPage({ riskId }: { riskId: string }) {
+  const t = useT();
   const [risk, setRisk]             = useState<RiskDetail | null>(null);
   const [loading, setLoading]       = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -160,7 +168,7 @@ export default function RiskDetailPage({ riskId }: { riskId: string }) {
         }),
       });
       hydrate(r.data);
-      setSuccess('Đã lưu thay đổi.');
+      setSuccess(t('templatesF039RisksDetail.savedSuccess'));
     } catch (e) {
       setProblem(e as ProblemDetails);
     } finally {
@@ -171,8 +179,7 @@ export default function RiskDetailPage({ riskId }: { riskId: string }) {
   async function onDelete() {
     if (!risk) return;
     if (!window.confirm(
-      `Xoá rủi ro "${risk.title}"? Bản ghi sẽ bị soft-delete (vẫn còn trong audit), `
-      + 'không hiển thị trong danh sách nữa.'
+      t('templatesF039RisksDetail.confirmDelete', { title: risk.title })
     )) return;
     setDeleting(true);
     setProblem(null);
@@ -188,13 +195,13 @@ export default function RiskDetailPage({ riskId }: { riskId: string }) {
   if (loading || !risk) {
     return (
       <>
-        <PageHeader title="Đang tải..." description="" />
+        <PageHeader title={t('templatesF039RisksDetail.loadingTitle')} description="" />
         <div className="px-6 py-12 max-w-[1300px] mx-auto">
           {problem ? (
             <ErrorBanner problem={problem} />
           ) : (
             <div className="flex items-center justify-center py-16 text-[var(--text-secondary)]">
-              <Loader2 className="w-5 h-5 animate-spin mr-2" /> Đang tải chi tiết rủi ro...
+              <Loader2 className="w-5 h-5 animate-spin mr-2" /> {t('templatesF039RisksDetail.loadingDetail')}
             </div>
           )}
         </div>
@@ -203,6 +210,9 @@ export default function RiskDetailPage({ riskId }: { riskId: string }) {
   }
 
   const score = likelihood * impact;
+  const SEVERITY_META = getSeverityMeta(t);
+  const STATUS_META = getStatusMeta(t);
+  const CATEGORY_LABEL = getCategoryLabel(t);
   const sev = SEVERITY_META[severityFromScore(score)];
   const stt = STATUS_META[status];
 
@@ -210,13 +220,17 @@ export default function RiskDetailPage({ riskId }: { riskId: string }) {
     <>
       <PageHeader
         title={risk.title}
-        description={`Risk ID: ${risk.risk_id} · ${CATEGORY_LABEL[risk.category]} · Cập nhật ${new Date(risk.updated_at).toLocaleString('vi-VN')}`}
+        description={t('templatesF039RisksDetail.headerDesc', {
+          riskId: risk.risk_id,
+          category: CATEGORY_LABEL[risk.category],
+          updatedAt: new Date(risk.updated_at).toLocaleString('vi-VN'),
+        })}
         actions={
           <>
             <Badge variant={sev.variant}>{sev.label}</Badge>
             <Badge variant={stt.variant}>{stt.label}</Badge>
             <a href="/p2/risks">
-              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> Danh sách</Button>
+              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> {t('templatesF039RisksDetail.backList')}</Button>
             </a>
           </>
         }
@@ -228,7 +242,7 @@ export default function RiskDetailPage({ riskId }: { riskId: string }) {
 
         <form onSubmit={onSave} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-5 lg:p-6 shadow-soft-sm space-y-5">
           <Input
-            label="Tên rủi ro"
+            label={t('templatesF039RisksDetail.fieldTitle')}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
@@ -236,19 +250,19 @@ export default function RiskDetailPage({ riskId }: { riskId: string }) {
           />
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-[var(--text-primary)]">Mô tả</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templatesF039RisksDetail.fieldDescription')}</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              placeholder="Mô tả hoàn cảnh, nguy cơ, tác động dự kiến..."
+              placeholder={t('templatesF039RisksDetail.descriptionPlaceholder')}
               className="w-full px-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all resize-none leading-relaxed"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[var(--text-primary)]">Danh mục</label>
+              <label className="text-sm font-medium text-[var(--text-primary)]">{t('templatesF039RisksDetail.fieldCategory')}</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as Category)}
@@ -258,19 +272,19 @@ export default function RiskDetailPage({ riskId }: { riskId: string }) {
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[var(--text-primary)]">Trạng thái</label>
+              <label className="text-sm font-medium text-[var(--text-primary)]">{t('templatesF039RisksDetail.fieldStatus')}</label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as Status)}
                 className="w-full h-10 px-3 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)]"
               >
-                <option value="open">Mở</option>
-                <option value="mitigating">Đang xử lý</option>
-                <option value="closed">Đã đóng</option>
+                <option value="open">{STATUS_META.open.label}</option>
+                <option value="mitigating">{STATUS_META.mitigating.label}</option>
+                <option value="closed">{STATUS_META.closed.label}</option>
               </select>
             </div>
             <Input
-              label="Hạn xử lý"
+              label={t('templatesF039RisksDetail.fieldDueDate')}
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
@@ -278,26 +292,26 @@ export default function RiskDetailPage({ riskId }: { riskId: string }) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <ScoreSlider label="Khả năng (likelihood)" value={likelihood} onChange={setLikelihood} />
-            <ScoreSlider label="Tác động (impact)"      value={impact}     onChange={setImpact} />
+            <ScoreSlider label={t('templatesF039RisksDetail.fieldLikelihood')} value={likelihood} onChange={setLikelihood} />
+            <ScoreSlider label={t('templatesF039RisksDetail.fieldImpact')}     value={impact}     onChange={setImpact} />
           </div>
 
           <div className="bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom p-4 flex items-center justify-between">
             <div>
-              <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Score tự tính</p>
+              <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templatesF039RisksDetail.autoScoreLabel')}</p>
               <p className="font-serif text-2xl text-[var(--text-primary)]">{likelihood} × {impact} = {score}</p>
-              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">DB trigger sẽ ghi lại khi lưu.</p>
+              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{t('templatesF039RisksDetail.autoScoreHint')}</p>
             </div>
-            <Badge variant={sev.variant}>Score {score} · {sev.label}</Badge>
+            <Badge variant={sev.variant}>{t('templatesF039RisksDetail.scoreBadge', { score, severity: sev.label })}</Badge>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-[var(--text-primary)]">Kế hoạch xử lý</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templatesF039RisksDetail.fieldMitigationPlan')}</label>
             <textarea
               value={mitigationPlan}
               onChange={(e) => setMitigationPlan(e.target.value)}
               rows={3}
-              placeholder="Bước cụ thể để giảm rủi ro, người chịu trách nhiệm, dependencies..."
+              placeholder={t('templatesF039RisksDetail.mitigationPlanPlaceholder')}
               className="w-full px-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all resize-none leading-relaxed"
             />
           </div>
@@ -305,7 +319,7 @@ export default function RiskDetailPage({ riskId }: { riskId: string }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-[var(--text-primary)]">
-                Tiến độ xử lý ({progress}%)
+                {t('templatesF039RisksDetail.progressLabel', { progress })}
               </label>
               <input
                 type="range"
@@ -323,7 +337,7 @@ export default function RiskDetailPage({ riskId }: { riskId: string }) {
               </div>
             </div>
             <Input
-              label="Owner (UUID enterprise_users)"
+              label={t('templatesF039RisksDetail.fieldOwner')}
               value={ownerUserId}
               onChange={(e) => setOwnerUserId(e.target.value)}
               placeholder="00000000-0000-0000-0000-000000000000"
@@ -337,13 +351,13 @@ export default function RiskDetailPage({ riskId }: { riskId: string }) {
               className="text-[var(--state-error)] hover:bg-[var(--state-error)]/10"
             >
               {deleting ? (
-                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Đang xoá...</>
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t('templatesF039RisksDetail.deleting')}</>
               ) : (
-                <><Trash2 className="w-4 h-4 mr-2" /> Xoá (soft)</>
+                <><Trash2 className="w-4 h-4 mr-2" /> {t('templatesF039RisksDetail.deleteSoft')}</>
               )}
             </Button>
             <Button variant="primary" type="submit" size="md" isLoading={submitting} disabled={!title.trim()}>
-              <Save className="w-4 h-4 mr-2" /> Lưu thay đổi
+              <Save className="w-4 h-4 mr-2" /> {t('templatesF039RisksDetail.saveChanges')}
             </Button>
           </div>
         </form>
@@ -352,13 +366,12 @@ export default function RiskDetailPage({ riskId }: { riskId: string }) {
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <div className="space-y-1">
             <p>
-              Score + severity tự suy ra từ likelihood × impact bởi DB trigger.
-              Mỗi update bump <span className="font-mono">updated_at</span>; soft-delete chỉ set{' '}
-              <span className="font-mono">deleted_at</span> (audit trail bảo toàn).
+              {t('templatesF039RisksDetail.footnoteScorePre')} <span className="font-mono">updated_at</span>{t('templatesF039RisksDetail.footnoteScoreMid')}{' '}
+              <span className="font-mono">deleted_at</span> {t('templatesF039RisksDetail.footnoteScorePost')}
             </p>
             <p>
               <span className="text-[var(--text-secondary)]/70">
-                Phase 2 v1 sẽ thêm: evidence attachments, lịch sử review (likelihood/impact change), tự động đề xuất từ pipeline anomaly.
+                {t('templatesF039RisksDetail.footnoteRoadmap')}
               </span>
             </p>
           </div>
@@ -375,6 +388,14 @@ export default function RiskDetailPage({ riskId }: { riskId: string }) {
 function ScoreSlider({
   label, value, onChange,
 }: { label: string; value: number; onChange: (v: number) => void }) {
+  const t = useT();
+  const scale = [
+    t('templatesF039RisksDetail.scaleVeryLow'),
+    t('templatesF039RisksDetail.scaleLow'),
+    t('templatesF039RisksDetail.scaleMedium'),
+    t('templatesF039RisksDetail.scaleHigh'),
+    t('templatesF039RisksDetail.scaleVeryHigh'),
+  ];
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
@@ -391,7 +412,7 @@ function ScoreSlider({
         className="w-full h-2 bg-[var(--border-color)]/40 rounded-full accent-[var(--primary-gold)]"
       />
       <div className="flex justify-between text-[10px] text-[var(--text-secondary)]">
-        {['Rất thấp', 'Thấp', 'Trung', 'Cao', 'Rất cao'].map((l) => <span key={l}>{l}</span>)}
+        {scale.map((l) => <span key={l}>{l}</span>)}
       </div>
     </div>
   );

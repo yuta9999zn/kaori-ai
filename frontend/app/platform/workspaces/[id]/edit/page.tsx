@@ -9,11 +9,12 @@ import { workspaceApi, type WsStatus } from '@/lib/api/platform';
 import {
   Button, Input, Label, ErrorBanner, type ProblemDetails,
 } from '@/components/platform/foundation';
+import { useT } from '@/lib/i18n/provider';
 
-const STATUS_OPTIONS: Array<{ value: WsStatus; label: string }> = [
-  { value: 'active',    label: 'Đang hoạt động' },
-  { value: 'inactive',  label: 'Ngừng hoạt động' },
-  { value: 'suspended', label: 'Tạm ngưng' },
+const STATUS_OPTIONS: Array<{ value: WsStatus; labelKey: string }> = [
+  { value: 'active',    labelKey: 'editPage.statusActive' },
+  { value: 'inactive',  labelKey: 'editPage.statusInactive' },
+  { value: 'suspended', labelKey: 'editPage.statusSuspended' },
 ];
 
 export default function WorkspaceEditPage({
@@ -21,6 +22,7 @@ export default function WorkspaceEditPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const t = useT();
   const { id } = use(params);
   const router = useRouter();
   const qc     = useQueryClient();
@@ -72,7 +74,7 @@ export default function WorkspaceEditPage({
     return (
       <ErrorBanner
         problem={query.error ? (query.error as unknown as ProblemDetails) : null}
-        message="Không thể tải workspace để chỉnh sửa."
+        message={t('editPage.errLoadFailed')}
       />
     );
   }
@@ -80,10 +82,10 @@ export default function WorkspaceEditPage({
   return (
     <div className="max-w-2xl space-y-6">
       <section className="rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm p-6 space-y-5">
-        <h2 className="font-serif text-lg text-[var(--text-primary)]">Thông tin chung</h2>
+        <h2 className="font-serif text-lg text-[var(--text-primary)]">{t('editPage.sectionGeneral')}</h2>
 
         <div className="space-y-1.5">
-          <Label htmlFor="ws-name">Tên workspace</Label>
+          <Label htmlFor="ws-name">{t('editPage.fieldName')}</Label>
           <Input
             id="ws-name"
             value={name}
@@ -95,7 +97,7 @@ export default function WorkspaceEditPage({
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="ws-plan">Mã gói</Label>
+          <Label htmlFor="ws-plan">{t('editPage.fieldPlanCode')}</Label>
           <Input
             id="ws-plan"
             value={planCode}
@@ -105,12 +107,12 @@ export default function WorkspaceEditPage({
             required
           />
           <p className="text-xs text-[var(--text-secondary)]">
-            2–20 ký tự chữ/số, gạch dưới hoặc gạch ngang. Ví dụ: PILOT, ENT_BASIC, ENT_MID, ENT_MAX.
+            {t('editPage.planCodeHint')}
           </p>
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="ws-status">Trạng thái</Label>
+          <Label htmlFor="ws-status">{t('editPage.fieldStatus')}</Label>
           <select
             id="ws-status"
             value={status}
@@ -118,7 +120,7 @@ export default function WorkspaceEditPage({
             className="h-10 w-full rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)]"
           >
             {STATUS_OPTIONS.map((s) => (
-              <option key={s.value} value={s.value}>{s.label}</option>
+              <option key={s.value} value={s.value}>{t(s.labelKey)}</option>
             ))}
           </select>
         </div>
@@ -131,14 +133,14 @@ export default function WorkspaceEditPage({
             onClick={() => router.push(`/platform/workspaces/${id}`)}
             type="button"
           >
-            Hủy
+            {t('editPage.cancel')}
           </Button>
           <Button
             isLoading={updateMut.isPending}
             onClick={() => { setError(null); updateMut.mutate(); }}
           >
             <Save className="w-4 h-4 mr-1.5" />
-            Lưu thay đổi
+            {t('editPage.saveChanges')}
           </Button>
         </div>
       </section>
@@ -146,15 +148,15 @@ export default function WorkspaceEditPage({
       <section className="rounded-md-custom border border-[var(--state-error)]/30 bg-[var(--bg-card)] shadow-soft-sm p-6 space-y-3">
         <h2 className="font-serif text-lg text-[#9B5050] flex items-center gap-2">
           <AlertTriangle className="w-5 h-5" />
-          Vùng nguy hiểm
+          {t('editPage.dangerZone')}
         </h2>
         <p className="text-sm text-[var(--text-secondary)]">
-          Xóa mềm workspace sẽ chuyển trạng thái sang <strong>Ngừng hoạt động</strong>.
-          Không xóa dữ liệu — có thể khôi phục bằng cách cập nhật lại trạng thái.
+          {t('editPage.softDeleteInfoPre')} <strong>{t('editPage.statusInactive')}</strong>.
+          {' '}{t('editPage.softDeleteInfoPost')}
         </p>
         <Button variant="destructive" onClick={() => setConfirmDelete(true)}>
           <Trash2 className="w-4 h-4 mr-1.5" />
-          Xóa mềm workspace
+          {t('editPage.softDeleteWorkspace')}
         </Button>
       </section>
 
@@ -165,21 +167,20 @@ export default function WorkspaceEditPage({
           aria-modal="true"
         >
           <div className="w-full max-w-md rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-lg p-6 space-y-4 animate-slide-up-fade">
-            <h3 className="font-serif text-lg text-[var(--text-primary)]">Xác nhận xóa mềm</h3>
+            <h3 className="font-serif text-lg text-[var(--text-primary)]">{t('editPage.confirmDeleteTitle')}</h3>
             <p className="text-sm text-[var(--text-secondary)]">
-              Workspace <strong className="text-[var(--text-primary)]">"{query.data.data.name}"</strong> sẽ chuyển sang trạng thái Ngừng hoạt động.
-              Người dùng sẽ không truy cập được cho đến khi kích hoạt lại.
+              {t('editPage.confirmDeleteBodyPre')} <strong className="text-[var(--text-primary)]">"{query.data.data.name}"</strong> {t('editPage.confirmDeleteBodyPost')}
             </p>
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="secondary" onClick={() => setConfirmDelete(false)}>
-                Hủy
+                {t('editPage.cancel')}
               </Button>
               <Button
                 variant="destructive"
                 isLoading={deleteMut.isPending}
                 onClick={() => deleteMut.mutate()}
               >
-                Xóa mềm
+                {t('editPage.softDelete')}
               </Button>
             </div>
           </div>

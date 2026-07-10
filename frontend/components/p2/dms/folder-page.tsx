@@ -13,6 +13,7 @@ import {
 import {
   Button, Badge, ErrorBanner, cn, api, API_BASE, type ProblemDetails,
 } from '@/components/p2/foundation';
+import { useT } from '@/lib/i18n/provider';
 import { Markdown } from './md';
 import { MdToolbar } from './md-toolbar';
 import { MetadataForm, CompletenessBadge, StatusLozenge } from './metadata-form';
@@ -40,6 +41,7 @@ function PageEditor({ page, docs, onClose, onSaved }: {
   onClose: () => void;
   onSaved: () => void;
 }) {
+  const t = useT();
   const [bodyMd, setBodyMd] = useState(page.body_md || '');
   const [templateId, setTemplateId] = useState(page.default_template_id || '');
   const [sampleFileId, setSampleFileId] = useState(page.sample_file_id || '');
@@ -86,17 +88,17 @@ function PageEditor({ page, docs, onClose, onSaved }: {
     <div className="space-y-3">
       {/* editor chrome: Đang sửa + Lưu (Publish) — kiểu Confluence */}
       <div className="flex items-center gap-2 border-b border-[var(--border-color)] pb-2">
-        <Badge variant="default" className="text-[10px]">ĐANG SỬA TRANG</Badge>
+        <Badge variant="default" className="text-[10px]">{t('dmsFolderPage.editingPageBadge')}</Badge>
         <span className="text-xs text-[var(--text-secondary)] flex-1">
-          Mỗi lần lưu tạo một phiên bản mới — lịch sử không bị ghi đè.
+          {t('dmsFolderPage.editingPageHint')}
         </span>
         <input value={changeNote} onChange={(e) => setChangeNote(e.target.value)}
-          placeholder="Ghi chú thay đổi (tuỳ chọn)…"
+          placeholder={t('dmsFolderPage.changeNotePlaceholder')}
           className="px-2 py-1.5 text-xs bg-white border border-[var(--border-color)] rounded w-56" />
-        <Button variant="secondary" onClick={onClose}>Huỷ</Button>
+        <Button variant="secondary" onClick={onClose}>{t('dmsFolderPage.cancel')}</Button>
         <Button onClick={save} disabled={saving}>
           {saving ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : null}
-          Lưu trang (v{page.page_version + 1})
+          {t('dmsFolderPage.savePage', { version: page.page_version + 1 })}
         </Button>
       </div>
 
@@ -105,11 +107,11 @@ function PageEditor({ page, docs, onClose, onSaved }: {
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4">
         {/* body — mô tả nghiệp vụ */}
         <div>
-          <label className="text-xs font-semibold text-[var(--text-secondary)]">Mô tả nghiệp vụ</label>
+          <label className="text-xs font-semibold text-[var(--text-secondary)]">{t('dmsFolderPage.businessDescLabel')}</label>
           <div className="mt-1">
             <MdToolbar target={bodyRef} onChange={setBodyMd} />
             <textarea ref={bodyRef} value={bodyMd} onChange={(e) => setBodyMd(e.target.value)} rows={14}
-              placeholder={'# Nghiệp vụ này là gì\n\nTài liệu nào thuộc về đây, chu kỳ nộp, quy ước đặt tên…\n\n- Gạch đầu dòng\n- [ ] Checklist\n[tên link](https://…) · #hashtag · ==đánh dấu=='}
+              placeholder={t('dmsFolderPage.businessDescPlaceholder')}
               className="w-full px-3 py-2 bg-white border border-[var(--border-color)] rounded-b-md text-sm font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30" />
           </div>
         </div>
@@ -117,39 +119,39 @@ function PageEditor({ page, docs, onClose, onSaved }: {
         {/* side panel: mẫu + file mẫu + nhãn — kiểu panel phải Confluence */}
         <div className="space-y-3">
           <div>
-            <label className="text-xs font-semibold text-[var(--text-secondary)]">Mẫu tài liệu của thư mục</label>
+            <label className="text-xs font-semibold text-[var(--text-secondary)]">{t('dmsFolderPage.folderTemplateLabel')}</label>
             <select value={templateId} onChange={(e) => setTemplateId(e.target.value)}
               className="mt-1 w-full px-2 py-2 bg-white border border-[var(--border-color)] rounded text-sm">
-              <option value="">— kế thừa từ thư mục cha —</option>
-              {templates.map((t) => (
-                <option key={t.template_id} value={t.template_id}>
-                  {t.icon ? `${t.icon} ` : ''}{t.name_vi}{t.is_global ? ' (mẫu hệ thống)' : ''}
+              <option value="">{t('dmsFolderPage.inheritFromParent')}</option>
+              {templates.map((tmpl) => (
+                <option key={tmpl.template_id} value={tmpl.template_id}>
+                  {tmpl.icon ? `${tmpl.icon} ` : ''}{tmpl.name_vi}{tmpl.is_global ? t('dmsFolderPage.systemTemplateSuffix') : ''}
                 </option>
               ))}
             </select>
             <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
-              Tài liệu tải vào thư mục sẽ thừa hưởng mẫu này (thuộc tính + các mục cần có).
+              {t('dmsFolderPage.folderTemplateHint')}
             </p>
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-[var(--text-secondary)]">File upload mẫu (đính trên trang)</label>
+            <label className="text-xs font-semibold text-[var(--text-secondary)]">{t('dmsFolderPage.sampleFileLabel')}</label>
             <select value={sampleFileId} onChange={(e) => setSampleFileId(e.target.value)}
               className="mt-1 w-full px-2 py-2 bg-white border border-[var(--border-color)] rounded text-sm">
-              <option value="">— không có —</option>
+              <option value="">{t('dmsFolderPage.noneOption')}</option>
               {sampleCandidates.map((d) => (
                 <option key={d.doc_id} value={d.file_id!}>{d.name_vi}</option>
               ))}
             </select>
             <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
-              Chọn một tài liệu trong thư mục làm biểu mẫu trống — người dùng tải về, điền, nộp lại.
+              {t('dmsFolderPage.sampleFileHint')}
             </p>
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-[var(--text-secondary)]">Nhãn tự gắn (labels)</label>
+            <label className="text-xs font-semibold text-[var(--text-secondary)]">{t('dmsFolderPage.labelsLabel')}</label>
             <input value={labels} onChange={(e) => setLabels(e.target.value)}
-              placeholder="quy-trinh:mua-hang, loai:hop-dong"
+              placeholder={t('dmsFolderPage.labelsPlaceholder')}
               className="mt-1 w-full px-2 py-2 bg-white border border-[var(--border-color)] rounded text-sm" />
           </div>
         </div>
@@ -163,6 +165,7 @@ function VersionHistory({ folderId, currentVersion, onClose, onRestored }: {
   folderId: string; currentVersion: number;
   onClose: () => void; onRestored: () => void;
 }) {
+  const t = useT();
   const [versions, setVersions] = useState<PageVersion[] | null>(null);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
   const [restoring, setRestoring] = useState<number | null>(null);
@@ -187,22 +190,22 @@ function VersionHistory({ folderId, currentVersion, onClose, onRestored }: {
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-4 space-y-2">
       <div className="flex items-center gap-2">
         <History className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-        <h3 className="text-sm font-semibold flex-1">Lịch sử phiên bản trang</h3>
+        <h3 className="text-sm font-semibold flex-1">{t('dmsFolderPage.versionHistoryTitle')}</h3>
         <button onClick={onClose} className="text-[var(--text-secondary)] hover:text-[var(--state-error)]"><X className="w-4 h-4" /></button>
       </div>
       {problem && <ErrorBanner problem={problem} />}
       {versions === null ? (
         <div className="py-4 text-center"><Loader2 className="w-4 h-4 animate-spin inline text-[var(--text-secondary)]" /></div>
       ) : versions.length === 0 ? (
-        <p className="text-sm text-[var(--text-secondary)]">Trang chưa có lần sửa nào — phiên bản đầu tiên sẽ được ghi khi anh/chị lưu trang.</p>
+        <p className="text-sm text-[var(--text-secondary)]">{t('dmsFolderPage.versionHistoryEmpty')}</p>
       ) : (
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-xs text-[var(--text-secondary)]">
-              <th className="py-1.5 pr-3">Phiên bản</th>
-              <th className="py-1.5 pr-3">Thời gian</th>
-              <th className="py-1.5 pr-3">Mẫu gắn kèm</th>
-              <th className="py-1.5 pr-3">Ghi chú</th>
+              <th className="py-1.5 pr-3">{t('dmsFolderPage.colVersion')}</th>
+              <th className="py-1.5 pr-3">{t('dmsFolderPage.colTime')}</th>
+              <th className="py-1.5 pr-3">{t('dmsFolderPage.colTemplateAttached')}</th>
+              <th className="py-1.5 pr-3">{t('dmsFolderPage.colNote')}</th>
               <th className="py-1.5" />
             </tr>
           </thead>
@@ -210,7 +213,7 @@ function VersionHistory({ folderId, currentVersion, onClose, onRestored }: {
             {versions.map((v) => (
               <tr key={v.version_no} className="border-t border-[var(--border-color)]/50">
                 <td className="py-2 pr-3 font-mono text-xs">
-                  v{v.version_no}{v.version_no === currentVersion && <Badge variant="success" className="ml-1.5 text-[9px]">hiện tại</Badge>}
+                  v{v.version_no}{v.version_no === currentVersion && <Badge variant="success" className="ml-1.5 text-[9px]">{t('dmsFolderPage.currentBadge')}</Badge>}
                 </td>
                 <td className="py-2 pr-3 text-xs text-[var(--text-secondary)]">{fmtTime(v.edited_at)}</td>
                 <td className="py-2 pr-3 text-xs">{v.template_snapshot?.name_vi || '—'}</td>
@@ -220,7 +223,7 @@ function VersionHistory({ folderId, currentVersion, onClose, onRestored }: {
                     <button onClick={() => restore(v.version_no)} disabled={restoring !== null}
                       className="inline-flex items-center gap-1 text-xs text-[var(--primary-gold-dark)] hover:underline">
                       {restoring === v.version_no ? <Loader2 className="w-3 h-3 animate-spin" /> : <RotateCcw className="w-3 h-3" />}
-                      Khôi phục
+                      {t('dmsFolderPage.restore')}
                     </button>
                   )}
                 </td>
@@ -238,14 +241,15 @@ function CreateDocPanel({ folderId, templateName, onClose, onCreated }: {
   folderId: string; templateName: string | null;
   onClose: () => void; onCreated: (docId: string) => void;
 }) {
+  const t = useT();
   const [name, setName] = useState('');
   const [prompt, setPrompt] = useState('');
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
 
   async function create(withAI: boolean) {
-    if (!name.trim()) { setProblem({ title: 'Nhập tên tài liệu trước' } as ProblemDetails); return; }
-    if (withAI && !prompt.trim()) { setProblem({ title: 'Nhập mô tả/yêu cầu để AI soạn' } as ProblemDetails); return; }
+    if (!name.trim()) { setProblem({ title: t('dmsFolderPage.errNameRequired') } as ProblemDetails); return; }
+    if (withAI && !prompt.trim()) { setProblem({ title: t('dmsFolderPage.errPromptRequired') } as ProblemDetails); return; }
     setBusy(true);
     setProblem(null);
     try {
@@ -264,23 +268,23 @@ function CreateDocPanel({ folderId, templateName, onClose, onCreated }: {
     <div className="bg-[var(--bg-card)] border border-[var(--primary-gold)]/40 rounded-lg-custom p-4 space-y-3">
       <div className="flex items-center gap-2">
         <NotebookPen className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-        <h3 className="text-sm font-semibold flex-1">Tạo tài liệu trong Kaori{templateName ? ` — theo mẫu ${templateName}` : ''}</h3>
+        <h3 className="text-sm font-semibold flex-1">{t('dmsFolderPage.createDocTitle')}{templateName ? t('dmsFolderPage.createDocTitleTemplate', { name: templateName }) : ''}</h3>
         <button onClick={onClose} className="text-[var(--text-secondary)] hover:text-[var(--state-error)]"><X className="w-4 h-4" /></button>
       </div>
       {problem && <ErrorBanner problem={problem} />}
       <input value={name} onChange={(e) => setName(e.target.value)}
-        placeholder="Tên tài liệu (vd Message Definition — App bán hàng)"
+        placeholder={t('dmsFolderPage.docNamePlaceholder')}
         className="w-full px-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30" />
       <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} rows={4}
-        placeholder={'Mô tả tài liệu + yêu cầu để AI soạn nháp theo bộ khung của mẫu (tuỳ chọn).\nVD: "Chuẩn hoá thông báo lỗi cho app bán hàng Đồng Xanh: lỗi mạng, lỗi đăng nhập sai, thiếu trường bắt buộc khi tạo đơn, trùng mã khách hàng…"\nAI chỉ dùng thông tin trong mô tả này — không bịa.'}
+        placeholder={t('dmsFolderPage.aiPromptPlaceholder')}
         className="w-full px-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30" />
       <div className="flex justify-end gap-2">
         <Button variant="secondary" onClick={() => create(false)} disabled={busy}>
-          <FilePlus2 className="w-3.5 h-3.5 mr-1.5" /> Tạo trống
+          <FilePlus2 className="w-3.5 h-3.5 mr-1.5" /> {t('dmsFolderPage.createEmpty')}
         </Button>
         <Button onClick={() => create(true)} disabled={busy}>
           {busy ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Sparkles className="w-4 h-4 mr-1.5" />}
-          Tạo bằng AI
+          {t('dmsFolderPage.createWithAI')}
         </Button>
       </div>
     </div>
@@ -294,6 +298,7 @@ function DocItem({ d, schema, statusField, onChanged, onOpenAuthored }: {
   onChanged: () => void;
   onOpenAuthored: (docId: string) => void;
 }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const statusVal = statusField ? (d.metadata as any)?.[statusField.key] : null;
 
@@ -310,13 +315,13 @@ function DocItem({ d, schema, statusField, onChanged, onOpenAuthored }: {
           </button>
           {d.status === 'generating' && (
             <Badge variant="default" className="text-[10px] inline-flex items-center gap-1">
-              <Sparkles className="w-3 h-3" /> AI đang soạn
+              <Sparkles className="w-3 h-3" /> {t('dmsFolderPage.aiGenerating')}
             </Badge>
           )}
           {statusVal && statusField && <StatusLozenge value={String(statusVal)} options={statusField.options || []} />}
           <CompletenessBadge value={d.completeness} />
           {d.version > 1 && <span className="text-[10px] font-mono text-[var(--text-secondary)]">v{d.version}</span>}
-          <Badge variant="default" className="text-[10px]">tài liệu Kaori</Badge>
+          <Badge variant="default" className="text-[10px]">{t('dmsFolderPage.kaoriDocBadge')}</Badge>
         </div>
       </div>
     );
@@ -335,12 +340,12 @@ function DocItem({ d, schema, statusField, onChanged, onOpenAuthored }: {
         {statusVal && statusField && <StatusLozenge value={String(statusVal)} options={statusField.options || []} />}
         <CompletenessBadge value={d.completeness} />
         {d.version > 1 && (
-          <span title={`Phiên bản ${d.version} — upload trùng tên tự chồng version`}
+          <span title={t('dmsFolderPage.versionTitle', { version: d.version })}
             className="text-[10px] font-mono text-[var(--text-secondary)]">v{d.version}</span>
         )}
         {d.doc_type && <Badge variant="default" className="text-[10px]">.{d.doc_type}</Badge>}
         <a href={`${API_BASE}/api/v1/document-repository/${d.doc_id}/download`}
-          target="_blank" rel="noreferrer" title="Tải về"
+          target="_blank" rel="noreferrer" title={t('dmsFolderPage.download')}
           onClick={(e) => {
             // đính token vào request qua fetch → blob (raw <a> không mang Bearer)
             e.preventDefault();
@@ -374,6 +379,7 @@ export function FolderPage({ folderId, onUploaded }: {
   folderId: string;
   onUploaded?: () => void;
 }) {
+  const t = useT();
   const [page, setPage] = useState<FolderPageData | null>(null);
   const [docs, setDocs] = useState<DocRow[]>([]);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -436,7 +442,7 @@ export function FolderPage({ folderId, onUploaded }: {
       await load();
       onUploaded?.();
     } catch (err: any) {
-      setProblem(err.title ? err : { title: err?.message || 'Tải lên thất bại' });
+      setProblem(err.title ? err : { title: err?.message || t('dmsFolderPage.uploadFailed') });
     } finally {
       setUploading(false);
     }
@@ -472,20 +478,20 @@ export function FolderPage({ folderId, onUploaded }: {
         <div className="flex-1 min-w-0">
           <h1 className="text-xl font-bold truncate">{page.name_vi}</h1>
           <p className="text-[11px] text-[var(--text-secondary)]">
-            Trang nghiệp vụ · v{page.page_version}
-            {page.updated_at && ` · sửa lần cuối ${fmtTime(page.updated_at)}`}
+            {t('dmsFolderPage.pageMetaVersion', { version: page.page_version })}
+            {page.updated_at && t('dmsFolderPage.pageMetaUpdated', { time: fmtTime(page.updated_at) })}
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <Button variant="secondary" onClick={() => setShowVersions(!showVersions)}>
-            <History className="w-3.5 h-3.5 mr-1.5" /> Lịch sử
+            <History className="w-3.5 h-3.5 mr-1.5" /> {t('dmsFolderPage.history')}
           </Button>
           <Button variant="secondary"
             onClick={() => setInsightScope({ scope_kind: 'folder', scope: { folder_id: folderId }, title: page.name_vi })}>
-            <Sparkles className="w-3.5 h-3.5 mr-1.5" /> Phân tích thư mục
+            <Sparkles className="w-3.5 h-3.5 mr-1.5" /> {t('dmsFolderPage.analyzeFolder')}
           </Button>
           <Button onClick={() => setMode('edit')}>
-            <Pencil className="w-3.5 h-3.5 mr-1.5" /> Sửa trang
+            <Pencil className="w-3.5 h-3.5 mr-1.5" /> {t('dmsFolderPage.editPage')}
           </Button>
         </div>
       </div>
@@ -518,31 +524,32 @@ export function FolderPage({ folderId, onUploaded }: {
       ) : (
         <button onClick={() => setMode('edit')}
           className="w-full text-left px-4 py-3 border border-dashed border-[var(--border-color)] rounded-lg-custom text-sm text-[var(--text-secondary)] hover:border-[var(--primary-gold)]/60">
-          Chưa có mô tả nghiệp vụ — bấm để viết (tài liệu nào thuộc về đây, chu kỳ nộp, quy ước…).
+          {t('dmsFolderPage.noBusinessDesc')}
         </button>
       )}
 
       {/* properties: mẫu hiệu lực + file mẫu — bảng thuộc tính trên trang */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-md-custom px-3 py-2.5">
-          <p className="text-[10px] font-semibold text-[var(--text-secondary)] uppercase">Mẫu tài liệu áp dụng</p>
+          <p className="text-[10px] font-semibold text-[var(--text-secondary)] uppercase">{t('dmsFolderPage.appliedTemplateLabel')}</p>
           {tpl ? (
             <p className="text-sm mt-0.5">
               {tpl.icon} {tpl.name_vi}
               {page.template_inherited_from && (
-                <span className="text-[10px] text-[var(--text-secondary)]"> (kế thừa từ thư mục cha)</span>
+                <span className="text-[10px] text-[var(--text-secondary)]"> {t('dmsFolderPage.inheritedFromParentSuffix')}</span>
               )}
               <span className="block text-[11px] text-[var(--text-secondary)] mt-0.5">
-                {schema.length} thuộc tính{statusField ? ` · trạng thái: ${(statusField.options || []).length} bước` : ''}
-                {tpl.section_outline.length > 0 && ` · ${tpl.section_outline.length} mục nội dung`}
+                {t('dmsFolderPage.schemaFieldsCount', { count: schema.length })}
+                {statusField ? t('dmsFolderPage.statusStepsCount', { count: (statusField.options || []).length }) : ''}
+                {tpl.section_outline.length > 0 && t('dmsFolderPage.sectionOutlineCount', { count: tpl.section_outline.length })}
               </span>
             </p>
           ) : (
-            <p className="text-sm mt-0.5 text-[var(--text-secondary)] italic">Chưa gắn mẫu — tài liệu tải lên sẽ không có bảng thuộc tính.</p>
+            <p className="text-sm mt-0.5 text-[var(--text-secondary)] italic">{t('dmsFolderPage.noTemplateAttached')}</p>
           )}
         </div>
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-md-custom px-3 py-2.5">
-          <p className="text-[10px] font-semibold text-[var(--text-secondary)] uppercase">File upload mẫu</p>
+          <p className="text-[10px] font-semibold text-[var(--text-secondary)] uppercase">{t('dmsFolderPage.sampleUploadFileLabel')}</p>
           {page.sample_file_id ? (
             <button
               onClick={() => {
@@ -558,39 +565,39 @@ export function FolderPage({ folderId, onUploaded }: {
                 });
               }}
               className="text-sm mt-0.5 inline-flex items-center gap-1.5 text-[var(--primary-gold-dark)] hover:underline">
-              <Paperclip className="w-3.5 h-3.5" /> Tải biểu mẫu về để điền
+              <Paperclip className="w-3.5 h-3.5" /> {t('dmsFolderPage.downloadSampleToFill')}
             </button>
           ) : (
-            <p className="text-sm mt-0.5 text-[var(--text-secondary)] italic">Chưa đính file mẫu trên trang.</p>
+            <p className="text-sm mt-0.5 text-[var(--text-secondary)] italic">{t('dmsFolderPage.noSampleFile')}</p>
           )}
         </div>
       </div>
 
       {/* docs: toolbar + list/index */}
       <div className="flex items-center gap-2">
-        <h2 className="text-sm font-semibold flex-1">Tài liệu ({docs.length})</h2>
+        <h2 className="text-sm font-semibold flex-1">{t('dmsFolderPage.docsHeading', { count: docs.length })}</h2>
         {tpl && (
           <div className="flex items-center rounded-md-custom border border-[var(--border-color)] overflow-hidden">
             <button onClick={() => setDocView('list')}
               className={cn('px-2.5 py-1.5 text-xs flex items-center gap-1.5',
                 docView === 'list' ? 'bg-[var(--primary-gold)]/15 text-[var(--primary-gold-dark)] font-medium' : 'bg-white text-[var(--text-secondary)]')}>
-              <List className="w-3.5 h-3.5" /> Danh sách
+              <List className="w-3.5 h-3.5" /> {t('dmsFolderPage.listView')}
             </button>
             <button onClick={() => setDocView('index')}
               className={cn('px-2.5 py-1.5 text-xs flex items-center gap-1.5',
                 docView === 'index' ? 'bg-[var(--primary-gold)]/15 text-[var(--primary-gold-dark)] font-medium' : 'bg-white text-[var(--text-secondary)]')}>
-              <Table2 className="w-3.5 h-3.5" /> Bảng index
+              <Table2 className="w-3.5 h-3.5" /> {t('dmsFolderPage.indexView')}
             </button>
           </div>
         )}
         <Button variant="secondary" onClick={() => setShowCreate(!showCreate)}>
-          <NotebookPen className="w-3.5 h-3.5 mr-1.5" /> Tạo tài liệu
+          <NotebookPen className="w-3.5 h-3.5 mr-1.5" /> {t('dmsFolderPage.createDoc')}
         </Button>
         <input ref={fileRef} type="file" hidden onChange={onUpload}
           accept=".pdf,.docx,.doc,.xlsx,.xls,.csv,.png,.jpg,.jpeg,.tiff,.webp,.pptx,.md,.json,.sql,.zip,.txt" />
         <Button onClick={() => fileRef.current?.click()} disabled={uploading}>
           {uploading ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Upload className="w-4 h-4 mr-1.5" />}
-          Tải lên
+          {t('dmsFolderPage.uploadBtn')}
         </Button>
       </div>
 
@@ -600,19 +607,19 @@ export function FolderPage({ folderId, onUploaded }: {
           onCreated={(docId) => { setShowCreate(false); setOpenDoc(docId); }} />
       )}
       <p className="text-[11px] text-[var(--text-secondary)] -mt-2">
-        Tải file <b>trùng tên</b> sẽ tự chồng thành phiên bản mới của tài liệu cũ (v1 → v2), không tạo bản sao.
+        {t('dmsFolderPage.dupFileNotePre')}<b>{t('dmsFolderPage.dupFileNoteBold')}</b>{t('dmsFolderPage.dupFileNotePost')}
       </p>
 
       {docView === 'index' && tpl ? (
         <IndexView template={tpl} folderId={folderId}
           onAnalyzeGroup={(ids) => setInsightScope({
             scope_kind: 'group', scope: { doc_ids: ids },
-            title: `${ids.length} tài liệu đã chọn`,
+            title: t('dmsFolderPage.selectedDocsTitle', { count: ids.length }),
           })}
           onOpenDoc={() => setDocView('list')} />
       ) : docs.length === 0 ? (
         <div className="py-8 text-center text-sm text-[var(--text-secondary)] border border-dashed border-[var(--border-color)] rounded-lg-custom">
-          Thư mục trống — tải tài liệu đầu tiên lên{page.sample_file_id ? ' (tải biểu mẫu về điền trước nếu cần)' : ''}.
+          {t('dmsFolderPage.emptyFolder')}{page.sample_file_id ? t('dmsFolderPage.emptyFolderSample') : ''}.
         </div>
       ) : (
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom">

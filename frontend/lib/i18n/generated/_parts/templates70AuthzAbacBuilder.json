@@ -1,0 +1,219 @@
+{
+  "templates70AuthzAbacBuilder.title": {
+    "vi": "ABAC Policy Builder",
+    "en": "ABAC Policy Builder",
+    "ja": "ABACポリシービルダー",
+    "ko": "ABAC 정책 빌더",
+    "zh": "ABAC 策略构建器"
+  },
+  "templates70AuthzAbacBuilder.description": {
+    "vi": "Định nghĩa chính sách theo thuộc tính subject × resource × action × condition.",
+    "en": "Define a policy by subject × resource × action × condition attributes.",
+    "ja": "subject × resource × action × condition の属性でポリシーを定義します。",
+    "ko": "subject × resource × action × condition 속성으로 정책을 정의합니다.",
+    "zh": "按 subject × resource × action × condition 属性定义策略。"
+  },
+  "templates70AuthzAbacBuilder.phase2Badge": {
+    "vi": "Phase 2",
+    "en": "Phase 2",
+    "ja": "Phase 2",
+    "ko": "Phase 2",
+    "zh": "Phase 2"
+  },
+  "templates70AuthzAbacBuilder.backToRbac": {
+    "vi": "RBAC",
+    "en": "RBAC",
+    "ja": "RBAC",
+    "ko": "RBAC",
+    "zh": "RBAC"
+  },
+  "templates70AuthzAbacBuilder.bannerPre": {
+    "vi": "Phase 2 — Hybrid PDP. Hiện tại enforcement chỉ RBAC. Policy bạn save ở đây sẽ dry-run trong simulator (file 71 ",
+    "en": "Phase 2 — Hybrid PDP. Enforcement is currently RBAC-only. A policy you save here will dry-run in the simulator (file 71 ",
+    "ja": "Phase 2 — ハイブリッドPDP。現在の適用はRBACのみです。ここで保存したポリシーはシミュレーター(ファイル71 ",
+    "ko": "Phase 2 — 하이브리드 PDP. 현재 적용은 RBAC뿐입니다. 여기서 저장한 정책은 시뮬레이터(파일 71 ",
+    "zh": "Phase 2 — 混合 PDP。目前仅执行 RBAC。你在此保存的策略会先在模拟器(文件 71 "
+  },
+  "templates70AuthzAbacBuilder.bannerPost": {
+    "vi": ") trước khi đi vào production.",
+    "en": ") before going to production.",
+    "ja": ")で試験実行されてから本番環境に入ります。",
+    "ko": ")에서 드라이런된 후 프로덕션에 반영됩니다.",
+    "zh": ")中试运行,然后再进入生产环境。"
+  },
+  "templates70AuthzAbacBuilder.nameLabel": {
+    "vi": "Tên policy",
+    "en": "Policy name",
+    "ja": "ポリシー名",
+    "ko": "정책 이름",
+    "zh": "策略名称"
+  },
+  "templates70AuthzAbacBuilder.namePlaceholder": {
+    "vi": "Ví dụ: Chỉ Finance HCM xem revenue confidential",
+    "en": "Example: Only Finance HCM can view confidential revenue",
+    "ja": "例:Finance HCMのみがconfidentialなrevenueを閲覧可能",
+    "ko": "예: Finance HCM만 confidential revenue 조회 가능",
+    "zh": "示例：仅 Finance HCM 可查看 confidential 的 revenue"
+  },
+  "templates70AuthzAbacBuilder.descLabel": {
+    "vi": "Mô tả ngắn",
+    "en": "Short description",
+    "ja": "簡単な説明",
+    "ko": "간단한 설명",
+    "zh": "简短说明"
+  },
+  "templates70AuthzAbacBuilder.descPlaceholder": {
+    "vi": "Khi nào áp dụng, vì sao",
+    "en": "When it applies and why",
+    "ja": "適用条件と理由",
+    "ko": "언제 적용되는지, 이유",
+    "zh": "适用场景与原因"
+  },
+  "templates70AuthzAbacBuilder.effectLabel": {
+    "vi": "Hiệu ứng",
+    "en": "Effect",
+    "ja": "効果",
+    "ko": "효과",
+    "zh": "效果"
+  },
+  "templates70AuthzAbacBuilder.actionLabel": {
+    "vi": "Hành động",
+    "en": "Action",
+    "ja": "アクション",
+    "ko": "액션",
+    "zh": "操作"
+  },
+  "templates70AuthzAbacBuilder.subjectTitle": {
+    "vi": "Subject (người gọi)",
+    "en": "Subject (caller)",
+    "ja": "Subject(呼び出し元)",
+    "ko": "Subject(호출자)",
+    "zh": "Subject(调用方)"
+  },
+  "templates70AuthzAbacBuilder.resourceTitle": {
+    "vi": "Resource (dữ liệu/đối tượng)",
+    "en": "Resource (data/object)",
+    "ja": "Resource(データ/オブジェクト)",
+    "ko": "Resource(데이터/객체)",
+    "zh": "Resource(数据/对象)"
+  },
+  "templates70AuthzAbacBuilder.subjectRole": {
+    "vi": "Vai trò",
+    "en": "Role",
+    "ja": "役割",
+    "ko": "역할",
+    "zh": "角色"
+  },
+  "templates70AuthzAbacBuilder.subjectDepartment": {
+    "vi": "Phòng ban",
+    "en": "Department",
+    "ja": "部門",
+    "ko": "부서",
+    "zh": "部门"
+  },
+  "templates70AuthzAbacBuilder.subjectLocation": {
+    "vi": "Địa điểm",
+    "en": "Location",
+    "ja": "拠点",
+    "ko": "위치",
+    "zh": "地点"
+  },
+  "templates70AuthzAbacBuilder.subjectMfa": {
+    "vi": "MFA",
+    "en": "MFA",
+    "ja": "MFA",
+    "ko": "MFA",
+    "zh": "MFA"
+  },
+  "templates70AuthzAbacBuilder.resourceTable": {
+    "vi": "Bảng",
+    "en": "Table",
+    "ja": "テーブル",
+    "ko": "테이블",
+    "zh": "表"
+  },
+  "templates70AuthzAbacBuilder.resourceSensitivity": {
+    "vi": "Độ nhạy",
+    "en": "Sensitivity",
+    "ja": "機密度",
+    "ko": "민감도",
+    "zh": "敏感度"
+  },
+  "templates70AuthzAbacBuilder.resourceOwnerTeam": {
+    "vi": "Team sở hữu",
+    "en": "Owning team",
+    "ja": "所有チーム",
+    "ko": "소유 팀",
+    "zh": "所属团队"
+  },
+  "templates70AuthzAbacBuilder.addCondition": {
+    "vi": "Thêm điều kiện",
+    "en": "Add condition",
+    "ja": "条件を追加",
+    "ko": "조건 추가",
+    "zh": "添加条件"
+  },
+  "templates70AuthzAbacBuilder.noConditions": {
+    "vi": "Không có điều kiện — áp dụng cho mọi {scope}.",
+    "en": "No conditions — applies to every {scope}.",
+    "ja": "条件なし — すべての{scope}に適用されます。",
+    "ko": "조건 없음 — 모든 {scope}에 적용됩니다.",
+    "zh": "无条件 — 适用于所有{scope}。"
+  },
+  "templates70AuthzAbacBuilder.attributePlaceholder": {
+    "vi": "— Thuộc tính —",
+    "en": "— Attribute —",
+    "ja": "— 属性 —",
+    "ko": "— 속성 —",
+    "zh": "— 属性 —"
+  },
+  "templates70AuthzAbacBuilder.valuePlaceholder": {
+    "vi": "Giá trị",
+    "en": "Value",
+    "ja": "値",
+    "ko": "값",
+    "zh": "值"
+  },
+  "templates70AuthzAbacBuilder.removeConditionAria": {
+    "vi": "Xoá điều kiện",
+    "en": "Delete condition",
+    "ja": "条件を削除",
+    "ko": "조건 삭제",
+    "zh": "删除条件"
+  },
+  "templates70AuthzAbacBuilder.denyOverrideAllow": {
+    "vi": "DENY luôn override ALLOW",
+    "en": "DENY always overrides ALLOW",
+    "ja": "DENYは常にALLOWより優先されます",
+    "ko": "DENY가 항상 ALLOW보다 우선합니다",
+    "zh": "DENY 始终覆盖 ALLOW"
+  },
+  "templates70AuthzAbacBuilder.denyOverrideDesc": {
+    "vi": " trong Hybrid PDP. Policy không có condition = áp dụng cho mọi subject/resource.",
+    "en": " in Hybrid PDP. A policy with no condition applies to every subject/resource.",
+    "ja": "(ハイブリッドPDP内)。conditionのないポリシーはすべてのsubject/resourceに適用されます。",
+    "ko": "(하이브리드 PDP 내). condition이 없는 정책은 모든 subject/resource에 적용됩니다.",
+    "zh": "(混合 PDP 中)。没有 condition 的策略适用于所有 subject/resource。"
+  },
+  "templates70AuthzAbacBuilder.simulateButton": {
+    "vi": "Mô phỏng",
+    "en": "Simulate",
+    "ja": "シミュレート",
+    "ko": "시뮬레이션",
+    "zh": "模拟"
+  },
+  "templates70AuthzAbacBuilder.saveButton": {
+    "vi": "Lưu policy",
+    "en": "Save policy",
+    "ja": "ポリシーを保存",
+    "ko": "정책 저장",
+    "zh": "保存策略"
+  },
+  "templates70AuthzAbacBuilder.savePhase2Tooltip": {
+    "vi": "Phase 2 — Sắp ra mắt",
+    "en": "Phase 2 — Coming soon",
+    "ja": "Phase 2 — 近日公開",
+    "ko": "Phase 2 — 출시 예정",
+    "zh": "Phase 2 — 即将推出"
+  }
+}

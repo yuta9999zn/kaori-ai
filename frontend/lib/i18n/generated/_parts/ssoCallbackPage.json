@@ -1,0 +1,79 @@
+{
+  "ssoCallbackPage.loadingEllipsis": {
+    "vi": "Đang tải…",
+    "en": "Loading…",
+    "ja": "読み込み中…",
+    "ko": "로딩 중…",
+    "zh": "加载中…"
+  },
+  "ssoCallbackPage.errMissingCode": {
+    "vi": "Thiếu mã SSO. Vui lòng đăng nhập lại.",
+    "en": "Missing SSO code. Please log in again.",
+    "ja": "SSOコードがありません。もう一度ログインしてください。",
+    "ko": "SSO 코드가 없습니다. 다시 로그인해 주세요.",
+    "zh": "缺少 SSO 代码。请重新登录。"
+  },
+  "ssoCallbackPage.errCodeExpired": {
+    "vi": "Mã SSO đã hết hạn hoặc đã được sử dụng. Vui lòng đăng nhập lại.",
+    "en": "The SSO code has expired or already been used. Please log in again.",
+    "ja": "SSOコードの有効期限が切れているか、既に使用されています。もう一度ログインしてください。",
+    "ko": "SSO 코드가 만료되었거나 이미 사용되었습니다. 다시 로그인해 주세요.",
+    "zh": "SSO 代码已过期或已被使用。请重新登录。"
+  },
+  "ssoCallbackPage.errCodeInvalid": {
+    "vi": "Mã SSO không hợp lệ. Vui lòng đăng nhập lại.",
+    "en": "Invalid SSO code. Please log in again.",
+    "ja": "SSOコードが無効です。もう一度ログインしてください。",
+    "ko": "SSO 코드가 유효하지 않습니다. 다시 로그인해 주세요.",
+    "zh": "SSO 代码无效。请重新登录。"
+  },
+  "ssoCallbackPage.errAuthUnavailable": {
+    "vi": "Hệ thống xác thực tạm thời chưa sẵn sàng. Thử lại sau.",
+    "en": "The authentication system is temporarily unavailable. Please try again later.",
+    "ja": "認証システムが一時的に利用できません。後でもう一度お試しください。",
+    "ko": "인증 시스템을 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요.",
+    "zh": "认证系统暂时不可用。请稍后重试。"
+  },
+  "ssoCallbackPage.errSsoFailed": {
+    "vi": "Đăng nhập SSO thất bại. Vui lòng thử lại.",
+    "en": "SSO login failed. Please try again.",
+    "ja": "SSOログインに失敗しました。もう一度お試しください。",
+    "ko": "SSO 로그인에 실패했습니다. 다시 시도해 주세요.",
+    "zh": "SSO 登录失败。请重试。"
+  },
+  "ssoCallbackPage.authenticating": {
+    "vi": "Đang xác thực…",
+    "en": "Authenticating…",
+    "ja": "認証中…",
+    "ko": "인증 중…",
+    "zh": "正在认证…"
+  },
+  "ssoCallbackPage.exchangingDesc": {
+    "vi": "Đang đổi mã SSO lấy phiên đăng nhập của bạn.",
+    "en": "Exchanging your SSO code for a login session.",
+    "ja": "SSOコードをログインセッションに交換しています。",
+    "ko": "SSO 코드를 로그인 세션으로 교환하고 있습니다.",
+    "zh": "正在用 SSO 代码换取您的登录会话。"
+  },
+  "ssoCallbackPage.loginSuccess": {
+    "vi": "Đăng nhập thành công",
+    "en": "Login successful",
+    "ja": "ログインに成功しました",
+    "ko": "로그인 성공",
+    "zh": "登录成功"
+  },
+  "ssoCallbackPage.redirectingDesc": {
+    "vi": "Đang chuyển bạn về dashboard…",
+    "en": "Redirecting you to the dashboard…",
+    "ja": "ダッシュボードへリダイレクトしています…",
+    "ko": "대시보드로 이동하고 있습니다…",
+    "zh": "正在跳转到仪表盘…"
+  },
+  "ssoCallbackPage.backToLogin": {
+    "vi": "← Quay lại trang đăng nhập",
+    "en": "← Back to login",
+    "ja": "← ログインページに戻る",
+    "ko": "← 로그인 페이지로 돌아가기",
+    "zh": "← 返回登录页面"
+  }
+}

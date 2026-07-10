@@ -7,6 +7,7 @@ import { pipelineApi } from "@/lib/api/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { useT } from "@/lib/i18n/provider";
 
 const ACCEPTED_TYPES = {
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
@@ -36,6 +37,7 @@ function fileIcon(name: string) {
 }
 
 export default function FileUploader({ onComplete }: { onComplete: (runId: string) => void }) {
+  const t = useT();
   const [uploads, setUploads]       = useState<FileUpload[]>([]);
   const [globalError, setGlobalError] = useState("");
 
@@ -61,13 +63,13 @@ export default function FileUploader({ onComplete }: { onComplete: (runId: strin
           onComplete(runId);
           return;
         }
-        if (status.status === "failed") throw new Error(status.error_message || "Pipeline failed");
+        if (status.status === "failed") throw new Error(status.error_message || t("pipelineFileuploader.errPipelineFailed"));
         if (status.status === "duplicate") { updateUpload(idx, { status: "done", progress: 100 }); onComplete(runId); return; }
         attempts++;
       }
-      throw new Error("Upload timed out");
+      throw new Error(t("pipelineFileuploader.errUploadTimeout"));
     } catch (err: unknown) {
-      updateUpload(idx, { status: "error", error: (err as Error).message || "Upload failed", progress: 0 });
+      updateUpload(idx, { status: "error", error: (err as Error).message || t("pipelineFileuploader.errUploadFailed"), progress: 0 });
     }
   }
 
@@ -91,9 +93,9 @@ export default function FileUploader({ onComplete }: { onComplete: (runId: strin
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-h2 font-serif text-[#2E2A24]">Tải lên dữ liệu</h2>
+        <h2 className="text-h2 font-serif text-[#2E2A24]">{t("pipelineFileuploader.title")}</h2>
         <p className="text-small text-[#7A7266] mt-1">
-          Hỗ trợ: Excel (.xlsx, .xls), CSV, TSV, ODS, ZIP, SQL — tối đa 100 MB/file
+          {t("pipelineFileuploader.subtitle")}
         </p>
       </div>
 
@@ -109,10 +111,10 @@ export default function FileUploader({ onComplete }: { onComplete: (runId: strin
         <input {...getInputProps()} />
         <Upload className={`w-9 h-9 mx-auto mb-4 ${isDragActive ? "text-brand-500" : "text-[#C0B8A8]"}`} strokeWidth={1.5} />
         <p className="text-body-strong text-[#2E2A24]">
-          {isDragActive ? "Thả file vào đây…" : "Kéo thả file hoặc nhấp để chọn"}
+          {isDragActive ? t("pipelineFileuploader.dropActive") : t("pipelineFileuploader.dropIdle")}
         </p>
         <p className="text-small text-[#A89F90] mt-1.5">
-          Excel, CSV, TSV, ODS, ZIP, SQL · tối đa 100 MB
+          {t("pipelineFileuploader.dropHint")}
         </p>
       </div>
 
@@ -152,10 +154,10 @@ export default function FileUploader({ onComplete }: { onComplete: (runId: strin
                         u.status === "uploading"  ? "info"    :
                         u.status === "processing" ? "brand"   : "neutral"
                       }>
-                        {u.status === "uploading"  ? "Đang tải…"  :
-                         u.status === "processing" ? "Đang xử lý…":
-                         u.status === "done"       ? "Hoàn tất"   :
-                         u.status === "error"      ? "Lỗi"        : "Chờ"}
+                        {u.status === "uploading"  ? t("pipelineFileuploader.statusUploading")  :
+                         u.status === "processing" ? t("pipelineFileuploader.statusProcessing"):
+                         u.status === "done"       ? t("pipelineFileuploader.statusDone")   :
+                         u.status === "error"      ? t("pipelineFileuploader.statusError")        : t("pipelineFileuploader.statusIdle")}
                       </Badge>
                     </div>
 

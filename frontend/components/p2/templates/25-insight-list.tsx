@@ -29,6 +29,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type Impact   = 'HIGH' | 'MEDIUM' | 'LOW';
 type Status   = 'NEW' | 'REVIEWED' | 'CONVERTED' | 'DISMISSED';
 type Source   = 'bronze' | 'silver' | 'gold';
@@ -65,17 +66,17 @@ interface NorthStarSummary {
   actioned_revenue_vnd:      number;
 }
 
-const IMPACT_BADGE: Record<Impact, { variant: any; label: string }> = {
-  HIGH:   { variant: 'error',   label: 'Tác động cao' },
-  MEDIUM: { variant: 'warning', label: 'Tác động vừa' },
-  LOW:    { variant: 'default', label: 'Tác động thấp' },
+const IMPACT_BADGE: Record<Impact, { variant: any; labelKey: string }> = {
+  HIGH:   { variant: 'error',   labelKey: 'templates25InsightList.impactHigh' },
+  MEDIUM: { variant: 'warning', labelKey: 'templates25InsightList.impactMedium' },
+  LOW:    { variant: 'default', labelKey: 'templates25InsightList.impactLow' },
 };
 
-const STATUS_BADGE: Record<Status, { variant: any; label: string }> = {
-  NEW:       { variant: 'info',    label: 'Mới' },
-  REVIEWED:  { variant: 'default', label: 'Đã xem' },
-  CONVERTED: { variant: 'success', label: 'Đã ra quyết định' },
-  DISMISSED: { variant: 'default', label: 'Đã bỏ qua' },
+const STATUS_BADGE: Record<Status, { variant: any; labelKey: string }> = {
+  NEW:       { variant: 'info',    labelKey: 'templates25InsightList.statusNew' },
+  REVIEWED:  { variant: 'default', labelKey: 'templates25InsightList.statusReviewed' },
+  CONVERTED: { variant: 'success', labelKey: 'templates25InsightList.statusConverted' },
+  DISMISSED: { variant: 'default', labelKey: 'templates25InsightList.statusDismissed' },
 };
 
 const SOURCE_LABEL: Record<Source, string> = {
@@ -85,6 +86,7 @@ const SOURCE_LABEL: Record<Source, string> = {
 };
 
 export default function InsightListPage() {
+  const t = useT();
   const [items,    setItems]    = useState<Insight[]>([]);
   const [cursor,   setCursor]   = useState<string | null>(null);
   const [hasMore,  setHasMore]  = useState(false);
@@ -115,11 +117,11 @@ export default function InsightListPage() {
         : 'LOW';
     return {
       id:                  String(it.id ?? ''),
-      title:               String(it.title ?? '(không tiêu đề)'),
+      title:               String(it.title ?? t('templates25InsightList.noTitle')),
       description:         String(it.body ?? it.disclaimer ?? ''),
-      metric_name:         category === 'opportunity' ? 'Cơ hội'
-                            : category === 'risk' ? 'Rủi ro'
-                            : category === 'anomaly' ? 'Dị thường' : 'Xu hướng',
+      metric_name:         category === 'opportunity' ? t('templates25InsightList.metricOpportunity')
+                            : category === 'risk' ? t('templates25InsightList.metricRisk')
+                            : category === 'anomaly' ? t('templates25InsightList.metricAnomaly') : t('templates25InsightList.metricTrend'),
       metric_value:        '—',
       impact,
       status:              'NEW',
@@ -185,17 +187,17 @@ export default function InsightListPage() {
   return (
     <>
       <PageHeader
-        title="Insight"
-        description="Khám phá pattern, dị thường và cơ hội hành động từ dữ liệu Bronze / Silver / Gold."
+        title={t('templates25InsightList.pageTitle')}
+        description={t('templates25InsightList.pageDescription')}
         actions={
           <>
             <Button variant="secondary" onClick={() => load(true)}>
               <RefreshCw className="w-4 h-4 mr-2" />
-              Làm mới
+              {t('templates25InsightList.btnRefresh')}
             </Button>
             <Button onClick={() => (window.location.href = '/p2/insights/generate')}>
               <Sparkles className="w-4 h-4 mr-2" />
-              Tạo insight mới
+              {t('templates25InsightList.btnCreateNew')}
             </Button>
           </>
         }
@@ -218,7 +220,7 @@ export default function InsightListPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm theo tiêu đề, metric, nguồn dữ liệu..."
+              placeholder={t('templates25InsightList.searchPlaceholder')}
               className="w-full pl-9 pr-4 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)]"
             />
           </div>
@@ -227,21 +229,21 @@ export default function InsightListPage() {
             onChange={(e) => setImpactFilter(e.target.value as any)}
             className="px-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-xs font-medium focus:outline-none"
           >
-            <option value="ALL">Tất cả tác động</option>
-            <option value="HIGH">Cao</option>
-            <option value="MEDIUM">Vừa</option>
-            <option value="LOW">Thấp</option>
+            <option value="ALL">{t('templates25InsightList.filterAllImpact')}</option>
+            <option value="HIGH">{t('templates25InsightList.filterImpactHigh')}</option>
+            <option value="MEDIUM">{t('templates25InsightList.filterImpactMedium')}</option>
+            <option value="LOW">{t('templates25InsightList.filterImpactLow')}</option>
           </select>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
             className="px-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-xs font-medium focus:outline-none"
           >
-            <option value="ALL">Tất cả trạng thái</option>
-            <option value="NEW">Mới</option>
-            <option value="REVIEWED">Đã xem</option>
-            <option value="CONVERTED">Đã ra quyết định</option>
-            <option value="DISMISSED">Đã bỏ qua</option>
+            <option value="ALL">{t('templates25InsightList.filterAllStatus')}</option>
+            <option value="NEW">{t('templates25InsightList.statusNew')}</option>
+            <option value="REVIEWED">{t('templates25InsightList.statusReviewed')}</option>
+            <option value="CONVERTED">{t('templates25InsightList.statusConverted')}</option>
+            <option value="DISMISSED">{t('templates25InsightList.statusDismissed')}</option>
           </select>
           <div className="flex items-center gap-1 px-1 py-1 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom">
             <button
@@ -251,7 +253,7 @@ export default function InsightListPage() {
                 'p-1.5 rounded-sm-custom',
                 view === 'grid' ? 'bg-[var(--bg-card)] shadow-soft-sm text-[var(--primary-gold-dark)]' : 'text-[var(--text-secondary)]',
               )}
-              aria-label="Xem dạng lưới"
+              aria-label={t('templates25InsightList.ariaGridView')}
             >
               <LayoutGrid className="w-4 h-4" />
             </button>
@@ -262,7 +264,7 @@ export default function InsightListPage() {
                 'p-1.5 rounded-sm-custom',
                 view === 'list' ? 'bg-[var(--bg-card)] shadow-soft-sm text-[var(--primary-gold-dark)]' : 'text-[var(--text-secondary)]',
               )}
-              aria-label="Xem dạng danh sách"
+              aria-label={t('templates25InsightList.ariaListView')}
             >
               <List className="w-4 h-4" />
             </button>
@@ -270,7 +272,7 @@ export default function InsightListPage() {
         </form>
 
         <p className="text-xs text-[var(--text-secondary)]">
-          {(total ?? 0).toLocaleString('vi-VN')} insight · Đang hiển thị {visibleItems.length}
+          {t('templates25InsightList.totalCount', { total: (total ?? 0).toLocaleString('vi-VN'), shown: visibleItems.length })}
         </p>
 
         {loading && items.length === 0 ? (
@@ -300,6 +302,7 @@ export default function InsightListPage() {
 // ----------------------------------------------------------------------------
 
 function NorthStarCard({ summary }: { summary: NorthStarSummary }) {
+  const t = useT();
   const total = summary.total_revenue_at_risk_vnd;
   const acted = summary.actioned_revenue_vnd;
   const pct   = total > 0 ? Math.round((acted / total) * 100) : 0;
@@ -313,28 +316,28 @@ function NorthStarCard({ summary }: { summary: NorthStarSummary }) {
           </div>
           <div>
             <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">North Star</p>
-            <h3 className="font-serif text-lg text-[var(--text-primary)]">Doanh thu rủi ro đã hành động</h3>
+            <h3 className="font-serif text-lg text-[var(--text-primary)]">{t('templates25InsightList.nsTitle')}</h3>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-              SUM(revenue_at_risk) khi churn_risk_label = HIGH và is_actioned = true
+              {t('templates25InsightList.nsFormula')}
             </p>
           </div>
         </div>
         <div className="text-right">
           <p className="font-serif text-2xl text-[var(--text-primary)]">{formatVND(acted)}</p>
-          <p className="text-xs text-[var(--text-secondary)] mt-0.5">/ {formatVND(total)} tổng rủi ro</p>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">{t('templates25InsightList.nsOfTotal', { total: formatVND(total) })}</p>
           <Badge variant={pct >= 60 ? 'success' : pct >= 30 ? 'warning' : 'error'} className="mt-1">
-            {pct}% đã xử lý
+            {t('templates25InsightList.nsPctResolved', { pct })}
           </Badge>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 mt-4">
         <div className="rounded-md-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-3">
-          <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">High-impact chờ xử lý</p>
+          <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates25InsightList.nsHighImpactPending')}</p>
           <p className="font-serif text-xl text-[#9B5050] mt-1">{summary.high_impact_unactioned}</p>
         </div>
         <div className="rounded-md-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-3">
-          <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">High-impact đã hành động</p>
+          <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates25InsightList.nsHighImpactActioned')}</p>
           <p className="font-serif text-xl text-[#5C856A] mt-1">{summary.high_impact_actioned}</p>
         </div>
       </div>
@@ -347,6 +350,7 @@ function NorthStarCard({ summary }: { summary: NorthStarSummary }) {
 // ----------------------------------------------------------------------------
 
 function InsightCard({ insight: ins }: { insight: Insight }) {
+  const t = useT();
   return (
     <a
       href={`/p2/insights/${ins.id}`}
@@ -355,8 +359,8 @@ function InsightCard({ insight: ins }: { insight: Insight }) {
       <div className="p-5 flex-1 flex flex-col">
         <div className="flex items-start justify-between gap-2 mb-3">
           <div className="flex flex-wrap items-center gap-1.5">
-            <Badge variant={IMPACT_BADGE[ins.impact].variant}>{IMPACT_BADGE[ins.impact].label}</Badge>
-            <Badge variant={STATUS_BADGE[ins.status].variant}>{STATUS_BADGE[ins.status].label}</Badge>
+            <Badge variant={IMPACT_BADGE[ins.impact].variant}>{t(IMPACT_BADGE[ins.impact].labelKey)}</Badge>
+            <Badge variant={STATUS_BADGE[ins.status].variant}>{t(STATUS_BADGE[ins.status].labelKey)}</Badge>
           </div>
           <Bookmark
             className={cn(
@@ -395,7 +399,7 @@ function InsightCard({ insight: ins }: { insight: Insight }) {
         {ins.revenue_at_risk_vnd > 0 && (
           <div className="flex items-center gap-2 text-xs mb-3">
             <AlertTriangle className="w-3.5 h-3.5 text-[var(--primary-gold-dark)]" />
-            <span className="text-[var(--text-secondary)]">Doanh thu rủi ro:</span>
+            <span className="text-[var(--text-secondary)]">{t('templates25InsightList.revenueAtRiskLabel')}</span>
             <span className="font-medium text-[var(--text-primary)]">{formatVND(ins.revenue_at_risk_vnd)}</span>
           </div>
         )}
@@ -414,7 +418,7 @@ function InsightCard({ insight: ins }: { insight: Insight }) {
 
       <div className="px-5 py-3 border-t border-[var(--border-color)]/60 bg-[var(--bg-app)]/30 rounded-b-lg-custom flex items-center justify-between">
         <span className="text-xs text-[var(--text-secondary)] inline-flex items-center">
-          Xem chi tiết <ChevronRight className="w-3 h-3 ml-0.5" />
+          {t('templates25InsightList.viewDetails')} <ChevronRight className="w-3 h-3 ml-0.5" />
         </span>
         {ins.is_actioned && ins.decision_id ? (
           <a
@@ -423,12 +427,12 @@ function InsightCard({ insight: ins }: { insight: Insight }) {
             className="text-xs font-medium text-[#5C856A] inline-flex items-center gap-1 hover:underline"
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
-            Đã hành động
+            {t('templates25InsightList.actioned')}
           </a>
         ) : ins.status === 'NEW' || ins.status === 'REVIEWED' ? (
           <span className="text-xs font-medium text-[var(--primary-gold-dark)] inline-flex items-center gap-1">
             <Gavel className="w-3.5 h-3.5" />
-            Tạo quyết định
+            {t('templates25InsightList.createDecision')}
           </span>
         ) : null}
       </div>
@@ -437,6 +441,7 @@ function InsightCard({ insight: ins }: { insight: Insight }) {
 }
 
 function InsightRow({ insight: ins }: { insight: Insight }) {
+  const t = useT();
   return (
     <a
       href={`/p2/insights/${ins.id}`}
@@ -448,8 +453,8 @@ function InsightRow({ insight: ins }: { insight: Insight }) {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <Badge variant={IMPACT_BADGE[ins.impact].variant}>{IMPACT_BADGE[ins.impact].label}</Badge>
-            <Badge variant={STATUS_BADGE[ins.status].variant}>{STATUS_BADGE[ins.status].label}</Badge>
+            <Badge variant={IMPACT_BADGE[ins.impact].variant}>{t(IMPACT_BADGE[ins.impact].labelKey)}</Badge>
+            <Badge variant={STATUS_BADGE[ins.status].variant}>{t(STATUS_BADGE[ins.status].labelKey)}</Badge>
             <span className="text-[11px] text-[var(--text-secondary)]">{ins.created_at}</span>
           </div>
           <h3 className="font-medium text-sm text-[var(--text-primary)] leading-snug mb-0.5">{ins.title}</h3>
@@ -467,20 +472,21 @@ function InsightRow({ insight: ins }: { insight: Insight }) {
 }
 
 function EmptyState({ onClear }: { onClear: () => void }) {
+  const t = useT();
   return (
     <div className="bg-[var(--bg-card)] rounded-lg-custom border border-dashed border-[var(--border-color)] p-12 text-center">
       <div className="w-14 h-14 mx-auto rounded-full bg-[var(--bg-app)] flex items-center justify-center mb-3">
         <Lightbulb className="w-6 h-6 text-[var(--text-secondary)]/60" />
       </div>
-      <h3 className="font-serif text-lg text-[var(--text-primary)]">Không có insight phù hợp</h3>
+      <h3 className="font-serif text-lg text-[var(--text-primary)]">{t('templates25InsightList.emptyTitle')}</h3>
       <p className="text-sm text-[var(--text-secondary)] mt-1 max-w-sm mx-auto">
-        Đổi bộ lọc, hoặc tạo insight mới từ pipeline đã có để xem kết quả ở đây.
+        {t('templates25InsightList.emptyDesc')}
       </p>
       <div className="mt-4 flex items-center justify-center gap-2">
-        <Button variant="secondary" onClick={onClear}>Xoá bộ lọc</Button>
+        <Button variant="secondary" onClick={onClear}>{t('templates25InsightList.clearFilters')}</Button>
         <Button onClick={() => (window.location.href = '/p2/insights/generate')}>
           <Sparkles className="w-4 h-4 mr-2" />
-          Tạo insight
+          {t('templates25InsightList.createInsight')}
         </Button>
       </div>
     </div>

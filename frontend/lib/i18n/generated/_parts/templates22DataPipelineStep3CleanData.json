@@ -1,0 +1,198 @@
+{
+  "templates22DataPipelineStep3CleanData.categoryUniversalLabel": {
+    "vi": "Phổ quát",
+    "en": "Universal",
+    "ja": "汎用",
+    "ko": "범용",
+    "zh": "通用"
+  },
+  "templates22DataPipelineStep3CleanData.categoryUniversalDesc": {
+    "vi": "Quy tắc cơ bản áp dụng cho mọi dataset",
+    "en": "Base rules applied to every dataset",
+    "ja": "すべてのデータセットに適用される基本ルール",
+    "ko": "모든 데이터셋에 적용되는 기본 규칙",
+    "zh": "适用于所有数据集的基础规则"
+  },
+  "templates22DataPipelineStep3CleanData.categoryByTypeLabel": {
+    "vi": "Theo kiểu dữ liệu",
+    "en": "By data type",
+    "ja": "データ型別",
+    "ko": "데이터 타입별",
+    "zh": "按数据类型"
+  },
+  "templates22DataPipelineStep3CleanData.categoryByTypeDesc": {
+    "vi": "Coerce kiểu, kiểm tra null-rate theo cột",
+    "en": "Type coercion, null-rate check per column",
+    "ja": "型変換、列ごとのnull率チェック",
+    "ko": "타입 강제 변환, 컬럼별 null-rate 검사",
+    "zh": "类型强制转换、按字段检查空值率"
+  },
+  "templates22DataPipelineStep3CleanData.categoryByPurposeLabel": {
+    "vi": "Theo nghiệp vụ",
+    "en": "By business purpose",
+    "ja": "業務別",
+    "ko": "업무별",
+    "zh": "按业务用途"
+  },
+  "templates22DataPipelineStep3CleanData.categoryByPurposeDesc": {
+    "vi": "Validate email, chuẩn hoá phone, parse currency",
+    "en": "Validate email, normalize phone, parse currency",
+    "ja": "メール検証、電話番号正規化、通貨解析",
+    "ko": "이메일 검증, 전화번호 정규화, 통화 파싱",
+    "zh": "验证邮箱、规范化电话、解析货币"
+  },
+  "templates22DataPipelineStep3CleanData.categoryAiDetectedLabel": {
+    "vi": "Do AI phát hiện",
+    "en": "AI-detected",
+    "ja": "AI検出",
+    "ko": "AI 감지",
+    "zh": "AI 检测"
+  },
+  "templates22DataPipelineStep3CleanData.categoryAiDetectedDesc": {
+    "vi": "Anomaly heuristic — review thủ công trước khi áp dụng",
+    "en": "Anomaly heuristics — manual review before applying",
+    "ja": "異常検知ヒューリスティック — 適用前に手動レビュー",
+    "ko": "이상 탐지 휴리스틱 — 적용 전 수동 검토 필요",
+    "zh": "异常检测启发式规则——应用前需人工审核"
+  },
+  "templates22DataPipelineStep3CleanData.pageTitle": {
+    "vi": "Làm sạch dữ liệu",
+    "en": "Clean data",
+    "ja": "データクレンジング",
+    "ko": "데이터 정제",
+    "zh": "清洗数据"
+  },
+  "templates22DataPipelineStep3CleanData.pageDescription": {
+    "vi": "Bước 3 / 5 — chọn quy tắc làm sạch áp dụng từ Bronze sang Silver.",
+    "en": "Step 3 / 5 — choose the cleaning rules applied from Bronze to Silver.",
+    "ja": "ステップ3/5 — Bronze から Silver へ適用するクレンジングルールを選択します。",
+    "ko": "3/5단계 — Bronze에서 Silver로 적용할 정제 규칙을 선택하세요.",
+    "zh": "第3/5步 — 选择从 Bronze 应用到 Silver 的清洗规则。"
+  },
+  "templates22DataPipelineStep3CleanData.cleanedTitle": {
+    "vi": "Dữ liệu đã được làm sạch",
+    "en": "Data has been cleaned",
+    "ja": "データはクレンジング済みです",
+    "ko": "데이터가 정제되었습니다",
+    "zh": "数据已清洗完成"
+  },
+  "templates22DataPipelineStep3CleanData.cleanedDesc": {
+    "vi": "Bước này đã hoàn tất cho lần chạy hiện tại (Silver đã sẵn sàng). Bạn có thể sang Bước 4 để phân tích. Muốn làm sạch lại với quy tắc khác? Tải lại file ở Bước 1.",
+    "en": "This step is already complete for the current run (Silver is ready). You can move on to Step 4 to analyze. Want to clean again with different rules? Re-upload the file at Step 1.",
+    "ja": "このステップは現在の実行では既に完了しています（Silver 準備済み）。ステップ4に進んで分析できます。別のルールで再度クレンジングしたい場合は、ステップ1でファイルを再アップロードしてください。",
+    "ko": "이 단계는 현재 실행에서 이미 완료되었습니다 (Silver 준비 완료). 4단계로 이동하여 분석할 수 있습니다. 다른 규칙으로 다시 정제하려면 1단계에서 파일을 다시 업로드하세요.",
+    "zh": "此步骤在当前运行中已完成（Silver 已就绪）。您可以进入第4步进行分析。想用不同规则重新清洗？请在第1步重新上传文件。"
+  },
+  "templates22DataPipelineStep3CleanData.backStep2": {
+    "vi": "Quay lại Bước 2",
+    "en": "Back to Step 2",
+    "ja": "ステップ2に戻る",
+    "ko": "2단계로 돌아가기",
+    "zh": "返回第2步"
+  },
+  "templates22DataPipelineStep3CleanData.goStep4": {
+    "vi": "Sang Bước 4 — Phân tích",
+    "en": "Go to Step 4 — Analyze",
+    "ja": "ステップ4へ — 分析",
+    "ko": "4단계로 — 분석",
+    "zh": "前往第4步 — 分析"
+  },
+  "templates22DataPipelineStep3CleanData.destructiveWarning": {
+    "vi": "{count} quy tắc đang chọn sẽ XOÁ hàng dữ liệu",
+    "en": "{count} selected rules will DELETE data rows",
+    "ja": "選択中の {count} 件のルールはデータ行を削除します",
+    "ko": "선택된 규칙 {count}개가 데이터 행을 삭제합니다",
+    "zh": "已选中的 {count} 条规则将删除数据行"
+  },
+  "templates22DataPipelineStep3CleanData.destructiveNote": {
+    "vi": "Bronze gốc vẫn nguyên vẹn (K-2) — bạn có thể replay bất kỳ lúc nào nếu cần điều chỉnh.",
+    "en": "The original Bronze remains intact (K-2) — you can replay at any time if adjustments are needed.",
+    "ja": "元の Bronze はそのまま保持されます（K-2）— 調整が必要な場合はいつでもリプレイできます。",
+    "ko": "원본 Bronze는 그대로 유지됩니다 (K-2) — 조정이 필요하면 언제든지 재실행할 수 있습니다.",
+    "zh": "原始 Bronze 保持不变（K-2）——如需调整，随时可以重放。"
+  },
+  "templates22DataPipelineStep3CleanData.selectedCount": {
+    "vi": "{selected} / {total} đang chọn",
+    "en": "{selected} / {total} selected",
+    "ja": "{selected} / {total} 選択中",
+    "ko": "{selected} / {total} 선택됨",
+    "zh": "已选 {selected} / {total}"
+  },
+  "templates22DataPipelineStep3CleanData.auditNotePrefix": {
+    "vi": "Mỗi quy tắc apply đều được ghi vào",
+    "en": "Every applied rule is recorded in",
+    "ja": "適用されたすべてのルールは",
+    "ko": "적용된 모든 규칙은",
+    "zh": "每条已应用的规则都会记录到"
+  },
+  "templates22DataPipelineStep3CleanData.auditNoteSuffix": {
+    "vi": "(K-6). Bronze giữ nguyên (K-2) — Silver chỉ là kết quả tái tạo. Bạn có thể tinh chỉnh quy tắc và chạy lại.",
+    "en": "(K-6). Bronze remains unchanged (K-2) — Silver is just a regenerated result. You can adjust the rules and re-run.",
+    "ja": "に記録されます（K-6）。元の Bronze は保持されます（K-2）— Silver は再生成された結果です。ルールを調整して再実行できます。",
+    "ko": "에 기록됩니다 (K-6). Bronze는 그대로 유지됩니다 (K-2) — Silver는 재생성된 결과일 뿐입니다. 규칙을 조정하여 다시 실행할 수 있습니다.",
+    "zh": "（K-6）。Bronze 保持不变（K-2）——Silver 只是重新生成的结果。您可以调整规则后重新运行。"
+  },
+  "templates22DataPipelineStep3CleanData.back": {
+    "vi": "Quay lại",
+    "en": "Back",
+    "ja": "戻る",
+    "ko": "뒤로",
+    "zh": "返回"
+  },
+  "templates22DataPipelineStep3CleanData.applyRules": {
+    "vi": "Áp dụng {count} quy tắc + sang Bước 4",
+    "en": "Apply {count} rules + go to Step 4",
+    "ja": "{count} 件のルールを適用してステップ4へ",
+    "ko": "{count}개 규칙 적용 + 4단계로 이동",
+    "zh": "应用 {count} 条规则并前往第4步"
+  },
+  "templates22DataPipelineStep3CleanData.errCleanFailed": {
+    "vi": "Làm sạch dữ liệu thất bại",
+    "en": "Data cleaning failed",
+    "ja": "データクレンジングに失敗しました",
+    "ko": "데이터 정제 실패",
+    "zh": "数据清洗失败"
+  },
+  "templates22DataPipelineStep3CleanData.errCleanTimeout": {
+    "vi": "Quá thời gian chờ làm sạch dữ liệu. Vui lòng thử lại.",
+    "en": "Timed out waiting for data cleaning. Please try again.",
+    "ja": "データクレンジングの待機がタイムアウトしました。もう一度お試しください。",
+    "ko": "데이터 정제 대기 시간이 초과되었습니다. 다시 시도해 주세요.",
+    "zh": "等待数据清洗超时，请重试。"
+  },
+  "templates22DataPipelineStep3CleanData.badgeRecommended": {
+    "vi": "Khuyến nghị",
+    "en": "Recommended",
+    "ja": "推奨",
+    "ko": "권장",
+    "zh": "推荐"
+  },
+  "templates22DataPipelineStep3CleanData.badgeDeleteRows": {
+    "vi": "Xoá hàng",
+    "en": "Deletes rows",
+    "ja": "行を削除",
+    "ko": "행 삭제",
+    "zh": "删除行"
+  },
+  "templates22DataPipelineStep3CleanData.columnsLabel": {
+    "vi": "Cột:",
+    "en": "Columns:",
+    "ja": "項目:",
+    "ko": "컬럼:",
+    "zh": "字段："
+  },
+  "templates22DataPipelineStep3CleanData.moreSuffix": {
+    "vi": "nữa",
+    "en": "more",
+    "ja": "件",
+    "ko": "개 더",
+    "zh": "更多"
+  },
+  "templates22DataPipelineStep3CleanData.impactLabel": {
+    "vi": "Tác động:",
+    "en": "Impact:",
+    "ja": "影響:",
+    "ko": "영향:",
+    "zh": "影响："
+  }
+}

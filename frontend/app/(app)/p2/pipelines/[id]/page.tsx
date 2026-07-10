@@ -21,6 +21,7 @@ import React, { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { api } from '@/components/p2/foundation';
+import { useT } from '@/lib/i18n/provider';
 
 function stepPathFor(status: string): string {
   const raw = String(status ?? '').toLowerCase();
@@ -44,6 +45,7 @@ function stepPathFor(status: string): string {
 }
 
 export default function PipelineWizardEntry() {
+  const t = useT();
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const id = params?.id;
@@ -70,7 +72,7 @@ export default function PipelineWizardEntry() {
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-24 text-[var(--text-secondary)]">
       <Loader2 className="w-6 h-6 animate-spin" />
-      <p className="text-sm">Đang mở pipeline…</p>
+      <p className="text-sm">{t('idPage3.openingPipeline')}</p>
     </div>
   );
 }

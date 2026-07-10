@@ -1,0 +1,303 @@
+{
+  "templatesFnewDepartmentWorkflows.deptMarketing": {
+    "vi": "Marketing",
+    "en": "Marketing",
+    "ja": "マーケティング",
+    "ko": "마케팅",
+    "zh": "市场营销"
+  },
+  "templatesFnewDepartmentWorkflows.deptSales": {
+    "vi": "Sales",
+    "en": "Sales",
+    "ja": "セールス",
+    "ko": "영업",
+    "zh": "销售"
+  },
+  "templatesFnewDepartmentWorkflows.deptCustomerService": {
+    "vi": "CSKH",
+    "en": "Customer Service",
+    "ja": "カスタマーサービス",
+    "ko": "고객서비스",
+    "zh": "客户服务"
+  },
+  "templatesFnewDepartmentWorkflows.deptWarehouse": {
+    "vi": "Kho vận",
+    "en": "Warehouse",
+    "ja": "倉庫",
+    "ko": "창고",
+    "zh": "仓储物流"
+  },
+  "templatesFnewDepartmentWorkflows.deptHr": {
+    "vi": "Nhân sự",
+    "en": "HR",
+    "ja": "人事",
+    "ko": "인사",
+    "zh": "人力资源"
+  },
+  "templatesFnewDepartmentWorkflows.deptFinance": {
+    "vi": "Tài chính",
+    "en": "Finance",
+    "ja": "財務",
+    "ko": "재무",
+    "zh": "财务"
+  },
+  "templatesFnewDepartmentWorkflows.deptCustom": {
+    "vi": "Tùy chỉnh",
+    "en": "Custom",
+    "ja": "カスタム",
+    "ko": "사용자 지정",
+    "zh": "自定义"
+  },
+  "templatesFnewDepartmentWorkflows.deptFallback": {
+    "vi": "Phòng ban",
+    "en": "Department",
+    "ja": "部門",
+    "ko": "부서",
+    "zh": "部门"
+  },
+  "templatesFnewDepartmentWorkflows.stateDraft": {
+    "vi": "Bản nháp",
+    "en": "Draft",
+    "ja": "下書き",
+    "ko": "초안",
+    "zh": "草稿"
+  },
+  "templatesFnewDepartmentWorkflows.stateTesting": {
+    "vi": "Đang test",
+    "en": "Testing",
+    "ja": "テスト中",
+    "ko": "테스트 중",
+    "zh": "测试中"
+  },
+  "templatesFnewDepartmentWorkflows.stateActive": {
+    "vi": "Đang chạy",
+    "en": "Running",
+    "ja": "実行中",
+    "ko": "실행 중",
+    "zh": "运行中"
+  },
+  "templatesFnewDepartmentWorkflows.stateArchived": {
+    "vi": "Lưu trữ",
+    "en": "Archived",
+    "ja": "アーカイブ済み",
+    "ko": "보관됨",
+    "zh": "已归档"
+  },
+  "templatesFnewDepartmentWorkflows.stateBroken": {
+    "vi": "Lỗi",
+    "en": "Broken",
+    "ja": "エラー",
+    "ko": "오류",
+    "zh": "故障"
+  },
+  "templatesFnewDepartmentWorkflows.headerDesc": {
+    "vi": "{count} workflow của phòng {dept} {enterprise}{branch}",
+    "en": "{count} workflows in {dept} department {enterprise}{branch}",
+    "ja": "{dept}部門の{count}件のワークフロー {enterprise}{branch}",
+    "ko": "{dept} 부서의 워크플로우 {count}건 {enterprise}{branch}",
+    "zh": "{dept}部门的{count}个工作流 {enterprise}{branch}"
+  },
+  "templatesFnewDepartmentWorkflows.loadingDept": {
+    "vi": "Đang tải thông tin phòng ban…",
+    "en": "Loading department information…",
+    "ja": "部門情報を読み込んでいます…",
+    "ko": "부서 정보를 불러오는 중…",
+    "zh": "正在加载部门信息…"
+  },
+  "templatesFnewDepartmentWorkflows.allDepartments": {
+    "vi": "Tất cả phòng ban",
+    "en": "All departments",
+    "ja": "すべての部門",
+    "ko": "전체 부서",
+    "zh": "所有部门"
+  },
+  "templatesFnewDepartmentWorkflows.createWorkflowForDept": {
+    "vi": "Tạo workflow cho phòng này",
+    "en": "Create workflow for this department",
+    "ja": "この部門のワークフローを作成",
+    "ko": "이 부서의 워크플로우 만들기",
+    "zh": "为此部门创建工作流"
+  },
+  "templatesFnewDepartmentWorkflows.statTotal": {
+    "vi": "Tổng workflow",
+    "en": "Total workflows",
+    "ja": "ワークフロー合計",
+    "ko": "전체 워크플로우",
+    "zh": "工作流总数"
+  },
+  "templatesFnewDepartmentWorkflows.statActive": {
+    "vi": "Đang chạy",
+    "en": "Running",
+    "ja": "実行中",
+    "ko": "실행 중",
+    "zh": "运行中"
+  },
+  "templatesFnewDepartmentWorkflows.statTesting": {
+    "vi": "Đang test",
+    "en": "Testing",
+    "ja": "テスト中",
+    "ko": "테스트 중",
+    "zh": "测试中"
+  },
+  "templatesFnewDepartmentWorkflows.statDrafts": {
+    "vi": "Bản nháp",
+    "en": "Drafts",
+    "ja": "下書き",
+    "ko": "초안",
+    "zh": "草稿"
+  },
+  "templatesFnewDepartmentWorkflows.statCrossLink": {
+    "vi": "Cross-link",
+    "en": "Cross-link",
+    "ja": "クロスリンク",
+    "ko": "교차 연결",
+    "zh": "跨部门链接"
+  },
+  "templatesFnewDepartmentWorkflows.branchAbbr": {
+    "vi": "CN",
+    "en": "Br.",
+    "ja": "支店",
+    "ko": "지점",
+    "zh": "分公司"
+  },
+  "templatesFnewDepartmentWorkflows.viewOrgTree": {
+    "vi": "Xem cây tổ chức",
+    "en": "View org tree",
+    "ja": "組織図を見る",
+    "ko": "조직도 보기",
+    "zh": "查看组织架构"
+  },
+  "templatesFnewDepartmentWorkflows.searchPlaceholder": {
+    "vi": "Tìm workflow trong phòng này…",
+    "en": "Search workflows in this department…",
+    "ja": "この部門のワークフローを検索…",
+    "ko": "이 부서의 워크플로우 검색…",
+    "zh": "搜索此部门的工作流…"
+  },
+  "templatesFnewDepartmentWorkflows.filterAll": {
+    "vi": "Trạng thái: Tất cả",
+    "en": "Status: All",
+    "ja": "ステータス：すべて",
+    "ko": "상태: 전체",
+    "zh": "状态：全部"
+  },
+  "templatesFnewDepartmentWorkflows.emptyNoMatchTitle": {
+    "vi": "Không có workflow khớp lọc",
+    "en": "No workflows match the filter",
+    "ja": "フィルターに一致するワークフローがありません",
+    "ko": "필터와 일치하는 워크플로우가 없습니다",
+    "zh": "没有符合筛选条件的工作流"
+  },
+  "templatesFnewDepartmentWorkflows.emptyNoWorkflowTitle": {
+    "vi": "Phòng ban này chưa có workflow",
+    "en": "This department has no workflows yet",
+    "ja": "この部門にはまだワークフローがありません",
+    "ko": "이 부서에는 아직 워크플로우가 없습니다",
+    "zh": "该部门尚无工作流"
+  },
+  "templatesFnewDepartmentWorkflows.emptyNoMatchDesc": {
+    "vi": "Thử bỏ lọc trạng thái / xóa từ khóa tìm kiếm.",
+    "en": "Try clearing the status filter or the search keyword.",
+    "ja": "ステータスフィルターや検索キーワードを解除してみてください。",
+    "ko": "상태 필터를 해제하거나 검색어를 지워보세요.",
+    "zh": "请尝试清除状态筛选或搜索关键词。"
+  },
+  "templatesFnewDepartmentWorkflows.emptyNoWorkflowDesc": {
+    "vi": "Tạo workflow đầu tiên cho phòng này. Có thể bắt đầu trắng hoặc clone từ template.",
+    "en": "Create the first workflow for this department. Start from scratch or clone a template.",
+    "ja": "この部門の最初のワークフローを作成しましょう。ゼロから作成するか、テンプレートから複製できます。",
+    "ko": "이 부서의 첫 워크플로우를 만들어보세요. 처음부터 시작하거나 템플릿을 복제할 수 있습니다.",
+    "zh": "为此部门创建第一个工作流。可以从空白开始，也可以从模板克隆。"
+  },
+  "templatesFnewDepartmentWorkflows.createFirstWorkflow": {
+    "vi": "Tạo workflow đầu tiên",
+    "en": "Create first workflow",
+    "ja": "最初のワークフローを作成",
+    "ko": "첫 워크플로우 만들기",
+    "zh": "创建第一个工作流"
+  },
+  "templatesFnewDepartmentWorkflows.sourceTemplate": {
+    "vi": "từ template",
+    "en": "from template",
+    "ja": "テンプレートから",
+    "ko": "템플릿에서",
+    "zh": "来自模板"
+  },
+  "templatesFnewDepartmentWorkflows.sourceProcessMining": {
+    "vi": "process-mining",
+    "en": "process mining",
+    "ja": "プロセスマイニング",
+    "ko": "프로세스 마이닝",
+    "zh": "流程挖掘"
+  },
+  "templatesFnewDepartmentWorkflows.sourceSelfBuilt": {
+    "vi": "tự xây",
+    "en": "self-built",
+    "ja": "自作",
+    "ko": "직접 구축",
+    "zh": "自建"
+  },
+  "templatesFnewDepartmentWorkflows.openWorkflow": {
+    "vi": "Mở workflow",
+    "en": "Open workflow",
+    "ja": "ワークフローを開く",
+    "ko": "워크플로우 열기",
+    "zh": "打开工作流"
+  },
+  "templatesFnewDepartmentWorkflows.crossLinkTitle": {
+    "vi": "Kết nối xuyên phòng ban / chi nhánh / mảng",
+    "en": "Cross-department / branch / division links",
+    "ja": "部門・支店・事業部をまたぐ連携",
+    "ko": "부서 / 지점 / 사업부 간 연결",
+    "zh": "跨部门/分公司/业务板块连接"
+  },
+  "templatesFnewDepartmentWorkflows.crossLinkCount": {
+    "vi": "{count} kết nối",
+    "en": "{count} links",
+    "ja": "{count}件の連携",
+    "ko": "연결 {count}건",
+    "zh": "{count}个连接"
+  },
+  "templatesFnewDepartmentWorkflows.unnamedWorkflow": {
+    "vi": "(workflow)",
+    "en": "(workflow)",
+    "ja": "（ワークフロー）",
+    "ko": "(워크플로우)",
+    "zh": "（工作流）"
+  },
+  "templatesFnewDepartmentWorkflows.crossesDepartment": {
+    "vi": "phòng khác",
+    "en": "other department",
+    "ja": "他部門",
+    "ko": "다른 부서",
+    "zh": "其他部门"
+  },
+  "templatesFnewDepartmentWorkflows.crossesBranch": {
+    "vi": "chi nhánh khác",
+    "en": "other branch",
+    "ja": "他支店",
+    "ko": "다른 지점",
+    "zh": "其他分公司"
+  },
+  "templatesFnewDepartmentWorkflows.crossesEnterprise": {
+    "vi": "cty con khác",
+    "en": "other subsidiary",
+    "ja": "他の子会社",
+    "ko": "다른 자회사",
+    "zh": "其他子公司"
+  },
+  "templatesFnewDepartmentWorkflows.crossesDivision": {
+    "vi": "mảng khác",
+    "en": "other division",
+    "ja": "他事業部",
+    "ko": "다른 사업부",
+    "zh": "其他业务板块"
+  },
+  "templatesFnewDepartmentWorkflows.crossLinkMore": {
+    "vi": "+{count} kết nối khác — mở từng workflow để xem chi tiết.",
+    "en": "+{count} more links — open each workflow for details.",
+    "ja": "他{count}件の連携 — 詳細は各ワークフローを開いて確認してください。",
+    "ko": "+{count}건의 추가 연결 — 각 워크플로우를 열어 자세히 확인하세요.",
+    "zh": "还有{count}个连接 — 打开各工作流查看详情。"
+  }
+}

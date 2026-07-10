@@ -25,6 +25,7 @@ import {
   Button, Badge, ErrorBanner, api, cn, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types
 // ============================================================================
@@ -34,18 +35,26 @@ type Industry = 'all' | 'retail' | 'manufacturing' | 'finance' | 'services' | 'm
 
 interface IndustryMeta {
   code:  Industry;
-  label: string;
   icon:  any;
 }
 
 const INDUSTRIES: IndustryMeta[] = [
-  { code: 'all',           label: 'Tất cả',     icon: AllIcon },
-  { code: 'retail',        label: 'Bán lẻ',     icon: ShoppingBag },
-  { code: 'manufacturing', label: 'Sản xuất',   icon: Factory },
-  { code: 'finance',       label: 'Tài chính',  icon: Landmark },
-  { code: 'services',      label: 'Dịch vụ',    icon: Briefcase },
-  { code: 'marketing',     label: 'Marketing',  icon: Megaphone },
+  { code: 'all',           icon: AllIcon },
+  { code: 'retail',        icon: ShoppingBag },
+  { code: 'manufacturing', icon: Factory },
+  { code: 'finance',       icon: Landmark },
+  { code: 'services',      icon: Briefcase },
+  { code: 'marketing',     icon: Megaphone },
 ];
+
+const INDUSTRY_LABEL_KEYS: Record<Industry, string> = {
+  all:           'templates50ReportTemplate.industryAll',
+  retail:        'templates50ReportTemplate.industryRetail',
+  manufacturing: 'templates50ReportTemplate.industryManufacturing',
+  finance:       'templates50ReportTemplate.industryFinance',
+  services:      'templates50ReportTemplate.industryServices',
+  marketing:     'templates50ReportTemplate.industryMarketing',
+};
 
 interface TemplateRow {
   id:           string;
@@ -78,6 +87,7 @@ const MOCK_TEMPLATES: TemplateRow[] = [
 // ============================================================================
 
 export default function ReportTemplatesPage() {
+  const t = useT();
   const [templates, setTemplates] = useState<TemplateRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -131,17 +141,17 @@ export default function ReportTemplatesPage() {
   return (
     <>
       <PageHeader
-        title="Mẫu báo cáo"
-        description="Bộ template dựng sẵn theo ngành. Bấm 'Dùng mẫu' để clone vào Builder."
+        title={t('templates50ReportTemplate.pageTitle')}
+        description={t('templates50ReportTemplate.pageDescription')}
         actions={
           <>
             <Badge variant="info">Phase 2 · F-038</Badge>
             <a href="/p2/reports">
-              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> Về danh sách</Button>
+              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> {t('templates50ReportTemplate.btnBackToList')}</Button>
             </a>
             <a href="/p2/reports/builder">
               <Button variant="primary" size="md">
-                <Plus className="w-4 h-4 mr-2" /> Tạo từ trống
+                <Plus className="w-4 h-4 mr-2" /> {t('templates50ReportTemplate.btnCreateBlank')}
               </Button>
             </a>
           </>
@@ -153,8 +163,8 @@ export default function ReportTemplatesPage() {
           <ErrorBanner
             problem={{
               ...problem,
-              title:  'Đang xem catalog demo',
-              detail: `${problem.title}${problem.detail ? ' — ' + problem.detail : ''}. Hiển thị ${MOCK_TEMPLATES.length} mẫu fixture cho tới khi /api/v1/reports/templates sẵn sàng.`,
+              title:  t('templates50ReportTemplate.errBannerTitle'),
+              detail: `${problem.title}${problem.detail ? ' — ' + problem.detail : ''}. ${t('templates50ReportTemplate.errBannerDetailSuffix', { count: MOCK_TEMPLATES.length })}`,
             }}
           />
         )}
@@ -162,8 +172,8 @@ export default function ReportTemplatesPage() {
         {/* Scope tabs */}
         <div className="flex items-center gap-1 border-b border-[var(--border-color)]">
           {[
-            { value: 'builtin' as Scope,   label: 'Mẫu Kaori',    icon: Globe },
-            { value: 'workspace' as Scope, label: 'Của workspace', icon: User },
+            { value: 'builtin' as Scope,   label: t('templates50ReportTemplate.tabBuiltin'),    icon: Globe },
+            { value: 'workspace' as Scope, label: t('templates50ReportTemplate.tabWorkspace'), icon: User },
           ].map((s) => {
             const active = scope === s.value;
             const Icon = s.icon;
@@ -205,7 +215,7 @@ export default function ReportTemplatesPage() {
                   )}
                 >
                   <Icon className="w-3.5 h-3.5" />
-                  {i.label}
+                  {t(INDUSTRY_LABEL_KEYS[i.code])}
                 </button>
               );
             })}
@@ -216,7 +226,7 @@ export default function ReportTemplatesPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm theo tên mẫu..."
+              placeholder={t('templates50ReportTemplate.searchPlaceholder')}
               className="w-full pl-9 pr-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm placeholder:text-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all"
             />
           </div>
@@ -225,15 +235,15 @@ export default function ReportTemplatesPage() {
         {/* Grid */}
         {loading ? (
           <div className="flex items-center justify-center py-20 text-[var(--text-secondary)]">
-            <Loader2 className="w-5 h-5 animate-spin mr-2" /> Đang tải catalog...
+            <Loader2 className="w-5 h-5 animate-spin mr-2" /> {t('templates50ReportTemplate.loadingCatalog')}
           </div>
         ) : filtered.length === 0 ? (
           <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom py-16 text-center">
             <BookMarked className="w-12 h-12 mx-auto text-[var(--text-secondary)]/40 mb-3" />
             <p className="text-sm text-[var(--text-secondary)]">
               {scope === 'workspace'
-                ? 'Workspace chưa có mẫu nào. Vào Builder, bấm "Lưu thành mẫu" để tạo.'
-                : 'Không có mẫu khớp bộ lọc.'}
+                ? t('templates50ReportTemplate.emptyWorkspace')
+                : t('templates50ReportTemplate.emptyFiltered')}
             </p>
           </div>
         ) : (
@@ -252,8 +262,7 @@ export default function ReportTemplatesPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Clone mẫu sẽ tạo bản sao block — chỉnh sửa không ảnh hưởng nguồn. Mọi mẫu Kaori đã qua kiểm duyệt nội dung
-            (không có dataset PII, không có narrative cố ý dẫn dắt thiên lệch — K-6 transparency).
+            {t('templates50ReportTemplate.footerNote')}
           </p>
         </div>
       </div>
@@ -268,6 +277,7 @@ export default function ReportTemplatesPage() {
 function TemplateCard({
   tpl: t, cloning, onClone,
 }: { tpl: TemplateRow; cloning: boolean; onClone: () => void }) {
+  const tt = useT();
   const industry = INDUSTRIES.find((i) => i.code === t.industry) ?? INDUSTRIES[0];
   const Icon = industry.icon;
 
@@ -278,7 +288,7 @@ function TemplateCard({
           <Icon className="w-5 h-5 text-[var(--primary-gold-dark)]" />
         </div>
         <Badge variant={t.scope === 'builtin' ? 'info' : 'current'}>
-          {t.scope === 'builtin' ? 'Kaori' : 'Workspace'}
+          {t.scope === 'builtin' ? tt('templates50ReportTemplate.badgeKaori') : tt('templates50ReportTemplate.badgeWorkspace')}
         </Badge>
       </div>
 
@@ -287,12 +297,12 @@ function TemplateCard({
 
       <div className="mt-4 pt-3 border-t border-[var(--border-color)]/60 space-y-1.5">
         <div className="flex items-center justify-between text-[11px] text-[var(--text-secondary)]">
-          <span className="inline-flex items-center gap-1"><FileText className="w-3 h-3" /> {t.block_count} block</span>
-          <span>{industry.label}</span>
+          <span className="inline-flex items-center gap-1"><FileText className="w-3 h-3" /> {tt('templates50ReportTemplate.blockCount', { count: t.block_count })}</span>
+          <span>{tt(INDUSTRY_LABEL_KEYS[industry.code])}</span>
         </div>
         <div className="flex items-center justify-between text-[11px] text-[var(--text-secondary)]">
-          <span>Tác giả: <span className="text-[var(--text-primary)]">{t.author}</span></span>
-          {t.used_count != null && <span>Đã dùng {t.used_count.toLocaleString('vi-VN')}×</span>}
+          <span>{tt('templates50ReportTemplate.authorLabel')} <span className="text-[var(--text-primary)]">{t.author}</span></span>
+          {t.used_count != null && <span>{tt('templates50ReportTemplate.usedCount', { count: t.used_count.toLocaleString('vi-VN') })}</span>}
         </div>
       </div>
 
@@ -303,7 +313,7 @@ function TemplateCard({
         isLoading={cloning}
         className="mt-4"
       >
-        <Sparkles className="w-3.5 h-3.5 mr-1.5" /> Dùng mẫu
+        <Sparkles className="w-3.5 h-3.5 mr-1.5" /> {tt('templates50ReportTemplate.btnUseTemplate')}
         <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
       </Button>
     </div>

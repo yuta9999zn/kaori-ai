@@ -25,6 +25,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types
 // ============================================================================
@@ -69,6 +70,7 @@ function buildQuarterOptions(): string[] {
 // ============================================================================
 
 export default function StrategyHubPage() {
+  const t = useT();
   const quarters = useMemo(buildQuarterOptions, []);
   const defaultQuarter = quarters[2];   // current quarter (middle of the 5)
 
@@ -99,14 +101,14 @@ export default function StrategyHubPage() {
   return (
     <>
       <PageHeader
-        title="Chiến lược"
-        description="Tổng quan OKR + Lộ trình + Họp review theo quý."
+        title={t('templatesFnew40StrategyHub.title')}
+        description={t('templatesFnew40StrategyHub.headerDesc')}
         actions={
           <>
             <Badge variant="info">F-040</Badge>
             <Button variant="secondary" size="md" onClick={load} disabled={loading}>
               <RefreshCw className={cn('w-4 h-4 mr-2', loading && 'animate-spin')} />
-              Làm mới
+              {t('templatesFnew40StrategyHub.refresh')}
             </Button>
           </>
         }
@@ -118,7 +120,7 @@ export default function StrategyHubPage() {
         {/* Quarter selector */}
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-3 flex items-center gap-3 shadow-soft-sm">
           <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider font-medium">
-            Quý
+            {t('templatesFnew40StrategyHub.quarterLabel')}
           </span>
           {quarters.map((q) => (
             <button
@@ -146,25 +148,25 @@ export default function StrategyHubPage() {
         ) : summary ? (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <KpiTile
-              label={`Tổng OKR ${quarter}`}
+              label={t('templatesFnew40StrategyHub.totalOkr', { quarter })}
               value={summary.total}
               icon={Target}
               tone="text-[var(--text-primary)]"
             />
             <KpiTile
-              label="On-track"
+              label={t('templatesFnew40StrategyHub.onTrack')}
               value={summary.by_status.on_track}
               icon={CheckCircle2}
               tone="text-[var(--state-success)]"
             />
             <KpiTile
-              label="At-risk"
+              label={t('templatesFnew40StrategyHub.atRisk')}
               value={summary.by_status.at_risk}
               icon={TrendingUp}
               tone="text-[var(--state-warning)]"
             />
             <KpiTile
-              label="Off-track"
+              label={t('templatesFnew40StrategyHub.offTrack')}
               value={summary.by_status.off_track}
               icon={AlertTriangle}
               tone="text-[var(--state-error)]"
@@ -175,29 +177,29 @@ export default function StrategyHubPage() {
         {/* Module cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <ModuleCard
-            title="OKR"
-            description="Objective + 3 Key Results · cập nhật progress hàng tuần."
+            title={t('templatesFnew40StrategyHub.moduleOkrTitle')}
+            description={t('templatesFnew40StrategyHub.moduleOkrDesc')}
             href="/p2/strategy/okr"
             icon={Target}
             metric={summary
-              ? `${summary.total} OKR đang chạy`
-              : 'Đang tải...'}
+              ? t('templatesFnew40StrategyHub.metricOkrRunning', { count: summary.total })
+              : t('templatesFnew40StrategyHub.loadingEllipsis')}
             available
           />
           <ModuleCard
-            title="Lộ trình"
-            description="Gantt-style milestone + phụ thuộc giữa các initiative."
+            title={t('templatesFnew40StrategyHub.timelineTitle')}
+            description={t('templatesFnew40StrategyHub.timelineDesc')}
             href="/p2/strategy/timeline"
             icon={GanttChartSquare}
-            metric="Sắp ra mắt — Phase 2 v1"
+            metric={t('templatesFnew40StrategyHub.comingSoon')}
             available={false}
           />
           <ModuleCard
-            title="Họp review"
-            description="Lịch họp định kỳ + AI-prepped insight pack."
+            title={t('templatesFnew40StrategyHub.reviewMeetingTitle')}
+            description={t('templatesFnew40StrategyHub.reviewMeetingDesc')}
             href="/p2/strategy/review-meeting"
             icon={CalendarCheck}
-            metric="Sắp ra mắt — Phase 2 v1"
+            metric={t('templatesFnew40StrategyHub.comingSoon')}
             available={false}
           />
         </div>
@@ -205,8 +207,7 @@ export default function StrategyHubPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <Sparkles className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Status (on_track / at_risk / off_track) tự suy ra từ KR progress so với
-            quý đã trôi qua. Cập nhật progress KR sẽ tự cập nhật status.
+            {t('templatesFnew40StrategyHub.statusAutoNote')}
           </p>
         </div>
       </div>

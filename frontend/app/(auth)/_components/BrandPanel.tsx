@@ -6,6 +6,7 @@
  */
 
 import { KaoriLogo } from "@/components/brand/KaoriLogo";
+import { useT } from "@/lib/i18n/provider";
 
 interface Props {
   /** Headline shown in serif italic. Override per page if needed. */
@@ -15,10 +16,14 @@ interface Props {
 }
 
 export function AuthBrandPanel({
-  headline    = "Trí tuệ,",
-  italicTail  = "được trao một cách bình thản.",
-  subhead     = "Nền tảng phân tích dữ liệu B2B đa khách hàng. Quy mô vững vàng, giao diện rõ ràng, vận hành nhẹ nhàng.",
+  headline,
+  italicTail,
+  subhead,
 }: Props) {
+  const t = useT();
+  const headlineText   = headline    ?? t("componentsBrandpanel.headline");
+  const italicTailText = italicTail  ?? t("componentsBrandpanel.italicTail");
+  const subheadText    = subhead     ?? t("componentsBrandpanel.subhead");
   return (
     <div className="relative hidden lg:flex w-1/2 flex-col justify-between p-12 overflow-hidden bg-gradient-to-br from-[#FAF7F2] via-[#F4EFE6] to-[#E9E7E2]">
       <div className="absolute inset-0 bg-pattern z-0" />
@@ -36,18 +41,18 @@ export function AuthBrandPanel({
 
       <div className="relative z-10 flex flex-col max-w-lg mb-20 animate-fade-in">
         <h1 className="font-serif text-5xl leading-[1.15] text-[var(--color-ink)] font-medium mb-6">
-          {headline}
+          {headlineText}
           <br />
-          <span className="text-[var(--color-ink-muted)] italic">{italicTail}</span>
+          <span className="text-[var(--color-ink-muted)] italic">{italicTailText}</span>
         </h1>
-        <p className="text-[var(--color-ink-muted)] text-lg leading-relaxed">{subhead}</p>
+        <p className="text-[var(--color-ink-muted)] text-lg leading-relaxed">{subheadText}</p>
       </div>
 
       <div className="relative z-10 flex items-center gap-4 text-sm text-[var(--color-ink-muted)]">
-        <span>© 2026 Kaori Platform</span>
+        <span>{t("componentsBrandpanel.copyright")}</span>
         <span className="w-1 h-1 rounded-full bg-[var(--color-brand-500)]" />
         <a href="#" className="hover:text-[var(--color-ink)] transition-colors">
-          Chính sách bảo mật
+          {t("componentsBrandpanel.privacyPolicy")}
         </a>
       </div>
     </div>

@@ -17,16 +17,12 @@ import { ArrowLeft, Building2 } from 'lucide-react';
 
 import { workspaceApi, type WsStatus } from '@/lib/api/platform';
 import { Badge, cn } from '@/components/platform/foundation';
+import { useT } from '@/lib/i18n/provider';
 
 const STATUS_VARIANT: Record<WsStatus, 'operational' | 'warning' | 'degraded'> = {
   active:    'operational',
   inactive:  'degraded',
   suspended: 'warning',
-};
-const STATUS_LABEL: Record<WsStatus, string> = {
-  active:    'Đang hoạt động',
-  inactive:  'Ngừng hoạt động',
-  suspended: 'Tạm ngưng',
 };
 
 export default function WorkspaceDetailLayout({
@@ -36,8 +32,15 @@ export default function WorkspaceDetailLayout({
   children: React.ReactNode;
   params:   Promise<{ id: string }>;
 }) {
+  const t = useT();
   const { id }   = use(params);
   const pathname = usePathname() ?? '';
+
+  const STATUS_LABEL: Record<WsStatus, string> = {
+    active:    t('idLayout.statusActive'),
+    inactive:  t('idLayout.statusInactive'),
+    suspended: t('idLayout.statusSuspended'),
+  };
 
   const query = useQuery({
     queryKey: ['platform-workspace', id],
@@ -49,12 +52,12 @@ export default function WorkspaceDetailLayout({
   const ws = query.data?.data;
 
   const tabs = [
-    { href: `/platform/workspaces/${id}`,         label: 'Tổng quan' },
-    { href: `/platform/workspaces/${id}/members`, label: 'Thành viên' },
-    { href: `/platform/workspaces/${id}/keys`,    label: 'Khoá API' },
-    { href: `/platform/workspaces/${id}/billing`, label: 'Thanh toán' },
-    { href: `/platform/workspaces/${id}/audit`,   label: 'Nhật ký kiểm toán' },
-    { href: `/platform/workspaces/${id}/edit`,    label: 'Chỉnh sửa' },
+    { href: `/platform/workspaces/${id}`,         label: t('idLayout.tabOverview') },
+    { href: `/platform/workspaces/${id}/members`, label: t('idLayout.tabMembers') },
+    { href: `/platform/workspaces/${id}/keys`,    label: t('idLayout.tabApiKeys') },
+    { href: `/platform/workspaces/${id}/billing`, label: t('idLayout.tabBilling') },
+    { href: `/platform/workspaces/${id}/audit`,   label: t('idLayout.tabAuditLog') },
+    { href: `/platform/workspaces/${id}/edit`,    label: t('idLayout.tabEdit') },
   ];
 
   return (
@@ -65,7 +68,7 @@ export default function WorkspaceDetailLayout({
           className="inline-flex items-center gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          Tất cả workspaces
+          {t('idLayout.allWorkspaces')}
         </Link>
       </div>
 
@@ -83,7 +86,7 @@ export default function WorkspaceDetailLayout({
             )}
             {query.isError && !ws && (
               <>
-                <h1 className="font-serif text-2xl text-[var(--text-primary)]">Workspace không tồn tại</h1>
+                <h1 className="font-serif text-2xl text-[var(--text-primary)]">{t('idLayout.notFound')}</h1>
                 <p className="text-xs text-[var(--text-secondary)] mt-1 font-mono">{id}</p>
               </>
             )}

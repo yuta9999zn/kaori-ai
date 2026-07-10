@@ -11,12 +11,14 @@ import {
   Button, ErrorBanner, type ProblemDetails,
 } from '@/components/platform/foundation';
 import { PageHeader } from '@/components/platform/shell';
+import { useT } from '@/lib/i18n/provider';
 
 export default function AdminResetPasswordPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const t = useT();
   const { id } = use(params);
   const router = useRouter();
 
@@ -45,7 +47,7 @@ export default function AdminResetPasswordPage({
       <div className="px-6 lg:px-8 py-6 max-w-2xl">
         <ErrorBanner
           problem={query.error ? (query.error as unknown as ProblemDetails) : null}
-          message="Không thể tải quản trị viên."
+          message={t('resetPasswordPage2.errLoadAdmin')}
         />
       </div>
     );
@@ -63,12 +65,12 @@ export default function AdminResetPasswordPage({
           className="inline-flex items-center gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          Quay lại chi tiết
+          {t('resetPasswordPage2.backToDetail')}
         </Link>
       </div>
 
       <PageHeader
-        title="Đặt lại mật khẩu"
+        title={t('resetPasswordPage2.title')}
         description={`${a.full_name ?? a.email} · ${a.email}`}
       />
 
@@ -77,15 +79,15 @@ export default function AdminResetPasswordPage({
           <section className="rounded-md-custom border border-[var(--state-success)]/40 bg-[var(--state-success)]/8 shadow-soft-sm p-6 space-y-3">
             <div className="flex items-center gap-2 text-[#5C856A]">
               <CheckCircle2 className="w-5 h-5" />
-              <h2 className="font-serif text-lg">Đã gửi email</h2>
+              <h2 className="font-serif text-lg">{t('resetPasswordPage2.emailSentTitle')}</h2>
             </div>
             <p className="text-sm text-[var(--text-primary)]">
-              Liên kết đặt lại mật khẩu đã được gửi tới{' '}
-              <strong>{sentTo}</strong>. Token có hiệu lực trong 60 phút.
+              {t('resetPasswordPage2.emailSentBefore')}{' '}
+              <strong>{sentTo}</strong>{t('resetPasswordPage2.emailSentAfter')}
             </p>
             <div className="pt-2">
               <Button variant="secondary" onClick={() => router.push(`/platform/admins/${id}`)}>
-                Quay lại chi tiết
+                {t('resetPasswordPage2.backToDetail')}
               </Button>
             </div>
           </section>
@@ -94,17 +96,17 @@ export default function AdminResetPasswordPage({
             <div className="flex items-start gap-3 bg-[var(--state-warning)]/12 border border-[var(--state-warning)]/30 rounded-md-custom px-3 py-2.5">
               <ShieldAlert className="w-5 h-5 text-[#9E814D] shrink-0 mt-0.5" />
               <div className="text-sm text-[var(--text-primary)]">
-                <p className="font-medium">Hành động này:</p>
+                <p className="font-medium">{t('resetPasswordPage2.actionHeading')}</p>
                 <ul className="list-disc list-inside text-[var(--text-secondary)] text-xs mt-1 space-y-0.5">
-                  <li>Gửi email tới <strong>{a.email}</strong> với liên kết đặt lại mật khẩu.</li>
-                  <li>Vô hiệu hóa các phiên đăng nhập hiện tại của tài khoản này.</li>
+                  <li>{t('resetPasswordPage2.actionSendEmailBefore')} <strong>{a.email}</strong> {t('resetPasswordPage2.actionSendEmailAfter')}</li>
+                  <li>{t('resetPasswordPage2.actionInvalidateSessions')}</li>
                   <li>
                     {a.mfa_enabled
-                      ? 'Giữ nguyên thiết lập MFA — người dùng vẫn cần TOTP để đăng nhập.'
-                      : 'KHÔNG bật MFA — bạn nên yêu cầu người dùng bật MFA sau khi đặt lại.'}
+                      ? t('resetPasswordPage2.actionMfaKept')
+                      : t('resetPasswordPage2.actionMfaNotEnabled')}
                   </li>
                   <li>
-                    Ghi nhận trong nhật ký kiểm toán dưới dạng{' '}
+                    {t('resetPasswordPage2.actionAuditBefore')}{' '}
                     <code className="font-mono">admin.password_reset_requested</code>.
                   </li>
                 </ul>
@@ -115,14 +117,14 @@ export default function AdminResetPasswordPage({
 
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="secondary" onClick={() => router.push(`/platform/admins/${id}`)}>
-                Hủy
+                {t('resetPasswordPage2.cancel')}
               </Button>
               <Button
                 isLoading={resetMut.isPending}
                 onClick={() => { setError(null); resetMut.mutate(); }}
               >
                 <KeyRound className="w-4 h-4 mr-1.5" />
-                Gửi email đặt lại mật khẩu
+                {t('resetPasswordPage2.sendResetEmail')}
               </Button>
             </div>
           </section>

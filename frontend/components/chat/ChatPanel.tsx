@@ -17,42 +17,42 @@ import { MessageSquare, X, RotateCcw, Send, Bot, User as UserIcon, AlertTriangle
 import { cn } from "@/lib/cn";
 import { useChatStream, type ChatMessage, type ChatScope } from "./useChatStream";
 import { ToolCallCard } from "./ToolCallCard";
+import { useT } from "@/lib/i18n/provider";
 
 interface Props {
   scope: ChatScope;
-  /** Override the floating-button label. Defaults to "Hỏi Kaori". */
+  /** Override the floating-button label. Defaults to the localized "Hỏi Kaori". */
   buttonLabel?: string;
 }
 
-const SCOPE_INTROS: Record<ChatScope, { greeting: string; suggestions: string[] }> = {
-  enterprise: {
-    greeting:
-      "Chào anh chị 👋 — Kaori đây. Có thể hỏi về tồn kho dữ liệu, " +
-      "decisions gần đây, top khách hàng rủi ro, hạn mức billing.",
-    suggestions: [
-      "Tóm tắt quyết định AI tuần này",
-      "Top 5 khách hàng đang rủi ro",
-      "Hạn mức tháng này còn bao nhiêu?",
-    ],
-  },
-  platform: {
-    greeting:
-      "Chào admin 👋 — Kaori Ops đây. Có thể hỏi tổng quan platform, " +
-      "tenant đang vượt quota, signup gần đây.",
-    suggestions: [
-      "Tổng quan platform hiện tại",
-      "Workspace nào đang vượt 95% quota?",
-      "Số signup mới 30 ngày qua",
-    ],
-  },
-};
-
-export function ChatPanel({ scope, buttonLabel = "Hỏi Kaori" }: Props) {
+export function ChatPanel({ scope, buttonLabel }: Props) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const { messages, status, send, reset } = useChatStream(scope);
 
-  const intro = SCOPE_INTROS[scope];
+  const resolvedButtonLabel = buttonLabel ?? t("chatChatpanel.buttonLabel");
+
+  const scopeIntros: Record<ChatScope, { greeting: string; suggestions: string[] }> = {
+    enterprise: {
+      greeting: t("chatChatpanel.introEnterpriseGreeting"),
+      suggestions: [
+        t("chatChatpanel.introEnterpriseSug1"),
+        t("chatChatpanel.introEnterpriseSug2"),
+        t("chatChatpanel.introEnterpriseSug3"),
+      ],
+    },
+    platform: {
+      greeting: t("chatChatpanel.introPlatformGreeting"),
+      suggestions: [
+        t("chatChatpanel.introPlatformSug1"),
+        t("chatChatpanel.introPlatformSug2"),
+        t("chatChatpanel.introPlatformSug3"),
+      ],
+    },
+  };
+
+  const intro = scopeIntros[scope];
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   // Auto-scroll to the bottom on new messages or streaming updates.
@@ -81,7 +81,7 @@ export function ChatPanel({ scope, buttonLabel = "Hỏi Kaori" }: Props) {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          aria-label={buttonLabel}
+          aria-label={resolvedButtonLabel}
           className={cn(
             "fixed bottom-6 right-6 z-40",
             "h-12 px-4 rounded-full",
@@ -91,7 +91,7 @@ export function ChatPanel({ scope, buttonLabel = "Hỏi Kaori" }: Props) {
           )}
         >
           <MessageSquare className="w-4 h-4" />
-          {buttonLabel}
+          {resolvedButtonLabel}
         </button>
       )}
 
@@ -115,13 +115,15 @@ export function ChatPanel({ scope, buttonLabel = "Hỏi Kaori" }: Props) {
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-[var(--color-ink)]">Kaori</p>
             <p className="text-[11px] text-[var(--color-ink-muted)]">
-              {scope === "platform" ? "Platform Ops" : "Trợ lý doanh nghiệp"}
+              {scope === "platform"
+                ? t("chatChatpanel.platformOpsLabel")
+                : t("chatChatpanel.enterpriseAssistantLabel")}
             </p>
           </div>
           {messages.length > 0 && (
             <button
               type="button"
-              aria-label="Xoá hội thoại"
+              aria-label={t("chatChatpanel.ariaClearChat")}
               onClick={reset}
               className="p-1.5 rounded-md text-[var(--color-ink-muted)] hover:bg-canvas hover:text-[var(--color-ink)] transition-colors"
             >
@@ -130,7 +132,7 @@ export function ChatPanel({ scope, buttonLabel = "Hỏi Kaori" }: Props) {
           )}
           <button
             type="button"
-            aria-label="Đóng chat"
+            aria-label={t("chatChatpanel.ariaCloseChat")}
             onClick={() => setOpen(false)}
             className="p-1.5 rounded-md text-[var(--color-ink-muted)] hover:bg-canvas hover:text-[var(--color-ink)] transition-colors"
           >
@@ -170,7 +172,11 @@ export function ChatPanel({ scope, buttonLabel = "Hỏi Kaori" }: Props) {
                 handleSubmit(e);
               }
             }}
-            placeholder={status === "streaming" ? "Đang trả lời…" : "Hỏi Kaori bất kỳ điều gì…"}
+            placeholder={
+              status === "streaming"
+                ? t("chatChatpanel.placeholderStreaming")
+                : t("chatChatpanel.placeholderIdle")
+            }
             rows={1}
             disabled={status === "streaming"}
             className={cn(
@@ -183,7 +189,7 @@ export function ChatPanel({ scope, buttonLabel = "Hỏi Kaori" }: Props) {
           />
           <button
             type="submit"
-            aria-label="Gửi"
+            aria-label={t("chatChatpanel.ariaSend")}
             disabled={!draft.trim() || status === "streaming"}
             className={cn(
               "h-9 w-9 rounded-md-custom flex items-center justify-center shrink-0",

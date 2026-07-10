@@ -1,0 +1,100 @@
+{
+  "idPage7.loadError": {
+    "vi": "Không thể tải workspace {workspaceId}. Endpoint GET /api/v1/platform/workspaces/{id} có thể chưa được triển khai.",
+    "en": "Unable to load workspace {workspaceId}. The endpoint GET /api/v1/platform/workspaces/{id} may not be implemented yet.",
+    "ja": "ワークスペース {workspaceId} を読み込めませんでした。エンドポイント GET /api/v1/platform/workspaces/{id} がまだ実装されていない可能性があります。",
+    "ko": "워크스페이스 {workspaceId}를 불러올 수 없습니다. 엔드포인트 GET /api/v1/platform/workspaces/{id}가 아직 구현되지 않았을 수 있습니다.",
+    "zh": "无法加载工作区 {workspaceId}。端点 GET /api/v1/platform/workspaces/{id} 可能尚未实现。"
+  },
+  "idPage7.factPlanCode": {
+    "vi": "Mã gói",
+    "en": "Plan code",
+    "ja": "プランコード",
+    "ko": "플랜 코드",
+    "zh": "套餐代码"
+  },
+  "idPage7.factIndustry": {
+    "vi": "Ngành",
+    "en": "Industry",
+    "ja": "業種",
+    "ko": "업종",
+    "zh": "行业"
+  },
+  "idPage7.factCreatedAt": {
+    "vi": "Tạo lúc",
+    "en": "Created at",
+    "ja": "作成日時",
+    "ko": "생성 시각",
+    "zh": "创建时间"
+  },
+  "idPage7.factUpdatedAt": {
+    "vi": "Cập nhật",
+    "en": "Updated",
+    "ja": "更新日時",
+    "ko": "업데이트",
+    "zh": "更新时间"
+  },
+  "idPage7.recentActivityTitle": {
+    "vi": "Hoạt động gần đây",
+    "en": "Recent activity",
+    "ja": "最近のアクティビティ",
+    "ko": "최근 활동",
+    "zh": "最近活动"
+  },
+  "idPage7.auditLogHintPre": {
+    "vi": "Nhật ký hoạt động sẽ hiển thị tại đây khi backend audit log",
+    "en": "The activity log will show here once the backend audit log",
+    "ja": "バックエンドの監査ログ",
+    "ko": "백엔드 감사 로그",
+    "zh": "后端审计日志"
+  },
+  "idPage7.auditLogHintPost": {
+    "vi": "sẵn sàng.",
+    "en": "is ready.",
+    "ja": "が準備でき次第、ここに活動ログが表示されます。",
+    "ko": "가 준비되면 여기에 활동 로그가 표시됩니다.",
+    "zh": "就绪后，活动日志将显示在此处。"
+  },
+  "idPage7.viewAuditLog": {
+    "vi": "Xem nhật ký kiểm toán",
+    "en": "View audit log",
+    "ja": "監査ログを表示",
+    "ko": "감사 로그 보기",
+    "zh": "查看审计日志"
+  },
+  "idPage7.quickActionsTitle": {
+    "vi": "Tác vụ nhanh",
+    "en": "Quick actions",
+    "ja": "クイックアクション",
+    "ko": "빠른 작업",
+    "zh": "快捷操作"
+  },
+  "idPage7.qaManageMembers": {
+    "vi": "Quản lý thành viên",
+    "en": "Manage members",
+    "ja": "ユーザーを管理",
+    "ko": "사용자 관리",
+    "zh": "管理用户"
+  },
+  "idPage7.qaViewBilling": {
+    "vi": "Xem thanh toán",
+    "en": "View billing",
+    "ja": "請求情報を表示",
+    "ko": "결제 정보 보기",
+    "zh": "查看付款"
+  },
+  "idPage7.qaAuditLog": {
+    "vi": "Nhật ký kiểm toán",
+    "en": "Audit log",
+    "ja": "監査ログ",
+    "ko": "감사 로그",
+    "zh": "审计日志"
+  },
+  "idPage7.qaEditWorkspace": {
+    "vi": "Chỉnh sửa workspace",
+    "en": "Edit workspace",
+    "ja": "ワークスペースを編集",
+    "ko": "워크스페이스 편집",
+    "zh": "编辑工作区"
+  }
+}

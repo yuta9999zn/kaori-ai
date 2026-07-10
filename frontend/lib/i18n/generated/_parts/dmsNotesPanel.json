@@ -1,0 +1,58 @@
+{
+  "dmsNotesPanel.heading": {
+    "vi": "Ghi chú ({count})",
+    "en": "Notes ({count})",
+    "ja": "メモ ({count})",
+    "ko": "메모 ({count})",
+    "zh": "备注 ({count})"
+  },
+  "dmsNotesPanel.empty": {
+    "vi": "Chưa có ghi chú nào.",
+    "en": "No notes yet.",
+    "ja": "まだメモがありません。",
+    "ko": "아직 메모가 없습니다.",
+    "zh": "暂无备注。"
+  },
+  "dmsNotesPanel.deleteTitle": {
+    "vi": "Xoá ghi chú",
+    "en": "Delete note",
+    "ja": "メモを削除",
+    "ko": "메모 삭제",
+    "zh": "删除备注"
+  },
+  "dmsNotesPanel.draftPlaceholder": {
+    "vi": "Viết ghi chú… (**đậm**, ==đánh dấu==, [tên](https://link), #hashtag)",
+    "en": "Write a note… (**bold**, ==highlight==, [name](https://link), #hashtag)",
+    "ja": "メモを入力…（**太字**、==ハイライト==、[名前](https://link)、#ハッシュタグ）",
+    "ko": "메모 작성… (**굵게**, ==강조==, [이름](https://link), #해시태그)",
+    "zh": "写备注…（**加粗**、==高亮==、[名称](https://link)、#话题标签）"
+  },
+  "dmsNotesPanel.addNote": {
+    "vi": "Thêm ghi chú",
+    "en": "Add note",
+    "ja": "メモを追加",
+    "ko": "메모 추가",
+    "zh": "添加备注"
+  },
+  "dmsNotesPanel.errLoad": {
+    "vi": "Không tải được ghi chú",
+    "en": "Could not load notes",
+    "ja": "メモを読み込めませんでした",
+    "ko": "메모를 불러오지 못했습니다",
+    "zh": "无法加载备注"
+  },
+  "dmsNotesPanel.errSave": {
+    "vi": "Không lưu được ghi chú",
+    "en": "Could not save note",
+    "ja": "メモを保存できませんでした",
+    "ko": "메모를 저장하지 못했습니다",
+    "zh": "无法保存备注"
+  },
+  "dmsNotesPanel.errDelete": {
+    "vi": "Không xoá được",
+    "en": "Could not delete",
+    "ja": "削除できませんでした",
+    "ko": "삭제하지 못했습니다",
+    "zh": "无法删除"
+  }
+}

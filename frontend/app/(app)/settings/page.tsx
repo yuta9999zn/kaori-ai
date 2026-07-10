@@ -56,7 +56,7 @@ export default function SettingsPage() {
     <div className="space-y-8 max-w-2xl">
       <div>
         <h1 className="text-h1 font-serif text-ink">{t("nav.settings")}</h1>
-        <p className="text-small text-ink-muted mt-1">Cấu hình workspace và tùy chọn AI.</p>
+        <p className="text-small text-ink-muted mt-1">{t("settingsPage.subtitle")}</p>
       </div>
 
       {isLoading && (
@@ -73,12 +73,12 @@ export default function SettingsPage() {
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
                 <Globe className="w-4 h-4 text-brand-500" strokeWidth={1.75} />
-                <CardTitle>Ngôn ngữ giao diện</CardTitle>
+                <CardTitle>{t("settingsPage.languageTitle")}</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="pb-5">
               <p className="text-small text-ink-muted mb-3">
-                Ngôn ngữ hiển thị cho tài khoản của bạn. Thay đổi sẽ được lưu tự động.
+                {t("settingsPage.languageDesc")}
               </p>
               <LocalePicker />
             </CardContent>
@@ -89,16 +89,15 @@ export default function SettingsPage() {
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
                 <Bot className="w-4 h-4 text-brand-500" strokeWidth={1.75} />
-                <CardTitle>Cài đặt AI</CardTitle>
+                <CardTitle>{t("settingsPage.aiSettingsTitle")}</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="pb-5 space-y-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <p className="text-body-strong text-ink">AI ngoài (Claude / GPT-4o)</p>
+                  <p className="text-body-strong text-ink">{t("settingsPage.externalAiLabel")}</p>
                   <p className="text-small text-ink-muted mt-0.5">
-                    Cho phép gửi dữ liệu (đã ẩn PII) đến AI bên ngoài để phân tích sâu hơn.
-                    Mặc định Kaori dùng Qwen2.5 chạy nội bộ — riêng tư và miễn phí.
+                    {t("settingsPage.externalAiDesc")}
                   </p>
                 </div>
                 <button
@@ -119,8 +118,7 @@ export default function SettingsPage() {
 
               {effectiveConsent && (
                 <div className="bg-warning-50 border border-warning-100 rounded-xl px-4 py-3 text-small text-warning-700">
-                  <strong>Lưu ý:</strong> Dữ liệu của bạn sẽ được ẩn PII trước khi gửi, nhưng vẫn rời khỏi
-                  hạ tầng nội bộ. Đảm bảo tuân thủ chính sách dữ liệu của tổ chức bạn.
+                  <strong>{t("settingsPage.noteLabel")}</strong> {t("settingsPage.externalAiWarning")}
                 </div>
               )}
 
@@ -132,13 +130,13 @@ export default function SettingsPage() {
               )}
 
               {saved && !isDirty && (
-                <p className="text-small text-success-600">Đã lưu thành công.</p>
+                <p className="text-small text-success-600">{t("settingsPage.savedSuccess")}</p>
               )}
 
               <div className="flex justify-end">
                 <Button onClick={() => save()} loading={saving} disabled={!isDirty}>
                   <Save className="w-4 h-4 mr-1.5" />
-                  Lưu thay đổi
+                  {t("settingsPage.saveChanges")}
                 </Button>
               </div>
             </CardContent>
@@ -150,16 +148,15 @@ export default function SettingsPage() {
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
                 <Bell className="w-4 h-4 text-brand-500" strokeWidth={1.75} />
-                <CardTitle>Thông báo</CardTitle>
+                <CardTitle>{t("settingsPage.notificationsTitle")}</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="pb-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <p className="text-body-strong text-ink">Cảnh báo qua email</p>
+                  <p className="text-body-strong text-ink">{t("settingsPage.emailAlertsLabel")}</p>
                   <p className="text-small text-ink-muted mt-0.5">
-                    Gửi email khi sử dụng đạt ngưỡng 80% / 95% quota tháng,
-                    khi pipeline hoàn tất hoặc thất bại, và khi có hoạt động bảo mật quan trọng.
+                    {t("settingsPage.emailAlertsDesc")}
                   </p>
                 </div>
                 <button
@@ -169,7 +166,7 @@ export default function SettingsPage() {
                   }`}
                   role="switch"
                   aria-checked={effectiveNotify}
-                  aria-label="Bật/tắt cảnh báo email"
+                  aria-label={t("settingsPage.emailAlertsToggleAriaLabel")}
                 >
                   <span
                     className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${

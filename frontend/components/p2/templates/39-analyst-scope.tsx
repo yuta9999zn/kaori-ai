@@ -23,6 +23,7 @@ import {
   api, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type Scope = 'single' | 'multi' | 'cross';
 type Tier  = 'basic' | 'intermediate' | 'advanced';
 
@@ -32,18 +33,6 @@ interface ScopePolicy {
   allow_external_ai_in_cross: boolean;
 }
 
-const SCOPE_LABEL: Record<Scope, string> = {
-  single: 'Single pipeline',
-  multi:  'Multi pipeline',
-  cross:  'Cross workspace',
-};
-
-const TIER_LABEL: Record<Tier, string> = {
-  basic:        'Cơ bản',
-  intermediate: 'Trung cấp',
-  advanced:     'Nâng cao',
-};
-
 const SCOPE_ICON: Record<Scope, any> = {
   single: Layers,
   multi:  Network,
@@ -51,6 +40,17 @@ const SCOPE_ICON: Record<Scope, any> = {
 };
 
 export default function AnalystScopePage() {
+  const t = useT();
+  const SCOPE_LABEL: Record<Scope, string> = {
+    single: t('templates39AnalystScope.scopeSingle'),
+    multi:  t('templates39AnalystScope.scopeMulti'),
+    cross:  t('templates39AnalystScope.scopeCross'),
+  };
+  const TIER_LABEL: Record<Tier, string> = {
+    basic:        t('templates39AnalystScope.tierBasic'),
+    intermediate: t('templates39AnalystScope.tierIntermediate'),
+    advanced:     t('templates39AnalystScope.tierAdvanced'),
+  };
   const [policy,  setPolicy]  = useState<ScopePolicy | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving,  setSaving]  = useState(false);
@@ -79,7 +79,7 @@ export default function AnalystScopePage() {
         method: 'PATCH',
         body:   JSON.stringify(policy),
       });
-      setSuccess('Đã lưu policy phạm vi phân tích');
+      setSuccess(t('templates39AnalystScope.saveSuccess'));
     } catch (err: any) {
       setProblem(err);
     } finally {
@@ -95,14 +95,14 @@ export default function AnalystScopePage() {
   return (
     <>
       <PageHeader
-        title="Phạm vi phân tích"
-        description="Mặc định scope per-tier + guard cross-workspace. Chỉ MANAGER cập nhật được."
+        title={t('templates39AnalystScope.pageTitle')}
+        description={t('templates39AnalystScope.pageDesc')}
         actions={
           <>
             <Badge variant="info">Phase 2 · F-033</Badge>
             <Button variant="tertiary" onClick={() => (window.location.href = '/p2/analysis')}>
               <ChevronLeft className="w-4 h-4 mr-1" />
-              Hub
+              {t('templates39AnalystScope.hubBtn')}
             </Button>
           </>
         }
@@ -121,33 +121,33 @@ export default function AnalystScopePage() {
               <div className="px-5 py-4 border-b border-[var(--border-color)]/60">
                 <h3 className="font-serif text-base text-[var(--text-primary)] inline-flex items-center gap-2">
                   <Settings2 className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-                  Mặc định scope theo tier
+                  {t('templates39AnalystScope.tierScopeSectionTitle')}
                 </h3>
                 <p className="text-xs text-[var(--text-secondary)] mt-1">
-                  Khi user vào /p2/analysis/{'{tier}'}, scope sẽ tự khởi tạo theo cấu hình này.
+                  {t('templates39AnalystScope.tierScopeHint', { path: '/p2/analysis/{tier}' })}
                 </p>
               </div>
 
               <div className="divide-y divide-[var(--border-color)]/60">
-                {(Object.keys(TIER_LABEL) as Tier[]).map((t) => (
-                  <div key={t} className="px-5 py-4 flex items-center justify-between gap-3 flex-wrap">
+                {(Object.keys(TIER_LABEL) as Tier[]).map((tier) => (
+                  <div key={tier} className="px-5 py-4 flex items-center justify-between gap-3 flex-wrap">
                     <div>
-                      <p className="font-medium text-sm text-[var(--text-primary)]">{TIER_LABEL[t]}</p>
+                      <p className="font-medium text-sm text-[var(--text-primary)]">{TIER_LABEL[tier]}</p>
                       <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                        Hiện tại: <span className="font-medium text-[var(--text-primary)]">{SCOPE_LABEL[policy.default_scope_per_tier[t]]}</span>
+                        {t('templates39AnalystScope.currentLabel')} <span className="font-medium text-[var(--text-primary)]">{SCOPE_LABEL[policy.default_scope_per_tier[tier]]}</span>
                       </p>
                     </div>
                     <div className="flex items-center gap-1">
                       {(Object.keys(SCOPE_LABEL) as Scope[]).map((s) => {
                         const Icon = SCOPE_ICON[s];
-                        const isActive = policy.default_scope_per_tier[t] === s;
-                        const disabled = (t === 'basic' && s !== 'single');
+                        const isActive = policy.default_scope_per_tier[tier] === s;
+                        const disabled = (tier === 'basic' && s !== 'single');
                         return (
                           <button
                             key={s}
                             type="button"
                             disabled={disabled}
-                            onClick={() => setTierScope(t, s)}
+                            onClick={() => setTierScope(tier, s)}
                             className={cn(
                               'inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-sm-custom border transition-colors',
                               isActive
@@ -155,7 +155,7 @@ export default function AnalystScopePage() {
                                 : 'border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]',
                               disabled && 'opacity-40 cursor-not-allowed',
                             )}
-                            title={disabled ? 'Tier Basic chỉ chạy single-pipeline' : SCOPE_LABEL[s]}
+                            title={disabled ? t('templates39AnalystScope.basicLockedTitle') : SCOPE_LABEL[s]}
                           >
                             <Icon className="w-3.5 h-3.5" />
                             {SCOPE_LABEL[s]}
@@ -170,7 +170,7 @@ export default function AnalystScopePage() {
 
             {/* Guards */}
             <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm space-y-3">
-              <h3 className="font-serif text-base text-[var(--text-primary)]">Guard rails</h3>
+              <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates39AnalystScope.guardRailsTitle')}</h3>
 
               <div className="p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)]/40">
                 <Checkbox
@@ -178,11 +178,11 @@ export default function AnalystScopePage() {
                   onChange={() => setPolicy({ ...policy, require_manager_for_cross: !policy.require_manager_for_cross })}
                   label={
                     <span>
-                      <span className="font-medium text-[var(--text-primary)]">Yêu cầu MANAGER duyệt</span> mọi cross-workspace run
+                      <span className="font-medium text-[var(--text-primary)]">{t('templates39AnalystScope.requireManagerLabel')}</span> {t('templates39AnalystScope.requireManagerSuffix')}
                     </span>
                   }
                 />
-                <p className="text-xs text-[var(--text-secondary)] mt-1.5 ml-6">Khuyến nghị BẬT — chống chia sẻ dữ liệu trái phép giữa workspace.</p>
+                <p className="text-xs text-[var(--text-secondary)] mt-1.5 ml-6">{t('templates39AnalystScope.requireManagerHint')}</p>
               </div>
 
               <div className="p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)]/40">
@@ -191,11 +191,11 @@ export default function AnalystScopePage() {
                   onChange={() => setPolicy({ ...policy, allow_external_ai_in_cross: !policy.allow_external_ai_in_cross })}
                   label={
                     <span>
-                      <span className="font-medium text-[var(--text-primary)]">Cho phép AI bên ngoài</span> trong cross-workspace run (sau PII mask)
+                      <span className="font-medium text-[var(--text-primary)]">{t('templates39AnalystScope.allowExternalAiLabel')}</span> {t('templates39AnalystScope.allowExternalAiSuffix')}
                     </span>
                   }
                 />
-                <p className="text-xs text-[var(--text-secondary)] mt-1.5 ml-6">Tắt để khoá Qwen nội bộ duy nhất — phù hợp khi có workspace ở chế độ strict.</p>
+                <p className="text-xs text-[var(--text-secondary)] mt-1.5 ml-6">{t('templates39AnalystScope.allowExternalAiHint')}</p>
               </div>
             </div>
 
@@ -203,15 +203,15 @@ export default function AnalystScopePage() {
             <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
               <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
               <p>
-                <span className="font-medium text-[var(--text-primary)]">Tier Basic</span> luôn locked = single-pipeline (không thay đổi được).
-                <span className="font-medium text-[var(--text-primary)]"> Tier Nâng cao</span> mặc định include cross-workspace nhưng tôn trọng RLS.
+                <span className="font-medium text-[var(--text-primary)]">{t('templates39AnalystScope.footerTierBasicLabel')}</span> {t('templates39AnalystScope.footerTierBasicText')}
+                <span className="font-medium text-[var(--text-primary)]"> {t('templates39AnalystScope.footerTierAdvancedLabel')}</span> {t('templates39AnalystScope.footerTierAdvancedText')}
               </p>
             </div>
 
             <div className="flex justify-end">
               <Button onClick={save} isLoading={saving}>
                 <Save className="w-4 h-4 mr-2" />
-                Lưu policy
+                {t('templates39AnalystScope.saveBtn')}
               </Button>
             </div>
           </>

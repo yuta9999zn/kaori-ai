@@ -26,6 +26,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Block schema
 // ============================================================================
@@ -39,13 +40,16 @@ interface BlockMeta {
   description: string;
 }
 
+// NOTE: label/description below store i18n KEYS (not display text) because this
+// array lives at module scope, outside any component — the `useT()` hook can't
+// run here. Call sites (Palette / Outline / Inspector) resolve them via `t(...)`.
 const BLOCK_PALETTE: BlockMeta[] = [
-  { kind: 'heading',     label: 'Tiêu đề',         icon: Heading1, description: 'Mục/section heading.' },
-  { kind: 'text',        label: 'Văn bản',          icon: AlignLeft, description: 'Đoạn văn / markdown.' },
-  { kind: 'chart',       label: 'Biểu đồ',          icon: BarChart3, description: 'Bar / Line / Pie / Scatter (chart-registry).' },
-  { kind: 'table',       label: 'Bảng',             icon: Table2,   description: 'Bảng số liệu Gold dataset.' },
-  { kind: 'kpi',         label: 'KPI',              icon: Gauge,    description: 'Single-number tile + delta.' },
-  { kind: 'insight_ref', label: 'Insight đã có',    icon: Lightbulb, description: 'Tham chiếu Insight đã sinh trước.' },
+  { kind: 'heading',     label: 'templates49ReportBuilder.blockHeadingLabel',    icon: Heading1,  description: 'templates49ReportBuilder.blockHeadingDesc' },
+  { kind: 'text',        label: 'templates49ReportBuilder.blockTextLabel',       icon: AlignLeft, description: 'templates49ReportBuilder.blockTextDesc' },
+  { kind: 'chart',       label: 'templates49ReportBuilder.blockChartLabel',      icon: BarChart3, description: 'templates49ReportBuilder.blockChartDesc' },
+  { kind: 'table',       label: 'templates49ReportBuilder.blockTableLabel',      icon: Table2,    description: 'templates49ReportBuilder.blockTableDesc' },
+  { kind: 'kpi',         label: 'templates49ReportBuilder.blockKpiLabel',        icon: Gauge,     description: 'templates49ReportBuilder.blockKpiDesc' },
+  { kind: 'insight_ref', label: 'templates49ReportBuilder.blockInsightRefLabel', icon: Lightbulb, description: 'templates49ReportBuilder.blockInsightRefDesc' },
 ];
 
 interface ReportBlock {
@@ -61,16 +65,18 @@ interface ReportBlock {
 }
 
 let _seq = 0;
-function newBlock(kind: BlockKind): ReportBlock {
+// `t` is threaded in from the calling component — this factory lives at module
+// scope so it cannot call the `useT()` hook itself.
+function newBlock(kind: BlockKind, t: (key: string, params?: Record<string, any>) => string): ReportBlock {
   _seq += 1;
   const id = `blk_${Date.now()}_${_seq}`;
   switch (kind) {
-    case 'heading':     return { id, kind, title: 'Tiêu đề mục mới' };
-    case 'text':        return { id, kind, body: 'Nhập nội dung tại đây. Hỗ trợ markdown nhẹ (bold, italic, link).' };
-    case 'chart':       return { id, kind, title: 'Biểu đồ', chart_kind: 'bar', dataset_id: 'monthly_revenue_gold' };
-    case 'table':       return { id, kind, title: 'Bảng dữ liệu', dataset_id: 'monthly_revenue_gold' };
-    case 'kpi':         return { id, kind, title: 'Doanh thu tháng', metric: '1.245.300.000₫', delta_pct: 12 };
-    case 'insight_ref': return { id, kind, insight_id: 'ins_42', title: 'Churn vùng APAC tăng 12%' };
+    case 'heading':     return { id, kind, title: t('templates49ReportBuilder.defaultHeadingTitle') };
+    case 'text':        return { id, kind, body: t('templates49ReportBuilder.defaultTextBody') };
+    case 'chart':       return { id, kind, title: t('templates49ReportBuilder.defaultChartTitle'), chart_kind: 'bar', dataset_id: 'monthly_revenue_gold' };
+    case 'table':       return { id, kind, title: t('templates49ReportBuilder.defaultTableTitle'), dataset_id: 'monthly_revenue_gold' };
+    case 'kpi':         return { id, kind, title: t('templates49ReportBuilder.defaultKpiTitle'), metric: '1.245.300.000₫', delta_pct: 12 };
+    case 'insight_ref': return { id, kind, insight_id: 'ins_42', title: t('templates49ReportBuilder.defaultInsightRefTitle') };
   }
 }
 
@@ -79,12 +85,13 @@ function newBlock(kind: BlockKind): ReportBlock {
 // ============================================================================
 
 export default function ReportBuilderPage() {
-  const [name, setName] = useState('Báo cáo doanh thu Q1 2026');
+  const t = useT();
+  const [name, setName] = useState(t('templates49ReportBuilder.defaultReportName'));
   const [blocks, setBlocks] = useState<ReportBlock[]>([
-    newBlock('heading'),
-    newBlock('kpi'),
-    newBlock('chart'),
-    newBlock('text'),
+    newBlock('heading', t),
+    newBlock('kpi', t),
+    newBlock('chart', t),
+    newBlock('text', t),
   ]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -97,7 +104,7 @@ export default function ReportBuilderPage() {
   );
 
   function addBlock(kind: BlockKind) {
-    const blk = newBlock(kind);
+    const blk = newBlock(kind, t);
     setBlocks((prev) => [...prev, blk]);
     setSelectedId(blk.id);
   }
@@ -133,8 +140,8 @@ export default function ReportBuilderPage() {
         body: JSON.stringify({ name, blocks }),
       });
       setSuccess(asTemplate
-        ? 'Đã lưu thành mẫu báo cáo dùng chung cho workspace.'
-        : 'Đã lưu báo cáo. Mở từ danh sách để chia sẻ hoặc lên lịch.',
+        ? t('templates49ReportBuilder.saveTemplateSuccess')
+        : t('templates49ReportBuilder.saveReportSuccess'),
       );
     } catch (e: any) {
       setProblem(e);
@@ -146,13 +153,13 @@ export default function ReportBuilderPage() {
   return (
     <>
       <PageHeader
-        title="Tạo báo cáo"
-        description="Kéo block vào canvas, chỉnh tiêu đề + nội dung, xem preview ngay bên phải."
+        title={t('templates49ReportBuilder.pageTitle')}
+        description={t('templates49ReportBuilder.pageDescription')}
         actions={
           <>
             <Badge variant="info">Phase 2 · F-038</Badge>
             <a href="/p2/reports">
-              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> Huỷ</Button>
+              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> {t('templates49ReportBuilder.cancel')}</Button>
             </a>
             <Button
               variant="secondary"
@@ -161,7 +168,7 @@ export default function ReportBuilderPage() {
               disabled={submitting || blocks.length === 0}
               isLoading={submitting}
             >
-              <BookMarked className="w-4 h-4 mr-2" /> Lưu thành mẫu
+              <BookMarked className="w-4 h-4 mr-2" /> {t('templates49ReportBuilder.saveAsTemplate')}
             </Button>
             <Button
               variant="primary"
@@ -170,7 +177,7 @@ export default function ReportBuilderPage() {
               disabled={submitting || blocks.length === 0}
               isLoading={submitting}
             >
-              <Save className="w-4 h-4 mr-2" /> Lưu báo cáo
+              <Save className="w-4 h-4 mr-2" /> {t('templates49ReportBuilder.saveReport')}
             </Button>
           </>
         }
@@ -181,10 +188,10 @@ export default function ReportBuilderPage() {
         {success && <SuccessBanner message={success} />}
 
         <Input
-          label="Tên báo cáo"
+          label={t('templates49ReportBuilder.reportNameLabel')}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Tên hiển thị cho báo cáo này"
+          placeholder={t('templates49ReportBuilder.reportNamePlaceholder')}
         />
 
         <div className="grid grid-cols-1 xl:grid-cols-[280px_1fr_320px] gap-4 min-h-[600px]">
@@ -211,8 +218,7 @@ export default function ReportBuilderPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Block "Insight đã có" chỉ tham chiếu (insight_id) — không nhân bản nội dung.
-            Khi insight gốc đổi, báo cáo render lại tự động (K-6 audit log mỗi lần render).
+            {t('templates49ReportBuilder.insightRefNote')}
           </p>
         </div>
       </div>
@@ -225,11 +231,12 @@ export default function ReportBuilderPage() {
 // ============================================================================
 
 function Palette({ onAdd }: { onAdd: (kind: BlockKind) => void }) {
+  const t = useT();
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-4 shadow-soft-sm">
       <div className="flex items-center gap-2 mb-3">
         <Plus className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-        <h3 className="font-serif text-sm text-[var(--text-primary)]">Thêm block</h3>
+        <h3 className="font-serif text-sm text-[var(--text-primary)]">{t('templates49ReportBuilder.addBlockHeading')}</h3>
       </div>
       <div className="space-y-1.5">
         {BLOCK_PALETTE.map((b) => {
@@ -242,8 +249,8 @@ function Palette({ onAdd }: { onAdd: (kind: BlockKind) => void }) {
             >
               <Icon className="w-4 h-4 text-[var(--primary-gold-dark)] mt-0.5 shrink-0" />
               <div className="min-w-0">
-                <p className="text-sm font-medium text-[var(--text-primary)]">{b.label}</p>
-                <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-snug">{b.description}</p>
+                <p className="text-sm font-medium text-[var(--text-primary)]">{t(b.label)}</p>
+                <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-snug">{t(b.description)}</p>
               </div>
             </button>
           );
@@ -267,15 +274,16 @@ function Outline({
   onMoveDown: (id: string) => void;
   onDelete:   (id: string) => void;
 }) {
+  const t = useT();
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-4 shadow-soft-sm">
       <div className="flex items-center gap-2 mb-3">
         <GripVertical className="w-4 h-4 text-[var(--text-secondary)]" />
-        <h3 className="font-serif text-sm text-[var(--text-primary)]">Cấu trúc</h3>
-        <Badge variant="default">{blocks.length} block</Badge>
+        <h3 className="font-serif text-sm text-[var(--text-primary)]">{t('templates49ReportBuilder.outlineHeading')}</h3>
+        <Badge variant="default">{t('templates49ReportBuilder.blockCount', { count: blocks.length })}</Badge>
       </div>
       {blocks.length === 0 ? (
-        <p className="text-xs text-[var(--text-secondary)] py-3 text-center">Báo cáo trống. Thêm block ở trên.</p>
+        <p className="text-xs text-[var(--text-secondary)] py-3 text-center">{t('templates49ReportBuilder.outlineEmpty')}</p>
       ) : (
         <ul className="space-y-1">
           {blocks.map((b, i) => {
@@ -294,16 +302,16 @@ function Outline({
               >
                 <button onClick={() => onSelect(b.id)} className="flex-1 flex items-center gap-2 min-w-0 text-left">
                   <Icon className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] shrink-0" />
-                  <span className="text-xs text-[var(--text-primary)] truncate">{b.title || meta.label}</span>
+                  <span className="text-xs text-[var(--text-primary)] truncate">{b.title || t(meta.label)}</span>
                 </button>
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
-                  <button onClick={() => onMoveUp(b.id)} disabled={i === 0} title="Lên" className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:opacity-30">
+                  <button onClick={() => onMoveUp(b.id)} disabled={i === 0} title={t('templates49ReportBuilder.moveUp')} className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:opacity-30">
                     <ArrowUp className="w-3 h-3" />
                   </button>
-                  <button onClick={() => onMoveDown(b.id)} disabled={i === blocks.length - 1} title="Xuống" className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:opacity-30">
+                  <button onClick={() => onMoveDown(b.id)} disabled={i === blocks.length - 1} title={t('templates49ReportBuilder.moveDown')} className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:opacity-30">
                     <ArrowDown className="w-3 h-3" />
                   </button>
-                  <button onClick={() => onDelete(b.id)} title="Xoá" className="p-1 text-[var(--text-secondary)] hover:text-[var(--state-error)]">
+                  <button onClick={() => onDelete(b.id)} title={t('templates49ReportBuilder.deleteBlock')} className="p-1 text-[var(--text-secondary)] hover:text-[var(--state-error)]">
                     <Trash2 className="w-3 h-3" />
                   </button>
                 </div>
@@ -323,22 +331,23 @@ function Outline({
 function Preview({
   blocks, selectedId, onSelect,
 }: { blocks: ReportBlock[]; selectedId: string | null; onSelect: (id: string) => void }) {
+  const t = useT();
   return (
     <div className="bg-white border border-[var(--border-color)] rounded-lg-custom shadow-soft-sm overflow-hidden">
       <div className="border-b border-[var(--border-color)] px-4 py-2 flex items-center justify-between bg-[var(--bg-app)]">
         <div className="flex items-center gap-2">
           <Eye className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-          <span className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Preview</span>
+          <span className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">{t('templates49ReportBuilder.previewLabel')}</span>
         </div>
         <span className="text-[11px] text-[var(--text-secondary)] flex items-center gap-1">
-          <FileBadge className="w-3 h-3" /> A4 portrait
+          <FileBadge className="w-3 h-3" /> {t('templates49ReportBuilder.a4Portrait')}
         </span>
       </div>
       <div className="p-8 lg:p-10 space-y-5 min-h-[500px]">
         {blocks.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <Sparkles className="w-12 h-12 text-[var(--text-secondary)]/30 mb-3" />
-            <p className="text-sm text-[var(--text-secondary)]">Báo cáo trống — thêm block ở cột trái để bắt đầu.</p>
+            <p className="text-sm text-[var(--text-secondary)]">{t('templates49ReportBuilder.previewEmpty')}</p>
           </div>
         ) : (
           blocks.map((b) => (
@@ -358,6 +367,7 @@ function Preview({
 function BlockRenderer({
   block: b, active, onClick,
 }: { block: ReportBlock; active: boolean; onClick: () => void }) {
+  const t = useT();
   return (
     <div
       onClick={onClick}
@@ -389,7 +399,7 @@ function BlockRenderer({
           <div className="rounded-md-custom border border-[var(--border-color)] overflow-hidden text-xs">
             <table className="w-full">
               <thead className="bg-[var(--bg-app)] text-[var(--text-secondary)]">
-                <tr><th className="px-3 py-2 text-left">Cột A</th><th className="px-3 py-2 text-left">Cột B</th><th className="px-3 py-2 text-right">Số liệu</th></tr>
+                <tr><th className="px-3 py-2 text-left">{t('templates49ReportBuilder.tableColA')}</th><th className="px-3 py-2 text-left">{t('templates49ReportBuilder.tableColB')}</th><th className="px-3 py-2 text-right">{t('templates49ReportBuilder.tableColMetric')}</th></tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-color)]/60">
                 <tr><td className="px-3 py-2">Hà Nội</td><td className="px-3 py-2">Q1</td><td className="px-3 py-2 text-right font-mono">812.500.000₫</td></tr>
@@ -398,7 +408,7 @@ function BlockRenderer({
               </tbody>
             </table>
           </div>
-          <p className="text-[11px] text-[var(--text-secondary)] mt-2">Dataset: <span className="font-mono">{b.dataset_id}</span></p>
+          <p className="text-[11px] text-[var(--text-secondary)] mt-2">{t('templates49ReportBuilder.datasetPrefix')} <span className="font-mono">{b.dataset_id}</span></p>
         </div>
       )}
       {b.kind === 'kpi' && (
@@ -407,7 +417,7 @@ function BlockRenderer({
           <p className="font-serif text-3xl text-[var(--text-primary)] mt-1">{b.metric}</p>
           {b.delta_pct != null && (
             <p className={cn('text-xs mt-1', b.delta_pct >= 0 ? 'text-[var(--state-success)]' : 'text-[var(--state-error)]')}>
-              {b.delta_pct >= 0 ? '▲' : '▼'} {Math.abs(b.delta_pct)}% so kỳ trước
+              {b.delta_pct >= 0 ? '▲' : '▼'} {Math.abs(b.delta_pct)}% {t('templates49ReportBuilder.deltaVsPrev')}
             </p>
           )}
         </div>
@@ -417,7 +427,7 @@ function BlockRenderer({
           <Lightbulb className="w-5 h-5 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <div className="min-w-0">
             <p className="text-sm font-medium text-[var(--text-primary)]">{b.title}</p>
-            <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">Insight ID: <span className="font-mono">{b.insight_id}</span></p>
+            <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{t('templates49ReportBuilder.insightIdPrefix')} <span className="font-mono">{b.insight_id}</span></p>
           </div>
         </div>
       )}
@@ -432,12 +442,13 @@ function BlockRenderer({
 function Inspector({
   block, onChange,
 }: { block: ReportBlock | null; onChange: (patch: Partial<ReportBlock>) => void }) {
+  const t = useT();
   if (!block) {
     return (
       <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-5 shadow-soft-sm">
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <GripVertical className="w-10 h-10 text-[var(--text-secondary)]/30 mb-2" />
-          <p className="text-sm text-[var(--text-secondary)]">Chọn 1 block để chỉnh sửa thuộc tính.</p>
+          <p className="text-sm text-[var(--text-secondary)]">{t('templates49ReportBuilder.selectBlockPrompt')}</p>
         </div>
       </div>
     );
@@ -450,12 +461,12 @@ function Inspector({
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-5 shadow-soft-sm space-y-4">
       <div className="flex items-center gap-2 pb-3 border-b border-[var(--border-color)]/60">
         <Icon className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-        <h3 className="font-serif text-sm text-[var(--text-primary)]">{meta.label}</h3>
+        <h3 className="font-serif text-sm text-[var(--text-primary)]">{t(meta.label)}</h3>
       </div>
 
       {(block.kind === 'heading' || block.kind === 'chart' || block.kind === 'table' || block.kind === 'kpi' || block.kind === 'insight_ref') && (
         <Input
-          label="Tiêu đề"
+          label={t('templates49ReportBuilder.titleLabel')}
           value={block.title ?? ''}
           onChange={(e) => onChange({ title: e.target.value })}
         />
@@ -463,7 +474,7 @@ function Inspector({
 
       {block.kind === 'text' && (
         <div className="space-y-2">
-          <label className="text-sm font-medium text-[var(--text-primary)]">Nội dung</label>
+          <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates49ReportBuilder.contentLabel')}</label>
           <textarea
             value={block.body ?? ''}
             onChange={(e) => onChange({ body: e.target.value })}
@@ -476,30 +487,30 @@ function Inspector({
       {block.kind === 'chart' && (
         <>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-[var(--text-primary)]">Loại biểu đồ</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates49ReportBuilder.chartTypeLabel')}</label>
             <select
               value={block.chart_kind ?? 'bar'}
               onChange={(e) => onChange({ chart_kind: e.target.value })}
               className="w-full h-10 px-3 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)]"
             >
-              <option value="bar">Bar (cột)</option>
-              <option value="line">Line (đường)</option>
-              <option value="pie">Pie (tròn)</option>
-              <option value="scatter">Scatter (phân tán)</option>
+              <option value="bar">{t('templates49ReportBuilder.chartBar')}</option>
+              <option value="line">{t('templates49ReportBuilder.chartLine')}</option>
+              <option value="pie">{t('templates49ReportBuilder.chartPie')}</option>
+              <option value="scatter">{t('templates49ReportBuilder.chartScatter')}</option>
             </select>
           </div>
           <Input
-            label="Dataset Gold"
+            label={t('templates49ReportBuilder.datasetGoldLabel')}
             value={block.dataset_id ?? ''}
             onChange={(e) => onChange({ dataset_id: e.target.value })}
-            placeholder="VD: monthly_revenue_gold"
+            placeholder={t('templates49ReportBuilder.datasetGoldPlaceholder')}
           />
         </>
       )}
 
       {block.kind === 'table' && (
         <Input
-          label="Dataset Gold"
+          label={t('templates49ReportBuilder.datasetGoldLabel')}
           value={block.dataset_id ?? ''}
           onChange={(e) => onChange({ dataset_id: e.target.value })}
         />
@@ -508,13 +519,13 @@ function Inspector({
       {block.kind === 'kpi' && (
         <>
           <Input
-            label="Giá trị"
+            label={t('templates49ReportBuilder.valueLabel')}
             value={block.metric ?? ''}
             onChange={(e) => onChange({ metric: e.target.value })}
-            placeholder="VD: 1.245.300.000₫"
+            placeholder={t('templates49ReportBuilder.valuePlaceholder')}
           />
           <Input
-            label="Delta % so kỳ trước"
+            label={t('templates49ReportBuilder.deltaPctLabel')}
             type="number"
             value={block.delta_pct ?? 0}
             onChange={(e) => onChange({ delta_pct: Number(e.target.value) })}
@@ -524,11 +535,11 @@ function Inspector({
 
       {block.kind === 'insight_ref' && (
         <Input
-          label="Insight ID"
+          label={t('templates49ReportBuilder.insightIdLabel')}
           value={block.insight_id ?? ''}
           onChange={(e) => onChange({ insight_id: e.target.value })}
-          placeholder="VD: ins_42"
-          helperText="Tham chiếu insight đã tạo ở /p2/insights."
+          placeholder={t('templates49ReportBuilder.insightIdPlaceholder')}
+          helperText={t('templates49ReportBuilder.insightIdHelper')}
         />
       )}
     </div>

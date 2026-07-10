@@ -1,0 +1,247 @@
+{
+  "templatesFnew3v1Bronze.title": {
+    "vi": "Bronze — dữ liệu thô",
+    "en": "Bronze — raw data",
+    "ja": "Bronze — 生データ",
+    "ko": "Bronze — 원시 데이터",
+    "zh": "Bronze — 原始数据"
+  },
+  "templatesFnew3v1Bronze.description": {
+    "vi": "Append-only · Parquet/CSV/XLSX · K-2 không sửa, không xoá.",
+    "en": "Append-only · Parquet/CSV/XLSX · K-2 no edit, no delete.",
+    "ja": "追記専用 · Parquet/CSV/XLSX · K-2 編集不可・削除不可。",
+    "ko": "추가 전용 · Parquet/CSV/XLSX · K-2 수정 불가, 삭제 불가.",
+    "zh": "仅追加 · Parquet/CSV/XLSX · K-2 不可修改、不可删除。"
+  },
+  "templatesFnew3v1Bronze.backToExplore": {
+    "vi": "Khám phá",
+    "en": "Explore",
+    "ja": "探索",
+    "ko": "탐색",
+    "zh": "探索"
+  },
+  "templatesFnew3v1Bronze.colSourceFile": {
+    "vi": "File nguồn · sheet",
+    "en": "Source file · sheet",
+    "ja": "元ファイル · シート",
+    "ko": "원본 파일 · 시트",
+    "zh": "源文件 · sheet"
+  },
+  "templatesFnew3v1Bronze.colFormat": {
+    "vi": "Định dạng",
+    "en": "Format",
+    "ja": "形式",
+    "ko": "형식",
+    "zh": "格式"
+  },
+  "templatesFnew3v1Bronze.colRows": {
+    "vi": "Hàng",
+    "en": "Rows",
+    "ja": "行数",
+    "ko": "행",
+    "zh": "行数"
+  },
+  "templatesFnew3v1Bronze.colCols": {
+    "vi": "Cột",
+    "en": "Columns",
+    "ja": "列数",
+    "ko": "열",
+    "zh": "列数"
+  },
+  "templatesFnew3v1Bronze.colStatus": {
+    "vi": "Trạng thái pipeline",
+    "en": "Pipeline status",
+    "ja": "パイプライン状態",
+    "ko": "파이프라인 상태",
+    "zh": "管道状态"
+  },
+  "templatesFnew3v1Bronze.colIngestedAt": {
+    "vi": "Ingest lúc",
+    "en": "Ingested at",
+    "ja": "取込日時",
+    "ko": "수집 시각",
+    "zh": "摄取时间"
+  },
+  "templatesFnew3v1Bronze.colViewSample": {
+    "vi": "Xem mẫu",
+    "en": "View sample",
+    "ja": "サンプルを見る",
+    "ko": "샘플 보기",
+    "zh": "查看样本"
+  },
+  "templatesFnew3v1Bronze.loadingFiles": {
+    "vi": "Đang tải...",
+    "en": "Loading...",
+    "ja": "読み込み中...",
+    "ko": "불러오는 중...",
+    "zh": "加载中..."
+  },
+  "templatesFnew3v1Bronze.emptyStatePrefix": {
+    "vi": "Chưa có file Bronze nào — tải file đầu tiên qua",
+    "en": "No Bronze files yet — upload your first one via",
+    "ja": "Bronze ファイルはまだありません — 以下から最初のファイルをアップロードしてください",
+    "ko": "아직 Bronze 파일이 없습니다 — 아래에서 첫 파일을 업로드하세요",
+    "zh": "还没有 Bronze 文件 — 通过以下方式上传第一个文件"
+  },
+  "templatesFnew3v1Bronze.linkPipelineUpload": {
+    "vi": "Pipeline → Upload",
+    "en": "Pipeline → Upload",
+    "ja": "データパイプライン → アップロード",
+    "ko": "데이터 파이프라인 → 업로드",
+    "zh": "数据管道 → 上传"
+  },
+  "templatesFnew3v1Bronze.pagePrev": {
+    "vi": "Trang trước",
+    "en": "Previous page",
+    "ja": "前のページ",
+    "ko": "이전 페이지",
+    "zh": "上一页"
+  },
+  "templatesFnew3v1Bronze.pageIndicator": {
+    "vi": "Trang {page}",
+    "en": "Page {page}",
+    "ja": "ページ {page}",
+    "ko": "{page} 페이지",
+    "zh": "第 {page} 页"
+  },
+  "templatesFnew3v1Bronze.pageNext": {
+    "vi": "Trang sau",
+    "en": "Next page",
+    "ja": "次のページ",
+    "ko": "다음 페이지",
+    "zh": "下一页"
+  },
+  "templatesFnew3v1Bronze.footerNotePrefix": {
+    "vi": "K-2 — Bronze append-only: trang này chỉ đọc. Để chỉnh sửa hoặc làm sạch dữ liệu, dùng",
+    "en": "K-2 — Bronze is append-only: this page is read-only. To edit or clean data, use",
+    "ja": "K-2 — Bronze は追記専用です。このページは読み取り専用です。データの編集やクレンジングには次を使用してください：",
+    "ko": "K-2 — Bronze는 추가 전용입니다. 이 페이지는 읽기 전용입니다. 데이터를 수정하거나 정제하려면 다음을 사용하세요:",
+    "zh": "K-2 — Bronze 仅追加：此页面为只读。如需编辑或清洗数据,请使用"
+  },
+  "templatesFnew3v1Bronze.linkPipeline": {
+    "vi": "Pipeline",
+    "en": "Pipeline",
+    "ja": "データパイプライン",
+    "ko": "데이터 파이프라인",
+    "zh": "数据管道"
+  },
+  "templatesFnew3v1Bronze.footerNoteSuffix": {
+    "vi": "Mẫu sample tối đa 50 dòng/file (BE giới hạn 200, đủ để hình dung shape mà không nặng request).",
+    "en": "Sample preview shows up to 50 rows/file (backend limit 200 — enough to see the shape without a heavy request).",
+    "ja": "サンプルプレビューは最大50行/ファイル(バックエンド上限200 — リクエストを重くせず形を把握するのに十分)。",
+    "ko": "샘플 미리보기는 파일당 최대 50행(백엔드 한도 200 — 요청 부담 없이 구조를 파악하기에 충분).",
+    "zh": "样本预览每个文件最多显示 50 行(后端上限 200,足以了解数据形态而不加重请求)。"
+  },
+  "templatesFnew3v1Bronze.statusUploading": {
+    "vi": "Đang tải lên",
+    "en": "Uploading",
+    "ja": "アップロード中",
+    "ko": "업로드 중",
+    "zh": "上传中"
+  },
+  "templatesFnew3v1Bronze.statusBronzeComplete": {
+    "vi": "Đã ingest",
+    "en": "Ingested",
+    "ja": "取込完了",
+    "ko": "수집 완료",
+    "zh": "已摄取"
+  },
+  "templatesFnew3v1Bronze.statusSchemaReview": {
+    "vi": "Xác nhận schema",
+    "en": "Schema review",
+    "ja": "スキーマ確認",
+    "ko": "스키마 확인",
+    "zh": "确认结构"
+  },
+  "templatesFnew3v1Bronze.statusSilverComplete": {
+    "vi": "Đã làm sạch",
+    "en": "Cleaned",
+    "ja": "クレンジング完了",
+    "ko": "정제 완료",
+    "zh": "已清洗"
+  },
+  "templatesFnew3v1Bronze.statusAnalyzing": {
+    "vi": "Đang phân tích",
+    "en": "Analyzing",
+    "ja": "分析中",
+    "ko": "분석 중",
+    "zh": "分析中"
+  },
+  "templatesFnew3v1Bronze.statusAnalysisComplete": {
+    "vi": "Hoàn thành",
+    "en": "Complete",
+    "ja": "完了",
+    "ko": "완료",
+    "zh": "已完成"
+  },
+  "templatesFnew3v1Bronze.statusFailed": {
+    "vi": "Thất bại",
+    "en": "Failed",
+    "ja": "失敗",
+    "ko": "실패",
+    "zh": "失败"
+  },
+  "templatesFnew3v1Bronze.statusCancelled": {
+    "vi": "Đã huỷ",
+    "en": "Cancelled",
+    "ja": "キャンセル済み",
+    "ko": "취소됨",
+    "zh": "已取消"
+  },
+  "templatesFnew3v1Bronze.lineageTooltip": {
+    "vi": "Truy theo file qua các lớp",
+    "en": "Trace file across layers",
+    "ja": "レイヤー間でファイルを追跡",
+    "ko": "레이어 전반에서 파일 추적",
+    "zh": "跨层追溯文件"
+  },
+  "templatesFnew3v1Bronze.viewButton": {
+    "vi": "Xem",
+    "en": "View",
+    "ja": "表示",
+    "ko": "보기",
+    "zh": "查看"
+  },
+  "templatesFnew3v1Bronze.csvSampleButton": {
+    "vi": "CSV mẫu",
+    "en": "Sample CSV",
+    "ja": "サンプル CSV",
+    "ko": "샘플 CSV",
+    "zh": "样本 CSV"
+  },
+  "templatesFnew3v1Bronze.closeModal": {
+    "vi": "Đóng",
+    "en": "Close",
+    "ja": "閉じる",
+    "ko": "닫기",
+    "zh": "关闭"
+  },
+  "templatesFnew3v1Bronze.loadingSample": {
+    "vi": "Đang tải mẫu dữ liệu...",
+    "en": "Loading data sample...",
+    "ja": "データサンプルを読み込み中...",
+    "ko": "데이터 샘플 불러오는 중...",
+    "zh": "正在加载数据样本..."
+  },
+  "templatesFnew3v1Bronze.rowsColsSummary": {
+    "vi": "{rows} hàng × {cols} cột",
+    "en": "{rows} rows × {cols} columns",
+    "ja": "{rows} 行 × {cols} 列",
+    "ko": "{rows} 행 × {cols} 열",
+    "zh": "{rows} 行 × {cols} 列"
+  },
+  "templatesFnew3v1Bronze.sampleFooter": {
+    "vi": "Hiển thị {shown}/{total} dòng (giới hạn {limit}). Tải xuống mẫu để mở trong Excel.",
+    "en": "Showing {shown}/{total} rows (limit {limit}). Download the sample to open in Excel.",
+    "ja": "{shown}/{total} 行を表示中(上限 {limit})。サンプルをダウンロードして Excel で開けます。",
+    "ko": "{shown}/{total} 행 표시 중(한도 {limit}). 샘플을 다운로드하여 Excel에서 열 수 있습니다.",
+    "zh": "显示 {shown}/{total} 行(上限 {limit})。下载样本可在 Excel 中打开。"
+  },
+  "templatesFnew3v1Bronze.noRowsMessage": {
+    "vi": "File không có dòng nào (có thể ingest đã fail). Kiểm tra trang pipeline.",
+    "en": "This file has no rows (ingestion may have failed). Check the pipeline page.",
+    "ja": "このファイルには行がありません(取込が失敗した可能性があります)。パイプラインページを確認してください。",
+    "ko": "이 파일에는 행이 없습니다(수집이 실패했을 수 있음). 파이프라인 페이지를 확인하세요.",
+    "zh": "此文件没有任何行(摄取可能已失败)。请检查管道页面。"
+  }
+}

@@ -26,10 +26,12 @@ import { authApi } from '@/lib/api/client';
 import { useAuth, type Role } from '@/lib/auth-store';
 import { Button } from '@/components/platform/foundation';
 import { AuthBrandPanel, MobileLogo } from '../../../(auth)/_components/BrandPanel';
+import { useT } from '@/lib/i18n/provider';
 
 const TOTP_STEP_SECONDS = 30;
 
 export default function PlatformMfaVerifyPage() {
+  const t = useT();
   const router  = useRouter();
   const setAuth = useAuth((s) => s.setAuth);
 
@@ -120,7 +122,7 @@ export default function PlatformMfaVerifyPage() {
         router.replace('/platform/login?mfa_expired=1');
         return;
       }
-      setError('Mã xác thực không đúng. Vui lòng thử lại.');
+      setError(t('mfaPage.errInvalidCode'));
       setShake(true);
       setCode(Array(6).fill(''));
       setTimeout(() => setShake(false), 500);
@@ -183,9 +185,9 @@ export default function PlatformMfaVerifyPage() {
   return (
     <div className="min-h-screen w-full flex bg-canvas overflow-hidden selection:bg-[var(--primary-gold)]/30">
       <AuthBrandPanel
-        headline="Một bước nữa,"
-        italicTail="xác minh danh tính."
-        subhead="Tài khoản này đã bật MFA. Mở ứng dụng xác thực (Google Authenticator / 1Password) và nhập mã 6 chữ số đang hiển thị."
+        headline={t('mfaPage.headline')}
+        italicTail={t('mfaPage.italicTail')}
+        subhead={t('mfaPage.subhead')}
       />
 
       <div className="relative flex w-full lg:w-1/2 flex-col items-center justify-center p-6 sm:p-12">
@@ -201,13 +203,13 @@ export default function PlatformMfaVerifyPage() {
               <ShieldCheck className="w-6 h-6 text-[var(--primary-gold-dark)]" />
             </div>
             <h2 className="font-serif text-3xl font-semibold tracking-tight text-[var(--text-primary)]">
-              Xác minh danh tính
+              {t('mfaPage.title')}
             </h2>
             <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-              Nhập mã 6 chữ số từ ứng dụng xác thực
+              {t('mfaPage.enterCodeIntro')}
               {maskedEmail && (
                 <>
-                  {' '}cho{' '}
+                  {' '}{t('mfaPage.forLabel')}{' '}
                   <span className="font-medium text-[var(--text-primary)]">{maskedEmail}</span>
                 </>
               )}
@@ -233,7 +235,7 @@ export default function PlatformMfaVerifyPage() {
                   onKeyDown={(e) => handleKeyDown(e, index)}
                   onPaste={handlePaste}
                   disabled={loading}
-                  aria-label={`Chữ số thứ ${index + 1}`}
+                  aria-label={t('mfaPage.digitAriaLabel', { n: index + 1 })}
                   className={`w-12 h-14 sm:w-14 sm:h-16 text-center text-2xl font-medium rounded-md-custom border bg-white transition-all duration-200 outline-none tabular-nums focus:scale-105 focus:-translate-y-1 focus:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed ${
                     error
                       ? 'border-[var(--state-error)]/40 text-[#9B5050] bg-[var(--state-error)]/8 focus:border-[var(--state-error)] focus:ring-2 focus:ring-[var(--state-error)]/20'
@@ -248,17 +250,17 @@ export default function PlatformMfaVerifyPage() {
                 <span className="text-[#9B5050] font-medium">{error}</span>
               ) : challengeRemaining > 0 ? (
                 <span className="text-[var(--text-secondary)]">
-                  Mã làm mới sau{' '}
+                  {t('mfaPage.codeRefreshesIn')}{' '}
                   <span className="font-medium tabular-nums text-[var(--text-primary)]">
                     00:{stepRemaining.toString().padStart(2, '0')}
                   </span>
-                  {' '}— phiên hết hạn sau{' '}
+                  {' '}— {t('mfaPage.sessionExpiresIn')}{' '}
                   <span className="font-medium tabular-nums text-[var(--text-primary)]">
                     {Math.floor(challengeRemaining / 60)}:{(challengeRemaining % 60).toString().padStart(2, '0')}
                   </span>
                 </span>
               ) : (
-                <span className="text-[var(--text-secondary)]">Đang khôi phục phiên...</span>
+                <span className="text-[var(--text-secondary)]">{t('mfaPage.restoringSession')}</span>
               )}
             </div>
 
@@ -268,7 +270,7 @@ export default function PlatformMfaVerifyPage() {
               disabled={code.some((d) => !d) || !challengeToken}
               className="w-full"
             >
-              Xác minh
+              {t('mfaPage.verifyButton')}
             </Button>
           </form>
         </div>
@@ -279,7 +281,7 @@ export default function PlatformMfaVerifyPage() {
             className="inline-flex items-center text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-            Quay lại đăng nhập
+            {t('mfaPage.backToLogin')}
           </Link>
         </div>
       </div>

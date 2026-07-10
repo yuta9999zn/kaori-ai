@@ -30,6 +30,7 @@ import {
   api, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type AuditKind =
   | 'permission_denied'
   | 'permission_allowed'
@@ -58,18 +59,19 @@ interface Page<T> {
   total:       number;
 }
 
-const KIND_BADGE: Record<AuditKind, { label: string; tone: 'success' | 'warning' | 'error' | 'info' | 'default' }> = {
-  permission_denied:      { label: 'Từ chối quyền',         tone: 'error' },
-  permission_allowed:     { label: 'Cấp quyền',              tone: 'success' },
-  role_changed:           { label: 'Đổi vai trò',            tone: 'info' },
-  role_escalated:         { label: 'Nâng vai trò',           tone: 'warning' },
-  cross_workspace_access: { label: 'Truy cập cross-workspace', tone: 'warning' },
-  abac_match:             { label: 'ABAC match',             tone: 'default' },
+const KIND_BADGE: Record<AuditKind, { labelKey: string; tone: 'success' | 'warning' | 'error' | 'info' | 'default' }> = {
+  permission_denied:      { labelKey: 'templates72AuthzAudits.kindPermissionDenied',     tone: 'error' },
+  permission_allowed:     { labelKey: 'templates72AuthzAudits.kindPermissionAllowed',    tone: 'success' },
+  role_changed:           { labelKey: 'templates72AuthzAudits.kindRoleChanged',          tone: 'info' },
+  role_escalated:         { labelKey: 'templates72AuthzAudits.kindRoleEscalated',        tone: 'warning' },
+  cross_workspace_access: { labelKey: 'templates72AuthzAudits.kindCrossWorkspaceAccess', tone: 'warning' },
+  abac_match:             { labelKey: 'templates72AuthzAudits.kindAbacMatch',            tone: 'default' },
 };
 
 const PAGE_LIMIT = 50;
 
 export default function AuthzAuditPage() {
+  const t = useT();
   const [items,    setItems]    = useState<AuthzAuditRow[]>([]);
   const [cursor,   setCursor]   = useState<string | null>(null);
   const [hasMore,  setHasMore]  = useState(false);
@@ -128,7 +130,7 @@ export default function AuthzAuditPage() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err: any) {
-      setProblem({ title: 'Xuất CSV thất bại', detail: String(err?.message ?? err) });
+      setProblem({ title: t('templates72AuthzAudits.exportCsvFailedTitle'), detail: String(err?.message ?? err) });
     } finally {
       setExporting(false);
     }
@@ -137,18 +139,18 @@ export default function AuthzAuditPage() {
   return (
     <>
       <PageHeader
-        title="Authz Audit"
-        description="Mọi sự kiện cấp/từ chối quyền + đổi vai trò + truy cập cross-workspace."
+        title={t('templates72AuthzAudits.pageTitle')}
+        description={t('templates72AuthzAudits.pageDescription')}
         actions={
           <>
             <Badge variant="info">Phase 2</Badge>
             <Button variant="secondary" onClick={() => load(true)}>
               <RefreshCw className="w-4 h-4 mr-2" />
-              Làm mới
+              {t('templates72AuthzAudits.refresh')}
             </Button>
             <Button variant="secondary" onClick={exportCsv} isLoading={exporting}>
               <Download className="w-4 h-4 mr-2" />
-              Xuất CSV
+              {t('templates72AuthzAudits.exportCsv')}
             </Button>
             <Button variant="tertiary" onClick={() => (window.location.href = '/p2/authz/rbac')}>
               <ChevronLeft className="w-4 h-4 mr-1" />
@@ -172,7 +174,7 @@ export default function AuthzAuditPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm theo email actor..."
+              placeholder={t('templates72AuthzAudits.searchPlaceholder')}
               className="w-full pl-9 pr-4 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
             />
           </div>
@@ -181,19 +183,19 @@ export default function AuthzAuditPage() {
             onChange={(e) => setKindFilter(e.target.value as any)}
             className="px-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-xs font-medium focus:outline-none"
           >
-            <option value="ALL">Mọi loại sự kiện</option>
+            <option value="ALL">{t('templates72AuthzAudits.allKinds')}</option>
             {(Object.keys(KIND_BADGE) as AuditKind[]).map((k) => (
-              <option key={k} value={k}>{KIND_BADGE[k].label}</option>
+              <option key={k} value={k}>{t(KIND_BADGE[k].labelKey)}</option>
             ))}
           </select>
           <button type="submit" className="px-3 py-2 bg-[var(--primary-gold)]/10 border border-[var(--primary-gold)]/30 text-[var(--primary-gold-dark)] text-xs font-medium rounded-md-custom hover:bg-[var(--primary-gold)]/20">
             <Filter className="w-3.5 h-3.5 inline mr-1" />
-            Lọc
+            {t('templates72AuthzAudits.filter')}
           </button>
         </form>
 
         <p className="text-xs text-[var(--text-secondary)]">
-          {total.toLocaleString('vi-VN')} sự kiện · Đang hiển thị {items.length}
+          {t('templates72AuthzAudits.summary', { total: total.toLocaleString('vi-VN'), shown: String(items.length) })}
         </p>
 
         {/* Table */}
@@ -202,11 +204,11 @@ export default function AuthzAuditPage() {
             <table className="w-full text-sm">
               <thead className="bg-[var(--bg-app)]/50 border-b border-[var(--border-color)]/60">
                 <tr>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-44">Loại</th>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Actor</th>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Resource · Action</th>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-28">Decision</th>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-40">IP · Thời gian</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-44">{t('templates72AuthzAudits.colType')}</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">{t('templates72AuthzAudits.colActor')}</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">{t('templates72AuthzAudits.colResourceAction')}</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-28">{t('templates72AuthzAudits.colDecision')}</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-40">{t('templates72AuthzAudits.colIpTime')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-color)]/60">
@@ -220,7 +222,7 @@ export default function AuthzAuditPage() {
                   <tr>
                     <td colSpan={5} className="px-4 py-12 text-center text-[var(--text-secondary)]">
                       <Shield className="w-10 h-10 mx-auto mb-2 text-[var(--text-secondary)]/40" />
-                      Chưa có sự kiện authz nào.
+                      {t('templates72AuthzAudits.emptyState')}
                     </td>
                   </tr>
                 ) : items.map((row) => (
@@ -229,7 +231,7 @@ export default function AuthzAuditPage() {
                       <Badge variant={KIND_BADGE[row.kind].tone}>
                         {row.kind === 'cross_workspace_access' && <Globe className="w-3 h-3 mr-1 inline" />}
                         {row.kind === 'role_escalated' && <ArrowUpRight className="w-3 h-3 mr-1 inline" />}
-                        {KIND_BADGE[row.kind].label}
+                        {t(KIND_BADGE[row.kind].labelKey)}
                       </Badge>
                     </td>
                     <td className="px-4 py-3 align-top">
@@ -239,14 +241,14 @@ export default function AuthzAuditPage() {
                     <td className="px-4 py-3 align-top">
                       <p className="text-sm font-mono text-[var(--text-primary)]">{row.resource}</p>
                       <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                        action: <span className="font-mono">{row.action}</span>
+                        {t('templates72AuthzAudits.actionLabel')} <span className="font-mono">{row.action}</span>
                       </p>
                       {row.reason && (
                         <p className="text-xs text-[var(--text-secondary)] mt-1 leading-snug max-w-md">{row.reason}</p>
                       )}
                       {row.policy_id && (
                         <p className="text-[11px] text-[var(--primary-gold-dark)] mt-1">
-                          policy: <span className="font-mono">{row.policy_id}</span>
+                          {t('templates72AuthzAudits.policyLabel')} <span className="font-mono">{row.policy_id}</span>
                         </p>
                       )}
                     </td>
@@ -268,7 +270,7 @@ export default function AuthzAuditPage() {
           </div>
           {hasMore && (
             <div className="px-4 py-3 border-t border-[var(--border-color)]/60 flex justify-center">
-              <Button variant="secondary" onClick={() => load(false)} isLoading={loading}>Tải thêm</Button>
+              <Button variant="secondary" onClick={() => load(false)} isLoading={loading}>{t('templates72AuthzAudits.loadMore')}</Button>
             </div>
           )}
         </div>
@@ -276,8 +278,7 @@ export default function AuthzAuditPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Authz audit retention: 2 năm (CLAUDE.md §7 — <span className="font-mono">kaori.audit.internal</span>). Tất cả row đều immutable.
-            Phase 2 sẽ thêm filter theo workspace_id (đa workspace).
+            {t('templates72AuthzAudits.retentionPre')} <span className="font-mono">kaori.audit.internal</span>{t('templates72AuthzAudits.retentionPost')}
           </p>
         </div>
       </div>

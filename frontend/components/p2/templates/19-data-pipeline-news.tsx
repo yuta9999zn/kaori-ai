@@ -26,47 +26,49 @@ import {
   cn,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type SourceKind = 'upload' | 'silver' | 'template';
 
-const SOURCE_OPTIONS: Array<{
-  id: SourceKind;
-  title: string;
-  desc: string;
-  icon: any;
-  recommended?: boolean;
-}> = [
-  {
-    id: 'upload',
-    title: 'Tải file mới (CSV / Excel / ZIP)',
-    desc: 'Phù hợp khi bạn có dữ liệu mới. SHA-256 sẽ chống upload trùng (K-8).',
-    icon: UploadCloud,
-    recommended: true,
-  },
-  {
-    id: 'silver',
-    title: 'Dùng dataset Silver có sẵn',
-    desc: 'Bỏ qua ingest — chạy phân tích trên dataset đã sạch & che PII.',
-    icon: Layers,
-  },
-  {
-    id: 'template',
-    title: 'Bắt đầu từ template phân tích',
-    desc: 'Mẫu nghiệp vụ phổ biến (RFM churn, anomaly, time series) có sẵn.',
-    icon: Sparkles,
-  },
-];
-
-const STEPS = [
-  { n: 1, title: 'Upload',         desc: 'Tải file gốc. Kaori tính SHA-256 + đẩy về Bronze.', icon: UploadCloud },
-  { n: 2, title: 'Cột',            desc: 'Map cột — exact / fuzzy / AI suggest với confidence.', icon: FileSpreadsheet },
-  { n: 3, title: 'Làm sạch',       desc: 'Áp dụng quy tắc (null, dedup, kiểu dữ liệu, AI detect).', icon: Layers },
-  { n: 4, title: 'Phân tích',      desc: 'Chọn template + bật/tắt consent_external (K-4).',     icon: BarChart2 },
-  { n: 5, title: 'Kết quả',        desc: 'Dashboard ChartBlock + insight + decision audit log.', icon: Lightbulb },
-];
-
 export default function PipelineNew() {
+  const t = useT();
   const [source,  setSource]  = useState<SourceKind>('upload');
   const [name,    setName]    = useState('');
+
+  const SOURCE_OPTIONS: Array<{
+    id: SourceKind;
+    title: string;
+    desc: string;
+    icon: any;
+    recommended?: boolean;
+  }> = [
+    {
+      id: 'upload',
+      title: t('templates19DataPipelineNews.sourceUploadTitle'),
+      desc: t('templates19DataPipelineNews.sourceUploadDesc'),
+      icon: UploadCloud,
+      recommended: true,
+    },
+    {
+      id: 'silver',
+      title: t('templates19DataPipelineNews.sourceSilverTitle'),
+      desc: t('templates19DataPipelineNews.sourceSilverDesc'),
+      icon: Layers,
+    },
+    {
+      id: 'template',
+      title: t('templates19DataPipelineNews.sourceTemplateTitle'),
+      desc: t('templates19DataPipelineNews.sourceTemplateDesc'),
+      icon: Sparkles,
+    },
+  ];
+
+  const STEPS = [
+    { n: 1, title: t('templates19DataPipelineNews.step1Title'), desc: t('templates19DataPipelineNews.step1Desc'), icon: UploadCloud },
+    { n: 2, title: t('templates19DataPipelineNews.step2Title'), desc: t('templates19DataPipelineNews.step2Desc'), icon: FileSpreadsheet },
+    { n: 3, title: t('templates19DataPipelineNews.step3Title'), desc: t('templates19DataPipelineNews.step3Desc'), icon: Layers },
+    { n: 4, title: t('templates19DataPipelineNews.step4Title'), desc: t('templates19DataPipelineNews.step4Desc'), icon: BarChart2 },
+    { n: 5, title: t('templates19DataPipelineNews.step5Title'), desc: t('templates19DataPipelineNews.step5Desc'), icon: Lightbulb },
+  ];
 
   function handleStart() {
     const params = new URLSearchParams({ source });
@@ -77,14 +79,14 @@ export default function PipelineNew() {
   return (
     <>
       <PageHeader
-        title="Tạo pipeline mới"
-        description="Chọn nguồn dữ liệu và đặt tên. Wizard 5 bước sẽ hướng dẫn phần còn lại."
+        title={t('templates19DataPipelineNews.pageTitle')}
+        description={t('templates19DataPipelineNews.pageDesc')}
       />
 
       <div className="px-6 lg:px-8 py-8 max-w-[960px] mx-auto space-y-6">
         {/* Source picker */}
         <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-6 shadow-soft-sm">
-          <h2 className="font-serif text-lg text-[var(--text-primary)] mb-4">Nguồn dữ liệu</h2>
+          <h2 className="font-serif text-lg text-[var(--text-primary)] mb-4">{t('templates19DataPipelineNews.sourceSectionTitle')}</h2>
           <div className="space-y-3">
             {SOURCE_OPTIONS.map((opt) => {
               const Icon = opt.icon;
@@ -113,7 +115,7 @@ export default function PipelineNew() {
                   </div>
                   {opt.recommended && !sel && (
                     <span className="absolute top-3 right-4 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-sm-custom bg-[var(--primary-gold)]/15 text-[#9E814D]">
-                      Khuyến nghị
+                      {t('templates19DataPipelineNews.recommendedBadge')}
                     </span>
                   )}
                   <div className={cn(
@@ -128,25 +130,25 @@ export default function PipelineNew() {
           </div>
 
           <div className="mt-5 pt-5 border-t border-[var(--border-color)]/60">
-            <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">Tên pipeline</label>
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">{t('templates19DataPipelineNews.pipelineNameLabel')}</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Ví dụ: Phân tích doanh thu Q3 NA"
+              placeholder={t('templates19DataPipelineNews.pipelineNamePlaceholder')}
               className="w-full h-10 rounded-md-custom border border-[var(--border-color)] bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/40 focus:border-[var(--primary-gold)]"
             />
-            <p className="text-xs text-[var(--text-secondary)] mt-1">Tuỳ chọn — có thể đổi sau khi tạo.</p>
+            <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates19DataPipelineNews.pipelineNameHint')}</p>
           </div>
         </div>
 
         {/* 5-step preview */}
         <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-6 shadow-soft-sm">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-serif text-lg text-[var(--text-primary)]">5 bước trong wizard</h2>
+            <h2 className="font-serif text-lg text-[var(--text-primary)]">{t('templates19DataPipelineNews.stepsSectionTitle')}</h2>
             <span className="text-xs text-[var(--text-secondary)] flex items-center gap-1">
               <Clock className="w-3.5 h-3.5" />
-              5–15 phút tuỳ kích thước file
+              {t('templates19DataPipelineNews.stepsDuration')}
             </span>
           </div>
 
@@ -171,18 +173,17 @@ export default function PipelineNew() {
           <div className="mt-5 flex items-start gap-3 p-3 rounded-md-custom bg-[var(--bg-app)]/60 border border-[var(--border-color)]">
             <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
             <p className="text-xs text-[var(--text-secondary)]">
-              Mọi LLM call đi qua <span className="font-medium text-[var(--text-primary)]">llm_router</span> (K-3) — Qwen 2.5 local là mặc định.
-              External AI (Claude / GPT-4o) chỉ bật khi bạn chọn ở Bước 4 (K-4) — PII đã được che (K-5).
+              {t('templates19DataPipelineNews.llmRouterPre')}<span className="font-medium text-[var(--text-primary)]">llm_router</span>{t('templates19DataPipelineNews.llmRouterPost')}
             </p>
           </div>
         </div>
 
         <div className="flex items-center justify-end gap-3">
           <Button variant="secondary" onClick={() => (window.location.href = '/p2/pipelines')}>
-            Huỷ
+            {t('templates19DataPipelineNews.cancelBtn')}
           </Button>
           <Button onClick={handleStart}>
-            Bắt đầu
+            {t('templates19DataPipelineNews.startBtn')}
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </div>

@@ -1,0 +1,198 @@
+{
+  "newPage.title": {
+    "vi": "Workflow mới",
+    "en": "New workflow",
+    "ja": "新規ワークフロー",
+    "ko": "새 워크플로우",
+    "zh": "新工作流"
+  },
+  "newPage.description": {
+    "vi": "Tạo workflow trắng. Sau khi tạo, thêm từng bước và gắn tài liệu.",
+    "en": "Create a blank workflow. After creating it, add steps and attach documents.",
+    "ja": "空のワークフローを作成します。作成後、ステップを追加し、ドキュメントを添付してください。",
+    "ko": "빈 워크플로우를 생성합니다. 생성 후 단계를 추가하고 문서를 첨부하세요.",
+    "zh": "创建空白工作流。创建后可添加步骤并关联文档。"
+  },
+  "newPage.back": {
+    "vi": "Quay lại",
+    "en": "Back",
+    "ja": "戻る",
+    "ko": "뒤로",
+    "zh": "返回"
+  },
+  "newPage.infoTitle": {
+    "vi": "Thông tin workflow",
+    "en": "Workflow information",
+    "ja": "ワークフロー情報",
+    "ko": "워크플로우 정보",
+    "zh": "工作流信息"
+  },
+  "newPage.infoHint": {
+    "vi": "Có thể chỉnh sau khi tạo.",
+    "en": "Can be edited after creation.",
+    "ja": "作成後に編集できます。",
+    "ko": "생성 후 수정할 수 있습니다.",
+    "zh": "创建后可修改。"
+  },
+  "newPage.nameViLabel": {
+    "vi": "Tên workflow (Tiếng Việt)",
+    "en": "Workflow name (Vietnamese)",
+    "ja": "ワークフロー名(ベトナム語)",
+    "ko": "워크플로우 이름(베트남어)",
+    "zh": "工作流名称(越南语)"
+  },
+  "newPage.nameViPlaceholder": {
+    "vi": "VD: Quy trình thẩm định lead",
+    "en": "e.g. Lead qualification process",
+    "ja": "例: リード審査プロセス",
+    "ko": "예: 리드 심사 프로세스",
+    "zh": "例如：潜在客户审核流程"
+  },
+  "newPage.nameLabel": {
+    "vi": "Tên workflow (English / internal)",
+    "en": "Workflow name (English / internal)",
+    "ja": "ワークフロー名(英語/内部用)",
+    "ko": "워크플로우 이름(영어/내부용)",
+    "zh": "工作流名称(英语/内部)"
+  },
+  "newPage.namePlaceholder": {
+    "vi": "VD: Lead Qualification Workflow",
+    "en": "e.g. Lead Qualification Workflow",
+    "ja": "例: Lead Qualification Workflow",
+    "ko": "예: Lead Qualification Workflow",
+    "zh": "例如：Lead Qualification Workflow"
+  },
+  "newPage.department": {
+    "vi": "Phòng ban",
+    "en": "Department",
+    "ja": "部門",
+    "ko": "부서",
+    "zh": "部门"
+  },
+  "newPage.loadingDepartments": {
+    "vi": "Đang tải danh sách phòng ban…",
+    "en": "Loading department list…",
+    "ja": "部門リストを読み込み中…",
+    "ko": "부서 목록을 불러오는 중…",
+    "zh": "正在加载部门列表…"
+  },
+  "newPage.noDepartmentsPrefix": {
+    "vi": "Doanh nghiệp chưa có phòng ban nào. Vào",
+    "en": "This enterprise has no departments yet. Go to",
+    "ja": "この企業にはまだ部門がありません。次のページへ移動してください:",
+    "ko": "이 기업에는 아직 부서가 없습니다.",
+    "zh": "该企业尚无部门。请前往"
+  },
+  "newPage.noDepartmentsSuffix": {
+    "vi": "tạo phòng ban trước (cần quyền MANAGER).",
+    "en": "to create a department first (requires MANAGER permission).",
+    "ja": "で先に部門を作成してください(MANAGER権限が必要です)。",
+    "ko": "이동하여 먼저 부서를 생성하세요(MANAGER 권한 필요).",
+    "zh": "先创建部门(需要 MANAGER 权限)。"
+  },
+  "newPage.fromOrgTree": {
+    "vi": "(từ cây tổ chức)",
+    "en": "(from org tree)",
+    "ja": "(組織ツリーから)",
+    "ko": "(조직도에서)",
+    "zh": "(来自组织架构)"
+  },
+  "newPage.preDeptHint": {
+    "vi": "Phòng ban đã chọn từ /p2/org-tree. Đổi phòng ban bằng cách bấm \"Quay lại\" rồi chọn phòng khác.",
+    "en": "Department was selected from /p2/org-tree. To change it, click \"Back\" and choose a different department.",
+    "ja": "部門は /p2/org-tree から選択されました。変更するには「戻る」をクリックして別の部門を選択してください。",
+    "ko": "부서는 /p2/org-tree에서 선택되었습니다. 변경하려면 \"뒤로\"를 클릭한 후 다른 부서를 선택하세요.",
+    "zh": "部门已从 /p2/org-tree 选定。如需更改，请点击\"返回\"后选择其他部门。"
+  },
+  "newPage.descriptionLabel": {
+    "vi": "Mô tả",
+    "en": "Description",
+    "ja": "説明",
+    "ko": "설명",
+    "zh": "描述"
+  },
+  "newPage.descriptionPlaceholder": {
+    "vi": "Mục tiêu workflow + ai sử dụng + tần suất chạy…",
+    "en": "Workflow goal + who uses it + run frequency…",
+    "ja": "ワークフローの目的 + 利用者 + 実行頻度…",
+    "ko": "워크플로우 목표 + 사용자 + 실행 빈도…",
+    "zh": "工作流目标 + 使用人员 + 运行频率…"
+  },
+  "newPage.submit": {
+    "vi": "Tạo workflow",
+    "en": "Create workflow",
+    "ja": "ワークフローを作成",
+    "ko": "워크플로우 생성",
+    "zh": "创建工作流"
+  },
+  "newPage.footerPrefix": {
+    "vi": "Hoặc",
+    "en": "Or",
+    "ja": "または",
+    "ko": "또는",
+    "zh": "或"
+  },
+  "newPage.footerLink": {
+    "vi": "tạo từ template",
+    "en": "create from template",
+    "ja": "テンプレートから作成",
+    "ko": "템플릿에서 생성",
+    "zh": "从模板创建"
+  },
+  "newPage.footerSuffix": {
+    "vi": "để có sẵn 5 bước theo phòng ban.",
+    "en": "to get 5 pre-built steps tailored to your department.",
+    "ja": "部門向けに用意された5つのステップを利用できます。",
+    "ko": "부서별로 준비된 5단계를 바로 사용할 수 있습니다.",
+    "zh": "即可获得按部门预设的5个步骤。"
+  },
+  "newPage.deptMarketing": {
+    "vi": "Marketing",
+    "en": "Marketing",
+    "ja": "マーケティング",
+    "ko": "마케팅",
+    "zh": "市场营销"
+  },
+  "newPage.deptSales": {
+    "vi": "Sales",
+    "en": "Sales",
+    "ja": "営業",
+    "ko": "영업",
+    "zh": "销售"
+  },
+  "newPage.deptCustomerService": {
+    "vi": "CSKH",
+    "en": "Customer Service",
+    "ja": "カスタマーサービス",
+    "ko": "고객 서비스",
+    "zh": "客户服务"
+  },
+  "newPage.deptWarehouse": {
+    "vi": "Kho vận",
+    "en": "Warehouse",
+    "ja": "倉庫",
+    "ko": "창고",
+    "zh": "仓储"
+  },
+  "newPage.deptHr": {
+    "vi": "Nhân sự",
+    "en": "HR",
+    "ja": "人事",
+    "ko": "인사",
+    "zh": "人力资源"
+  },
+  "newPage.deptFinance": {
+    "vi": "Tài chính",
+    "en": "Finance",
+    "ja": "財務",
+    "ko": "재무",
+    "zh": "财务"
+  },
+  "newPage.deptCustom": {
+    "vi": "Tùy chỉnh",
+    "en": "Custom",
+    "ja": "カスタム",
+    "ko": "사용자 지정",
+    "zh": "自定义"
+  }
+}

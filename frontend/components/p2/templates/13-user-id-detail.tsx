@@ -27,6 +27,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type Role   = 'MANAGER' | 'OPERATOR' | 'ANALYST' | 'VIEWER';
 type Status = 'active' | 'invited' | 'suspended';
 
@@ -56,6 +57,7 @@ const ROLE_BADGE: Record<Role, any> = {
 };
 
 export default function UserDetail() {
+  const t = useT();
   // usePathname() works in SSR + client; reading `window.location.pathname`
   // at component body crashes Next prerender with "window is not defined".
   const pathname = usePathname() ?? '';
@@ -131,26 +133,26 @@ export default function UserDetail() {
   return (
     <>
       <PageHeader
-        title={user?.name ?? 'Đang tải...'}
+        title={user?.name ?? t('templates13UserIdDetail.loading')}
         description={user?.email}
         actions={
           <>
             <Button variant="secondary" onClick={() => (window.location.href = '/p2/users')}>
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Quay lại
+              {t('templates13UserIdDetail.back')}
             </Button>
             {!editing && user && (
               <Button onClick={startEdit}>
                 <Edit2 className="w-4 h-4 mr-2" />
-                Chỉnh sửa
+                {t('templates13UserIdDetail.edit')}
               </Button>
             )}
             {editing && (
               <>
-                <Button variant="secondary" onClick={() => setEditing(false)} disabled={isSaving}>Huỷ</Button>
+                <Button variant="secondary" onClick={() => setEditing(false)} disabled={isSaving}>{t('templates13UserIdDetail.cancel')}</Button>
                 <Button onClick={saveEdit} isLoading={isSaving}>
                   <Save className="w-4 h-4 mr-2" />
-                  Lưu
+                  {t('templates13UserIdDetail.save')}
                 </Button>
               </>
             )}
@@ -162,7 +164,7 @@ export default function UserDetail() {
         <ErrorBanner problem={problem} />
         {resetSent && (
           <div className="rounded-md-custom bg-[var(--state-success)]/10 border border-[var(--state-success)]/30 p-3 text-sm text-[#5C856A]">
-            Đã gửi email đặt lại mật khẩu cho {user?.email}.
+            {t('templates13UserIdDetail.resetSentMsg', { email: user?.email ?? '' })}
           </div>
         )}
 
@@ -175,18 +177,18 @@ export default function UserDetail() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
               {/* Identity */}
-              <Section title="Thông tin tài khoản" icon={User}>
+              <Section title={t('templates13UserIdDetail.sectionAccountInfo')} icon={User}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   {editing ? (
-                    <Input label="Họ tên" value={draft.name ?? ''} onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
+                    <Input label={t('templates13UserIdDetail.fieldName')} value={draft.name ?? ''} onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
                   ) : (
-                    <Field label="Họ tên" value={user.name} />
+                    <Field label={t('templates13UserIdDetail.fieldName')} value={user.name} />
                   )}
-                  <Field label="Email" value={user.email} mono />
+                  <Field label={t('templates13UserIdDetail.fieldEmail')} value={user.email} mono />
 
                   {editing ? (
                     <div className="space-y-2">
-                      <Label>Vai trò</Label>
+                      <Label>{t('templates13UserIdDetail.fieldRole')}</Label>
                       <select
                         value={draft.role}
                         onChange={(e) => setDraft({ ...draft, role: e.target.value as Role })}
@@ -197,41 +199,41 @@ export default function UserDetail() {
                     </div>
                   ) : (
                     <div className="space-y-2">
-                      <Label>Vai trò</Label>
+                      <Label>{t('templates13UserIdDetail.fieldRole')}</Label>
                       <div><Badge variant={ROLE_BADGE[user.role]}>{user.role}</Badge></div>
                     </div>
                   )}
-                  <Field label="Trạng thái" value={
+                  <Field label={t('templates13UserIdDetail.fieldStatus')} value={
                     <Badge variant={user.status === 'active' ? 'success' : user.status === 'invited' ? 'warning' : 'error'}>
-                      {user.status === 'active' ? 'Hoạt động' : user.status === 'invited' ? 'Đã mời' : 'Đã khoá'}
+                      {user.status === 'active' ? t('templates13UserIdDetail.statusActive') : user.status === 'invited' ? t('templates13UserIdDetail.statusInvited') : t('templates13UserIdDetail.statusLocked')}
                     </Badge>
                   } />
                 </div>
               </Section>
 
               {/* Contact */}
-              <Section title="Liên hệ" icon={ShieldCheck}>
+              <Section title={t('templates13UserIdDetail.sectionContact')} icon={ShieldCheck}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   {editing ? (
                     <>
-                      <Input label="Điện thoại" value={draft.phone ?? ''} onChange={(e) => setDraft({ ...draft, phone: e.target.value })} />
-                      <Input label="Địa chỉ"     value={draft.address ?? ''} onChange={(e) => setDraft({ ...draft, address: e.target.value })} />
+                      <Input label={t('templates13UserIdDetail.fieldPhone')} value={draft.phone ?? ''} onChange={(e) => setDraft({ ...draft, phone: e.target.value })} />
+                      <Input label={t('templates13UserIdDetail.fieldAddress')}     value={draft.address ?? ''} onChange={(e) => setDraft({ ...draft, address: e.target.value })} />
                     </>
                   ) : (
                     <>
-                      <Field label="Điện thoại" value={user.phone || '—'} />
-                      <Field label="Địa chỉ"    value={user.address || '—'} />
+                      <Field label={t('templates13UserIdDetail.fieldPhone')} value={user.phone || '—'} />
+                      <Field label={t('templates13UserIdDetail.fieldAddress')}    value={user.address || '—'} />
                     </>
                   )}
-                  <Field label="Tham gia" value={user.created_at} />
-                  <Field label="Hoạt động cuối" value={user.last_active_at || '—'} />
+                  <Field label={t('templates13UserIdDetail.fieldJoined')} value={user.created_at} />
+                  <Field label={t('templates13UserIdDetail.fieldLastActive')} value={user.last_active_at || '—'} />
                 </div>
               </Section>
 
               {/* Activity */}
-              <Section title="Hoạt động gần đây" icon={ActivityIcon}>
+              <Section title={t('templates13UserIdDetail.sectionActivity')} icon={ActivityIcon}>
                 {audit.length === 0 ? (
-                  <p className="text-sm text-[var(--text-secondary)] text-center py-6">Chưa có hoạt động nào.</p>
+                  <p className="text-sm text-[var(--text-secondary)] text-center py-6">{t('templates13UserIdDetail.noActivity')}</p>
                 ) : (
                   <div className="space-y-2">
                     {audit.map((e) => (
@@ -240,7 +242,7 @@ export default function UserDetail() {
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-[var(--text-primary)]">{e.action}</p>
                           <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                            {e.module} · {e.at} · IP {e.ip_masked}
+                            {t('templates13UserIdDetail.activityMeta', { module: e.module, at: e.at, ip: e.ip_masked })}
                           </p>
                         </div>
                       </div>
@@ -253,28 +255,28 @@ export default function UserDetail() {
             {/* Sidebar actions */}
             <div className="lg:col-span-1 space-y-4">
               <div className="rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-5 shadow-soft-sm space-y-3">
-                <h3 className="font-serif text-base text-[var(--text-primary)]">Bảo mật</h3>
+                <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates13UserIdDetail.security')}</h3>
                 <Button variant="secondary" onClick={sendReset} isLoading={isResetting} className="w-full">
                   <KeyRound className="w-4 h-4 mr-2" />
-                  Gửi liên kết đặt lại mật khẩu
+                  {t('templates13UserIdDetail.sendResetLink')}
                 </Button>
                 <p className="text-xs text-[var(--text-secondary)]">
-                  Gửi email yêu cầu user đặt lại — không bao giờ hiển thị mật khẩu trực tiếp.
+                  {t('templates13UserIdDetail.resetHint')}
                 </p>
               </div>
 
               <div className="rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-5 shadow-soft-sm space-y-3">
-                <h3 className="font-serif text-base text-[var(--state-error)]">Khu vực nguy hiểm</h3>
+                <h3 className="font-serif text-base text-[var(--state-error)]">{t('templates13UserIdDetail.dangerZone')}</h3>
                 <Button variant="secondary" onClick={() => { /* TODO: trigger suspend like list page */ }} className="w-full">
                   <Ban className="w-4 h-4 mr-2" />
-                  Khoá tài khoản
+                  {t('templates13UserIdDetail.lockAccount')}
                 </Button>
                 <Button variant="destructive" onClick={() => { /* TODO: trigger delete confirm */ }} className="w-full">
                   <Trash2 className="w-4 h-4 mr-2" />
-                  Xoá khỏi workspace
+                  {t('templates13UserIdDetail.deleteFromWorkspace')}
                 </Button>
                 <p className="text-xs text-[var(--text-secondary)]">
-                  Không thể xoá MANAGER cuối cùng. Mời thêm MANAGER trước.
+                  {t('templates13UserIdDetail.deleteHint')}
                 </p>
               </div>
             </div>

@@ -1,0 +1,212 @@
+{
+  "bpmnBpmneditor.startEvent": {
+    "vi": "Bắt đầu",
+    "en": "Start",
+    "ja": "開始",
+    "ko": "시작",
+    "zh": "开始"
+  },
+  "bpmnBpmneditor.noticeAutoLayoutRestored": {
+    "vi": "Sơ đồ đã lưu thiếu thông tin bố cục — Kaori đã tự sắp xếp lại. Kiểm tra lại vị trí rồi bấm \"Lưu sơ đồ\".",
+    "en": "The saved diagram was missing layout info — Kaori auto-arranged it. Check the positions, then click \"Save diagram\".",
+    "ja": "保存済みの図にレイアウト情報が不足していたため、Kaoriが自動で再配置しました。位置を確認してから「図を保存」を押してください。",
+    "ko": "저장된 다이어그램에 레이아웃 정보가 없어 Kaori가 자동으로 재배치했습니다. 위치를 확인한 뒤 \"다이어그램 저장\"을 누르세요.",
+    "zh": "已保存的流程图缺少布局信息——Kaori 已自动重新排列。请检查位置后点击“保存流程图”。"
+  },
+  "bpmnBpmneditor.noticeLoadFailedBlank": {
+    "vi": "Không mở được sơ đồ đã lưu (lỗi định dạng/bố cục). Đã mở canvas trống — vẽ lại, hoặc bấm \"Tải .bpmn\" để lấy bản XML cũ.",
+    "en": "Could not open the saved diagram (format/layout error). Opened a blank canvas — redraw it, or click \"Download .bpmn\" to get the old XML.",
+    "ja": "保存済みの図を開けませんでした（形式/レイアウトエラー）。空のキャンバスを開きました — 再作成するか、「.bpmnをダウンロード」で旧XMLを取得してください。",
+    "ko": "저장된 다이어그램을 열 수 없습니다(형식/레이아웃 오류). 빈 캔버스를 열었습니다 — 다시 그리거나 \".bpmn 다운로드\"로 이전 XML을 가져오세요.",
+    "zh": "无法打开已保存的流程图（格式/布局错误）。已打开空白画布——请重新绘制，或点击“下载 .bpmn”获取旧的 XML。"
+  },
+  "bpmnBpmneditor.noticeInitFailed": {
+    "vi": "Không khởi tạo được trình thiết kế BPMN.",
+    "en": "Could not initialize the BPMN designer.",
+    "ja": "BPMNデザイナーを初期化できませんでした。",
+    "ko": "BPMN 디자이너를 초기화할 수 없습니다.",
+    "zh": "无法初始化 BPMN 设计器。"
+  },
+  "bpmnBpmneditor.noticeRelayoutDone": {
+    "vi": "Đã sắp xếp lại bố cục. Bấm \"Lưu sơ đồ\" để giữ.",
+    "en": "Layout has been re-arranged. Click \"Save diagram\" to keep it.",
+    "ja": "レイアウトを再配置しました。保持するには「図を保存」を押してください。",
+    "ko": "레이아웃을 재배치했습니다. 유지하려면 \"다이어그램 저장\"을 누르세요.",
+    "zh": "已重新排列布局。点击“保存流程图”以保留。"
+  },
+  "bpmnBpmneditor.noticeRelayoutFailed": {
+    "vi": "Không sắp xếp lại được (sơ đồ có thể chứa pool/lane phức tạp).",
+    "en": "Could not re-arrange the layout (the diagram may contain complex pools/lanes).",
+    "ja": "レイアウトを再配置できませんでした（図に複雑なプール/レーンが含まれている可能性があります）。",
+    "ko": "레이아웃을 재배치할 수 없습니다(다이어그램에 복잡한 풀/레인이 포함되어 있을 수 있음).",
+    "zh": "无法重新排列布局（流程图可能包含复杂的池/泳道）。"
+  },
+  "bpmnBpmneditor.noticeExportFailed": {
+    "vi": "Không xuất được .bpmn.",
+    "en": "Could not export the .bpmn file.",
+    "ja": ".bpmnをエクスポートできませんでした。",
+    "ko": ".bpmn 파일을 내보낼 수 없습니다.",
+    "zh": "无法导出 .bpmn 文件。"
+  },
+  "bpmnBpmneditor.relayoutTitle": {
+    "vi": "Tự dựng lại vị trí/đường nối/nhãn từ cấu trúc sơ đồ",
+    "en": "Auto-rebuild positions/connections/labels from the diagram structure",
+    "ja": "図の構造から位置/接続線/ラベルを自動再構築",
+    "ko": "다이어그램 구조에서 위치/연결선/레이블을 자동으로 재구성",
+    "zh": "根据流程图结构自动重建位置/连线/标签"
+  },
+  "bpmnBpmneditor.relayoutBusy": {
+    "vi": "Đang sắp xếp…",
+    "en": "Arranging…",
+    "ja": "配置中…",
+    "ko": "정렬 중…",
+    "zh": "正在排列…"
+  },
+  "bpmnBpmneditor.relayoutLabel": {
+    "vi": "Sắp xếp lại bố cục",
+    "en": "Re-arrange layout",
+    "ja": "レイアウトを再配置",
+    "ko": "레이아웃 재배치",
+    "zh": "重新排列布局"
+  },
+  "bpmnBpmneditor.downloadBpmn": {
+    "vi": "Tải .bpmn",
+    "en": "Download .bpmn",
+    "ja": ".bpmnをダウンロード",
+    "ko": ".bpmn 다운로드",
+    "zh": "下载 .bpmn"
+  },
+  "bpmnBpmneditor.propertiesTitle": {
+    "vi": "Thuộc tính",
+    "en": "Properties",
+    "ja": "プロパティ",
+    "ko": "속성",
+    "zh": "属性"
+  },
+  "bpmnBpmneditor.hintSelectElement": {
+    "vi": "Chọn một phần tử để cấu hình. Kéo-thả từ bảng công cụ bên trái để thêm bước / cổng / sự kiện.",
+    "en": "Select an element to configure it. Drag-and-drop from the toolbar on the left to add a step / gateway / event.",
+    "ja": "設定する要素を選択してください。左側のツールバーからドラッグ＆ドロップしてステップ/ゲートウェイ/イベントを追加します。",
+    "ko": "구성할 요소를 선택하세요. 왼쪽 도구 모음에서 드래그 앤 드롭하여 단계/게이트웨이/이벤트를 추가합니다.",
+    "zh": "选择一个元素进行配置。从左侧工具栏拖放以添加步骤/网关/事件。"
+  },
+  "bpmnBpmneditor.hintConnectLabel": {
+    "vi": "Nối 2 phần tử:",
+    "en": "Connecting 2 elements:",
+    "ja": "2つの要素を接続する：",
+    "ko": "요소 2개 연결하기:",
+    "zh": "连接两个元素："
+  },
+  "bpmnBpmneditor.hintConnectMid1": {
+    "vi": "rê chuột vào phần tử nguồn → bảng nút nhỏ hiện bên phải nó →",
+    "en": "hover over the source element → a small button panel appears to its right →",
+    "ja": "元となる要素にマウスを合わせる → その右側に小さなボタンパネルが表示される →",
+    "ko": "소스 요소 위에 마우스를 올리면 오른쪽에 작은 버튼 패널이 나타납니다 →",
+    "zh": "将鼠标悬停在源元素上 → 其右侧会出现一个小按钮面板 →"
+  },
+  "bpmnBpmneditor.hintConnectDragArrow": {
+    "vi": "kéo nút mũi tên",
+    "en": "drag the arrow button",
+    "ja": "矢印ボタンをドラッグ",
+    "ko": "화살표 버튼을 드래그",
+    "zh": "拖动箭头按钮"
+  },
+  "bpmnBpmneditor.hintConnectMid2": {
+    "vi": "(Kết nối) thả vào phần tử đích. Hoặc bấm công cụ",
+    "en": "(Connect) and drop it on the target element. Or click the",
+    "ja": "（接続）を対象の要素にドロップします。または左側のパレットで",
+    "ko": "(연결) 를 대상 요소에 놓습니다. 또는 왼쪽 팔레트에서",
+    "zh": "（连接）并放到目标元素上。或者点击左侧调色板中的"
+  },
+  "bpmnBpmneditor.hintConnectArrowTool": {
+    "vi": "mũi tên",
+    "en": "arrow",
+    "ja": "矢印",
+    "ko": "화살표",
+    "zh": "箭头"
+  },
+  "bpmnBpmneditor.hintConnectMid3": {
+    "vi": "ở palette trái rồi bấm nguồn → bấm đích.",
+    "en": "tool, then click the source → click the target.",
+    "ja": "ツールをクリックしてから、元 → 対象の順にクリックします。",
+    "ko": "도구를 클릭한 다음 소스 → 대상을 순서대로 클릭합니다.",
+    "zh": "工具，然后点击源元素 → 点击目标元素。"
+  },
+  "bpmnBpmneditor.bpmnTypeLabel": {
+    "vi": "Loại BPMN",
+    "en": "BPMN type",
+    "ja": "BPMNタイプ",
+    "ko": "BPMN 유형",
+    "zh": "BPMN 类型"
+  },
+  "bpmnBpmneditor.displayNameLabel": {
+    "vi": "Tên hiển thị",
+    "en": "Display name",
+    "ja": "表示名",
+    "ko": "표시 이름",
+    "zh": "显示名称"
+  },
+  "bpmnBpmneditor.displayNamePlaceholder": {
+    "vi": "Đặt tên bước…",
+    "en": "Name this step…",
+    "ja": "ステップの名前を入力…",
+    "ko": "단계 이름 입력…",
+    "zh": "为此步骤命名…"
+  },
+  "bpmnBpmneditor.kaoriActionLabel": {
+    "vi": "Hành động Kaori",
+    "en": "Kaori action",
+    "ja": "Kaoriアクション",
+    "ko": "Kaori 액션",
+    "zh": "Kaori 操作"
+  },
+  "bpmnBpmneditor.actionUnassignedOption": {
+    "vi": "— Chưa gán (chỉ thiết kế) —",
+    "en": "— Unassigned (design only) —",
+    "ja": "— 未割り当て（設計のみ）—",
+    "ko": "— 미할당(설계 전용) —",
+    "zh": "— 未分配（仅设计）—"
+  },
+  "bpmnBpmneditor.gatewayHintPre": {
+    "vi": "Điều kiện nhánh đặt trên",
+    "en": "Branch conditions go on the gateway's",
+    "ja": "分岐条件はゲートウェイの",
+    "ko": "분기 조건은 게이트웨이의",
+    "zh": "分支条件设置在网关的"
+  },
+  "bpmnBpmneditor.gatewayHintOutgoing": {
+    "vi": "đường nối ra",
+    "en": "outgoing connection",
+    "ja": "送信接続線",
+    "ko": "나가는 연결선",
+    "zh": "出向连线"
+  },
+  "bpmnBpmneditor.gatewayHintMid": {
+    "vi": "của cổng: chọn mũi tên → ô \"Tên\" gõ điều kiện (vd",
+    "en": ": select the arrow → type the condition into the \"Name\" field (e.g.",
+    "ja": "上に設定します：矢印を選択 → 「名前」欄に条件を入力します（例：",
+    "ko": "위에 설정합니다: 화살표를 선택 → \"이름\" 필드에 조건을 입력합니다(예:",
+    "zh": "上：选择箭头 → 在“名称”框中输入条件（例如"
+  },
+  "bpmnBpmneditor.gatewayHintPost": {
+    "vi": "). Nhánh mặc định (else) để trống tên + đặt làm Default.",
+    "en": "). The default branch (else) leaves the name empty and is set as Default.",
+    "ja": "）。デフォルトの分岐（else）は名前を空にしてDefaultに設定します。",
+    "ko": "). 기본 분기(else)는 이름을 비워두고 Default로 설정합니다.",
+    "zh": "）。默认分支（else）名称留空并设为 Default。"
+  },
+  "bpmnBpmneditor.badgeExecutable": {
+    "vi": "Thực thi được",
+    "en": "Executable",
+    "ja": "実行可能",
+    "ko": "실행 가능",
+    "zh": "可执行"
+  },
+  "bpmnBpmneditor.badgeDesignOnly": {
+    "vi": "Thiết kế — chưa thực thi",
+    "en": "Design — not yet executable",
+    "ja": "設計 — 未実行",
+    "ko": "설계 — 아직 실행 불가",
+    "zh": "设计中——尚未可执行"
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "membersPage.totalCountPrefix": {
+    "vi": "Tổng cộng",
+    "en": "Total",
+    "ja": "合計",
+    "ko": "총",
+    "zh": "共"
+  },
+  "membersPage.totalCountSuffix": {
+    "vi": "thành viên",
+    "en": "members",
+    "ja": "人のメンバー",
+    "ko": "명의 멤버",
+    "zh": "位成员"
+  },
+  "membersPage.manageHint": {
+    "vi": "Quản lý người dùng và quyền truy cập trong workspace.",
+    "en": "Manage users and access permissions in this workspace.",
+    "ja": "このワークスペースのユーザーとアクセス権限を管理します。",
+    "ko": "이 워크스페이스의 사용자 및 액세스 권한을 관리합니다.",
+    "zh": "管理此工作区中的用户和访问权限。"
+  },
+  "membersPage.inviteMember": {
+    "vi": "Mời thành viên",
+    "en": "Invite member",
+    "ja": "メンバーを招待",
+    "ko": "멤버 초대",
+    "zh": "邀请成员"
+  },
+  "membersPage.roleManager": {
+    "vi": "Quản lý",
+    "en": "Manager",
+    "ja": "マネージャー",
+    "ko": "매니저",
+    "zh": "经理"
+  },
+  "membersPage.roleOperator": {
+    "vi": "Vận hành",
+    "en": "Operator",
+    "ja": "オペレーター",
+    "ko": "운영자",
+    "zh": "操作员"
+  },
+  "membersPage.roleAnalyst": {
+    "vi": "Phân tích",
+    "en": "Analyst",
+    "ja": "アナリスト",
+    "ko": "분석가",
+    "zh": "分析师"
+  },
+  "membersPage.roleViewer": {
+    "vi": "Xem",
+    "en": "Viewer",
+    "ja": "閲覧者",
+    "ko": "조회자",
+    "zh": "查看者"
+  },
+  "membersPage.statusActive": {
+    "vi": "Đang hoạt động",
+    "en": "Active",
+    "ja": "アクティブ",
+    "ko": "활성",
+    "zh": "活跃"
+  },
+  "membersPage.statusPending": {
+    "vi": "Chờ xác nhận",
+    "en": "Pending confirmation",
+    "ja": "確認待ち",
+    "ko": "확인 대기",
+    "zh": "待确认"
+  },
+  "membersPage.statusInactive": {
+    "vi": "Đã tắt",
+    "en": "Inactive",
+    "ja": "無効",
+    "ko": "비활성",
+    "zh": "已停用"
+  },
+  "membersPage.colMember": {
+    "vi": "Thành viên",
+    "en": "Member",
+    "ja": "メンバー",
+    "ko": "멤버",
+    "zh": "成员"
+  },
+  "membersPage.role": {
+    "vi": "Vai trò",
+    "en": "Role",
+    "ja": "役割",
+    "ko": "역할",
+    "zh": "角色"
+  },
+  "membersPage.colStatus": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "membersPage.colLastLogin": {
+    "vi": "Đăng nhập gần nhất",
+    "en": "Last login",
+    "ja": "最終ログイン",
+    "ko": "마지막 로그인",
+    "zh": "最近登录"
+  },
+  "membersPage.colJoined": {
+    "vi": "Tham gia",
+    "en": "Joined",
+    "ja": "参加日",
+    "ko": "가입일",
+    "zh": "加入时间"
+  },
+  "membersPage.emptyTable": {
+    "vi": "Chưa có thành viên nào trong workspace này.",
+    "en": "No members in this workspace yet.",
+    "ja": "このワークスペースにはまだメンバーがいません。",
+    "ko": "이 워크스페이스에는 아직 멤버가 없습니다.",
+    "zh": "此工作区中还没有成员。"
+  },
+  "membersPage.removeMember": {
+    "vi": "Xóa thành viên",
+    "en": "Remove member",
+    "ja": "メンバーを削除",
+    "ko": "멤버 삭제",
+    "zh": "移除成员"
+  },
+  "membersPage.backendNotReady": {
+    "vi": "Backend GET {path} chưa sẵn sàng.",
+    "en": "Backend GET {path} is not ready yet.",
+    "ja": "バックエンド GET {path} はまだ準備できていません。",
+    "ko": "백엔드 GET {path}가 아직 준비되지 않았습니다.",
+    "zh": "后端 GET {path} 尚未就绪。"
+  },
+  "membersPage.inviteSubtitle": {
+    "vi": "Gửi email mời người dùng tham gia workspace này.",
+    "en": "Send an email invitation for a user to join this workspace.",
+    "ja": "このワークスペースに参加するようユーザーを招待するメールを送信します。",
+    "ko": "이 워크스페이스에 참여하도록 사용자를 초대하는 이메일을 보냅니다.",
+    "zh": "发送电子邮件邀请用户加入此工作区。"
+  },
+  "membersPage.close": {
+    "vi": "Đóng",
+    "en": "Close",
+    "ja": "閉じる",
+    "ko": "닫기",
+    "zh": "关闭"
+  },
+  "membersPage.emailLabel": {
+    "vi": "Email",
+    "en": "Email",
+    "ja": "メール",
+    "ko": "이메일",
+    "zh": "电子邮件"
+  },
+  "membersPage.emailPlaceholder": {
+    "vi": "ten@congty.com",
+    "en": "name@company.com",
+    "ja": "name@company.com",
+    "ko": "name@company.com",
+    "zh": "name@company.com"
+  },
+  "membersPage.managerRequiredNote": {
+    "vi": "Mỗi workspace cần ít nhất một người vai trò Quản lý (MANAGER) để vận hành.",
+    "en": "Every workspace needs at least one person with the Manager (MANAGER) role to operate.",
+    "ja": "各ワークスペースには運用のためマネージャー（MANAGER）役割の担当者が最低1名必要です。",
+    "ko": "각 워크스페이스는 운영을 위해 매니저(MANAGER) 역할의 담당자가 최소 1명 필요합니다.",
+    "zh": "每个工作区都需要至少一名经理（MANAGER）角色的成员才能运作。"
+  },
+  "membersPage.cancel": {
+    "vi": "Hủy",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "membersPage.sendInvite": {
+    "vi": "Gửi lời mời",
+    "en": "Send invite",
+    "ja": "招待を送信",
+    "ko": "초대 보내기",
+    "zh": "发送邀请"
+  },
+  "membersPage.removeConfirmPrefix": {
+    "vi": "Xóa",
+    "en": "Remove",
+    "ja": "削除:",
+    "ko": "삭제:",
+    "zh": "移除"
+  },
+  "membersPage.removeConfirmSuffix": {
+    "vi": "? Người dùng sẽ mất quyền truy cập ngay lập tức.",
+    "en": "? The user will lose access immediately.",
+    "ja": "？このユーザーは直ちにアクセス権を失います。",
+    "ko": "? 이 사용자는 즉시 접근 권한을 잃게 됩니다.",
+    "zh": "？该用户将立即失去访问权限。"
+  }
+}

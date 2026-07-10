@@ -22,6 +22,7 @@ import Link from "next/link";
 import { authApi } from "@/lib/api/client";
 import { useAuth } from "@/lib/auth-store";
 import { KaoriLogo } from "@/components/brand/KaoriLogo";
+import { useT } from "@/lib/i18n/provider";
 
 // Suspense wrapper required by Next.js 16 strict prerender for any
 // client component that calls useSearchParams() — otherwise
@@ -35,6 +36,7 @@ export default function SsoCallbackPage() {
 }
 
 function SsoCallbackFallback() {
+  const t = useT();
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-canvas p-6">
       <div className="w-full max-w-[420px] rounded-2xl bg-white p-8 shadow-soft-md border border-[var(--color-subtle)]/60">
@@ -45,7 +47,7 @@ function SsoCallbackFallback() {
           <span className="font-serif text-xl font-semibold text-[var(--color-ink)]">Kaori</span>
         </div>
         <div className="space-y-2">
-          <h2 className="font-serif text-xl font-medium text-[var(--color-ink)]">Đang tải…</h2>
+          <h2 className="font-serif text-xl font-medium text-[var(--color-ink)]">{t('ssoCallbackPage.loadingEllipsis')}</h2>
         </div>
       </div>
     </div>
@@ -53,6 +55,7 @@ function SsoCallbackFallback() {
 }
 
 function SsoCallbackInner() {
+  const t            = useT();
   const router       = useRouter();
   const params       = useSearchParams();
   const { setAuth }  = useAuth();
@@ -64,7 +67,7 @@ function SsoCallbackInner() {
   useEffect(() => {
     const ssoCode = params.get("sso_code");
     if (!ssoCode) {
-      setError("Thiếu mã SSO. Vui lòng đăng nhập lại.");
+      setError(t('ssoCallbackPage.errMissingCode'));
       setPhase("error");
       return;
     }
@@ -94,13 +97,13 @@ function SsoCallbackInner() {
         const res = (err as any)?.response;
         const status = res?.status;
         if (status === 410) {
-          setError("Mã SSO đã hết hạn hoặc đã được sử dụng. Vui lòng đăng nhập lại.");
+          setError(t('ssoCallbackPage.errCodeExpired'));
         } else if (status === 404) {
-          setError("Mã SSO không hợp lệ. Vui lòng đăng nhập lại.");
+          setError(t('ssoCallbackPage.errCodeInvalid'));
         } else if (status === 502 || status === 503) {
-          setError("Hệ thống xác thực tạm thời chưa sẵn sàng. Thử lại sau.");
+          setError(t('ssoCallbackPage.errAuthUnavailable'));
         } else {
-          setError("Đăng nhập SSO thất bại. Vui lòng thử lại.");
+          setError(t('ssoCallbackPage.errSsoFailed'));
         }
         setPhase("error");
       }
@@ -124,10 +127,10 @@ function SsoCallbackInner() {
         {phase === "exchanging" && (
           <div className="space-y-2">
             <h2 className="font-serif text-xl font-medium text-[var(--color-ink)]">
-              Đang xác thực…
+              {t('ssoCallbackPage.authenticating')}
             </h2>
             <p className="text-sm text-[var(--color-ink-muted)]">
-              Đang đổi mã SSO lấy phiên đăng nhập của bạn.
+              {t('ssoCallbackPage.exchangingDesc')}
             </p>
           </div>
         )}
@@ -135,10 +138,10 @@ function SsoCallbackInner() {
         {phase === "redirecting" && (
           <div className="space-y-2">
             <h2 className="font-serif text-xl font-medium text-[var(--color-ink)]">
-              Đăng nhập thành công
+              {t('ssoCallbackPage.loginSuccess')}
             </h2>
             <p className="text-sm text-[var(--color-ink-muted)]">
-              Đang chuyển bạn về dashboard…
+              {t('ssoCallbackPage.redirectingDesc')}
             </p>
           </div>
         )}
@@ -152,7 +155,7 @@ function SsoCallbackInner() {
               href="/login"
               className="inline-block text-sm font-medium text-[var(--color-brand-500)] hover:underline"
             >
-              ← Quay lại trang đăng nhập
+              {t('ssoCallbackPage.backToLogin')}
             </Link>
           </div>
         )}

@@ -1,0 +1,205 @@
+{
+  "bpmnBpmnpanel.loadingEditor": {
+    "vi": "Đang tải trình thiết kế BPMN…",
+    "en": "Loading BPMN designer…",
+    "ja": "BPMNデザイナーを読み込み中…",
+    "ko": "BPMN 디자이너 로드 중…",
+    "zh": "正在加载 BPMN 设计器…"
+  },
+  "bpmnBpmnpanel.errLoad": {
+    "vi": "Không tải được BPMN",
+    "en": "Failed to load BPMN",
+    "ja": "BPMNの読み込みに失敗しました",
+    "ko": "BPMN을 불러오지 못했습니다",
+    "zh": "无法加载 BPMN"
+  },
+  "bpmnBpmnpanel.errNoDiagram": {
+    "vi": "Chưa có sơ đồ để lưu",
+    "en": "No diagram to save yet",
+    "ja": "保存する図がまだありません",
+    "ko": "저장할 다이어그램이 아직 없습니다",
+    "zh": "尚无可保存的图表"
+  },
+  "bpmnBpmnpanel.savedDiagram": {
+    "vi": "Đã lưu sơ đồ BPMN",
+    "en": "BPMN diagram saved",
+    "ja": "BPMN図を保存しました",
+    "ko": "BPMN 다이어그램이 저장되었습니다",
+    "zh": "已保存 BPMN 图表"
+  },
+  "bpmnBpmnpanel.errSaveFailed": {
+    "vi": "Lưu thất bại (BPMN không hợp lệ?)",
+    "en": "Save failed (invalid BPMN?)",
+    "ja": "保存に失敗しました（BPMNが無効な可能性）",
+    "ko": "저장 실패 (BPMN이 유효하지 않을 수 있음)",
+    "zh": "保存失败（BPMN 是否无效？）"
+  },
+  "bpmnBpmnpanel.builtFromSteps": {
+    "vi": "Đã dựng sơ đồ BPMN từ các bước trong Builder",
+    "en": "BPMN diagram built from Builder steps",
+    "ja": "ビルダーのステップからBPMN図を作成しました",
+    "ko": "빌더 단계로부터 BPMN 다이어그램을 생성했습니다",
+    "zh": "已根据构建器中的步骤生成 BPMN 图表"
+  },
+  "bpmnBpmnpanel.errFromStepsFailed": {
+    "vi": "Không dựng được sơ đồ từ bước",
+    "en": "Failed to build diagram from steps",
+    "ja": "ステップから図を作成できませんでした",
+    "ko": "단계로부터 다이어그램을 생성하지 못했습니다",
+    "zh": "无法根据步骤生成图表"
+  },
+  "bpmnBpmnpanel.confirmSync": {
+    "vi": "Đồng bộ sẽ GHI ĐÈ toàn bộ các bước trong Builder bằng sơ đồ BPMN hiện tại. Nếu bạn vừa dựng bước trong Builder mà sơ đồ này chưa phản ánh, hãy bấm “Tạo sơ đồ từ bước” trước. Tiếp tục đồng bộ?",
+    "en": "Syncing will OVERWRITE all Builder steps with the current BPMN diagram. If you just built steps in the Builder and this diagram doesn't reflect them yet, click \"Build diagram from steps\" first. Continue syncing?",
+    "ja": "同期すると、現在のBPMN図でビルダー内のすべてのステップが上書きされます。ビルダーでステップを作成したばかりでこの図にまだ反映されていない場合は、先に「ステップから図を作成」をクリックしてください。同期を続けますか？",
+    "ko": "동기화하면 현재 BPMN 다이어그램으로 빌더의 모든 단계가 덮어써집니다. 방금 빌더에서 단계를 만들었는데 이 다이어그램에 아직 반영되지 않았다면, 먼저 \"단계로부터 다이어그램 생성\"을 클릭하세요. 계속 동기화하시겠습니까?",
+    "zh": "同步将用当前的 BPMN 图表覆盖构建器中的所有步骤。如果您刚在构建器中创建了步骤而此图表尚未反映，请先点击“根据步骤生成图表”。是否继续同步？"
+  },
+  "bpmnBpmnpanel.errSyncFailed": {
+    "vi": "Đồng bộ thất bại",
+    "en": "Sync failed",
+    "ja": "同期に失敗しました",
+    "ko": "동기화 실패",
+    "zh": "同步失败"
+  },
+  "bpmnBpmnpanel.syncedResult": {
+    "vi": "Đã đồng bộ: {nodes} bước, {edges} luồng",
+    "en": "Synced: {nodes} steps, {edges} flows",
+    "ja": "同期完了：{nodes}ステップ、{edges}フロー",
+    "ko": "동기화 완료: {nodes}단계, {edges}흐름",
+    "zh": "已同步：{nodes} 个步骤，{edges} 条流程"
+  },
+  "bpmnBpmnpanel.designBadge": {
+    "vi": "Thiết kế — chưa thực thi",
+    "en": "Design — not yet executed",
+    "ja": "設計 — 未実行",
+    "ko": "설계 — 아직 실행되지 않음",
+    "zh": "设计 — 尚未执行"
+  },
+  "bpmnBpmnpanel.reload": {
+    "vi": "Tải lại",
+    "en": "Reload",
+    "ja": "再読み込み",
+    "ko": "다시 불러오기",
+    "zh": "重新加载"
+  },
+  "bpmnBpmnpanel.fromStepsTitle": {
+    "vi": "Dựng sơ đồ BPMN từ các bước đã tạo trong Builder (không ghi đè bước)",
+    "en": "Build a BPMN diagram from the steps already created in the Builder (does not overwrite steps)",
+    "ja": "ビルダーで作成済みのステップからBPMN図を作成します（ステップは上書きされません）",
+    "ko": "빌더에서 이미 생성된 단계로부터 BPMN 다이어그램을 생성합니다 (단계는 덮어쓰지 않음)",
+    "zh": "根据构建器中已创建的步骤生成 BPMN 图表（不会覆盖步骤）"
+  },
+  "bpmnBpmnpanel.buildingEllipsis": {
+    "vi": "Đang dựng…",
+    "en": "Building…",
+    "ja": "作成中…",
+    "ko": "생성 중…",
+    "zh": "正在生成…"
+  },
+  "bpmnBpmnpanel.fromStepsBtn": {
+    "vi": "Tạo sơ đồ từ bước",
+    "en": "Build diagram from steps",
+    "ja": "ステップから図を作成",
+    "ko": "단계로부터 다이어그램 생성",
+    "zh": "根据步骤生成图表"
+  },
+  "bpmnBpmnpanel.savingEllipsis": {
+    "vi": "Đang lưu…",
+    "en": "Saving…",
+    "ja": "保存中…",
+    "ko": "저장 중…",
+    "zh": "正在保存…"
+  },
+  "bpmnBpmnpanel.saveBtn": {
+    "vi": "Lưu sơ đồ",
+    "en": "Save diagram",
+    "ja": "図を保存",
+    "ko": "다이어그램 저장",
+    "zh": "保存图表"
+  },
+  "bpmnBpmnpanel.syncingEllipsis": {
+    "vi": "Đang đồng bộ…",
+    "en": "Syncing…",
+    "ja": "同期中…",
+    "ko": "동기화 중…",
+    "zh": "正在同步…"
+  },
+  "bpmnBpmnpanel.saveSyncBtn": {
+    "vi": "Lưu & Đồng bộ bước",
+    "en": "Save & Sync steps",
+    "ja": "保存＆ステップ同期",
+    "ko": "저장 및 단계 동기화",
+    "zh": "保存并同步步骤"
+  },
+  "bpmnBpmnpanel.nodeCountTitle": {
+    "vi": "Tổng phần tử sơ đồ BPMN — gồm cả sự kiện bắt đầu/kết thúc và cổng (gateway), nên nhiều hơn số bước nghiệp vụ.",
+    "en": "Total BPMN diagram elements — includes start/end events and gateways, so it exceeds the business step count.",
+    "ja": "BPMN図の要素合計 — 開始/終了イベントとゲートウェイを含むため、業務ステップ数より多くなります。",
+    "ko": "BPMN 다이어그램 요소 총합 — 시작/종료 이벤트와 게이트웨이를 포함하므로 업무 단계 수보다 많습니다.",
+    "zh": "BPMN 图表元素总数——包含开始/结束事件和网关，因此会多于业务步骤数。"
+  },
+  "bpmnBpmnpanel.nodeCountLabel": {
+    "vi": "Phần tử:",
+    "en": "Elements:",
+    "ja": "要素:",
+    "ko": "요소:",
+    "zh": "元素："
+  },
+  "bpmnBpmnpanel.edgeCountLabel": {
+    "vi": "Luồng:",
+    "en": "Flows:",
+    "ja": "フロー:",
+    "ko": "흐름:",
+    "zh": "流程："
+  },
+  "bpmnBpmnpanel.executableCountLabel": {
+    "vi": "Thực thi được:",
+    "en": "Executable:",
+    "ja": "実行可能:",
+    "ko": "실행 가능:",
+    "zh": "可执行："
+  },
+  "bpmnBpmnpanel.triggerCountLabel": {
+    "vi": "Trigger:",
+    "en": "Trigger:",
+    "ja": "トリガー:",
+    "ko": "트리거:",
+    "zh": "触发器："
+  },
+  "bpmnBpmnpanel.messageFlowLabel": {
+    "vi": "Message flow:",
+    "en": "Message flow:",
+    "ja": "メッセージフロー:",
+    "ko": "메시지 플로우:",
+    "zh": "消息流："
+  },
+  "bpmnBpmnpanel.poolLabel": {
+    "vi": "Pool:",
+    "en": "Pool:",
+    "ja": "プール:",
+    "ko": "풀:",
+    "zh": "泳道池："
+  },
+  "bpmnBpmnpanel.laneList": {
+    "vi": "— lane: {lanes}",
+    "en": "— lane: {lanes}",
+    "ja": "— レーン: {lanes}",
+    "ko": "— 레인: {lanes}",
+    "zh": "— 泳道: {lanes}"
+  },
+  "bpmnBpmnpanel.danglingHeading": {
+    "vi": "Nhánh chưa nối đủ (cần xử lý trước khi chạy):",
+    "en": "Branches not fully connected (must fix before running):",
+    "ja": "接続が不十分な分岐（実行前に対応が必要）:",
+    "ko": "연결이 완전하지 않은 분기 (실행 전 처리 필요):",
+    "zh": "未完全连接的分支（运行前需处理）："
+  },
+  "bpmnBpmnpanel.danglingItem": {
+    "vi": "có {actual}/{expected} nhánh",
+    "en": "has {actual}/{expected} branches",
+    "ja": "{actual}/{expected} 分岐",
+    "ko": "{actual}/{expected} 분기",
+    "zh": "有 {actual}/{expected} 个分支"
+  }
+}

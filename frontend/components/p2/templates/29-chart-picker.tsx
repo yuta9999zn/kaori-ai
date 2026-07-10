@@ -33,6 +33,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type ChartKind =
   | 'bar' | 'column' | 'stacked_bar' | 'line' | 'area'
   | 'pie' | 'donut' | 'treemap' | 'funnel'
@@ -52,36 +53,46 @@ interface ChartDef {
   needs_y:     number;
 }
 
-const CHARTS: ChartDef[] = [
+interface ChartDefRaw {
+  kind:        ChartKind;
+  labelKey:    string;
+  category:    Category;
+  descKey:     string;
+  icon:        any;
+  needs_x:     number;
+  needs_y:     number;
+}
+
+const CHART_DEFS: ChartDefRaw[] = [
   // Comparison
-  { kind: 'bar',         label: 'Cột ngang',         category: 'comparison',   description: 'So sánh giá trị giữa các nhóm', icon: BarChart2,    needs_x: 1, needs_y: 1 },
-  { kind: 'column',      label: 'Cột dọc',           category: 'comparison',   description: 'Cột dọc thuần — mặc định cho category', icon: BarChart, needs_x: 1, needs_y: 1 },
-  { kind: 'stacked_bar', label: 'Cột chồng',         category: 'comparison',   description: 'Cột chồng nhiều series',         icon: Layers,       needs_x: 1, needs_y: 2 },
-  { kind: 'line',        label: 'Đường',             category: 'comparison',   description: 'Xu hướng theo thời gian',         icon: LineChart,    needs_x: 1, needs_y: 1 },
-  { kind: 'area',        label: 'Vùng',              category: 'comparison',   description: 'Vùng tô — cumulative theo thời gian', icon: AreaChart, needs_x: 1, needs_y: 1 },
+  { kind: 'bar',         labelKey: 'templates29ChartPicker.chartBarLabel',        category: 'comparison',   descKey: 'templates29ChartPicker.chartBarDesc',        icon: BarChart2,    needs_x: 1, needs_y: 1 },
+  { kind: 'column',      labelKey: 'templates29ChartPicker.chartColumnLabel',     category: 'comparison',   descKey: 'templates29ChartPicker.chartColumnDesc',     icon: BarChart,     needs_x: 1, needs_y: 1 },
+  { kind: 'stacked_bar', labelKey: 'templates29ChartPicker.chartStackedBarLabel', category: 'comparison',   descKey: 'templates29ChartPicker.chartStackedBarDesc', icon: Layers,       needs_x: 1, needs_y: 2 },
+  { kind: 'line',        labelKey: 'templates29ChartPicker.chartLineLabel',       category: 'comparison',   descKey: 'templates29ChartPicker.chartLineDesc',       icon: LineChart,    needs_x: 1, needs_y: 1 },
+  { kind: 'area',        labelKey: 'templates29ChartPicker.chartAreaLabel',       category: 'comparison',   descKey: 'templates29ChartPicker.chartAreaDesc',       icon: AreaChart,    needs_x: 1, needs_y: 1 },
 
   // Composition
-  { kind: 'pie',         label: 'Tròn',              category: 'composition',  description: 'Tỉ trọng cho ≤6 nhóm',             icon: PieChart,     needs_x: 1, needs_y: 1 },
-  { kind: 'donut',       label: 'Tròn rỗng',         category: 'composition',  description: 'Như Pie, có không gian hiển thị tổng giữa', icon: PieChart, needs_x: 1, needs_y: 1 },
-  { kind: 'treemap',     label: 'Treemap',           category: 'composition',  description: 'Phân cấp theo diện tích',         icon: Box,          needs_x: 1, needs_y: 1 },
-  { kind: 'funnel',      label: 'Funnel',            category: 'composition',  description: 'Conversion qua các bước',         icon: TrendingDown, needs_x: 1, needs_y: 1 },
+  { kind: 'pie',         labelKey: 'templates29ChartPicker.chartPieLabel',       category: 'composition',  descKey: 'templates29ChartPicker.chartPieDesc',       icon: PieChart,     needs_x: 1, needs_y: 1 },
+  { kind: 'donut',       labelKey: 'templates29ChartPicker.chartDonutLabel',     category: 'composition',  descKey: 'templates29ChartPicker.chartDonutDesc',     icon: PieChart,     needs_x: 1, needs_y: 1 },
+  { kind: 'treemap',     labelKey: 'templates29ChartPicker.chartTreemapLabel',   category: 'composition',  descKey: 'templates29ChartPicker.chartTreemapDesc',   icon: Box,          needs_x: 1, needs_y: 1 },
+  { kind: 'funnel',      labelKey: 'templates29ChartPicker.chartFunnelLabel',    category: 'composition',  descKey: 'templates29ChartPicker.chartFunnelDesc',    icon: TrendingDown, needs_x: 1, needs_y: 1 },
 
   // Distribution
-  { kind: 'histogram',   label: 'Histogram',         category: 'distribution', description: 'Phân phối tần suất',               icon: BarChart,     needs_x: 1, needs_y: 0 },
-  { kind: 'box_plot',    label: 'Box plot',          category: 'distribution', description: 'Median + quartiles + outlier',     icon: Hash,         needs_x: 1, needs_y: 1 },
-  { kind: 'density',     label: 'Density',           category: 'distribution', description: 'Phân phối liên tục (kernel density)', icon: Activity,    needs_x: 1, needs_y: 0 },
+  { kind: 'histogram',   labelKey: 'templates29ChartPicker.chartHistogramLabel', category: 'distribution', descKey: 'templates29ChartPicker.chartHistogramDesc', icon: BarChart,     needs_x: 1, needs_y: 0 },
+  { kind: 'box_plot',    labelKey: 'templates29ChartPicker.chartBoxPlotLabel',   category: 'distribution', descKey: 'templates29ChartPicker.chartBoxPlotDesc',   icon: Hash,         needs_x: 1, needs_y: 1 },
+  { kind: 'density',     labelKey: 'templates29ChartPicker.chartDensityLabel',   category: 'distribution', descKey: 'templates29ChartPicker.chartDensityDesc',   icon: Activity,     needs_x: 1, needs_y: 0 },
 
   // Relationship
-  { kind: 'scatter',     label: 'Scatter',           category: 'relationship', description: 'Tương quan 2 biến',                icon: ScatterChart, needs_x: 1, needs_y: 1 },
-  { kind: 'bubble',      label: 'Bubble',            category: 'relationship', description: 'Scatter + size theo biến thứ 3',  icon: Box,          needs_x: 1, needs_y: 1 },
-  { kind: 'heatmap',     label: 'Heatmap',           category: 'relationship', description: 'Mật độ theo 2 chiều rời rạc',      icon: Map,          needs_x: 1, needs_y: 1 },
+  { kind: 'scatter',     labelKey: 'templates29ChartPicker.chartScatterLabel',   category: 'relationship', descKey: 'templates29ChartPicker.chartScatterDesc',   icon: ScatterChart, needs_x: 1, needs_y: 1 },
+  { kind: 'bubble',      labelKey: 'templates29ChartPicker.chartBubbleLabel',    category: 'relationship', descKey: 'templates29ChartPicker.chartBubbleDesc',    icon: Box,          needs_x: 1, needs_y: 1 },
+  { kind: 'heatmap',     labelKey: 'templates29ChartPicker.chartHeatmapLabel',   category: 'relationship', descKey: 'templates29ChartPicker.chartHeatmapDesc',   icon: Map,          needs_x: 1, needs_y: 1 },
 ];
 
-const CATEGORY_LABEL: Record<Category, string> = {
-  comparison:   'So sánh',
-  composition:  'Tỉ trọng',
-  distribution: 'Phân phối',
-  relationship: 'Tương quan',
+const CATEGORY_LABEL_KEY: Record<Category, string> = {
+  comparison:   'templates29ChartPicker.categoryComparison',
+  composition:  'templates29ChartPicker.categoryComposition',
+  distribution: 'templates29ChartPicker.categoryDistribution',
+  relationship: 'templates29ChartPicker.categoryRelationship',
 };
 
 interface SampleData {
@@ -94,6 +105,22 @@ interface SampleData {
 interface GoldFeature { id: string; name: string; description: string; }
 
 export default function ChartPickerPage() {
+  const t = useT();
+  const CHARTS: ChartDef[] = CHART_DEFS.map((c) => ({
+    kind:        c.kind,
+    label:       t(c.labelKey),
+    category:    c.category,
+    description: t(c.descKey),
+    icon:        c.icon,
+    needs_x:     c.needs_x,
+    needs_y:     c.needs_y,
+  }));
+  const CATEGORY_LABEL: Record<Category, string> = {
+    comparison:   t(CATEGORY_LABEL_KEY.comparison),
+    composition:  t(CATEGORY_LABEL_KEY.composition),
+    distribution: t(CATEGORY_LABEL_KEY.distribution),
+    relationship: t(CATEGORY_LABEL_KEY.relationship),
+  };
   const [sources,    setSources]    = useState<GoldFeature[]>([]);
   const [sourceId,   setSourceId]   = useState<string>('');
   const [sample,     setSample]     = useState<SampleData | null>(null);
@@ -149,7 +176,7 @@ export default function ChartPickerPage() {
           title:         `${def.label} · ${sample.source_label}`,
         }),
       });
-      setSuccess('Đã thêm chart vào dashboard');
+      setSuccess(t('templates29ChartPicker.msgAddedToDashboard'));
     } catch (err: any) {
       setProblem(err);
     }
@@ -165,18 +192,18 @@ export default function ChartPickerPage() {
       y_field:     yField || null,
     };
     navigator.clipboard.writeText(JSON.stringify(spec, null, 2));
-    setSuccess('Đã copy chart spec vào clipboard');
+    setSuccess(t('templates29ChartPicker.msgCopiedSpec'));
   }
 
   return (
     <>
       <PageHeader
-        title="Chart Picker"
-        description="15 loại biểu đồ — chọn loại phù hợp, preview với dữ liệu thật, thêm vào dashboard."
+        title={t('templates29ChartPicker.pageTitle')}
+        description={t('templates29ChartPicker.pageDescription')}
         actions={
           <Badge variant="default">
             <ShieldCheck className="w-3 h-3 mr-1 inline" />
-            Render client-side
+            {t('templates29ChartPicker.badgeRenderClientSide')}
           </Badge>
         }
       />
@@ -189,7 +216,7 @@ export default function ChartPickerPage() {
         <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-4 shadow-soft-sm">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
             <div>
-              <label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Nguồn</label>
+              <label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">{t('templates29ChartPicker.labelSource')}</label>
               <div className="relative mt-1">
                 <Database className="w-4 h-4 text-[var(--text-secondary)] absolute left-3 top-1/2 -translate-y-1/2" />
                 <select
@@ -197,7 +224,7 @@ export default function ChartPickerPage() {
                   onChange={(e) => setSourceId(e.target.value)}
                   className="w-full pl-9 pr-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)]"
                 >
-                  {sources.length === 0 && <option value="">— Chưa có Gold feature —</option>}
+                  {sources.length === 0 && <option value="">{t('templates29ChartPicker.optNoGoldFeature')}</option>}
                   {sources.map((s) => (
                     <option key={s.id} value={s.id}>{s.name}</option>
                   ))}
@@ -206,14 +233,14 @@ export default function ChartPickerPage() {
             </div>
 
             <div>
-              <label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Trục X</label>
+              <label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">{t('templates29ChartPicker.labelAxisX')}</label>
               <select
                 value={xField}
                 onChange={(e) => setXField(e.target.value)}
                 disabled={!sample}
                 className="mt-1 w-full px-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 disabled:opacity-50"
               >
-                <option value="">— Chọn cột —</option>
+                <option value="">{t('templates29ChartPicker.optSelectColumn')}</option>
                 {(sample?.fields ?? []).map((f) => (
                   <option key={f.name} value={f.name}>{f.name} ({f.type})</option>
                 ))}
@@ -221,14 +248,14 @@ export default function ChartPickerPage() {
             </div>
 
             <div>
-              <label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Trục Y</label>
+              <label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">{t('templates29ChartPicker.labelAxisY')}</label>
               <select
                 value={yField}
                 onChange={(e) => setYField(e.target.value)}
                 disabled={!sample || def.needs_y === 0}
                 className="mt-1 w-full px-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 disabled:opacity-50"
               >
-                <option value="">— Chọn cột —</option>
+                <option value="">{t('templates29ChartPicker.optSelectColumn')}</option>
                 {(sample?.fields ?? []).filter((f) => f.type === 'number').map((f) => (
                   <option key={f.name} value={f.name}>{f.name}</option>
                 ))}
@@ -241,7 +268,7 @@ export default function ChartPickerPage() {
           {/* Left: chart picker */}
           <div className="lg:col-span-1 bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--border-color)]/60 flex items-center gap-1 overflow-x-auto">
-              <CategoryButton active={category === 'ALL'} onClick={() => setCategory('ALL')}>Tất cả</CategoryButton>
+              <CategoryButton active={category === 'ALL'} onClick={() => setCategory('ALL')}>{t('templates29ChartPicker.categoryAll')}</CategoryButton>
               {(Object.keys(CATEGORY_LABEL) as Category[]).map((c) => (
                 <CategoryButton key={c} active={category === c} onClick={() => setCategory(c)}>
                   {CATEGORY_LABEL[c]}
@@ -286,11 +313,11 @@ export default function ChartPickerPage() {
               <div className="flex items-center gap-2">
                 <Button variant="secondary" size="sm" onClick={copySpec} disabled={!sample}>
                   <Copy className="w-3.5 h-3.5 mr-1.5" />
-                  Copy spec
+                  {t('templates29ChartPicker.btnCopySpec')}
                 </Button>
                 <Button size="sm" onClick={addToDashboard} disabled={!sample}>
                   <Plus className="w-3.5 h-3.5 mr-1.5" />
-                  Thêm vào dashboard
+                  {t('templates29ChartPicker.btnAddToDashboard')}
                 </Button>
               </div>
             </div>
@@ -303,7 +330,7 @@ export default function ChartPickerPage() {
               ) : !sample ? (
                 <div className="h-full rounded-md-custom border border-dashed border-[var(--border-color)] flex flex-col items-center justify-center text-[var(--text-secondary)]">
                   <Search className="w-10 h-10 mb-2" />
-                  <p className="text-sm">Chọn một Gold feature để xem preview</p>
+                  <p className="text-sm">{t('templates29ChartPicker.emptyPreviewHint')}</p>
                 </div>
               ) : (
                 <ChartPreview def={def} sample={sample} xField={xField} yField={yField} />
@@ -313,9 +340,8 @@ export default function ChartPickerPage() {
             <div className="px-5 py-3 border-t border-[var(--border-color)]/60 bg-[var(--bg-app)]/30 text-[11px] text-[var(--text-secondary)] flex items-start gap-2">
               <ShieldCheck className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
               <p>
-                Render qua <span className="font-mono">frontend/components/charts/chart-registry.tsx</span> —
-                không có endpoint <span className="font-mono">/api/v1/charts/render</span> (Sprint 7 PR D / §14).
-                Backend chỉ trả ChartBlock JSON, frontend tự vẽ.
+                {t('templates29ChartPicker.footerRenderVia')} <span className="font-mono">frontend/components/charts/chart-registry.tsx</span> —{' '}
+                {t('templates29ChartPicker.footerNoEndpoint')} <span className="font-mono">/api/v1/charts/render</span> {t('templates29ChartPicker.footerNote')}
               </p>
             </div>
           </div>
@@ -352,6 +378,7 @@ function CategoryButton({
 function ChartPreview({
   def, sample, xField, yField,
 }: { def: ChartDef; sample: SampleData; xField: string; yField: string }) {
+  const t = useT();
   const xIdx = sample.fields.findIndex((f) => f.name === xField);
   const yIdx = sample.fields.findIndex((f) => f.name === yField);
   const previewRows = sample.rows.slice(0, 8);
@@ -360,10 +387,10 @@ function ChartPreview({
     return (
       <div className="h-full rounded-md-custom border border-dashed border-[var(--state-warning)]/50 bg-[var(--state-warning)]/5 p-6 flex flex-col items-center justify-center text-center">
         <Filter className="w-8 h-8 text-[var(--state-warning)] mb-2" />
-        <p className="text-sm font-medium text-[var(--text-primary)]">Cần chọn cột phù hợp</p>
+        <p className="text-sm font-medium text-[var(--text-primary)]">{t('templates29ChartPicker.needColumnsTitle')}</p>
         <p className="text-xs text-[var(--text-secondary)] mt-1">
-          Biểu đồ <span className="font-medium">{def.label}</span> cần ít nhất {def.needs_x} cột X
-          {def.needs_y > 0 && ` và ${def.needs_y} cột Y số`}.
+          {t('templates29ChartPicker.needColumnsPrefix')} <span className="font-medium">{def.label}</span> {t('templates29ChartPicker.needColumnsSuffix', { count: def.needs_x })}
+          {def.needs_y > 0 && ` ${t('templates29ChartPicker.needColumnsAndY', { count: def.needs_y })}`}.
         </p>
       </div>
     );
@@ -400,7 +427,7 @@ function ChartPreview({
         </div>
       </div>
       <p className="text-[11px] text-[var(--text-secondary)] mt-2">
-        Preview hiển thị 8 hàng đầu — chart thật sẽ render đầy đủ {sample.rows.length.toLocaleString('vi-VN')} hàng qua chart-registry.
+        {t('templates29ChartPicker.previewFooter', { rows: sample.rows.length.toLocaleString('vi-VN') })}
       </p>
     </div>
   );

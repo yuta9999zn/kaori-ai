@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { analyticsApi } from "@/lib/api/client";
 import FlexibleChart from "@/components/charts/FlexibleChart";
 import { ChartBlock } from "@/components/charts/chart-registry";
+import { useT } from "@/lib/i18n/provider";
 
 // ── Types matching ai-orchestrator GET /analytics/runs/{id} ───────────────────
 
@@ -23,17 +24,17 @@ interface AnalysisRun {
   template_results: TemplateResult[];
 }
 
-const TEMPLATE_LABELS: Record<string, string> = {
-  summary_stats:  "Thống kê tổng quan",
-  time_series:    "Chuỗi thời gian",
-  distribution:   "Phân phối",
-  correlation:    "Tương quan",
-  clustering:     "Phân nhóm",
-  cohort:         "Cohort",
-  churn:          "Nguy cơ rời bỏ",
-  anomaly:        "Bất thường",
-  regression:     "Hồi quy",
-  bank_classify:  "Phân loại giao dịch",
+const TEMPLATE_LABEL_KEYS: Record<string, string> = {
+  summary_stats:  "pipelineResultsdashboard.templateSummaryStats",
+  time_series:    "pipelineResultsdashboard.templateTimeSeries",
+  distribution:   "pipelineResultsdashboard.templateDistribution",
+  correlation:    "pipelineResultsdashboard.templateCorrelation",
+  clustering:     "pipelineResultsdashboard.templateClustering",
+  cohort:         "pipelineResultsdashboard.templateCohort",
+  churn:          "pipelineResultsdashboard.templateChurn",
+  anomaly:        "pipelineResultsdashboard.templateAnomaly",
+  regression:     "pipelineResultsdashboard.templateRegression",
+  bank_classify:  "pipelineResultsdashboard.templateBankClassify",
 };
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -43,6 +44,11 @@ export default function ResultsDashboard({
 }: {
   analysisRunId: string;
 }) {
+  const t = useT();
+  const templateLabel = (id: string) => {
+    const key = TEMPLATE_LABEL_KEYS[id];
+    return key ? t(key) : id;
+  };
   const [run, setRun] = useState<AnalysisRun | null>(null);
   const [activeTab, setActiveTab] = useState("overview");
   const [polling, setPolling] = useState(true);
@@ -76,10 +82,10 @@ export default function ResultsDashboard({
   }
 
   const tabs = [
-    { key: "overview", label: "Tổng quan" },
+    { key: "overview", label: t("pipelineResultsdashboard.tabOverview") },
     ...run.template_results.map((r) => ({
       key: r.template_id,
-      label: TEMPLATE_LABELS[r.template_id] ?? r.template_id,
+      label: templateLabel(r.template_id),
       status: r.status,
     })),
   ];
@@ -92,17 +98,17 @@ export default function ResultsDashboard({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Kết quả phân tích</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t("pipelineResultsdashboard.title")}</h2>
           <p className="text-gray-500 mt-1 text-sm">
             {polling
-              ? `Đang phân tích... (${done}/${total} hoàn tất)`
-              : `${done}/${total} phân tích hoàn tất`}
+              ? t("pipelineResultsdashboard.statusPolling", { done, total })
+              : t("pipelineResultsdashboard.statusDone", { done, total })}
           </p>
         </div>
         {polling && (
           <div className="flex items-center gap-2 text-blue-600 text-sm">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600" />
-            Đang cập nhật...
+            {t("pipelineResultsdashboard.updating")}
           </div>
         )}
       </div>
@@ -138,7 +144,7 @@ export default function ResultsDashboard({
               <p className="text-blue-800 text-sm leading-relaxed">
                 {run.overview.narrative}
               </p>
-              <p className="text-blue-400 text-xs mt-2">Qwen2.5 · Tổng quan</p>
+              <p className="text-blue-400 text-xs mt-2">Qwen2.5 · {t("pipelineResultsdashboard.narrativeOverview")}</p>
             </div>
           )}
 
@@ -153,12 +159,12 @@ export default function ResultsDashboard({
               >
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold text-gray-800 text-sm">
-                    {TEMPLATE_LABELS[r.template_id] ?? r.template_id}
+                    {templateLabel(r.template_id)}
                   </h3>
                   <StatusBadge status={r.status} />
                 </div>
                 <p className="text-gray-400 text-xs">
-                  {r.results_payload?.blocks?.length ?? 0} biểu đồ
+                  {t("pipelineResultsdashboard.chartCount", { count: r.results_payload?.blocks?.length ?? 0 })}
                 </p>
               </button>
             ))}
@@ -175,7 +181,7 @@ export default function ResultsDashboard({
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-4" />
                   <p className="text-gray-600">
-                    Đang phân tích {TEMPLATE_LABELS[r.template_id]}...
+                    {t("pipelineResultsdashboard.analyzingTemplate", { template: templateLabel(r.template_id) })}
                   </p>
                 </div>
               </div>
@@ -183,7 +189,7 @@ export default function ResultsDashboard({
 
             {r.status === "error" && (
               <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-                <p className="text-red-700 font-medium">Phân tích thất bại</p>
+                <p className="text-red-700 font-medium">{t("pipelineResultsdashboard.analysisFailed")}</p>
                 {r.error_message && (
                   <p className="text-red-500 text-sm mt-1">{r.error_message}</p>
                 )}
@@ -207,13 +213,14 @@ export default function ResultsDashboard({
 // ── Block renderer ────────────────────────────────────────────────────────────
 
 function BlockRenderer({ block }: { block: ChartBlock }) {
+  const t = useT();
   if (block.type === "narrative") {
     return (
       <div className="bg-blue-50 border border-blue-100 rounded-xl p-5">
         <p className="text-blue-800 text-sm leading-relaxed">{block.text}</p>
         {block.provider && (
           <p className="text-blue-400 text-xs mt-2 capitalize">
-            {block.provider} · AI nhận xét
+            {block.provider} · {t("pipelineResultsdashboard.aiComment")}
           </p>
         )}
       </div>
@@ -259,6 +266,7 @@ function BlockRenderer({ block }: { block: ChartBlock }) {
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function StatusBadge({ status }: { status: string }) {
+  const t = useT();
   const map: Record<string, string> = {
     done:    "bg-green-100 text-green-700",
     error:   "bg-red-100 text-red-700",
@@ -266,7 +274,10 @@ function StatusBadge({ status }: { status: string }) {
     queued:  "bg-gray-100 text-gray-600",
   };
   const labels: Record<string, string> = {
-    done: "Hoàn tất", error: "Lỗi", running: "Đang chạy", queued: "Chờ",
+    done: t("pipelineResultsdashboard.badgeDone"),
+    error: t("pipelineResultsdashboard.badgeError"),
+    running: t("pipelineResultsdashboard.badgeRunning"),
+    queued: t("pipelineResultsdashboard.badgeQueued"),
   };
   return (
     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${map[status] ?? map.queued}`}>

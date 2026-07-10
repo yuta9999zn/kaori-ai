@@ -16,10 +16,18 @@ import {
 import { PageHeader } from '@/components/p2/shell';
 import { FolderTree } from '@/components/p2/dms/tree';
 import { FolderPage } from '@/components/p2/dms/folder-page';
+import { useT } from '@/lib/i18n/provider';
 
-const PERIOD_LABEL: Record<string, string> = {
-  day: 'Ngày', week: 'Tuần', month: 'Tháng', quarter: 'Quý', year: 'Năm',
-};
+function periodLabel(t: (key: string, params?: Record<string, string | number>) => string, kind: string): string {
+  const map: Record<string, string> = {
+    day: t('templates70DocumentRepository.periodLabelDay'),
+    week: t('templates70DocumentRepository.periodLabelWeek'),
+    month: t('templates70DocumentRepository.periodLabelMonth'),
+    quarter: t('templates70DocumentRepository.periodLabelQuarter'),
+    year: t('templates70DocumentRepository.periodLabelYear'),
+  };
+  return map[kind] ?? kind;
+}
 
 function dateQS(dateFrom: string, dateTo: string, periodKind: string): string {
   const p = new URLSearchParams();
@@ -31,6 +39,7 @@ function dateQS(dateFrom: string, dateTo: string, periodKind: string): string {
 }
 
 export default function DocumentRepositoryPage() {
+  const t = useT();
   const [current, setCurrent] = useState<string | null>(null);   // null = root
   const [crumbs, setCrumbs] = useState<{ folder_id: string; name_vi: string }[]>([]);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -68,12 +77,12 @@ export default function DocumentRepositoryPage() {
   return (
     <div className="space-y-4">
       <PageHeader
-        title="Kho tài liệu"
-        description="Mỗi thư mục là một trang nghiệp vụ (mô tả + mẫu tài liệu + file mẫu + lịch sử phiên bản) — tài liệu tải vào tự thừa hưởng cấu trúc."
+        title={t('templates70DocumentRepository.title')}
+        description={t('templates70DocumentRepository.pageDescription')}
         actions={
           <a href="/p2/document-templates"
             className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-md-custom border border-[var(--border-color)] bg-white hover:border-[var(--primary-gold)]/60 text-[var(--text-primary)]">
-            <LayoutTemplate className="w-4 h-4 text-[var(--primary-gold-dark)]" /> Mẫu tài liệu
+            <LayoutTemplate className="w-4 h-4 text-[var(--primary-gold-dark)]" /> {t('templates70DocumentRepository.templatesLink')}
           </a>
         }
       />
@@ -86,44 +95,44 @@ export default function DocumentRepositoryPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && runSearch()}
-            placeholder="Tìm tài liệu theo tên…"
+            placeholder={t('templates70DocumentRepository.searchPlaceholder')}
             className="w-full pl-9 pr-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
           />
         </div>
         <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)}
-          title="Từ ngày (theo ngày chứng từ)"
+          title={t('templates70DocumentRepository.dateFromTitle')}
           className="px-2 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm text-[var(--text-secondary)]" />
         <span className="text-xs text-[var(--text-secondary)]">→</span>
         <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)}
-          title="Đến ngày"
+          title={t('templates70DocumentRepository.dateToTitle')}
           className="px-2 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm text-[var(--text-secondary)]" />
         <select value={periodKind} onChange={(e) => setPeriodKind(e.target.value)}
-          title="Kỳ báo cáo"
+          title={t('templates70DocumentRepository.periodKindTitle')}
           className="px-2 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm text-[var(--text-secondary)]">
-          <option value="">Mọi kỳ</option>
-          <option value="day">Báo cáo ngày</option>
-          <option value="week">Báo cáo tuần</option>
-          <option value="month">Báo cáo tháng</option>
-          <option value="quarter">Báo cáo quý</option>
-          <option value="year">Báo cáo năm</option>
+          <option value="">{t('templates70DocumentRepository.periodAll')}</option>
+          <option value="day">{t('templates70DocumentRepository.periodReportDay')}</option>
+          <option value="week">{t('templates70DocumentRepository.periodReportWeek')}</option>
+          <option value="month">{t('templates70DocumentRepository.periodReportMonth')}</option>
+          <option value="quarter">{t('templates70DocumentRepository.periodReportQuarter')}</option>
+          <option value="year">{t('templates70DocumentRepository.periodReportYear')}</option>
         </select>
-        <Button variant="secondary" onClick={runSearch}>Tìm</Button>
+        <Button variant="secondary" onClick={runSearch}>{t('templates70DocumentRepository.searchButton')}</Button>
         {(dateFrom || dateTo || periodKind) && (
           <button onClick={() => { setDateFrom(''); setDateTo(''); setPeriodKind(''); setResults(null); }}
             className="text-xs text-[var(--text-secondary)] hover:text-[var(--state-error)] underline">
-            Xoá lọc
+            {t('templates70DocumentRepository.clearFilter')}
           </button>
         )}
         <div className="ml-auto flex items-center rounded-md-custom border border-[var(--border-color)] overflow-hidden">
           <button onClick={() => setView('page')}
             className={cn('px-2.5 py-2 text-xs flex items-center gap-1.5',
               view === 'page' ? 'bg-[var(--primary-gold)]/15 text-[var(--primary-gold-dark)] font-medium' : 'bg-white text-[var(--text-secondary)]')}>
-            <ListTree className="w-3.5 h-3.5" /> Cây nghiệp vụ
+            <ListTree className="w-3.5 h-3.5" /> {t('templates70DocumentRepository.viewTree')}
           </button>
           <button onClick={() => setView('time')}
             className={cn('px-2.5 py-2 text-xs flex items-center gap-1.5',
               view === 'time' ? 'bg-[var(--primary-gold)]/15 text-[var(--primary-gold-dark)] font-medium' : 'bg-white text-[var(--text-secondary)]')}>
-            <CalendarDays className="w-3.5 h-3.5" /> Theo thời gian
+            <CalendarDays className="w-3.5 h-3.5" /> {t('templates70DocumentRepository.viewTime')}
           </button>
         </div>
       </div>
@@ -133,9 +142,10 @@ export default function DocumentRepositoryPage() {
       {results !== null ? (
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-4">
           <p className="text-xs text-[var(--text-secondary)] mb-2">
-            {results.length} kết quả{search.trim() ? ` cho “${search}”` : ''}
+            {t('templates70DocumentRepository.resultsCount', { count: results.length })}
+            {search.trim() ? t('templates70DocumentRepository.resultsFor', { query: search }) : ''}
             {(dateFrom || dateTo) && ` · ${dateFrom || '…'} → ${dateTo || '…'}`}
-            {periodKind && ` · ${PERIOD_LABEL[periodKind]}`}
+            {periodKind && ` · ${periodLabel(t, periodKind)}`}
           </p>
           {results.map((r) => (
             <button key={r.doc_id} onClick={() => select(r.folder_id)}
@@ -147,7 +157,7 @@ export default function DocumentRepositoryPage() {
                   <CalendarDays className="w-3 h-3" />{r.doc_date}
                 </span>
               )}
-              {r.period_kind && <Badge variant="default" className="text-[10px] shrink-0">{PERIOD_LABEL[r.period_kind]}</Badge>}
+              {r.period_kind && <Badge variant="default" className="text-[10px] shrink-0">{periodLabel(t, r.period_kind)}</Badge>}
               <span className="text-[10px] text-[var(--text-secondary)] font-mono truncate">{r.path}</span>
             </button>
           ))}
@@ -171,7 +181,7 @@ export default function DocumentRepositoryPage() {
             <button onClick={() => select(null)}
               className={cn('flex items-center gap-1.5 px-1.5 py-1 rounded text-[13px] w-full mb-1',
                 current === null ? 'bg-[var(--primary-gold)]/15 text-[var(--primary-gold-dark)] font-medium' : 'hover:bg-[var(--bg-app)]/60')}>
-              <Home className="w-3.5 h-3.5" /> Kho tài liệu
+              <Home className="w-3.5 h-3.5" /> {t('templates70DocumentRepository.title')}
             </button>
             <FolderTree selected={current} onSelect={select}
               refreshKey={treeRefresh} onProblem={setProblem} />
@@ -181,7 +191,7 @@ export default function DocumentRepositoryPage() {
             {/* breadcrumb */}
             {current && crumbs.length > 0 && (
               <div className="flex items-center gap-1 text-xs text-[var(--text-secondary)] flex-wrap mb-3">
-                <button onClick={() => select(null)} className="hover:text-[var(--primary-gold-dark)]">Kho</button>
+                <button onClick={() => select(null)} className="hover:text-[var(--primary-gold-dark)]">{t('templates70DocumentRepository.breadcrumbRoot')}</button>
                 {crumbs.map((c) => (
                   <React.Fragment key={c.folder_id}>
                     <ChevronRight className="w-3 h-3 opacity-50" />
@@ -198,9 +208,9 @@ export default function DocumentRepositoryPage() {
               <FolderPage folderId={current} onUploaded={() => setTreeRefresh((k) => k + 1)} />
             ) : (
               <div className="py-14 text-center text-sm text-[var(--text-secondary)] border border-dashed border-[var(--border-color)] rounded-lg-custom">
-                <p className="font-medium text-[var(--text-primary)] mb-1">Chọn một nghiệp vụ ở cây bên trái</p>
-                <p>Mỗi thư mục là một <b>trang nghiệp vụ</b>: mô tả tài liệu, mẫu thuộc tính, file upload mẫu,<br />
-                  lịch sử phiên bản — tài liệu tải vào tự thừa hưởng cấu trúc của trang.</p>
+                <p className="font-medium text-[var(--text-primary)] mb-1">{t('templates70DocumentRepository.emptyStateTitle')}</p>
+                <p>{t('templates70DocumentRepository.emptyStatePre')} <b>{t('templates70DocumentRepository.emptyStateBold')}</b>{t('templates70DocumentRepository.emptyStatePost1')}<br />
+                  {t('templates70DocumentRepository.emptyStatePost2')}</p>
               </div>
             )}
           </main>
@@ -237,11 +247,11 @@ function bucketRange(b: Bucket): [string, string] {
   return [`${b.year}-01-01`, `${b.year}-12-31`];
 }
 
-function bucketLabel(b: Bucket): string {
-  if (b.day != null) return `Ngày ${String(b.day).padStart(2, '0')}`;
-  if (b.month != null) return `Tháng ${b.month}`;
-  if (b.quarter != null) return `Quý ${b.quarter}`;
-  return `Năm ${b.year}`;
+function bucketLabel(b: Bucket, t: (key: string, params?: Record<string, string | number>) => string): string {
+  if (b.day != null) return t('templates70DocumentRepository.bucketDay', { day: String(b.day).padStart(2, '0') });
+  if (b.month != null) return t('templates70DocumentRepository.bucketMonth', { month: b.month });
+  if (b.quarter != null) return t('templates70DocumentRepository.bucketQuarter', { quarter: b.quarter });
+  return t('templates70DocumentRepository.bucketYear', { year: b.year });
 }
 
 function bucketKey(b: Bucket): string {
@@ -252,6 +262,7 @@ function TimeTree({ periodKind, onPick }: {
   periodKind: string;
   onPick: (from: string, to: string) => void;
 }) {
+  const t = useT();
   const NEXT: Record<string, string | null> = { year: 'quarter', quarter: 'month', month: 'day', day: null };
   const [years, setYears] = useState<Bucket[] | null>(null);
   const [children, setChildren] = useState<Record<string, Bucket[]>>({});
@@ -296,12 +307,12 @@ function TimeTree({ periodKind, onPick }: {
             <CalendarDays className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0" />
             <button onClick={() => (expandable ? toggle(b, level) : onPick(from, to))}
               className="text-sm font-medium hover:text-[var(--primary-gold-dark)]">
-              {bucketLabel(b)}
+              {bucketLabel(b, t)}
             </button>
             <button onClick={() => onPick(from, to)}
-              title="Xem tài liệu trong khoảng này"
+              title={t('templates70DocumentRepository.viewRangeTitle')}
               className="ml-auto text-[10px] text-[var(--text-secondary)] hover:text-[var(--primary-gold-dark)] tabular-nums">
-              {b.doc_count} tài liệu →
+              {b.doc_count} {t('templates70DocumentRepository.docCountSuffix')} →
             </button>
           </div>
           {open[key] && children[key] && renderLevel(children[key], NEXT[level]!, depth + 1)}
@@ -317,13 +328,14 @@ function TimeTree({ periodKind, onPick }: {
   if (years === null)
     return <div className="py-10 text-center text-[var(--text-secondary)]"><Loader2 className="w-5 h-5 animate-spin inline" /></div>;
   if (years.length === 0)
-    return <div className="py-10 text-center text-sm text-[var(--text-secondary)]">Chưa có tài liệu nào để xếp theo thời gian.</div>;
+    return <div className="py-10 text-center text-sm text-[var(--text-secondary)]">{t('templates70DocumentRepository.noDocsTimeline')}</div>;
 
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-2">
       <p className="px-2 pt-1 pb-2 text-[11px] text-[var(--text-secondary)]">
-        Cây thời gian ảo — nhóm theo <b>ngày chứng từ</b> (tài liệu chưa gán ngày dùng ngày tải lên).
-        Bấm số lượng để xem tài liệu trong kỳ{periodKind ? ` (đang lọc: ${PERIOD_LABEL[periodKind]})` : ''}.
+        {t('templates70DocumentRepository.timelineIntroPre')} <b>{t('templates70DocumentRepository.timelineIntroBold')}</b>
+        {t('templates70DocumentRepository.timelineIntroPost')}
+        {periodKind ? t('templates70DocumentRepository.timelineFilterSuffix', { period: periodLabel(t, periodKind) }) : ''}.
       </p>
       {renderLevel(years, 'year', 0)}
     </div>

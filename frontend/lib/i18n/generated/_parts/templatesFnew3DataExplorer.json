@@ -1,0 +1,303 @@
+{
+  "templatesFnew3DataExplorer.title": {
+    "vi": "Khám phá dữ liệu",
+    "en": "Data Explorer",
+    "ja": "データ探索",
+    "ko": "데이터 탐색",
+    "zh": "数据浏览"
+  },
+  "templatesFnew3DataExplorer.description": {
+    "vi": "Tổng quan 3 lớp Medallion — Bronze (thô) → Silver (sạch) → Gold (chuẩn hoá phân tích).",
+    "en": "Overview of the 3 Medallion layers — Bronze (raw) → Silver (clean) → Gold (analysis-ready).",
+    "ja": "3つのMedallion層の概要 — Bronze（生データ）→ Silver（クレンジング）→ Gold（分析対応）。",
+    "ko": "3개 Medallion 레이어 개요 — Bronze(원본) → Silver(정제) → Gold(분석 준비).",
+    "zh": "3 层 Medallion 概览 — Bronze（原始）→ Silver（清洗）→ Gold（可分析）。"
+  },
+  "templatesFnew3DataExplorer.refresh": {
+    "vi": "Làm mới",
+    "en": "Refresh",
+    "ja": "更新",
+    "ko": "새로고침",
+    "zh": "刷新"
+  },
+  "templatesFnew3DataExplorer.uploadData": {
+    "vi": "Tải dữ liệu",
+    "en": "Upload data",
+    "ja": "データをアップロード",
+    "ko": "데이터 업로드",
+    "zh": "上传数据"
+  },
+  "templatesFnew3DataExplorer.overviewFailedTitle": {
+    "vi": "Tạm thời chưa tải được phần tổng quan",
+    "en": "The overview couldn't be loaded right now",
+    "ja": "現在、概要を読み込めません",
+    "ko": "현재 개요를 불러올 수 없습니다",
+    "zh": "暂时无法加载概览"
+  },
+  "templatesFnew3DataExplorer.overviewFailedDesc": {
+    "vi": "Số liệu tổng quan chưa phản hồi. Bạn vẫn mở được trực tiếp từng lớp dữ liệu bên dưới, hoặc bấm thử lại.",
+    "en": "The overview data hasn't responded yet. You can still open each data layer below directly, or try again.",
+    "ja": "概要データがまだ応答していません。以下の各データ層を直接開くか、再試行してください。",
+    "ko": "개요 데이터가 아직 응답하지 않았습니다. 아래에서 각 데이터 레이어를 직접 열거나 다시 시도하세요.",
+    "zh": "概览数据尚未响应。您仍可直接打开下方各数据层，或点击重试。"
+  },
+  "templatesFnew3DataExplorer.retry": {
+    "vi": "Thử lại",
+    "en": "Retry",
+    "ja": "再試行",
+    "ko": "다시 시도",
+    "zh": "重试"
+  },
+  "templatesFnew3DataExplorer.rawData": {
+    "vi": "Dữ liệu thô",
+    "en": "Raw data",
+    "ja": "生データ",
+    "ko": "원본 데이터",
+    "zh": "原始数据"
+  },
+  "templatesFnew3DataExplorer.cleaned": {
+    "vi": "Đã làm sạch",
+    "en": "Cleaned",
+    "ja": "クレンジング済み",
+    "ko": "정제 완료",
+    "zh": "已清洗"
+  },
+  "templatesFnew3DataExplorer.readyForAnalysis": {
+    "vi": "Sẵn để phân tích",
+    "en": "Ready for analysis",
+    "ja": "分析準備完了",
+    "ko": "분석 준비 완료",
+    "zh": "可供分析"
+  },
+  "templatesFnew3DataExplorer.bronzeSubtitle": {
+    "vi": "Dữ liệu thô — giữ nguyên bản gốc",
+    "en": "Raw data — kept in original form",
+    "ja": "生データ — 元のまま保持",
+    "ko": "원본 데이터 — 원형 그대로 유지",
+    "zh": "原始数据 — 保持原样"
+  },
+  "templatesFnew3DataExplorer.silverSubtitle": {
+    "vi": "Đã làm sạch + che thông tin nhạy cảm",
+    "en": "Cleaned + sensitive info masked",
+    "ja": "クレンジング済み + 機微情報をマスク",
+    "ko": "정제 완료 + 민감정보 마스킹",
+    "zh": "已清洗 + 敏感信息已脱敏"
+  },
+  "templatesFnew3DataExplorer.goldSubtitle": {
+    "vi": "Chuẩn hoá sẵn để phân tích",
+    "en": "Standardized and ready for analysis",
+    "ja": "標準化済み、分析準備完了",
+    "ko": "표준화되어 분석 준비 완료",
+    "zh": "已标准化，可供分析"
+  },
+  "templatesFnew3DataExplorer.statFile": {
+    "vi": "File",
+    "en": "File",
+    "ja": "ファイル",
+    "ko": "파일",
+    "zh": "文件"
+  },
+  "templatesFnew3DataExplorer.statRow": {
+    "vi": "Hàng",
+    "en": "Rows",
+    "ja": "行数",
+    "ko": "행",
+    "zh": "行数"
+  },
+  "templatesFnew3DataExplorer.statSize": {
+    "vi": "Dung lượng",
+    "en": "Size",
+    "ja": "容量",
+    "ko": "용량",
+    "zh": "容量"
+  },
+  "templatesFnew3DataExplorer.statDataset": {
+    "vi": "Dataset",
+    "en": "Dataset",
+    "ja": "データセット",
+    "ko": "데이터셋",
+    "zh": "数据集"
+  },
+  "templatesFnew3DataExplorer.statAvgQuality": {
+    "vi": "Chất lượng TB",
+    "en": "Avg quality",
+    "ja": "平均品質",
+    "ko": "평균 품질",
+    "zh": "平均质量"
+  },
+  "templatesFnew3DataExplorer.statFeature": {
+    "vi": "Feature",
+    "en": "Feature",
+    "ja": "フィーチャー",
+    "ko": "피처",
+    "zh": "特征"
+  },
+  "templatesFnew3DataExplorer.statStale": {
+    "vi": "Lỗi thời",
+    "en": "Stale",
+    "ja": "陳腐化",
+    "ko": "오래됨",
+    "zh": "过期"
+  },
+  "templatesFnew3DataExplorer.bronzeFailedAlert": {
+    "vi": "{count} lần ingest fail trong 24h",
+    "en": "{count} ingest failures in the last 24h",
+    "ja": "過去24時間で{count}回の取り込み失敗",
+    "ko": "지난 24시간 동안 {count}회 수집 실패",
+    "zh": "过去 24 小时内有 {count} 次导入失败"
+  },
+  "templatesFnew3DataExplorer.silverQualityAlert": {
+    "vi": "Chất lượng dữ liệu trung bình dưới 90%",
+    "en": "Average data quality is below 90%",
+    "ja": "平均データ品質が90%未満です",
+    "ko": "평균 데이터 품질이 90% 미만입니다",
+    "zh": "平均数据质量低于 90%"
+  },
+  "templatesFnew3DataExplorer.goldStaleAlert": {
+    "vi": "{count} feature lỗi thời > 90 ngày",
+    "en": "{count} features stale for over 90 days",
+    "ja": "90日以上更新のないフィーチャーが{count}件",
+    "ko": "90일 이상 오래된 피처 {count}개",
+    "zh": "{count} 个特征已超过 90 天未更新"
+  },
+  "templatesFnew3DataExplorer.bronzeLastIngest": {
+    "vi": "Ingest gần nhất: {time}",
+    "en": "Last ingest: {time}",
+    "ja": "直近の取り込み: {time}",
+    "ko": "최근 수집: {time}",
+    "zh": "最近导入：{time}"
+  },
+  "templatesFnew3DataExplorer.noDataYet": {
+    "vi": "Chưa có dữ liệu",
+    "en": "No data yet",
+    "ja": "データはまだありません",
+    "ko": "아직 데이터 없음",
+    "zh": "暂无数据"
+  },
+  "templatesFnew3DataExplorer.silverLastProcessed": {
+    "vi": "Xử lý gần nhất: {time}",
+    "en": "Last processed: {time}",
+    "ja": "直近の処理: {time}",
+    "ko": "최근 처리: {time}",
+    "zh": "最近处理：{time}"
+  },
+  "templatesFnew3DataExplorer.notProcessedYet": {
+    "vi": "Chưa xử lý",
+    "en": "Not processed yet",
+    "ja": "未処理",
+    "ko": "아직 처리되지 않음",
+    "zh": "尚未处理"
+  },
+  "templatesFnew3DataExplorer.goldLastAggregated": {
+    "vi": "Tổng hợp gần nhất: {time}",
+    "en": "Last aggregated: {time}",
+    "ja": "直近の集計: {time}",
+    "ko": "최근 집계: {time}",
+    "zh": "最近汇总：{time}"
+  },
+  "templatesFnew3DataExplorer.notAggregatedYet": {
+    "vi": "Chưa tổng hợp",
+    "en": "Not aggregated yet",
+    "ja": "未集計",
+    "ko": "아직 집계되지 않음",
+    "zh": "尚未汇总"
+  },
+  "templatesFnew3DataExplorer.recentActivity": {
+    "vi": "Hoạt động gần đây",
+    "en": "Recent activity",
+    "ja": "最近のアクティビティ",
+    "ko": "최근 활동",
+    "zh": "最近活动"
+  },
+  "templatesFnew3DataExplorer.viewFullPipeline": {
+    "vi": "Xem pipeline đầy đủ",
+    "en": "View full pipeline",
+    "ja": "パイプライン全体を表示",
+    "ko": "전체 파이프라인 보기",
+    "zh": "查看完整管道"
+  },
+  "templatesFnew3DataExplorer.noActivityYet": {
+    "vi": "Chưa có hoạt động.",
+    "en": "No activity yet.",
+    "ja": "アクティビティはまだありません。",
+    "ko": "아직 활동이 없습니다.",
+    "zh": "暂无活动。"
+  },
+  "templatesFnew3DataExplorer.kRule2": {
+    "vi": "Bronze append-only — không sửa, không xoá. Mọi thay đổi qua pipeline mới.",
+    "en": "Bronze is append-only — no edits, no deletes. All changes go through a new pipeline.",
+    "ja": "Bronzeは追記専用 — 編集も削除もできません。変更は新しいパイプラインを通してのみ行います。",
+    "ko": "Bronze는 추가 전용입니다 — 수정도 삭제도 불가합니다. 모든 변경은 새 파이프라인을 통해서만 이루어집니다.",
+    "zh": "Bronze 只追加，不可修改或删除。所有变更需通过新的管道。"
+  },
+  "templatesFnew3DataExplorer.kRule5": {
+    "vi": "Silver che PII trước mọi truy vấn — email/phone/ID hiện dạng <EMAIL_1>.",
+    "en": "Silver masks PII before every query — email/phone/ID appear as <EMAIL_1>.",
+    "ja": "Silverはすべてのクエリの前にPIIをマスクします — メール/電話/IDは<EMAIL_1>の形式で表示されます。",
+    "ko": "Silver는 모든 조회 전에 PII를 마스킹합니다 — 이메일/전화/ID는 <EMAIL_1> 형태로 표시됩니다.",
+    "zh": "Silver 在每次查询前都会脱敏个人信息 — 邮箱/电话/身份证以 <EMAIL_1> 形式呈现。"
+  },
+  "templatesFnew3DataExplorer.kRule9": {
+    "vi": "Gold dùng NUMERIC(14,4) cho tiền, NUMERIC(5,4) cho tỷ lệ — không FLOAT.",
+    "en": "Gold uses NUMERIC(14,4) for money, NUMERIC(5,4) for rates — never FLOAT.",
+    "ja": "Goldは金額にNUMERIC(14,4)、比率にNUMERIC(5,4)を使用します — FLOATは使いません。",
+    "ko": "Gold는 금액에 NUMERIC(14,4), 비율에 NUMERIC(5,4)를 사용합니다 — FLOAT는 사용하지 않습니다.",
+    "zh": "Gold 金额使用 NUMERIC(14,4)，比率使用 NUMERIC(5,4) — 绝不使用 FLOAT。"
+  },
+  "templatesFnew3DataExplorer.drillDownHint": {
+    "vi": "Drill-down xem từng dòng raw + lineage là Phase 2 v1 follow-up.",
+    "en": "Drilling into raw rows + lineage is a Phase 2 v1 follow-up.",
+    "ja": "生データ行とリネージのドリルダウンはPhase 2 v1のフォローアップです。",
+    "ko": "원본 행 및 계보 드릴다운은 Phase 2 v1 후속 작업입니다.",
+    "zh": "逐行下钻查看原始数据和血缘将在 Phase 2 v1 中跟进。"
+  },
+  "templatesFnew3DataExplorer.viewDetailsPrefix": {
+    "vi": "Hôm nay xem chi tiết qua",
+    "en": "For now, view details via",
+    "ja": "詳細は",
+    "ko": "지금은 상세 정보를",
+    "zh": "目前请通过"
+  },
+  "templatesFnew3DataExplorer.pipelinePage": {
+    "vi": "trang pipeline",
+    "en": "the pipeline page",
+    "ja": "パイプラインページ",
+    "ko": "파이프라인 페이지",
+    "zh": "管道页面"
+  },
+  "templatesFnew3DataExplorer.viewDetailsSuffix": {
+    "vi": ".",
+    "en": ".",
+    "ja": "をご覧ください。",
+    "ko": "에서 확인하세요.",
+    "zh": "查看。"
+  },
+  "templatesFnew3DataExplorer.justNow": {
+    "vi": "vừa xong",
+    "en": "just now",
+    "ja": "たった今",
+    "ko": "방금 전",
+    "zh": "刚刚"
+  },
+  "templatesFnew3DataExplorer.minutesAgo": {
+    "vi": "{n} phút trước",
+    "en": "{n} min ago",
+    "ja": "{n}分前",
+    "ko": "{n}분 전",
+    "zh": "{n} 分钟前"
+  },
+  "templatesFnew3DataExplorer.hoursAgo": {
+    "vi": "{n} giờ trước",
+    "en": "{n} hr ago",
+    "ja": "{n}時間前",
+    "ko": "{n}시간 전",
+    "zh": "{n} 小时前"
+  },
+  "templatesFnew3DataExplorer.daysAgo": {
+    "vi": "{n} ngày trước",
+    "en": "{n} days ago",
+    "ja": "{n}日前",
+    "ko": "{n}일 전",
+    "zh": "{n} 天前"
+  }
+}

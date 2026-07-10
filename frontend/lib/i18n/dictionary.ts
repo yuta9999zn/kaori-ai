@@ -1,7 +1,18 @@
 /**
  * i18n dictionary — 5 locales (VI default + EN + JA + KO + ZH).
  * VI is authoritative. EN is hand-reviewed. JA/KO/ZH are seeded.
+ *
+ * The hand-authored base catalog (below) is merged with machine-generated,
+ * screen-level catalogs under `generated/<locale>.json`. The generated
+ * catalog is produced by the screen-level i18n conversion pass (one
+ * namespace per component, keys never collide across files). Generated
+ * keys are spread AFTER the base so a base key always wins on conflict.
  */
+import viGen from './generated/vi.json';
+import enGen from './generated/en.json';
+import jaGen from './generated/ja.json';
+import koGen from './generated/ko.json';
+import zhGen from './generated/zh.json';
 
 export const LOCALES = ['vi', 'en', 'ja', 'ko', 'zh'] as const;
 export type Locale = typeof LOCALES[number];
@@ -560,7 +571,13 @@ const zh: Dict = {
   'error.quota_exceeded': '您已超出本月配额。',
 };
 
-const DICTS: Record<Locale, Dict> = { vi, en, ja, ko, zh };
+const DICTS: Record<Locale, Dict> = {
+  vi: { ...(viGen as Dict), ...vi },
+  en: { ...(enGen as Dict), ...en },
+  ja: { ...(jaGen as Dict), ...ja },
+  ko: { ...(koGen as Dict), ...ko },
+  zh: { ...(zhGen as Dict), ...zh },
+};
 
 export function translate(
   key: string,

@@ -6,7 +6,8 @@
 // the script to regenerate. Lazy `any` types added; not meant for strict tsc.
 
 import React, { useState, useEffect, useRef } from 'react';
-import { 
+import { useT } from '@/lib/i18n/provider';
+import {
   LayoutDashboard, 
   Briefcase, 
   Key, 
@@ -243,7 +244,9 @@ const Input = React.forwardRef<any, any>(({ className, label, error, helperText,
 Input.displayName = "Input";
 
 // --- SELECT (Simulated Radix Select) ---
-const Select = ({  label, placeholder = "Select an option", options = [], value, onChange, error, disabled  }: any) => {
+const Select = ({  label, placeholder, options = [], value, onChange, error, disabled  }: any) => {
+  const t = useT();
+  const effectivePlaceholder = placeholder || t('templates17WorkspaceEdit.selectDefaultPlaceholder');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -270,7 +273,7 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
           !selectedOption ? "text-[var(--text-secondary)]/60" : "text-[var(--text-primary)]"
         )}
       >
-        {selectedOption ? selectedOption.label : placeholder}
+        {selectedOption ? selectedOption.label : effectivePlaceholder}
         <ChevronDown className="h-4 w-4 opacity-50" />
       </button>
       {isOpen && !disabled && (
@@ -296,7 +299,9 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
 };
 
 // --- DATEPICKER (Simulated) ---
-const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any) => {
+const DatePicker = ({  label, placeholder, date, setDate  }: any) => {
+  const t = useT();
+  const effectivePlaceholder = placeholder || t('templates17WorkspaceEdit.datePickerDefaultPlaceholder');
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
   useEffect(() => {
@@ -317,19 +322,27 @@ const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any
         )}
       >
         <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
-        {date ? date : placeholder}
+        {date ? date : effectivePlaceholder}
       </button>
       {isOpen && (
         <div className="absolute top-full left-0 z-50 mt-1 p-3 bg-white rounded-md-custom border border-[var(--border-color)] shadow-soft-md animate-in fade-in zoom-in-95 duration-150 w-[280px]">
            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm font-semibold text-[var(--text-primary)]">October 2026</span>
+              <span className="text-sm font-semibold text-[var(--text-primary)]">{t('templates17WorkspaceEdit.calendarMonthLabel')}</span>
               <div className="flex gap-1">
                 <button className="p-1 hover:bg-[var(--bg-app)] rounded"><ChevronLeft className="w-4 h-4 text-[var(--text-secondary)]"/></button>
                 <button className="p-1 hover:bg-[var(--bg-app)] rounded"><ChevronRight className="w-4 h-4 text-[var(--text-secondary)]"/></button>
               </div>
            </div>
            <div className="grid grid-cols-7 gap-1 text-center text-xs text-[var(--text-secondary)] mb-2">
-             {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => <div key={d}>{d}</div>)}
+             {[
+               ['Su', 'templates17WorkspaceEdit.weekdaySu'],
+               ['Mo', 'templates17WorkspaceEdit.weekdayMo'],
+               ['Tu', 'templates17WorkspaceEdit.weekdayTu'],
+               ['We', 'templates17WorkspaceEdit.weekdayWe'],
+               ['Th', 'templates17WorkspaceEdit.weekdayTh'],
+               ['Fr', 'templates17WorkspaceEdit.weekdayFr'],
+               ['Sa', 'templates17WorkspaceEdit.weekdaySa'],
+             ].map(([d, key]) => <div key={d}>{t(key)}</div>)}
            </div>
            <div className="grid grid-cols-7 gap-1 text-sm">
              {Array.from({length: 31}).map((_, i) => (
@@ -388,6 +401,7 @@ const TableHead = ({  className, ...props  }: any) => <th className={cn("h-12 px
 const TableCell = ({  className, ...props  }: any) => <td className={cn("p-4 align-middle text-[var(--text-primary)]", className)} {...props} />;
 
 const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
+  const t = useT();
   return (
     <div className="rounded-lg-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm overflow-hidden w-full">
       <Table>
@@ -412,8 +426,8 @@ const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
                   <div className="w-10 h-10 rounded-full bg-[var(--bg-app)] flex items-center justify-center mb-2">
                     <Search className="w-5 h-5 text-[var(--text-secondary)]" />
                   </div>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">No results found</span>
-                  <span className="text-xs text-[var(--text-secondary)]">Try adjusting your filters</span>
+                  <span className="text-sm font-medium text-[var(--text-primary)]">{t('templates17WorkspaceEdit.noResultsFound')}</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{t('templates17WorkspaceEdit.tryAdjustingFilters')}</span>
                 </div>
               </TableCell>
             </TableRow>
@@ -428,10 +442,10 @@ const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
       </Table>
       {pagination && data.length > 0 && (
         <div className="border-t border-[var(--border-color)] px-4 py-3 flex items-center justify-between bg-[#FCFBF9]">
-          <span className="text-xs text-[var(--text-secondary)]">Showing 1 to {data.length} of {data.length} results</span>
+          <span className="text-xs text-[var(--text-secondary)]">{t('templates17WorkspaceEdit.showingResults', { count: data.length })}</span>
           <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled>Previous</Button>
-              <Button variant="outline" size="sm">Next</Button>
+              <Button variant="outline" size="sm" disabled>{t('templates17WorkspaceEdit.previous')}</Button>
+              <Button variant="outline" size="sm">{t('templates17WorkspaceEdit.next')}</Button>
           </div>
         </div>
       )}
@@ -606,6 +620,22 @@ const NAVIGATION_CONFIG = [
   }
 ];
 
+// i18n label lookups for NAVIGATION_CONFIG (module-scope config can't call useT() directly)
+const NAV_GROUP_LABEL_KEYS: Record<string, string> = {
+  Main: 'templates17WorkspaceEdit.navGroupMain',
+  Management: 'templates17WorkspaceEdit.navGroupManagement',
+  System: 'templates17WorkspaceEdit.navGroupSystem',
+};
+const NAV_ITEM_LABEL_KEYS: Record<string, string> = {
+  overview: 'templates17WorkspaceEdit.navPlatformHealth',
+  workspaces: 'templates17WorkspaceEdit.navWorkspaces',
+  keys: 'templates17WorkspaceEdit.navApiKeys',
+  billing: 'templates17WorkspaceEdit.navBilling',
+  admin: 'templates17WorkspaceEdit.navAdmins',
+  components: 'templates17WorkspaceEdit.navComponentLibrary',
+  sessions: 'templates17WorkspaceEdit.securitySessions',
+};
+
 // --- HEADER SUB-COMPONENTS ---
 const EnvBadge = ({  env = 'production'  }: any) => {
   const config = {
@@ -621,6 +651,7 @@ const EnvBadge = ({  env = 'production'  }: any) => {
 };
 
 const NotificationDropdown = () => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -641,7 +672,7 @@ const NotificationDropdown = () => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-[320px] bg-[var(--bg-card)] rounded-lg-custom shadow-soft-md border border-[var(--border-color)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 z-50">
           <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] bg-[#FCFBF9]">
-            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Notifications</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates17WorkspaceEdit.notifications')}</h3>
           </div>
           <div className="max-h-[300px] overflow-y-auto">
             {notifications.map((n) => (
@@ -661,6 +692,7 @@ const NotificationDropdown = () => {
 };
 
 const HeaderUserMenu = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -683,13 +715,13 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
           </div>
           <div className="p-1.5">
             <button onClick={() => { setActiveRoute('sessions'); setIsOpen(false); }} className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> Security & Sessions
+              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> {t('templates17WorkspaceEdit.securitySessions')}
             </button>
           </div>
           <div className="h-[1px] bg-[var(--border-color)]/50 mx-1.5" />
           <div className="p-1.5">
             <button className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] transition-colors flex items-center gap-2 font-medium">
-              <LogOut className="w-4 h-4" /> Sign out
+              <LogOut className="w-4 h-4" /> {t('templates17WorkspaceEdit.signOut')}
             </button>
           </div>
         </div>
@@ -699,13 +731,15 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
 };
 
 const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: any) => {
-  let routeLabel = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label;
-  if (activeRoute === 'workspace-details') routeLabel = 'Workspaces / Overview';
-  else if (activeRoute === 'workspace-members') routeLabel = 'Workspaces / Members';
-  else if (activeRoute === 'billing') routeLabel = 'Workspaces / Billing';
-  else if (activeRoute === 'audit-logs') routeLabel = 'Workspaces / Audit Logs';
-  else if (activeRoute === 'workspace-new') routeLabel = 'Workspaces / New Workspace';
-  else if (activeRoute === 'workspace-edit') routeLabel = 'Workspaces / Settings';
+  const t = useT();
+  const navItemMatch = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute);
+  let routeLabel = navItemMatch ? t(NAV_ITEM_LABEL_KEYS[navItemMatch.id] ?? navItemMatch.label) : undefined;
+  if (activeRoute === 'workspace-details') routeLabel = t('templates17WorkspaceEdit.breadcrumbWorkspaceOverview');
+  else if (activeRoute === 'workspace-members') routeLabel = t('templates17WorkspaceEdit.breadcrumbWorkspaceMembers');
+  else if (activeRoute === 'billing') routeLabel = t('templates17WorkspaceEdit.breadcrumbWorkspaceBilling');
+  else if (activeRoute === 'audit-logs') routeLabel = t('templates17WorkspaceEdit.breadcrumbWorkspaceAuditLogs');
+  else if (activeRoute === 'workspace-new') routeLabel = t('templates17WorkspaceEdit.breadcrumbWorkspaceNew');
+  else if (activeRoute === 'workspace-edit') routeLabel = t('templates17WorkspaceEdit.breadcrumbWorkspaceSettings');
   else if (!routeLabel) routeLabel = activeRoute;
 
   return (
@@ -715,7 +749,7 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
           <Menu className="w-5 h-5" />
         </button>
         <div className="hidden sm:flex items-center text-sm font-medium">
-          <span className="text-[var(--text-secondary)]">Platform</span>
+          <span className="text-[var(--text-secondary)]">{t('templates17WorkspaceEdit.breadcrumbPlatform')}</span>
           <ChevronRight className="w-4 h-4 mx-2 text-[var(--border-color)] shrink-0 opacity-50" />
           <span className="text-[var(--text-primary)] capitalize">{routeLabel}</span>
         </div>
@@ -726,9 +760,9 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
         <div className="hidden sm:flex items-center gap-2">
            <div className="relative group hidden lg:block">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-[var(--text-secondary)] group-focus-within:text-[var(--primary-gold)] transition-colors" />
-              <input type="text" placeholder="Search..." className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
+              <input type="text" placeholder={t('templates17WorkspaceEdit.searchPlaceholder')} className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
             </div>
-            <Button variant="outline" size="sm" onClick={() => setActiveRoute('workspace-new')} className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> Workspace</Button>
+            <Button variant="outline" size="sm" onClick={() => setActiveRoute('workspace-new')} className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> {t('templates17WorkspaceEdit.newWorkspaceButton')}</Button>
         </div>
         <NotificationDropdown />
         <HeaderUserMenu setActiveRoute={setActiveRoute} />
@@ -752,6 +786,7 @@ const SidebarTooltip = ({  children, content, isCollapsed  }: any) => {
 };
 
 const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, setIsCollapsed  }: any) => {
+  const t = useT();
   const collapsed = isCollapsed && !isMobile;
   // Keep Workspaces highlighted for any workspace sub-route or billing
   const currentHighlight = (activeRoute === 'workspace-details' || activeRoute === 'workspace-members' || activeRoute === 'billing' || activeRoute === 'audit-logs' || activeRoute === 'workspace-new' || activeRoute === 'workspace-edit') ? 'workspaces' : activeRoute;
@@ -768,16 +803,16 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
         {!collapsed && (
           <div className="flex flex-col overflow-hidden animate-in fade-in duration-300">
             <span className="font-serif text-[17px] leading-none font-semibold text-[var(--text-primary)] tracking-wide">Kaori</span>
-            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">Platform</span>
+            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">{t('templates17WorkspaceEdit.breadcrumbPlatform')}</span>
           </div>
         )}
       </div>
 
-      <nav aria-label="Main Navigation" className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-6">
+      <nav aria-label={t('templates17WorkspaceEdit.mainNavigationAriaLabel')} className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-6">
         {NAVIGATION_CONFIG.map((group, idx) => (
           <div key={idx} className="flex flex-col">
             {!collapsed ? (
-              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{group.group}</div>
+              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{t(NAV_GROUP_LABEL_KEYS[group.group] ?? group.group)}</div>
             ) : (
               <div className="w-full h-[1px] bg-[var(--border-color)]/60 my-2 rounded-full" />
             )}
@@ -785,8 +820,9 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
               {group.items.map((item) => {
                 const isActive = currentHighlight === item.id;
                 const Icon = item.icon;
+                const itemLabel = t(NAV_ITEM_LABEL_KEYS[item.id] ?? item.label);
                 return (
-                  <SidebarTooltip key={item.id} content={item.label} isCollapsed={collapsed}>
+                  <SidebarTooltip key={item.id} content={itemLabel} isCollapsed={collapsed}>
                     <button
                       onClick={() => setActiveRoute(item.id)}
                       className={cn(
@@ -797,7 +833,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
                     >
                       {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[var(--primary-gold)] rounded-r-md transition-all" />}
                       <Icon className={`shrink-0 transition-colors ${isActive ? 'text-[var(--primary-gold)] w-5 h-5' : 'w-[18px] h-[18px] group-hover:text-[var(--text-primary)]'}`} />
-                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{item.label}</span>}
+                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{itemLabel}</span>}
                       {!collapsed && item.badge && (
                         <span className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[var(--primary-gold)] text-white text-[10px] font-bold shadow-sm ml-2">
                           {item.badge}
@@ -822,7 +858,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
             className={cn("w-full flex items-center h-8 rounded-md-custom text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors border border-transparent hover:border-[var(--border-color)]/50", collapsed ? 'justify-center' : 'px-3 gap-3')}
           >
             {collapsed ? <PanelLeftOpen className="w-[18px] h-[18px]" /> : <PanelLeftClose className="w-[18px] h-[18px]" />}
-            {!collapsed && <span className="text-xs font-medium">Collapse sidebar</span>}
+            {!collapsed && <span className="text-xs font-medium">{t('templates17WorkspaceEdit.collapseSidebar')}</span>}
           </button>
         )}
       </div>
@@ -837,6 +873,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
 
 // --- EDIT WORKSPACE SETTINGS PAGE ---
 const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isSaving, setIsSaving] = useState(false);
   const [showSavedToast, setShowSavedToast] = useState(false);
   
@@ -880,21 +917,21 @@ const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
       {showSavedToast && (
         <div className="absolute top-0 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="bg-[#F3F9F5] border border-[#8FBFA0] text-[#427A5B] px-4 py-2 rounded-full shadow-soft-md flex items-center gap-2 text-sm font-medium">
-            <CheckCircle2 className="w-4 h-4" /> Changes saved successfully
+            <CheckCircle2 className="w-4 h-4" /> {t('templates17WorkspaceEdit.changesSavedToast')}
           </div>
         </div>
       )}
 
-      <PageHeader 
-        showBack 
+      <PageHeader
+        showBack
         onBack={() => setActiveRoute('workspace-details')}
-        title="Workspace Settings" 
-        subtitle="Update configuration and preferences for this environment."
+        title={t('templates17WorkspaceEdit.workspaceSettingsTitle')}
+        subtitle={t('templates17WorkspaceEdit.workspaceSettingsSubtitle')}
         actions={
           <>
-            <Button variant="tertiary" onClick={() => setActiveRoute('workspace-details')} className="hidden sm:flex">Cancel</Button>
+            <Button variant="tertiary" onClick={() => setActiveRoute('workspace-details')} className="hidden sm:flex">{t('templates17WorkspaceEdit.cancel')}</Button>
             <Button onClick={handleSave} disabled={!isDirty} isLoading={isSaving}>
-              <Save className="w-4 h-4 mr-2" /> Save changes
+              <Save className="w-4 h-4 mr-2" /> {t('templates17WorkspaceEdit.saveChanges')}
             </Button>
           </>
         }
@@ -903,45 +940,45 @@ const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
       <Tabs defaultValue="general" tabs={[
         {
           id: 'general',
-          label: 'General',
+          label: t('templates17WorkspaceEdit.tabGeneral'),
           content: (
             <div className="space-y-8 animate-step">
               <Section>
                 <Card className="p-6">
-                  <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">Basic Information</h3>
+                  <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">{t('templates17WorkspaceEdit.basicInformation')}</h3>
                   <div className="space-y-5">
-                    <Input 
-                      label="Workspace Name" 
+                    <Input
+                      label={t('templates17WorkspaceEdit.workspaceNameLabel')}
                       value={formData.name}
                       onChange={(e: any) => setFormData({...formData, name: e.target.value})}
                     />
-                    <Input 
-                      label="Description" 
+                    <Input
+                      label={t('templates17WorkspaceEdit.descriptionLabel')}
                       value={formData.description}
                       onChange={(e: any) => setFormData({...formData, description: e.target.value})}
                     />
-                    <Input 
-                      label="Deployment Region" 
-                      value="US East (N. Virginia)" 
-                      disabled 
-                      helperText="Region cannot be changed after workspace creation for data compliance reasons."
+                    <Input
+                      label={t('templates17WorkspaceEdit.deploymentRegionLabel')}
+                      value={t('templates17WorkspaceEdit.regionUsEast')}
+                      disabled
+                      helperText={t('templates17WorkspaceEdit.regionChangeHelper')}
                     />
                   </div>
                 </Card>
               </Section>
               <Section>
                 <Card className="p-6">
-                  <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">Display Settings</h3>
+                  <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">{t('templates17WorkspaceEdit.displaySettings')}</h3>
                   <div className="space-y-5">
-                    <Select 
-                      label="Default Timezone" 
+                    <Select
+                      label={t('templates17WorkspaceEdit.defaultTimezoneLabel')}
                       value={formData.timezone}
                       onChange={(v: any) => setFormData({...formData, timezone: v})}
                       options={[
-                        {label: 'UTC (Coordinated Universal Time)', value: 'UTC'},
-                        {label: 'PST (Pacific Standard Time)', value: 'PST'},
-                        {label: 'EST (Eastern Standard Time)', value: 'EST'},
-                        {label: 'CET (Central European Time)', value: 'CET'}
+                        {label: t('templates17WorkspaceEdit.tzUtc'), value: 'UTC'},
+                        {label: t('templates17WorkspaceEdit.tzPst'), value: 'PST'},
+                        {label: t('templates17WorkspaceEdit.tzEst'), value: 'EST'},
+                        {label: t('templates17WorkspaceEdit.tzCet'), value: 'CET'}
                       ]}
                     />
                   </div>
@@ -952,22 +989,22 @@ const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
         },
         {
           id: 'advanced',
-          label: 'Advanced',
+          label: t('templates17WorkspaceEdit.tabAdvanced'),
           content: (
             <div className="space-y-8 animate-step">
               <Section>
                 <Card className="p-6">
-                  <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">Resource Limits</h3>
-                  <p className="text-xs text-[var(--text-secondary)] mb-5">Override default workspace limits. Requires Enterprise plan.</p>
+                  <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">{t('templates17WorkspaceEdit.resourceLimits')}</h3>
+                  <p className="text-xs text-[var(--text-secondary)] mb-5">{t('templates17WorkspaceEdit.resourceLimitsDesc')}</p>
                   <div className="space-y-5">
-                    <Input 
-                      label="API Rate Limit (req/sec)" 
+                    <Input
+                      label={t('templates17WorkspaceEdit.apiRateLimitLabel')}
                       type="number"
                       value={formData.rateLimit}
                       onChange={(e: any) => setFormData({...formData, rateLimit: e.target.value})}
                     />
-                    <Input 
-                      label="Storage Quota (GB)" 
+                    <Input
+                      label={t('templates17WorkspaceEdit.storageQuotaLabel')}
                       type="number"
                       value={formData.storageQuota}
                       onChange={(e: any) => setFormData({...formData, storageQuota: e.target.value})}
@@ -978,9 +1015,9 @@ const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
               <Section>
                  <Card className="p-6 opacity-60 pointer-events-none">
                     <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3 flex items-center justify-between">
-                      Integrations <Badge>Coming Soon</Badge>
+                      {t('templates17WorkspaceEdit.integrations')} <Badge>{t('templates17WorkspaceEdit.comingSoon')}</Badge>
                     </h3>
-                    <p className="text-xs text-[var(--text-secondary)]">External connections (Slack, Datadog) will be configured here.</p>
+                    <p className="text-xs text-[var(--text-secondary)]">{t('templates17WorkspaceEdit.integrationsDesc')}</p>
                  </Card>
               </Section>
             </div>
@@ -988,29 +1025,29 @@ const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
         },
         {
           id: 'danger',
-          label: 'Danger Zone',
+          label: t('templates17WorkspaceEdit.tabDangerZone'),
           content: (
             <div className="space-y-8 animate-step">
               <Section>
                 <Card className="p-6 border-[#D97C7C]/40 bg-[#FDF8F8]">
                   <h3 className="text-sm font-semibold text-[#9B5050] mb-4 border-b border-[#D97C7C]/30 pb-3 flex items-center">
-                    <AlertTriangle className="w-4 h-4 mr-2" /> Danger Zone
+                    <AlertTriangle className="w-4 h-4 mr-2" /> {t('templates17WorkspaceEdit.tabDangerZone')}
                   </h3>
-                  
+
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4 border-b border-[#D97C7C]/20">
                     <div>
-                      <h4 className="text-sm font-medium text-[var(--text-primary)]">Suspend Workspace</h4>
-                      <p className="text-xs text-[var(--text-secondary)] mt-1">Temporarily disable all API access and logins for this workspace.</p>
+                      <h4 className="text-sm font-medium text-[var(--text-primary)]">{t('templates17WorkspaceEdit.suspendWorkspaceHeading')}</h4>
+                      <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates17WorkspaceEdit.suspendWorkspaceDesc')}</p>
                     </div>
-                    <Button variant="secondary" className="shrink-0 text-[#9B5050] hover:bg-[#D97C7C]/10 border-[#D97C7C]/40">Suspend</Button>
+                    <Button variant="secondary" className="shrink-0 text-[#9B5050] hover:bg-[#D97C7C]/10 border-[#D97C7C]/40">{t('templates17WorkspaceEdit.suspend')}</Button>
                   </div>
 
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
                     <div>
-                      <h4 className="text-sm font-medium text-[var(--text-primary)]">Delete Workspace</h4>
-                      <p className="text-xs text-[var(--text-secondary)] mt-1">Permanently remove this workspace and all its data. This action is irreversible.</p>
+                      <h4 className="text-sm font-medium text-[var(--text-primary)]">{t('templates17WorkspaceEdit.deleteWorkspace')}</h4>
+                      <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates17WorkspaceEdit.deleteWorkspaceDesc')}</p>
                     </div>
-                    <Button variant="destructive" className="shrink-0" onClick={() => setIsDeleteModalOpen(true)}>Delete Workspace</Button>
+                    <Button variant="destructive" className="shrink-0" onClick={() => setIsDeleteModalOpen(true)}>{t('templates17WorkspaceEdit.deleteWorkspace')}</Button>
                   </div>
                 </Card>
               </Section>
@@ -1020,28 +1057,28 @@ const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
       ]} />
 
       {/* Delete Confirmation Modal */}
-      <Modal 
-        isOpen={isDeleteModalOpen} 
+      <Modal
+        isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        title="Delete Workspace"
-        description="This action cannot be undone. This will permanently delete the workspace and remove all associated data."
+        title={t('templates17WorkspaceEdit.deleteWorkspace')}
+        description={t('templates17WorkspaceEdit.deleteWorkspaceModalDesc')}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={deleteConfirmText !== formData.name}>I understand, delete this workspace</Button>
+            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>{t('templates17WorkspaceEdit.cancel')}</Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={deleteConfirmText !== formData.name}>{t('templates17WorkspaceEdit.deleteWorkspaceConfirmButton')}</Button>
           </>
         }
       >
         <div className="space-y-4">
-          <Alert variant="error" title="Warning">
-            All API keys will be revoked immediately and active sessions will be terminated.
+          <Alert variant="error" title={t('templates17WorkspaceEdit.warning')}>
+            {t('templates17WorkspaceEdit.deleteWorkspaceAlertMsg')}
           </Alert>
           <div className="space-y-2 mt-4">
-            <Label>Please type <strong className="font-bold text-[var(--text-primary)]">{formData.name}</strong> to confirm.</Label>
-            <Input 
+            <Label>{t('templates17WorkspaceEdit.deleteConfirmPrefix')} <strong className="font-bold text-[var(--text-primary)]">{formData.name}</strong> {t('templates17WorkspaceEdit.deleteConfirmSuffix')}</Label>
+            <Input
               value={deleteConfirmText}
               onChange={(e: any) => setDeleteConfirmText(e.target.value)}
-              placeholder="Workspace name"
+              placeholder={t('templates17WorkspaceEdit.workspaceNamePlaceholder')}
             />
           </div>
         </div>
@@ -1053,6 +1090,7 @@ const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
 
 // --- COMPONENTS PAGE ---
 const ComponentsPage = () => {
+  const t = useT();
   const [date, setDate] = useState("");
   const [selectVal, setSelectVal] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -1060,100 +1098,100 @@ const ComponentsPage = () => {
   
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Component Library" 
-        subtitle="Foundational UI system for Kaori Platform following strict design tokens."
-        actions={<Button>Deploy System</Button>}
+      <PageHeader
+        title={t('templates17WorkspaceEdit.componentLibraryTitle')}
+        subtitle={t('templates17WorkspaceEdit.componentLibrarySubtitle')}
+        actions={<Button>{t('templates17WorkspaceEdit.deploySystem')}</Button>}
       />
-      
+
       <Tabs defaultValue="form" tabs={[
-        { id: 'form', label: 'Forms & Inputs', content: (
+        { id: 'form', label: t('templates17WorkspaceEdit.tabFormsInputs'), content: (
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <Section title="Buttons" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)]">
+             <Section title={t('templates17WorkspaceEdit.sectionButtons')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)]">
                <div className="flex flex-wrap gap-4 mb-4">
-                 <Button variant="primary">Primary Button</Button>
-                 <Button variant="secondary">Secondary Button</Button>
-                 <Button variant="tertiary">Tertiary Ghost</Button>
+                 <Button variant="primary">{t('templates17WorkspaceEdit.primaryButton')}</Button>
+                 <Button variant="secondary">{t('templates17WorkspaceEdit.secondaryButton')}</Button>
+                 <Button variant="tertiary">{t('templates17WorkspaceEdit.tertiaryGhost')}</Button>
                </div>
                <div className="flex flex-wrap gap-4 items-center">
-                 <Button variant="primary" isLoading>Loading</Button>
-                 <Button variant="destructive">Destructive Action</Button>
+                 <Button variant="primary" isLoading>{t('templates17WorkspaceEdit.loading')}</Button>
+                 <Button variant="destructive">{t('templates17WorkspaceEdit.destructiveAction')}</Button>
                  <Button variant="primary" size="icon"><Plus className="w-4 h-4"/></Button>
                </div>
              </Section>
-             
-             <Section title="Inputs & Selects" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] space-y-4">
-                <Input label="Email Address" placeholder="admin@kaori.io" helperText="We will never share your email." />
-                <Input label="Workspace Name" placeholder="e.g. Production AI" error="This workspace name is already taken." />
-                <Select 
-                  label="Environment" 
-                  placeholder="Select environment..." 
-                  options={[{label: 'Production', value: 'prod'}, {label: 'Staging', value: 'stage'}]}
+
+             <Section title={t('templates17WorkspaceEdit.sectionInputsSelects')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] space-y-4">
+                <Input label={t('templates17WorkspaceEdit.emailAddressLabel')} placeholder="admin@kaori.io" helperText={t('templates17WorkspaceEdit.emailHelperText')} />
+                <Input label={t('templates17WorkspaceEdit.workspaceNameLabel')} placeholder={t('templates17WorkspaceEdit.workspaceNamePlaceholderExample')} error={t('templates17WorkspaceEdit.workspaceNameTakenError')} />
+                <Select
+                  label={t('templates17WorkspaceEdit.environmentLabel')}
+                  placeholder={t('templates17WorkspaceEdit.selectEnvironmentPlaceholder')}
+                  options={[{label: t('templates17WorkspaceEdit.production'), value: 'prod'}, {label: t('templates17WorkspaceEdit.staging'), value: 'stage'}]}
                   value={selectVal}
                   onChange={setSelectVal}
                 />
-                <DatePicker label="Billing Cycle Start" date={date} setDate={setDate} />
+                <DatePicker label={t('templates17WorkspaceEdit.billingCycleStartLabel')} date={date} setDate={setDate} />
              </Section>
            </div>
         )},
-        { id: 'data', label: 'Data Display', content: (
+        { id: 'data', label: t('templates17WorkspaceEdit.tabDataDisplay'), content: (
            <div className="space-y-8">
-             <Section title="Metric Cards">
+             <Section title={t('templates17WorkspaceEdit.sectionMetricCards')}>
                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                 <MetricCard title="Total Revenue" value="$45,231" trend="+20.1%" isUp={true} />
-                 <MetricCard title="Active Workspaces" value="12" trend="0%" />
-                 <MetricCard title="Error Rate" value="1.2%" trend="+0.4%" isUp={false} inverseGood={true} />
+                 <MetricCard title={t('templates17WorkspaceEdit.totalRevenue')} value="$45,231" trend="+20.1%" isUp={true} />
+                 <MetricCard title={t('templates17WorkspaceEdit.activeWorkspaces')} value="12" trend="0%" />
+                 <MetricCard title={t('templates17WorkspaceEdit.errorRate')} value="1.2%" trend="+0.4%" isUp={false} inverseGood={true} />
                </div>
              </Section>
-             
-             <Section title="Data Table">
-                <DataTable 
-                  columns={["Workspace", "Environment", "Status", "Created"]}
+
+             <Section title={t('templates17WorkspaceEdit.sectionDataTable')}>
+                <DataTable
+                  columns={[t('templates17WorkspaceEdit.colWorkspace'), t('templates17WorkspaceEdit.colEnvironment'), t('templates17WorkspaceEdit.colStatus'), t('templates17WorkspaceEdit.colCreated')]}
                   data={[
-                    ["Production AI", "Production", <Badge variant="operational" key="1">Healthy</Badge>, "Oct 12, 2026"],
-                    ["Staging Data", "Staging", <Badge variant="degraded" key="2">Degraded</Badge>, "Oct 14, 2026"],
-                    ["Dev Cluster", "Development", <Badge variant="operational" key="3">Healthy</Badge>, "Oct 15, 2026"]
+                    ["Production AI", t('templates17WorkspaceEdit.production'), <Badge variant="operational" key="1">{t('templates17WorkspaceEdit.healthy')}</Badge>, "Oct 12, 2026"],
+                    ["Staging Data", t('templates17WorkspaceEdit.staging'), <Badge variant="degraded" key="2">{t('templates17WorkspaceEdit.degraded')}</Badge>, "Oct 14, 2026"],
+                    ["Dev Cluster", "Development", <Badge variant="operational" key="3">{t('templates17WorkspaceEdit.healthy')}</Badge>, "Oct 15, 2026"]
                   ]}
                   loading={false}
                 />
              </Section>
            </div>
         )},
-        { id: 'feedback', label: 'Feedback & Overlays', content: (
+        { id: 'feedback', label: t('templates17WorkspaceEdit.tabFeedbackOverlays'), content: (
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <Section title="Alerts" className="space-y-4">
-               <Alert variant="info" title="System Update">A new version of the platform shell is available.</Alert>
-               <Alert variant="success" title="Backup Complete">All workspace data has been successfully backed up.</Alert>
-               <Alert variant="warning" title="High Latency">We are detecting high latency in the EU-Central region.</Alert>
-               <Alert variant="error" title="Payment Failed">Your last invoice could not be processed.</Alert>
+             <Section title={t('templates17WorkspaceEdit.sectionAlerts')} className="space-y-4">
+               <Alert variant="info" title={t('templates17WorkspaceEdit.alertSystemUpdateTitle')}>{t('templates17WorkspaceEdit.alertSystemUpdateMsg')}</Alert>
+               <Alert variant="success" title={t('templates17WorkspaceEdit.alertBackupCompleteTitle')}>{t('templates17WorkspaceEdit.alertBackupCompleteMsg')}</Alert>
+               <Alert variant="warning" title={t('templates17WorkspaceEdit.alertHighLatencyTitle')}>{t('templates17WorkspaceEdit.alertHighLatencyMsg')}</Alert>
+               <Alert variant="error" title={t('templates17WorkspaceEdit.alertPaymentFailedTitle')}>{t('templates17WorkspaceEdit.alertPaymentFailedMsg')}</Alert>
              </Section>
-             
-             <Section title="Modals & Drawers" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] flex flex-col gap-4 items-start">
-               <Button variant="secondary" onClick={() => setIsModalOpen(true)}>Open Modal</Button>
-               <Button variant="secondary" onClick={() => setIsDrawerOpen(true)}>Open Drawer</Button>
-               
-               <Modal 
-                 isOpen={isModalOpen} 
+
+             <Section title={t('templates17WorkspaceEdit.sectionModalsDrawers')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] flex flex-col gap-4 items-start">
+               <Button variant="secondary" onClick={() => setIsModalOpen(true)}>{t('templates17WorkspaceEdit.openModal')}</Button>
+               <Button variant="secondary" onClick={() => setIsDrawerOpen(true)}>{t('templates17WorkspaceEdit.openDrawer')}</Button>
+
+               <Modal
+                 isOpen={isModalOpen}
                  onClose={() => setIsModalOpen(false)}
-                 title="Delete Workspace"
-                 description="Are you sure you want to delete this workspace? This action cannot be undone."
-                 footer={<><Button variant="outline" onClick={()=>setIsModalOpen(false)}>Cancel</Button><Button variant="destructive">Confirm Delete</Button></>}
+                 title={t('templates17WorkspaceEdit.deleteWorkspace')}
+                 description={t('templates17WorkspaceEdit.deleteWorkspaceConfirmDesc')}
+                 footer={<><Button variant="outline" onClick={()=>setIsModalOpen(false)}>{t('templates17WorkspaceEdit.cancel')}</Button><Button variant="destructive">{t('templates17WorkspaceEdit.confirmDelete')}</Button></>}
                >
                  <div className="space-y-4">
-                    <Input label="Type workspace name to confirm" placeholder="Production AI" />
+                    <Input label={t('templates17WorkspaceEdit.typeWorkspaceNameConfirmLabel')} placeholder="Production AI" />
                  </div>
                </Modal>
 
                <Drawer
                  isOpen={isDrawerOpen}
                  onClose={() => setIsDrawerOpen(false)}
-                 title="Edit Profile"
-                 footer={<><Button variant="outline" className="w-full" onClick={()=>setIsDrawerOpen(false)}>Cancel</Button><Button className="w-full">Save Changes</Button></>}
+                 title={t('templates17WorkspaceEdit.editProfile')}
+                 footer={<><Button variant="outline" className="w-full" onClick={()=>setIsDrawerOpen(false)}>{t('templates17WorkspaceEdit.cancel')}</Button><Button className="w-full">{t('templates17WorkspaceEdit.saveChangesCapital')}</Button></>}
                >
                  <div className="space-y-4">
-                    <Input label="Full Name" placeholder="Admin User" />
-                    <Input label="Email" placeholder="admin@kaori.io" disabled />
-                    <Select label="Role" options={[{label:'Admin', value:'admin'}, {label:'Member', value:'member'}]} value="admin" onChange={()=>{}} />
+                    <Input label={t('templates17WorkspaceEdit.fullNameLabel')} placeholder="Admin User" />
+                    <Input label={t('templates17WorkspaceEdit.emailLabel')} placeholder="admin@kaori.io" disabled />
+                    <Select label={t('templates17WorkspaceEdit.roleLabel')} options={[{label: t('templates17WorkspaceEdit.admin'), value:'admin'}, {label: t('templates17WorkspaceEdit.member'), value:'member'}]} value="admin" onChange={()=>{}} />
                  </div>
                </Drawer>
              </Section>
@@ -1166,20 +1204,21 @@ const ComponentsPage = () => {
 
 // --- PLATFORM OVERVIEW PAGE ---
 const PlatformOverview = () => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader title="Platform Overview" subtitle="Monitor system health, usage, and recent activity." actions={<Button variant="outline"><RefreshCw className="w-4 h-4 mr-2" /> Refresh Data</Button>} />
+      <PageHeader title={t('templates17WorkspaceEdit.platformOverviewTitle')} subtitle={t('templates17WorkspaceEdit.platformOverviewSubtitle')} actions={<Button variant="outline"><RefreshCw className="w-4 h-4 mr-2" /> {t('templates17WorkspaceEdit.refreshData')}</Button>} />
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="Total Workspaces" value="124" trend="+4" isUp={true} />
-          <MetricCard title="Active Users" value="1,892" trend="+12.5%" isUp={true} />
-          <MetricCard title="API Requests" value="2.4M" trend="+5.2%" isUp={true} />
-          <MetricCard title="Failed Requests" value="482" trend="-18%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates17WorkspaceEdit.totalWorkspaces')} value="124" trend="+4" isUp={true} />
+          <MetricCard title={t('templates17WorkspaceEdit.activeUsers')} value="1,892" trend="+12.5%" isUp={true} />
+          <MetricCard title={t('templates17WorkspaceEdit.apiRequests')} value="2.4M" trend="+5.2%" isUp={true} />
+          <MetricCard title={t('templates17WorkspaceEdit.failedRequests')} value="482" trend="-18%" isUp={false} inverseGood={true} />
         </div>
       </Section>
-      <Section title="Recent Activity">
-         <DataTable 
-            columns={["Event", "Workspace", "Time"]}
+      <Section title={t('templates17WorkspaceEdit.recentActivity')}>
+         <DataTable
+            columns={[t('templates17WorkspaceEdit.colEvent'), t('templates17WorkspaceEdit.colWorkspace'), t('templates17WorkspaceEdit.colTime')]}
             data={[
               ["API Key Generated", "Production AI", "2 mins ago"],
               ["Workspace Created", "Staging Env", "1 hour ago"],
@@ -1194,14 +1233,15 @@ const PlatformOverview = () => {
 
 // --- SESSIONS PAGE ---
 const SessionsPage = () => {
+  const t = useT();
   return (
     <PageContainer maxWidth="narrow">
-      <PageHeader title="Active Sessions" subtitle="Manage devices where your account is currently signed in." actions={<Button variant="outline">Sign out all</Button>} />
-      <Section title="Security & Sessions">
+      <PageHeader title={t('templates17WorkspaceEdit.activeSessionsTitle')} subtitle={t('templates17WorkspaceEdit.activeSessionsSubtitle')} actions={<Button variant="outline">{t('templates17WorkspaceEdit.signOutAll')}</Button>} />
+      <Section title={t('templates17WorkspaceEdit.securitySessions')}>
         <Card className="p-8 text-center flex flex-col items-center">
           <Shield className="w-8 h-8 text-[var(--text-secondary)] mb-3" />
-          <h3 className="text-sm font-medium text-[var(--text-primary)]">Security & Sessions</h3>
-          <p className="text-xs text-[var(--text-secondary)] mt-1">Manage active logins here.</p>
+          <h3 className="text-sm font-medium text-[var(--text-primary)]">{t('templates17WorkspaceEdit.securitySessions')}</h3>
+          <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates17WorkspaceEdit.manageActiveLoginsText')}</p>
         </Card>
       </Section>
     </PageContainer>
@@ -1210,10 +1250,11 @@ const SessionsPage = () => {
 
 // --- CREATE WORKSPACE WIZARD ---
 const Stepper = ({  currentStep  }: any) => {
+  const t = useT();
   const steps = [
-    { num: 1, label: 'Workspace Info' },
-    { num: 2, label: 'Plan Selection' },
-    { num: 3, label: 'Review & Create' }
+    { num: 1, label: t('templates17WorkspaceEdit.stepWorkspaceInfo') },
+    { num: 2, label: t('templates17WorkspaceEdit.stepPlanSelection') },
+    { num: 3, label: t('templates17WorkspaceEdit.stepReviewCreate') }
   ];
 
   return (
@@ -1258,6 +1299,7 @@ const Stepper = ({  currentStep  }: any) => {
 };
 
 const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [step, setStep] = useState(1);
   const [isCreating, setIsCreating] = useState(false);
   const [formData, setFormData] = useState({
@@ -1270,10 +1312,10 @@ const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
 
   const validateStep1 = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Workspace name is required';
-    else if (formData.name.length < 3) newErrors.name = 'Name must be at least 3 characters';
-    
-    if (!formData.region) newErrors.region = 'Please select a deployment region';
+    if (!formData.name.trim()) newErrors.name = t('templates17WorkspaceEdit.errWorkspaceNameRequired');
+    else if (formData.name.length < 3) newErrors.name = t('templates17WorkspaceEdit.errWorkspaceNameMinLength');
+
+    if (!formData.region) newErrors.region = t('templates17WorkspaceEdit.errRegionRequired');
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -1295,8 +1337,8 @@ const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
   return (
     <PageContainer maxWidth="narrow" className="pt-8">
       <div className="mb-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <h1 className="text-3xl font-serif font-semibold text-[var(--text-primary)] mb-2">Create a Workspace</h1>
-        <p className="text-sm text-[var(--text-secondary)]">Set up a new isolated environment for your team in minutes.</p>
+        <h1 className="text-3xl font-serif font-semibold text-[var(--text-primary)] mb-2">{t('templates17WorkspaceEdit.createWorkspaceTitle')}</h1>
+        <p className="text-sm text-[var(--text-secondary)]">{t('templates17WorkspaceEdit.createWorkspaceSubtitle')}</p>
       </div>
 
       <Stepper currentStep={step} />
@@ -1305,13 +1347,13 @@ const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
         {step === 1 && (
           <div className="space-y-6 animate-step">
             <div>
-              <h2 className="text-lg font-semibold text-[var(--text-primary)]">Workspace Details</h2>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">Provide the basic information for your new tenant environment.</p>
+              <h2 className="text-lg font-semibold text-[var(--text-primary)]">{t('templates17WorkspaceEdit.workspaceDetailsHeading')}</h2>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates17WorkspaceEdit.workspaceDetailsDesc')}</p>
             </div>
             <div className="space-y-5">
-              <Input label="Workspace Name" placeholder="e.g. Acme Corp Production" value={formData.name} onChange={(e: any) => { setFormData({...formData, name: e.target.value}); if (errors.name) setErrors({...errors, name: ''}); }} error={errors.name} autoFocus />
-              <Input label="Description (Optional)" placeholder="Briefly describe the purpose of this workspace..." value={formData.description} onChange={(e: any) => setFormData({...formData, description: e.target.value})} />
-              <Select label="Data Region" placeholder="Select deployment region..." options={[{label: 'US East (N. Virginia)', value: 'us-east'}, {label: 'EU Central (Frankfurt)', value: 'eu-central'}, {label: 'Asia Pacific (Singapore)', value: 'ap-southeast'}]} value={formData.region} onChange={(v: any) => { setFormData({...formData, region: v}); if (errors.region) setErrors({...errors, region: ''}); }} error={errors.region} />
+              <Input label={t('templates17WorkspaceEdit.workspaceNameLabel')} placeholder={t('templates17WorkspaceEdit.workspaceNamePlaceholderAcme')} value={formData.name} onChange={(e: any) => { setFormData({...formData, name: e.target.value}); if (errors.name) setErrors({...errors, name: ''}); }} error={errors.name} autoFocus />
+              <Input label={t('templates17WorkspaceEdit.descriptionOptionalLabel')} placeholder={t('templates17WorkspaceEdit.descriptionPlaceholder')} value={formData.description} onChange={(e: any) => setFormData({...formData, description: e.target.value})} />
+              <Select label={t('templates17WorkspaceEdit.dataRegionLabel')} placeholder={t('templates17WorkspaceEdit.selectRegionPlaceholder')} options={[{label: t('templates17WorkspaceEdit.regionUsEast'), value: 'us-east'}, {label: t('templates17WorkspaceEdit.regionEuCentral'), value: 'eu-central'}, {label: t('templates17WorkspaceEdit.regionApSoutheast'), value: 'ap-southeast'}]} value={formData.region} onChange={(v: any) => { setFormData({...formData, region: v}); if (errors.region) setErrors({...errors, region: ''}); }} error={errors.region} />
             </div>
           </div>
         )}
@@ -1319,20 +1361,20 @@ const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
         {step === 2 && (
           <div className="space-y-6 animate-step">
             <div>
-              <h2 className="text-lg font-semibold text-[var(--text-primary)]">Select a Plan</h2>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">Choose the right tier for your workspace requirements.</p>
+              <h2 className="text-lg font-semibold text-[var(--text-primary)]">{t('templates17WorkspaceEdit.selectPlanHeading')}</h2>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates17WorkspaceEdit.selectPlanDesc')}</p>
             </div>
             <div className="grid grid-cols-1 gap-4">
               {[
-                { id: 'free', name: 'Free Tier', price: '$0', desc: '10,000 API reqs/mo, 5GB storage. Best for testing.' },
-                { id: 'pro', name: 'Pro', price: '$49', desc: '50,000 API reqs/mo, 50GB storage, email support.', recommended: true },
-                { id: 'enterprise', name: 'Enterprise', price: '$249', desc: 'Unlimited reqs, 500GB storage, 24/7 priority SLA.' }
+                { id: 'free', name: t('templates17WorkspaceEdit.freeTier'), price: '$0', desc: t('templates17WorkspaceEdit.freeTierDesc') },
+                { id: 'pro', name: t('templates17WorkspaceEdit.proTierName'), price: '$49', desc: t('templates17WorkspaceEdit.proTierDesc'), recommended: true },
+                { id: 'enterprise', name: t('templates17WorkspaceEdit.enterpriseTierName'), price: '$249', desc: t('templates17WorkspaceEdit.enterpriseTierDesc') }
               ].map(plan => (
                 <div key={plan.id} onClick={() => setFormData({...formData, plan: plan.id})} className={cn("relative flex items-center p-4 rounded-md-custom border cursor-pointer transition-all duration-200", formData.plan === plan.id ? "border-[var(--primary-gold)] bg-[var(--primary-gold)]/5 shadow-soft-sm" : "border-[var(--border-color)] bg-white hover:border-[var(--primary-gold)]/40 hover:bg-[var(--bg-app)]")}>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <h4 className="text-sm font-semibold text-[var(--text-primary)]">{plan.name}</h4>
-                      {plan.recommended && <Badge variant="current">Recommended</Badge>}
+                      {plan.recommended && <Badge variant="current">{t('templates17WorkspaceEdit.recommended')}</Badge>}
                     </div>
                     <p className="text-xs text-[var(--text-secondary)] mt-1">{plan.desc}</p>
                   </div>
@@ -1351,37 +1393,37 @@ const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
         {step === 3 && (
           <div className="space-y-6 animate-step">
             <div>
-              <h2 className="text-lg font-semibold text-[var(--text-primary)]">Review & Create</h2>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">Please confirm your workspace configuration before provisioning.</p>
+              <h2 className="text-lg font-semibold text-[var(--text-primary)]">{t('templates17WorkspaceEdit.reviewCreateHeading')}</h2>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates17WorkspaceEdit.reviewCreateDesc')}</p>
             </div>
             <div className="bg-[var(--bg-app)] rounded-md-custom border border-[var(--border-color)] p-5 space-y-4">
               <div className="flex justify-between items-center border-b border-[var(--border-color)] pb-3">
-                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Workspace Name</span>
+                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t('templates17WorkspaceEdit.workspaceNameLabel')}</span>
                 <span className="text-sm font-medium text-[var(--text-primary)]">{formData.name}</span>
               </div>
               <div className="flex justify-between items-center border-b border-[var(--border-color)] pb-3">
-                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Description</span>
-                <span className="text-sm text-[var(--text-primary)] text-right truncate max-w-[200px]">{formData.description || 'None provided'}</span>
+                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t('templates17WorkspaceEdit.descriptionLabel')}</span>
+                <span className="text-sm text-[var(--text-primary)] text-right truncate max-w-[200px]">{formData.description || t('templates17WorkspaceEdit.noneProvided')}</span>
               </div>
               <div className="flex justify-between items-center border-b border-[var(--border-color)] pb-3">
-                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Region</span>
-                <span className="text-sm font-medium text-[var(--text-primary)]">{formData.region === 'us-east' ? 'US East (N. Virginia)' : formData.region === 'eu-central' ? 'EU Central (Frankfurt)' : formData.region === 'ap-southeast' ? 'Asia Pacific (Singapore)' : 'None'}</span>
+                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t('templates17WorkspaceEdit.regionLabel')}</span>
+                <span className="text-sm font-medium text-[var(--text-primary)]">{formData.region === 'us-east' ? t('templates17WorkspaceEdit.regionUsEast') : formData.region === 'eu-central' ? t('templates17WorkspaceEdit.regionEuCentral') : formData.region === 'ap-southeast' ? t('templates17WorkspaceEdit.regionApSoutheast') : t('templates17WorkspaceEdit.none')}</span>
               </div>
               <div className="flex justify-between items-center pt-1">
-                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Selected Plan</span>
-                <Badge variant={formData.plan === 'pro' ? 'current' : 'operational'} className="capitalize">{formData.plan} Tier</Badge>
+                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t('templates17WorkspaceEdit.selectedPlanLabel')}</span>
+                <Badge variant={formData.plan === 'pro' ? 'current' : 'operational'} className="capitalize">{formData.plan} {t('templates17WorkspaceEdit.tierSuffix')}</Badge>
               </div>
             </div>
-            <Alert variant="info" title="Ready to provision">Creating a workspace will instantly provision isolated infrastructure in your selected region.</Alert>
+            <Alert variant="info" title={t('templates17WorkspaceEdit.readyToProvisionTitle')}>{t('templates17WorkspaceEdit.readyToProvisionMsg')}</Alert>
           </div>
         )}
 
         <div className="mt-8 pt-6 border-t border-[var(--border-color)] flex items-center justify-between">
-          <Button variant="tertiary" onClick={step === 1 ? () => setActiveRoute('workspaces') : handleBack} disabled={isCreating}>{step === 1 ? 'Cancel' : 'Back'}</Button>
+          <Button variant="tertiary" onClick={step === 1 ? () => setActiveRoute('workspaces') : handleBack} disabled={isCreating}>{step === 1 ? t('templates17WorkspaceEdit.cancel') : t('templates17WorkspaceEdit.back')}</Button>
           {step < 3 ? (
-            <Button onClick={handleNext}>Continue <ChevronRight className="w-4 h-4 ml-1" /></Button>
+            <Button onClick={handleNext}>{t('templates17WorkspaceEdit.continueBtn')} <ChevronRight className="w-4 h-4 ml-1" /></Button>
           ) : (
-            <Button onClick={handleCreate} isLoading={isCreating}>Create Workspace</Button>
+            <Button onClick={handleCreate} isLoading={isCreating}>{t('templates17WorkspaceEdit.createWorkspaceBtn')}</Button>
           )}
         </div>
       </Card>
@@ -1391,6 +1433,7 @@ const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
 
 // --- WORKSPACE OVERVIEW PAGE ---
 const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -1411,25 +1454,25 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
         subtitle="ws_prod_01 • Main production environment for ML models" 
         actions={
           <>
-            <Button variant="outline" className="hidden sm:flex" onClick={() => setActiveRoute('workspace-edit')}><Edit2 className="w-4 h-4 mr-2"/> Edit details</Button>
-            <Button variant="outline" className="hidden sm:flex" onClick={() => setActiveRoute('workspace-members')}><Users className="w-4 h-4 mr-2"/> Manage members</Button>
+            <Button variant="outline" className="hidden sm:flex" onClick={() => setActiveRoute('workspace-edit')}><Edit2 className="w-4 h-4 mr-2"/> {t('templates17WorkspaceEdit.editDetails')}</Button>
+            <Button variant="outline" className="hidden sm:flex" onClick={() => setActiveRoute('workspace-members')}><Users className="w-4 h-4 mr-2"/> {t('templates17WorkspaceEdit.manageMembers')}</Button>
             <div className="relative" ref={dropdownRef}>
                <Button variant="tertiary" size="icon" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                  <MoreVertical className="w-4 h-4" />
                </Button>
                {isDropdownOpen && (
                   <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 animate-in fade-in zoom-in-95 duration-100">
-                    <button 
+                    <button
                       onClick={() => { setActiveRoute('audit-logs'); setIsDropdownOpen(false); }}
                       className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors"
                     >
-                      <Activity className="w-4 h-4 text-[var(--text-secondary)]"/> Audit logs
+                      <Activity className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates17WorkspaceEdit.auditLogs')}
                     </button>
-                    <button 
+                    <button
                       onClick={() => { setActiveRoute('billing'); setIsDropdownOpen(false); }}
                       className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors"
                     >
-                      <CreditCard className="w-4 h-4 text-[var(--text-secondary)]"/> Billing
+                      <CreditCard className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates17WorkspaceEdit.navBilling')}
                     </button>
                   </div>
                )}
@@ -1443,23 +1486,23 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
            <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-[var(--primary-gold)]/5 to-transparent pointer-events-none" />
            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 relative z-10">
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Status</p>
-                <Badge variant="operational" className="py-1">Active</Badge>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates17WorkspaceEdit.statusLabel')}</p>
+                <Badge variant="operational" className="py-1">{t('templates17WorkspaceEdit.active')}</Badge>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Plan</p>
-                <div className="text-sm font-medium text-[var(--text-primary)]">Enterprise</div>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates17WorkspaceEdit.planLabel')}</p>
+                <div className="text-sm font-medium text-[var(--text-primary)]">{t('templates17WorkspaceEdit.enterpriseTierName')}</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Region</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates17WorkspaceEdit.regionLabel')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">US-East</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Created</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates17WorkspaceEdit.createdLabel')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">Oct 12, 2026</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Owner</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates17WorkspaceEdit.ownerLabel')}</p>
                 <div className="flex items-center gap-2">
                    <div className="w-5 h-5 rounded bg-[var(--bg-app)] border border-[var(--border-color)] flex items-center justify-center text-[10px] font-bold text-[var(--primary-gold)]">A</div>
                    <div className="text-sm font-medium text-[var(--text-primary)]">Admin User</div>
@@ -1471,28 +1514,28 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
 
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="API Requests (Today)" value="124.5K" trend="+5.2%" isUp={true} />
-          <MetricCard title="Active Users" value="14" trend="0%" />
-          <MetricCard title="Error Rate" value="0.01%" trend="-0.04%" isUp={false} inverseGood={true} />
-          <MetricCard title="Storage Used" value="84 GB" trend="+2.1%" isUp={true} />
+          <MetricCard title={t('templates17WorkspaceEdit.apiRequestsToday')} value="124.5K" trend="+5.2%" isUp={true} />
+          <MetricCard title={t('templates17WorkspaceEdit.activeUsers')} value="14" trend="0%" />
+          <MetricCard title={t('templates17WorkspaceEdit.errorRate')} value="0.01%" trend="-0.04%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates17WorkspaceEdit.storageUsed')} value="84 GB" trend="+2.1%" isUp={true} />
         </div>
       </Section>
 
       <Section>
         <Tabs defaultValue="overview" tabs={[
-          { 
-            id: 'overview', 
-            label: 'Overview', 
+          {
+            id: 'overview',
+            label: t('templates17WorkspaceEdit.tabOverview'),
             content: (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
                 <div className="lg:col-span-2 space-y-4">
                   <div className="flex items-center justify-between">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Recent Activity</h3>
-                     <Button variant="tertiary" size="sm" onClick={() => setActiveRoute('audit-logs')}>View all logs</Button>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates17WorkspaceEdit.recentActivity')}</h3>
+                     <Button variant="tertiary" size="sm" onClick={() => setActiveRoute('audit-logs')}>{t('templates17WorkspaceEdit.viewAllLogs')}</Button>
                   </div>
-                  <DataTable 
+                  <DataTable
                     pagination={false}
-                    columns={["Event", "Actor", "Time"]}
+                    columns={[t('templates17WorkspaceEdit.colEvent'), t('templates17WorkspaceEdit.colActor'), t('templates17WorkspaceEdit.colTime')]}
                     data={[
                       ["Billing updated to Enterprise", "Admin User", "2 days ago"],
                       ["API Key 'Prod Token' generated", "System", "Oct 18, 2026"],
@@ -1503,27 +1546,27 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
                 </div>
                 <div className="space-y-6 sm:space-y-8">
                    <div className="space-y-4">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Alerts</h3>
-                     <Alert variant="success" title="Healthy">No issues detected for this workspace.</Alert>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates17WorkspaceEdit.alertsHeading')}</h3>
+                     <Alert variant="success" title={t('templates17WorkspaceEdit.healthy')}>{t('templates17WorkspaceEdit.noIssuesMsg')}</Alert>
                    </div>
                    <div className="space-y-4">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Quick Actions</h3>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates17WorkspaceEdit.quickActionsHeading')}</h3>
                      <div className="bg-[var(--bg-card)] rounded-md-custom border border-[var(--border-color)] p-4 shadow-soft-sm flex flex-col gap-2">
-                        <Button variant="outline" className="w-full justify-start"><Key className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> Generate API Key</Button>
-                        <Button variant="outline" className="w-full justify-start" onClick={() => setActiveRoute('workspace-members')}><UserPlus className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> Invite User</Button>
-                        <Button variant="outline" className="w-full justify-start" onClick={() => setActiveRoute('billing')}><CreditCard className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> Manage Billing</Button>
+                        <Button variant="outline" className="w-full justify-start"><Key className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> {t('templates17WorkspaceEdit.generateApiKey')}</Button>
+                        <Button variant="outline" className="w-full justify-start" onClick={() => setActiveRoute('workspace-members')}><UserPlus className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> {t('templates17WorkspaceEdit.inviteUser')}</Button>
+                        <Button variant="outline" className="w-full justify-start" onClick={() => setActiveRoute('billing')}><CreditCard className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> {t('templates17WorkspaceEdit.manageBilling')}</Button>
                      </div>
                    </div>
                 </div>
               </div>
             )
           },
-          { 
-            id: 'activity', 
-            label: 'Activity', 
+          {
+            id: 'activity',
+            label: t('templates17WorkspaceEdit.tabActivity'),
             content: (
-               <DataTable 
-                columns={["Event", "Resource", "Actor", "Time"]}
+               <DataTable
+                columns={[t('templates17WorkspaceEdit.colEvent'), t('templates17WorkspaceEdit.colResource'), t('templates17WorkspaceEdit.colActor'), t('templates17WorkspaceEdit.colTime')]}
                 data={[
                   ["Billing updated", "Plan: Enterprise", "Admin User", "2 days ago"],
                   ["Key generated", "Prod Token", "System", "Oct 18, 2026"],
@@ -1534,9 +1577,9 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
               />
             )
           },
-          { 
-            id: 'usage', 
-            label: 'Usage', 
+          {
+            id: 'usage',
+            label: t('templates17WorkspaceEdit.tabUsage'),
             content: (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="p-6">
@@ -1545,12 +1588,12 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
                       <Zap className="w-5 h-5 text-[var(--text-secondary)]" />
                     </div>
                     <div>
-                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">API Calls</h3>
-                       <p className="text-xs text-[var(--text-secondary)]">Last 30 days</p>
+                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates17WorkspaceEdit.apiCallsHeading')}</h3>
+                       <p className="text-xs text-[var(--text-secondary)]">{t('templates17WorkspaceEdit.last30Days')}</p>
                     </div>
                   </div>
                   <div className="text-3xl font-semibold text-[var(--text-primary)]">2.4M</div>
-                  <div className="text-sm text-[var(--text-secondary)] mt-2">12% of Enterprise Limit (20M)</div>
+                  <div className="text-sm text-[var(--text-secondary)] mt-2">{t('templates17WorkspaceEdit.enterpriseLimit20m')}</div>
                   <div className="w-full bg-[var(--bg-app)] rounded-full h-2 mt-4 border border-[var(--border-color)] overflow-hidden">
                      <div className="bg-[var(--primary-gold)] h-2 rounded-full" style={{width: '12%'}}></div>
                   </div>
@@ -1561,12 +1604,12 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
                       <Server className="w-5 h-5 text-[var(--text-secondary)]" />
                     </div>
                     <div>
-                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">Storage</h3>
-                       <p className="text-xs text-[var(--text-secondary)]">Current usage</p>
+                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates17WorkspaceEdit.storageHeading')}</h3>
+                       <p className="text-xs text-[var(--text-secondary)]">{t('templates17WorkspaceEdit.currentUsage')}</p>
                     </div>
                   </div>
                   <div className="text-3xl font-semibold text-[var(--text-primary)]">84 GB</div>
-                  <div className="text-sm text-[var(--text-secondary)] mt-2">16% of Enterprise Limit (500 GB)</div>
+                  <div className="text-sm text-[var(--text-secondary)] mt-2">{t('templates17WorkspaceEdit.enterpriseLimit500gb')}</div>
                   <div className="w-full bg-[var(--bg-app)] rounded-full h-2 mt-4 border border-[var(--border-color)] overflow-hidden">
                      <div className="bg-[#5C856A] h-2 rounded-full" style={{width: '16%'}}></div>
                   </div>
@@ -1574,13 +1617,13 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
               </div>
             )
           },
-          { id: 'keys', label: 'API Keys', content: <Alert variant="info" title="Keys">Manage API keys here.</Alert> },
-          { id: 'members', label: 'Members', content: (
+          { id: 'keys', label: t('templates17WorkspaceEdit.navApiKeys'), content: <Alert variant="info" title={t('templates17WorkspaceEdit.keysAlertTitle')}>{t('templates17WorkspaceEdit.manageApiKeysHereMsg')}</Alert> },
+          { id: 'members', label: t('templates17WorkspaceEdit.tabMembers'), content: (
             <Card className="p-8 text-center flex flex-col items-center">
               <Users className="w-8 h-8 text-[var(--text-secondary)] mb-3" />
-              <h3 className="text-sm font-medium text-[var(--text-primary)]">Workspace Members</h3>
-              <p className="text-xs text-[var(--text-secondary)] mt-1 mb-4">Manage active members and roles.</p>
-              <Button onClick={() => setActiveRoute('workspace-members')}>Open Members Management</Button>
+              <h3 className="text-sm font-medium text-[var(--text-primary)]">{t('templates17WorkspaceEdit.workspaceMembersHeading')}</h3>
+              <p className="text-xs text-[var(--text-secondary)] mt-1 mb-4">{t('templates17WorkspaceEdit.manageActiveMembersDesc')}</p>
+              <Button onClick={() => setActiveRoute('workspace-members')}>{t('templates17WorkspaceEdit.openMembersManagement')}</Button>
             </Card>
           )}
         ]} />
@@ -1598,6 +1641,7 @@ const MOCK_WORKSPACES = [
 ];
 
 const RowActionsDropdown = ({  workspaceId, onViewDetails, onEdit  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
 
@@ -1617,20 +1661,20 @@ const RowActionsDropdown = ({  workspaceId, onViewDetails, onEdit  }: any) => {
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 animate-in fade-in zoom-in-95 duration-100">
           <button onClick={() => { onViewDetails(); setIsOpen(false); }} className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> View details
+            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates17WorkspaceEdit.viewDetails')}
           </button>
           <button onClick={() => { onEdit(); setIsOpen(false); }} className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Edit2 className="w-4 h-4 text-[var(--text-secondary)]"/> Edit workspace
+            <Edit2 className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates17WorkspaceEdit.editWorkspace')}
           </button>
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Users className="w-4 h-4 text-[var(--text-secondary)]"/> Manage members
+            <Users className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates17WorkspaceEdit.manageMembers')}
           </button>
           <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2" />
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-warning)] hover:bg-[#FDF9F0] flex items-center gap-2 transition-colors font-medium">
-            <Ban className="w-4 h-4 opacity-80"/> Suspend
+            <Ban className="w-4 h-4 opacity-80"/> {t('templates17WorkspaceEdit.suspend')}
           </button>
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] flex items-center gap-2 transition-colors font-medium">
-            <Trash2 className="w-4 h-4 opacity-80"/> Delete
+            <Trash2 className="w-4 h-4 opacity-80"/> {t('templates17WorkspaceEdit.delete')}
           </button>
         </div>
       )}
@@ -1639,6 +1683,7 @@ const RowActionsDropdown = ({  workspaceId, onViewDetails, onEdit  }: any) => {
 };
 
 const WorkspacesPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
   const [plan, setPlan] = useState('all');
@@ -1683,15 +1728,15 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Workspaces" 
-        subtitle="Manage all tenant environments and access." 
+      <PageHeader
+        title={t('templates17WorkspaceEdit.navWorkspaces')}
+        subtitle={t('templates17WorkspaceEdit.workspacesSubtitle')}
         actions={
           <>
-            <Button variant="outline" className="hidden sm:flex"><Search className="w-4 h-4 mr-2"/> Import</Button>
-            <Button onClick={() => setActiveRoute('workspace-new')}><Plus className="w-4 h-4 mr-2"/> Create workspace</Button>
+            <Button variant="outline" className="hidden sm:flex"><Search className="w-4 h-4 mr-2"/> {t('templates17WorkspaceEdit.import')}</Button>
+            <Button onClick={() => setActiveRoute('workspace-new')}><Plus className="w-4 h-4 mr-2"/> {t('templates17WorkspaceEdit.createWorkspaceAction')}</Button>
           </>
-        } 
+        }
       />
 
       <Section>
@@ -1700,27 +1745,27 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               className="h-10 w-full pl-9 pr-3 rounded-md-custom border border-[var(--border-color)] bg-white text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
-              placeholder="Search workspaces..."
+              placeholder={t('templates17WorkspaceEdit.searchWorkspacesPlaceholder')}
               value={search}
               onChange={(e: any) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex w-full sm:w-auto gap-3 shrink-0">
             <div className="w-full sm:w-36">
-              <Select value={status} onChange={setStatus} options={[{label: 'All Statuses', value: 'all'}, {label: 'Active', value: 'Active'}, {label: 'Suspended', value: 'Suspended'}]} placeholder="Status" />
+              <Select value={status} onChange={setStatus} options={[{label: t('templates17WorkspaceEdit.allStatuses'), value: 'all'}, {label: t('templates17WorkspaceEdit.active'), value: 'Active'}, {label: t('templates17WorkspaceEdit.suspended'), value: 'Suspended'}]} placeholder={t('templates17WorkspaceEdit.statusPlaceholder')} />
             </div>
             <div className="w-full sm:w-36">
-              <Select value={plan} onChange={setPlan} options={[{label: 'All Plans', value: 'all'}, {label: 'Free', value: 'Free'}, {label: 'Pro', value: 'Pro'}, {label: 'Enterprise', value: 'Enterprise'}]} placeholder="Plan" />
+              <Select value={plan} onChange={setPlan} options={[{label: t('templates17WorkspaceEdit.allPlans'), value: 'all'}, {label: t('templates17WorkspaceEdit.free'), value: 'Free'}, {label: t('templates17WorkspaceEdit.pro'), value: 'Pro'}, {label: t('templates17WorkspaceEdit.enterpriseTierName'), value: 'Enterprise'}]} placeholder={t('templates17WorkspaceEdit.planPlaceholder')} />
             </div>
           </div>
           {(search || status !== 'all' || plan !== 'all') && (
-            <Button variant="tertiary" onClick={() => {setSearch(''); setStatus('all'); setPlan('all');}} className="px-3">Clear filters</Button>
+            <Button variant="tertiary" onClick={() => {setSearch(''); setStatus('all'); setPlan('all');}} className="px-3">{t('templates17WorkspaceEdit.clearFilters')}</Button>
           )}
         </div>
       </Section>
 
       <Section>
-        <DataTable columns={["Workspace", "Owner", "Plan", "Members", "Usage", "Status", "Created", ""]} data={mappedData} loading={isLoading} />
+        <DataTable columns={[t('templates17WorkspaceEdit.colWorkspace'), t('templates17WorkspaceEdit.colOwner'), t('templates17WorkspaceEdit.planLabel'), t('templates17WorkspaceEdit.colMembers'), t('templates17WorkspaceEdit.colUsage'), t('templates17WorkspaceEdit.colStatus'), t('templates17WorkspaceEdit.colCreated'), ""]} data={mappedData} loading={isLoading} />
       </Section>
     </PageContainer>
   );
@@ -1728,6 +1773,7 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
 
 // --- WORKSPACE BILLING PAGE ---
 const UsageCard = ({  title, current, max, unit, icon: Icon  }: any) => {
+  const t = useT();
   const percent = Math.min((current / max) * 100, 100);
   const isWarning = percent >= 80;
 
@@ -1746,14 +1792,15 @@ const UsageCard = ({  title, current, max, unit, icon: Icon  }: any) => {
          <div className={cn("h-2 rounded-full transition-all duration-500", isWarning ? "bg-[#D97C7C]" : "bg-[#5C856A]")} style={{ width: `${percent}%` }}></div>
       </div>
       <div className="flex items-center justify-between mt-2">
-        <span className="text-[11px] font-medium text-[var(--text-secondary)]">{percent.toFixed(1)}% used</span>
-        {isWarning && <span className="text-[11px] text-[#9B5050] font-medium flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> Approaching limit</span>}
+        <span className="text-[11px] font-medium text-[var(--text-secondary)]">{percent.toFixed(1)}% {t('templates17WorkspaceEdit.percentUsedSuffix')}</span>
+        {isWarning && <span className="text-[11px] text-[#9B5050] font-medium flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> {t('templates17WorkspaceEdit.approachingLimit')}</span>}
       </div>
     </Card>
   );
 };
 
 const WorkspaceBillingPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [isLoadingInvoices, setIsLoadingInvoices] = useState(true);
@@ -1780,56 +1827,56 @@ const WorkspaceBillingPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        showBack 
+      <PageHeader
+        showBack
         onBack={() => setActiveRoute('workspace-details')}
-        title="Billing & Usage" 
-        subtitle="Manage your subscription, monitor usage, and view invoices."
+        title={t('templates17WorkspaceEdit.billingUsageTitle')}
+        subtitle={t('templates17WorkspaceEdit.billingUsageSubtitle')}
         actions={
           <>
-            <Button variant="outline" className="hidden sm:flex"><Download className="w-4 h-4 mr-2" /> Download all</Button>
-            <Button onClick={() => setIsUpgradeOpen(true)}>Upgrade plan</Button>
+            <Button variant="outline" className="hidden sm:flex"><Download className="w-4 h-4 mr-2" /> {t('templates17WorkspaceEdit.downloadAll')}</Button>
+            <Button onClick={() => setIsUpgradeOpen(true)}>{t('templates17WorkspaceEdit.upgradePlan')}</Button>
           </>
         }
       />
 
-      <Section title="Current Plan">
+      <Section title={t('templates17WorkspaceEdit.currentPlanSection')}>
         <Card className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border-[var(--primary-gold)]/40 bg-[#FAF7F2]/30 relative overflow-hidden">
           <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-[var(--primary-gold)]/5 to-transparent pointer-events-none" />
           <div className="relative z-10 flex flex-col gap-1">
             <div className="flex items-center gap-3">
-              <h3 className="text-lg font-semibold text-[var(--text-primary)]">Pro Tier</h3>
-              <Badge variant="current">Active</Badge>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)]">{t('templates17WorkspaceEdit.proTierHeading')}</h3>
+              <Badge variant="current">{t('templates17WorkspaceEdit.active')}</Badge>
             </div>
             <p className="text-sm text-[var(--text-secondary)]">
               $49.00 / month, billed monthly.
             </p>
             <p className="text-xs text-[var(--text-secondary)] mt-2">
-              Next billing date is <strong className="font-medium text-[var(--text-primary)]">Nov 01, 2026</strong>.
+              {t('templates17WorkspaceEdit.nextBillingDatePrefix')} <strong className="font-medium text-[var(--text-primary)]">Nov 01, 2026</strong>.
             </p>
           </div>
           <div className="relative z-10 flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-            <Button variant="outline" onClick={() => setIsCancelOpen(true)}>Cancel Plan</Button>
-            <Button onClick={() => setIsUpgradeOpen(true)}>Change Plan</Button>
+            <Button variant="outline" onClick={() => setIsCancelOpen(true)}>{t('templates17WorkspaceEdit.cancelPlan')}</Button>
+            <Button onClick={() => setIsUpgradeOpen(true)}>{t('templates17WorkspaceEdit.changePlan')}</Button>
           </div>
         </Card>
       </Section>
 
-      <Section title="Current Usage">
+      <Section title={t('templates17WorkspaceEdit.currentUsageSection')}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-           <UsageCard title="API Requests" icon={Zap} current={42150} max={50000} unit="reqs" />
-           <UsageCard title="Storage Used" icon={HardDrive} current={8.4} max={50} unit="GB" />
-           <UsageCard title="Active Users" icon={Users} current={8} max={10} unit="seats" />
+           <UsageCard title={t('templates17WorkspaceEdit.apiRequests')} icon={Zap} current={42150} max={50000} unit="reqs" />
+           <UsageCard title={t('templates17WorkspaceEdit.storageUsed')} icon={HardDrive} current={8.4} max={50} unit="GB" />
+           <UsageCard title={t('templates17WorkspaceEdit.activeUsers')} icon={Users} current={8} max={10} unit="seats" />
         </div>
       </Section>
 
-      <Section title="Invoices" actions={
+      <Section title={t('templates17WorkspaceEdit.invoicesSection')} actions={
         <div className="w-32">
-          <Select value="2026" onChange={() => {}} options={[{label: '2026', value: '2026'}, {label: '2025', value: '2025'}]} placeholder="Year" />
+          <Select value="2026" onChange={() => {}} options={[{label: '2026', value: '2026'}, {label: '2025', value: '2025'}]} placeholder={t('templates17WorkspaceEdit.yearPlaceholder')} />
         </div>
       }>
-        <DataTable 
-          columns={["Invoice ID", "Date", "Amount", "Status", ""]}
+        <DataTable
+          columns={[t('templates17WorkspaceEdit.colInvoiceId'), t('templates17WorkspaceEdit.colDate'), t('templates17WorkspaceEdit.colAmount'), t('templates17WorkspaceEdit.colStatus'), ""]}
           data={invoiceData}
           loading={isLoadingInvoices}
           pagination={false}
@@ -1837,77 +1884,77 @@ const WorkspaceBillingPage = ({  setActiveRoute  }: any) => {
       </Section>
 
       {/* Upgrade Modal */}
-      <Modal 
-        isOpen={isUpgradeOpen} 
+      <Modal
+        isOpen={isUpgradeOpen}
         onClose={() => setIsUpgradeOpen(false)}
-        title="Upgrade Plan"
-        description="Select a tier that best suits your team's needs."
+        title={t('templates17WorkspaceEdit.upgradePlanModalTitle')}
+        description={t('templates17WorkspaceEdit.upgradePlanModalDesc')}
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
           {/* Free Tier */}
           <div className="border border-[var(--border-color)] rounded-lg-custom p-4 bg-[var(--bg-app)] flex flex-col">
             <div className="mb-4">
-              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">Free</h4>
+              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">{t('templates17WorkspaceEdit.free')}</h4>
               <div className="text-2xl font-bold text-[var(--text-primary)]">$0<span className="text-sm text-[var(--text-secondary)] font-normal">/mo</span></div>
             </div>
             <ul className="text-xs text-[var(--text-secondary)] space-y-2 mb-6 flex-1">
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> 10,000 API reqs/mo</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> 5 GB Storage</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> 3 Team Members</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> {t('templates17WorkspaceEdit.featureApiReqs10k')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> {t('templates17WorkspaceEdit.feature5gbStorage')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--state-info)] mt-0.5" /> {t('templates17WorkspaceEdit.feature3TeamMembers')}</li>
             </ul>
-            <Button variant="outline" className="w-full" disabled>Downgrade</Button>
+            <Button variant="outline" className="w-full" disabled>{t('templates17WorkspaceEdit.downgrade')}</Button>
           </div>
 
           {/* Pro Tier (Current) */}
           <div className="border-2 border-[var(--primary-gold)] rounded-lg-custom p-4 bg-white flex flex-col relative shadow-soft-md scale-[1.02]">
             <div className="absolute top-0 right-0 bg-[var(--primary-gold)] text-[var(--bg-card)] text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded-bl-lg rounded-tr-[14px]">
-              Current
+              {t('templates17WorkspaceEdit.current')}
             </div>
             <div className="mb-4">
-              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">Pro</h4>
+              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">{t('templates17WorkspaceEdit.pro')}</h4>
               <div className="text-2xl font-bold text-[var(--text-primary)]">$49<span className="text-sm text-[var(--text-secondary)] font-normal">/mo</span></div>
             </div>
             <ul className="text-xs text-[var(--text-secondary)] space-y-2 mb-6 flex-1">
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> 50,000 API reqs/mo</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> 50 GB Storage</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> 10 Team Members</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> Email Support</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> {t('templates17WorkspaceEdit.featureApiReqs50k')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> {t('templates17WorkspaceEdit.feature50gbStorage')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> {t('templates17WorkspaceEdit.feature10TeamMembers')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mt-0.5" /> {t('templates17WorkspaceEdit.featureEmailSupport')}</li>
             </ul>
-            <Button variant="outline" className="w-full border-[var(--primary-gold)] text-[#9E814D]" disabled>Current Plan</Button>
+            <Button variant="outline" className="w-full border-[var(--primary-gold)] text-[#9E814D]" disabled>{t('templates17WorkspaceEdit.currentPlanBtn')}</Button>
           </div>
 
           {/* Enterprise Tier */}
           <div className="border border-[var(--border-color)] rounded-lg-custom p-4 bg-white flex flex-col">
             <div className="mb-4">
-              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">Enterprise</h4>
+              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">{t('templates17WorkspaceEdit.enterpriseTierName')}</h4>
               <div className="text-2xl font-bold text-[var(--text-primary)]">$249<span className="text-sm text-[var(--text-secondary)] font-normal">/mo</span></div>
             </div>
             <ul className="text-xs text-[var(--text-secondary)] space-y-2 mb-6 flex-1">
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> Unlimited API reqs</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> 500 GB Storage</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> Unlimited Members</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> Priority Support & SLAs</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> {t('templates17WorkspaceEdit.featureUnlimitedApiReqs')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> {t('templates17WorkspaceEdit.feature500gbStorage')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> {t('templates17WorkspaceEdit.featureUnlimitedMembers')}</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-[#5C856A] mt-0.5" /> {t('templates17WorkspaceEdit.featurePrioritySupport')}</li>
             </ul>
-            <Button className="w-full">Upgrade</Button>
+            <Button className="w-full">{t('templates17WorkspaceEdit.upgrade')}</Button>
           </div>
         </div>
       </Modal>
 
       {/* Cancel Plan Modal */}
-      <Modal 
-        isOpen={isCancelOpen} 
+      <Modal
+        isOpen={isCancelOpen}
         onClose={() => setIsCancelOpen(false)}
-        title="Cancel Subscription"
-        description="Are you sure you want to cancel your Pro plan? Your workspace will be downgraded to the Free tier at the end of the current billing cycle."
+        title={t('templates17WorkspaceEdit.cancelSubscriptionTitle')}
+        description={t('templates17WorkspaceEdit.cancelSubscriptionDesc')}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsCancelOpen(false)}>Keep Plan</Button>
-            <Button variant="destructive" onClick={() => setIsCancelOpen(false)}>Confirm Cancellation</Button>
+            <Button variant="outline" onClick={() => setIsCancelOpen(false)}>{t('templates17WorkspaceEdit.keepPlan')}</Button>
+            <Button variant="destructive" onClick={() => setIsCancelOpen(false)}>{t('templates17WorkspaceEdit.confirmCancellation')}</Button>
           </>
         }
       >
-         <Alert variant="warning" title="Warning">
-           Downgrading will reduce your limits to 10,000 API requests and 5 GB storage. Any resources exceeding these limits may become unavailable.
+         <Alert variant="warning" title={t('templates17WorkspaceEdit.warning')}>
+           {t('templates17WorkspaceEdit.downgradeWarningMsg')}
          </Alert>
       </Modal>
 
@@ -1921,7 +1968,8 @@ const WorkspaceBillingPage = ({  setActiveRoute  }: any) => {
 // ==========================================
 
 export default function KaoriPlatformShell() {
-  const [activeRoute, setActiveRoute] = useState('workspace-edit'); 
+  const t = useT();
+  const [activeRoute, setActiveRoute] = useState('workspace-edit');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const [isCollapsed, setIsCollapsed] = useState(() => {
@@ -1970,14 +2018,14 @@ export default function KaoriPlatformShell() {
              activeRoute === 'overview' ? <PlatformOverview /> : 
              activeRoute === 'sessions' ? <SessionsPage /> : (
               <PageContainer maxWidth="narrow">
-                <PageHeader title={`${NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label} module`} subtitle="This section of the platform is currently being designed." />
+                <PageHeader title={`${t(NAV_ITEM_LABEL_KEYS[activeRoute] ?? (NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label ?? activeRoute))} ${t('templates17WorkspaceEdit.moduleSuffix')}`} subtitle={t('templates17WorkspaceEdit.moduleDesignSubtitle')} />
                 <Section>
                   <Card className="flex flex-col items-center justify-center py-20 px-4 text-center border-dashed bg-[var(--bg-card)]/50 mx-auto w-full animate-in fade-in duration-300">
                     <div className="w-12 h-12 rounded-lg-custom bg-[var(--bg-sidebar)] flex items-center justify-center border border-[var(--border-color)] mb-4">
                       {React.createElement(NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.icon || LayoutDashboard, { className: 'w-6 h-6 text-[var(--text-secondary)]' })}
                     </div>
-                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">Work in Progress</h3>
-                    <p className="text-sm text-[var(--text-secondary)] max-w-sm">Content for {activeRoute} will populate here inside the Shell Wrapper.</p>
+                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">{t('templates17WorkspaceEdit.workInProgress')}</h3>
+                    <p className="text-sm text-[var(--text-secondary)] max-w-sm">{t('templates17WorkspaceEdit.contentForRoutePrefix')} {activeRoute} {t('templates17WorkspaceEdit.contentForRouteSuffix')}</p>
                   </Card>
                 </Section>
               </PageContainer>

@@ -25,6 +25,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 
 // ─── Types ───────────────────────────────────────────────────────────
 
@@ -60,6 +61,7 @@ interface FollowupRule {
 // ─── Page component ──────────────────────────────────────────────────
 
 export default function NpsDashboardPage() {
+  const t = useT();
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d');
   // TODO P2-35-DATA: useQuery(['nps-scorecard', timeRange])
   const scorecard: NpsScorecard | null = null;
@@ -68,13 +70,13 @@ export default function NpsDashboardPage() {
   const isLoading = false;
   const error: ProblemDetails | null = null;
 
-  if (error) return <ErrorBanner message={error.detail ?? 'Không tải được NPS.'} />;
+  if (error) return <ErrorBanner message={error.detail ?? t('templates79CsNpsDashboard.errLoad')} />;
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="NPS Dashboard"
-        subtitle="Theo dõi NPS, sentiment, và auto-followup rules (promoter / passive / detractor)."
+        title={t('templates79CsNpsDashboard.title')}
+        subtitle={t('templates79CsNpsDashboard.subtitle')}
       />
 
       {/* Time range filter */}
@@ -97,15 +99,15 @@ export default function NpsDashboardPage() {
       ) : !scorecard ? (
         <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground">
           <MessageSquare className="mx-auto size-8" />
-          <div className="mt-2">Chưa có response — cài đặt survey trigger đầu tiên.</div>
-          <Button className="mt-3">+ Tạo trigger</Button>
+          <div className="mt-2">{t('templates79CsNpsDashboard.emptyScorecard')}</div>
+          <Button className="mt-3">{t('templates79CsNpsDashboard.addTriggerBtn')}</Button>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-          <ScorecardTile label="NPS tổng" value={scorecard.overall_nps.toFixed(1)} accent />
-          <ScorecardTile label="Promoters" value={scorecard.promoter_count.toString()} icon={<Smile className="size-4" />} />
-          <ScorecardTile label="Passives" value={scorecard.passive_count.toString()} icon={<Meh className="size-4" />} />
-          <ScorecardTile label="Detractors" value={scorecard.detractor_count.toString()} icon={<Frown className="size-4" />} />
+          <ScorecardTile label={t('templates79CsNpsDashboard.tileNpsTotal')} value={scorecard.overall_nps.toFixed(1)} accent />
+          <ScorecardTile label={t('templates79CsNpsDashboard.tilePromoters')} value={scorecard.promoter_count.toString()} icon={<Smile className="size-4" />} />
+          <ScorecardTile label={t('templates79CsNpsDashboard.tilePassives')} value={scorecard.passive_count.toString()} icon={<Meh className="size-4" />} />
+          <ScorecardTile label={t('templates79CsNpsDashboard.tileDetractors')} value={scorecard.detractor_count.toString()} icon={<Frown className="size-4" />} />
         </div>
       )}
 
@@ -113,35 +115,35 @@ export default function NpsDashboardPage() {
       {scorecard && scorecard.response_count < 30 && (
         <div className="flex items-center gap-3 rounded-lg border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-800">
           <AlertCircle className="size-4" />
-          NPS chưa đủ tin cậy thống kê (n={scorecard.response_count} &lt; 30). Tăng frequency hoặc cohort.
+          {t('templates79CsNpsDashboard.lowVolumeWarning', { count: scorecard.response_count })}
         </div>
       )}
 
       {/* Trend chart placeholder */}
       <div className="rounded-lg border bg-white p-4">
         <div className="flex items-center gap-2 text-sm font-medium">
-          <TrendingUp className="size-4" /> Xu hướng NPS
+          <TrendingUp className="size-4" /> {t('templates79CsNpsDashboard.trendHeading')}
         </div>
         <div className="mt-4 h-40 rounded bg-gray-50 p-4 text-sm text-muted-foreground">
-          Tính năng đang hoàn thiện
+          {t('templates79CsNpsDashboard.featureWip')}
         </div>
       </div>
 
       {/* Response table */}
       <div className="rounded-lg border bg-white">
-        <div className="border-b px-4 py-3 font-medium">Responses</div>
+        <div className="border-b px-4 py-3 font-medium">{t('templates79CsNpsDashboard.responsesHeading')}</div>
         {responses.length === 0 ? (
-          <div className="px-4 py-8 text-center text-sm text-muted-foreground">Chưa có response.</div>
+          <div className="px-4 py-8 text-center text-sm text-muted-foreground">{t('templates79CsNpsDashboard.emptyResponses')}</div>
         ) : (
           <table className="w-full text-sm">
             <thead className="border-b bg-gray-50 text-left text-xs uppercase text-muted-foreground">
               <tr>
-                <th className="px-4 py-2">Khách</th>
-                <th className="px-4 py-2">Score</th>
-                <th className="px-4 py-2">Sentiment</th>
-                <th className="px-4 py-2">Comment</th>
-                <th className="px-4 py-2">Segment</th>
-                <th className="px-4 py-2">Followup</th>
+                <th className="px-4 py-2">{t('templates79CsNpsDashboard.colCustomer')}</th>
+                <th className="px-4 py-2">{t('templates79CsNpsDashboard.colScore')}</th>
+                <th className="px-4 py-2">{t('templates79CsNpsDashboard.colSentiment')}</th>
+                <th className="px-4 py-2">{t('templates79CsNpsDashboard.colComment')}</th>
+                <th className="px-4 py-2">{t('templates79CsNpsDashboard.colSegment')}</th>
+                <th className="px-4 py-2">{t('templates79CsNpsDashboard.colFollowup')}</th>
               </tr>
             </thead>
             <tbody>
@@ -154,18 +156,18 @@ export default function NpsDashboardPage() {
       {/* Followup rules editor */}
       <div className="rounded-lg border bg-white">
         <div className="border-b px-4 py-3 flex items-center justify-between">
-          <span className="font-medium">Auto-followup rules</span>
+          <span className="font-medium">{t('templates79CsNpsDashboard.rulesHeading')}</span>
           {/* TODO P2-35-PERM: gate edit on MANAGER+ */}
-          <Button size="sm">+ Rule</Button>
+          <Button size="sm">{t('templates79CsNpsDashboard.addRuleBtn')}</Button>
         </div>
         <div className="space-y-2 p-4">
           {rules.length === 0 ? (
-            <div className="text-sm text-muted-foreground">Chưa có rule. Click "+ Rule" để tạo.</div>
+            <div className="text-sm text-muted-foreground">{t('templates79CsNpsDashboard.emptyRules', { btn: t('templates79CsNpsDashboard.addRuleBtn') })}</div>
           ) : (
             rules.map(r => (
               <div key={r.rule_id} className="rounded border bg-gray-50 p-3 text-sm">
                 <strong>{r.trigger}</strong> → {r.action}
-                {r.condition && <span className="ml-2 text-muted-foreground">if {r.condition}</span>}
+                {r.condition && <span className="ml-2 text-muted-foreground">{t('templates79CsNpsDashboard.ifLabel')} {r.condition}</span>}
               </div>
             ))
           )}
@@ -174,8 +176,8 @@ export default function NpsDashboardPage() {
 
       {/* Campaign manager placeholder */}
       <div className="rounded-lg border bg-white p-4">
-        <div className="font-medium">Survey campaigns</div>
-        <div className="mt-2 text-sm text-muted-foreground">Tính năng đang hoàn thiện</div>
+        <div className="font-medium">{t('templates79CsNpsDashboard.campaignsHeading')}</div>
+        <div className="mt-2 text-sm text-muted-foreground">{t('templates79CsNpsDashboard.featureWip')}</div>
       </div>
     </div>
   );

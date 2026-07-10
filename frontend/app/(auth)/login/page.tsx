@@ -60,9 +60,9 @@ export default function LoginPage() {
       if (res?.status === 423) {
         const secs = res.data?.lockoutRemainingSeconds ?? 900;
         setLockout(secs);
-        setError(`Tài khoản bị khóa. Thử lại sau ${Math.ceil(secs / 60)} phút.`);
+        setError(t("loginPage.errAccountLocked", { minutes: Math.ceil(secs / 60) }));
       } else {
-        setError("Email hoặc mật khẩu không đúng.");
+        setError(t("loginPage.errInvalidCredentials"));
       }
     } finally {
       setLoading(false);
@@ -86,18 +86,18 @@ export default function LoginPage() {
 
         <div className="relative z-10 flex flex-col max-w-lg mb-20 animate-fade-in">
           <h1 className="font-serif text-5xl leading-[1.15] text-[var(--color-ink)] font-medium mb-6">
-            Trí tuệ,<br />
-            <span className="text-[var(--color-ink-muted)] italic">được trao một cách bình thản.</span>
+            {t("loginPage.heroTitleLine1")}<br />
+            <span className="text-[var(--color-ink-muted)] italic">{t("loginPage.heroTitleLine2")}</span>
           </h1>
           <p className="text-[var(--color-ink-muted)] text-lg leading-relaxed">
-            Nền tảng phân tích dữ liệu B2B đa khách hàng. Quy mô vững vàng, giao diện rõ ràng, vận hành nhẹ nhàng.
+            {t("loginPage.heroSubtitle")}
           </p>
         </div>
 
         <div className="relative z-10 flex items-center gap-4 text-sm text-[var(--color-ink-muted)]">
-          <span>© 2026 Kaori Platform</span>
+          <span>{t("loginPage.copyright")}</span>
           <span className="w-1 h-1 rounded-full bg-[var(--color-brand-500)]" />
-          <a href="#" className="hover:text-[var(--color-ink)] transition-colors">Chính sách bảo mật</a>
+          <a href="#" className="hover:text-[var(--color-ink)] transition-colors">{t("loginPage.privacyPolicy")}</a>
         </div>
       </div>
 
@@ -118,10 +118,10 @@ export default function LoginPage() {
         <div className="w-full max-w-[420px] rounded-2xl bg-white p-8 shadow-soft-md border border-[var(--color-subtle)]/60 animate-fade-in">
           <div className="flex flex-col space-y-2 mb-8">
             <h2 className="font-serif text-3xl font-semibold tracking-tight text-[var(--color-ink)]">
-              Chào mừng trở lại
+              {t("loginPage.welcomeBack")}
             </h2>
             <p className="text-sm text-[var(--color-ink-muted)]">
-              Đăng nhập vào workspace của bạn
+              {t("loginPage.welcomeSubtitle")}
             </p>
           </div>
 
@@ -131,7 +131,7 @@ export default function LoginPage() {
                 {error}
                 {lockout != null && (
                   <p className="text-[var(--color-danger-600)] text-tiny mt-1">
-                    Còn {lockout}s trước khi thử lại.
+                    {t("loginPage.lockoutCountdown", { seconds: lockout })}
                   </p>
                 )}
               </div>
@@ -171,7 +171,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => setShowPwd((v) => !v)}
                   disabled={loading}
-                  aria-label={showPwd ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                  aria-label={showPwd ? t("loginPage.hidePassword") : t("loginPage.showPassword")}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] transition-colors p-1"
                 >
                   {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -201,7 +201,7 @@ export default function LoginPage() {
               + Vietnamese label differ. */}
           <div className="mt-6 pt-6 border-t border-[var(--color-subtle)]/60 space-y-3">
             <p className="text-xs text-[var(--color-ink-muted)] text-center">
-              hoặc đăng nhập bằng
+              {t("loginPage.orSignInWith")}
             </p>
             {/* Microsoft button intentionally not listed yet — provider
                 code-complete in BE, but no Entra tenant provisioned.
@@ -228,13 +228,18 @@ export default function LoginPage() {
                     const res = (err as any)?.response;
                     const status = res?.status;
                     if (status === 503) {
-                      setError(`Đăng nhập ${provider.label} chưa được cấu hình. Liên hệ quản trị viên.`);
+                      setError(t("loginPage.errSsoNotConfigured", { provider: provider.label }));
                     } else if (status === 404) {
-                      setError("Endpoint SSO không tồn tại. Vui lòng báo team kỹ thuật.");
+                      setError(t("loginPage.errSsoEndpointMissing"));
                     } else if (status >= 500) {
-                      setError(`Lỗi máy chủ (${status}). Thử lại sau.`);
+                      setError(t("loginPage.errServerError", { status }));
                     } else {
-                      setError(`Không thể khởi động đăng nhập ${provider.label}${status ? ` (HTTP ${status})` : ""}.`);
+                      setError(
+                        t("loginPage.errSsoStartFailed", {
+                          provider: provider.label,
+                          status: status ? ` (HTTP ${status})` : "",
+                        }),
+                      );
                     }
                     setSsoLoading(null);
                   }
@@ -260,8 +265,8 @@ export default function LoginPage() {
                   </svg>
                 )}
                 {ssoLoading === provider.id
-                  ? `Đang chuyển sang ${provider.label}…`
-                  : `Tiếp tục với ${provider.label}`}
+                  ? t("loginPage.ssoRedirecting", { provider: provider.label })
+                  : t("loginPage.ssoContinueWith", { provider: provider.label })}
               </button>
             ))}
           </div>
@@ -273,13 +278,13 @@ export default function LoginPage() {
               framed as registration so the language matches user expectation. */}
           <div className="mt-6 pt-6 border-t border-[var(--color-subtle)]/60">
             <p className="text-xs text-[var(--color-ink-muted)] text-center mb-3">
-              Doanh nghiệp lần đầu sử dụng Kaori?
+              {t("loginPage.newTenantCta")}
             </p>
             <Link
               href="/register"
               className="block w-full text-center px-4 py-2.5 rounded-md-custom border border-[var(--color-subtle)] text-sm font-medium text-[var(--color-ink)] bg-white hover:bg-canvas hover:border-[var(--color-brand-500)]/40 transition-colors"
             >
-              Đăng ký doanh nghiệp với khoá kích hoạt
+              {t("loginPage.registerLink")}
             </Link>
           </div>
         </div>

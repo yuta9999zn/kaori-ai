@@ -1,0 +1,30 @@
+{
+  "securityLayout.tabMfa": {
+    "vi": "Xác thực 2 lớp",
+    "en": "Two-factor authentication",
+    "ja": "2要素認証",
+    "ko": "2단계 인증",
+    "zh": "双因素认证"
+  },
+  "securityLayout.tabSessions": {
+    "vi": "Phiên đăng nhập",
+    "en": "Login sessions",
+    "ja": "ログインセッション",
+    "ko": "로그인 세션",
+    "zh": "登录会话"
+  },
+  "securityLayout.title": {
+    "vi": "Bảo mật tài khoản",
+    "en": "Account security",
+    "ja": "アカウントセキュリティ",
+    "ko": "계정 보안",
+    "zh": "账户安全"
+  },
+  "securityLayout.subtitle": {
+    "vi": "Quản lý xác thực 2 lớp (TOTP) và các phiên đăng nhập đang hoạt động.",
+    "en": "Manage two-factor authentication (TOTP) and active login sessions.",
+    "ja": "2要素認証(TOTP)と現在アクティブなログインセッションを管理します。",
+    "ko": "2단계 인증(TOTP) 및 활성 로그인 세션을 관리합니다.",
+    "zh": "管理双因素认证(TOTP)和当前活跃的登录会话。"
+  }
+}

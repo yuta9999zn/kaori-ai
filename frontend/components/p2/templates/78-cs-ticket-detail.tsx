@@ -28,6 +28,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 
 // ─── Types ───────────────────────────────────────────────────────────
 
@@ -67,6 +68,7 @@ interface CustomerSidebar {
 // ─── Page component ──────────────────────────────────────────────────
 
 export default function CsTicketDetailPage({ ticketId }: { ticketId: string }) {
+  const t = useT();
   // TODO P2-34-DATA: useQuery(['cs-ticket', ticketId])
   const ticket: TicketFull | null = null;
   // TODO P2-34-DATA: useQuery(['cs-customer-360', customerId])
@@ -78,8 +80,8 @@ export default function CsTicketDetailPage({ ticketId }: { ticketId: string }) {
   const [aiDraftLoading, setAiDraftLoading] = useState(false);
 
   if (isLoading) return <div className="h-screen animate-pulse rounded bg-gray-100" />;
-  if (error) return <ErrorBanner message={error.detail ?? 'Không tải được ticket.'} />;
-  if (!ticket) return <div className="rounded border border-dashed p-12 text-center">Ticket không tồn tại hoặc đã xoá.</div>;
+  if (error) return <ErrorBanner message={error.detail ?? t('templates78CsTicketDetail.errLoadFailed')} />;
+  if (!ticket) return <div className="rounded border border-dashed p-12 text-center">{t('templates78CsTicketDetail.errNotFound')}</div>;
 
   const slaBreachIn2h = ticket.sla_breach_at &&
     new Date(ticket.sla_breach_at).getTime() - Date.now() < 2 * 60 * 60 * 1000;
@@ -94,7 +96,7 @@ export default function CsTicketDetailPage({ ticketId }: { ticketId: string }) {
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Badge variant="outline">{ticket.priority}</Badge>
             <Badge variant="outline">{ticket.channel}</Badge>
-            <span>Assignee: {ticket.assignee_name ?? 'Unassigned'}</span>
+            <span>{t('templates78CsTicketDetail.assigneeLabel', { name: ticket.assignee_name ?? t('templates78CsTicketDetail.unassigned') })}</span>
           </div>
         </div>
       </div>
@@ -104,9 +106,9 @@ export default function CsTicketDetailPage({ ticketId }: { ticketId: string }) {
         <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4">
           <AlertTriangle className="size-5 text-red-600" />
           <div className="flex-1 text-sm text-red-800">
-            SLA breach trong &lt; 2h — cân nhắc escalate D.2 workflow.
+            {t('templates78CsTicketDetail.slaBreachWarning')}
           </div>
-          <Button size="sm" variant="destructive">Escalate</Button>
+          <Button size="sm" variant="destructive">{t('templates78CsTicketDetail.escalate')}</Button>
         </div>
       )}
 
@@ -120,10 +122,10 @@ export default function CsTicketDetailPage({ ticketId }: { ticketId: string }) {
         {/* Conversation thread */}
         <div className="col-span-6 space-y-4">
           <div className="rounded-lg border bg-white">
-            <div className="border-b px-4 py-3 font-medium">Conversation</div>
+            <div className="border-b px-4 py-3 font-medium">{t('templates78CsTicketDetail.conversation')}</div>
             <div className="space-y-3 px-4 py-3">
               {ticket.conversation.length === 0 ? (
-                <div className="text-sm text-muted-foreground">Chưa có tin nhắn.</div>
+                <div className="text-sm text-muted-foreground">{t('templates78CsTicketDetail.noMessages')}</div>
               ) : (
                 ticket.conversation.map(m => <MessageBubble key={m.message_id} message={m} />)
               )}
@@ -133,23 +135,23 @@ export default function CsTicketDetailPage({ ticketId }: { ticketId: string }) {
           {/* Reply composer */}
           <div className="rounded-lg border bg-white p-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Trả lời</span>
+              <span className="text-sm font-medium">{t('templates78CsTicketDetail.reply')}</span>
               <div className="flex items-center gap-2">
                 <Button size="sm" variant="ghost" disabled={aiDraftLoading}
                   onClick={() => {
                     setAiDraftLoading(true);
                     // TODO P2-34-DATA: POST /cs/tickets/{id}/ai-draft-reply
                   }}>
-                  <Wand2 className="size-4" /> AI gợi ý
+                  <Wand2 className="size-4" /> {t('templates78CsTicketDetail.aiSuggestion')}
                 </Button>
                 <Button size="sm" variant="ghost">
-                  <FileText className="size-4" /> Mẫu trả lời
+                  <FileText className="size-4" /> {t('templates78CsTicketDetail.replyTemplate')}
                 </Button>
               </div>
             </div>
             <textarea
               className="mt-2 h-32 w-full rounded border p-2 text-sm"
-              placeholder="Nhập nội dung trả lời..."
+              placeholder={t('templates78CsTicketDetail.replyPlaceholder')}
               value={composerDraft}
               onChange={(e) => setComposerDraft(e.target.value)}
             />
@@ -157,27 +159,27 @@ export default function CsTicketDetailPage({ ticketId }: { ticketId: string }) {
               <div className="text-xs text-muted-foreground">
                 {/* TODO P2-34-PERM: gate Send on MANAGER approval for HIGH-risk */}
               </div>
-              <Button><Send className="size-4" /> Gửi</Button>
+              <Button><Send className="size-4" /> {t('templates78CsTicketDetail.send')}</Button>
             </div>
           </div>
         </div>
 
         {/* Right rail */}
         <div className="col-span-3 space-y-3">
-          <RailPanel title="Nội bộ ghi chú" body="[TODO: mig 072 collab notes]" />
-          <RailPanel title="Ticket tương tự (T-Cube)" body="[TODO: related-tickets list]" />
-          <RailPanel title="AI gợi ý hành động" body="[TODO: Refund / Escalate L2 / Churn Save]" />
-          {slaBreachIn2h && <RailPanel title="SLA Escalation Path (D.2)" body="[TODO: workflow visualisation]" />}
+          <RailPanel title={t('templates78CsTicketDetail.railInternalNotes')} body="[TODO: mig 072 collab notes]" />
+          <RailPanel title={t('templates78CsTicketDetail.railSimilarTickets')} body="[TODO: related-tickets list]" />
+          <RailPanel title={t('templates78CsTicketDetail.railAiSuggestedAction')} body="[TODO: Refund / Escalate L2 / Churn Save]" />
+          {slaBreachIn2h && <RailPanel title={t('templates78CsTicketDetail.railSlaEscalationPath')} body="[TODO: workflow visualisation]" />}
         </div>
       </div>
 
       {/* Footer actions */}
       <div className="sticky bottom-0 -mx-6 flex justify-end gap-2 border-t bg-white px-6 py-3">
-        <Button variant="ghost">Snooze</Button>
-        <Button variant="ghost">Reassign</Button>
-        <Button variant="ghost">Merge</Button>
-        <Button variant="ghost"><ExternalLink className="size-4" /> Link insight</Button>
-        <Button>Resolve</Button>
+        <Button variant="ghost">{t('templates78CsTicketDetail.snooze')}</Button>
+        <Button variant="ghost">{t('templates78CsTicketDetail.reassign')}</Button>
+        <Button variant="ghost">{t('templates78CsTicketDetail.merge')}</Button>
+        <Button variant="ghost"><ExternalLink className="size-4" /> {t('templates78CsTicketDetail.linkInsight')}</Button>
+        <Button>{t('templates78CsTicketDetail.resolve')}</Button>
       </div>
     </div>
   );
@@ -186,7 +188,8 @@ export default function CsTicketDetailPage({ ticketId }: { ticketId: string }) {
 // ─── Subcomponents ───────────────────────────────────────────────────
 
 function CustomerSidebarPanel({ customer }: { customer: CustomerSidebar | null }) {
-  if (!customer) return <div className="rounded-lg border bg-white p-4 text-sm text-muted-foreground">Đang tải...</div>;
+  const t = useT();
+  if (!customer) return <div className="rounded-lg border bg-white p-4 text-sm text-muted-foreground">{t('templates78CsTicketDetail.loading')}</div>;
   const riskColor = {
     LOW: 'bg-green-100 text-green-700',
     MEDIUM: 'bg-yellow-100 text-yellow-700',
@@ -197,27 +200,27 @@ function CustomerSidebarPanel({ customer }: { customer: CustomerSidebar | null }
   return (
     <div className="space-y-3 rounded-lg border bg-white p-4">
       <div>
-        <div className="text-xs uppercase text-muted-foreground">Khách hàng</div>
+        <div className="text-xs uppercase text-muted-foreground">{t('templates78CsTicketDetail.customer')}</div>
         <div className="font-medium">{customer.name}</div>
       </div>
       <div>
-        <div className="text-xs uppercase text-muted-foreground">LTV</div>
+        <div className="text-xs uppercase text-muted-foreground">{t('templates78CsTicketDetail.ltv')}</div>
         <div className="text-sm">{customer.lifetime_value_vnd.toLocaleString('vi-VN')}₫</div>
       </div>
       <div>
-        <div className="text-xs uppercase text-muted-foreground">Churn risk</div>
+        <div className="text-xs uppercase text-muted-foreground">{t('templates78CsTicketDetail.churnRisk')}</div>
         <span className={cn('inline-block rounded-full px-2 py-0.5 text-xs', riskColor)}>
           {customer.churn_risk}
         </span>
       </div>
       <div>
-        <div className="text-xs uppercase text-muted-foreground">Mở ticket</div>
+        <div className="text-xs uppercase text-muted-foreground">{t('templates78CsTicketDetail.openTickets')}</div>
         <div className="text-sm">{customer.open_ticket_count}</div>
       </div>
       {churnHigh && (
         <div className="rounded border border-yellow-300 bg-yellow-50 p-2 text-xs text-yellow-800">
-          Khách HIGH risk churn — link sang Churn Save?
-          <Button size="sm" variant="ghost" className="mt-1">Link → P2-37</Button>
+          {t('templates78CsTicketDetail.churnHighWarning')}
+          <Button size="sm" variant="ghost" className="mt-1">{t('templates78CsTicketDetail.linkToChurnSave')}</Button>
         </div>
       )}
     </div>

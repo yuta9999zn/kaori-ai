@@ -28,6 +28,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type Role   = 'MANAGER' | 'OPERATOR' | 'ANALYST' | 'VIEWER';
 type Status = 'active' | 'invited' | 'suspended';
 
@@ -41,20 +42,27 @@ interface User {
   created_at:     string;
 }
 
-const ROLE_META: Record<Role, { variant: any; label: string; desc: string }> = {
-  MANAGER:  { variant: 'current', label: 'MANAGER',  desc: 'Toàn quyền — quản trị workspace, người dùng, billing' },
-  OPERATOR: { variant: 'info',    label: 'OPERATOR', desc: 'Tạo + chạy pipeline, xem/sửa data' },
-  ANALYST:  { variant: 'success', label: 'ANALYST',  desc: 'Sinh insight + báo cáo, không quản lý người dùng' },
-  VIEWER:   { variant: 'default', label: 'VIEWER',   desc: 'Chỉ xem dashboard + báo cáo' },
-};
+function getRoleMeta(t: (key: string, params?: Record<string, any>) => string): Record<Role, { variant: any; label: string; desc: string }> {
+  return {
+    MANAGER:  { variant: 'current', label: 'MANAGER',  desc: t('templates11UserManager.roleDescManager') },
+    OPERATOR: { variant: 'info',    label: 'OPERATOR', desc: t('templates11UserManager.roleDescOperator') },
+    ANALYST:  { variant: 'success', label: 'ANALYST',  desc: t('templates11UserManager.roleDescAnalyst') },
+    VIEWER:   { variant: 'default', label: 'VIEWER',   desc: t('templates11UserManager.roleDescViewer') },
+  };
+}
 
-const STATUS_META: Record<Status, { variant: any; label: string }> = {
-  active:    { variant: 'success',  label: 'Đang hoạt động' },
-  invited:   { variant: 'warning',  label: 'Đã mời' },
-  suspended: { variant: 'error',    label: 'Đã khoá' },
-};
+function getStatusMeta(t: (key: string, params?: Record<string, any>) => string): Record<Status, { variant: any; label: string }> {
+  return {
+    active:    { variant: 'success',  label: t('templates11UserManager.statusActive') },
+    invited:   { variant: 'warning',  label: t('templates11UserManager.statusInvited') },
+    suspended: { variant: 'error',    label: t('templates11UserManager.statusSuspended') },
+  };
+}
 
 export default function UserManager() {
+  const t = useT();
+  const ROLE_META = useMemo(() => getRoleMeta(t), [t]);
+  const STATUS_META = useMemo(() => getStatusMeta(t), [t]);
   const [users,    setUsers]    = useState<User[]>([]);
   const [loading,  setLoading]  = useState(true);
   const [problem,  setProblem]  = useState<ProblemDetails | null>(null);
@@ -147,17 +155,17 @@ export default function UserManager() {
   return (
     <>
       <PageHeader
-        title="Người dùng workspace"
-        description="Quản lý vai trò và quyền truy cập của từng thành viên."
+        title={t('templates11UserManager.pageTitle')}
+        description={t('templates11UserManager.pageDescription')}
         actions={
           <>
             <Button variant="secondary" onClick={() => { /* TODO: GET /api/v1/enterprises/users/export */ }}>
               <Download className="w-4 h-4 mr-2" />
-              Xuất CSV
+              {t('templates11UserManager.exportCsv')}
             </Button>
             <Button onClick={() => (window.location.href = '/p2/users/invite')}>
               <UserPlus className="w-4 h-4 mr-2" />
-              Mời người dùng
+              {t('templates11UserManager.inviteUser')}
             </Button>
           </>
         }
@@ -168,9 +176,9 @@ export default function UserManager() {
           <div className="rounded-md-custom bg-[var(--state-warning)]/10 border border-[var(--state-warning)]/30 p-3 flex items-start gap-3 text-sm text-[#9E814D]">
             <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-[var(--state-warning)]" />
             <div>
-              <p className="font-medium">Workspace chỉ còn duy nhất 1 MANAGER.</p>
+              <p className="font-medium">{t('templates11UserManager.lastManagerWarningTitle')}</p>
               <p className="opacity-90 mt-0.5">
-                Không thể xoá hoặc giáng cấp người này. Mời thêm MANAGER trước nếu cần thay đổi.
+                {t('templates11UserManager.lastManagerWarningDetail')}
               </p>
             </div>
           </div>
@@ -185,7 +193,7 @@ export default function UserManager() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm theo tên hoặc email..."
+              placeholder={t('templates11UserManager.searchPlaceholder')}
               className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-md-custom pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)]"
             />
           </div>
@@ -194,7 +202,7 @@ export default function UserManager() {
             onChange={(e) => setRoleFilter(e.target.value as any)}
             className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-md-custom px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
           >
-            <option value="all">Tất cả vai trò</option>
+            <option value="all">{t('templates11UserManager.allRoles')}</option>
             {(Object.keys(ROLE_META) as Role[]).map((r) => (
               <option key={r} value={r}>{r}</option>
             ))}
@@ -209,17 +217,17 @@ export default function UserManager() {
               ))}
             </div>
           ) : filtered.length === 0 ? (
-            <p className="p-12 text-center text-[var(--text-secondary)]">Không có người dùng nào khớp bộ lọc.</p>
+            <p className="p-12 text-center text-[var(--text-secondary)]">{t('templates11UserManager.emptyFiltered')}</p>
           ) : (
             <table className="w-full">
               <thead className="bg-[var(--bg-app)]/50 border-b border-[var(--border-color)]">
                 <tr>
-                  <Th>Người dùng</Th>
-                  <Th>Vai trò</Th>
-                  <Th>Trạng thái</Th>
-                  <Th>Hoạt động cuối</Th>
-                  <Th>Tham gia</Th>
-                  <Th><span className="sr-only">Hành động</span></Th>
+                  <Th>{t('templates11UserManager.colUser')}</Th>
+                  <Th>{t('templates11UserManager.colRole')}</Th>
+                  <Th>{t('templates11UserManager.colStatus')}</Th>
+                  <Th>{t('templates11UserManager.colLastActive')}</Th>
+                  <Th>{t('templates11UserManager.colJoined')}</Th>
+                  <Th><span className="sr-only">{t('templates11UserManager.colActions')}</span></Th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-color)]/60">
@@ -243,7 +251,7 @@ export default function UserManager() {
                       <Td>
                         <Badge variant={meta.variant}>{meta.label}</Badge>
                         {lastMgr && (
-                          <p className="text-[10px] text-[#9E814D] mt-1">MANAGER duy nhất</p>
+                          <p className="text-[10px] text-[#9E814D] mt-1">{t('templates11UserManager.soleManager')}</p>
                         )}
                       </Td>
                       <Td><Badge variant={statusMeta.variant}>{statusMeta.label}</Badge></Td>
@@ -264,10 +272,10 @@ export default function UserManager() {
                           {actionFor === u.id && (
                             <div className="absolute right-0 top-full mt-1 w-56 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-md-custom shadow-soft-md py-1 z-20 animate-slide-up-fade">
                               <a href={`/p2/users/${u.id}`} className="flex items-center px-3 py-2 text-sm hover:bg-[var(--bg-app)]">
-                                <Edit className="w-4 h-4 mr-2 text-[var(--text-secondary)]" /> Xem chi tiết
+                                <Edit className="w-4 h-4 mr-2 text-[var(--text-secondary)]" /> {t('templates11UserManager.viewDetail')}
                               </a>
                               <div className="border-t border-[var(--border-color)]/60 my-1" />
-                              <p className="px-3 py-1 text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">Đổi vai trò</p>
+                              <p className="px-3 py-1 text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates11UserManager.changeRole')}</p>
                               {(Object.keys(ROLE_META) as Role[]).map((r) => (
                                 <button
                                   key={r}
@@ -286,7 +294,7 @@ export default function UserManager() {
                                 className="w-full flex items-center px-3 py-2 text-sm hover:bg-[var(--bg-app)] disabled:opacity-40 disabled:cursor-not-allowed text-[#9E814D]"
                               >
                                 <Ban className="w-4 h-4 mr-2" />
-                                {u.status === 'suspended' ? 'Bỏ khoá' : 'Khoá tài khoản'}
+                                {u.status === 'suspended' ? t('templates11UserManager.unsuspend') : t('templates11UserManager.suspendAccount')}
                               </button>
                               <button
                                 onClick={() => { setConfirmDelete(u); setActionFor(null); }}
@@ -294,7 +302,7 @@ export default function UserManager() {
                                 className="w-full flex items-center px-3 py-2 text-sm hover:bg-[var(--state-error)]/10 disabled:opacity-40 disabled:cursor-not-allowed text-[var(--state-error)]"
                               >
                                 <Trash2 className="w-4 h-4 mr-2" />
-                                Xoá
+                                {t('templates11UserManager.delete')}
                               </button>
                             </div>
                           )}
@@ -314,18 +322,17 @@ export default function UserManager() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/30 backdrop-blur-sm" onClick={() => setConfirmDelete(null)}>
           <div className="bg-[var(--bg-card)] rounded-lg-custom shadow-soft-lg border border-[var(--border-color)] w-full max-w-[440px] p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-start justify-between mb-4">
-              <h3 className="font-serif text-lg text-[var(--text-primary)]">Xoá người dùng?</h3>
+              <h3 className="font-serif text-lg text-[var(--text-primary)]">{t('templates11UserManager.deleteModalTitle')}</h3>
               <button onClick={() => setConfirmDelete(null)} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <p className="text-sm text-[var(--text-secondary)] mb-6">
-              <span className="font-medium text-[var(--text-primary)]">{confirmDelete.name}</span> sẽ mất toàn bộ quyền truy cập workspace.
-              Hành động này không thể hoàn tác.
+              <span className="font-medium text-[var(--text-primary)]">{confirmDelete.name}</span> {t('templates11UserManager.deleteModalDetail')}
             </p>
             <div className="flex justify-end gap-3">
-              <Button variant="secondary" onClick={() => setConfirmDelete(null)} disabled={isMutating}>Huỷ</Button>
-              <Button variant="destructive" onClick={() => handleDelete(confirmDelete)} isLoading={isMutating}>Xoá</Button>
+              <Button variant="secondary" onClick={() => setConfirmDelete(null)} disabled={isMutating}>{t('templates11UserManager.cancel')}</Button>
+              <Button variant="destructive" onClick={() => handleDelete(confirmDelete)} isLoading={isMutating}>{t('templates11UserManager.delete')}</Button>
             </div>
           </div>
         </div>

@@ -1,0 +1,37 @@
+{
+  "dmsIndexView.emptyState": {
+    "vi": "Chưa có tài liệu nào theo mẫu này trong thư mục.",
+    "en": "No documents match this template in the folder yet.",
+    "ja": "このフォルダにはこのテンプレートに該当する文書がまだありません。",
+    "ko": "이 폴더에는 아직 이 템플릿에 해당하는 문서가 없습니다.",
+    "zh": "该文件夹中还没有符合此模板的文档。"
+  },
+  "dmsIndexView.selectedCount": {
+    "vi": "{count} tài liệu đã chọn",
+    "en": "{count} documents selected",
+    "ja": "{count} 件の文書を選択中",
+    "ko": "문서 {count}개 선택됨",
+    "zh": "已选择 {count} 份文档"
+  },
+  "dmsIndexView.analyzeGroup": {
+    "vi": "Phân tích nhóm đã chọn",
+    "en": "Analyze selected group",
+    "ja": "選択したグループを分析",
+    "ko": "선택한 그룹 분석",
+    "zh": "分析所选分组"
+  },
+  "dmsIndexView.colDocument": {
+    "vi": "Tài liệu",
+    "en": "Document",
+    "ja": "文書",
+    "ko": "문서",
+    "zh": "文档"
+  },
+  "dmsIndexView.colInfo": {
+    "vi": "Thông tin",
+    "en": "Info",
+    "ja": "情報",
+    "ko": "정보",
+    "zh": "信息"
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "editPage.errLoadFailed": {
+    "vi": "Không thể tải workspace để chỉnh sửa.",
+    "en": "Unable to load the workspace for editing.",
+    "ja": "編集用のワークスペースを読み込めませんでした。",
+    "ko": "편집할 워크스페이스를 불러올 수 없습니다.",
+    "zh": "无法加载要编辑的工作区。"
+  },
+  "editPage.sectionGeneral": {
+    "vi": "Thông tin chung",
+    "en": "General information",
+    "ja": "基本情報",
+    "ko": "일반 정보",
+    "zh": "基本信息"
+  },
+  "editPage.fieldName": {
+    "vi": "Tên workspace",
+    "en": "Workspace name",
+    "ja": "ワークスペース名",
+    "ko": "워크스페이스 이름",
+    "zh": "工作区名称"
+  },
+  "editPage.fieldPlanCode": {
+    "vi": "Mã gói",
+    "en": "Plan code",
+    "ja": "プランコード",
+    "ko": "플랜 코드",
+    "zh": "套餐代码"
+  },
+  "editPage.planCodeHint": {
+    "vi": "2–20 ký tự chữ/số, gạch dưới hoặc gạch ngang. Ví dụ: PILOT, ENT_BASIC, ENT_MID, ENT_MAX.",
+    "en": "2–20 letters/digits, underscore or hyphen. Example: PILOT, ENT_BASIC, ENT_MID, ENT_MAX.",
+    "ja": "2〜20文字の英数字、アンダースコアまたはハイフン。例: PILOT, ENT_BASIC, ENT_MID, ENT_MAX。",
+    "ko": "2~20자의 영문/숫자, 밑줄 또는 하이픈. 예: PILOT, ENT_BASIC, ENT_MID, ENT_MAX.",
+    "zh": "2–20 位字母/数字、下划线或连字符。例如：PILOT、ENT_BASIC、ENT_MID、ENT_MAX。"
+  },
+  "editPage.fieldStatus": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "editPage.statusActive": {
+    "vi": "Đang hoạt động",
+    "en": "Active",
+    "ja": "稼働中",
+    "ko": "활성",
+    "zh": "运行中"
+  },
+  "editPage.statusInactive": {
+    "vi": "Ngừng hoạt động",
+    "en": "Inactive",
+    "ja": "停止中",
+    "ko": "비활성",
+    "zh": "已停用"
+  },
+  "editPage.statusSuspended": {
+    "vi": "Tạm ngưng",
+    "en": "Suspended",
+    "ja": "一時停止",
+    "ko": "일시 중지",
+    "zh": "已暂停"
+  },
+  "editPage.cancel": {
+    "vi": "Hủy",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "editPage.saveChanges": {
+    "vi": "Lưu thay đổi",
+    "en": "Save changes",
+    "ja": "変更を保存",
+    "ko": "변경 사항 저장",
+    "zh": "保存更改"
+  },
+  "editPage.dangerZone": {
+    "vi": "Vùng nguy hiểm",
+    "en": "Danger zone",
+    "ja": "危険な操作",
+    "ko": "위험 구역",
+    "zh": "危险区域"
+  },
+  "editPage.softDeleteInfoPre": {
+    "vi": "Xóa mềm workspace sẽ chuyển trạng thái sang",
+    "en": "Soft-deleting the workspace will change its status to",
+    "ja": "ワークスペースをソフト削除すると、ステータスが次のように変わります：",
+    "ko": "워크스페이스를 소프트 삭제하면 상태가 다음으로 변경됩니다:",
+    "zh": "软删除工作区会将其状态更改为"
+  },
+  "editPage.softDeleteInfoPost": {
+    "vi": "Không xóa dữ liệu — có thể khôi phục bằng cách cập nhật lại trạng thái.",
+    "en": "No data is deleted — it can be restored by updating the status again.",
+    "ja": "データは削除されません。ステータスを再度更新することで復元できます。",
+    "ko": "데이터는 삭제되지 않으며, 상태를 다시 업데이트하면 복원할 수 있습니다.",
+    "zh": "不会删除数据——可以通过重新更新状态来恢复。"
+  },
+  "editPage.softDeleteWorkspace": {
+    "vi": "Xóa mềm workspace",
+    "en": "Soft-delete workspace",
+    "ja": "ワークスペースをソフト削除",
+    "ko": "워크스페이스 소프트 삭제",
+    "zh": "软删除工作区"
+  },
+  "editPage.confirmDeleteTitle": {
+    "vi": "Xác nhận xóa mềm",
+    "en": "Confirm soft delete",
+    "ja": "ソフト削除の確認",
+    "ko": "소프트 삭제 확인",
+    "zh": "确认软删除"
+  },
+  "editPage.confirmDeleteBodyPre": {
+    "vi": "Workspace",
+    "en": "Workspace",
+    "ja": "ワークスペース",
+    "ko": "워크스페이스",
+    "zh": "工作区"
+  },
+  "editPage.confirmDeleteBodyPost": {
+    "vi": "sẽ chuyển sang trạng thái Ngừng hoạt động. Người dùng sẽ không truy cập được cho đến khi kích hoạt lại.",
+    "en": "will change to Inactive status. Users will not be able to access it until it is reactivated.",
+    "ja": "は「停止中」ステータスに変更されます。再度有効化するまで、ユーザーはアクセスできません。",
+    "ko": "상태가 비활성으로 변경됩니다. 다시 활성화할 때까지 사용자는 접근할 수 없습니다.",
+    "zh": "将变更为已停用状态。用户在重新激活之前将无法访问。"
+  },
+  "editPage.softDelete": {
+    "vi": "Xóa mềm",
+    "en": "Soft delete",
+    "ja": "ソフト削除",
+    "ko": "소프트 삭제",
+    "zh": "软删除"
+  }
+}

@@ -26,6 +26,7 @@ import {
 import { GlobalStyles, KaoriLockup, cn } from './foundation';
 import { NAV_TREE, type NavGroup, type NavChild } from './navigation';
 import { useAuth, type Role } from '@/lib/auth-store';
+import { useT } from '@/lib/i18n/provider';
 
 // ============================================================================
 // 1. Helpers
@@ -172,6 +173,7 @@ function Sidebar({ currentPath, isOpen, onClose }: SidebarProps) {
 // ============================================================================
 
 function Header({ onMenuToggle }: { onMenuToggle: () => void }) {
+  const t      = useT();
   const user   = useAuth((s) => s.user);
   const clear  = useAuth((s) => s.clear);
   const router = useRouter();
@@ -189,13 +191,13 @@ function Header({ onMenuToggle }: { onMenuToggle: () => void }) {
           type="button"
           onClick={onMenuToggle}
           className="lg:hidden p-2 text-[var(--text-secondary)] hover:bg-[var(--bg-app)] rounded-md-custom"
-          aria-label="Mở menu"
+          aria-label={t('platformShell.menuAriaLabel')}
         >
           <Menu className="w-5 h-5" />
         </button>
         <div className="hidden md:flex items-center px-3 py-1.5 rounded-md-custom bg-[var(--bg-app)] border border-[var(--border-color)] text-sm text-[var(--text-primary)]">
           <ShieldCheck className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] mr-2" />
-          <span className="font-medium">Kaori Platform</span>
+          <span className="font-medium">{t('platformShell.brandBadge')}</span>
         </div>
       </div>
 
@@ -204,7 +206,7 @@ function Header({ onMenuToggle }: { onMenuToggle: () => void }) {
           <Search className="w-4 h-4 text-[var(--text-secondary)] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Tìm workspace, admin, key..."
+            placeholder={t('platformShell.searchPlaceholder')}
             className="w-full bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom pl-9 pr-12 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all hover:bg-[var(--bg-card)]"
           />
           <kbd className="hidden lg:inline-flex absolute right-3 top-1/2 -translate-y-1/2 items-center border border-[var(--border-color)] rounded px-1.5 text-[10px] font-medium text-[var(--text-secondary)] bg-[var(--bg-card)]">
@@ -217,7 +219,7 @@ function Header({ onMenuToggle }: { onMenuToggle: () => void }) {
         <button
           type="button"
           className="p-2 text-[var(--text-secondary)] hover:bg-[var(--bg-app)] rounded-full relative"
-          aria-label="Thông báo"
+          aria-label={t('platformShell.notificationsAriaLabel')}
         >
           <Bell className="w-5 h-5" />
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[var(--state-error)] rounded-full border-2 border-[var(--bg-card)]" />
@@ -225,7 +227,7 @@ function Header({ onMenuToggle }: { onMenuToggle: () => void }) {
         <button
           type="button"
           className="hidden sm:block p-2 text-[var(--text-secondary)] hover:bg-[var(--bg-app)] rounded-full"
-          aria-label="Trợ giúp"
+          aria-label={t('platformShell.helpAriaLabel')}
         >
           <HelpCircle className="w-5 h-5" />
         </button>
@@ -235,7 +237,7 @@ function Header({ onMenuToggle }: { onMenuToggle: () => void }) {
             type="button"
             onClick={() => setOpenMenu((v) => !v)}
             className="ml-2 w-9 h-9 rounded-full bg-[var(--primary-gold)]/15 border border-[var(--primary-gold)]/30 flex items-center justify-center hover:ring-2 hover:ring-[var(--primary-gold)]/30 transition-all"
-            aria-label="Tài khoản"
+            aria-label={t('platformShell.accountAriaLabel')}
           >
             <span className="text-xs font-semibold text-[var(--primary-gold-dark)]">
               {userInitials(user?.email)}
@@ -246,10 +248,10 @@ function Header({ onMenuToggle }: { onMenuToggle: () => void }) {
             <div className="absolute right-0 mt-2 w-60 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-md-custom shadow-soft-md py-1 animate-slide-up-fade z-50">
               <div className="px-4 py-3 border-b border-[var(--border-color)]/60">
                 <p className="text-sm font-semibold text-[var(--text-primary)]">
-                  {user?.email ?? 'Tài khoản'}
+                  {user?.email ?? t('platformShell.accountFallback')}
                 </p>
                 <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                  Vai trò: <span className="font-medium">{user?.role ?? 'GUEST'}</span>
+                  {t('platformShell.roleLabel')} <span className="font-medium">{user?.role ?? 'GUEST'}</span>
                 </p>
               </div>
               <Link
@@ -257,7 +259,7 @@ function Header({ onMenuToggle }: { onMenuToggle: () => void }) {
                 onClick={() => setOpenMenu(false)}
                 className="flex items-center px-4 py-2 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)]"
               >
-                <Settings className="w-4 h-4 mr-2 text-[var(--text-secondary)]" /> Phiên & bảo mật
+                <Settings className="w-4 h-4 mr-2 text-[var(--text-secondary)]" /> {t('platformShell.sessionsSecurity')}
               </Link>
               <div className="border-t border-[var(--border-color)]/60 mt-1 pt-1">
                 <button
@@ -265,7 +267,7 @@ function Header({ onMenuToggle }: { onMenuToggle: () => void }) {
                   onClick={logout}
                   className="w-full flex items-center px-4 py-2 text-sm text-[var(--state-error)] hover:bg-[var(--state-error)]/8"
                 >
-                  <LogOut className="w-4 h-4 mr-2" /> Đăng xuất
+                  <LogOut className="w-4 h-4 mr-2" /> {t('platformShell.logout')}
                 </button>
               </div>
             </div>

@@ -1,0 +1,114 @@
+{
+  "invitePage.backToAdmins": {
+    "vi": "Tất cả quản trị viên",
+    "en": "All administrators",
+    "ja": "すべての管理者",
+    "ko": "모든 관리자",
+    "zh": "所有管理员"
+  },
+  "invitePage.title": {
+    "vi": "Mời quản trị viên",
+    "en": "Invite administrator",
+    "ja": "管理者を招待",
+    "ko": "관리자 초대",
+    "zh": "邀请管理员"
+  },
+  "invitePage.description": {
+    "vi": "Gửi email mời tham gia với quyền quản trị nền tảng.",
+    "en": "Send an invitation email with platform administrator permissions.",
+    "ja": "プラットフォーム管理者権限で招待メールを送信します。",
+    "ko": "플랫폼 관리자 권한으로 초대 이메일을 보냅니다.",
+    "zh": "发送邀请邮件并授予平台管理员权限。"
+  },
+  "invitePage.labelFullName": {
+    "vi": "Họ tên",
+    "en": "Full name",
+    "ja": "氏名",
+    "ko": "성명",
+    "zh": "姓名"
+  },
+  "invitePage.phFullName": {
+    "vi": "VD: Nguyễn Văn A",
+    "en": "e.g. Nguyen Van A",
+    "ja": "例：Nguyen Van A",
+    "ko": "예: Nguyen Van A",
+    "zh": "例如：Nguyen Van A"
+  },
+  "invitePage.labelEmail": {
+    "vi": "Email",
+    "en": "Email",
+    "ja": "メールアドレス",
+    "ko": "이메일",
+    "zh": "邮箱"
+  },
+  "invitePage.phEmail": {
+    "vi": "ten@kaori.io",
+    "en": "name@kaori.io",
+    "ja": "name@kaori.io",
+    "ko": "name@kaori.io",
+    "zh": "name@kaori.io"
+  },
+  "invitePage.labelRole": {
+    "vi": "Vai trò",
+    "en": "Role",
+    "ja": "役割",
+    "ko": "역할",
+    "zh": "角色"
+  },
+  "invitePage.roleSupport": {
+    "vi": "Hỗ trợ kỹ thuật (SUPPORT)",
+    "en": "Technical support (SUPPORT)",
+    "ja": "テクニカルサポート（SUPPORT）",
+    "ko": "기술 지원 (SUPPORT)",
+    "zh": "技术支持 (SUPPORT)"
+  },
+  "invitePage.roleAdmin": {
+    "vi": "Quản trị viên (ADMIN)",
+    "en": "Administrator (ADMIN)",
+    "ja": "管理者（ADMIN）",
+    "ko": "관리자 (ADMIN)",
+    "zh": "管理员 (ADMIN)"
+  },
+  "invitePage.roleSuperAdmin": {
+    "vi": "Super Admin (SUPER_ADMIN — yêu cầu MFA)",
+    "en": "Super Admin (SUPER_ADMIN — MFA required)",
+    "ja": "スーパー管理者（SUPER_ADMIN — MFA必須）",
+    "ko": "슈퍼 관리자 (SUPER_ADMIN — MFA 필수)",
+    "zh": "超级管理员 (SUPER_ADMIN — 需要 MFA)"
+  },
+  "invitePage.roleDescSuperAdmin": {
+    "vi": "Toàn quyền vận hành nền tảng. Bắt buộc bật MFA.",
+    "en": "Full platform operating permissions. MFA is mandatory.",
+    "ja": "プラットフォームの全操作権限。MFAの有効化が必須です。",
+    "ko": "플랫폼 운영에 대한 모든 권한. MFA 활성화가 필수입니다.",
+    "zh": "拥有平台全部操作权限，必须启用 MFA。"
+  },
+  "invitePage.roleDescAdmin": {
+    "vi": "Quản trị workspace, thành viên, billing. Không thể tạo SUPER_ADMIN.",
+    "en": "Manages workspace, members, and billing. Cannot create SUPER_ADMIN accounts.",
+    "ja": "ワークスペース、メンバー、請求を管理します。SUPER_ADMINは作成できません。",
+    "ko": "워크스페이스, 구성원, 청구를 관리합니다. SUPER_ADMIN은 생성할 수 없습니다.",
+    "zh": "管理工作区、成员和账单，无法创建 SUPER_ADMIN 账户。"
+  },
+  "invitePage.roleDescSupport": {
+    "vi": "Chỉ đọc — hỗ trợ kỹ thuật và xử lý yêu cầu khách hàng.",
+    "en": "Read-only — provides technical support and handles customer requests.",
+    "ja": "読み取り専用 — テクニカルサポートと顧客対応を行います。",
+    "ko": "읽기 전용 — 기술 지원 및 고객 요청 처리를 담당합니다.",
+    "zh": "只读 — 提供技术支持并处理客户请求。"
+  },
+  "invitePage.cancel": {
+    "vi": "Hủy",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "invitePage.sendInvite": {
+    "vi": "Gửi lời mời",
+    "en": "Send invitation",
+    "ja": "招待を送信",
+    "ko": "초대 보내기",
+    "zh": "发送邀请"
+  }
+}

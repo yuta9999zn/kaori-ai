@@ -1,0 +1,128 @@
+{
+  "templatesFnew40StrategyHub.title": {
+    "vi": "Chiến lược",
+    "en": "Strategy",
+    "ja": "戦略",
+    "ko": "전략",
+    "zh": "战略"
+  },
+  "templatesFnew40StrategyHub.headerDesc": {
+    "vi": "Tổng quan OKR + Lộ trình + Họp review theo quý.",
+    "en": "Overview of OKR + Timeline + Review meetings by quarter.",
+    "ja": "四半期ごとのOKR＋ロードマップ＋レビューミーティングの概要。",
+    "ko": "분기별 OKR + 로드맵 + 리뷰 회의 개요.",
+    "zh": "按季度查看 OKR + 路线图 + 复盘会议概览。"
+  },
+  "templatesFnew40StrategyHub.refresh": {
+    "vi": "Làm mới",
+    "en": "Refresh",
+    "ja": "更新",
+    "ko": "새로고침",
+    "zh": "刷新"
+  },
+  "templatesFnew40StrategyHub.quarterLabel": {
+    "vi": "Quý",
+    "en": "Quarter",
+    "ja": "四半期",
+    "ko": "분기",
+    "zh": "季度"
+  },
+  "templatesFnew40StrategyHub.totalOkr": {
+    "vi": "Tổng OKR {quarter}",
+    "en": "Total OKR {quarter}",
+    "ja": "OKR合計 {quarter}",
+    "ko": "총 OKR {quarter}",
+    "zh": "OKR 总数 {quarter}"
+  },
+  "templatesFnew40StrategyHub.onTrack": {
+    "vi": "On-track",
+    "en": "On-track",
+    "ja": "On-track",
+    "ko": "On-track",
+    "zh": "On-track"
+  },
+  "templatesFnew40StrategyHub.atRisk": {
+    "vi": "At-risk",
+    "en": "At-risk",
+    "ja": "At-risk",
+    "ko": "At-risk",
+    "zh": "At-risk"
+  },
+  "templatesFnew40StrategyHub.offTrack": {
+    "vi": "Off-track",
+    "en": "Off-track",
+    "ja": "Off-track",
+    "ko": "Off-track",
+    "zh": "Off-track"
+  },
+  "templatesFnew40StrategyHub.moduleOkrTitle": {
+    "vi": "OKR",
+    "en": "OKR",
+    "ja": "OKR",
+    "ko": "OKR",
+    "zh": "OKR"
+  },
+  "templatesFnew40StrategyHub.moduleOkrDesc": {
+    "vi": "Objective + 3 Key Results · cập nhật progress hàng tuần.",
+    "en": "Objective + 3 Key Results · updated weekly.",
+    "ja": "Objective + 3 Key Results · 週次で進捗を更新。",
+    "ko": "Objective + 3 Key Results · 매주 진행 상황 업데이트.",
+    "zh": "Objective + 3 Key Results · 每周更新进度。"
+  },
+  "templatesFnew40StrategyHub.metricOkrRunning": {
+    "vi": "{count} OKR đang chạy",
+    "en": "{count} OKR in progress",
+    "ja": "実行中のOKR {count}件",
+    "ko": "진행 중인 OKR {count}개",
+    "zh": "{count} 个 OKR 进行中"
+  },
+  "templatesFnew40StrategyHub.loadingEllipsis": {
+    "vi": "Đang tải...",
+    "en": "Loading...",
+    "ja": "読み込み中...",
+    "ko": "로딩 중...",
+    "zh": "加载中..."
+  },
+  "templatesFnew40StrategyHub.timelineTitle": {
+    "vi": "Lộ trình",
+    "en": "Timeline",
+    "ja": "ロードマップ",
+    "ko": "로드맵",
+    "zh": "路线图"
+  },
+  "templatesFnew40StrategyHub.timelineDesc": {
+    "vi": "Gantt-style milestone + phụ thuộc giữa các initiative.",
+    "en": "Gantt-style milestones + dependencies between initiatives.",
+    "ja": "ガントチャート形式のマイルストーン＋施策間の依存関係。",
+    "ko": "간트 차트 형식의 마일스톤 + 이니셔티브 간 의존 관계.",
+    "zh": "甘特图式里程碑 + 各项举措之间的依赖关系。"
+  },
+  "templatesFnew40StrategyHub.comingSoon": {
+    "vi": "Sắp ra mắt — Phase 2 v1",
+    "en": "Coming soon — Phase 2 v1",
+    "ja": "近日公開 — Phase 2 v1",
+    "ko": "출시 예정 — Phase 2 v1",
+    "zh": "即将上线 — Phase 2 v1"
+  },
+  "templatesFnew40StrategyHub.reviewMeetingTitle": {
+    "vi": "Họp review",
+    "en": "Review meeting",
+    "ja": "レビューミーティング",
+    "ko": "리뷰 회의",
+    "zh": "复盘会议"
+  },
+  "templatesFnew40StrategyHub.reviewMeetingDesc": {
+    "vi": "Lịch họp định kỳ + AI-prepped insight pack.",
+    "en": "Recurring meeting schedule + AI-prepped insight pack.",
+    "ja": "定例会議スケジュール＋AIが準備するインサイトパック。",
+    "ko": "정기 회의 일정 + AI가 준비한 인사이트 팩.",
+    "zh": "定期会议安排 + AI 预先整理的洞察包。"
+  },
+  "templatesFnew40StrategyHub.statusAutoNote": {
+    "vi": "Status (on_track / at_risk / off_track) tự suy ra từ KR progress so với quý đã trôi qua. Cập nhật progress KR sẽ tự cập nhật status.",
+    "en": "Status (on_track / at_risk / off_track) is inferred automatically from KR progress against the elapsed quarter. Updating KR progress will automatically update the status.",
+    "ja": "ステータス（on_track / at_risk / off_track）は、経過した四半期に対するKRの進捗から自動的に算出されます。KRの進捗を更新するとステータスも自動更新されます。",
+    "ko": "상태(on_track / at_risk / off_track)는 경과한 분기 대비 KR 진행률로부터 자동으로 산출됩니다. KR 진행률을 업데이트하면 상태도 자동으로 업데이트됩니다.",
+    "zh": "状态（on_track / at_risk / off_track）会根据已过季度对比 KR 进度自动推算。更新 KR 进度会自动更新状态。"
+  }
+}

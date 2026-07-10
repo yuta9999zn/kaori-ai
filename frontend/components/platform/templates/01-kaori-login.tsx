@@ -7,6 +7,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { useT } from '@/lib/i18n/provider';
 
 // --- STYLES & FONTS ---
 // Injecting the requested Google Fonts and custom animations for the self-contained environment.
@@ -106,6 +107,7 @@ Label.displayName = "Label";
 // --- MAIN PAGE COMPONENT ---
 
 export default function KaoriLogin() {
+  const t = useT();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -122,7 +124,7 @@ export default function KaoriLogin() {
 
     // Mock validation
     if (formData.email !== 'admin@company.com' || formData.password !== 'password') {
-      setError('Invalid email or password. Try admin@company.com / password');
+      setError(t('templates01KaoriLogin.errInvalidCreds'));
       setIsLoading(false);
       return;
     }
@@ -162,20 +164,19 @@ export default function KaoriLogin() {
           {/* Center: Copy */}
           <div className="relative z-10 flex flex-col max-w-lg mb-20 animate-fade-in">
             <h1 className="font-serif text-5xl leading-[1.15] text-[#2F2F2F] font-medium mb-6">
-              Intelligence,<br/>
-              <span className="text-[#8C8173] italic">Calmly Delivered.</span>
+              {t('templates01KaoriLogin.heroTitleLine1')}<br/>
+              <span className="text-[#8C8173] italic">{t('templates01KaoriLogin.heroTitleLine2')}</span>
             </h1>
             <p className="text-[#8C8173] text-lg leading-relaxed">
-              Experience the next generation of multi-tenant data intelligence. 
-              Built for scale, designed for clarity, and engineered to bring peace to your workflows.
+              {t('templates01KaoriLogin.heroDesc')}
             </p>
           </div>
           
           {/* Bottom: Subtle Footer */}
           <div className="relative z-10 flex items-center gap-4 text-sm text-[#8C8173]">
-            <span>© 2026 Kaori Platform</span>
+            <span>{t('templates01KaoriLogin.copyright')}</span>
             <span className="w-1 h-1 rounded-full bg-[#D4B88A]" />
-            <a href="#" className="hover:text-[#2F2F2F] transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-[#2F2F2F] transition-colors">{t('templates01KaoriLogin.privacyPolicy')}</a>
           </div>
         </div>
 
@@ -197,10 +198,10 @@ export default function KaoriLogin() {
             
             <div className="flex flex-col space-y-2 mb-8">
               <h2 className="font-serif text-3xl font-semibold tracking-tight text-[#2F2F2F]">
-                Welcome back
+                {t('templates01KaoriLogin.welcomeBack')}
               </h2>
               <p className="text-sm text-[#8C8173]">
-                Sign in to your platform workspace
+                {t('templates01KaoriLogin.signInSubtitle')}
               </p>
             </div>
 
@@ -215,7 +216,7 @@ export default function KaoriLogin() {
 
               {/* Email Field */}
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('templates01KaoriLogin.emailLabel')}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -229,7 +230,7 @@ export default function KaoriLogin() {
 
               {/* Password Field */}
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('templates01KaoriLogin.passwordLabel')}</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -246,7 +247,7 @@ export default function KaoriLogin() {
                     onClick={() => setShowPassword(!showPassword)}
                     disabled={isLoading}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8C8173] hover:text-[#2F2F2F] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B88A] rounded-md p-1"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={showPassword ? t('templates01KaoriLogin.hidePassword') : t('templates01KaoriLogin.showPassword')}
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -268,20 +269,20 @@ export default function KaoriLogin() {
                     className="h-4 w-4 rounded-md border-[#E9E7E2] text-[#D4B88A] focus:ring-[#D4B88A] accent-[#D4B88A] transition-colors cursor-pointer"
                   />
                   <Label htmlFor="remember" className="text-sm font-normal text-[#8C8173] cursor-pointer">
-                    Remember me
+                    {t('templates01KaoriLogin.rememberMe')}
                   </Label>
                 </div>
                 <a
                   href="#forgot-password"
                   className="text-sm font-medium text-[#2F2F2F] hover:text-[#D4B88A] transition-colors"
                 >
-                  Forgot password?
+                  {t('templates01KaoriLogin.forgotPassword')}
                 </a>
               </div>
 
               {/* Primary Button */}
               <Button type="submit" className="w-full mt-2" isLoading={isLoading}>
-                Sign in
+                {t('templates01KaoriLogin.signInButton')}
               </Button>
 
               {/* Divider */}
@@ -291,7 +292,7 @@ export default function KaoriLogin() {
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
                   <span className="bg-white px-2 text-[#8C8173]">
-                    or continue with
+                    {t('templates01KaoriLogin.orContinueWith')}
                   </span>
                 </div>
               </div>
@@ -330,9 +331,9 @@ export default function KaoriLogin() {
           
           {/* Footer */}
           <div className="mt-8 text-center text-sm text-[#8C8173] animate-fade-in">
-            Don't have an account?{' '}
+            {t('templates01KaoriLogin.noAccount')}{' '}
             <a href="#request-access" className="font-medium text-[#2F2F2F] hover:text-[#D4B88A] transition-colors underline-offset-4 hover:underline">
-              Request access
+              {t('templates01KaoriLogin.requestAccess')}
             </a>
           </div>
 

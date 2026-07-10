@@ -13,14 +13,11 @@ import {
   Badge, Button, Input, Label, ErrorBanner, type ProblemDetails,
 } from '@/components/platform/foundation';
 import { fmtDateTime } from '@/lib/format';
+import { useT } from '@/lib/i18n/provider';
 
 const STATUS_VARIANT: Record<KeyStatus, 'operational' | 'default'> = {
   active:  'operational',
   revoked: 'default',
-};
-const STATUS_LABEL: Record<KeyStatus, string> = {
-  active:  'Đang hoạt động',
-  revoked: 'Đã thu hồi',
 };
 
 function maskKey(keyId: string) {
@@ -35,6 +32,7 @@ export default function WorkspaceKeysPage({
 }) {
   const { id } = use(params);
   const qc     = useQueryClient();
+  const t = useT();
 
   const query = useQuery({
     queryKey: ['workspace-keys', id],
@@ -97,16 +95,16 @@ export default function WorkspaceKeysPage({
         <p className="text-sm text-[var(--text-secondary)]">
           {keys.length > 0 ? (
             <>
-              <strong className="text-[var(--text-primary)]">{activeCount}</strong> khoá đang hoạt động trên tổng số{' '}
+              <strong className="text-[var(--text-primary)]">{activeCount}</strong> {t('keysPage.activeOfTotal')}{' '}
               <strong className="text-[var(--text-primary)]">{keys.length}</strong>
             </>
           ) : (
-            'Khoá API dùng để kích hoạt workspace và xác thực tích hợp.'
+            t('keysPage.headerBlurb')
           )}
         </p>
         <Button onClick={() => setCreateOpen(true)}>
           <Plus className="w-4 h-4 mr-1.5" />
-          Tạo khoá mới
+          {t('keysPage.createBtn')}
         </Button>
       </div>
 
@@ -122,7 +120,7 @@ export default function WorkspaceKeysPage({
       )}
 
       {query.isError && (
-        <ErrorBanner problem={problem} message="Không thể tải danh sách khoá API." />
+        <ErrorBanner problem={problem} message={t('keysPage.errLoadList')} />
       )}
 
       {!query.isLoading && !query.isError && (
@@ -131,10 +129,10 @@ export default function WorkspaceKeysPage({
             <table className="w-full text-sm">
               <thead className="bg-[var(--bg-app)]/60 text-[var(--text-secondary)]">
                 <tr>
-                  <th className="text-left font-medium px-4 py-2.5">Khoá</th>
-                  <th className="text-left font-medium px-4 py-2.5">Trạng thái</th>
-                  <th className="text-left font-medium px-4 py-2.5">Tạo lúc</th>
-                  <th className="text-left font-medium px-4 py-2.5">Thu hồi lúc</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('keysPage.colKey')}</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('keysPage.colStatus')}</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('keysPage.colCreatedAt')}</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('keysPage.colRevokedAt')}</th>
                   <th className="text-right font-medium px-4 py-2.5 w-20"></th>
                 </tr>
               </thead>
@@ -142,7 +140,7 @@ export default function WorkspaceKeysPage({
                 {keys.length === 0 && (
                   <tr>
                     <td colSpan={5} className="px-4 py-10 text-center text-[var(--text-secondary)]">
-                      Chưa có khoá API nào trong workspace này.
+                      {t('keysPage.emptyState')}
                     </td>
                   </tr>
                 )}
@@ -155,14 +153,16 @@ export default function WorkspaceKeysPage({
                         </div>
                         <div className="min-w-0">
                           <p className="font-medium text-[var(--text-primary)] truncate">
-                            {k.label || 'Không có nhãn'}
+                            {k.label || t('keysPage.noLabel')}
                           </p>
                           <p className="text-xs text-[var(--text-secondary)] font-mono truncate">{maskKey(k.key_id)}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <Badge variant={STATUS_VARIANT[k.status]}>{STATUS_LABEL[k.status]}</Badge>
+                      <Badge variant={STATUS_VARIANT[k.status]}>
+                        {t(k.status === 'active' ? 'keysPage.statusActive' : 'keysPage.statusRevoked')}
+                      </Badge>
                     </td>
                     <td className="px-4 py-3 text-sm text-[var(--text-secondary)] tabular-nums">
                       {fmtDateTime(k.created_at)}
@@ -176,7 +176,7 @@ export default function WorkspaceKeysPage({
                           type="button"
                           onClick={() => setRevokeTarget(k)}
                           className="p-1.5 text-[var(--text-secondary)] hover:text-[#9B5050] hover:bg-[var(--state-error)]/8 rounded-md-custom transition-colors"
-                          aria-label="Thu hồi khoá"
+                          aria-label={t('keysPage.ariaRevoke')}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -197,19 +197,19 @@ export default function WorkspaceKeysPage({
           <header className="flex items-start justify-between gap-4 mb-4">
             <div>
               <h3 className="font-serif text-lg text-[var(--text-primary)]">
-                {revealedKey ? 'Khoá đã được tạo' : 'Tạo khoá API mới'}
+                {revealedKey ? t('keysPage.modalTitleCreated') : t('keysPage.modalTitleCreate')}
               </h3>
               <p className="text-sm text-[var(--text-secondary)] mt-1">
                 {revealedKey
-                  ? 'Sao chép khoá ngay — sau khi đóng cửa sổ, khoá sẽ không thể hiển thị lại.'
-                  : 'Khoá sẽ chỉ hiển thị một lần duy nhất sau khi tạo.'}
+                  ? t('keysPage.modalDescRevealed')
+                  : t('keysPage.modalDescCreate')}
               </p>
             </div>
             <button
               type="button"
               onClick={closeCreateFlow}
               className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-md-custom hover:bg-[var(--bg-app)]"
-              aria-label="Đóng"
+              aria-label={t('keysPage.ariaClose')}
             >
               <X className="w-4 h-4" />
             </button>
@@ -220,12 +220,11 @@ export default function WorkspaceKeysPage({
               <div className="flex items-start gap-2 text-xs text-[#9E814D] bg-[var(--state-warning)]/12 border border-[var(--state-warning)]/30 rounded-md-custom px-3 py-2">
                 <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                 <span>
-                  Đây là lần duy nhất khoá hiển thị đầy đủ. Hãy lưu vào kho mật khẩu
-                  hoặc biến môi trường ngay bây giờ.
+                  {t('keysPage.warnOneTime')}
                 </span>
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="reveal-key">Khoá API</Label>
+                <Label htmlFor="reveal-key">{t('keysPage.labelApiKey')}</Label>
                 <div className="flex gap-2">
                   <Input
                     id="reveal-key"
@@ -236,51 +235,50 @@ export default function WorkspaceKeysPage({
                   />
                   <Button variant="secondary" onClick={handleCopy}>
                     {copied ? (
-                      <><Check className="w-4 h-4 mr-1" /> Đã sao</>
+                      <><Check className="w-4 h-4 mr-1" /> {t('keysPage.copiedLabel')}</>
                     ) : (
-                      <><Copy className="w-4 h-4 mr-1" /> Sao chép</>
+                      <><Copy className="w-4 h-4 mr-1" /> {t('keysPage.copyLabel')}</>
                     )}
                   </Button>
                 </div>
               </div>
               <div className="flex justify-end pt-2">
                 <Button onClick={closeCreateFlow}>
-                  <Check className="w-4 h-4 mr-1.5" /> Tôi đã sao chép
+                  <Check className="w-4 h-4 mr-1.5" /> {t('keysPage.confirmedCopy')}
                 </Button>
               </div>
             </div>
           ) : (
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="key-label">Nhãn (không bắt buộc)</Label>
+                <Label htmlFor="key-label">{t('keysPage.labelOptional')}</Label>
                 <Input
                   id="key-label"
-                  placeholder="ví dụ: ci-runner, stg-deploy"
+                  placeholder={t('keysPage.labelPlaceholder')}
                   maxLength={100}
                   value={createLabel}
                   onChange={(e) => setCreateLabel(e.target.value)}
                 />
-                <p className="text-xs text-[var(--text-secondary)]">Tối đa 100 ký tự. Chỉ phục vụ mục đích nhận diện.</p>
+                <p className="text-xs text-[var(--text-secondary)]">{t('keysPage.labelHint')}</p>
               </div>
 
               <div className="flex items-start gap-2 text-xs text-[var(--text-secondary)] bg-[var(--state-info)]/10 border border-[var(--state-info)]/30 rounded-md-custom px-3 py-2">
                 <ShieldCheck className="w-4 h-4 text-[#52647D] shrink-0 mt-0.5" />
                 <span>
-                  Khoá được sinh ngẫu nhiên 160-bit (định dạng{' '}
-                  <code className="font-mono">KAORI-XXXXXXXX-…</code>) và chỉ lưu hash SHA-256
-                  trên máy chủ.
+                  {t('keysPage.keyGenInfoPre')}{' '}
+                  <code className="font-mono">KAORI-XXXXXXXX-…</code>{t('keysPage.keyGenInfoPost')}
                 </span>
               </div>
 
               {createError && <ErrorBanner problem={createError} />}
 
               <div className="flex justify-end gap-2 pt-2">
-                <Button variant="secondary" onClick={closeCreateFlow}>Hủy</Button>
+                <Button variant="secondary" onClick={closeCreateFlow}>{t('keysPage.cancelBtn')}</Button>
                 <Button
                   isLoading={createMut.isPending}
                   onClick={() => { setCreateError(null); createMut.mutate(); }}
                 >
-                  <Plus className="w-4 h-4 mr-1.5" /> Tạo khoá
+                  <Plus className="w-4 h-4 mr-1.5" /> {t('keysPage.createKeyBtn')}
                 </Button>
               </div>
             </div>
@@ -291,20 +289,20 @@ export default function WorkspaceKeysPage({
       {revokeTarget && (
         <Modal onClose={() => setRevokeTarget(null)} small>
           <header className="mb-3">
-            <h3 className="font-serif text-lg text-[var(--text-primary)]">Thu hồi khoá API</h3>
+            <h3 className="font-serif text-lg text-[var(--text-primary)]">{t('keysPage.revokeModalTitle')}</h3>
             <p className="text-sm text-[var(--text-secondary)] mt-1">
-              Thu hồi <strong className="text-[var(--text-primary)]">"{revokeTarget.label || 'khoá không nhãn'}"</strong>?
-              Mọi tích hợp đang dùng khoá này sẽ ngừng hoạt động ngay lập tức.
+              {t('keysPage.revokeConfirmPre')} <strong className="text-[var(--text-primary)]">"{revokeTarget.label || t('keysPage.unlabeledKey')}"</strong>?
+              {' '}{t('keysPage.revokeConfirmPost')}
             </p>
           </header>
           <div className="flex justify-end gap-2 pt-2">
-            <Button variant="secondary" onClick={() => setRevokeTarget(null)}>Hủy</Button>
+            <Button variant="secondary" onClick={() => setRevokeTarget(null)}>{t('keysPage.cancelBtn')}</Button>
             <Button
               variant="destructive"
               isLoading={revokeMut.isPending}
               onClick={() => revokeTarget && revokeMut.mutate(revokeTarget.key_id)}
             >
-              <Trash2 className="w-4 h-4 mr-1.5" /> Thu hồi
+              <Trash2 className="w-4 h-4 mr-1.5" /> {t('keysPage.revokeBtn')}
             </Button>
           </div>
         </Modal>

@@ -30,6 +30,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 
 // ─── Types mirror BE shapes ──────────────────────────────────────────
 
@@ -60,6 +61,7 @@ interface SavedView {
 // ─── Page component ──────────────────────────────────────────────────
 
 export default function CsTicketInboxPage() {
+  const t = useT();
   const [activeView, setActiveView] = useState<string>('my-queue');
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
@@ -71,10 +73,10 @@ export default function CsTicketInboxPage() {
 
   // TODO P2-33-DATA: useQuery(['cs-saved-views', userId])
   const savedViews: SavedView[] = [
-    { view_id: 'my-queue', name: 'My queue', filters: { assignee: 'me' } },
-    { view_id: 'unassigned', name: 'Unassigned', filters: { assignee: 'none' } },
-    { view_id: 'high', name: 'High priority', filters: { priority: 'high' } },
-    { view_id: 'sla-risk', name: 'SLA breach risk', filters: { sla: 'risk' } },
+    { view_id: 'my-queue', name: t('templates77CsTicketInbox.viewMyQueue'), filters: { assignee: 'me' } },
+    { view_id: 'unassigned', name: t('templates77CsTicketInbox.viewUnassigned'), filters: { assignee: 'none' } },
+    { view_id: 'high', name: t('templates77CsTicketInbox.viewHighPriority'), filters: { priority: 'high' } },
+    { view_id: 'sla-risk', name: t('templates77CsTicketInbox.viewSlaRisk'), filters: { sla: 'risk' } },
   ];
 
   // TODO P2-33-PERM: hide quick actions for VIEWER; enable bulk only for MANAGER+.
@@ -83,8 +85,8 @@ export default function CsTicketInboxPage() {
   return (
     <div className="space-y-4">
       <PageHeader
-        title="CS Ticket Inbox"
-        subtitle="Triage tickets từ mọi kênh — email · Zalo · web form · phone log."
+        title={t('templates77CsTicketInbox.pageTitle')}
+        subtitle={t('templates77CsTicketInbox.pageSubtitle')}
       />
 
       {/* Saved views switcher */}
@@ -107,42 +109,42 @@ export default function CsTicketInboxPage() {
       <div className="flex items-center gap-3 rounded-lg border bg-white px-4 py-3">
         <Filter className="size-4 text-muted-foreground" />
         <select className="bg-transparent text-sm outline-none">
-          <option value="">Tất cả status</option>
-          <option value="open">Open</option>
-          <option value="pending">Pending</option>
-          <option value="resolved">Resolved</option>
+          <option value="">{t('templates77CsTicketInbox.statusAll')}</option>
+          <option value="open">{t('templates77CsTicketInbox.statusOpen')}</option>
+          <option value="pending">{t('templates77CsTicketInbox.statusPending')}</option>
+          <option value="resolved">{t('templates77CsTicketInbox.statusResolved')}</option>
         </select>
         <select className="bg-transparent text-sm outline-none">
-          <option value="">Tất cả priority</option>
-          <option value="urgent">Urgent</option>
-          <option value="high">High</option>
+          <option value="">{t('templates77CsTicketInbox.priorityAll')}</option>
+          <option value="urgent">{t('templates77CsTicketInbox.priorityUrgentOpt')}</option>
+          <option value="high">{t('templates77CsTicketInbox.priorityHighOpt')}</option>
         </select>
         <select className="bg-transparent text-sm outline-none">
-          <option value="">Tất cả channel</option>
-          <option value="email">Email</option>
-          <option value="zalo">Zalo</option>
-          <option value="web">Web form</option>
-          <option value="phone">Phone log</option>
+          <option value="">{t('templates77CsTicketInbox.channelAll')}</option>
+          <option value="email">{t('templates77CsTicketInbox.channelEmail')}</option>
+          <option value="zalo">{t('templates77CsTicketInbox.channelZalo')}</option>
+          <option value="web">{t('templates77CsTicketInbox.channelWeb')}</option>
+          <option value="phone">{t('templates77CsTicketInbox.channelPhone')}</option>
         </select>
         <div className="flex-1" />
-        <Button>+ Ticket mới</Button>
+        <Button>{t('templates77CsTicketInbox.newTicketBtn')}</Button>
       </div>
 
       {/* Bulk action toolbar */}
       {selectedRows.size > 0 && (
         <div className="flex items-center justify-between rounded-lg border border-primary-gold bg-primary-gold/5 px-4 py-2 text-sm">
-          <span>{selectedRows.size} ticket đã chọn</span>
+          <span>{t('templates77CsTicketInbox.bulkSelectedCount', { count: selectedRows.size })}</span>
           <div className="flex gap-2">
-            <Button size="sm" variant="ghost">Assign</Button>
-            <Button size="sm" variant="ghost">Snooze</Button>
-            <Button size="sm" variant="ghost">Resolve</Button>
-            <Button size="sm" variant="ghost">Escalate</Button>
+            <Button size="sm" variant="ghost">{t('templates77CsTicketInbox.bulkAssign')}</Button>
+            <Button size="sm" variant="ghost">{t('templates77CsTicketInbox.bulkSnooze')}</Button>
+            <Button size="sm" variant="ghost">{t('templates77CsTicketInbox.bulkResolve')}</Button>
+            <Button size="sm" variant="ghost">{t('templates77CsTicketInbox.bulkEscalate')}</Button>
           </div>
         </div>
       )}
 
       {/* Ticket table */}
-      {error && <ErrorBanner message={error.detail ?? 'Không tải được tickets.'} />}
+      {error && <ErrorBanner message={error.detail ?? t('templates77CsTicketInbox.errLoadTickets')} />}
       {isLoading && (
         <div className="space-y-2">
           {Array.from({ length: 10 }).map((_, i) => (
@@ -153,8 +155,8 @@ export default function CsTicketInboxPage() {
       {!isLoading && tickets.length === 0 && (
         <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground">
           <Inbox className="mx-auto size-8" />
-          <div className="mt-2">Inbox sạch — chưa có ticket nào.</div>
-          <div className="mt-1 text-xs">Tháng này resolved 0 tickets.</div>
+          <div className="mt-2">{t('templates77CsTicketInbox.emptyInbox')}</div>
+          <div className="mt-1 text-xs">{t('templates77CsTicketInbox.emptyResolvedThisMonth')}</div>
         </div>
       )}
       {!isLoading && tickets.length > 0 && (
@@ -163,12 +165,12 @@ export default function CsTicketInboxPage() {
             <thead className="border-b bg-gray-50 text-left text-xs uppercase text-muted-foreground">
               <tr>
                 <th className="px-4 py-2"><input type="checkbox" /></th>
-                <th className="px-4 py-2">Channel</th>
-                <th className="px-4 py-2">Priority</th>
-                <th className="px-4 py-2">Subject</th>
-                <th className="px-4 py-2">Customer</th>
-                <th className="px-4 py-2">Assignee</th>
-                <th className="px-4 py-2">SLA</th>
+                <th className="px-4 py-2">{t('templates77CsTicketInbox.thChannel')}</th>
+                <th className="px-4 py-2">{t('templates77CsTicketInbox.thPriority')}</th>
+                <th className="px-4 py-2">{t('templates77CsTicketInbox.thSubject')}</th>
+                <th className="px-4 py-2">{t('templates77CsTicketInbox.thCustomer')}</th>
+                <th className="px-4 py-2">{t('templates77CsTicketInbox.thAssignee')}</th>
+                <th className="px-4 py-2">{t('templates77CsTicketInbox.thSla')}</th>
                 <th className="px-4 py-2"></th>
               </tr>
             </thead>
@@ -185,6 +187,7 @@ export default function CsTicketInboxPage() {
 // ─── Subcomponents ───────────────────────────────────────────────────
 
 function TicketRow({ ticket }: { ticket: Ticket }) {
+  const t = useT();
   const slaBreachImminent = ticket.sla_breach_at &&
     new Date(ticket.sla_breach_at).getTime() - Date.now() < 2 * 60 * 60 * 1000;  // < 2h
 
@@ -196,7 +199,7 @@ function TicketRow({ ticket }: { ticket: Ticket }) {
       <td className="px-4 py-2"><PriorityChip priority={ticket.priority} /></td>
       <td className="px-4 py-2 font-medium">{ticket.subject}</td>
       <td className="px-4 py-2">{ticket.customer_name}</td>
-      <td className="px-4 py-2">{ticket.assignee_name ?? <em className="text-muted-foreground">Unassigned</em>}</td>
+      <td className="px-4 py-2">{ticket.assignee_name ?? <em className="text-muted-foreground">{t('templates77CsTicketInbox.unassignedLabel')}</em>}</td>
       <td className="px-4 py-2"><SlaTimer breachAt={ticket.sla_breach_at} /></td>
       <td className="px-4 py-2 text-right">
         <Button size="sm" variant="ghost">⋯</Button>
@@ -206,11 +209,12 @@ function TicketRow({ ticket }: { ticket: Ticket }) {
 }
 
 function PriorityChip({ priority }: { priority: TicketPriority }) {
+  const t = useT();
   const map: Record<TicketPriority, { label: string; cls: string }> = {
-    urgent: { label: 'Urgent', cls: 'bg-red-100 text-red-700' },
-    high:   { label: 'High',   cls: 'bg-orange-100 text-orange-700' },
-    normal: { label: 'Normal', cls: 'bg-gray-100 text-gray-700' },
-    low:    { label: 'Low',    cls: 'bg-blue-50 text-blue-600' },
+    urgent: { label: t('templates77CsTicketInbox.priorityUrgent'), cls: 'bg-red-100 text-red-700' },
+    high:   { label: t('templates77CsTicketInbox.priorityHigh'),   cls: 'bg-orange-100 text-orange-700' },
+    normal: { label: t('templates77CsTicketInbox.priorityNormal'), cls: 'bg-gray-100 text-gray-700' },
+    low:    { label: t('templates77CsTicketInbox.priorityLow'),    cls: 'bg-blue-50 text-blue-600' },
   };
   return <span className={cn('rounded-full px-2 py-0.5 text-xs', map[priority].cls)}>{map[priority].label}</span>;
 }

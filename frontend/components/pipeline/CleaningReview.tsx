@@ -6,6 +6,7 @@ import { pipelineApi } from "@/lib/api/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useT } from "@/lib/i18n/provider";
 
 interface CleaningRule {
   rule_id: string;
@@ -20,13 +21,6 @@ interface CleaningRule {
   amount_signals?: Record<string, any>;
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  UNIVERSAL:   "Cơ bản (áp dụng cho mọi dataset)",
-  BY_TYPE:     "Theo kiểu dữ liệu",
-  BY_PURPOSE:  "Theo mục đích",
-  AI_DETECTED: "AI phát hiện",
-};
-
 export default function CleaningReview({
   runId,
   onComplete,
@@ -34,6 +28,13 @@ export default function CleaningReview({
   runId: string;
   onComplete: () => void;
 }) {
+  const t = useT();
+  const CATEGORY_LABELS: Record<string, string> = {
+    UNIVERSAL:   t("pipelineCleaningreview.catUniversal"),
+    BY_TYPE:     t("pipelineCleaningreview.catByType"),
+    BY_PURPOSE:  t("pipelineCleaningreview.catByPurpose"),
+    AI_DETECTED: t("pipelineCleaningreview.catAiDetected"),
+  };
   const [loading,  setLoading]  = useState(true);
   const [rules,    setRules]    = useState<CleaningRule[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -52,7 +53,7 @@ export default function CleaningReview({
         ));
         setLoading(false);
       })
-      .catch(() => { setError("Không thể lấy gợi ý làm sạch"); setLoading(false); });
+      .catch(() => { setError(t("pipelineCleaningreview.errFetchSuggestions")); setLoading(false); });
   }, [runId]);
 
   function toggle(ruleId: string) {
@@ -66,7 +67,7 @@ export default function CleaningReview({
       await pipelineApi.applyCleaningRules(runId, [...selected]);
       onComplete();
     } catch {
-      setError("Lỗi khi áp dụng quy tắc làm sạch");
+      setError(t("pipelineCleaningreview.errApply"));
     } finally {
       setApplying(false);
     }
@@ -81,7 +82,7 @@ export default function CleaningReview({
     <div className="flex items-center justify-center py-24">
       <div className="text-center space-y-3">
         <Loader2 className="w-9 h-9 text-brand-400 animate-spin mx-auto" />
-        <p className="text-small text-[#7A7266]">Đang phân tích dữ liệu…</p>
+        <p className="text-small text-[#7A7266]">{t("pipelineCleaningreview.loadingAnalyzing")}</p>
       </div>
     </div>
   );
@@ -89,9 +90,9 @@ export default function CleaningReview({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-h2 font-serif text-[#2E2A24]">Làm sạch dữ liệu</h2>
+        <h2 className="text-h2 font-serif text-[#2E2A24]">{t("pipelineCleaningreview.title")}</h2>
         <p className="text-small text-[#7A7266] mt-1">
-          Chọn quy tắc để áp dụng. Dữ liệu gốc (Bronze) không bị thay đổi.
+          {t("pipelineCleaningreview.subtitle")}
         </p>
       </div>
 
@@ -116,9 +117,9 @@ export default function CleaningReview({
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-body-strong text-[#2E2A24]">{rule.name}</span>
                     <Badge tone={rule.safe ? "success" : "warning"}>
-                      {rule.safe ? "An toàn" : "Cần xác nhận"}
+                      {rule.safe ? t("pipelineCleaningreview.badgeSafe") : t("pipelineCleaningreview.badgeNeedsConfirm")}
                     </Badge>
-                    {rule.suggested === true && <Badge tone="info">Gợi ý nên áp dụng</Badge>}
+                    {rule.suggested === true && <Badge tone="info">{t("pipelineCleaningreview.badgeSuggested")}</Badge>}
                   </div>
                   <p className="text-small text-[#7A7266] mt-0.5">{rule.description}</p>
                   {/* CR-0016 — measured evidence behind the line-total suggestion */}
@@ -128,17 +129,17 @@ export default function CleaningReview({
                       {rule.amount_signals && (
                         <div className="text-tiny text-[#7A7266] mt-1 flex flex-wrap gap-x-4 gap-y-0.5">
                           {rule.amount_signals.unit_price_median != null && (
-                            <span>Đơn giá (median): {rule.amount_signals.unit_price_median}</span>
+                            <span>{t("pipelineCleaningreview.signalUnitPrice", { value: rule.amount_signals.unit_price_median })}</span>
                           )}
                           {rule.amount_signals.quantity_median != null && (
-                            <span>Số lượng (median): {rule.amount_signals.quantity_median}</span>
+                            <span>{t("pipelineCleaningreview.signalQuantity", { value: rule.amount_signals.quantity_median })}</span>
                           )}
                           {rule.amount_signals.implied_line_total_median != null && (
-                            <span>Thành tiền ước: {rule.amount_signals.implied_line_total_median}</span>
+                            <span>{t("pipelineCleaningreview.signalImpliedTotal", { value: rule.amount_signals.implied_line_total_median })}</span>
                           )}
-                          <span>Có cột thành tiền: {rule.amount_signals.has_explicit_total ? "có" : "chưa"}</span>
+                          <span>{t("pipelineCleaningreview.signalHasTotalColumn", { status: rule.amount_signals.has_explicit_total ? t("pipelineCleaningreview.signalHasTotalYes") : t("pipelineCleaningreview.signalHasTotalNo") })}</span>
                           {rule.amount_signals.total_matches_unit_times_qty != null && (
-                            <span>Khớp đơn giá×SL: {Math.round(rule.amount_signals.total_matches_unit_times_qty * 100)}%</span>
+                            <span>{t("pipelineCleaningreview.signalMatchRatio", { percent: Math.round(rule.amount_signals.total_matches_unit_times_qty * 100) })}</span>
                           )}
                         </div>
                       )}
@@ -164,9 +165,9 @@ export default function CleaningReview({
       )}
 
       <div className="flex items-center justify-between">
-        <p className="text-small text-[#7A7266]">Đã chọn {selected.size} / {rules.length} quy tắc</p>
+        <p className="text-small text-[#7A7266]">{t("pipelineCleaningreview.selectedCount", { selected: selected.size, total: rules.length })}</p>
         <Button onClick={handleApply} loading={applying} disabled={selected.size === 0}>
-          {applying ? "Đang áp dụng…" : "Áp dụng và tiếp tục →"}
+          {applying ? t("pipelineCleaningreview.applying") : t("pipelineCleaningreview.applyAndContinue")}
         </Button>
       </div>
     </div>

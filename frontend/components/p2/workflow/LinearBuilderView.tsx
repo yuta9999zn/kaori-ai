@@ -15,6 +15,7 @@ import {
   KAORI_ACTIONS, KAORI_ACTION_BY_KEY, ACTION_GROUP_LABEL,
 } from '@/lib/bpmn/bpmn-elements';
 import { api } from '@/components/p2/foundation';
+import { useT } from '@/lib/i18n/provider';
 
 // A gate is "đã gán người duyệt" iff it binds a chain OR a non-empty role.
 // In this builder the action is stored on node_type_catalog_key (the "Hành động
@@ -57,12 +58,14 @@ const ICON: Record<string, string> = {
   parallel_split: '🔱', parallel_join: '⊕', subworkflow: '📦',
   loop_foreach: '🔁', loop_end: '🔚',
 };
-const TYPE_LABEL: Record<string, string> = {
-  step: 'Bước nghiệp vụ', decision_if_else: 'Điểm kiểm tra điều kiện',
-  decision_switch: 'Điểm rẽ nhiều trường hợp', approval_gate: 'Phê duyệt',
-  notification: 'Thông báo', wait_event: 'Chờ sự kiện', sla_timer: 'Hạn xử lý',
-  parallel_split: 'Chạy song song', parallel_join: 'Hợp nhánh', subworkflow: 'Quy trình con',
-  loop_foreach: 'Vòng lặp (với mỗi)', loop_end: 'Kết thúc vòng lặp',
+const TYPE_LABEL_KEY: Record<string, string> = {
+  step: 'workflowLinearbuilderview.typeStep', decision_if_else: 'workflowLinearbuilderview.typeIfElse',
+  decision_switch: 'workflowLinearbuilderview.typeSwitch', approval_gate: 'workflowLinearbuilderview.typeApproval',
+  notification: 'workflowLinearbuilderview.typeNotification', wait_event: 'workflowLinearbuilderview.typeWaitEvent',
+  sla_timer: 'workflowLinearbuilderview.typeSlaTimer',
+  parallel_split: 'workflowLinearbuilderview.typeParallelSplit', parallel_join: 'workflowLinearbuilderview.typeParallelJoin',
+  subworkflow: 'workflowLinearbuilderview.typeSubworkflow',
+  loop_foreach: 'workflowLinearbuilderview.typeLoopForeach', loop_end: 'workflowLinearbuilderview.typeLoopEnd',
 };
 const DECISIONS = new Set(['decision_if_else', 'decision_switch', 'parallel_split']);
 // Control actions (if/else, switch, split, join) ARE offered now — picking one
@@ -122,6 +125,7 @@ export default function LinearBuilderView({
   onSetEdge: SetEdgeFn;
   deptName?: string | null;
 }) {
+  const t = useT();
   const [openId, setOpenId] = useState<string | null>(null);
   const [zoom, setZoom] = useState(100);
   const [savedAt, setSavedAt] = useState(0);
@@ -254,18 +258,18 @@ export default function LinearBuilderView({
 
   const status = (c: Card) => {
     const outs = mainOut.get(c.node_id) ?? [];
-    if (c.node_type === 'decision_if_else' && outs.length < 2) return warn('Cần 2 nhánh');
-    if (c.node_type === 'decision_switch' && outs.length < 2) return warn('Cần nhánh + mặc định');
-    if (c.node_type === 'parallel_split' && outs.length < 2) return warn('Cần ≥2 nhánh');
+    if (c.node_type === 'decision_if_else' && outs.length < 2) return warn(t('workflowLinearbuilderview.statusNeedTwoBranches'));
+    if (c.node_type === 'decision_switch' && outs.length < 2) return warn(t('workflowLinearbuilderview.statusNeedBranchDefault'));
+    if (c.node_type === 'parallel_split' && outs.length < 2) return warn(t('workflowLinearbuilderview.statusNeedAtLeastTwoBranches'));
     if (!DECISIONS.has(c.node_type) && c.node_type !== 'parallel_join' && !c.node_type_catalog_key)
-      return warn('Chưa gán hành động');
+      return warn(t('workflowLinearbuilderview.statusNoAction'));
     if (c.node_type_catalog_key === 'approval_gate' && !approvalBound(c.decision_config))
-      return warn('Chưa gắn người duyệt');
+      return warn(t('workflowLinearbuilderview.statusNoApprover'));
     if (c.node_type === 'loop_foreach' && !c.decision_config?.items)
-      return warn('Chưa chọn danh sách để lặp');
-    return { kind: 'ok', text: '✓ Sẵn sàng' };
+      return warn(t('workflowLinearbuilderview.statusNoLoopList'));
+    return { kind: 'ok', text: t('workflowLinearbuilderview.statusReady') };
   };
-  function warn(t: string) { return { kind: 'warn', text: '⚠ ' + t }; }
+  function warn(msg: string) { return { kind: 'warn', text: '⚠ ' + msg }; }
 
   // ── single-pass synchronous recursive render ──
   function renderFlow() {
@@ -279,7 +283,7 @@ export default function LinearBuilderView({
       if (rendered.has(id)) {
         return (
           <div key={key} className="text-[11px] text-[var(--text-secondary)] rounded-full border border-dashed border-[var(--border-color)] px-3 py-1 bg-white">
-            ⊕ Gộp về “{c.title_vi || c.title}”
+            {t('workflowLinearbuilderview.mergedInto', { title: c.title_vi || c.title })}
           </div>
         );
       }
@@ -291,7 +295,7 @@ export default function LinearBuilderView({
         outgoing = (
           <>
             <Arrow color={color} />
-            <Terminal kind={color === 'reject' ? 'reject' : 'end'} text="■ Kết thúc" />
+            <Terminal kind={color === 'reject' ? 'reject' : 'end'} text={t('workflowLinearbuilderview.terminalEnd')} />
           </>
         );
       } else if (outs.length === 1) {
@@ -316,7 +320,7 @@ export default function LinearBuilderView({
                     <div className="lbw-drop" style={{ background: col, ['--bc' as any]: col }} />
                     <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border my-1"
                       style={{ color: col, borderColor: col + '55', background: col + '12' }}>
-                      {bc === 'reject' ? '❌' : bc === 'excep' ? '⚠' : '✅'} {e.label || e.condition || 'Nhánh'}
+                      {bc === 'reject' ? '❌' : bc === 'excep' ? '⚠' : '✅'} {e.label || e.condition || t('workflowLinearbuilderview.branchFallback')}
                     </span>
                     <Arrow color={bc} />
                     {flow(e.target_node_id, bc, key + '|' + e.edge_id)}
@@ -374,13 +378,13 @@ export default function LinearBuilderView({
           <span className="text-[var(--text-secondary)] text-xs shrink-0">{open ? '▾' : '▸'}</span>
         </button>
         <div className="px-3 pb-1.5 text-[11.5px] text-[var(--text-secondary)] leading-relaxed">
-          Loại: <b className="text-[var(--text-primary)]">{TYPE_LABEL[c.node_type] ?? c.node_type}</b>
-          {deptName ? <> · Người: <b className="text-[var(--text-primary)]">{deptName}</b></> : null}
+          {t('workflowLinearbuilderview.typePrefix')} <b className="text-[var(--text-primary)]">{TYPE_LABEL_KEY[c.node_type] ? t(TYPE_LABEL_KEY[c.node_type]) : c.node_type}</b>
+          {deptName ? <> {t('workflowLinearbuilderview.deptPrefix')} <b className="text-[var(--text-primary)]">{deptName}</b></> : null}
           <br />
           {!isDecision && (
-            <>Hành động Kaori: {actionVi
+            <>{t('workflowLinearbuilderview.actionLabelPrefix')} {actionVi
               ? <b className="text-[var(--text-primary)]">{actionVi}</b>
-              : <b className="text-amber-700">⚠ chưa gán</b>}</>
+              : <b className="text-amber-700">{t('workflowLinearbuilderview.actionUnassigned')}</b>}</>
           )}
         </div>
         <div className="flex items-center justify-between px-3 py-1.5 border-t border-[#f1eee7] bg-[#fcfbf8]">
@@ -391,22 +395,22 @@ export default function LinearBuilderView({
           <div className="flex items-center gap-2">
             <button onClick={() => toggleOpen(c.node_id)}
               className="text-[11px] text-[var(--primary-gold-dark)] hover:underline">
-              {open ? 'Thu gọn' : 'Sửa ▾'}
+              {open ? t('workflowLinearbuilderview.collapseLabel') : t('workflowLinearbuilderview.editLabel')}
             </button>
             <button onClick={() => onDelete(c.node_id)}
-              className="text-[11px] text-rose-500/80 hover:text-rose-600">Xoá</button>
+              className="text-[11px] text-rose-500/80 hover:text-rose-600">{t('workflowLinearbuilderview.deleteLabel')}</button>
           </div>
         </div>
 
         {open && (
           <div className="border-t border-dashed border-[var(--border-color)] bg-[#fbfaf6] p-3 space-y-2">
-            <Field label="Tên bước">
+            <Field label={t('workflowLinearbuilderview.fieldTitleLabel')}>
               <input defaultValue={c.title_vi || c.title}
                 onBlur={(e) => { const v = e.target.value.trim(); if (v && v !== (c.title_vi || c.title)) upd(c.node_id, { title: v, title_vi: v }); }}
                 className="w-full rounded border border-[var(--border-color)] px-2 py-1 text-sm" />
             </Field>
 
-            <Field label="Hành động Kaori">
+            <Field label={t('workflowLinearbuilderview.fieldActionLabel')}>
               <select value={c.node_type_catalog_key ?? ''}
                 onChange={(e) => {
                   const key = e.target.value;
@@ -415,7 +419,7 @@ export default function LinearBuilderView({
                   upd(c.node_id, { node_type_catalog_key: key, node_type: CATALOG_TO_NODETYPE[key] ?? 'step' });
                 }}
                 className="w-full rounded border border-[var(--border-color)] px-2 py-1 text-sm bg-white">
-                <option value="">— Chưa gán (chỉ thiết kế) —</option>
+                <option value="">{t('workflowLinearbuilderview.optionUnassignedDesignOnly')}</option>
                 {Object.entries(ACTION_GROUPS).map(([g, items]) => (
                   <optgroup key={g} label={ACTION_GROUP_LABEL[g as keyof typeof ACTION_GROUP_LABEL] ?? g}>
                     {items.map((a) => <option key={a.key} value={a.key}>{a.vi}</option>)}
@@ -425,8 +429,8 @@ export default function LinearBuilderView({
             </Field>
 
             {/* #9 — role/lane responsible for this step → BPMN swimlane. */}
-            <Field label="Vai trò phụ trách (lane)">
-              <input defaultValue={c.lane_name ?? ''} placeholder="vd: Kế toán, Trưởng phòng…"
+            <Field label={t('workflowLinearbuilderview.fieldLaneLabel')}>
+              <input defaultValue={c.lane_name ?? ''} placeholder={t('workflowLinearbuilderview.placeholderLaneExample')}
                 list="kaori-lanes"
                 onBlur={(e) => { const v = e.target.value.trim(); if (v !== (c.lane_name ?? '')) upd(c.node_id, { lane_name: v }); }}
                 className="w-full rounded border border-[var(--border-color)] px-2 py-1 text-sm" />
@@ -437,7 +441,7 @@ export default function LinearBuilderView({
                 straight to "Gửi thông báo", skipping "Ghi sổ". Decisions route via
                 their own branch editors instead. */}
             {!DECISIONS.has(c.node_type) && (
-              <Field label="Đi tới bước tiếp theo">
+              <Field label={t('workflowLinearbuilderview.fieldNextStepLabel')}>
                 <select value={outs[0]?.target_node_id ?? ''}
                   onChange={(ev) => setEdge({
                     sourceId: c.node_id,
@@ -446,12 +450,12 @@ export default function LinearBuilderView({
                     label: outs[0]?.label ?? 'next',
                   })}
                   className="w-full rounded border border-[var(--border-color)] px-2 py-1 text-sm bg-white">
-                  <option value="">— Kết thúc (không đi tiếp) —</option>
+                  <option value="">{t('workflowLinearbuilderview.optionEndNoNext')}</option>
                   {cards.filter((x) => x.node_id !== c.node_id).map((x) =>
                     <option key={x.node_id} value={x.node_id}>{x.title_vi || x.title}</option>)}
                 </select>
                 {outs.length > 1 && (
-                  <p className="text-[10px] text-amber-700/80 mt-0.5">Bước này có {outs.length} nhánh ra — ô này chỉnh nhánh đầu.</p>
+                  <p className="text-[10px] text-amber-700/80 mt-0.5">{t('workflowLinearbuilderview.branchCountHint', { n: outs.length })}</p>
                 )}
               </Field>
             )}
@@ -478,11 +482,11 @@ export default function LinearBuilderView({
             )}
 
             {isDecision && c.node_type !== 'decision_if_else' && c.node_type !== 'decision_switch' && (
-              <Field label="Các nhánh (đi tới bước nào)">
+              <Field label={t('workflowLinearbuilderview.fieldBranchesLabel')}>
                 <div className="space-y-1.5">
                   {outs.map((e) => (
                     <div key={e.edge_id} className="flex items-center gap-1.5">
-                      <input defaultValue={e.label ?? ''} placeholder="nhãn / điều kiện"
+                      <input defaultValue={e.label ?? ''} placeholder={t('workflowLinearbuilderview.placeholderLabelCondition')}
                         onBlur={(ev) => setEdge({ sourceId: c.node_id, oldTarget: e.target_node_id, newTarget: e.target_node_id, label: ev.target.value, condition: e.condition })}
                         className="w-24 rounded border border-[var(--border-color)] px-1.5 py-1 text-xs" />
                       <span className="text-xs">→</span>
@@ -523,15 +527,17 @@ export default function LinearBuilderView({
       <datalist id="kaori-lanes">
         {[...new Set([
           ...cards.map((c) => (c.lane_name ?? '').trim()).filter(Boolean),
-          'Kế toán', 'Trưởng phòng', 'Giám đốc', 'Kinh doanh', 'Chăm sóc khách hàng',
+          t('workflowLinearbuilderview.laneAccounting'), t('workflowLinearbuilderview.laneDeptHead'),
+          t('workflowLinearbuilderview.laneDirector'), t('workflowLinearbuilderview.laneSales'),
+          t('workflowLinearbuilderview.laneCustomerCare'),
         ])].map((l) => <option key={l} value={l} />)}
       </datalist>
       {/* top status bar */}
       <div className="flex items-center gap-2 flex-wrap border-b border-[var(--border-color)] px-4 py-2 bg-[#fffdf7] text-xs">
-        <span className="font-medium uppercase tracking-wider text-[var(--text-secondary)] mr-1">Luồng</span>
-        <Chip onClick={() => jump(roots[0]?.node_id ?? '')}>▶ Bắt đầu</Chip>
+        <span className="font-medium uppercase tracking-wider text-[var(--text-secondary)] mr-1">{t('workflowLinearbuilderview.labelFlow')}</span>
+        <Chip onClick={() => jump(roots[0]?.node_id ?? '')}>{t('workflowLinearbuilderview.chipStart')}</Chip>
         <Sep />
-        <Chip>{cards.filter((c) => !DECISIONS.has(c.node_type)).length} bước</Chip>
+        <Chip>{t('workflowLinearbuilderview.chipStepsCount', { n: cards.filter((c) => !DECISIONS.has(c.node_type)).length })}</Chip>
         {cards.filter((c) => DECISIONS.has(c.node_type)).map((d) => (
           <span key={d.node_id} className="contents">
             <Sep /><Chip branch onClick={() => jump(d.node_id)}>🔀 #{stepNo.get(d.node_id)} {d.title_vi || d.title}</Chip>
@@ -543,12 +549,12 @@ export default function LinearBuilderView({
             className={'rounded-md-custom border px-3 py-1.5 font-medium transition '
               + (dryOpen ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
                          : 'border-[var(--border-color)] hover:bg-black/5')}>
-            ▶ Chạy thử
+            {t('workflowLinearbuilderview.btnDryRun')}
           </button>
         )}
         <button onClick={onAddCard}
           className="rounded-md-custom bg-[var(--primary-gold)] text-white px-3 py-1.5 font-medium hover:opacity-90">
-          + Thêm bước
+          {t('workflowLinearbuilderview.btnAddStep')}
         </button>
       </div>
 
@@ -556,32 +562,32 @@ export default function LinearBuilderView({
       {dryOpen && (
         <div className="border-b border-emerald-200 bg-emerald-50/60 px-4 py-3 text-xs space-y-2">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-semibold text-emerald-800">Chạy thử với hồ sơ mẫu:</span>
-            {dryFields.length === 0 && <span className="text-emerald-700/80">Workflow chưa có điều kiện rẽ nhánh nào để thử.</span>}
+            <span className="font-semibold text-emerald-800">{t('workflowLinearbuilderview.labelDryRunSample')}</span>
+            {dryFields.length === 0 && <span className="text-emerald-700/80">{t('workflowLinearbuilderview.msgNoBranchToTest')}</span>}
             {dryFields.map((f) => (
               <label key={f.name} className="inline-flex items-center gap-1">
-                <span className="text-emerald-800">{f.name}{f.isList ? ' (số phần tử)' : ''}</span>
+                <span className="text-emerald-800">{f.name}{f.isList ? t('workflowLinearbuilderview.suffixElementCount') : ''}</span>
                 <input type={f.isList ? 'number' : 'text'} value={dryInput[f.name] ?? ''}
                   onChange={(e) => setDryInput((p) => ({ ...p, [f.name]: e.target.value }))}
-                  placeholder={f.isList ? 'vd: 3' : 'giá trị'}
+                  placeholder={f.isList ? t('workflowLinearbuilderview.placeholderExample3') : t('workflowLinearbuilderview.placeholderValue')}
                   className="w-28 rounded border border-emerald-300 px-2 py-1" />
               </label>
             ))}
             <button onClick={() => void runDry()} disabled={dryBusy}
               className="rounded-md-custom bg-emerald-600 text-white px-3 py-1.5 font-medium hover:opacity-90 disabled:opacity-50">
-              {dryBusy ? 'Đang chạy…' : 'Chạy'}
+              {dryBusy ? t('workflowLinearbuilderview.btnRunning') : t('workflowLinearbuilderview.btnRun')}
             </button>
-            {dryResult && <button onClick={() => setDryResult(null)} className="text-emerald-700 hover:underline">Xoá tô sáng</button>}
+            {dryResult && <button onClick={() => setDryResult(null)} className="text-emerald-700 hover:underline">{t('workflowLinearbuilderview.btnClearHighlight')}</button>}
           </div>
           {dryResult && (
             <div className="rounded bg-white border border-emerald-200 p-2 space-y-0.5">
-              <div className="font-medium text-emerald-800">Đường đi của hồ sơ:</div>
+              <div className="font-medium text-emerald-800">{t('workflowLinearbuilderview.labelRecordPath')}</div>
               {dryResult.trace.length === 0
-                ? <div className="text-[var(--text-secondary)]">Không có điểm rẽ nào — luồng đi thẳng.</div>
-                : dryResult.trace.map((t, i) => (
-                  <div key={i} className="text-[var(--text-primary)]">🔀 <b>{t.title}</b> → {t.detail}</div>
+                ? <div className="text-[var(--text-secondary)]">{t('workflowLinearbuilderview.msgNoBranchPoints')}</div>
+                : dryResult.trace.map((tr, i) => (
+                  <div key={i} className="text-[var(--text-primary)]">🔀 <b>{tr.title}</b> → {tr.detail}</div>
                 ))}
-              <div className="text-[10px] text-[var(--text-secondary)] pt-1">Bước xanh = hồ sơ đi qua · bước mờ = không chạm tới.</div>
+              <div className="text-[10px] text-[var(--text-secondary)] pt-1">{t('workflowLinearbuilderview.msgLegendPath')}</div>
             </div>
           )}
         </div>
@@ -591,10 +597,10 @@ export default function LinearBuilderView({
       <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 250px)', minHeight: 460 }}>
         <div className="p-6 flex flex-col items-center origin-top"
              style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'top center', minWidth: 'max-content' }}>
-          <Terminal kind="start" text="▶ BẮT ĐẦU" />
+          <Terminal kind="start" text={t('workflowLinearbuilderview.terminalStart')} />
           {cards.length === 0 ? (
             <div className="text-sm text-[var(--text-secondary)] my-12 text-center">
-              <p className="mb-3">Workflow trống — bấm “Thêm bước” ở trên.</p>
+              <p className="mb-3">{t('workflowLinearbuilderview.msgEmptyWorkflow')}</p>
             </div>
           ) : renderFlow()}
         </div>
@@ -615,6 +621,7 @@ export default function LinearBuilderView({
 
 // ── small pieces ──
 function Arrow({ color = 'main', onAdd }: { color?: string; onAdd?: () => void }) {
+  const t = useT();
   const c = COLORS[color] ?? COLORS.main;
   return (
     <div className="relative w-px my-0.5 group" style={{ height: 32, background: c }}>
@@ -624,7 +631,7 @@ function Arrow({ color = 'main', onAdd }: { color?: string; onAdd?: () => void }
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition">
           <button onClick={onAdd}
             className="whitespace-nowrap text-[11px] border border-[var(--primary-gold)] text-[var(--primary-gold-dark)] bg-white rounded-full px-2.5 py-0.5 shadow-sm">
-            + Thêm bước
+            {t('workflowLinearbuilderview.btnAddStep')}
           </button>
         </div>
       )}
@@ -655,18 +662,19 @@ function Sep() { return <span className="text-gray-300 mx-0.5">→</span>; }
 
 function AddBranch({ sourceId, cards, onSetEdge }:
   { sourceId: string; cards: Card[]; onSetEdge: SetEdgeFn }) {
-  const [t, setT] = useState('');
+  const t = useT();
+  const [target, setTarget] = useState('');
   const opts = cards.filter((x) => x.node_id !== sourceId);
   return (
     <div className="flex items-center gap-1.5 pt-1">
-      <select value={t} onChange={(e) => setT(e.target.value)}
+      <select value={target} onChange={(e) => setTarget(e.target.value)}
         className="flex-1 rounded border border-dashed border-[var(--primary-gold)] px-1.5 py-1 text-xs bg-white">
-        <option value="">+ thêm nhánh → đi tới…</option>
+        <option value="">{t('workflowLinearbuilderview.optionAddBranchGoto')}</option>
         {opts.map((x) => <option key={x.node_id} value={x.node_id}>{x.title_vi || x.title}</option>)}
       </select>
-      <button disabled={!t}
-        onClick={() => { if (t) { onSetEdge({ sourceId, newTarget: t, label: 'Nhánh' }); setT(''); } }}
-        className="text-xs text-[var(--primary-gold-dark)] disabled:opacity-40 px-1">Thêm</button>
+      <button disabled={!target}
+        onClick={() => { if (target) { onSetEdge({ sourceId, newTarget: target, label: t('workflowLinearbuilderview.branchFallback') }); setTarget(''); } }}
+        className="text-xs text-[var(--primary-gold-dark)] disabled:opacity-40 px-1">{t('workflowLinearbuilderview.btnAdd')}</button>
     </div>
   );
 }
@@ -677,6 +685,7 @@ function AddBranch({ sourceId, cards, onSetEdge }:
 // unbound gate is blocked on Chạy thử/Kích hoạt by _check_approval_gates.
 function ApprovalBind({ card, chains, onChange }:
   { card: Card; chains: any[]; onChange: (cfg: Record<string, any>) => void }) {
+  const t = useT();
   const cfg = card.decision_config ?? {};
   const chainId = cfg.approval_chain_id ?? '';
   const role = Array.isArray(cfg.approver_role) ? cfg.approver_role[0] : cfg.approver_role;
@@ -685,49 +694,48 @@ function ApprovalBind({ card, chains, onChange }:
   return (
     <div className="space-y-2 border-l-4 border-amber-400 pl-3 bg-amber-50/50 py-2 rounded-r">
       <p className="text-[10px] text-amber-700/70">
-        Người duyệt gắn TẠI ĐÂY (chuỗi duyệt hoặc vai trò). Ô “Vai trò phụ trách (lane)”
-        ở trên chỉ là nhãn hiển thị trên sơ đồ — không quyết định ai duyệt.
+        {t('workflowLinearbuilderview.msgApprovalNote')}
       </p>
-      <Field label="Chuỗi duyệt (đa cấp)">
+      <Field label={t('workflowLinearbuilderview.fieldChainLabel')}>
         <select value={chainId}
           onChange={(e) => onChange({ ...cfg, approval_chain_id: e.target.value || undefined })}
           className="w-full rounded border border-amber-200 px-2 py-1 text-sm bg-white">
-          <option value="">— Không dùng chuỗi (chọn vai trò bên dưới) —</option>
+          <option value="">{t('workflowLinearbuilderview.optionNoChain')}</option>
           {chains.map((c) => <option key={c.chain_id} value={c.chain_id}>{c.name_vi || c.name}</option>)}
         </select>
       </Field>
       {chains.length === 0 && (
         <p className="text-[11px] text-amber-700/80">
-          Chưa có chuỗi duyệt nào. Tạo ở “Duyệt &amp; Phân quyền → Chuỗi duyệt”, hoặc chọn vai trò.
+          {t('workflowLinearbuilderview.msgNoChainsYet')}
         </p>
       )}
       {selected && (
-        <p className="text-[11px] text-amber-700/80">✓ Gắn chuỗi: <b>{selected.name_vi || selected.name}</b> — mở ở cấp 1.</p>
+        <p className="text-[11px] text-amber-700/80">{t('workflowLinearbuilderview.msgChainBoundPrefix')} <b>{selected.name_vi || selected.name}</b> {t('workflowLinearbuilderview.msgChainBoundSuffix')}</p>
       )}
       {!chainId && (
-        <Field label="Vai trò duyệt (fallback)">
+        <Field label={t('workflowLinearbuilderview.fieldRoleFallbackLabel')}>
           <select value={role ?? ''}
             onChange={(e) => onChange({ ...cfg, approver_role: e.target.value || undefined })}
             className="w-full rounded border border-amber-200 px-2 py-1 text-sm bg-white">
-            <option value="">— Chọn vai trò —</option>
-            <option value="MANAGER">MANAGER (Quản lý)</option>
-            <option value="ANALYST">ANALYST (Phân tích)</option>
-            <option value="OPERATOR">OPERATOR (Vận hành)</option>
-            <option value="ADMIN">ADMIN (Quản trị)</option>
+            <option value="">{t('workflowLinearbuilderview.optionChooseRole')}</option>
+            <option value="MANAGER">{t('workflowLinearbuilderview.roleManager')}</option>
+            <option value="ANALYST">{t('workflowLinearbuilderview.roleAnalyst')}</option>
+            <option value="OPERATOR">{t('workflowLinearbuilderview.roleOperator')}</option>
+            <option value="ADMIN">{t('workflowLinearbuilderview.roleAdmin')}</option>
           </select>
         </Field>
       )}
-      <Field label="Khi quá hạn duyệt">
+      <Field label={t('workflowLinearbuilderview.fieldTimeoutLabel')}>
         <select value={cfg.timeout_action ?? 'escalate'}
           onChange={(e) => onChange({ ...cfg, timeout_action: e.target.value })}
           className="w-full rounded border border-amber-200 px-2 py-1 text-sm bg-white">
-          <option value="escalate">Báo cấp trên (escalate)</option>
-          <option value="approve">Tự duyệt</option>
-          <option value="reject">Tự từ chối</option>
+          <option value="escalate">{t('workflowLinearbuilderview.optionEscalate')}</option>
+          <option value="approve">{t('workflowLinearbuilderview.optionAutoApprove')}</option>
+          <option value="reject">{t('workflowLinearbuilderview.optionAutoReject')}</option>
         </select>
       </Field>
       {!bound && (
-        <p className="text-[11px] text-rose-600">⚠ Cổng rỗng quyền — chưa gắn chuỗi/vai trò. Sẽ bị chặn khi Chạy thử/Kích hoạt.</p>
+        <p className="text-[11px] text-rose-600">{t('workflowLinearbuilderview.msgGateUnbound')}</p>
       )}
     </div>
   );
@@ -740,6 +748,7 @@ function ApprovalBind({ card, chains, onChange }:
 function IfElseEditor({ card, cards, edges, onChange, onSetEdge }:
   { card: Card; cards: Card[]; edges: Edge[];
     onChange: (cfg: Record<string, any>) => void; onSetEdge: SetEdgeFn }) {
+  const t = useT();
   const cfg = card.decision_config ?? {};
   const cond = cfg.condition ?? {};
   const setCond = (patch: Record<string, any>) => onChange({ ...cfg, condition: { ...cond, ...patch } });
@@ -754,9 +763,9 @@ function IfElseEditor({ card, cards, edges, onChange, onSetEdge }:
       newTarget: newTarget || null, label: token });
   return (
     <div className="space-y-2 border-l-4 border-sky-400 pl-3 bg-sky-50/50 py-2 rounded-r">
-      <Field label="Điều kiện rẽ nhánh">
+      <Field label={t('workflowLinearbuilderview.fieldConditionLabel')}>
         <div className="grid grid-cols-[1fr_72px_1fr] gap-1.5 items-center">
-          <input key={card.node_id + '-f'} defaultValue={fieldRaw} placeholder="trường (vd: so_tien)"
+          <input key={card.node_id + '-f'} defaultValue={fieldRaw} placeholder={t('workflowLinearbuilderview.placeholderFieldExample')}
             list="kaori-fields"
             onBlur={(e) => { const v = e.target.value.trim(); setCond({ left: v ? `$.input.${v}` : undefined }); }}
             className="min-w-0 rounded border border-sky-200 px-2 py-1 text-sm" />
@@ -764,26 +773,26 @@ function IfElseEditor({ card, cards, edges, onChange, onSetEdge }:
             className="rounded border border-sky-200 px-1 py-1 text-sm bg-white">
             {COMPARE_OPS.map((o) => <option key={o.op} value={o.op}>{o.op}</option>)}
           </select>
-          <input key={card.node_id + '-v'} defaultValue={cond.right ?? ''} placeholder="giá trị (vd: 10000000)"
+          <input key={card.node_id + '-v'} defaultValue={cond.right ?? ''} placeholder={t('workflowLinearbuilderview.placeholderValueExample')}
             onBlur={(e) => { const v = e.target.value.trim(); const n = Number(v);
               setCond({ right: v === '' ? undefined : (v !== '' && !isNaN(n) ? n : v) }); }}
             className="min-w-0 rounded border border-sky-200 px-2 py-1 text-sm" />
         </div>
         <p className="text-[10px] text-sky-700/80 mt-1">
-          Trường đọc từ dữ liệu hồ sơ đi vào. Vd: <b>so_tien ≥ 10000000</b>. Nhiều mức → nối nhiều bước “Quyết định” (nhánh Sai → bước kiểm tra tiếp).
+          {t('workflowLinearbuilderview.msgConditionHintPrefix')} <b>so_tien ≥ 10000000</b>{t('workflowLinearbuilderview.msgConditionHintSuffix')}
         </p>
       </Field>
-      <Field label="Khi ĐÚNG → đi tới bước">
+      <Field label={t('workflowLinearbuilderview.fieldWhenTrueLabel')}>
         <select value={trueEdge?.target_node_id ?? ''} onChange={(e) => setBranch('có', trueEdge, e.target.value)}
           className="w-full rounded border border-sky-200 px-2 py-1 text-sm bg-white">
-          <option value="">— chọn bước —</option>
+          <option value="">{t('workflowLinearbuilderview.optionChooseStep')}</option>
           {others.map((x) => <option key={x.node_id} value={x.node_id}>{x.title_vi || x.title}</option>)}
         </select>
       </Field>
-      <Field label="Khi SAI → đi tới bước">
+      <Field label={t('workflowLinearbuilderview.fieldWhenFalseLabel')}>
         <select value={falseEdge?.target_node_id ?? ''} onChange={(e) => setBranch('không', falseEdge, e.target.value)}
           className="w-full rounded border border-sky-200 px-2 py-1 text-sm bg-white">
-          <option value="">— chọn bước —</option>
+          <option value="">{t('workflowLinearbuilderview.optionChooseStep')}</option>
           {others.map((x) => <option key={x.node_id} value={x.node_id}>{x.title_vi || x.title}</option>)}
         </select>
       </Field>
@@ -799,6 +808,7 @@ function IfElseEditor({ card, cards, edges, onChange, onSetEdge }:
 function SwitchEditor({ card, cards, edges, onChange, onSetEdge }:
   { card: Card; cards: Card[]; edges: Edge[];
     onChange: (cfg: Record<string, any>) => void; onSetEdge: SetEdgeFn }) {
+  const t = useT();
   const cfg = card.decision_config ?? {};
   const inputRaw = typeof cfg.input === 'string' ? cfg.input.replace(/^\$\.input\./, '') : '';
   const cases: any[] = Array.isArray(cfg.cases) ? cfg.cases : [];
@@ -826,31 +836,31 @@ function SwitchEditor({ card, cards, edges, onChange, onSetEdge }:
   const defEdge = edgeFor('default');
   return (
     <div className="space-y-2 border-l-4 border-violet-400 pl-3 bg-violet-50/50 py-2 rounded-r">
-      <Field label="Phân loại theo trường">
-        <input key={card.node_id + '-sw'} defaultValue={inputRaw} placeholder="trường (vd: so_tien)"
+      <Field label={t('workflowLinearbuilderview.fieldClassifyByLabel')}>
+        <input key={card.node_id + '-sw'} defaultValue={inputRaw} placeholder={t('workflowLinearbuilderview.placeholderFieldExample')}
           list="kaori-fields"
           onBlur={(e) => onChange({ ...cfg, input: e.target.value.trim() ? `$.input.${e.target.value.trim()}` : undefined })}
           className="w-full rounded border border-violet-200 px-2 py-1 text-sm" />
       </Field>
-      <label className="block text-[11px] uppercase tracking-wide text-[var(--text-secondary)]">Các mức (từ ≤ giá trị &lt; đến) → bước</label>
+      <label className="block text-[11px] uppercase tracking-wide text-[var(--text-secondary)]">{t('workflowLinearbuilderview.labelLevelsRange')}</label>
       <div className="space-y-1.5">
         {cases.map((cs, i) => {
           const e = edgeFor(cs.label);
           return (
             <div key={i} className="rounded border border-violet-200 bg-white p-1.5 space-y-1">
               <div className="flex items-center gap-1">
-                <input defaultValue={cs.label ?? ''} placeholder="tên mức (vd: 100-500tr)"
+                <input defaultValue={cs.label ?? ''} placeholder={t('workflowLinearbuilderview.placeholderLevelNameExample')}
                   onBlur={(ev) => renameLabel(i, cs.label, ev.target.value.trim())}
                   className="flex-1 min-w-0 rounded border border-violet-200 px-2 py-1 text-xs" />
                 <button className="text-rose-500 text-xs px-1 shrink-0" onClick={() => removeCase(i)}>✕</button>
               </div>
               <div className="flex items-center gap-1">
-                <span className="text-[10px] text-violet-700 shrink-0">từ ≥</span>
-                <input defaultValue={cs.min ?? ''} placeholder="trống = −∞" type="number" inputMode="numeric"
+                <span className="text-[10px] text-violet-700 shrink-0">{t('workflowLinearbuilderview.textFromGte')}</span>
+                <input defaultValue={cs.min ?? ''} placeholder={t('workflowLinearbuilderview.placeholderEmptyMinusInfinity')} type="number" inputMode="numeric"
                   onBlur={(ev) => updCase(i, { min: ev.target.value === '' ? undefined : Number(ev.target.value) })}
                   className="flex-1 min-w-0 rounded border border-violet-200 px-2 py-1 text-xs" />
-                <span className="text-[10px] text-violet-700 shrink-0">đến &lt;</span>
-                <input defaultValue={cs.max ?? ''} placeholder="trống = +∞" type="number" inputMode="numeric"
+                <span className="text-[10px] text-violet-700 shrink-0">{t('workflowLinearbuilderview.textToLt')}</span>
+                <input defaultValue={cs.max ?? ''} placeholder={t('workflowLinearbuilderview.placeholderEmptyPlusInfinity')} type="number" inputMode="numeric"
                   onBlur={(ev) => updCase(i, { max: ev.target.value === '' ? undefined : Number(ev.target.value) })}
                   className="flex-1 min-w-0 rounded border border-violet-200 px-2 py-1 text-xs" />
               </div>
@@ -861,23 +871,23 @@ function SwitchEditor({ card, cards, edges, onChange, onSetEdge }:
               )}
               <select value={e?.target_node_id ?? ''} onChange={(ev) => route(cs.label, ev.target.value)}
                 className="w-full rounded border border-violet-200 px-2 py-1 text-xs bg-white">
-                <option value="">— đi tới bước —</option>
+                <option value="">{t('workflowLinearbuilderview.optionGotoStep')}</option>
                 {others.map((x) => <option key={x.node_id} value={x.node_id}>{x.title_vi || x.title}</option>)}
               </select>
             </div>
           );
         })}
         <button onClick={() => setCases([...cases, { label: `muc${cases.length + 1}` }])}
-          className="text-xs text-violet-700 hover:underline">+ Thêm mức</button>
+          className="text-xs text-violet-700 hover:underline">{t('workflowLinearbuilderview.btnAddLevel')}</button>
       </div>
-      <Field label="Mặc định (không khớp mức nào) → bước">
+      <Field label={t('workflowLinearbuilderview.fieldDefaultLabel')}>
         <select value={defEdge?.target_node_id ?? ''} onChange={(e) => route('default', e.target.value)}
           className="w-full rounded border border-violet-200 px-2 py-1 text-sm bg-white">
-          <option value="">— chọn bước —</option>
+          <option value="">{t('workflowLinearbuilderview.optionChooseStep')}</option>
           {others.map((x) => <option key={x.node_id} value={x.node_id}>{x.title_vi || x.title}</option>)}
         </select>
       </Field>
-      <p className="text-[10px] text-violet-700/80">Để trống “từ/đến” = không giới hạn đầu đó. Mức khớp đầu tiên thắng — xếp hẹp→rộng.</p>
+      <p className="text-[10px] text-violet-700/80">{t('workflowLinearbuilderview.msgLevelsHint')}</p>
     </div>
   );
 }
@@ -887,42 +897,43 @@ function SwitchEditor({ card, cards, edges, onChange, onSetEdge }:
 // it once per item. Sends PARTIAL patches — updateCard deep-merges decision_config.
 function LoopEditor({ card, onChange }:
   { card: Card; onChange: (patch: Record<string, any>) => void }) {
+  const t = useT();
   const cfg = card.decision_config ?? {};
   const itemsRaw = typeof cfg.items === 'string' ? cfg.items.replace(/^\$\.input\./, '') : '';
   const itemVar = cfg.item_var || 'item';
   return (
     <div className="space-y-2 border-l-4 border-teal-400 pl-3 bg-teal-50/50 py-2 rounded-r">
-      <Field label="Lặp qua danh sách (trường)">
-        <input key={card.node_id + '-loop'} defaultValue={itemsRaw} placeholder="vd: hoa_don_qua_han"
+      <Field label={t('workflowLinearbuilderview.fieldLoopOverLabel')}>
+        <input key={card.node_id + '-loop'} defaultValue={itemsRaw} placeholder={t('workflowLinearbuilderview.placeholderLoopFieldExample')}
           list="kaori-fields"
           onBlur={(e) => onChange({ items: e.target.value.trim() ? `$.input.${e.target.value.trim()}` : undefined })}
           className="w-full rounded border border-teal-200 px-2 py-1 text-sm" />
       </Field>
-      <Field label="Tên biến mỗi phần tử">
+      <Field label={t('workflowLinearbuilderview.fieldItemVarLabel')}>
         <input key={card.node_id + '-iv'} defaultValue={cfg.item_var ?? 'item'} placeholder="item"
           onBlur={(e) => onChange({ item_var: e.target.value.trim() || undefined })}
           className="w-full rounded border border-teal-200 px-2 py-1 text-sm" />
       </Field>
       <p className="text-[10px] text-teal-700/80">
-        Các bước SAU node này (đến “Kết thúc vòng lặp”) chạy 1 lần cho mỗi phần tử.
-        Trong thân, đọc phần tử qua <code className="bg-white px-1 rounded">$.{itemVar}.&lt;trường&gt;</code>.
+        {t('workflowLinearbuilderview.msgLoopBodyHintPrefix')} <code className="bg-white px-1 rounded">$.{itemVar}.&lt;trường&gt;</code>.
       </p>
     </div>
   );
 }
 
 function SavedToast({ at }: { at: number }) {
+  const t = useT();
   const [show, setShow] = useState(false);
   useEffect(() => {
     if (!at) return;
     setShow(true);
-    const t = setTimeout(() => setShow(false), 1500);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setShow(false), 1500);
+    return () => clearTimeout(timer);
   }, [at]);
   if (!show) return null;
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white text-xs px-3 py-1.5 rounded-full shadow-lg">
-      ✓ Đã lưu
+      {t('workflowLinearbuilderview.toastSaved')}
     </div>
   );
 }

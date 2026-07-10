@@ -1,0 +1,58 @@
+{
+  "adminsPage.title": {
+    "vi": "Quản trị viên Platform",
+    "en": "Platform Admins",
+    "ja": "プラットフォーム管理者",
+    "ko": "플랫폼 관리자",
+    "zh": "平台管理员"
+  },
+  "adminsPage.description": {
+    "vi": "Tài khoản có quyền quản trị toàn hệ thống. Super Admin bắt buộc MFA.",
+    "en": "Accounts with system-wide admin rights. Super Admin requires MFA.",
+    "ja": "システム全体の管理権限を持つアカウント。Super Adminは MFA が必須です。",
+    "ko": "시스템 전체 관리 권한을 가진 계정입니다. Super Admin은 MFA가 필수입니다.",
+    "zh": "拥有系统级管理权限的账户。Super Admin 必须启用 MFA。"
+  },
+  "adminsPage.inviteAdmin": {
+    "vi": "Mời quản trị viên",
+    "en": "Invite admin",
+    "ja": "管理者を招待",
+    "ko": "관리자 초대",
+    "zh": "邀请管理员"
+  },
+  "adminsPage.emptyState": {
+    "vi": "Chưa có quản trị viên nào.",
+    "en": "No admins yet.",
+    "ja": "管理者はまだいません。",
+    "ko": "아직 관리자가 없습니다.",
+    "zh": "暂无管理员。"
+  },
+  "adminsPage.inactive": {
+    "vi": "Vô hiệu",
+    "en": "Disabled",
+    "ja": "無効",
+    "ko": "비활성화",
+    "zh": "已禁用"
+  },
+  "adminsPage.roleSuperAdmin": {
+    "vi": "Super Admin",
+    "en": "Super Admin",
+    "ja": "Super Admin",
+    "ko": "Super Admin",
+    "zh": "Super Admin"
+  },
+  "adminsPage.roleAdmin": {
+    "vi": "Quản trị viên",
+    "en": "Admin",
+    "ja": "管理者",
+    "ko": "관리자",
+    "zh": "管理员"
+  },
+  "adminsPage.roleSupport": {
+    "vi": "Hỗ trợ kỹ thuật",
+    "en": "Technical support",
+    "ja": "テクニカルサポート",
+    "ko": "기술 지원",
+    "zh": "技术支持"
+  }
+}

@@ -96,9 +96,9 @@ export default function Sidebar() {
     { href: '/users',     label: t('nav.users'),     icon: Users },
     // P15-S11 — customer / vendor / contract (mig 062/063). Top-level
     // entries; FE templates may reshuffle later.
-    { href: '/customers', label: 'Khách hàng',      icon: Briefcase },
-    { href: '/vendors',   label: 'Nhà cung cấp',    icon: Building2 },
-    { href: '/contracts', label: 'Hợp đồng',         icon: FileSignature },
+    { href: '/customers', label: t('layoutSidebar.navCustomers'), icon: Briefcase },
+    { href: '/vendors',   label: t('layoutSidebar.navVendors'),   icon: Building2 },
+    { href: '/contracts', label: t('layoutSidebar.navContracts'), icon: FileSignature },
     { href: '/settings',  label: t('nav.settings'),  icon: Settings },
   ];
 

@@ -30,6 +30,7 @@ import {
   Button, Badge, ErrorBanner, SuccessBanner, api, cn, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types
 // ============================================================================
@@ -91,6 +92,7 @@ interface DistributionListResponse { items: DistributionRow[] }
 // ============================================================================
 
 export default function ReportDistributionWiredPage() {
+  const t = useT();
   const [reportId, setReportId] = useState<string | null>(null);
 
   // Sync ?report=<id> from URL (initial + on history changes).
@@ -108,15 +110,15 @@ export default function ReportDistributionWiredPage() {
   return (
     <>
       <PageHeader
-        title="Phát hành báo cáo"
+        title={t('templates51bReportDistributionWired.pageTitle')}
         description={
           reportId
-            ? 'Gửi 1 báo cáo đã ready cho danh sách người nhận tuỳ chọn.'
-            : 'Chọn 1 báo cáo từ danh sách bên dưới để bắt đầu.'
+            ? t('templates51bReportDistributionWired.pageDescWithReport')
+            : t('templates51bReportDistributionWired.pageDescPicker')
         }
         actions={
           <a href="/p2/reports">
-            <Button variant="tertiary"><ArrowLeft className="w-4 h-4 mr-1.5" /> Về danh sách</Button>
+            <Button variant="tertiary"><ArrowLeft className="w-4 h-4 mr-1.5" /> {t('templates51bReportDistributionWired.backToList')}</Button>
           </a>
         }
       />
@@ -152,6 +154,7 @@ export default function ReportDistributionWiredPage() {
 // ============================================================================
 
 function ReportPicker({ onPick }: { onPick: (id: string) => void }) {
+  const t = useT();
   const [reports, setReports] = useState<BackendReportItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -187,7 +190,7 @@ function ReportPicker({ onPick }: { onPick: (id: string) => void }) {
         <ErrorBanner
           problem={{
             ...problem,
-            title:  'Không tải được danh sách báo cáo',
+            title:  t('templates51bReportDistributionWired.errLoadListTitle'),
             detail: `${problem.title}${problem.detail ? ' — ' + problem.detail : ''}.`,
           }}
         />
@@ -200,7 +203,7 @@ function ReportPicker({ onPick }: { onPick: (id: string) => void }) {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Tìm theo tiêu đề hoặc người tạo..."
+            placeholder={t('templates51bReportDistributionWired.searchPlaceholder')}
             className="w-full pl-9 pr-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm placeholder:text-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all"
           />
         </div>
@@ -209,13 +212,13 @@ function ReportPicker({ onPick }: { onPick: (id: string) => void }) {
       <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom shadow-soft-sm overflow-hidden">
         {loading ? (
           <div className="px-5 py-12 text-center text-[var(--text-secondary)]">
-            <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> Đang tải...
+            <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> {t('templates51bReportDistributionWired.loading')}
           </div>
         ) : filtered.length === 0 ? (
           <div className="px-5 py-12 text-center">
             <FileText className="w-10 h-10 mx-auto text-[var(--text-secondary)]/30 mb-3" />
             <p className="text-sm text-[var(--text-secondary)]">
-              Không có báo cáo nào ở trạng thái "ready" để phát hành. Hãy tạo báo cáo trước qua{' '}
+              {t('templates51bReportDistributionWired.emptyPickerPrefix')}{' '}
               <a href="/p2/reports/auto" className="text-[var(--primary-gold-dark)] underline">/p2/reports/auto</a>.
             </p>
           </div>
@@ -223,9 +226,9 @@ function ReportPicker({ onPick }: { onPick: (id: string) => void }) {
           <table className="w-full text-sm text-left">
             <thead className="bg-[var(--bg-app)] border-b border-[var(--border-color)] text-[11px] font-medium uppercase tracking-wider text-[var(--text-secondary)]">
               <tr>
-                <th className="px-5 py-3">Tiêu đề</th>
-                <th className="px-5 py-3">Tác giả</th>
-                <th className="px-5 py-3">Hoàn thành</th>
+                <th className="px-5 py-3">{t('templates51bReportDistributionWired.colTitle')}</th>
+                <th className="px-5 py-3">{t('templates51bReportDistributionWired.colAuthor')}</th>
+                <th className="px-5 py-3">{t('templates51bReportDistributionWired.colCompleted')}</th>
                 <th className="px-5 py-3 text-right"></th>
               </tr>
             </thead>
@@ -244,11 +247,11 @@ function ReportPicker({ onPick }: { onPick: (id: string) => void }) {
                   </td>
                   <td className="px-5 py-4 text-xs text-[var(--text-secondary)]">{r.owner_email}</td>
                   <td className="px-5 py-4 text-xs text-[var(--text-secondary)]">
-                    {r.completed_at ? formatRelative(r.completed_at) : '—'}
+                    {r.completed_at ? formatRelative(r.completed_at, t) : '—'}
                   </td>
                   <td className="px-5 py-4 text-right">
                     <span className="inline-flex items-center text-xs font-medium text-[var(--primary-gold-dark)]">
-                      Phát hành <ChevronRight className="w-3 h-3 ml-0.5" />
+                      {t('templates51bReportDistributionWired.distributeLink')} <ChevronRight className="w-3 h-3 ml-0.5" />
                     </span>
                   </td>
                 </tr>
@@ -268,6 +271,7 @@ function ReportPicker({ onPick }: { onPick: (id: string) => void }) {
 function DistributePanel({
   reportId, onBack,
 }: { reportId: string; onBack: () => void }) {
+  const t = useT();
   const [report, setReport] = useState<BackendReportItem | null>(null);
   const [reportProblem, setReportProblem] = useState<ProblemDetails | null>(null);
 
@@ -342,8 +346,8 @@ function DistributePanel({
       const fail = r.failure_count;
       setSuccess(
         fail === 0
-          ? `Đã enqueue ${ok} email — notification-service sẽ gửi trong vài phút.`
-          : `Enqueue ${ok}/${r.recipient_count} thành công, ${fail} thất bại — kiểm tra Lịch sử bên dưới.`,
+          ? t('templates51bReportDistributionWired.successAllOk', { ok })
+          : t('templates51bReportDistributionWired.successPartial', { ok, total: r.recipient_count, fail }),
       );
       setRecipientsRaw('');
       setCustomMessage('');
@@ -362,7 +366,7 @@ function DistributePanel({
         onClick={onBack}
         className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] inline-flex items-center"
       >
-        <ArrowLeft className="w-3 h-3 mr-1" /> Đổi báo cáo
+        <ArrowLeft className="w-3 h-3 mr-1" /> {t('templates51bReportDistributionWired.changeReport')}
       </button>
 
       {/* Report context card */}
@@ -370,24 +374,24 @@ function DistributePanel({
         <ErrorBanner
           problem={{
             ...reportProblem,
-            title:  'Không tải được báo cáo',
+            title:  t('templates51bReportDistributionWired.errLoadReportTitle'),
             detail: reportProblem.detail ?? reportProblem.title,
           }}
         />
       ) : !report ? (
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-5 shadow-soft-sm">
           <Loader2 className="w-5 h-5 animate-spin inline mr-2 text-[var(--primary-gold-dark)]" />
-          <span className="text-sm text-[var(--text-secondary)]">Đang tải thông tin báo cáo...</span>
+          <span className="text-sm text-[var(--text-secondary)]">{t('templates51bReportDistributionWired.loadingReport')}</span>
         </div>
       ) : report.status !== 'ready' ? (
         <div className="bg-[var(--state-warning)]/8 border border-[var(--state-warning)]/30 rounded-lg-custom p-5 shadow-soft-sm">
           <div className="flex items-start gap-3">
             <AlertTriangle className="w-5 h-5 text-[var(--state-warning)] shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-medium text-[var(--text-primary)]">Báo cáo chưa sẵn sàng</p>
+              <p className="text-sm font-medium text-[var(--text-primary)]">{t('templates51bReportDistributionWired.notReadyTitle')}</p>
               <p className="text-xs text-[var(--text-secondary)] mt-1">
-                Trạng thái hiện tại: <span className="font-mono">{report.status}</span>. BE từ chối phát hành (409) cho tới khi
-                báo cáo ở trạng thái <span className="font-mono">ready</span>. Đợi auto-worker hoàn thành hoặc chọn báo cáo khác.
+                {t('templates51bReportDistributionWired.notReadyStatusPrefix')} <span className="font-mono">{report.status}</span>. {t('templates51bReportDistributionWired.notReadyDetail')}{' '}
+                <span className="font-mono">ready</span>. {t('templates51bReportDistributionWired.notReadySuffix')}
               </p>
             </div>
           </div>
@@ -399,7 +403,7 @@ function DistributePanel({
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-[var(--text-primary)]">{report.title}</p>
               <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                Tác giả {report.owner_email} · hoàn thành {report.completed_at ? formatRelative(report.completed_at) : '—'}
+                {t('templates51bReportDistributionWired.authorLine', { owner: report.owner_email, completed: report.completed_at ? formatRelative(report.completed_at, t) : '—' })}
               </p>
             </div>
             <Badge variant="success">ready</Badge>
@@ -418,7 +422,7 @@ function DistributePanel({
           <ErrorBanner
             problem={{
               ...problem,
-              title:  problem.title ?? 'Phát hành thất bại',
+              title:  problem.title ?? t('templates51bReportDistributionWired.errDistributeTitle'),
               detail: problem.detail ?? '',
             }}
           />
@@ -427,22 +431,22 @@ function DistributePanel({
 
         <div className="space-y-2">
           <label className="text-[11px] uppercase tracking-wider font-medium text-[var(--text-secondary)] block">
-            Email người nhận
+            {t('templates51bReportDistributionWired.recipientEmailLabel')}
           </label>
           <textarea
             value={recipientsRaw}
             onChange={(e) => setRecipientsRaw(e.target.value)}
             rows={3}
-            placeholder="lan@acme.vn, huy@acme.vn — phân cách bằng dấu phẩy hoặc xuống dòng"
+            placeholder={t('templates51bReportDistributionWired.recipientPlaceholder')}
             className="w-full px-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm placeholder:text-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] resize-none transition-all"
           />
           <p className="text-xs text-[var(--text-secondary)]">
             {recipients.length === 0 ? (
-              <>Tối thiểu 1 email · tối đa 50.</>
+              <>{t('templates51bReportDistributionWired.recipientMinMax')}</>
             ) : (
               <>
-                <span className="text-[var(--text-primary)] font-medium">{recipients.length}</span> email duy nhất sau khi gộp trùng
-                {overCap && <span className="text-[var(--state-error)] ml-1">— vượt giới hạn 50</span>}.
+                <span className="text-[var(--text-primary)] font-medium">{recipients.length}</span> {t('templates51bReportDistributionWired.recipientUniqueSuffix')}
+                {overCap && <span className="text-[var(--state-error)] ml-1">{t('templates51bReportDistributionWired.overCapNote')}</span>}.
               </>
             )}
           </p>
@@ -450,17 +454,17 @@ function DistributePanel({
 
         <div className="space-y-2">
           <label className="text-[11px] uppercase tracking-wider font-medium text-[var(--text-secondary)] block">
-            Lời nhắn cá nhân (tuỳ chọn, ≤ 500 ký tự)
+            {t('templates51bReportDistributionWired.customMessageLabel')}
           </label>
           <textarea
             value={customMessage}
             onChange={(e) => setCustomMessage(e.target.value.slice(0, 500))}
             rows={3}
-            placeholder="vd. Anh chị xem báo cáo trước cuộc họp 15h nhé."
+            placeholder={t('templates51bReportDistributionWired.customMessagePlaceholder')}
             className="w-full px-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm placeholder:text-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] resize-none transition-all"
           />
           <p className="text-xs text-[var(--text-secondary)]">
-            Hiển thị trên đầu email, trên phần tóm tắt do AI viết. {customMessage.length}/500 ký tự.
+            {t('templates51bReportDistributionWired.customMessageHint', { count: customMessage.length })}
           </p>
         </div>
 
@@ -471,8 +475,8 @@ function DistributePanel({
             disabled={!formValid || submitting || !report || report.status !== 'ready'}
           >
             {submitting
-              ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> Đang gửi...</>
-              : <><Send className="w-4 h-4 mr-1.5" /> Gửi ngay</>}
+              ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> {t('templates51bReportDistributionWired.sending')}</>
+              : <><Send className="w-4 h-4 mr-1.5" /> {t('templates51bReportDistributionWired.sendNow')}</>}
           </Button>
         </div>
       </div>
@@ -480,26 +484,26 @@ function DistributePanel({
       {/* History */}
       <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom shadow-soft-sm overflow-hidden">
         <div className="px-5 py-3 border-b border-[var(--border-color)] flex items-center justify-between">
-          <h3 className="font-serif text-base text-[var(--text-primary)]">Lịch sử phát hành</h3>
+          <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates51bReportDistributionWired.historyTitle')}</h3>
           <Badge variant="default">{history.length}</Badge>
         </div>
         {historyLoading ? (
           <div className="px-5 py-8 text-center text-[var(--text-secondary)]">
-            <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> Đang tải...
+            <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> {t('templates51bReportDistributionWired.loading')}
           </div>
         ) : history.length === 0 ? (
           <div className="px-5 py-10 text-center">
             <Send className="w-10 h-10 mx-auto text-[var(--text-secondary)]/30 mb-3" />
-            <p className="text-sm text-[var(--text-secondary)]">Báo cáo này chưa được phát hành thủ công lần nào.</p>
+            <p className="text-sm text-[var(--text-secondary)]">{t('templates51bReportDistributionWired.historyEmpty')}</p>
           </div>
         ) : (
           <table className="w-full text-sm text-left">
             <thead className="bg-[var(--bg-app)] border-b border-[var(--border-color)] text-[11px] font-medium uppercase tracking-wider text-[var(--text-secondary)]">
               <tr>
-                <th className="px-5 py-3">Người nhận</th>
-                <th className="px-5 py-3">Lời nhắn</th>
+                <th className="px-5 py-3">{t('templates51bReportDistributionWired.colRecipient')}</th>
+                <th className="px-5 py-3">{t('templates51bReportDistributionWired.colMessage')}</th>
                 <th className="px-5 py-3">SMTP</th>
-                <th className="px-5 py-3">Thời điểm</th>
+                <th className="px-5 py-3">{t('templates51bReportDistributionWired.colTimestamp')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--border-color)]/60">
@@ -513,6 +517,7 @@ function DistributePanel({
 }
 
 function DistributionRowItem({ row: d }: { row: DistributionRow }) {
+  const t = useT();
   // Live SMTP state from notification_outbox; fall back to the dispatch
   // status frozen at distribute-time when the join missed (rare).
   const live = d.outbox_status ?? d.dispatch_status;
@@ -526,14 +531,14 @@ function DistributionRowItem({ row: d }: { row: DistributionRow }) {
       </td>
       <td className="px-5 py-4 max-w-xs">
         <p className="text-xs text-[var(--text-secondary)] line-clamp-2">
-          {d.custom_message ?? <span className="italic">(không có)</span>}
+          {d.custom_message ?? <span className="italic">{t('templates51bReportDistributionWired.noneValue')}</span>}
         </p>
       </td>
       <td className="px-5 py-4">
         <SmtpBadge status={live} attempts={d.outbox_attempts ?? 0} error={d.outbox_error ?? d.dispatch_error} />
       </td>
       <td className="px-5 py-4 text-xs text-[var(--text-secondary)]">
-        {formatRelative(d.outbox_sent_at ?? d.created_at)}
+        {formatRelative(d.outbox_sent_at ?? d.created_at, t)}
       </td>
     </tr>
   );
@@ -542,13 +547,14 @@ function DistributionRowItem({ row: d }: { row: DistributionRow }) {
 function SmtpBadge({
   status, attempts, error,
 }: { status: string; attempts: number; error: string | null }) {
+  const t = useT();
   if (status === 'sent') {
-    return <Badge variant="success"><Mail className="w-3 h-3 mr-1" /> Đã gửi</Badge>;
+    return <Badge variant="success"><Mail className="w-3 h-3 mr-1" /> {t('templates51bReportDistributionWired.smtpSent')}</Badge>;
   }
   if (status === 'dead' || status === 'failed') {
     return (
       <div className="inline-flex flex-col gap-0.5">
-        <Badge variant="error"><MailX className="w-3 h-3 mr-1" /> Thất bại</Badge>
+        <Badge variant="error"><MailX className="w-3 h-3 mr-1" /> {t('templates51bReportDistributionWired.smtpFailed')}</Badge>
         {error && <span className="text-[10px] text-[var(--text-secondary)] line-clamp-1 max-w-[200px]">{error}</span>}
       </div>
     );
@@ -556,8 +562,8 @@ function SmtpBadge({
   // pending / unknown
   return (
     <div className="inline-flex flex-col gap-0.5">
-      <Badge variant="warning"><Hourglass className="w-3 h-3 mr-1" /> Đang chờ</Badge>
-      {attempts > 0 && <span className="text-[10px] text-[var(--text-secondary)]">{attempts} lần thử</span>}
+      <Badge variant="warning"><Hourglass className="w-3 h-3 mr-1" /> {t('templates51bReportDistributionWired.smtpPending')}</Badge>
+      {attempts > 0 && <span className="text-[10px] text-[var(--text-secondary)]">{t('templates51bReportDistributionWired.attemptsCount', { count: attempts })}</span>}
     </div>
   );
 }
@@ -567,14 +573,15 @@ function SmtpBadge({
 // ============================================================================
 
 function ImplicitNote() {
+  const t = useT();
   return (
     <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
       <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
       <p>
-        Phiên bản này hỗ trợ <span className="font-mono">channel=email</span> và phát hành thủ công.
-        Lịch tự động (cron), gửi theo nhóm vai trò (MANAGER / OPERATOR / ANALYST), và Slack / webhook đều thuộc v1.
-        Mỗi email được durable enqueue qua <span className="font-mono">notification_outbox</span> — poller retry tới 5 lần
-        rồi vào trạng thái <span className="font-mono">dead</span>.
+        {t('templates51bReportDistributionWired.implicitNote1')} <span className="font-mono">channel=email</span> {t('templates51bReportDistributionWired.implicitNote2')}
+        {t('templates51bReportDistributionWired.implicitNote3')}
+        {t('templates51bReportDistributionWired.implicitNote4')} <span className="font-mono">notification_outbox</span> {t('templates51bReportDistributionWired.implicitNote5')}
+        {t('templates51bReportDistributionWired.implicitNote6')} <span className="font-mono">dead</span>.
       </p>
     </div>
   );
@@ -599,11 +606,11 @@ function dedupEmails(raw: string): string[] {
   return out;
 }
 
-function formatRelative(iso: string): string {
+function formatRelative(iso: string, t: ReturnType<typeof useT>): string {
   const diff = Date.now() - +new Date(iso);
-  if (diff < 60_000)         return 'vừa xong';
-  if (diff < 3_600_000)      return `${Math.round(diff / 60_000)} phút trước`;
-  if (diff < 86_400_000)     return `${Math.round(diff / 3_600_000)} giờ trước`;
-  if (diff < 7 * 86_400_000) return `${Math.round(diff / 86_400_000)} ngày trước`;
+  if (diff < 60_000)         return t('templates51bReportDistributionWired.timeJustNow');
+  if (diff < 3_600_000)      return t('templates51bReportDistributionWired.timeMinutesAgo', { count: Math.round(diff / 60_000) });
+  if (diff < 86_400_000)     return t('templates51bReportDistributionWired.timeHoursAgo', { count: Math.round(diff / 3_600_000) });
+  if (diff < 7 * 86_400_000) return t('templates51bReportDistributionWired.timeDaysAgo', { count: Math.round(diff / 86_400_000) });
   return new Date(iso).toLocaleDateString('vi-VN');
 }

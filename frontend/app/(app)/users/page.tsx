@@ -49,12 +49,17 @@ const ROLE_TONE: Record<UserRole, BadgeTone> = {
   ANALYST:  "neutral",
   VIEWER:   "neutral",
 };
-const ROLE_LABEL: Record<UserRole, string> = {
-  MANAGER:  "Quản lý",
-  OPERATOR: "Vận hành",
-  ANALYST:  "Phân tích",
-  VIEWER:   "Xem",
-};
+type TFn = (key: string, params?: Record<string, string | number>) => string;
+
+function roleLabel(t: TFn, role: UserRole): string {
+  const map: Record<UserRole, string> = {
+    MANAGER:  t("usersPage.roleManager"),
+    OPERATOR: t("usersPage.roleOperator"),
+    ANALYST:  t("usersPage.roleAnalyst"),
+    VIEWER:   t("usersPage.roleViewer"),
+  };
+  return map[role];
+}
 const ROLE_ICON: Record<UserRole, any> = {
   MANAGER:  ShieldCheck,
   OPERATOR: Edit3,
@@ -113,7 +118,7 @@ export default function UsersPage() {
   const COLUMNS: Column<EnterpriseUser>[] = useMemo(() => [
     {
       key: "full_name",
-      header: "Người dùng",
+      header: t("usersPage.colUser"),
       render: (row) => (
         <div className="min-w-0">
           <p className="text-body-strong text-ink truncate">{row.full_name ?? "—"}</p>
@@ -123,7 +128,7 @@ export default function UsersPage() {
     },
     {
       key: "role",
-      header: "Vai trò",
+      header: t("usersPage.colRole"),
       render: (row) => {
         const Icon = ROLE_ICON[row.role];
         return (
@@ -138,7 +143,7 @@ export default function UsersPage() {
               className="text-tiny px-2 py-0.5 rounded-md border border-subtle bg-surface focus:outline-none focus:ring-2 focus:ring-brand-300"
             >
               {ROLES.map((r) => (
-                <option key={r} value={r}>{ROLE_LABEL[r]}</option>
+                <option key={r} value={r}>{roleLabel(t, r)}</option>
               ))}
             </select>
           </div>
@@ -147,16 +152,16 @@ export default function UsersPage() {
     },
     {
       key: "is_active",
-      header: "Trạng thái",
+      header: t("usersPage.colStatus"),
       render: (row) => (
         <Badge tone={row.is_active ? "success" : "neutral"}>
-          {row.is_active ? "Hoạt động" : "Vô hiệu"}
+          {row.is_active ? t("usersPage.active") : t("usersPage.inactive")}
         </Badge>
       ),
     },
     {
       key: "created_at",
-      header: "Ngày tạo",
+      header: t("usersPage.colCreatedAt"),
       render: (row) => (
         <span className="text-tiny text-[#B0A698] tabular-nums">{fmtDateTime(row.created_at)}</span>
       ),
@@ -168,7 +173,7 @@ export default function UsersPage() {
         <div className="flex items-center gap-1.5 justify-end">
           <button
             onClick={() => setTemplateTarget(row)}
-            title="Áp dụng quyền theo template phòng ban + cấp bậc (mig 061)"
+            title={t("usersPage.tooltipApplyTemplate")}
             className="p-1.5 rounded-md hover:bg-surface text-ink-muted hover:text-brand-500"
           >
             <Wand2 className="w-4 h-4" />
@@ -181,19 +186,19 @@ export default function UsersPage() {
               })
             }
             disabled={updateMutation.isPending}
-            title={row.is_active ? "Vô hiệu hoá" : "Kích hoạt"}
+            title={row.is_active ? t("usersPage.deactivate") : t("usersPage.activate")}
             className="p-1.5 rounded-md hover:bg-surface text-ink-muted hover:text-brand-500"
           >
             <Power className="w-4 h-4" />
           </button>
           <button
             onClick={() => {
-              if (confirm(`Xoá người dùng "${row.email}"?`)) {
+              if (confirm(t("usersPage.confirmDeleteUser", { email: row.email }))) {
                 deleteMutation.mutate(row.id);
               }
             }}
             disabled={deleteMutation.isPending}
-            title="Xoá"
+            title={t("usersPage.delete")}
             className="p-1.5 rounded-md hover:bg-danger-50 text-ink-muted hover:text-danger-600"
           >
             <Trash2 className="w-4 h-4" />
@@ -201,7 +206,7 @@ export default function UsersPage() {
         </div>
       ),
     },
-  ], [updateMutation, deleteMutation]);
+  ], [t, updateMutation, deleteMutation]);
 
   return (
     <div className="space-y-8">
@@ -209,12 +214,12 @@ export default function UsersPage() {
         <div>
           <h1 className="text-h1 font-serif text-ink">{t("nav.users")}</h1>
           <p className="text-small text-ink-muted mt-1">
-            Quản lý tài khoản và phân quyền trong workspace.
+            {t("usersPage.subtitle")}
           </p>
         </div>
         <Button onClick={() => setShowInvite(true)}>
           <UserPlus className="w-4 h-4 mr-1.5" />
-          Mời thành viên
+          {t("usersPage.inviteMember")}
         </Button>
       </div>
 
@@ -243,8 +248,8 @@ export default function UsersPage() {
       {!isLoading && !isError && (data?.data ?? []).length === 0 && (
         <EmptyState
           icon={UserPlus}
-          title="Chưa có người dùng nào"
-          description="Mời thành viên vào workspace để bắt đầu cộng tác."
+          title={t("usersPage.emptyTitle")}
+          description={t("usersPage.emptyDescription")}
         />
       )}
 
@@ -256,7 +261,7 @@ export default function UsersPage() {
           pageSize={PAGE_SIZE}
           total={data?.meta?.total ?? 0}
           onPageChange={setPage}
-          emptyMessage="Không có người dùng nào."
+          emptyMessage={t("usersPage.tableEmptyMessage")}
         />
       )}
 
@@ -283,13 +288,15 @@ export default function UsersPage() {
 // /api/v1/enterprise-users/{user_id}/role with the template path; audit
 // row lands automatically server-side.
 
-const SENIORITY_LEVELS: Array<{ key: string; label: string }> = [
-  { key: 'entry',     label: 'Mới vào / Thực tập' },
-  { key: 'junior',    label: 'Junior' },
-  { key: 'mid',       label: 'Trung cấp (Mid)' },
-  { key: 'senior',    label: 'Senior' },
-  { key: 'executive', label: 'Cấp lãnh đạo (Executive)' },
-];
+function seniorityLevels(t: TFn): Array<{ key: string; label: string }> {
+  return [
+    { key: 'entry',     label: t("usersPage.seniorityEntry") },
+    { key: 'junior',    label: t("usersPage.seniorityJunior") },
+    { key: 'mid',       label: t("usersPage.seniorityMid") },
+    { key: 'senior',    label: t("usersPage.senioritySenior") },
+    { key: 'executive', label: t("usersPage.seniorityExecutive") },
+  ];
+}
 
 interface DeptOption {
   department_id: string;
@@ -312,6 +319,7 @@ function TemplateRoleModal({
   onClose:   () => void;
   onApplied: () => void;
 }) {
+  const t = useT();
   // EnterpriseUser list rows don't expose enterprise_id today — read it
   // from the auth store instead. Caller + target are guaranteed to share
   // an enterprise because the list query is RLS-scoped to the caller's.
@@ -340,7 +348,7 @@ function TemplateRoleModal({
         if (detail && Array.isArray(detail.departments)) {
           setDepts(detail.departments.map((d: any) => ({
             department_id: d.department_id,
-            name:          d.name || d.dept_type || 'Không tên',
+            name:          d.name || d.dept_type || t("usersPage.unnamed"),
             dept_type:     d.dept_type || 'custom',
           })));
         }
@@ -365,7 +373,7 @@ function TemplateRoleModal({
         setPreview(resp.template);
       } catch (e: any) {
         if (cancelled) return;
-        setPreviewError(e?.title || 'Không tải được đề xuất quyền.');
+        setPreviewError(e?.title || t("usersPage.errPreviewFailed"));
       }
     })();
     return () => { cancelled = true; };
@@ -393,7 +401,7 @@ function TemplateRoleModal({
         audit_event_id: resp.audit_event_id,
       });
     } catch (e: any) {
-      setSubmitError(e?.title || 'Không áp dụng được. Thử lại sau.');
+      setSubmitError(e?.title || t("usersPage.errApplyFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -403,27 +411,27 @@ function TemplateRoleModal({
     <Modal
       open
       onClose={submitting ? () => null : onClose}
-      title="Áp dụng quyền theo template"
+      title={t("usersPage.modalApplyTemplateTitle")}
       description={
         <span className="text-tiny text-ink-muted">
-          Người dùng: <span className="font-medium text-ink">{target.full_name || target.email}</span> ·
-          {" "}quyền hiện tại: <Badge tone={target.role === 'MANAGER' ? 'brand' : 'neutral'}>{target.role}</Badge>
+          {t("usersPage.labelUserColon")} <span className="font-medium text-ink">{target.full_name || target.email}</span> ·
+          {" "}{t("usersPage.labelCurrentRoleColon")} <Badge tone={target.role === 'MANAGER' ? 'brand' : 'neutral'}>{target.role}</Badge>
         </span>
       }
       footer={
         applied ? (
           <div className="flex justify-end">
-            <Button onClick={onApplied}>Đóng</Button>
+            <Button onClick={onApplied}>{t("usersPage.close")}</Button>
           </div>
         ) : (
           <div className="flex justify-end gap-2">
-            <Button variant="ghost" onClick={onClose} disabled={submitting}>Hủy</Button>
+            <Button variant="ghost" onClick={onClose} disabled={submitting}>{t("usersPage.cancel")}</Button>
             <Button
               onClick={apply}
               disabled={!preview || submitting}
               loading={submitting}
             >
-              Áp dụng {preview ? preview.default_role : 'theo template'}
+              {t("usersPage.applyPrefix")}{preview ? preview.default_role : t("usersPage.byTemplateFallback")}
             </Button>
           </div>
         )
@@ -434,11 +442,11 @@ function TemplateRoleModal({
           <div className="flex items-start gap-3 p-3 rounded-md bg-success-50 border border-success-100">
             <ShieldCheck className="w-5 h-5 text-success-700 mt-0.5 shrink-0" />
             <div className="flex-1 text-small">
-              <p className="font-medium text-success-700">Đã áp dụng quyền {applied.role}.</p>
+              <p className="font-medium text-success-700">{t("usersPage.appliedRoleMsg", { role: applied.role })}</p>
               <p className="text-tiny text-ink-muted mt-0.5">
                 {applied.previous === applied.role
-                  ? `Giữ nguyên quyền cũ — audit log đã ghi xác nhận của quản lý.`
-                  : `Chuyển từ ${applied.previous} → ${applied.role}.`}
+                  ? t("usersPage.keptSameRole")
+                  : t("usersPage.roleChanged", { from: applied.previous, to: applied.role })}
               </p>
               <p className="text-tiny text-[#B0A698] mt-1 font-mono">audit_event_id: {applied.audit_event_id}</p>
             </div>
@@ -447,14 +455,14 @@ function TemplateRoleModal({
       ) : (
         <div className="space-y-4">
           <label className="block space-y-1">
-            <span className="text-small text-ink-muted">Phòng ban</span>
+            <span className="text-small text-ink-muted">{t("usersPage.department")}</span>
             <select
               value={deptId}
               onChange={(e) => setDeptId(e.target.value)}
               disabled={depts.length === 0}
               className="w-full px-3 py-2 rounded-xl border border-subtle bg-surface text-small focus:outline-none focus:ring-2 focus:ring-brand-300"
             >
-              <option value="">— Chọn phòng ban —</option>
+              <option value="">{t("usersPage.selectDeptPlaceholder")}</option>
               {depts.map((d) => (
                 <option key={d.department_id} value={d.department_id}>
                   {d.name} ({d.dept_type})
@@ -463,20 +471,20 @@ function TemplateRoleModal({
             </select>
             {depts.length === 0 && (
               <span className="text-tiny text-[#B0A698]">
-                Đang tải danh sách phòng ban… nếu không có, hãy tạo phòng ban trước.
+                {t("usersPage.loadingDepts")}
               </span>
             )}
           </label>
 
           <label className="block space-y-1">
-            <span className="text-small text-ink-muted">Cấp bậc</span>
+            <span className="text-small text-ink-muted">{t("usersPage.seniority")}</span>
             <select
               value={seniority}
               onChange={(e) => setSeniority(e.target.value)}
               className="w-full px-3 py-2 rounded-xl border border-subtle bg-surface text-small focus:outline-none focus:ring-2 focus:ring-brand-300"
             >
-              <option value="">— Chọn cấp bậc —</option>
-              {SENIORITY_LEVELS.map((s) => (
+              <option value="">{t("usersPage.selectSeniorityPlaceholder")}</option>
+              {seniorityLevels(t).map((s) => (
                 <option key={s.key} value={s.key}>{s.label}</option>
               ))}
             </select>
@@ -485,7 +493,7 @@ function TemplateRoleModal({
           <div className="rounded-xl border border-subtle bg-surface p-3 min-h-[64px]">
             {!deptId || !seniority ? (
               <p className="text-tiny text-[#B0A698]">
-                Chọn phòng ban và cấp bậc để xem quyền đề xuất theo mig 061.
+                {t("usersPage.selectBothHint")}
               </p>
             ) : previewError ? (
               <div className="flex items-start gap-2 text-small text-danger-700">
@@ -495,12 +503,12 @@ function TemplateRoleModal({
             ) : preview ? (
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-tiny text-ink-muted">Đề xuất quyền:</span>
+                  <span className="text-tiny text-ink-muted">{t("usersPage.suggestedRoleLabel")}</span>
                   <Badge tone={preview.default_role === 'MANAGER' ? 'brand' : 'neutral'}>
                     {preview.default_role}
                   </Badge>
                   {preview.is_override && (
-                    <Badge tone="info">override của enterprise</Badge>
+                    <Badge tone="info">{t("usersPage.overrideBadge")}</Badge>
                   )}
                 </div>
                 {preview.description_vi && (
@@ -535,6 +543,7 @@ interface InviteFormProps {
 }
 
 function InviteForm({ isPending, isError, errorMessage, onCancel, onSubmit }: InviteFormProps) {
+  const t = useT();
   const [email, setEmail]       = useState("");
   const [fullName, setFullName] = useState("");
   const [role, setRole]         = useState<UserRole>("ANALYST");
@@ -551,7 +560,7 @@ function InviteForm({ isPending, isError, errorMessage, onCancel, onSubmit }: In
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label className="space-y-1 text-small">
-              <span className="text-ink-muted">Email</span>
+              <span className="text-ink-muted">{t("usersPage.email")}</span>
               <input
                 type="email"
                 required
@@ -561,7 +570,7 @@ function InviteForm({ isPending, isError, errorMessage, onCancel, onSubmit }: In
               />
             </label>
             <label className="space-y-1 text-small">
-              <span className="text-ink-muted">Họ tên</span>
+              <span className="text-ink-muted">{t("usersPage.fullName")}</span>
               <input
                 type="text"
                 value={fullName}
@@ -571,25 +580,25 @@ function InviteForm({ isPending, isError, errorMessage, onCancel, onSubmit }: In
             </label>
           </div>
           <label className="block space-y-1 text-small">
-            <span className="text-ink-muted">Vai trò</span>
+            <span className="text-ink-muted">{t("usersPage.role")}</span>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value as UserRole)}
               className="w-full px-3 py-2 rounded-xl border border-subtle bg-surface focus:outline-none focus:ring-2 focus:ring-brand-300"
             >
-              {ROLES.map((r) => <option key={r} value={r}>{ROLE_LABEL[r]} ({r})</option>)}
+              {ROLES.map((r) => <option key={r} value={r}>{roleLabel(t, r)} ({r})</option>)}
             </select>
           </label>
           {isError && (
-            <p className="text-small text-danger-600">{errorMessage ?? "Mời thành viên thất bại."}</p>
+            <p className="text-small text-danger-600">{errorMessage ?? t("usersPage.inviteFailedDefault")}</p>
           )}
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={onCancel} disabled={isPending}>
-              Huỷ
+              {t("usersPage.cancel")}
             </Button>
             <Button type="submit" loading={isPending}>
               {isPending && <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />}
-              Gửi lời mời
+              {t("usersPage.sendInvite")}
             </Button>
           </div>
         </form>

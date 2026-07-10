@@ -17,6 +17,7 @@ import { Badge, type BadgeTone } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { useT } from "@/lib/i18n/provider";
 
 interface Customer {
   customer_id:        string;
@@ -82,23 +83,23 @@ const CONTRACT_STATUS_TONE: Record<string, BadgeTone> = {
   terminated:   "danger",
 };
 
-const CONTRACT_TYPE_LABEL: Record<string, string> = {
-  license_enterprise: "License Enterprise",
-  license_pilot:      "License Pilot",
-  framework_msa:      "Khung MSA",
-  addon_module:       "Add-on Module",
-  custom_solution:    "Custom",
-  consulting:         "Tư vấn",
-  one_off:            "One-off",
+const CONTRACT_TYPE_KEYS: Record<string, string> = {
+  license_enterprise: "idPage.ctypeLicenseEnterprise",
+  license_pilot:      "idPage.ctypeLicensePilot",
+  framework_msa:      "idPage.ctypeFrameworkMsa",
+  addon_module:       "idPage.ctypeAddonModule",
+  custom_solution:    "idPage.ctypeCustomSolution",
+  consulting:         "idPage.ctypeConsulting",
+  one_off:            "idPage.ctypeOneOff",
 };
 
-function fmtVnd(s: string | null, currency: string = "VND"): string {
+function fmtVnd(s: string | null, currency: string, t: (key: string) => string): string {
   if (!s) return "—";
   const n = Number(s);
   if (!Number.isFinite(n)) return s;
   if (currency === "USD") return `$${n.toLocaleString("en-US")}`;
-  if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(1)} tỷ ₫`;
-  if (n >= 1_000_000)     return `${(n / 1_000_000).toFixed(0)} triệu ₫`;
+  if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(1)} ${t("idPage.unitBillion")}`;
+  if (n >= 1_000_000)     return `${(n / 1_000_000).toFixed(0)} ${t("idPage.unitMillion")}`;
   return `${n.toLocaleString("vi-VN")} ₫`;
 }
 
@@ -108,6 +109,7 @@ function fmtDate(s: string | null): string {
 }
 
 export default function CustomerDetailPage() {
+  const t = useT();
   const params = useParams();
   const id = (params?.id as string) ?? "";
 
@@ -130,7 +132,7 @@ export default function CustomerDetailPage() {
     return (
       <Card className="border-danger-200 bg-danger-50/30">
         <CardContent className="pt-6 text-small text-danger-700 flex items-center gap-2">
-          <AlertCircle className="w-4 h-4" /> Không tải được khách hàng. Có thể đã bị xoá hoặc cross-enterprise.
+          <AlertCircle className="w-4 h-4" /> {t("idPage.errLoadFailed")}
         </CardContent>
       </Card>
     );
@@ -142,7 +144,7 @@ export default function CustomerDetailPage() {
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Link href="/customers">
-          <Button variant="ghost"><ArrowLeft className="w-4 h-4 mr-1" /> Danh sách</Button>
+          <Button variant="ghost"><ArrowLeft className="w-4 h-4 mr-1" /> {t("idPage.backToList")}</Button>
         </Link>
         <div>
           <h1 className="text-h1 font-serif text-ink flex items-center gap-2">
@@ -158,24 +160,24 @@ export default function CustomerDetailPage() {
         <div className="lg:col-span-1 space-y-4">
           <Card>
             <CardContent className="pt-5 space-y-3">
-              <h3 className="text-body-strong text-ink">Thông tin cơ bản</h3>
-              <Field label="Người liên hệ" value={c.contact_person} />
-              <Field label="Email" value={c.email} mono />
-              <Field label="Điện thoại" value={c.phone} mono />
-              <Field label="MST" value={c.tax_code} mono />
-              <Field label="Địa chỉ" value={c.address} />
-              <Field label="Thành phố" value={c.city} />
+              <h3 className="text-body-strong text-ink">{t("idPage.sectionBasicInfo")}</h3>
+              <Field label={t("idPage.lblContactPerson")} value={c.contact_person} />
+              <Field label={t("idPage.lblEmail")} value={c.email} mono />
+              <Field label={t("idPage.lblPhone")} value={c.phone} mono />
+              <Field label={t("idPage.lblTaxCode")} value={c.tax_code} mono />
+              <Field label={t("idPage.lblAddress")} value={c.address} />
+              <Field label={t("idPage.lblCity")} value={c.city} />
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="pt-5 space-y-3">
-              <h3 className="text-body-strong text-ink">Phân loại</h3>
-              <Field label="Loại KH" value={c.customer_type} />
-              <Field label="Ngành" value={c.industry} />
-              <Field label="Tier" value={c.relationship_tier} />
-              <Field label="AM phụ trách" value={c.assigned_account_manager} mono />
-              <Field label="Lần đầu liên hệ" value={fmtDate(c.first_contact_date)} />
+              <h3 className="text-body-strong text-ink">{t("idPage.sectionClassification")}</h3>
+              <Field label={t("idPage.lblCustomerType")} value={c.customer_type} />
+              <Field label={t("idPage.lblIndustry")} value={c.industry} />
+              <Field label={t("idPage.lblTier")} value={c.relationship_tier} />
+              <Field label={t("idPage.lblAccountManager")} value={c.assigned_account_manager} mono />
+              <Field label={t("idPage.lblFirstContact")} value={fmtDate(c.first_contact_date)} />
             </CardContent>
           </Card>
         </div>
@@ -185,28 +187,28 @@ export default function CustomerDetailPage() {
           <Card>
             <CardContent className="pt-5 space-y-3">
               <h3 className="text-body-strong text-ink flex items-center gap-2">
-                <Award className="w-4 h-4 text-brand-500" /> Năng lực + danh hiệu
+                <Award className="w-4 h-4 text-brand-500" /> {t("idPage.sectionCapability")}
               </h3>
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Số năm hoạt động" value={c.years_in_business?.toString() ?? null} />
-                <Field label="Số nhân viên" value={c.employees_count?.toLocaleString("vi-VN") ?? null} />
-                <Field label="Doanh thu/năm" value={fmtVnd(c.annual_revenue_vnd)} />
-                <Field label="Tín dụng" value={c.credit_rating} />
+                <Field label={t("idPage.lblYearsInBusiness")} value={c.years_in_business?.toString() ?? null} />
+                <Field label={t("idPage.lblEmployeesCount")} value={c.employees_count?.toLocaleString("vi-VN") ?? null} />
+                <Field label={t("idPage.lblAnnualRevenue")} value={fmtVnd(c.annual_revenue_vnd, "VND", t)} />
+                <Field label={t("idPage.lblCreditRating")} value={c.credit_rating} />
               </div>
-              <Field label="Danh hiệu / giải thưởng" value={c.titles_awards} multiline />
-              <Field label="Chứng nhận" value={c.certifications} multiline />
-              <Field label="Tổng quan kinh nghiệm" value={c.experience_summary} multiline />
-              {c.note && <Field label="Ghi chú" value={c.note} multiline />}
+              <Field label={t("idPage.lblTitlesAwards")} value={c.titles_awards} multiline />
+              <Field label={t("idPage.lblCertifications")} value={c.certifications} multiline />
+              <Field label={t("idPage.lblExperienceSummary")} value={c.experience_summary} multiline />
+              {c.note && <Field label={t("idPage.lblNote")} value={c.note} multiline />}
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="pt-5 space-y-3">
               <h3 className="text-body-strong text-ink flex items-center gap-2">
-                <FileSignature className="w-4 h-4 text-brand-500" /> Hợp đồng ({data.contracts.length})
+                <FileSignature className="w-4 h-4 text-brand-500" /> {t("idPage.sectionContracts", { count: data.contracts.length })}
               </h3>
               {data.contracts.length === 0 ? (
-                <p className="text-tiny text-[#B0A698]">Chưa có hợp đồng nào với khách hàng này.</p>
+                <p className="text-tiny text-[#B0A698]">{t("idPage.noContracts")}</p>
               ) : (
                 <div className="space-y-2">
                   {data.contracts.map((ct) => (
@@ -215,15 +217,15 @@ export default function CustomerDetailPage() {
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-tiny font-mono text-brand-600">{ct.contract_no}</span>
-                            <Badge tone="neutral">{CONTRACT_TYPE_LABEL[ct.contract_type] ?? ct.contract_type}</Badge>
+                            <Badge tone="neutral">{CONTRACT_TYPE_KEYS[ct.contract_type] ? t(CONTRACT_TYPE_KEYS[ct.contract_type]) : ct.contract_type}</Badge>
                             <Badge tone={CONTRACT_STATUS_TONE[ct.status] ?? "neutral"}>{ct.status}</Badge>
-                            {ct.renewal_type === "auto_renew" && <Badge tone="info">auto-renew</Badge>}
+                            {ct.renewal_type === "auto_renew" && <Badge tone="info">{t("idPage.autoRenew")}</Badge>}
                           </div>
                           {ct.description && <p className="text-small text-ink mt-1">{ct.description}</p>}
                           <div className="grid grid-cols-3 gap-x-4 gap-y-1 mt-2 text-tiny text-ink-muted">
-                            <div><span className="text-[#B0A698]">Giá trị:</span> <span className="tabular-nums text-ink">{fmtVnd(ct.value_vnd, ct.currency)}</span></div>
-                            <div><span className="text-[#B0A698]">Thanh toán:</span> {ct.payment_schedule ?? "—"}{ct.payment_terms_days ? ` (${ct.payment_terms_days}d)` : ""}</div>
-                            <div><span className="text-[#B0A698]">Hiệu lực:</span> {fmtDate(ct.start_at)} → {fmtDate(ct.end_at)}</div>
+                            <div><span className="text-[#B0A698]">{t("idPage.lblValue")}</span> <span className="tabular-nums text-ink">{fmtVnd(ct.value_vnd, ct.currency, t)}</span></div>
+                            <div><span className="text-[#B0A698]">{t("idPage.lblPayment")}</span> {ct.payment_schedule ?? "—"}{ct.payment_terms_days ? ` (${ct.payment_terms_days}d)` : ""}</div>
+                            <div><span className="text-[#B0A698]">{t("idPage.lblValidity")}</span> {fmtDate(ct.start_at)} → {fmtDate(ct.end_at)}</div>
                           </div>
                         </div>
                       </div>

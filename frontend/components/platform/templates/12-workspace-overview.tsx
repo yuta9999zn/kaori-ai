@@ -6,7 +6,8 @@
 // the script to regenerate. Lazy `any` types added; not meant for strict tsc.
 
 import React, { useState, useEffect, useRef } from 'react';
-import { 
+import { useT } from '@/lib/i18n/provider';
+import {
   LayoutDashboard, 
   Briefcase, 
   Key, 
@@ -226,7 +227,9 @@ const Input = React.forwardRef<any, any>(({ className, label, error, helperText,
 Input.displayName = "Input";
 
 // --- SELECT (Simulated Radix Select) ---
-const Select = ({  label, placeholder = "Select an option", options = [], value, onChange, error  }: any) => {
+const Select = ({  label, placeholder, options = [], value, onChange, error  }: any) => {
+  const t = useT();
+  const resolvedPlaceholder = placeholder ?? t('templates12WorkspaceOverview.selectPlaceholderDefault');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -252,7 +255,7 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
           !selectedOption ? "text-[var(--text-secondary)]/60" : "text-[var(--text-primary)]"
         )}
       >
-        {selectedOption ? selectedOption.label : placeholder}
+        {selectedOption ? selectedOption.label : resolvedPlaceholder}
         <ChevronDown className="h-4 w-4 opacity-50" />
       </button>
       {isOpen && (
@@ -278,7 +281,9 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
 };
 
 // --- DATEPICKER (Simulated) ---
-const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any) => {
+const DatePicker = ({  label, placeholder, date, setDate  }: any) => {
+  const t = useT();
+  const resolvedPlaceholder = placeholder ?? t('templates12WorkspaceOverview.datePickerPlaceholderDefault');
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
   useEffect(() => {
@@ -299,19 +304,19 @@ const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any
         )}
       >
         <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
-        {date ? date : placeholder}
+        {date ? date : resolvedPlaceholder}
       </button>
       {isOpen && (
         <div className="absolute top-full left-0 z-50 mt-1 p-3 bg-white rounded-md-custom border border-[var(--border-color)] shadow-soft-md animate-in fade-in zoom-in-95 duration-150 w-[280px]">
            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm font-semibold text-[var(--text-primary)]">October 2026</span>
+              <span className="text-sm font-semibold text-[var(--text-primary)]">{t('templates12WorkspaceOverview.calendarMonthYear')}</span>
               <div className="flex gap-1">
                 <button className="p-1 hover:bg-[var(--bg-app)] rounded"><ChevronRight className="w-4 h-4 rotate-180 text-[var(--text-secondary)]"/></button>
                 <button className="p-1 hover:bg-[var(--bg-app)] rounded"><ChevronRight className="w-4 h-4 text-[var(--text-secondary)]"/></button>
               </div>
            </div>
            <div className="grid grid-cols-7 gap-1 text-center text-xs text-[var(--text-secondary)] mb-2">
-             {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => <div key={d}>{d}</div>)}
+             {t('templates12WorkspaceOverview.calendarWeekdays').split(',').map(d => <div key={d}>{d}</div>)}
            </div>
            <div className="grid grid-cols-7 gap-1 text-sm">
              {Array.from({length: 31}).map((_, i) => (
@@ -336,6 +341,7 @@ const Card = ({  className, ...props  }: any) => (
 );
 
 const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className  }: any) => {
+  const t = useT();
   const isPositive = (isUp && !inverseGood) || (!isUp && inverseGood);
   const trendColor = trend === '0%' ? 'text-[var(--text-secondary)]' : isPositive ? 'text-[#5C856A]' : 'text-[#9B5050]';
   return (
@@ -351,7 +357,7 @@ const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className
             </div>
           )}
         </div>
-        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">vs yesterday</div>
+        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">{t('templates12WorkspaceOverview.vsYesterday')}</div>
       </div>
     </Card>
   );
@@ -370,6 +376,7 @@ const TableHead = ({  className, ...props  }: any) => <th className={cn("h-12 px
 const TableCell = ({  className, ...props  }: any) => <td className={cn("p-4 align-middle text-[var(--text-primary)]", className)} {...props} />;
 
 const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
+  const t = useT();
   return (
     <div className="rounded-lg-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm overflow-hidden w-full">
       <Table>
@@ -394,8 +401,8 @@ const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
                   <div className="w-10 h-10 rounded-full bg-[var(--bg-app)] flex items-center justify-center mb-2">
                     <Search className="w-5 h-5 text-[var(--text-secondary)]" />
                   </div>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">No results found</span>
-                  <span className="text-xs text-[var(--text-secondary)]">Try adjusting your filters</span>
+                  <span className="text-sm font-medium text-[var(--text-primary)]">{t('templates12WorkspaceOverview.noResultsFound')}</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{t('templates12WorkspaceOverview.tryAdjustingFilters')}</span>
                 </div>
               </TableCell>
             </TableRow>
@@ -410,10 +417,10 @@ const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
       </Table>
       {pagination && (
         <div className="border-t border-[var(--border-color)] px-4 py-3 flex items-center justify-between bg-[#FCFBF9]">
-          <span className="text-xs text-[var(--text-secondary)]">Showing 1 to {data.length} of {data.length} results</span>
+          <span className="text-xs text-[var(--text-secondary)]">{t('templates12WorkspaceOverview.showingResults', { count: data.length })}</span>
           <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled>Previous</Button>
-              <Button variant="outline" size="sm">Next</Button>
+              <Button variant="outline" size="sm" disabled>{t('templates12WorkspaceOverview.previous')}</Button>
+              <Button variant="outline" size="sm">{t('templates12WorkspaceOverview.next')}</Button>
           </div>
         </div>
       )}
@@ -565,25 +572,25 @@ const Section = ({  title, description, actions, children, className = ''  }: an
 // --- CONFIG ---
 const NAVIGATION_CONFIG = [
   {
-    group: 'Main',
+    groupKey: 'templates12WorkspaceOverview.navGroupMain',
     items: [
-      { id: 'overview', label: 'Platform Health', icon: LayoutDashboard, route: '/platform' },
-      { id: 'workspaces', label: 'Workspaces', icon: Briefcase, route: '/platform/workspaces', badge: '4' },
+      { id: 'overview', labelKey: 'templates12WorkspaceOverview.navPlatformHealth', icon: LayoutDashboard, route: '/platform' },
+      { id: 'workspaces', labelKey: 'templates12WorkspaceOverview.navWorkspaces', icon: Briefcase, route: '/platform/workspaces', badge: '4' },
     ]
   },
   {
-    group: 'Management',
+    groupKey: 'templates12WorkspaceOverview.navGroupManagement',
     items: [
-      { id: 'keys', label: 'API Keys', icon: Key, route: '/platform/keys' },
-      { id: 'billing', label: 'Billing', icon: CreditCard, route: '/platform/billing' },
-      { id: 'admin', label: 'Admins', icon: Shield, route: '/platform/admins', role: 'admin' },
+      { id: 'keys', labelKey: 'templates12WorkspaceOverview.navApiKeys', icon: Key, route: '/platform/keys' },
+      { id: 'billing', labelKey: 'templates12WorkspaceOverview.navBilling', icon: CreditCard, route: '/platform/billing' },
+      { id: 'admin', labelKey: 'templates12WorkspaceOverview.navAdmins', icon: Shield, route: '/platform/admins', role: 'admin' },
     ]
   },
   {
-    group: 'System',
+    groupKey: 'templates12WorkspaceOverview.navGroupSystem',
     items: [
-      { id: 'components', label: 'Component Library', icon: Component, route: '/platform/components' },
-      { id: 'sessions', label: 'Security & Sessions', icon: Settings, route: '/p1/auth/sessions' },
+      { id: 'components', labelKey: 'templates12WorkspaceOverview.navComponentLibrary', icon: Component, route: '/platform/components' },
+      { id: 'sessions', labelKey: 'templates12WorkspaceOverview.navSecuritySessions', icon: Settings, route: '/p1/auth/sessions' },
     ]
   }
 ];
@@ -603,6 +610,7 @@ const EnvBadge = ({  env = 'production'  }: any) => {
 };
 
 const NotificationDropdown = () => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -623,7 +631,7 @@ const NotificationDropdown = () => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-[320px] bg-[var(--bg-card)] rounded-lg-custom shadow-soft-md border border-[var(--border-color)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 z-50">
           <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] bg-[#FCFBF9]">
-            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Notifications</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates12WorkspaceOverview.notificationsTitle')}</h3>
           </div>
           <div className="max-h-[300px] overflow-y-auto">
             {notifications.map((n) => (
@@ -643,6 +651,7 @@ const NotificationDropdown = () => {
 };
 
 const HeaderUserMenu = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -665,13 +674,13 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
           </div>
           <div className="p-1.5">
             <button onClick={() => { setActiveRoute('sessions'); setIsOpen(false); }} className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> Security & Sessions
+              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> {t('templates12WorkspaceOverview.navSecuritySessions')}
             </button>
           </div>
           <div className="h-[1px] bg-[var(--border-color)]/50 mx-1.5" />
           <div className="p-1.5">
             <button className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] transition-colors flex items-center gap-2 font-medium">
-              <LogOut className="w-4 h-4" /> Sign out
+              <LogOut className="w-4 h-4" /> {t('templates12WorkspaceOverview.signOut')}
             </button>
           </div>
         </div>
@@ -681,9 +690,11 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
 };
 
 const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: any) => {
+  const t = useT();
   // If the route is a detail route like "workspace-details", show custom label.
-  let routeLabel = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label;
-  if (activeRoute === 'workspace-details') routeLabel = 'Workspaces / Overview';
+  const navItem = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute);
+  let routeLabel = navItem ? t(navItem.labelKey) : undefined;
+  if (activeRoute === 'workspace-details') routeLabel = t('templates12WorkspaceOverview.workspacesOverviewBreadcrumb');
   else if (!routeLabel) routeLabel = activeRoute;
 
   return (
@@ -693,7 +704,7 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
           <Menu className="w-5 h-5" />
         </button>
         <div className="hidden sm:flex items-center text-sm font-medium">
-          <span className="text-[var(--text-secondary)]">Platform</span>
+          <span className="text-[var(--text-secondary)]">{t('templates12WorkspaceOverview.breadcrumbPlatform')}</span>
           <ChevronRight className="w-4 h-4 mx-2 text-[var(--border-color)] shrink-0 opacity-50" />
           <span className="text-[var(--text-primary)] capitalize">{routeLabel}</span>
         </div>
@@ -704,9 +715,9 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
         <div className="hidden sm:flex items-center gap-2">
            <div className="relative group hidden lg:block">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-[var(--text-secondary)] group-focus-within:text-[var(--primary-gold)] transition-colors" />
-              <input type="text" placeholder="Search..." className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
+              <input type="text" placeholder={t('templates12WorkspaceOverview.headerSearchPlaceholder')} className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
             </div>
-            <Button variant="outline" size="sm" className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> Workspace</Button>
+            <Button variant="outline" size="sm" className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> {t('templates12WorkspaceOverview.btnAddWorkspaceShort')}</Button>
         </div>
         <NotificationDropdown />
         <HeaderUserMenu setActiveRoute={setActiveRoute} />
@@ -730,6 +741,7 @@ const SidebarTooltip = ({  children, content, isCollapsed  }: any) => {
 };
 
 const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, setIsCollapsed  }: any) => {
+  const t = useT();
   const collapsed = isCollapsed && !isMobile;
   // If activeRoute is workspace-details, keep "Workspaces" highlighted.
   const currentHighlight = activeRoute === 'workspace-details' ? 'workspaces' : activeRoute;
@@ -746,7 +758,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
         {!collapsed && (
           <div className="flex flex-col overflow-hidden animate-in fade-in duration-300">
             <span className="font-serif text-[17px] leading-none font-semibold text-[var(--text-primary)] tracking-wide">Kaori</span>
-            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">Platform</span>
+            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">{t('templates12WorkspaceOverview.breadcrumbPlatform')}</span>
           </div>
         )}
       </div>
@@ -755,7 +767,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
         {NAVIGATION_CONFIG.map((group, idx) => (
           <div key={idx} className="flex flex-col">
             {!collapsed ? (
-              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{group.group}</div>
+              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{t(group.groupKey)}</div>
             ) : (
               <div className="w-full h-[1px] bg-[var(--border-color)]/60 my-2 rounded-full" />
             )}
@@ -764,7 +776,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
                 const isActive = currentHighlight === item.id;
                 const Icon = item.icon;
                 return (
-                  <SidebarTooltip key={item.id} content={item.label} isCollapsed={collapsed}>
+                  <SidebarTooltip key={item.id} content={t(item.labelKey)} isCollapsed={collapsed}>
                     <button
                       onClick={() => setActiveRoute(item.id)}
                       className={cn(
@@ -775,7 +787,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
                     >
                       {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[var(--primary-gold)] rounded-r-md transition-all" />}
                       <Icon className={`shrink-0 transition-colors ${isActive ? 'text-[var(--primary-gold)] w-5 h-5' : 'w-[18px] h-[18px] group-hover:text-[var(--text-primary)]'}`} />
-                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{item.label}</span>}
+                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{t(item.labelKey)}</span>}
                       {!collapsed && item.badge && (
                         <span className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[var(--primary-gold)] text-white text-[10px] font-bold shadow-sm ml-2">
                           {item.badge}
@@ -800,7 +812,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
             className={cn("w-full flex items-center h-8 rounded-md-custom text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors border border-transparent hover:border-[var(--border-color)]/50", collapsed ? 'justify-center' : 'px-3 gap-3')}
           >
             {collapsed ? <PanelLeftOpen className="w-[18px] h-[18px]" /> : <PanelLeftClose className="w-[18px] h-[18px]" />}
-            {!collapsed && <span className="text-xs font-medium">Collapse sidebar</span>}
+            {!collapsed && <span className="text-xs font-medium">{t('templates12WorkspaceOverview.sidebarCollapse')}</span>}
           </button>
         )}
       </div>
@@ -815,20 +827,21 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
 
 // --- WORKSPACE OVERVIEW PAGE ---
 const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        showBack 
+      <PageHeader
+        showBack
         onBack={() => setActiveRoute('workspaces')}
-        title="Production AI" 
-        subtitle="ws_prod_01 • Main production environment for ML models" 
+        title="Production AI"
+        subtitle="ws_prod_01 • Main production environment for ML models"
         actions={
           <>
-            <Button variant="outline" className="hidden sm:flex"><Edit2 className="w-4 h-4 mr-2"/> Edit details</Button>
-            <Button variant="outline" className="hidden sm:flex"><Users className="w-4 h-4 mr-2"/> Manage members</Button>
+            <Button variant="outline" className="hidden sm:flex"><Edit2 className="w-4 h-4 mr-2"/> {t('templates12WorkspaceOverview.btnEditDetails')}</Button>
+            <Button variant="outline" className="hidden sm:flex"><Users className="w-4 h-4 mr-2"/> {t('templates12WorkspaceOverview.btnManageMembers')}</Button>
             <Button variant="tertiary" size="icon"><MoreVertical className="w-4 h-4" /></Button>
           </>
-        } 
+        }
       />
 
       {/* Summary Card */}
@@ -837,23 +850,23 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
            <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-[var(--primary-gold)]/5 to-transparent pointer-events-none" />
            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 relative z-10">
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Status</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates12WorkspaceOverview.statusLabel')}</p>
                 <Badge variant="operational" className="py-1">Active</Badge>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Plan</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates12WorkspaceOverview.planLabel')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">Enterprise</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Region</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates12WorkspaceOverview.regionLabel')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">US-East</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Created</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates12WorkspaceOverview.createdLabel')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">Oct 12, 2026</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Owner</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates12WorkspaceOverview.ownerLabel')}</p>
                 <div className="flex items-center gap-2">
                    <div className="w-5 h-5 rounded bg-[var(--bg-app)] border border-[var(--border-color)] flex items-center justify-center text-[10px] font-bold text-[var(--primary-gold)]">A</div>
                    <div className="text-sm font-medium text-[var(--text-primary)]">Admin User</div>
@@ -866,30 +879,30 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
       {/* Metrics */}
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="API Requests (Today)" value="124.5K" trend="+5.2%" isUp={true} />
-          <MetricCard title="Active Users" value="14" trend="0%" />
-          <MetricCard title="Error Rate" value="0.01%" trend="-0.04%" isUp={false} inverseGood={true} />
-          <MetricCard title="Storage Used" value="84 GB" trend="+2.1%" isUp={true} />
+          <MetricCard title={t('templates12WorkspaceOverview.apiRequestsToday')} value="124.5K" trend="+5.2%" isUp={true} />
+          <MetricCard title={t('templates12WorkspaceOverview.activeUsersLabel')} value="14" trend="0%" />
+          <MetricCard title={t('templates12WorkspaceOverview.errorRateLabel')} value="0.01%" trend="-0.04%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates12WorkspaceOverview.storageUsedLabel')} value="84 GB" trend="+2.1%" isUp={true} />
         </div>
       </Section>
 
       {/* Tabs System */}
       <Section>
         <Tabs defaultValue="overview" tabs={[
-          { 
-            id: 'overview', 
-            label: 'Overview', 
+          {
+            id: 'overview',
+            label: t('templates12WorkspaceOverview.tabOverview'),
             content: (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
                 {/* Left col - Recent Activity */}
                 <div className="lg:col-span-2 space-y-4">
                   <div className="flex items-center justify-between">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Recent Activity</h3>
-                     <Button variant="tertiary" size="sm">View all</Button>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates12WorkspaceOverview.recentActivity')}</h3>
+                     <Button variant="tertiary" size="sm">{t('templates12WorkspaceOverview.viewAll')}</Button>
                   </div>
-                  <DataTable 
+                  <DataTable
                     pagination={false}
-                    columns={["Event", "Actor", "Time"]}
+                    columns={[t('templates12WorkspaceOverview.colEvent'), t('templates12WorkspaceOverview.colActor'), t('templates12WorkspaceOverview.colTime')]}
                     data={[
                       ["Billing updated to Enterprise", "Admin User", "2 days ago"],
                       ["API Key 'Prod Token' generated", "System", "Oct 18, 2026"],
@@ -902,28 +915,28 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
                 {/* Right col - Alerts & Quick Actions */}
                 <div className="space-y-6 sm:space-y-8">
                    <div className="space-y-4">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Alerts</h3>
-                     <Alert variant="success" title="Healthy">No issues detected for this workspace.</Alert>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates12WorkspaceOverview.alertsLabel')}</h3>
+                     <Alert variant="success" title={t('templates12WorkspaceOverview.alertHealthyTitle')}>{t('templates12WorkspaceOverview.alertHealthyBody')}</Alert>
                    </div>
-                   
+
                    <div className="space-y-4">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Quick Actions</h3>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates12WorkspaceOverview.quickActionsLabel')}</h3>
                      <div className="bg-[var(--bg-card)] rounded-md-custom border border-[var(--border-color)] p-4 shadow-soft-sm flex flex-col gap-2">
-                        <Button variant="outline" className="w-full justify-start"><Key className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> Generate API Key</Button>
-                        <Button variant="outline" className="w-full justify-start"><UserPlus className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> Invite User</Button>
-                        <Button variant="outline" className="w-full justify-start"><CreditCard className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> Upgrade Plan</Button>
+                        <Button variant="outline" className="w-full justify-start"><Key className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> {t('templates12WorkspaceOverview.btnGenerateApiKey')}</Button>
+                        <Button variant="outline" className="w-full justify-start"><UserPlus className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> {t('templates12WorkspaceOverview.btnInviteUser')}</Button>
+                        <Button variant="outline" className="w-full justify-start"><CreditCard className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> {t('templates12WorkspaceOverview.btnUpgradePlan')}</Button>
                      </div>
                    </div>
                 </div>
               </div>
             )
           },
-          { 
-            id: 'activity', 
-            label: 'Activity', 
+          {
+            id: 'activity',
+            label: t('templates12WorkspaceOverview.tabActivity'),
             content: (
-               <DataTable 
-                columns={["Event", "Resource", "Actor", "Time"]}
+               <DataTable
+                columns={[t('templates12WorkspaceOverview.colEvent'), t('templates12WorkspaceOverview.colResource'), t('templates12WorkspaceOverview.colActor'), t('templates12WorkspaceOverview.colTime')]}
                 data={[
                   ["Billing updated", "Plan: Enterprise", "Admin User", "2 days ago"],
                   ["Key generated", "Prod Token", "System", "Oct 18, 2026"],
@@ -934,9 +947,9 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
               />
             )
           },
-          { 
-            id: 'usage', 
-            label: 'Usage', 
+          {
+            id: 'usage',
+            label: t('templates12WorkspaceOverview.tabUsage'),
             content: (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="p-6">
@@ -945,12 +958,12 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
                       <Zap className="w-5 h-5 text-[var(--text-secondary)]" />
                     </div>
                     <div>
-                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">API Calls</h3>
-                       <p className="text-xs text-[var(--text-secondary)]">Last 30 days</p>
+                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates12WorkspaceOverview.usageApiCallsTitle')}</h3>
+                       <p className="text-xs text-[var(--text-secondary)]">{t('templates12WorkspaceOverview.usageLast30Days')}</p>
                     </div>
                   </div>
                   <div className="text-3xl font-semibold text-[var(--text-primary)]">2.4M</div>
-                  <div className="text-sm text-[var(--text-secondary)] mt-2">12% of Enterprise Limit (20M)</div>
+                  <div className="text-sm text-[var(--text-secondary)] mt-2">{t('templates12WorkspaceOverview.usageApiCallsDetail')}</div>
                   <div className="w-full bg-[var(--bg-app)] rounded-full h-2 mt-4 border border-[var(--border-color)] overflow-hidden">
                      <div className="bg-[var(--primary-gold)] h-2 rounded-full" style={{width: '12%'}}></div>
                   </div>
@@ -961,12 +974,12 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
                       <Server className="w-5 h-5 text-[var(--text-secondary)]" />
                     </div>
                     <div>
-                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">Storage</h3>
-                       <p className="text-xs text-[var(--text-secondary)]">Current usage</p>
+                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates12WorkspaceOverview.usageStorageTitle')}</h3>
+                       <p className="text-xs text-[var(--text-secondary)]">{t('templates12WorkspaceOverview.usageCurrentUsage')}</p>
                     </div>
                   </div>
                   <div className="text-3xl font-semibold text-[var(--text-primary)]">84 GB</div>
-                  <div className="text-sm text-[var(--text-secondary)] mt-2">16% of Enterprise Limit (500 GB)</div>
+                  <div className="text-sm text-[var(--text-secondary)] mt-2">{t('templates12WorkspaceOverview.usageStorageDetail')}</div>
                   <div className="w-full bg-[var(--bg-app)] rounded-full h-2 mt-4 border border-[var(--border-color)] overflow-hidden">
                      <div className="bg-[#5C856A] h-2 rounded-full" style={{width: '16%'}}></div>
                   </div>
@@ -974,8 +987,8 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
               </div>
             )
           },
-          { id: 'keys', label: 'API Keys', content: <Alert variant="info" title="Keys">Manage API keys here.</Alert> },
-          { id: 'members', label: 'Members', content: <Alert variant="info" title="Members">Manage workspace members here.</Alert> }
+          { id: 'keys', label: t('templates12WorkspaceOverview.navApiKeys'), content: <Alert variant="info" title={t('templates12WorkspaceOverview.alertKeysTitle')}>{t('templates12WorkspaceOverview.alertKeysBody')}</Alert> },
+          { id: 'members', label: t('templates12WorkspaceOverview.tabMembers'), content: <Alert variant="info" title={t('templates12WorkspaceOverview.tabMembers')}>{t('templates12WorkspaceOverview.alertMembersBody')}</Alert> }
         ]} />
       </Section>
     </PageContainer>
@@ -992,6 +1005,7 @@ const MOCK_WORKSPACES = [
 ];
 
 const RowActionsDropdown = ({  workspaceId, onViewDetails  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
 
@@ -1017,20 +1031,20 @@ const RowActionsDropdown = ({  workspaceId, onViewDetails  }: any) => {
             onClick={() => { onViewDetails(); setIsOpen(false); }}
             className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors"
           >
-            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> View details
+            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates12WorkspaceOverview.btnViewDetails')}
           </button>
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Edit2 className="w-4 h-4 text-[var(--text-secondary)]"/> Edit workspace
+            <Edit2 className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates12WorkspaceOverview.btnEditWorkspace')}
           </button>
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Users className="w-4 h-4 text-[var(--text-secondary)]"/> Manage members
+            <Users className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates12WorkspaceOverview.btnManageMembers')}
           </button>
           <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2" />
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-warning)] hover:bg-[#FDF9F0] flex items-center gap-2 transition-colors font-medium">
-            <Ban className="w-4 h-4 opacity-80"/> Suspend
+            <Ban className="w-4 h-4 opacity-80"/> {t('templates12WorkspaceOverview.btnSuspend')}
           </button>
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] flex items-center gap-2 transition-colors font-medium">
-            <Trash2 className="w-4 h-4 opacity-80"/> Delete
+            <Trash2 className="w-4 h-4 opacity-80"/> {t('templates12WorkspaceOverview.btnDelete')}
           </button>
         </div>
       )}
@@ -1039,6 +1053,7 @@ const RowActionsDropdown = ({  workspaceId, onViewDetails  }: any) => {
 };
 
 const WorkspacesPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
   const [plan, setPlan] = useState('all');
@@ -1085,15 +1100,15 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Workspaces" 
-        subtitle="Manage all tenant environments and access." 
+      <PageHeader
+        title={t('templates12WorkspaceOverview.navWorkspaces')}
+        subtitle={t('templates12WorkspaceOverview.pageWorkspacesSubtitle')}
         actions={
           <>
-            <Button variant="outline" className="hidden sm:flex"><Search className="w-4 h-4 mr-2"/> Import</Button>
-            <Button onClick={() => setIsCreateOpen(true)}><Plus className="w-4 h-4 mr-2"/> Create workspace</Button>
+            <Button variant="outline" className="hidden sm:flex"><Search className="w-4 h-4 mr-2"/> {t('templates12WorkspaceOverview.btnImport')}</Button>
+            <Button onClick={() => setIsCreateOpen(true)}><Plus className="w-4 h-4 mr-2"/> {t('templates12WorkspaceOverview.btnCreateWorkspace')}</Button>
           </>
-        } 
+        }
       />
 
       <Section>
@@ -1103,72 +1118,72 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               className="h-10 w-full pl-9 pr-3 rounded-md-custom border border-[var(--border-color)] bg-white text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
-              placeholder="Search workspaces..."
+              placeholder={t('templates12WorkspaceOverview.searchWorkspacesPlaceholder')}
               value={search}
               onChange={(e: any) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex w-full sm:w-auto gap-3 shrink-0">
             <div className="w-full sm:w-36">
-              <Select 
-                value={status} 
-                onChange={setStatus} 
-                options={[{label: 'All Statuses', value: 'all'}, {label: 'Active', value: 'Active'}, {label: 'Suspended', value: 'Suspended'}]} 
-                placeholder="Status" 
+              <Select
+                value={status}
+                onChange={setStatus}
+                options={[{label: t('templates12WorkspaceOverview.filterAllStatuses'), value: 'all'}, {label: t('templates12WorkspaceOverview.statusActive'), value: 'Active'}, {label: t('templates12WorkspaceOverview.statusSuspended'), value: 'Suspended'}]}
+                placeholder={t('templates12WorkspaceOverview.statusLabel')}
               />
             </div>
             <div className="w-full sm:w-36">
-              <Select 
-                value={plan} 
-                onChange={setPlan} 
-                options={[{label: 'All Plans', value: 'all'}, {label: 'Free', value: 'Free'}, {label: 'Pro', value: 'Pro'}, {label: 'Enterprise', value: 'Enterprise'}]} 
-                placeholder="Plan" 
+              <Select
+                value={plan}
+                onChange={setPlan}
+                options={[{label: t('templates12WorkspaceOverview.filterAllPlans'), value: 'all'}, {label: t('templates12WorkspaceOverview.planFree'), value: 'Free'}, {label: t('templates12WorkspaceOverview.planPro'), value: 'Pro'}, {label: t('templates12WorkspaceOverview.planEnterprise'), value: 'Enterprise'}]}
+                placeholder={t('templates12WorkspaceOverview.planLabel')}
               />
             </div>
           </div>
           {(search || status !== 'all' || plan !== 'all') && (
-            <Button 
-              variant="tertiary" 
-              onClick={() => {setSearch(''); setStatus('all'); setPlan('all');}} 
+            <Button
+              variant="tertiary"
+              onClick={() => {setSearch(''); setStatus('all'); setPlan('all');}}
               className="px-3"
             >
-              Clear filters
+              {t('templates12WorkspaceOverview.btnClearFilters')}
             </Button>
           )}
         </div>
       </Section>
 
       <Section>
-        <DataTable 
-          columns={["Workspace", "Owner", "Plan", "Members", "Usage", "Status", "Created", ""]} 
-          data={mappedData} 
-          loading={isLoading} 
+        <DataTable
+          columns={[t('templates12WorkspaceOverview.colWorkspace'), t('templates12WorkspaceOverview.ownerLabel'), t('templates12WorkspaceOverview.planLabel'), t('templates12WorkspaceOverview.tabMembers'), t('templates12WorkspaceOverview.tabUsage'), t('templates12WorkspaceOverview.statusLabel'), t('templates12WorkspaceOverview.createdLabel'), ""]}
+          data={mappedData}
+          loading={isLoading}
         />
       </Section>
 
       {/* Create Workspace Modal */}
-      <Modal 
-        isOpen={isCreateOpen} 
+      <Modal
+        isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
-        title="Create Workspace"
-        description="Provision a new tenant environment."
+        title={t('templates12WorkspaceOverview.modalCreateWorkspaceTitle')}
+        description={t('templates12WorkspaceOverview.modalCreateWorkspaceDesc')}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
-            <Button onClick={() => setIsCreateOpen(false)}>Create Environment</Button>
+            <Button variant="outline" onClick={() => setIsCreateOpen(false)}>{t('templates12WorkspaceOverview.btnCancel')}</Button>
+            <Button onClick={() => setIsCreateOpen(false)}>{t('templates12WorkspaceOverview.btnCreateEnvironment')}</Button>
           </>
         }
       >
         <div className="space-y-4">
-          <Input label="Workspace Name" placeholder="e.g. Acme Corp Production" />
-          <Select 
-            label="Plan Tier" 
-            placeholder="Select plan..."
-            options={[{label: 'Free Tier', value: 'free'}, {label: 'Pro', value: 'pro'}, {label: 'Enterprise', value: 'enterprise'}]}
+          <Input label={t('templates12WorkspaceOverview.labelWorkspaceName')} placeholder={t('templates12WorkspaceOverview.placeholderWorkspaceNameExample')} />
+          <Select
+            label={t('templates12WorkspaceOverview.labelPlanTier')}
+            placeholder={t('templates12WorkspaceOverview.placeholderSelectPlan')}
+            options={[{label: t('templates12WorkspaceOverview.planFreeTier'), value: 'free'}, {label: t('templates12WorkspaceOverview.planPro'), value: 'pro'}, {label: t('templates12WorkspaceOverview.planEnterprise'), value: 'enterprise'}]}
             value="free"
             onChange={() => {}}
           />
-          <Input label="Admin Email" placeholder="owner@company.com" helperText="An invitation will be sent to this email." />
+          <Input label={t('templates12WorkspaceOverview.labelAdminEmail')} placeholder="owner@company.com" helperText={t('templates12WorkspaceOverview.helperAdminEmailInvite')} />
         </div>
       </Modal>
 
@@ -1178,49 +1193,51 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
 
 // --- REMAINING PREVIOUS PAGES ---
 const ComponentsPage = () => {
+  const t = useT();
   const [date, setDate] = useState("");
   const [selectVal, setSelectVal] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  
+
   return (
     <PageContainer maxWidth="default">
-      <PageHeader title="Component Library" subtitle="Foundational UI system for Kaori Platform following strict design tokens." actions={<Button>Deploy System</Button>} />
+      <PageHeader title={t('templates12WorkspaceOverview.navComponentLibrary')} subtitle={t('templates12WorkspaceOverview.pageComponentLibrarySubtitle')} actions={<Button>{t('templates12WorkspaceOverview.btnDeploySystem')}</Button>} />
       <Tabs defaultValue="form" tabs={[
-        { id: 'form', label: 'Forms & Inputs', content: (
+        { id: 'form', label: t('templates12WorkspaceOverview.tabFormsInputs'), content: (
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <Section title="Buttons" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)]">
-               <div className="flex flex-wrap gap-4 mb-4"><Button variant="primary">Primary</Button><Button variant="secondary">Secondary</Button><Button variant="tertiary">Ghost</Button></div>
-               <div className="flex flex-wrap gap-4 items-center"><Button variant="primary" isLoading>Loading</Button><Button variant="destructive">Destructive</Button><Button variant="primary" size="icon"><Plus className="w-4 h-4"/></Button></div>
+             <Section title={t('templates12WorkspaceOverview.sectionButtons')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)]">
+               <div className="flex flex-wrap gap-4 mb-4"><Button variant="primary">{t('templates12WorkspaceOverview.btnPrimary')}</Button><Button variant="secondary">{t('templates12WorkspaceOverview.btnSecondary')}</Button><Button variant="tertiary">{t('templates12WorkspaceOverview.btnGhost')}</Button></div>
+               <div className="flex flex-wrap gap-4 items-center"><Button variant="primary" isLoading>{t('templates12WorkspaceOverview.btnLoading')}</Button><Button variant="destructive">{t('templates12WorkspaceOverview.btnDestructive')}</Button><Button variant="primary" size="icon"><Plus className="w-4 h-4"/></Button></div>
              </Section>
-             <Section title="Inputs & Selects" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] space-y-4">
-                <Input label="Email Address" placeholder="admin@kaori.io" helperText="We will never share your email." />
-                <Select label="Environment" placeholder="Select environment..." options={[{label: 'Production', value: 'prod'}]} value={selectVal} onChange={setSelectVal} />
+             <Section title={t('templates12WorkspaceOverview.sectionInputsSelects')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] space-y-4">
+                <Input label={t('templates12WorkspaceOverview.labelEmailAddress')} placeholder="admin@kaori.io" helperText={t('templates12WorkspaceOverview.helperNeverShareEmail')} />
+                <Select label={t('templates12WorkspaceOverview.labelEnvironment')} placeholder={t('templates12WorkspaceOverview.placeholderSelectEnvironment')} options={[{label: t('templates12WorkspaceOverview.envProductionOption'), value: 'prod'}]} value={selectVal} onChange={setSelectVal} />
              </Section>
            </div>
         )},
-        { id: 'data', label: 'Data Display', content: ( <Alert variant="info" title="Data Components">Use Data Tables & Metric Cards for display.</Alert> )},
-        { id: 'feedback', label: 'Feedback & Overlays', content: ( <Alert variant="info" title="Feedback Components">Modals, Drawers and Alerts provide user feedback.</Alert> )}
+        { id: 'data', label: t('templates12WorkspaceOverview.tabDataDisplay'), content: ( <Alert variant="info" title={t('templates12WorkspaceOverview.alertDataComponentsTitle')}>{t('templates12WorkspaceOverview.alertDataComponentsBody')}</Alert> )},
+        { id: 'feedback', label: t('templates12WorkspaceOverview.tabFeedbackOverlays'), content: ( <Alert variant="info" title={t('templates12WorkspaceOverview.alertFeedbackComponentsTitle')}>{t('templates12WorkspaceOverview.alertFeedbackComponentsBody')}</Alert> )}
       ]} />
     </PageContainer>
   );
 };
 
 const PlatformOverview = () => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader title="Platform Overview" subtitle="Monitor system health, usage, and recent activity." actions={<Button variant="outline"><RefreshCw className="w-4 h-4 mr-2" /> Refresh Data</Button>} />
+      <PageHeader title={t('templates12WorkspaceOverview.pagePlatformOverviewTitle')} subtitle={t('templates12WorkspaceOverview.pagePlatformOverviewSubtitle')} actions={<Button variant="outline"><RefreshCw className="w-4 h-4 mr-2" /> {t('templates12WorkspaceOverview.btnRefreshData')}</Button>} />
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="Total Workspaces" value="124" trend="+4" isUp={true} />
-          <MetricCard title="Active Users" value="1,892" trend="+12.5%" isUp={true} />
-          <MetricCard title="API Requests" value="2.4M" trend="+5.2%" isUp={true} />
-          <MetricCard title="Failed Requests" value="482" trend="-18%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates12WorkspaceOverview.totalWorkspacesLabel')} value="124" trend="+4" isUp={true} />
+          <MetricCard title={t('templates12WorkspaceOverview.activeUsersLabel')} value="1,892" trend="+12.5%" isUp={true} />
+          <MetricCard title={t('templates12WorkspaceOverview.apiRequestsLabel')} value="2.4M" trend="+5.2%" isUp={true} />
+          <MetricCard title={t('templates12WorkspaceOverview.failedRequestsLabel')} value="482" trend="-18%" isUp={false} inverseGood={true} />
         </div>
       </Section>
-      <Section title="Recent Activity">
-         <DataTable 
-            columns={["Event", "Workspace", "Time"]}
+      <Section title={t('templates12WorkspaceOverview.recentActivity')}>
+         <DataTable
+            columns={[t('templates12WorkspaceOverview.colEvent'), t('templates12WorkspaceOverview.colWorkspace'), t('templates12WorkspaceOverview.colTime')]}
             data={[
               ["API Key Generated", "Production AI", "2 mins ago"],
               ["Workspace Created", "Staging Env", "1 hour ago"],
@@ -1234,14 +1251,15 @@ const PlatformOverview = () => {
 };
 
 const SessionsPage = () => {
+  const t = useT();
   return (
     <PageContainer maxWidth="narrow">
-      <PageHeader title="Active Sessions" subtitle="Manage devices where your account is currently signed in." actions={<Button variant="outline">Sign out all</Button>} />
-      <Section title="Security & Sessions">
+      <PageHeader title={t('templates12WorkspaceOverview.pageActiveSessionsTitle')} subtitle={t('templates12WorkspaceOverview.pageActiveSessionsSubtitle')} actions={<Button variant="outline">{t('templates12WorkspaceOverview.btnSignOutAll')}</Button>} />
+      <Section title={t('templates12WorkspaceOverview.navSecuritySessions')}>
         <Card className="p-8 text-center flex flex-col items-center">
           <Shield className="w-8 h-8 text-[var(--text-secondary)] mb-3" />
-          <h3 className="text-sm font-medium text-[var(--text-primary)]">Security & Sessions</h3>
-          <p className="text-xs text-[var(--text-secondary)] mt-1">Manage active logins here.</p>
+          <h3 className="text-sm font-medium text-[var(--text-primary)]">{t('templates12WorkspaceOverview.navSecuritySessions')}</h3>
+          <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates12WorkspaceOverview.cardManageLoginsHere')}</p>
         </Card>
       </Section>
     </PageContainer>

@@ -1,0 +1,247 @@
+{
+  "templatesFnew40StrategyOkr.statusOnTrack": {
+    "vi": "On-track",
+    "en": "On track",
+    "ja": "順調",
+    "ko": "정상 진행",
+    "zh": "进度正常"
+  },
+  "templatesFnew40StrategyOkr.statusAtRisk": {
+    "vi": "At-risk",
+    "en": "At risk",
+    "ja": "リスクあり",
+    "ko": "위험",
+    "zh": "有风险"
+  },
+  "templatesFnew40StrategyOkr.statusOffTrack": {
+    "vi": "Off-track",
+    "en": "Off track",
+    "ja": "遅延",
+    "ko": "지연",
+    "zh": "偏离目标"
+  },
+  "templatesFnew40StrategyOkr.pageTitle": {
+    "vi": "OKR",
+    "en": "OKR",
+    "ja": "OKR",
+    "ko": "OKR",
+    "zh": "OKR"
+  },
+  "templatesFnew40StrategyOkr.pageDescription": {
+    "vi": "Objective + Key Results theo quý. Status tự suy ra từ KR progress.",
+    "en": "Objective + Key Results by quarter. Status is auto-derived from KR progress.",
+    "ja": "四半期ごとのObjective + Key Results。ステータスはKRの進捗から自動判定されます。",
+    "ko": "분기별 Objective + Key Results. 상태는 KR 진행률로 자동 산출됩니다.",
+    "zh": "按季度的 Objective + Key Results。状态由 KR 进度自动推导。"
+  },
+  "templatesFnew40StrategyOkr.btnOverview": {
+    "vi": "Tổng quan",
+    "en": "Overview",
+    "ja": "概要",
+    "ko": "개요",
+    "zh": "概览"
+  },
+  "templatesFnew40StrategyOkr.btnAddObjective": {
+    "vi": "Thêm Objective",
+    "en": "Add Objective",
+    "ja": "Objectiveを追加",
+    "ko": "Objective 추가",
+    "zh": "添加 Objective"
+  },
+  "templatesFnew40StrategyOkr.quarterLabel": {
+    "vi": "Quý",
+    "en": "Quarter",
+    "ja": "四半期",
+    "ko": "분기",
+    "zh": "季度"
+  },
+  "templatesFnew40StrategyOkr.emptyState": {
+    "vi": "Chưa có Objective nào trong {quarter}. Thêm Objective đầu tiên để bắt đầu.",
+    "en": "No Objectives yet in {quarter}. Add the first one to get started.",
+    "ja": "{quarter}にはまだObjectiveがありません。最初のObjectiveを追加して始めましょう。",
+    "ko": "{quarter}에 아직 Objective가 없습니다. 첫 Objective를 추가해 시작하세요.",
+    "zh": "{quarter} 内还没有 Objective。添加第一个 Objective 开始吧。"
+  },
+  "templatesFnew40StrategyOkr.confirmDelete": {
+    "vi": "Xoá Objective \"{title}\"? Bản ghi sẽ bị soft-delete (audit vẫn còn).",
+    "en": "Delete Objective \"{title}\"? The record will be soft-deleted (audit trail is kept).",
+    "ja": "Objective「{title}」を削除しますか？レコードはソフトデリートされます（監査ログは保持）。",
+    "ko": "Objective \"{title}\"을(를) 삭제하시겠습니까? 레코드는 소프트 삭제되며 감사 기록은 유지됩니다.",
+    "zh": "删除 Objective「{title}」？记录将被软删除（审计记录保留）。"
+  },
+  "templatesFnew40StrategyOkr.deletedSuccess": {
+    "vi": "Đã xoá \"{title}\".",
+    "en": "Deleted \"{title}\".",
+    "ja": "「{title}」を削除しました。",
+    "ko": "\"{title}\"을(를) 삭제했습니다.",
+    "zh": "已删除「{title}」。"
+  },
+  "templatesFnew40StrategyOkr.createdSuccess": {
+    "vi": "Đã thêm Objective: {title}",
+    "en": "Added Objective: {title}",
+    "ja": "Objectiveを追加しました: {title}",
+    "ko": "Objective를 추가했습니다: {title}",
+    "zh": "已添加 Objective：{title}"
+  },
+  "templatesFnew40StrategyOkr.updatedSuccess": {
+    "vi": "Đã cập nhật: {title}",
+    "en": "Updated: {title}",
+    "ja": "更新しました: {title}",
+    "ko": "업데이트했습니다: {title}",
+    "zh": "已更新：{title}"
+  },
+  "templatesFnew40StrategyOkr.btnEdit": {
+    "vi": "Sửa",
+    "en": "Edit",
+    "ja": "編集",
+    "ko": "수정",
+    "zh": "编辑"
+  },
+  "templatesFnew40StrategyOkr.avgProgressLabel": {
+    "vi": "Tiến độ Objective trung bình",
+    "en": "Average Objective progress",
+    "ja": "Objective平均進捗",
+    "ko": "Objective 평균 진행률",
+    "zh": "Objective 平均进度"
+  },
+  "templatesFnew40StrategyOkr.modalTitleCreate": {
+    "vi": "Thêm Objective mới",
+    "en": "Add new Objective",
+    "ja": "新しいObjectiveを追加",
+    "ko": "새 Objective 추가",
+    "zh": "添加新 Objective"
+  },
+  "templatesFnew40StrategyOkr.modalTitleEdit": {
+    "vi": "Sửa Objective",
+    "en": "Edit Objective",
+    "ja": "Objectiveを編集",
+    "ko": "Objective 수정",
+    "zh": "编辑 Objective"
+  },
+  "templatesFnew40StrategyOkr.closeAria": {
+    "vi": "Đóng",
+    "en": "Close",
+    "ja": "閉じる",
+    "ko": "닫기",
+    "zh": "关闭"
+  },
+  "templatesFnew40StrategyOkr.objectiveNameLabel": {
+    "vi": "Tên Objective *",
+    "en": "Objective name *",
+    "ja": "Objective名 *",
+    "ko": "Objective 이름 *",
+    "zh": "Objective 名称 *"
+  },
+  "templatesFnew40StrategyOkr.objectiveNamePlaceholder": {
+    "vi": "Ví dụ: Tăng doanh thu mảng SME 5 tỷ/tháng",
+    "en": "Example: Grow SME segment revenue by 5 billion VND/month",
+    "ja": "例: SMEセグメントの売上を月5十億VND増やす",
+    "ko": "예: SME 부문 매출을 월 50억 VND 증가",
+    "zh": "示例：SME 板块营收每月增长 50 亿越南盾"
+  },
+  "templatesFnew40StrategyOkr.quarterFieldLabel": {
+    "vi": "Quý *",
+    "en": "Quarter *",
+    "ja": "四半期 *",
+    "ko": "분기 *",
+    "zh": "季度 *"
+  },
+  "templatesFnew40StrategyOkr.ownerLabel": {
+    "vi": "Owner (UUID enterprise_users — tuỳ chọn)",
+    "en": "Owner (enterprise_users UUID — optional)",
+    "ja": "オーナー（enterprise_users UUID — 任意）",
+    "ko": "담당자 (enterprise_users UUID — 선택)",
+    "zh": "负责人（enterprise_users UUID — 可选）"
+  },
+  "templatesFnew40StrategyOkr.keyResultsLabel": {
+    "vi": "Key Results ({count}/10)",
+    "en": "Key Results ({count}/10)",
+    "ja": "Key Results（{count}/10）",
+    "ko": "Key Results ({count}/10)",
+    "zh": "Key Results（{count}/10）"
+  },
+  "templatesFnew40StrategyOkr.btnAddKr": {
+    "vi": "Thêm KR",
+    "en": "Add KR",
+    "ja": "KRを追加",
+    "ko": "KR 추가",
+    "zh": "添加 KR"
+  },
+  "templatesFnew40StrategyOkr.krLabel": {
+    "vi": "KR {n}",
+    "en": "KR {n}",
+    "ja": "KR {n}",
+    "ko": "KR {n}",
+    "zh": "KR {n}"
+  },
+  "templatesFnew40StrategyOkr.btnRemoveKr": {
+    "vi": "Xoá",
+    "en": "Delete",
+    "ja": "削除",
+    "ko": "삭제",
+    "zh": "删除"
+  },
+  "templatesFnew40StrategyOkr.krDescLabel": {
+    "vi": "Mô tả KR",
+    "en": "KR description",
+    "ja": "KRの説明",
+    "ko": "KR 설명",
+    "zh": "KR 描述"
+  },
+  "templatesFnew40StrategyOkr.krDescPlaceholder": {
+    "vi": "Ví dụ: Số khách SME mới ký HĐ",
+    "en": "Example: Number of new SME customers signed",
+    "ja": "例: 新規契約したSME顧客数",
+    "ko": "예: 신규 계약한 SME 고객 수",
+    "zh": "示例：新签约的 SME 客户数"
+  },
+  "templatesFnew40StrategyOkr.unitLabel": {
+    "vi": "Đơn vị",
+    "en": "Unit",
+    "ja": "単位",
+    "ko": "단위",
+    "zh": "单位"
+  },
+  "templatesFnew40StrategyOkr.unitPlaceholder": {
+    "vi": "khách / VNĐ / %",
+    "en": "customer / VNĐ / %",
+    "ja": "顧客 / VNĐ / %",
+    "ko": "고객 / VNĐ / %",
+    "zh": "客户 / VNĐ / %"
+  },
+  "templatesFnew40StrategyOkr.targetLabel": {
+    "vi": "Target *",
+    "en": "Target *",
+    "ja": "目標値 *",
+    "ko": "목표값 *",
+    "zh": "目标值 *"
+  },
+  "templatesFnew40StrategyOkr.currentLabel": {
+    "vi": "Hiện tại",
+    "en": "Current",
+    "ja": "現在値",
+    "ko": "현재값",
+    "zh": "当前值"
+  },
+  "templatesFnew40StrategyOkr.btnCancel": {
+    "vi": "Huỷ",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "templatesFnew40StrategyOkr.btnCreateObjective": {
+    "vi": "Tạo Objective",
+    "en": "Create Objective",
+    "ja": "Objectiveを作成",
+    "ko": "Objective 생성",
+    "zh": "创建 Objective"
+  },
+  "templatesFnew40StrategyOkr.btnSaveChanges": {
+    "vi": "Lưu thay đổi",
+    "en": "Save changes",
+    "ja": "変更を保存",
+    "ko": "변경사항 저장",
+    "zh": "保存更改"
+  }
+}

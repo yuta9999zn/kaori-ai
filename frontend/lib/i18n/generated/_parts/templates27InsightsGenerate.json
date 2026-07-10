@@ -1,0 +1,394 @@
+{
+  "templates27InsightsGenerate.title": {
+    "vi": "Tạo insight mới",
+    "en": "Create new insight",
+    "ja": "新しいインサイトを作成",
+    "ko": "새 인사이트 만들기",
+    "zh": "创建新洞察"
+  },
+  "templates27InsightsGenerate.pageDescription": {
+    "vi": "Hỏi câu hỏi kinh doanh — Kaori chọn framework + chạy phân tích bằng Qwen 2.5 nội bộ.",
+    "en": "Ask a business question — Kaori picks the framework and runs the analysis with the internal Qwen 2.5.",
+    "ja": "ビジネスの質問をしてください — Kaoriがフレームワークを選び、内部Qwen 2.5で分析を実行します。",
+    "ko": "비즈니스 질문을 하세요 — Kaori가 프레임워크를 선택하고 내부 Qwen 2.5로 분석을 실행합니다.",
+    "zh": "提出业务问题——Kaori 将选择分析框架并使用内部 Qwen 2.5 运行分析。"
+  },
+  "templates27InsightsGenerate.btnBack": {
+    "vi": "Quay lại",
+    "en": "Back",
+    "ja": "戻る",
+    "ko": "뒤로",
+    "zh": "返回"
+  },
+  "templates27InsightsGenerate.btnNext": {
+    "vi": "Tiếp tục",
+    "en": "Continue",
+    "ja": "次へ",
+    "ko": "계속",
+    "zh": "继续"
+  },
+  "templates27InsightsGenerate.btnSubmit": {
+    "vi": "Tạo insight",
+    "en": "Create insight",
+    "ja": "インサイトを作成",
+    "ko": "인사이트 생성",
+    "zh": "创建洞察"
+  },
+  "templates27InsightsGenerate.stepSourceLabel": {
+    "vi": "Nguồn",
+    "en": "Source",
+    "ja": "ソース",
+    "ko": "소스",
+    "zh": "数据源"
+  },
+  "templates27InsightsGenerate.stepQuestionLabel": {
+    "vi": "Câu hỏi",
+    "en": "Question",
+    "ja": "質問",
+    "ko": "질문",
+    "zh": "问题"
+  },
+  "templates27InsightsGenerate.stepPrivacyLabel": {
+    "vi": "Quyền riêng tư",
+    "en": "Privacy",
+    "ja": "プライバシー",
+    "ko": "개인정보 보호",
+    "zh": "隐私"
+  },
+  "templates27InsightsGenerate.stepReviewLabel": {
+    "vi": "Xác nhận",
+    "en": "Confirm",
+    "ja": "確認",
+    "ko": "확인",
+    "zh": "确认"
+  },
+  "templates27InsightsGenerate.step1Title": {
+    "vi": "Bước 1 · Chọn nguồn dữ liệu",
+    "en": "Step 1 · Choose a data source",
+    "ja": "ステップ1・データソースを選択",
+    "ko": "1단계 · 데이터 소스 선택",
+    "zh": "第1步 · 选择数据源"
+  },
+  "templates27InsightsGenerate.step1Desc": {
+    "vi": "Insight tạo từ Gold feature đã aggregate hoặc pipeline đã chạy xong.",
+    "en": "Insights are generated from an aggregated Gold feature or a finished pipeline run.",
+    "ja": "インサイトは集計済みのGold featureか、完了したパイプライン実行から生成されます。",
+    "ko": "인사이트는 집계된 Gold feature 또는 완료된 파이프라인 실행에서 생성됩니다.",
+    "zh": "洞察由已聚合的 Gold feature 或已完成的管道运行生成。"
+  },
+  "templates27InsightsGenerate.tabGoldFeature": {
+    "vi": "Gold feature",
+    "en": "Gold feature",
+    "ja": "Gold feature",
+    "ko": "Gold feature",
+    "zh": "Gold feature"
+  },
+  "templates27InsightsGenerate.tabPipelineRun": {
+    "vi": "Pipeline đã chạy",
+    "en": "Finished pipeline",
+    "ja": "実行済みパイプライン",
+    "ko": "완료된 파이프라인",
+    "zh": "已运行的管道"
+  },
+  "templates27InsightsGenerate.emptyGoldFeatures": {
+    "vi": "Chưa có Gold feature nào. Hãy chạy pipeline trước để aggregator tạo feature.",
+    "en": "No Gold features yet. Run a pipeline first so the aggregator can build a feature.",
+    "ja": "まだGold featureがありません。先にパイプラインを実行してaggregatorにfeatureを作成させてください。",
+    "ko": "아직 Gold feature가 없습니다. 먼저 파이프라인을 실행하여 aggregator가 feature를 만들도록 하세요.",
+    "zh": "尚无 Gold feature。请先运行管道，让聚合器生成 feature。"
+  },
+  "templates27InsightsGenerate.updatedAt": {
+    "vi": "Cập nhật: {date}",
+    "en": "Updated: {date}",
+    "ja": "更新日時: {date}",
+    "ko": "업데이트: {date}",
+    "zh": "更新时间：{date}"
+  },
+  "templates27InsightsGenerate.badgeStale": {
+    "vi": "Stale > 24h",
+    "en": "Stale > 24h",
+    "ja": "24時間超経過",
+    "ko": "24시간 초과",
+    "zh": "超过24小时未更新"
+  },
+  "templates27InsightsGenerate.emptyPipelineRuns": {
+    "vi": "Chưa có pipeline nào chạy xong.",
+    "en": "No pipeline has finished running yet.",
+    "ja": "完了したパイプラインはまだありません。",
+    "ko": "아직 완료된 파이프라인이 없습니다.",
+    "zh": "尚无已完成运行的管道。"
+  },
+  "templates27InsightsGenerate.rowsSummary": {
+    "vi": "{count} hàng · {date}",
+    "en": "{count} rows · {date}",
+    "ja": "{count}行・{date}",
+    "ko": "{count}행 · {date}",
+    "zh": "{count} 行 · {date}"
+  },
+  "templates27InsightsGenerate.step2Title": {
+    "vi": "Bước 2 · Đặt câu hỏi",
+    "en": "Step 2 · Ask your question",
+    "ja": "ステップ2・質問を入力",
+    "ko": "2단계 · 질문 입력",
+    "zh": "第2步 · 提出问题"
+  },
+  "templates27InsightsGenerate.step2Desc": {
+    "vi": "1 câu hỏi = 1 khung phân tích (K-10). Bạn không thể chạy SWOT + Fishbone song song.",
+    "en": "1 question = 1 analysis framework (K-10). You can't run SWOT + Fishbone in parallel.",
+    "ja": "1つの質問=1つの分析フレームワーク（K-10）。SWOTとFishboneを並行して実行することはできません。",
+    "ko": "질문 1개 = 분석 프레임워크 1개(K-10). SWOT와 Fishbone을 동시에 실행할 수 없습니다.",
+    "zh": "1个问题 = 1个分析框架（K-10）。不能同时运行 SWOT 和 Fishbone。"
+  },
+  "templates27InsightsGenerate.questionLabel": {
+    "vi": "Câu hỏi kinh doanh",
+    "en": "Business question",
+    "ja": "ビジネスの質問",
+    "ko": "비즈니스 질문",
+    "zh": "业务问题"
+  },
+  "templates27InsightsGenerate.questionPlaceholder": {
+    "vi": "Ví dụ: Vì sao doanh thu khách VIP tháng 4 giảm 15%?",
+    "en": "Example: Why did VIP customer revenue drop 15% in April?",
+    "ja": "例：4月のVIP顧客の売上が15%減少した理由は？",
+    "ko": "예: 4월 VIP 고객 매출이 15% 감소한 이유는?",
+    "zh": "示例：为什么4月份VIP客户营收下降了15%？"
+  },
+  "templates27InsightsGenerate.questionHint": {
+    "vi": "Hãy viết bằng tiếng Việt tự nhiên. Tránh thuật ngữ \"ETL\", \"dtype\", \"inference\".",
+    "en": "Write in plain, natural language. Avoid jargon like \"ETL\", \"dtype\", \"inference\".",
+    "ja": "自然な言葉で書いてください。「ETL」「dtype」「inference」のような専門用語は避けてください。",
+    "ko": "자연스러운 일상 언어로 작성하세요. \"ETL\", \"dtype\", \"inference\" 같은 전문 용어는 피하세요.",
+    "zh": "请用自然、通俗的语言书写，避免使用「ETL」「dtype」「inference」等专业术语。"
+  },
+  "templates27InsightsGenerate.frameworkLabel": {
+    "vi": "Khung phân tích",
+    "en": "Analysis framework",
+    "ja": "分析フレームワーク",
+    "ko": "분석 프레임워크",
+    "zh": "分析框架"
+  },
+  "templates27InsightsGenerate.frameworkHint": {
+    "vi": "Chọn 1 khung — Kaori sẽ chạy theo cấu trúc khung đó.",
+    "en": "Pick 1 framework — Kaori will run the analysis using its structure.",
+    "ja": "1つのフレームワークを選択してください — Kaoriはその構造に沿って分析を実行します。",
+    "ko": "프레임워크 1개를 선택하세요 — Kaori가 해당 구조에 따라 분석을 실행합니다.",
+    "zh": "选择1个框架——Kaori 将按照该框架结构运行分析。"
+  },
+  "templates27InsightsGenerate.frameworkFreeTitle": {
+    "vi": "Tự do",
+    "en": "Free-form",
+    "ja": "自由形式",
+    "ko": "자유 형식",
+    "zh": "自由形式"
+  },
+  "templates27InsightsGenerate.frameworkFreeDesc": {
+    "vi": "AI chọn cách phân tích phù hợp nhất với câu hỏi",
+    "en": "AI picks the analysis approach that best fits the question",
+    "ja": "AIが質問に最も適した分析方法を選択します",
+    "ko": "AI가 질문에 가장 적합한 분석 방식을 선택합니다",
+    "zh": "由 AI 选择最适合该问题的分析方式"
+  },
+  "templates27InsightsGenerate.framework2hDesc": {
+    "vi": "How · How much (deep dive định lượng)",
+    "en": "How · How much (quantitative deep dive)",
+    "ja": "How・How much（定量的なディープダイブ）",
+    "ko": "How · How much(정량적 딥다이브)",
+    "zh": "How · How much（定量深挖分析）"
+  },
+  "templates27InsightsGenerate.frameworkFishboneDesc": {
+    "vi": "Ishikawa — root-cause cho dị thường",
+    "en": "Ishikawa — root-cause analysis for anomalies",
+    "ja": "石川図（Ishikawa）— 異常値の根本原因分析",
+    "ko": "이시카와(Ishikawa) — 이상치에 대한 근본 원인 분석",
+    "zh": "石川图（Ishikawa）——异常情况根因分析"
+  },
+  "templates27InsightsGenerate.frameworkMomDesc": {
+    "vi": "So sánh tháng-trên-tháng",
+    "en": "Month-over-month comparison",
+    "ja": "月次比較（前月比）",
+    "ko": "전월 대비 비교",
+    "zh": "环比（月对月）比较"
+  },
+  "templates27InsightsGenerate.frameworkYoyDesc": {
+    "vi": "So sánh năm-trên-năm",
+    "en": "Year-over-year comparison",
+    "ja": "年次比較（前年比）",
+    "ko": "전년 대비 비교",
+    "zh": "同比（年对年）比较"
+  },
+  "templates27InsightsGenerate.step3Title": {
+    "vi": "Bước 3 · Quyền riêng tư",
+    "en": "Step 3 · Privacy",
+    "ja": "ステップ3・プライバシー",
+    "ko": "3단계 · 개인정보 보호",
+    "zh": "第3步 · 隐私"
+  },
+  "templates27InsightsGenerate.step3Desc": {
+    "vi": "Chọn nơi chạy LLM. Mặc định: Qwen 2.5 nội bộ — không gửi dữ liệu ra ngoài.",
+    "en": "Choose where the LLM runs. Default: internal Qwen 2.5 — no data leaves the system.",
+    "ja": "LLMの実行場所を選択してください。デフォルト：内部Qwen 2.5 — データは外部に送信されません。",
+    "ko": "LLM 실행 위치를 선택하세요. 기본값: 내부 Qwen 2.5 — 데이터가 외부로 전송되지 않습니다.",
+    "zh": "选择 LLM 运行位置。默认：内部 Qwen 2.5——数据不会外传。"
+  },
+  "templates27InsightsGenerate.qwenTitle": {
+    "vi": "Qwen 2.5 nội bộ",
+    "en": "Internal Qwen 2.5",
+    "ja": "内部Qwen 2.5",
+    "ko": "내부 Qwen 2.5",
+    "zh": "内部 Qwen 2.5"
+  },
+  "templates27InsightsGenerate.badgeRecommended": {
+    "vi": "Khuyến nghị",
+    "en": "Recommended",
+    "ja": "推奨",
+    "ko": "권장",
+    "zh": "推荐"
+  },
+  "templates27InsightsGenerate.qwenDesc": {
+    "vi": "Toàn bộ dữ liệu giữ trong Kaori — không gửi ra ngoài. Phù hợp với mọi câu hỏi kinh doanh thông thường.",
+    "en": "All data stays inside Kaori — nothing is sent externally. Suitable for any typical business question.",
+    "ja": "すべてのデータはKaori内部に保持され、外部には送信されません。通常のビジネス質問全般に適しています。",
+    "ko": "모든 데이터는 Kaori 내부에 보관되며 외부로 전송되지 않습니다. 일반적인 모든 비즈니스 질문에 적합합니다.",
+    "zh": "所有数据保留在 Kaori 内部——不会外传，适用于任何常规业务问题。"
+  },
+  "templates27InsightsGenerate.qwenBenefit1": {
+    "vi": "0₫ chi phí AI bên ngoài",
+    "en": "0₫ external AI cost",
+    "ja": "外部AIコスト0₫",
+    "ko": "외부 AI 비용 0₫",
+    "zh": "外部 AI 费用为 0₫"
+  },
+  "templates27InsightsGenerate.qwenBenefit2": {
+    "vi": "Không ảnh hưởng quota external AI",
+    "en": "Doesn't affect the external AI quota",
+    "ja": "外部AIのクォータに影響しません",
+    "ko": "외부 AI 할당량에 영향을 주지 않습니다",
+    "zh": "不影响外部 AI 配额"
+  },
+  "templates27InsightsGenerate.qwenBenefit3": {
+    "vi": "An toàn cho dữ liệu khách hàng cuối",
+    "en": "Safe for end-customer data",
+    "ja": "エンドカスタマーデータにも安全",
+    "ko": "최종 고객 데이터에도 안전합니다",
+    "zh": "对最终客户数据安全"
+  },
+  "templates27InsightsGenerate.externalTitle": {
+    "vi": "AI bên ngoài (Claude / GPT-4o)",
+    "en": "External AI (Claude / GPT-4o)",
+    "ja": "外部AI（Claude / GPT-4o）",
+    "ko": "외부 AI(Claude / GPT-4o)",
+    "zh": "外部 AI（Claude / GPT-4o）"
+  },
+  "templates27InsightsGenerate.badgeConsentRequired": {
+    "vi": "Cần đồng ý",
+    "en": "Consent required",
+    "ja": "同意が必要",
+    "ko": "동의 필요",
+    "zh": "需要同意"
+  },
+  "templates27InsightsGenerate.externalDescPre": {
+    "vi": "Câu hỏi phức tạp đôi khi cần model mạnh hơn. Kaori sẽ",
+    "en": "Complex questions sometimes need a stronger model. Kaori will",
+    "ja": "複雑な質問には、より強力なモデルが必要な場合があります。Kaoriは",
+    "ko": "복잡한 질문에는 더 강력한 모델이 필요할 때가 있습니다. Kaori는",
+    "zh": "复杂问题有时需要更强的模型。Kaori 会先进行"
+  },
+  "templates27InsightsGenerate.externalDescMid": {
+    "vi": "trước",
+    "en": "before sending",
+    "ja": "を行った後に送信します",
+    "ko": "적용 후 전송합니다",
+    "zh": "，再发送"
+  },
+  "templates27InsightsGenerate.externalDescPhone": {
+    "vi": "SĐT",
+    "en": "phone",
+    "ja": "電話番号",
+    "ko": "전화번호",
+    "zh": "电话"
+  },
+  "templates27InsightsGenerate.externalRisk1": {
+    "vi": "Trừ vào quota external AI tháng này",
+    "en": "Deducted from this month's external AI quota",
+    "ja": "今月の外部AIクォータから差し引かれます",
+    "ko": "이번 달 외부 AI 할당량에서 차감됩니다",
+    "zh": "将从本月外部 AI 配额中扣除"
+  },
+  "templates27InsightsGenerate.externalRisk2": {
+    "vi": "Mỗi lần gọi đều ghi audit log (K-6)",
+    "en": "Every call is recorded in the audit log (K-6)",
+    "ja": "呼び出しのたびに監査ログに記録されます（K-6）",
+    "ko": "호출할 때마다 감사 로그에 기록됩니다(K-6)",
+    "zh": "每次调用都会记录到审计日志（K-6）"
+  },
+  "templates27InsightsGenerate.externalRisk3Pre": {
+    "vi": "Không khả dụng nếu workspace ở chế độ",
+    "en": "Unavailable if the workspace is in",
+    "ja": "ワークスペースが次のモードの場合は利用できません：",
+    "ko": "워크스페이스가 다음 모드일 경우 사용할 수 없습니다:",
+    "zh": "如果工作区处于以下模式，则不可用："
+  },
+  "templates27InsightsGenerate.footerPre": {
+    "vi": "Mọi cuộc gọi LLM đều đi qua",
+    "en": "Every LLM call goes through",
+    "ja": "すべてのLLM呼び出しは",
+    "ko": "모든 LLM 호출은",
+    "zh": "所有 LLM 调用都经过"
+  },
+  "templates27InsightsGenerate.footerPost": {
+    "vi": "Kaori không bao giờ gọi SDK trực tiếp — đảm bảo cost governance + consent enforcement tại biên duy nhất.",
+    "en": "Kaori never calls the SDK directly — ensuring cost governance + consent enforcement at a single boundary.",
+    "ja": "を経由します（K-3）。Kaoriは決してSDKを直接呼び出しません — コストガバナンスと同意の適用を単一の境界で保証します。",
+    "ko": "를 거칩니다(K-3). Kaori는 SDK를 직접 호출하지 않습니다 — 단일 경계에서 비용 거버넌스와 동의 적용을 보장합니다.",
+    "zh": "（K-3）。Kaori 从不直接调用 SDK——在唯一边界处确保成本治理与同意执行。"
+  },
+  "templates27InsightsGenerate.step4Title": {
+    "vi": "Bước 4 · Xác nhận",
+    "en": "Step 4 · Confirm",
+    "ja": "ステップ4・確認",
+    "ko": "4단계 · 확인",
+    "zh": "第4步 · 确认"
+  },
+  "templates27InsightsGenerate.step4Desc": {
+    "vi": "Kiểm tra rồi dispatch — Kaori sẽ chạy trong nền và mở insight ngay khi xong.",
+    "en": "Review then dispatch — Kaori will run in the background and open the insight as soon as it's ready.",
+    "ja": "確認して送信してください — Kaoriがバックグラウンドで実行し、完了次第インサイトを開きます。",
+    "ko": "검토 후 전송하세요 — Kaori가 백그라운드에서 실행하고 완료되면 바로 인사이트를 엽니다.",
+    "zh": "检查后提交——Kaori 将在后台运行，完成后立即打开洞察。"
+  },
+  "templates27InsightsGenerate.labelSource": {
+    "vi": "Nguồn",
+    "en": "Source",
+    "ja": "ソース",
+    "ko": "소스",
+    "zh": "数据源"
+  },
+  "templates27InsightsGenerate.labelQuestion": {
+    "vi": "Câu hỏi",
+    "en": "Question",
+    "ja": "質問",
+    "ko": "질문",
+    "zh": "问题"
+  },
+  "templates27InsightsGenerate.reviewExternalConsented": {
+    "vi": "AI bên ngoài (đã đồng ý)",
+    "en": "External AI (consented)",
+    "ja": "外部AI（同意済み）",
+    "ko": "외부 AI(동의함)",
+    "zh": "外部 AI（已同意）"
+  },
+  "templates27InsightsGenerate.piiMaskNotice": {
+    "vi": "PII sẽ được mask trước khi gửi (K-5)",
+    "en": "PII will be masked before sending (K-5)",
+    "ja": "送信前にPIIはマスクされます（K-5）",
+    "ko": "전송 전 PII가 마스킹됩니다(K-5)",
+    "zh": "发送前将对 PII 进行脱敏处理（K-5）"
+  },
+  "templates27InsightsGenerate.reviewFooter": {
+    "vi": "Bạn sẽ thấy 3 tuyến (Chuyện gì / Vì sao / Nên làm gì) trên trang detail. Có thể chuyển insight thành quyết định ở đó.",
+    "en": "You'll see 3 lenses (What happened / Why / What to do) on the detail page. You can turn the insight into a decision there.",
+    "ja": "詳細ページでは3つの視点（何が起きたか／なぜか／何をすべきか）が表示されます。そこでインサイトを決定に変換できます。",
+    "ko": "상세 페이지에서 3가지 관점(무슨 일이 있었는지 / 왜 / 무엇을 해야 하는지)을 볼 수 있습니다. 그곳에서 인사이트를 결정으로 전환할 수 있습니다.",
+    "zh": "您将在详情页看到3条线索（发生了什么 / 为什么 / 该怎么做）。您可以在那里将洞察转化为决策。"
+  }
+}

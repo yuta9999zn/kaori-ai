@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { useT } from '@/lib/i18n/provider';
 
 export function Modal({
   open,
@@ -21,6 +22,7 @@ export function Modal({
   footer?: React.ReactNode;
   size?: 'sm' | 'md' | 'lg';
 }) {
+  const t = useT();
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -59,7 +61,7 @@ export function Modal({
           </div>
           <button
             onClick={onClose}
-            aria-label="Đóng"
+            aria-label={t('uiModal.close')}
             className="rounded-lg p-1.5 text-[#A89F90] hover:bg-muted hover:text-[#2E2A24] shrink-0"
           >
             <X className="w-4 h-4" />

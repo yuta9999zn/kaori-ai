@@ -78,28 +78,28 @@ const METHOD_TONE: Record<string, BadgeTone> = {
   heuristic:      "neutral",
   llm:            "warning",
 };
-const METHOD_LABEL: Record<string, string> = {
-  exact:          "Chính xác",
-  user_confirmed: "Đã xác nhận",
-  fuzzy:          "Gần đúng",
-  internal:       "Nội bộ",
-  orchestrator:   "Orchestrator",
-  heuristic:      "Heuristic",
-  llm:            "LLM",
+const METHOD_LABEL_KEY: Record<string, string> = {
+  exact:          "decisionsPage.methodExact",
+  user_confirmed: "decisionsPage.methodUserConfirmed",
+  fuzzy:          "decisionsPage.methodFuzzy",
+  internal:       "decisionsPage.methodInternal",
+  orchestrator:   "decisionsPage.methodOrchestrator",
+  heuristic:      "decisionsPage.methodHeuristic",
+  llm:            "decisionsPage.methodLlm",
 };
 
-const TYPE_LABEL: Record<string, string> = {
+const TYPE_LABEL_KEY: Record<string, string> = {
   // Real types written by BE today (Sprint 0.5 audit wire-up)
-  column_map:        "Ánh xạ cột",
-  cleaning_rule:     "Rule làm sạch",
-  template_analysis: "Phân tích template",
+  column_map:        "decisionsPage.typeColumnMap",
+  cleaning_rule:     "decisionsPage.typeCleaningRule",
+  template_analysis: "decisionsPage.typeTemplateAnalysis",
   // Forward-compatible types from BACKLOG
-  language_detect:   "Nhận diện ngôn ngữ",
-  purpose_classify:  "Phân loại mục đích",
-  rule_trigger:      "Kích hoạt rule",
-  preflight_go_nogo: "Preflight check",
-  model_select:      "Chọn mô hình",
-  framework_select:  "Chọn framework",
+  language_detect:   "decisionsPage.typeLanguageDetect",
+  purpose_classify:  "decisionsPage.typePurposeClassify",
+  rule_trigger:      "decisionsPage.typeRuleTrigger",
+  preflight_go_nogo: "decisionsPage.typePreflightGoNogo",
+  model_select:      "decisionsPage.typeModelSelect",
+  framework_select:  "decisionsPage.typeFrameworkSelect",
 };
 
 function confidenceTone(c: number): BadgeTone {
@@ -167,16 +167,16 @@ export default function DecisionsPage() {
   const COLUMNS: Column<DecisionAudit>[] = [
     {
       key: "decision_type",
-      header: "Loại quyết định",
+      header: t("decisionsPage.colType"),
       render: (row) => (
         <span className="text-body-strong text-ink">
-          {TYPE_LABEL[row.decision_type] ?? row.decision_type}
+          {TYPE_LABEL_KEY[row.decision_type] ? t(TYPE_LABEL_KEY[row.decision_type]) : row.decision_type}
         </span>
       ),
     },
     {
       key: "entity_ref",
-      header: "Đối tượng",
+      header: t("decisionsPage.colEntity"),
       render: (row) => (
         <span className="text-small text-ink-muted max-w-[180px] truncate block"
               title={row.entity_ref ?? row.subject ?? undefined}>
@@ -186,7 +186,7 @@ export default function DecisionsPage() {
     },
     {
       key: "confidence",
-      header: "Độ tin cậy",
+      header: t("decisionsPage.colConfidence"),
       render: (row) => (
         <Badge tone={confidenceTone(row.confidence)}>
           {(row.confidence * 100).toFixed(0)}%
@@ -195,39 +195,39 @@ export default function DecisionsPage() {
     },
     {
       key: "method",
-      header: "Phương pháp",
+      header: t("decisionsPage.colMethod"),
       render: (row) => (
         <Badge tone={METHOD_TONE[row.method] ?? "neutral"}>
-          {METHOD_LABEL[row.method] ?? row.method}
+          {METHOD_LABEL_KEY[row.method] ? t(METHOD_LABEL_KEY[row.method]) : row.method}
         </Badge>
       ),
     },
     {
       key: "needs_user_confirm",
-      header: "Trạng thái",
+      header: t("decisionsPage.colStatus"),
       render: (row) =>
         row.needs_user_confirm ? (
           <div className="flex items-center gap-1.5 text-warning-600">
             <AlertTriangle className="w-4 h-4" />
-            <span className="text-small">Cần xem lại</span>
+            <span className="text-small">{t("decisionsPage.statusNeedsReview")}</span>
           </div>
         ) : (
           <div className="flex items-center gap-1.5 text-success-600">
             <CheckCircle2 className="w-4 h-4" />
-            <span className="text-small">Tự động</span>
+            <span className="text-small">{t("decisionsPage.statusAuto")}</span>
           </div>
         ),
     },
     {
       key: "is_actioned",
-      header: "Đã xử lý",
+      header: t("decisionsPage.colActioned"),
       // Sprint 7 PR D — manual toggle. Stops row click bubbling so the
       // checkbox doesn't trigger a navigate. Optimistic UI not used yet
       // (mutation is fast enough); we rely on the invalidate→refetch.
       render: (row) => (
         <input
           type="checkbox"
-          aria-label="Đánh dấu quyết định đã được xử lý"
+          aria-label={t("decisionsPage.ariaMarkActioned")}
           checked={!!row.is_actioned}
           disabled={actionMutation.isPending}
           onClick={(e) => e.stopPropagation()}
@@ -243,7 +243,7 @@ export default function DecisionsPage() {
     },
     {
       key: "created_at",
-      header: "Thời gian",
+      header: t("decisionsPage.colCreatedAt"),
       render: (row) => (
         <span className="text-tiny text-[#B0A698] tabular-nums">{fmtDateTime(row.created_at)}</span>
       ),
@@ -281,10 +281,12 @@ export default function DecisionsPage() {
       a.remove();
       URL.revokeObjectURL(url);
       if (truncated) {
-        setExportError("Đã xuất 10.000 dòng đầu — kết quả bị cắt. Hãy thu hẹp khoảng thời gian hoặc dùng bộ lọc để xuất nốt phần còn lại.");
+        setExportError(t("decisionsPage.exportTruncated"));
       }
     } catch (e) {
-      setExportError(`Không tải được CSV: ${e instanceof Error ? e.message : "lỗi không rõ"}.`);
+      setExportError(t("decisionsPage.exportFailed", {
+        reason: e instanceof Error ? e.message : t("decisionsPage.unknownError"),
+      }));
     } finally {
       setExporting(false);
     }
@@ -295,21 +297,21 @@ export default function DecisionsPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-h1 font-serif text-ink">Nhật ký quyết định AI</h1>
+          <h1 className="text-h1 font-serif text-ink">{t("decisionsPage.title")}</h1>
           <p className="text-small text-ink-muted mt-1">
-            Mọi quyết định tự động đều được ghi lại — K-6 invariant.
+            {t("decisionsPage.subtitle")}
           </p>
         </div>
         <div className="flex items-center gap-3">
           {data && (
             <div className="flex items-center gap-2 text-small text-ink-muted bg-surface border border-subtle rounded-xl px-3 py-1.5">
               <Brain className="w-4 h-4 text-brand-500" />
-              {totalKnown.toLocaleString("vi-VN")}{hasNextPage ? "+" : ""} quyết định
+              {totalKnown.toLocaleString("vi-VN")}{hasNextPage ? "+" : ""} {t("decisionsPage.decisionsCountLabel")}
             </div>
           )}
           <Button variant="outline" onClick={handleExport} disabled={isLoading || exporting}>
             <Download className="w-4 h-4 mr-1.5" />
-            {exporting ? "Đang xuất..." : "Xuất CSV"}
+            {exporting ? t("decisionsPage.exportingBtn") : t("decisionsPage.exportCsvBtn")}
           </Button>
         </div>
       </div>
@@ -328,7 +330,7 @@ export default function DecisionsPage() {
           type="text"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="Tìm theo đối tượng / lý do..."
+          placeholder={t("decisionsPage.searchPlaceholder")}
           className="w-full pl-9 pr-3 py-2 rounded-xl border border-subtle bg-surface text-small focus:outline-none focus:ring-2 focus:ring-brand-300"
         />
       </div>
@@ -354,7 +356,7 @@ export default function DecisionsPage() {
             pageSize={rows.length || PAGE_SIZE}
             total={rows.length}
             onPageChange={() => {}}
-            emptyMessage="Chưa có quyết định nào được ghi lại."
+            emptyMessage={t("decisionsPage.emptyMessage")}
           />
           {hasNextPage && (
             <div className="flex justify-center">
@@ -363,7 +365,7 @@ export default function DecisionsPage() {
                 onClick={() => fetchNextPage()}
                 disabled={isFetchingNextPage}
               >
-                {isFetchingNextPage ? "Đang tải..." : "Tải thêm"}
+                {isFetchingNextPage ? t("decisionsPage.loadingMore") : t("decisionsPage.loadMoreBtn")}
               </Button>
             </div>
           )}

@@ -67,18 +67,18 @@ interface PipelineListPage {
 
 const PAGE_SIZE = 50;
 
-function statusMeta(s: RunStatus): { tone: BadgeTone; label: string } {
+function statusMeta(s: RunStatus): { tone: BadgeTone; labelKey: string | null; label: string | null } {
   switch (s) {
-    case "analysis_complete": return { tone: "success", label: "Hoàn tất" };
-    case "failed":            return { tone: "danger",  label: "Lỗi" };
-    case "cancelled":         return { tone: "neutral", label: "Đã huỷ" };
-    case "uploading":         return { tone: "info",    label: "Đang tải lên" };
-    case "bronze_complete":   return { tone: "info",    label: "Đã ingest" };
-    case "schema_review":     return { tone: "warning", label: "Chờ xem schema" };
-    case "cleaning_pending":  return { tone: "warning", label: "Chờ làm sạch" };
-    case "silver_complete":   return { tone: "info",    label: "Đã làm sạch" };
-    case "analyzing":         return { tone: "info",    label: "Đang phân tích" };
-    default:                  return { tone: "neutral", label: String(s) };
+    case "analysis_complete": return { tone: "success", labelKey: "pipelinePage.statusComplete",        label: null };
+    case "failed":            return { tone: "danger",  labelKey: "pipelinePage.statusFailed",          label: null };
+    case "cancelled":         return { tone: "neutral", labelKey: "pipelinePage.statusCancelled",       label: null };
+    case "uploading":         return { tone: "info",    labelKey: "pipelinePage.statusUploading",       label: null };
+    case "bronze_complete":   return { tone: "info",    labelKey: "pipelinePage.statusBronzeComplete",  label: null };
+    case "schema_review":     return { tone: "warning", labelKey: "pipelinePage.statusSchemaReview",    label: null };
+    case "cleaning_pending":  return { tone: "warning", labelKey: "pipelinePage.statusCleaningPending", label: null };
+    case "silver_complete":   return { tone: "info",    labelKey: "pipelinePage.statusSilverComplete",  label: null };
+    case "analyzing":         return { tone: "info",    labelKey: "pipelinePage.statusAnalyzing",       label: null };
+    default:                  return { tone: "neutral", labelKey: null, label: String(s) };
   }
 }
 
@@ -120,19 +120,19 @@ export default function PipelineListPage() {
   const COLUMNS: Column<PipelineRun>[] = [
     {
       key: "filename",
-      header: "Tệp dữ liệu",
+      header: t("pipelinePage.colFilename"),
       render: (row) => (
         <div className="flex items-center gap-2.5 min-w-0">
           <FileText className="w-4 h-4 text-brand-400 shrink-0" strokeWidth={1.5} />
           <span className="text-body-strong text-ink truncate">
-            {row.filename ?? "(không tên)"}
+            {row.filename ?? t("pipelinePage.noFilename")}
           </span>
         </div>
       ),
     },
     {
       key: "row_count_bronze",
-      header: "Số hàng",
+      header: t("pipelinePage.colRowCount"),
       render: (row) => {
         const n = row.row_count_silver ?? row.row_count_bronze;
         return (
@@ -144,15 +144,15 @@ export default function PipelineListPage() {
     },
     {
       key: "status",
-      header: "Trạng thái",
+      header: t("pipelinePage.colStatus"),
       render: (row) => {
-        const { tone, label } = statusMeta(row.status);
-        return <Badge tone={tone}>{label}</Badge>;
+        const { tone, labelKey, label } = statusMeta(row.status);
+        return <Badge tone={tone}>{labelKey ? t(labelKey) : label}</Badge>;
       },
     },
     {
       key: "created_at",
-      header: "Thời gian",
+      header: t("pipelinePage.colCreatedAt"),
       render: (row) => (
         <span className="text-tiny text-[#B0A698] tabular-nums">{fmtDateTime(row.created_at)}</span>
       ),
@@ -164,12 +164,12 @@ export default function PipelineListPage() {
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-h1 font-serif text-ink">{t("nav.pipeline")}</h1>
-          <p className="text-small text-ink-muted mt-1">Lịch sử các lần chạy pipeline dữ liệu.</p>
+          <p className="text-small text-ink-muted mt-1">{t("pipelinePage.description")}</p>
         </div>
         <Button asChild>
           <Link href="/pipeline/new">
             <Plus className="w-4 h-4 mr-1.5" />
-            Pipeline mới
+            {t("pipelinePage.newPipeline")}
           </Link>
         </Button>
       </div>
@@ -189,9 +189,9 @@ export default function PipelineListPage() {
       {!isLoading && !isError && rows.length === 0 && (
         <EmptyState
           icon={FileText}
-          title="Chưa có pipeline nào"
-          description="Tải lên tệp dữ liệu để bắt đầu phân tích."
-          action={{ href: "/pipeline/new", label: "Tạo pipeline mới" }}
+          title={t("pipelinePage.emptyTitle")}
+          description={t("pipelinePage.emptyDescription")}
+          action={{ href: "/pipeline/new", label: t("pipelinePage.emptyActionLabel") }}
         />
       )}
 
@@ -205,7 +205,7 @@ export default function PipelineListPage() {
             total={rows.length}
             onPageChange={() => {}}
             onRowClick={navigateToRun}
-            emptyMessage="Chưa có lần chạy nào."
+            emptyMessage={t("pipelinePage.tableEmptyMessage")}
           />
           {hasNextPage && (
             <div className="flex justify-center">
@@ -214,7 +214,7 @@ export default function PipelineListPage() {
                 onClick={() => fetchNextPage()}
                 disabled={isFetchingNextPage}
               >
-                {isFetchingNextPage ? "Đang tải..." : "Tải thêm"}
+                {isFetchingNextPage ? t("pipelinePage.loadingMore") : t("pipelinePage.loadMore")}
               </Button>
             </div>
           )}

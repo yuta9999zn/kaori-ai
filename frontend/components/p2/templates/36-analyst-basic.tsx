@@ -23,12 +23,14 @@ import {
 
 import { Button, Badge, ErrorBanner, cn, api, type ProblemDetails } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 interface PipelineRun  { id: string; title: string; finished_at?: string; }
 interface Template     { id: string; name: string; description: string; }
 
 type CreateResp = { run_id: string; tier: string; status: string };
 
 export default function AnalystBasicPage() {
+  const t = useT();
   const search = useSearchParams();
   const initialScope = (search?.get('scope') ?? 'single') as 'single' | 'multi' | 'cross';
 
@@ -93,17 +95,23 @@ export default function AnalystBasicPage() {
 
   const canRun = pipelineId && picked.size > 0 && !creating;
 
+  const scopeLabel = initialScope === 'single'
+    ? t('templates36AnalystBasic.scopeSingle')
+    : initialScope === 'multi'
+      ? t('templates36AnalystBasic.scopeMulti')
+      : t('templates36AnalystBasic.scopeCross');
+
   return (
     <>
       <PageHeader
-        title="Phân tích cơ bản"
-        description="1 pipeline · template + Qwen nội bộ. Phù hợp câu hỏi nhanh."
+        title={t('templates36AnalystBasic.title')}
+        description={t('templates36AnalystBasic.description')}
         actions={
           <>
             <Badge variant="info">F-033 · Basic</Badge>
             <Button variant="tertiary" onClick={() => (window.location.href = '/p2/analysis')}>
               <ChevronLeft className="w-4 h-4 mr-1" />
-              Hub
+              {t('templates36AnalystBasic.hub')}
             </Button>
           </>
         }
@@ -120,13 +128,13 @@ export default function AnalystBasicPage() {
                 <FlaskConical className="w-5 h-5 text-[var(--primary-gold-dark)]" />
               </div>
               <div>
-                <h3 className="font-serif text-base text-[var(--text-primary)]">Cơ bản</h3>
-                <p className="text-xs text-[var(--text-secondary)]">Scope: {initialScope === 'single' ? 'Single pipeline' : initialScope === 'multi' ? 'Multi pipeline' : 'Cross workspace'}</p>
+                <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates36AnalystBasic.basicTier')}</h3>
+                <p className="text-xs text-[var(--text-secondary)]">{t('templates36AnalystBasic.scopeText', { scope: scopeLabel })}</p>
               </div>
             </div>
             <Badge variant="success">
               <Lock className="w-3 h-3 mr-1 inline" />
-              Qwen 2.5 nội bộ
+              {t('templates36AnalystBasic.qwenInternal')}
             </Badge>
           </div>
         </div>
@@ -134,7 +142,7 @@ export default function AnalystBasicPage() {
         {/* Form */}
         <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm space-y-4">
           <div>
-            <label className="text-sm font-medium text-[var(--text-primary)]">Pipeline nguồn</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates36AnalystBasic.sourcePipeline')}</label>
             <div className="relative mt-1">
               <Database className="w-4 h-4 text-[var(--text-secondary)] absolute left-3 top-1/2 -translate-y-1/2" />
               <select
@@ -142,17 +150,17 @@ export default function AnalystBasicPage() {
                 onChange={(e) => setPipelineId(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
               >
-                {pipelines.length === 0 && <option value="">— Chưa có pipeline —</option>}
+                {pipelines.length === 0 && <option value="">{t('templates36AnalystBasic.noPipeline')}</option>}
                 {pipelines.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
               </select>
             </div>
           </div>
 
           <div>
-            <label className="text-sm font-medium text-[var(--text-primary)]">Template phân tích (chọn ≥ 1)</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates36AnalystBasic.analysisTemplate')}</label>
             <div className="mt-2 space-y-1.5">
               {templates.length === 0 && (
-                <p className="text-sm text-[var(--text-secondary)]">— Chưa có template —</p>
+                <p className="text-sm text-[var(--text-secondary)]">{t('templates36AnalystBasic.noTemplate')}</p>
               )}
               {templates.map((t) => {
                 const sel = picked.has(t.id);
@@ -182,30 +190,30 @@ export default function AnalystBasicPage() {
           </div>
 
           <div>
-            <label className="text-sm font-medium text-[var(--text-primary)]">Câu hỏi cụ thể (tuỳ chọn)</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates36AnalystBasic.specificQuestion')}</label>
             <textarea
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               rows={3}
-              placeholder="Ví dụ: Top 3 yếu tố ảnh hưởng doanh thu tháng 4?"
+              placeholder={t('templates36AnalystBasic.questionPlaceholder')}
               className="mt-1 w-full px-3 py-2 text-sm bg-white border border-[var(--border-color)] rounded-md-custom focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
             />
           </div>
 
           <Button onClick={handleRun} disabled={!canRun} isLoading={creating} className="w-full">
             <Sparkles className="w-4 h-4 mr-2" />
-            Chạy phân tích cơ bản
+            {t('templates36AnalystBasic.runBasicAnalysis')}
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </div>
 
         {/* What you'll get */}
         <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-4 shadow-soft-sm">
-          <p className="font-serif text-sm text-[var(--text-primary)] mb-3">Kết quả sẽ gồm</p>
+          <p className="font-serif text-sm text-[var(--text-primary)] mb-3">{t('templates36AnalystBasic.resultsInclude')}</p>
           <ul className="space-y-1.5 text-sm">
-            <li className="flex items-start gap-2"><Lightbulb className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" /><span className="text-[var(--text-primary)]">Narrative tóm tắt 3-5 câu</span></li>
-            <li className="flex items-start gap-2"><Lightbulb className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" /><span className="text-[var(--text-primary)]">Chart minh hoạ + bảng KPI từ các template đã chọn</span></li>
-            <li className="flex items-start gap-2"><Lightbulb className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" /><span className="text-[var(--text-primary)]">Khuyến nghị hành động (có thể chuyển thành Decision)</span></li>
+            <li className="flex items-start gap-2"><Lightbulb className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" /><span className="text-[var(--text-primary)]">{t('templates36AnalystBasic.resultNarrative')}</span></li>
+            <li className="flex items-start gap-2"><Lightbulb className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" /><span className="text-[var(--text-primary)]">{t('templates36AnalystBasic.resultChart')}</span></li>
+            <li className="flex items-start gap-2"><Lightbulb className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" /><span className="text-[var(--text-primary)]">{t('templates36AnalystBasic.resultRecommendation')}</span></li>
           </ul>
         </div>
 
@@ -213,7 +221,7 @@ export default function AnalystBasicPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Pipeline Wizard step-4 (<a href="/p2/pipelines" className="text-[var(--primary-gold-dark)] underline">/p2/pipelines</a>) chạy cùng template engine — Basic tier ở đây mở thêm khả năng dispatch nhanh không cần đi qua wizard.
+            {t('templates36AnalystBasic.wizardAltPrefix')} (<a href="/p2/pipelines" className="text-[var(--primary-gold-dark)] underline">/p2/pipelines</a>) {t('templates36AnalystBasic.wizardAltSuffix')}
           </p>
         </div>
       </div>

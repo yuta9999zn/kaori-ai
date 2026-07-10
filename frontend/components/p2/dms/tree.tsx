@@ -7,6 +7,7 @@ import {
   ChevronRight, ChevronDown, Folder, BookOpen, Plus, Loader2, Search, Trash2,
 } from 'lucide-react';
 import { cn, api, type ProblemDetails } from '@/components/p2/foundation';
+import { useT } from '@/lib/i18n/provider';
 
 export interface TreeFolder {
   folder_id: string; name_vi: string; path: string;
@@ -21,6 +22,7 @@ export function FolderTree({ selected, onSelect, refreshKey, onProblem }: {
   refreshKey: number;
   onProblem: (p: ProblemDetails) => void;
 }) {
+  const t = useT();
   const [roots, setRoots] = useState<TreeFolder[] | null>(null);
   const [children, setChildren] = useState<Record<string, TreeFolder[]>>({});
   const [open, setOpen] = useState<Record<string, boolean>>({});
@@ -48,7 +50,7 @@ export function FolderTree({ selected, onSelect, refreshKey, onProblem }: {
   }
 
   async function createUnder(parentId: string | null) {
-    const name = window.prompt('Tên thư mục / nghiệp vụ mới (vd "Mua hàng", "Hợp đồng 2026"):');
+    const name = window.prompt(t('dmsTree.promptFolderName'));
     if (!name?.trim()) return;
     try {
       await api('/api/v1/document-folders', {
@@ -63,7 +65,7 @@ export function FolderTree({ selected, onSelect, refreshKey, onProblem }: {
   }
 
   async function remove(f: TreeFolder) {
-    if (!window.confirm(`Xoá "${f.name_vi}" và toàn bộ bên trong? (xoá mềm)`)) return;
+    if (!window.confirm(t('dmsTree.confirmDelete', { name: f.name_vi }))) return;
     try {
       await api(`/api/v1/document-folders/${f.folder_id}`, { method: 'DELETE' });
       if (selected === f.folder_id) onSelect(null);
@@ -91,9 +93,9 @@ export function FolderTree({ selected, onSelect, refreshKey, onProblem }: {
                 : <span className="inline-block w-3.5" />}
             </button>
             {f.is_page ? (
-              <BookOpen className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] shrink-0" aria-label="Trang nghiệp vụ" />
+              <BookOpen className="w-3.5 h-3.5 text-[var(--primary-gold-dark)] shrink-0" aria-label={t('dmsTree.ariaBusinessPage')} />
             ) : (
-              <Folder className="w-3.5 h-3.5 text-amber-500/80 shrink-0" aria-label="Thư mục" />
+              <Folder className="w-3.5 h-3.5 text-amber-500/80 shrink-0" aria-label={t('dmsTree.ariaFolder')} />
             )}
             <button onClick={() => onSelect(f.folder_id)} className="flex-1 min-w-0 text-left">
               <span className="text-[13px] truncate block">{f.name_vi}</span>
@@ -102,12 +104,12 @@ export function FolderTree({ selected, onSelect, refreshKey, onProblem }: {
               {f.file_count > 0 && `${f.file_count}`}
             </span>
             <button onClick={(e) => { e.stopPropagation(); createUnder(f.folder_id); }}
-              title="Tạo thư mục con"
+              title={t('dmsTree.titleCreateSubfolder')}
               className="opacity-0 group-hover:opacity-100 text-[var(--text-secondary)] hover:text-[var(--primary-gold-dark)] shrink-0">
               <Plus className="w-3 h-3" />
             </button>
             <button onClick={(e) => { e.stopPropagation(); remove(f); }}
-              title="Xoá"
+              title={t('dmsTree.titleDelete')}
               className="opacity-0 group-hover:opacity-100 text-[var(--text-secondary)] hover:text-[var(--state-error)] shrink-0">
               <Trash2 className="w-3 h-3" />
             </button>
@@ -125,7 +127,7 @@ export function FolderTree({ selected, onSelect, refreshKey, onProblem }: {
       <div className="relative">
         <Search className="w-3.5 h-3.5 text-[var(--text-secondary)] absolute left-2.5 top-1/2 -translate-y-1/2" />
         <input value={filter} onChange={(e) => setFilter(e.target.value)}
-          placeholder="Lọc theo tên…"
+          placeholder={t('dmsTree.placeholderFilter')}
           className="w-full pl-8 pr-2 py-1.5 bg-white border border-[var(--border-color)] rounded text-xs focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30" />
       </div>
       {roots === null ? (
@@ -135,12 +137,12 @@ export function FolderTree({ selected, onSelect, refreshKey, onProblem }: {
           {renderNodes(roots, 0)}
           <button onClick={() => createUnder(null)}
             className="flex items-center gap-1.5 px-1.5 py-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--primary-gold-dark)] w-full">
-            <Plus className="w-3.5 h-3.5" /> Tạo thư mục
+            <Plus className="w-3.5 h-3.5" /> {t('dmsTree.btnCreateFolder')}
           </button>
           {/* chú giải icon — phân biệt thư mục / trang / file / tài liệu Kaori */}
           <div className="mt-2 pt-2 border-t border-[var(--border-color)]/50 px-1.5 space-y-0.5 text-[10px] text-[var(--text-secondary)]">
-            <p className="flex items-center gap-1.5"><Folder className="w-3 h-3 text-amber-500/80" /> thư mục · <BookOpen className="w-3 h-3 text-[var(--primary-gold-dark)]" /> trang nghiệp vụ</p>
-            <p className="flex items-center gap-1.5"><span className="w-3 h-3 inline-flex items-center justify-center text-emerald-700">▤</span> file tải lên · <span className="w-3 h-3 inline-flex items-center justify-center text-[var(--primary-gold-dark)]">✎</span> tài liệu Kaori</p>
+            <p className="flex items-center gap-1.5"><Folder className="w-3 h-3 text-amber-500/80" /> {t('dmsTree.legendFolder')} · <BookOpen className="w-3 h-3 text-[var(--primary-gold-dark)]" /> {t('dmsTree.legendPage')}</p>
+            <p className="flex items-center gap-1.5"><span className="w-3 h-3 inline-flex items-center justify-center text-emerald-700">▤</span> {t('dmsTree.legendFileUpload')} · <span className="w-3 h-3 inline-flex items-center justify-center text-[var(--primary-gold-dark)]">✎</span> {t('dmsTree.legendDocKaori')}</p>
           </div>
         </div>
       )}

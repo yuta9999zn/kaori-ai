@@ -32,6 +32,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types — mirror BE EnterpriseRiskController.toJson()
 // ============================================================================
@@ -74,26 +75,26 @@ interface RollupResponse {
   };
 }
 
-const SEVERITY_META: Record<Severity, { label: string; variant: 'success' | 'info' | 'warning' | 'error' }> = {
-  low:      { label: 'Thấp',         variant: 'success' },
-  medium:   { label: 'Trung',        variant: 'info' },
-  high:     { label: 'Cao',          variant: 'warning' },
-  critical: { label: 'Nghiêm trọng', variant: 'error' },
+const SEVERITY_META: Record<Severity, { labelKey: string; variant: 'success' | 'info' | 'warning' | 'error' }> = {
+  low:      { labelKey: 'templatesF039RisksHub.sevLow',      variant: 'success' },
+  medium:   { labelKey: 'templatesF039RisksHub.sevMedium',   variant: 'info' },
+  high:     { labelKey: 'templatesF039RisksHub.sevHigh',     variant: 'warning' },
+  critical: { labelKey: 'templatesF039RisksHub.sevCritical', variant: 'error' },
 };
 
-const STATUS_META: Record<Status, { label: string; variant: 'current' | 'warning' | 'success' }> = {
-  open:       { label: 'Mở',         variant: 'current' },
-  mitigating: { label: 'Đang xử lý', variant: 'warning' },
-  closed:     { label: 'Đã đóng',    variant: 'success' },
+const STATUS_META: Record<Status, { labelKey: string; variant: 'current' | 'warning' | 'success' }> = {
+  open:       { labelKey: 'templatesF039RisksHub.statusOpen',       variant: 'current' },
+  mitigating: { labelKey: 'templatesF039RisksHub.statusMitigating', variant: 'warning' },
+  closed:     { labelKey: 'templatesF039RisksHub.statusClosed',     variant: 'success' },
 };
 
-const CATEGORY_LABEL: Record<Category, string> = {
-  operational:  'Vận hành',
-  financial:    'Tài chính',
-  regulatory:   'Pháp lý',
-  reputational: 'Thương hiệu',
-  strategic:    'Chiến lược',
-  technical:    'Kỹ thuật',
+const CATEGORY_LABEL_KEY: Record<Category, string> = {
+  operational:  'templatesF039RisksHub.catOperational',
+  financial:    'templatesF039RisksHub.catFinancial',
+  regulatory:   'templatesF039RisksHub.catRegulatory',
+  reputational: 'templatesF039RisksHub.catReputational',
+  strategic:    'templatesF039RisksHub.catStrategic',
+  technical:    'templatesF039RisksHub.catTechnical',
 };
 
 const CATEGORIES: Category[] = [
@@ -101,11 +102,23 @@ const CATEGORIES: Category[] = [
   'reputational', 'strategic', 'technical',
 ];
 
+// Shared 5-point likelihood/impact scale labels — used by RiskMatrix headers
+// and ScoreSlider's bottom scale, kept as translation keys (not literals)
+// since they're read inside components via t().
+const LEVEL_LABEL_KEYS = [
+  'templatesF039RisksHub.levelVeryLow',
+  'templatesF039RisksHub.levelLow',
+  'templatesF039RisksHub.levelMedium',
+  'templatesF039RisksHub.levelHigh',
+  'templatesF039RisksHub.levelVeryHigh',
+];
+
 // ============================================================================
 // Page
 // ============================================================================
 
 export default function RisksHubPage() {
+  const t = useT();
   const [risks, setRisks] = useState<RiskRow[]>([]);
   const [rollup, setRollup] = useState<RollupResponse['data'] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -167,14 +180,14 @@ export default function RisksHubPage() {
   return (
     <>
       <PageHeader
-        title="Rủi ro"
-        description="Risk register theo doanh nghiệp. Score = likelihood × impact, severity tự suy ra."
+        title={t('templatesF039RisksHub.title')}
+        description={t('templatesF039RisksHub.description')}
         actions={
           <>
             <Badge variant="info">F-039</Badge>
-            <a href="/p2/risks/export"><Button variant="secondary" size="md">Xuất CSV</Button></a>
+            <a href="/p2/risks/export"><Button variant="secondary" size="md">{t('templatesF039RisksHub.exportCsv')}</Button></a>
             <Button variant="primary" size="md" onClick={() => setShowCreate(true)}>
-              <Plus className="w-4 h-4 mr-2" /> Thêm rủi ro
+              <Plus className="w-4 h-4 mr-2" /> {t('templatesF039RisksHub.addRisk')}
             </Button>
           </>
         }
@@ -186,10 +199,10 @@ export default function RisksHubPage() {
 
         {/* KPI tiles */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatTile label="Tổng đang mở"             value={stats.total}    icon={ShieldCheck}    tone="text-[var(--text-primary)]" />
-          <StatTile label="Nghiêm trọng (chưa đóng)" value={stats.critical} icon={AlertTriangle}  tone="text-[var(--state-error)]" />
-          <StatTile label="Hạn mitigation đã quá"     value={stats.overdue}  icon={Calendar}       tone="text-[var(--state-warning)]" />
-          <StatTile label="Chưa có owner"             value={stats.no_owner} icon={UsersIcon}      tone="text-[var(--state-info)]" />
+          <StatTile label={t('templatesF039RisksHub.kpiTotalOpen')} value={stats.total}    icon={ShieldCheck}    tone="text-[var(--text-primary)]" />
+          <StatTile label={t('templatesF039RisksHub.kpiCritical')}  value={stats.critical} icon={AlertTriangle}  tone="text-[var(--state-error)]" />
+          <StatTile label={t('templatesF039RisksHub.kpiOverdue')}   value={stats.overdue}  icon={Calendar}       tone="text-[var(--state-warning)]" />
+          <StatTile label={t('templatesF039RisksHub.kpiNoOwner')}   value={stats.no_owner} icon={UsersIcon}      tone="text-[var(--state-info)]" />
         </div>
 
         {/* Heat map */}
@@ -203,34 +216,34 @@ export default function RisksHubPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm theo tên rủi ro..."
+              placeholder={t('templatesF039RisksHub.searchPlaceholder')}
               className="w-full pl-9 pr-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm placeholder:text-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all"
             />
           </div>
           <FilterPill
-            label="Trạng thái" value={statusFilter} onChange={setStatusFilter}
+            label={t('templatesF039RisksHub.filterStatus')} value={statusFilter} onChange={setStatusFilter}
             options={[
-              { value: 'all',        label: 'Tất cả' },
-              { value: 'open',       label: 'Mở' },
-              { value: 'mitigating', label: 'Đang xử lý' },
-              { value: 'closed',     label: 'Đã đóng' },
+              { value: 'all',        label: t('templatesF039RisksHub.optAll') },
+              { value: 'open',       label: t(STATUS_META.open.labelKey) },
+              { value: 'mitigating', label: t(STATUS_META.mitigating.labelKey) },
+              { value: 'closed',     label: t(STATUS_META.closed.labelKey) },
             ]}
           />
           <FilterPill
-            label="Mức" value={severityFilter} onChange={setSeverityFilter}
+            label={t('templatesF039RisksHub.filterSeverity')} value={severityFilter} onChange={setSeverityFilter}
             options={[
-              { value: 'all',      label: 'Tất cả' },
-              { value: 'critical', label: 'Nghiêm trọng' },
-              { value: 'high',     label: 'Cao' },
-              { value: 'medium',   label: 'Trung' },
-              { value: 'low',      label: 'Thấp' },
+              { value: 'all',      label: t('templatesF039RisksHub.optAll') },
+              { value: 'critical', label: t(SEVERITY_META.critical.labelKey) },
+              { value: 'high',     label: t(SEVERITY_META.high.labelKey) },
+              { value: 'medium',   label: t(SEVERITY_META.medium.labelKey) },
+              { value: 'low',      label: t(SEVERITY_META.low.labelKey) },
             ]}
           />
           <FilterPill
-            label="Danh mục" value={categoryFilter} onChange={setCategoryFilter}
+            label={t('templatesF039RisksHub.filterCategory')} value={categoryFilter} onChange={setCategoryFilter}
             options={[
-              { value: 'all', label: 'Tất cả' },
-              ...CATEGORIES.map((c) => ({ value: c, label: CATEGORY_LABEL[c] })),
+              { value: 'all', label: t('templatesF039RisksHub.optAll') },
+              ...CATEGORIES.map((c) => ({ value: c, label: t(CATEGORY_LABEL_KEY[c]) })),
             ]}
           />
         </div>
@@ -241,24 +254,24 @@ export default function RisksHubPage() {
             <table className="w-full text-sm text-left">
               <thead className="bg-[var(--bg-app)] border-b border-[var(--border-color)] text-[11px] font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                 <tr>
-                  <th className="px-5 py-3">Rủi ro</th>
-                  <th className="px-5 py-3">Danh mục</th>
-                  <th className="px-5 py-3">Mức độ</th>
-                  <th className="px-5 py-3">Trạng thái</th>
-                  <th className="px-5 py-3">Tiến độ</th>
-                  <th className="px-5 py-3">Hạn xử lý</th>
-                  <th className="px-5 py-3 text-right">Xem</th>
+                  <th className="px-5 py-3">{t('templatesF039RisksHub.thRisk')}</th>
+                  <th className="px-5 py-3">{t('templatesF039RisksHub.thCategory')}</th>
+                  <th className="px-5 py-3">{t('templatesF039RisksHub.thSeverity')}</th>
+                  <th className="px-5 py-3">{t('templatesF039RisksHub.thStatus')}</th>
+                  <th className="px-5 py-3">{t('templatesF039RisksHub.thProgress')}</th>
+                  <th className="px-5 py-3">{t('templatesF039RisksHub.thDueDate')}</th>
+                  <th className="px-5 py-3 text-right">{t('templatesF039RisksHub.thView')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-color)]/60">
                 {loading ? (
                   <tr><td colSpan={7} className="px-5 py-16 text-center text-[var(--text-secondary)]">
-                    <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> Đang tải...
+                    <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> {t('templatesF039RisksHub.loading')}
                   </td></tr>
                 ) : filtered.length === 0 ? (
                   <tr><td colSpan={7} className="px-5 py-16 text-center">
                     <ShieldCheck className="w-10 h-10 mx-auto text-[var(--state-success)]/40 mb-3" />
-                    <p className="text-sm text-[var(--text-secondary)]">Không có rủi ro nào khớp bộ lọc.</p>
+                    <p className="text-sm text-[var(--text-secondary)]">{t('templatesF039RisksHub.emptyFiltered')}</p>
                   </td></tr>
                 ) : (
                   filtered.map((r) => <RiskRowItem key={r.risk_id} risk={r} />)
@@ -271,8 +284,9 @@ export default function RisksHubPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <Sparkles className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Severity tự suy ra từ likelihood × impact: ≥15 nghiêm trọng, ≥9 cao, ≥5 trung, còn lại thấp.
-            DB trigger ghi sẵn trên mỗi insert/update — FE chỉ render.
+            {t('templatesF039RisksHub.footerNote1')}
+            {' '}
+            {t('templatesF039RisksHub.footerNote2')}
           </p>
         </div>
       </div>
@@ -282,7 +296,7 @@ export default function RisksHubPage() {
           onClose={() => setShowCreate(false)}
           onCreated={(title) => {
             setShowCreate(false);
-            setSuccess(`Đã thêm rủi ro: ${title}`);
+            setSuccess(t('templatesF039RisksHub.createdSuccess', { title }));
             loadAll();
           }}
         />
@@ -332,6 +346,7 @@ function FilterPill<T extends string>({
 }
 
 function RiskMatrix({ risks, loading }: { risks: RiskRow[]; loading: boolean }) {
+  const t = useT();
   const cells: Record<string, RiskRow[]> = {};
   for (const r of risks) {
     if (r.status === 'closed') continue;
@@ -347,21 +362,22 @@ function RiskMatrix({ risks, loading }: { risks: RiskRow[]; loading: boolean }) 
     return 'bg-[var(--state-error)]/15 border-[var(--state-error)]/30';
   }
 
-  const LABELS = ['Rất thấp', 'Thấp', 'Trung', 'Cao', 'Rất cao'];
+  const LABELS = LEVEL_LABEL_KEYS.map((k) => t(k));
+  const openCount = Object.values(cells).flat().length;
 
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-5 shadow-soft-sm">
       <div className="flex items-center gap-2 mb-3">
         <AlertCircle className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-        <h3 className="font-serif text-base text-[var(--text-primary)]">Ma trận khả năng × tác động</h3>
-        <Badge variant="default">{Object.values(cells).flat().length} rủi ro mở</Badge>
+        <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templatesF039RisksHub.matrixTitle')}</h3>
+        <Badge variant="default">{t('templatesF039RisksHub.matrixOpenCount', { count: openCount })}</Badge>
       </div>
       <div className="overflow-x-auto">
         <table className="border-separate border-spacing-1">
           <thead>
             <tr>
               <th className="text-left text-[11px] text-[var(--text-secondary)] uppercase tracking-wider font-medium px-2 py-1">
-                Khả năng \ Tác động
+                {t('templatesF039RisksHub.matrixAxis')}
               </th>
               {LABELS.map((lbl, i) => (
                 <th key={lbl} className="text-[11px] text-[var(--text-secondary)] uppercase tracking-wider font-medium px-2 py-1">
@@ -402,10 +418,10 @@ function RiskMatrix({ risks, loading }: { risks: RiskRow[]; loading: boolean }) 
       </div>
       <div className="mt-3 flex items-center gap-3 text-[11px] text-[var(--text-secondary)] flex-wrap">
         {[
-          { label: 'Thấp (≤4)',          cls: 'bg-[var(--state-success)]/30' },
-          { label: 'Trung (5-8)',        cls: 'bg-[var(--state-info)]/30' },
-          { label: 'Cao (9-14)',         cls: 'bg-[var(--state-warning)]/40' },
-          { label: 'Nghiêm trọng (≥15)', cls: 'bg-[var(--state-error)]/40' },
+          { label: t('templatesF039RisksHub.legendLow'),      cls: 'bg-[var(--state-success)]/30' },
+          { label: t('templatesF039RisksHub.legendMedium'),   cls: 'bg-[var(--state-info)]/30' },
+          { label: t('templatesF039RisksHub.legendHigh'),     cls: 'bg-[var(--state-warning)]/40' },
+          { label: t('templatesF039RisksHub.legendCritical'), cls: 'bg-[var(--state-error)]/40' },
         ].map((l) => (
           <span key={l.label} className="inline-flex items-center gap-1.5">
             <span className={cn('w-3 h-3 rounded-sm-custom', l.cls)} />
@@ -418,6 +434,7 @@ function RiskMatrix({ risks, loading }: { risks: RiskRow[]; loading: boolean }) 
 }
 
 function RiskRowItem({ risk: r }: { risk: RiskRow }) {
+  const t = useT();
   const sev = SEVERITY_META[r.severity];
   const stt = STATUS_META[r.status];
   const isOverdue = r.due_date && new Date(r.due_date) < new Date() && r.status !== 'closed';
@@ -439,9 +456,9 @@ function RiskRowItem({ risk: r }: { risk: RiskRow }) {
           </div>
         </div>
       </td>
-      <td className="px-5 py-4 text-xs text-[var(--text-secondary)]">{CATEGORY_LABEL[r.category]}</td>
-      <td className="px-5 py-4"><Badge variant={sev.variant}>{sev.label}</Badge></td>
-      <td className="px-5 py-4"><Badge variant={stt.variant}>{stt.label}</Badge></td>
+      <td className="px-5 py-4 text-xs text-[var(--text-secondary)]">{t(CATEGORY_LABEL_KEY[r.category])}</td>
+      <td className="px-5 py-4"><Badge variant={sev.variant}>{t(sev.labelKey)}</Badge></td>
+      <td className="px-5 py-4"><Badge variant={stt.variant}>{t(stt.labelKey)}</Badge></td>
       <td className="px-5 py-4 min-w-[120px]">
         <div className="flex items-center gap-2">
           <div className="flex-1 h-1.5 bg-[var(--border-color)]/40 rounded-full overflow-hidden">
@@ -462,7 +479,7 @@ function RiskRowItem({ risk: r }: { risk: RiskRow }) {
       </td>
       <td className="px-5 py-4 text-right">
         <a href={`/p2/risks/${r.risk_id}`} className="inline-flex items-center text-xs font-medium text-[var(--primary-gold-dark)] hover:underline">
-          Chi tiết <ArrowRight className="w-3 h-3 ml-1" />
+          {t('templatesF039RisksHub.detail')} <ArrowRight className="w-3 h-3 ml-1" />
         </a>
       </td>
     </tr>
@@ -476,6 +493,7 @@ function RiskRowItem({ risk: r }: { risk: RiskRow }) {
 function CreateRiskModal({
   onClose, onCreated,
 }: { onClose: () => void; onCreated: (title: string) => void }) {
+  const t = useT();
   const [title, setTitle]                   = useState('');
   const [description, setDescription]       = useState('');
   const [category, setCategory]             = useState<Category>('operational');
@@ -522,8 +540,8 @@ function CreateRiskModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 animate-fade-in">
       <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-auto">
         <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-color)]">
-          <h3 className="font-serif text-lg text-[var(--text-primary)]">Thêm rủi ro mới</h3>
-          <button onClick={onClose} aria-label="Đóng" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+          <h3 className="font-serif text-lg text-[var(--text-primary)]">{t('templatesF039RisksHub.modalTitle')}</h3>
+          <button onClick={onClose} aria-label={t('templatesF039RisksHub.close')} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
             <XIcon className="w-5 h-5" />
           </button>
         </div>
@@ -532,79 +550,79 @@ function CreateRiskModal({
           {problem && <ErrorBanner problem={problem} />}
 
           <Input
-            label="Tên rủi ro *"
+            label={t('templatesF039RisksHub.fieldTitle')}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Ví dụ: Phụ thuộc vào 1 nhà cung cấp duy nhất"
+            placeholder={t('templatesF039RisksHub.fieldTitlePlaceholder')}
             required
             maxLength={200}
           />
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-[var(--text-primary)]">Mô tả</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templatesF039RisksHub.fieldDescription')}</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              placeholder="Mô tả chi tiết hoàn cảnh, nguy cơ..."
+              placeholder={t('templatesF039RisksHub.fieldDescriptionPlaceholder')}
               className="w-full px-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all resize-none"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[var(--text-primary)]">Danh mục *</label>
+              <label className="text-sm font-medium text-[var(--text-primary)]">{t('templatesF039RisksHub.fieldCategory')}</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as Category)}
                 className="w-full h-10 px-3 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)]"
               >
-                {CATEGORIES.map((c) => <option key={c} value={c}>{CATEGORY_LABEL[c]}</option>)}
+                {CATEGORIES.map((c) => <option key={c} value={c}>{t(CATEGORY_LABEL_KEY[c])}</option>)}
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[var(--text-primary)]">Trạng thái</label>
+              <label className="text-sm font-medium text-[var(--text-primary)]">{t('templatesF039RisksHub.fieldStatus')}</label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as Status)}
                 className="w-full h-10 px-3 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)]"
               >
-                <option value="open">Mở</option>
-                <option value="mitigating">Đang xử lý</option>
-                <option value="closed">Đã đóng</option>
+                <option value="open">{t(STATUS_META.open.labelKey)}</option>
+                <option value="mitigating">{t(STATUS_META.mitigating.labelKey)}</option>
+                <option value="closed">{t(STATUS_META.closed.labelKey)}</option>
               </select>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <ScoreSlider label="Khả năng (likelihood) *" value={likelihood} onChange={setLikelihood} />
-            <ScoreSlider label="Tác động (impact) *"      value={impact}     onChange={setImpact} />
+            <ScoreSlider label={t('templatesF039RisksHub.fieldLikelihood')} value={likelihood} onChange={setLikelihood} />
+            <ScoreSlider label={t('templatesF039RisksHub.fieldImpact')}     value={impact}     onChange={setImpact} />
           </div>
 
           <div className="bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom p-3 flex items-center justify-between">
             <div>
-              <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Score tự tính</p>
+              <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templatesF039RisksHub.scoreAuto')}</p>
               <p className="font-serif text-xl text-[var(--text-primary)]">{likelihood} × {impact} = {score}</p>
             </div>
             <Badge variant={SEVERITY_META[severityFromScore(score)].variant}>
-              {SEVERITY_META[severityFromScore(score)].label}
+              {t(SEVERITY_META[severityFromScore(score)].labelKey)}
             </Badge>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-[var(--text-primary)]">Kế hoạch xử lý</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templatesF039RisksHub.fieldMitigationPlan')}</label>
             <textarea
               value={mitigationPlan}
               onChange={(e) => setMitigationPlan(e.target.value)}
               rows={2}
-              placeholder="Bước cụ thể để giảm rủi ro..."
+              placeholder={t('templatesF039RisksHub.fieldMitigationPlanPlaceholder')}
               className="w-full px-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all resize-none"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[var(--text-primary)]">Tiến độ xử lý ({progress}%)</label>
+              <label className="text-sm font-medium text-[var(--text-primary)]">{t('templatesF039RisksHub.fieldProgress', { progress })}</label>
               <input
                 type="range"
                 min={0}
@@ -616,7 +634,7 @@ function CreateRiskModal({
               />
             </div>
             <Input
-              label="Hạn xử lý"
+              label={t('templatesF039RisksHub.fieldDueDate')}
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
@@ -624,9 +642,9 @@ function CreateRiskModal({
           </div>
 
           <div className="flex justify-end gap-2 pt-3 border-t border-[var(--border-color)]">
-            <Button variant="tertiary" type="button" onClick={onClose} disabled={submitting}>Huỷ</Button>
+            <Button variant="tertiary" type="button" onClick={onClose} disabled={submitting}>{t('templatesF039RisksHub.cancel')}</Button>
             <Button variant="primary" type="submit" isLoading={submitting} disabled={!title.trim()}>
-              <Plus className="w-4 h-4 mr-2" /> Tạo rủi ro
+              <Plus className="w-4 h-4 mr-2" /> {t('templatesF039RisksHub.createRisk')}
             </Button>
           </div>
         </form>
@@ -638,6 +656,7 @@ function CreateRiskModal({
 function ScoreSlider({
   label, value, onChange,
 }: { label: string; value: number; onChange: (v: number) => void }) {
+  const t = useT();
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
@@ -654,7 +673,7 @@ function ScoreSlider({
         className="w-full h-2 bg-[var(--border-color)]/40 rounded-full accent-[var(--primary-gold)]"
       />
       <div className="flex justify-between text-[10px] text-[var(--text-secondary)]">
-        {['Rất thấp', 'Thấp', 'Trung', 'Cao', 'Rất cao'].map((l) => <span key={l}>{l}</span>)}
+        {LEVEL_LABEL_KEYS.map((k) => <span key={k}>{t(k)}</span>)}
       </div>
     </div>
   );

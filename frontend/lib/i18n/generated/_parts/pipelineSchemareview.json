@@ -1,0 +1,177 @@
+{
+  "pipelineSchemareview.title": {
+    "vi": "Nhận diện cột dữ liệu",
+    "en": "Column recognition",
+    "ja": "列の識別",
+    "ko": "컬럼 인식",
+    "zh": "字段识别"
+  },
+  "pipelineSchemareview.desc": {
+    "vi": "Hệ thống đã ánh xạ tên cột sang chuẩn chung. Kiểm tra và chỉnh sửa nếu cần.",
+    "en": "The system has mapped column names to the common standard. Review and edit if needed.",
+    "ja": "システムが列名を共通標準にマッピングしました。必要に応じて確認・編集してください。",
+    "ko": "시스템이 컬럼 이름을 공통 표준에 매핑했습니다. 필요하면 확인하고 수정하세요.",
+    "zh": "系统已将字段名称映射到统一标准。请检查并按需修改。"
+  },
+  "pipelineSchemareview.warningBadge": {
+    "vi": "⚠ {count} cột cần xem lại",
+    "en": "⚠ {count} column(s) need review",
+    "ja": "⚠ 確認が必要な列が{count}件あります",
+    "ko": "⚠ 검토가 필요한 컬럼 {count}개",
+    "zh": "⚠ {count} 个字段需要检查"
+  },
+  "pipelineSchemareview.analyzing": {
+    "vi": "Đang phân tích cột dữ liệu…",
+    "en": "Analyzing data columns…",
+    "ja": "データ列を分析しています…",
+    "ko": "데이터 컬럼 분석 중…",
+    "zh": "正在分析数据字段…"
+  },
+  "pipelineSchemareview.errFetchSchema": {
+    "vi": "Không thể lấy schema",
+    "en": "Unable to fetch schema",
+    "ja": "スキーマを取得できませんでした",
+    "ko": "스키마를 가져올 수 없습니다",
+    "zh": "无法获取架构"
+  },
+  "pipelineSchemareview.errConfirm": {
+    "vi": "Lỗi khi xác nhận schema",
+    "en": "Error confirming schema",
+    "ja": "スキーマの確定でエラーが発生しました",
+    "ko": "스키마 확인 중 오류가 발생했습니다",
+    "zh": "确认架构时出错"
+  },
+  "pipelineSchemareview.sheetDefault": {
+    "vi": "Sheet 1",
+    "en": "Sheet 1",
+    "ja": "シート1",
+    "ko": "시트 1",
+    "zh": "工作表 1"
+  },
+  "pipelineSchemareview.colSource": {
+    "vi": "Tên cột gốc",
+    "en": "Original column name",
+    "ja": "元の列名",
+    "ko": "원본 컬럼명",
+    "zh": "原始字段名"
+  },
+  "pipelineSchemareview.colCanonical": {
+    "vi": "Tên chuẩn",
+    "en": "Canonical name",
+    "ja": "標準名",
+    "ko": "표준 이름",
+    "zh": "标准名称"
+  },
+  "pipelineSchemareview.colDtype": {
+    "vi": "Kiểu dữ liệu",
+    "en": "Data type",
+    "ja": "データ型",
+    "ko": "데이터 유형",
+    "zh": "数据类型"
+  },
+  "pipelineSchemareview.colConfidence": {
+    "vi": "Độ tin cậy",
+    "en": "Confidence",
+    "ja": "信頼度",
+    "ko": "신뢰도",
+    "zh": "置信度"
+  },
+  "pipelineSchemareview.colWarning": {
+    "vi": "Cảnh báo",
+    "en": "Warning",
+    "ja": "警告",
+    "ko": "경고",
+    "zh": "警告"
+  },
+  "pipelineSchemareview.confirming": {
+    "vi": "Đang xác nhận…",
+    "en": "Confirming…",
+    "ja": "確定しています…",
+    "ko": "확인 중…",
+    "zh": "正在确认…"
+  },
+  "pipelineSchemareview.confirmBtn": {
+    "vi": "Xác nhận và tiếp tục →",
+    "en": "Confirm and continue →",
+    "ja": "確定して続行 →",
+    "ko": "확인하고 계속 →",
+    "zh": "确认并继续 →"
+  },
+  "pipelineSchemareview.flagLowConfidence": {
+    "vi": "Tin cậy thấp",
+    "en": "Low confidence",
+    "ja": "信頼度が低い",
+    "ko": "신뢰도 낮음",
+    "zh": "置信度低"
+  },
+  "pipelineSchemareview.flagAmbiguous": {
+    "vi": "Không rõ ràng",
+    "en": "Ambiguous",
+    "ja": "不明瞭",
+    "ko": "불명확",
+    "zh": "含糊不清"
+  },
+  "pipelineSchemareview.flagLangMismatch": {
+    "vi": "Ngôn ngữ khác",
+    "en": "Language mismatch",
+    "ja": "言語の不一致",
+    "ko": "언어 불일치",
+    "zh": "语言不匹配"
+  },
+  "pipelineSchemareview.flagLlmFallback": {
+    "vi": "AI suy luận",
+    "en": "AI inferred",
+    "ja": "AI推論",
+    "ko": "AI 추론",
+    "zh": "AI 推断"
+  },
+  "pipelineSchemareview.flagNoMatch": {
+    "vi": "Không khớp",
+    "en": "No match",
+    "ja": "一致なし",
+    "ko": "일치 없음",
+    "zh": "无匹配"
+  },
+  "pipelineSchemareview.hintUnitPrice": {
+    "vi": "Đơn giá — giá MỖI đơn vị (sẽ × số lượng để ra thành tiền)",
+    "en": "Unit price — price PER unit (will be × quantity to get the line total)",
+    "ja": "単価 — 1単位あたりの価格（数量を掛けて金額になります）",
+    "ko": "단가 — 단위당 가격 (수량을 곱하면 금액이 됩니다)",
+    "zh": "单价 — 每单位的价格（将 × 数量得出金额）"
+  },
+  "pipelineSchemareview.hintAmount": {
+    "vi": "Thành tiền — tổng giá trị dòng (đã = đơn giá × số lượng)",
+    "en": "Amount — total line value (already = unit price × quantity)",
+    "ja": "金額 — 行の合計値（すでに単価×数量です）",
+    "ko": "금액 — 행의 총 가치 (이미 단가 × 수량입니다)",
+    "zh": "金额 — 行合计值（已等于单价 × 数量）"
+  },
+  "pipelineSchemareview.hintRevenue": {
+    "vi": "Doanh thu — tổng giá trị dòng",
+    "en": "Revenue — total line value",
+    "ja": "売上 — 行の合計値",
+    "ko": "매출 — 행의 총 가치",
+    "zh": "营收 — 行合计值"
+  },
+  "pipelineSchemareview.hintQuantity": {
+    "vi": "Số lượng",
+    "en": "Quantity",
+    "ja": "数量",
+    "ko": "수량",
+    "zh": "数量"
+  },
+  "pipelineSchemareview.hintCustomerId": {
+    "vi": "Mã khách hàng",
+    "en": "Customer ID",
+    "ja": "顧客ID",
+    "ko": "고객 ID",
+    "zh": "客户编号"
+  },
+  "pipelineSchemareview.hintDate": {
+    "vi": "Ngày giao dịch",
+    "en": "Transaction date",
+    "ja": "取引日",
+    "ko": "거래일",
+    "zh": "交易日期"
+  }
+}

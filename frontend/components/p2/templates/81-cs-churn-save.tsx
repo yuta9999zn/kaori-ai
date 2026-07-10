@@ -28,6 +28,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 
 // ─── Types ───────────────────────────────────────────────────────────
 
@@ -55,6 +56,7 @@ interface Playbook {
 // ─── Page component ──────────────────────────────────────────────────
 
 export default function ChurnSavePage() {
+  const t = useT();
   const [planFilter, setPlanFilter] = useState<string>('');
   const [selectedCustomer, setSelectedCustomer] = useState<ChurnPortfolioCustomer | null>(null);
   const [playbookDrawerOpen, setPlaybookDrawerOpen] = useState(false);
@@ -65,21 +67,21 @@ export default function ChurnSavePage() {
   const isLoading = false;
   const error: ProblemDetails | null = null;
 
-  if (error) return <ErrorBanner message={error.detail ?? 'Không tải được portfolio.'} />;
+  if (error) return <ErrorBanner message={error.detail ?? t('templates81CsChurnSave.errPortfolio')} />;
 
   const byTier = (tier: RiskTier) => customers.filter(c => c.risk_tier === tier);
 
   return (
     <div className="space-y-4">
       <PageHeader
-        title="Churn Save Workspace"
-        subtitle="Kanban khách hàng theo risk tier · NOV impact · playbook gợi ý."
+        title={t('templates81CsChurnSave.title')}
+        subtitle={t('templates81CsChurnSave.subtitle')}
       />
 
       {/* Portfolio filters */}
       <div className="flex items-center gap-3 rounded-lg border bg-white px-4 py-3">
         <select className="bg-transparent text-sm outline-none" value={planFilter} onChange={(e) => setPlanFilter(e.target.value)}>
-          <option value="">Tất cả plan</option>
+          <option value="">{t('templates81CsChurnSave.optionAllPlans')}</option>
           <option value="PILOT">PILOT</option>
           <option value="ENT_BASIC">ENT BASIC</option>
           <option value="ENT_MID">ENT MID</option>
@@ -87,7 +89,7 @@ export default function ChurnSavePage() {
         </select>
         <div className="flex-1" />
         <Badge variant="outline">
-          NOV at risk: {customers.reduce((sum, c) => sum + c.nov_at_risk_vnd, 0).toLocaleString('vi-VN')}₫
+          {t('templates81CsChurnSave.novAtRisk')}: {customers.reduce((sum, c) => sum + c.nov_at_risk_vnd, 0).toLocaleString('vi-VN')}₫
         </Badge>
       </div>
 
@@ -97,7 +99,7 @@ export default function ChurnSavePage() {
       ) : customers.length === 0 ? (
         <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground">
           <UserCheck className="mx-auto size-8 text-green-500" />
-          <div className="mt-2">Portfolio sạch — 0 khách HIGH risk 🎉.</div>
+          <div className="mt-2">{t('templates81CsChurnSave.emptyPortfolio')}</div>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -111,9 +113,9 @@ export default function ChurnSavePage() {
       {/* Effectiveness summary */}
       <div className="rounded-lg border bg-white p-4">
         <div className="flex items-center gap-2 font-medium">
-          <Activity className="size-4" /> Hiệu quả intervention (30d)
+          <Activity className="size-4" /> {t('templates81CsChurnSave.effectivenessTitle')}
         </div>
-        <div className="mt-2 text-sm text-muted-foreground">Tính năng đang hoàn thiện</div>
+        <div className="mt-2 text-sm text-muted-foreground">{t('templates81CsChurnSave.comingSoon')}</div>
         {/* TODO low effectiveness warning: yellow banner if <20% recovery */}
       </div>
 
@@ -138,11 +140,12 @@ export default function ChurnSavePage() {
 // ─── Subcomponents ───────────────────────────────────────────────────
 
 function RiskColumn({ tier, customers, onSelect }: { tier: RiskTier; customers: ChurnPortfolioCustomer[]; onSelect: (c: ChurnPortfolioCustomer) => void }) {
+  const t = useT();
   const config = {
-    CRITICAL: { label: 'Critical', cls: 'border-red-300 bg-red-50' },
-    HIGH:     { label: 'High',     cls: 'border-orange-300 bg-orange-50' },
-    MEDIUM:   { label: 'Medium',   cls: 'border-yellow-200 bg-yellow-50' },
-    LOW:      { label: 'Low',      cls: 'border-blue-200 bg-blue-50' },
+    CRITICAL: { label: t('templates81CsChurnSave.tierCritical'), cls: 'border-red-300 bg-red-50' },
+    HIGH:     { label: t('templates81CsChurnSave.tierHigh'),     cls: 'border-orange-300 bg-orange-50' },
+    MEDIUM:   { label: t('templates81CsChurnSave.tierMedium'),   cls: 'border-yellow-200 bg-yellow-50' },
+    LOW:      { label: t('templates81CsChurnSave.tierLow'),      cls: 'border-blue-200 bg-blue-50' },
   }[tier];
   return (
     <div className={cn('rounded-lg border p-3', config.cls)}>
@@ -152,7 +155,7 @@ function RiskColumn({ tier, customers, onSelect }: { tier: RiskTier; customers: 
       </div>
       <div className="space-y-2">
         {customers.length === 0 ? (
-          <div className="text-xs text-muted-foreground">Không có khách.</div>
+          <div className="text-xs text-muted-foreground">{t('templates81CsChurnSave.emptyColumn')}</div>
         ) : (
           customers.map(c => (
             <button
@@ -168,11 +171,11 @@ function RiskColumn({ tier, customers, onSelect }: { tier: RiskTier; customers: 
                 <TrendingDown className="inline size-3" /> {c.primary_risk_factor}
               </div>
               <div className="mt-1 text-xs">
-                NOV at risk: <strong>{c.nov_at_risk_vnd.toLocaleString('vi-VN')}₫</strong>
+                {t('templates81CsChurnSave.novAtRisk')}: <strong>{c.nov_at_risk_vnd.toLocaleString('vi-VN')}₫</strong>
               </div>
               {c.in_flight_action && (
                 <div className="mt-1 inline-block rounded bg-purple-100 px-2 py-0.5 text-xs text-purple-700">
-                  Đang chạy: {c.in_flight_action}
+                  {t('templates81CsChurnSave.runningAction')}: {c.in_flight_action}
                 </div>
               )}
             </button>
@@ -187,36 +190,37 @@ function CustomerActionDrawer({ customer, playbooks, onClose, onOpenPlaybook }: 
   customer: ChurnPortfolioCustomer; playbooks: Playbook[];
   onClose: () => void; onOpenPlaybook: () => void;
 }) {
+  const t = useT();
   void playbooks;
   return (
     <div className="fixed inset-y-0 right-0 w-full max-w-lg border-l bg-white shadow-lg overflow-y-auto">
       <div className="flex items-center justify-between border-b px-6 py-4">
         <h2 className="text-lg font-medium">{customer.name}</h2>
-        <Button variant="ghost" onClick={onClose}>Đóng</Button>
+        <Button variant="ghost" onClick={onClose}>{t('templates81CsChurnSave.close')}</Button>
       </div>
       <div className="space-y-4 px-6 py-4">
         <div className="rounded border bg-gray-50 p-3 text-sm">
-          <div className="text-xs uppercase text-muted-foreground">Risk factor (SHAP top-1)</div>
+          <div className="text-xs uppercase text-muted-foreground">{t('templates81CsChurnSave.riskFactorLabel')}</div>
           <div className="mt-1">{customer.primary_risk_factor}</div>
-          <div className="mt-3 text-xs uppercase text-muted-foreground">NOV at risk</div>
+          <div className="mt-3 text-xs uppercase text-muted-foreground">{t('templates81CsChurnSave.novAtRisk')}</div>
           <div className="mt-1 text-lg font-medium">{customer.nov_at_risk_vnd.toLocaleString('vi-VN')}₫</div>
         </div>
         <div>
-          <div className="font-medium">Adoption signals (EPIC-13)</div>
+          <div className="font-medium">{t('templates81CsChurnSave.adoptionSignalsLabel')}</div>
           <div className="mt-2 rounded border bg-gray-50 p-3 text-sm text-muted-foreground">
-            Tính năng đang hoàn thiện
+            {t('templates81CsChurnSave.comingSoon')}
           </div>
         </div>
         <div>
-          <div className="font-medium">Intervention history</div>
+          <div className="font-medium">{t('templates81CsChurnSave.interventionHistoryLabel')}</div>
           <div className="mt-2 rounded border bg-gray-50 p-3 text-sm text-muted-foreground">
-            Tính năng đang hoàn thiện
+            {t('templates81CsChurnSave.comingSoon')}
           </div>
         </div>
         <div className="flex justify-end gap-2 border-t pt-4">
           {/* TODO P2-37-PERM: gate Run on claim run_churn_save_action */}
-          <Button variant="ghost"><UserCheck className="size-4" /> Assign AE</Button>
-          <Button onClick={onOpenPlaybook}><Zap className="size-4" /> Run playbook</Button>
+          <Button variant="ghost"><UserCheck className="size-4" /> {t('templates81CsChurnSave.assignAe')}</Button>
+          <Button onClick={onOpenPlaybook}><Zap className="size-4" /> {t('templates81CsChurnSave.runPlaybook')}</Button>
         </div>
       </div>
     </div>
@@ -224,16 +228,17 @@ function CustomerActionDrawer({ customer, playbooks, onClose, onOpenPlaybook }: 
 }
 
 function PlaybookDrawer({ playbooks, onClose }: { playbooks: Playbook[]; onClose: () => void }) {
+  const t = useT();
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="w-full max-w-2xl rounded-lg bg-white p-6 shadow-lg">
         <div className="flex items-center justify-between border-b pb-3">
-          <h3 className="text-lg font-medium">Chọn playbook</h3>
-          <Button variant="ghost" onClick={onClose}>Đóng</Button>
+          <h3 className="text-lg font-medium">{t('templates81CsChurnSave.selectPlaybookTitle')}</h3>
+          <Button variant="ghost" onClick={onClose}>{t('templates81CsChurnSave.close')}</Button>
         </div>
         <div className="mt-4 space-y-2">
           {playbooks.length === 0 ? (
-            <div className="text-sm text-muted-foreground">Chưa có playbook — định nghĩa trong P2-37 setup.</div>
+            <div className="text-sm text-muted-foreground">{t('templates81CsChurnSave.noPlaybooksYet')}</div>
           ) : (
             playbooks.map(p => (
               <div key={p.playbook_id} className="rounded border p-3 text-sm">

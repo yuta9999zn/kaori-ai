@@ -1,0 +1,282 @@
+{
+  "templates09DashboardOverview.pageTitle": {
+    "vi": "Bảng điều khiển",
+    "en": "Dashboard",
+    "ja": "ダッシュボード",
+    "ko": "대시보드",
+    "zh": "仪表盘"
+  },
+  "templates09DashboardOverview.pageDescription": {
+    "vi": "Tổng quan workspace — pipeline, insight, hạn mức gói cước.",
+    "en": "Workspace overview — pipeline, insights, plan quota.",
+    "ja": "ワークスペースの概要 — データパイプライン、インサイト、プラン利用枠。",
+    "ko": "워크스페이스 개요 — 데이터 파이프라인, 인사이트, 플랜 한도.",
+    "zh": "工作区概览 — 数据管道、洞察、套餐额度。"
+  },
+  "templates09DashboardOverview.refresh": {
+    "vi": "Làm mới",
+    "en": "Refresh",
+    "ja": "更新",
+    "ko": "새로고침",
+    "zh": "刷新"
+  },
+  "templates09DashboardOverview.newPipeline": {
+    "vi": "Pipeline mới",
+    "en": "New pipeline",
+    "ja": "新規パイプライン",
+    "ko": "새 파이프라인",
+    "zh": "新建管道"
+  },
+  "templates09DashboardOverview.quotaTitle": {
+    "vi": "Hạn mức tháng này",
+    "en": "This month's quota",
+    "ja": "今月の利用枠",
+    "ko": "이번 달 한도",
+    "zh": "本月额度"
+  },
+  "templates09DashboardOverview.quotaCountedByPrefix": {
+    "vi": "Đếm theo",
+    "en": "Counted by",
+    "ja": "カウント基準：",
+    "ko": "산정 기준:",
+    "zh": "计费依据："
+  },
+  "templates09DashboardOverview.quotaCountedByUnit": {
+    "vi": "khách hàng đã xử lý duy nhất",
+    "en": "unique customers processed",
+    "ja": "処理済みのユニーク顧客数",
+    "ko": "처리된 고유 고객 수",
+    "zh": "已处理的唯一客户数"
+  },
+  "templates09DashboardOverview.quotaPlanLine": {
+    "vi": "Gói {plan} — {amount}/tháng.",
+    "en": "Plan {plan} — {amount}/month.",
+    "ja": "プラン {plan} — {amount}/月。",
+    "ko": "플랜 {plan} — {amount}/월.",
+    "zh": "套餐 {plan} — {amount}/月。"
+  },
+  "templates09DashboardOverview.upgradePlan": {
+    "vi": "Nâng cấp gói",
+    "en": "Upgrade plan",
+    "ja": "プランをアップグレード",
+    "ko": "플랜 업그레이드",
+    "zh": "升级套餐"
+  },
+  "templates09DashboardOverview.quotaUnitLabel": {
+    "vi": "khách hàng đã xử lý",
+    "en": "customers processed",
+    "ja": "処理済み顧客数",
+    "ko": "처리된 고객 수",
+    "zh": "已处理客户数"
+  },
+  "templates09DashboardOverview.emptyTitle": {
+    "vi": "Chưa có dữ liệu nào",
+    "en": "No data yet",
+    "ja": "まだデータがありません",
+    "ko": "아직 데이터가 없습니다",
+    "zh": "暂无数据"
+  },
+  "templates09DashboardOverview.emptyDescription": {
+    "vi": "Tải lên file CSV/Excel đầu tiên — Kaori sẽ tự nhận cột, làm sạch dữ liệu, sinh insight trong vài phút.",
+    "en": "Upload your first CSV/Excel file — Kaori will auto-detect columns, clean the data, and generate insights within minutes.",
+    "ja": "最初のCSV/Excelファイルをアップロードしてください — Kaoriが自動で項目を認識し、データをクレンジングして数分でインサイトを生成します。",
+    "ko": "첫 CSV/Excel 파일을 업로드하세요 — Kaori가 컬럼을 자동 인식하고 데이터를 정제하여 몇 분 안에 인사이트를 생성합니다.",
+    "zh": "上传你的第一个 CSV/Excel 文件 — Kaori 会自动识别字段、清洗数据，并在几分钟内生成洞察。"
+  },
+  "templates09DashboardOverview.uploadCta": {
+    "vi": "Tải dữ liệu lên",
+    "en": "Upload data",
+    "ja": "データをアップロード",
+    "ko": "데이터 업로드",
+    "zh": "上传数据"
+  },
+  "templates09DashboardOverview.orSeePrefix": {
+    "vi": "Hoặc xem",
+    "en": "Or see the",
+    "ja": "または",
+    "ko": "또는",
+    "zh": "或查看"
+  },
+  "templates09DashboardOverview.fiveMinGuide": {
+    "vi": "hướng dẫn 5 phút",
+    "en": "5-minute guide",
+    "ja": "5分ガイドをご覧ください",
+    "ko": "5분 가이드를 확인하세요",
+    "zh": "5分钟指南"
+  },
+  "templates09DashboardOverview.uploadingTitle": {
+    "vi": "Đang tải file lên...",
+    "en": "Uploading file...",
+    "ja": "ファイルをアップロード中...",
+    "ko": "파일 업로드 중...",
+    "zh": "正在上传文件..."
+  },
+  "templates09DashboardOverview.uploadingHint": {
+    "vi": "Vui lòng giữ kết nối — quá trình tải có thể mất vài phút với file lớn.",
+    "en": "Please keep this connection open — uploading may take a few minutes for large files.",
+    "ja": "接続を維持してください — ファイルが大きい場合、アップロードに数分かかることがあります。",
+    "ko": "연결을 유지해 주세요 — 파일이 클 경우 업로드에 몇 분이 걸릴 수 있습니다.",
+    "zh": "请保持连接 — 大文件上传可能需要几分钟。"
+  },
+  "templates09DashboardOverview.processingTitle": {
+    "vi": "Đang xử lý dữ liệu",
+    "en": "Processing data",
+    "ja": "データ処理中",
+    "ko": "데이터 처리 중",
+    "zh": "正在处理数据"
+  },
+  "templates09DashboardOverview.processingHint": {
+    "vi": "Bronze → Silver → Gold đang chạy.",
+    "en": "Bronze → Silver → Gold is running.",
+    "ja": "Bronze → Silver → Gold を実行中です。",
+    "ko": "Bronze → Silver → Gold 처리 중입니다.",
+    "zh": "Bronze → Silver → Gold 正在运行。"
+  },
+  "templates09DashboardOverview.kpiPipeline30d": {
+    "vi": "Pipeline 30 ngày",
+    "en": "Pipelines (30 days)",
+    "ja": "パイプライン（30日間）",
+    "ko": "파이프라인 (30일)",
+    "zh": "管道（30 天）"
+  },
+  "templates09DashboardOverview.kpiBronzeFiles": {
+    "vi": "Bronze files",
+    "en": "Bronze files",
+    "ja": "Bronze files",
+    "ko": "Bronze files",
+    "zh": "Bronze files"
+  },
+  "templates09DashboardOverview.kpiInsights30d": {
+    "vi": "Insight sinh ra",
+    "en": "Insights generated",
+    "ja": "生成されたインサイト",
+    "ko": "생성된 인사이트",
+    "zh": "生成的洞察"
+  },
+  "templates09DashboardOverview.kpiOpenAlerts": {
+    "vi": "Cảnh báo mở",
+    "en": "Open alerts",
+    "ja": "未対応の警告",
+    "ko": "열린 경고",
+    "zh": "未处理警报"
+  },
+  "templates09DashboardOverview.kpiDataProcessedGb": {
+    "vi": "Dữ liệu đã xử lý (GB)",
+    "en": "Data processed (GB)",
+    "ja": "処理済みデータ（GB）",
+    "ko": "처리된 데이터 (GB)",
+    "zh": "已处理数据（GB）"
+  },
+  "templates09DashboardOverview.kpiActiveUsers": {
+    "vi": "Người dùng hoạt động",
+    "en": "Active users",
+    "ja": "アクティブユーザー",
+    "ko": "활성 사용자",
+    "zh": "活跃用户"
+  },
+  "templates09DashboardOverview.recentPipelines": {
+    "vi": "Pipeline gần đây",
+    "en": "Recent pipelines",
+    "ja": "最近のパイプライン",
+    "ko": "최근 파이프라인",
+    "zh": "最近的管道"
+  },
+  "templates09DashboardOverview.viewAll": {
+    "vi": "Xem tất cả",
+    "en": "View all",
+    "ja": "すべて表示",
+    "ko": "전체 보기",
+    "zh": "查看全部"
+  },
+  "templates09DashboardOverview.noPipelinesYet": {
+    "vi": "Chưa có pipeline nào.",
+    "en": "No pipelines yet.",
+    "ja": "パイプラインはまだありません。",
+    "ko": "아직 파이프라인이 없습니다.",
+    "zh": "暂无管道。"
+  },
+  "templates09DashboardOverview.alerts": {
+    "vi": "Cảnh báo",
+    "en": "Alerts",
+    "ja": "警告",
+    "ko": "경고",
+    "zh": "警报"
+  },
+  "templates09DashboardOverview.noAlerts": {
+    "vi": "Không có cảnh báo nào.",
+    "en": "No alerts.",
+    "ja": "警告はありません。",
+    "ko": "경고가 없습니다.",
+    "zh": "暂无警报。"
+  },
+  "templates09DashboardOverview.priorityInsights": {
+    "vi": "Insight ưu tiên",
+    "en": "Priority insights",
+    "ja": "優先インサイト",
+    "ko": "우선 인사이트",
+    "zh": "优先洞察"
+  },
+  "templates09DashboardOverview.revenueAtRiskLabel": {
+    "vi": "Doanh thu tiềm ẩn rủi ro:",
+    "en": "Revenue at risk:",
+    "ja": "リスクにさらされている売上：",
+    "ko": "위험에 노출된 매출:",
+    "zh": "存在风险的营收："
+  },
+  "templates09DashboardOverview.actioned": {
+    "vi": "Đã hành động",
+    "en": "Actioned",
+    "ja": "対応済み",
+    "ko": "조치 완료",
+    "zh": "已处理"
+  },
+  "templates09DashboardOverview.notActioned": {
+    "vi": "Chưa",
+    "en": "Not yet",
+    "ja": "未対応",
+    "ko": "미조치",
+    "zh": "未处理"
+  },
+  "templates09DashboardOverview.errorTitle": {
+    "vi": "Không tải được dashboard",
+    "en": "Failed to load dashboard",
+    "ja": "ダッシュボードを読み込めませんでした",
+    "ko": "대시보드를 불러오지 못했습니다",
+    "zh": "无法加载仪表盘"
+  },
+  "templates09DashboardOverview.retry": {
+    "vi": "Thử lại",
+    "en": "Retry",
+    "ja": "再試行",
+    "ko": "다시 시도",
+    "zh": "重试"
+  },
+  "templates09DashboardOverview.statusSchemaReview": {
+    "vi": "Đang duyệt cột",
+    "en": "Reviewing columns",
+    "ja": "項目確認中",
+    "ko": "컬럼 검토 중",
+    "zh": "字段审核中"
+  },
+  "templates09DashboardOverview.statusAnalyzing": {
+    "vi": "Đang phân tích",
+    "en": "Analyzing",
+    "ja": "分析中",
+    "ko": "분석 중",
+    "zh": "分析中"
+  },
+  "templates09DashboardOverview.statusComplete": {
+    "vi": "Hoàn tất",
+    "en": "Complete",
+    "ja": "完了",
+    "ko": "완료",
+    "zh": "已完成"
+  },
+  "templates09DashboardOverview.updatedAt": {
+    "vi": "cập nhật {time}",
+    "en": "updated {time}",
+    "ja": "更新: {time}",
+    "ko": "업데이트: {time}",
+    "zh": "更新于 {time}"
+  }
+}

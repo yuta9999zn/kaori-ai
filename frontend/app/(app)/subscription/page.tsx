@@ -63,9 +63,9 @@ const PLAN_CATALOGUE: Array<{ code: string; label: string; quota: number; priceV
 ];
 
 const TABS = [
-  { id: "quota",   label: "Hạn mức",  icon: Gauge },
-  { id: "plan",    label: "Gói",       icon: CreditCard },
-  { id: "upgrade", label: "Nâng cấp",  icon: ArrowUpCircle },
+  { id: "quota",   labelKey: "subscriptionPage.tabQuota",   icon: Gauge },
+  { id: "plan",    labelKey: "subscriptionPage.tabPlan",    icon: CreditCard },
+  { id: "upgrade", labelKey: "subscriptionPage.tabUpgrade", icon: ArrowUpCircle },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -111,9 +111,9 @@ export default function SubscriptionPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-h1 font-serif text-ink">Gói dịch vụ & Hạn mức</h1>
+        <h1 className="text-h1 font-serif text-ink">{t("subscriptionPage.title")}</h1>
         <p className="text-small text-ink-muted mt-1">
-          Theo dõi hạn mức tháng và yêu cầu nâng cấp gói khi cần.
+          {t("subscriptionPage.subtitle")}
         </p>
       </div>
 
@@ -123,9 +123,9 @@ export default function SubscriptionPage() {
           <CardContent className="pt-6 flex items-start gap-3">
             <AlertOctagon className="w-5 h-5 text-danger-600 mt-0.5" />
             <div className="space-y-1">
-              <p className="text-body-strong text-danger-700">Đã đạt 95% hạn mức tháng</p>
+              <p className="text-body-strong text-danger-700">{t("subscriptionPage.alert95Title")}</p>
               <p className="text-small text-danger-600">
-                Yêu cầu nâng cấp ngay để tránh ngừng dịch vụ. Liên hệ hỗ trợ nếu cần xử lý gấp.
+                {t("subscriptionPage.alert95Desc")}
               </p>
             </div>
           </CardContent>
@@ -136,9 +136,9 @@ export default function SubscriptionPage() {
           <CardContent className="pt-6 flex items-start gap-3">
             <AlertTriangle className="w-5 h-5 text-warning-600 mt-0.5" />
             <div className="space-y-1">
-              <p className="text-body-strong text-warning-700">Đã đạt 80% hạn mức tháng</p>
+              <p className="text-body-strong text-warning-700">{t("subscriptionPage.alert80Title")}</p>
               <p className="text-small text-warning-600">
-                Tốc độ sử dụng hiện tại có thể vượt hạn mức trước cuối tháng. Cân nhắc nâng cấp gói.
+                {t("subscriptionPage.alert80Desc")}
               </p>
             </div>
           </CardContent>
@@ -162,7 +162,7 @@ export default function SubscriptionPage() {
                 }`}
               >
                 <Icon className="w-4 h-4" />
-                {tDef.label}
+                {t(tDef.labelKey)}
               </button>
             );
           })}
@@ -204,12 +204,13 @@ export default function SubscriptionPage() {
 // ── Tabs ───────────────────────────────────────────────────────────────────
 
 function QuotaTab({ s }: { s: SubscriptionState }) {
+  const t = useT();
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2">
-            <Gauge className="w-4 h-4 text-brand-500" /> Sử dụng tháng này
+            <Gauge className="w-4 h-4 text-brand-500" /> {t("subscriptionPage.usageTitle")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 pb-5">
@@ -217,7 +218,9 @@ function QuotaTab({ s }: { s: SubscriptionState }) {
             <span className="text-h2 font-serif text-ink tabular-nums">
               {s.usage_count.toLocaleString("vi-VN")}
             </span>
-            <span className="text-small text-ink-muted">/ {s.quota.toLocaleString("vi-VN")} khách hàng</span>
+            <span className="text-small text-ink-muted">
+              {t("subscriptionPage.quotaOf", { quota: s.quota.toLocaleString("vi-VN") })}
+            </span>
             <Badge tone={pctTone(s.usage_pct)}>{s.usage_pct}%</Badge>
           </div>
           <div className="h-2 bg-[#F5EFE5] rounded-full overflow-hidden">
@@ -227,7 +230,11 @@ function QuotaTab({ s }: { s: SubscriptionState }) {
             />
           </div>
           <p className="text-tiny text-[#B0A698]">
-            Còn {s.days_remaining} ngày trong chu kỳ {s.billing_month} ({s.days_in_billing_month} ngày).
+            {t("subscriptionPage.cycleRemaining", {
+              days: s.days_remaining,
+              billingMonth: s.billing_month,
+              daysInMonth: s.days_in_billing_month,
+            })}
           </p>
         </CardContent>
       </Card>
@@ -235,7 +242,7 @@ function QuotaTab({ s }: { s: SubscriptionState }) {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-brand-500" /> Dự báo cuối kỳ
+            <Sparkles className="w-4 h-4 text-brand-500" /> {t("subscriptionPage.forecastTitle")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 pb-5">
@@ -243,14 +250,17 @@ function QuotaTab({ s }: { s: SubscriptionState }) {
             <span className="text-h2 font-serif text-ink tabular-nums">
               {s.forecast_eom.toLocaleString("vi-VN")}
             </span>
-            <span className="text-small text-ink-muted">khách hàng (ước tính)</span>
+            <span className="text-small text-ink-muted">{t("subscriptionPage.forecastUnit")}</span>
           </div>
           <p className="text-tiny text-[#B0A698]">
-            Dự báo tuyến tính dựa trên tốc độ {s.usage_count} khách trong {s.days_in_billing_month - s.days_remaining} ngày đầu kỳ.
+            {t("subscriptionPage.forecastDesc", {
+              usageCount: s.usage_count,
+              days: s.days_in_billing_month - s.days_remaining,
+            })}
           </p>
           {s.last_aggregated_at && (
             <p className="text-tiny text-[#B0A698]">
-              Cập nhật lần cuối: {fmtDateTime(s.last_aggregated_at)}
+              {t("subscriptionPage.lastUpdated", { date: fmtDateTime(s.last_aggregated_at) })}
             </p>
           )}
         </CardContent>
@@ -260,10 +270,10 @@ function QuotaTab({ s }: { s: SubscriptionState }) {
         <Card className="md:col-span-2 border-warning-200 bg-warning-50/30">
           <CardContent className="pt-6">
             <p className="text-body-strong text-warning-700">
-              Đã vượt {s.overage_units.toLocaleString("vi-VN")} khách hàng
+              {t("subscriptionPage.overageTitle", { overage: s.overage_units.toLocaleString("vi-VN") })}
             </p>
             <p className="text-small text-warning-600">
-              Phí vượt sẽ được tính theo định mức gói ({s.current_plan}).
+              {t("subscriptionPage.overageDesc", { plan: s.current_plan })}
             </p>
           </CardContent>
         </Card>
@@ -273,23 +283,24 @@ function QuotaTab({ s }: { s: SubscriptionState }) {
 }
 
 function PlanTab({ s }: { s: SubscriptionState }) {
+  const t = useT();
   return (
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2">
-          <CreditCard className="w-4 h-4 text-brand-500" /> Gói hiện tại
+          <CreditCard className="w-4 h-4 text-brand-500" /> {t("subscriptionPage.planTitle")}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3 pb-5">
         <div className="flex items-baseline justify-between">
           <div>
             <p className="text-h2 font-serif text-ink">{s.plan_display_name}</p>
-            <p className="text-tiny text-[#B0A698]">Mã: {s.current_plan}</p>
+            <p className="text-tiny text-[#B0A698]">{t("subscriptionPage.planCode", { code: s.current_plan })}</p>
           </div>
           <p className="text-h3 font-serif text-ink tabular-nums">{fmtVnd(s.plan_price_vnd)}</p>
         </div>
         <p className="text-small text-ink-muted">
-          Hạn mức cơ bản: {s.plan_quota.toLocaleString("vi-VN")} khách hàng/tháng.
+          {t("subscriptionPage.planQuota", { quota: s.plan_quota.toLocaleString("vi-VN") })}
         </p>
       </CardContent>
     </Card>
@@ -306,6 +317,7 @@ interface UpgradeTabProps {
 }
 
 function UpgradeTab({ s, options, isPending, isError, errorMessage, onSubmit }: UpgradeTabProps) {
+  const t = useT();
   const [target, setTarget] = useState<string>(options[0]?.code ?? "");
 
   if (s.pending_upgrade) {
@@ -315,11 +327,10 @@ function UpgradeTab({ s, options, isPending, isError, errorMessage, onSubmit }: 
           <Clock className="w-5 h-5 text-info-600 mt-0.5" />
           <div className="space-y-1">
             <p className="text-body-strong text-info-700">
-              Đang chờ xử lý nâng cấp lên {s.pending_upgrade.requested_plan}
+              {t("subscriptionPage.pendingTitle", { plan: s.pending_upgrade.requested_plan })}
             </p>
             <p className="text-small text-info-600">
-              Yêu cầu gửi lúc {fmtDateTime(s.pending_upgrade.requested_at)}.
-              Đội ngũ Kaori sẽ liên hệ xác nhận trong 1 ngày làm việc.
+              {t("subscriptionPage.pendingDesc", { date: fmtDateTime(s.pending_upgrade.requested_at) })}
             </p>
           </div>
         </CardContent>
@@ -331,7 +342,7 @@ function UpgradeTab({ s, options, isPending, isError, errorMessage, onSubmit }: 
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2">
-          <ArrowUpCircle className="w-4 h-4 text-brand-500" /> Yêu cầu nâng cấp gói
+          <ArrowUpCircle className="w-4 h-4 text-brand-500" /> {t("subscriptionPage.requestTitle")}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 pb-5">
@@ -351,21 +362,24 @@ function UpgradeTab({ s, options, isPending, isError, errorMessage, onSubmit }: 
                 {target === opt.code && <CheckCircle2 className="w-4 h-4 text-brand-500" />}
               </div>
               <p className="text-tiny text-[#B0A698] mt-1">
-                {opt.quota.toLocaleString("vi-VN")} khách hàng • {fmtVnd(opt.priceVnd)}
+                {t("subscriptionPage.optionDetail", {
+                  quota: opt.quota.toLocaleString("vi-VN"),
+                  price: fmtVnd(opt.priceVnd),
+                })}
               </p>
             </button>
           ))}
         </div>
         {isError && (
-          <p className="text-small text-danger-600">{errorMessage ?? "Không thể gửi yêu cầu."}</p>
+          <p className="text-small text-danger-600">{errorMessage ?? t("subscriptionPage.errSubmitFailed")}</p>
         )}
         <div className="flex justify-end">
           <Button onClick={() => onSubmit(target)} loading={isPending} disabled={!target}>
-            Gửi yêu cầu nâng cấp
+            {t("subscriptionPage.submitButton")}
           </Button>
         </div>
         <p className="text-tiny text-[#B0A698]">
-          Yêu cầu sẽ được Kaori xử lý thủ công trong giai đoạn pilot.
+          {t("subscriptionPage.pilotNote")}
         </p>
       </CardContent>
     </Card>

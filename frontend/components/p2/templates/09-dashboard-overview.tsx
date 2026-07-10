@@ -27,6 +27,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type DashboardState = 'empty' | 'uploading' | 'processing' | 'completed' | 'error';
 
 type RunStatus = 'schema_review' | 'analyzing' | 'analysis_complete';
@@ -70,13 +71,16 @@ interface DashboardSnapshot {
   }>;
 }
 
-const STATUS_BADGE: Record<RunStatus, any> = {
-  schema_review:    { variant: 'info',    label: 'Đang duyệt cột' },
-  analyzing:        { variant: 'warning', label: 'Đang phân tích' },
-  analysis_complete:{ variant: 'success', label: 'Hoàn tất' },
-};
+function getStatusBadge(t: (key: string, params?: Record<string, string | number>) => string): Record<RunStatus, any> {
+  return {
+    schema_review:    { variant: 'info',    label: t('templates09DashboardOverview.statusSchemaReview') },
+    analyzing:        { variant: 'warning', label: t('templates09DashboardOverview.statusAnalyzing') },
+    analysis_complete:{ variant: 'success', label: t('templates09DashboardOverview.statusComplete') },
+  };
+}
 
 export default function DashboardOverview() {
+  const t = useT();
   const [snap,    setSnap]    = useState<DashboardSnapshot | null>(null);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -100,17 +104,17 @@ export default function DashboardOverview() {
   return (
     <>
       <PageHeader
-        title="Bảng điều khiển"
-        description="Tổng quan workspace — pipeline, insight, hạn mức gói cước."
+        title={t('templates09DashboardOverview.pageTitle')}
+        description={t('templates09DashboardOverview.pageDescription')}
         actions={
           <>
             <Button variant="secondary" onClick={load} disabled={loading}>
               <RefreshCw className={'w-4 h-4 mr-2 ' + (loading ? 'animate-spin' : '')} />
-              Làm mới
+              {t('templates09DashboardOverview.refresh')}
             </Button>
             <Button onClick={() => (window.location.href = '/p2/pipelines/new')}>
               <Plus className="w-4 h-4 mr-2" />
-              Pipeline mới
+              {t('templates09DashboardOverview.newPipeline')}
             </Button>
           </>
         }
@@ -131,11 +135,11 @@ export default function DashboardOverview() {
                 <div className="flex items-start justify-between mb-4 gap-4">
                   <div>
                     <h3 className="font-serif text-base text-[var(--text-primary)]">
-                      Hạn mức tháng này
+                      {t('templates09DashboardOverview.quotaTitle')}
                     </h3>
                     <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                      Đếm theo <span className="font-medium">khách hàng đã xử lý duy nhất</span> (DISTINCT customer_external_id).
-                      Gói {snap.quota.plan} — {formatVND(snap.quota.plan_amount_vnd)}/tháng.
+                      {t('templates09DashboardOverview.quotaCountedByPrefix')} <span className="font-medium">{t('templates09DashboardOverview.quotaCountedByUnit')}</span> (DISTINCT customer_external_id).
+                      {' '}{t('templates09DashboardOverview.quotaPlanLine', { plan: snap.quota.plan, amount: formatVND(snap.quota.plan_amount_vnd) })}
                     </p>
                   </div>
                   <Button
@@ -143,23 +147,39 @@ export default function DashboardOverview() {
                     size="sm"
                     onClick={() => (window.location.href = '/p2/subscription/upgrade')}
                   >
-                    Nâng cấp gói
+                    {t('templates09DashboardOverview.upgradePlan')}
                   </Button>
                 </div>
                 <QuotaBar
                   current={snap.quota.current}
                   limit={snap.quota.limit}
-                  unit="khách hàng đã xử lý"
+                  unit={t('templates09DashboardOverview.quotaUnitLabel')}
                 />
               </div>
             )}
 
-            {/* BE returns 'no_data' for a brand-new workspace; treat it as
-                'empty' so the user sees the upload CTA instead of a blank page. */}
-            {(snap.state === 'empty' || (snap.state as string) === 'no_data') && <EmptyState />}
-            {snap.state === 'uploading'  && <UploadingState />}
-            {snap.state === 'processing' && <ProcessingState recent={snap.recent_runs ?? []} />}
-            {snap.state === 'completed'  && <CompletedState snap={snap} />}
+            {/* BE speaks the 5-state machine (no_data → first_upload →
+                pending_review → analysis_ready → results_ready) and ALSO
+                sends `view` in this component's vocabulary. Resolve view
+                first, with a legacy state→view map as fallback. */}
+            {(() => {
+              const VIEW_FROM_STATE: Record<string, string> = {
+                no_data: 'empty', empty: 'empty',
+                first_upload: 'uploading', uploading: 'uploading',
+                pending_review: 'processing', processing: 'processing',
+                analysis_ready: 'completed', results_ready: 'completed',
+                completed: 'completed',
+              };
+              const view = (snap as any).view ?? VIEW_FROM_STATE[snap.state as string] ?? snap.state;
+              return (
+                <>
+                  {view === 'empty'      && <EmptyState />}
+                  {view === 'uploading'  && <UploadingState />}
+                  {view === 'processing' && <ProcessingState recent={snap.recent_runs ?? []} />}
+                  {view === 'completed'  && <CompletedState snap={snap} />}
+                </>
+              );
+            })()}
           </>
         )}
       </div>
@@ -172,23 +192,24 @@ export default function DashboardOverview() {
 // ============================================================================
 
 function EmptyState() {
+  const t = useT();
   return (
     <div className="rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-12 text-center shadow-soft-sm">
       <div className="mx-auto w-20 h-20 rounded-full bg-[var(--primary-gold)]/15 flex items-center justify-center mb-6">
         <UploadCloud className="w-10 h-10 text-[var(--primary-gold-dark)]" />
       </div>
-      <h2 className="font-serif text-2xl text-[var(--text-primary)] mb-3">Chưa có dữ liệu nào</h2>
+      <h2 className="font-serif text-2xl text-[var(--text-primary)] mb-3">{t('templates09DashboardOverview.emptyTitle')}</h2>
       <p className="text-sm text-[var(--text-secondary)] max-w-md mx-auto mb-8">
-        Tải lên file CSV/Excel đầu tiên — Kaori sẽ tự nhận cột, làm sạch dữ liệu, sinh insight trong vài phút.
+        {t('templates09DashboardOverview.emptyDescription')}
       </p>
       <Button onClick={() => (window.location.href = '/p2/pipelines/new')} size="lg">
         <UploadCloud className="w-4 h-4 mr-2" />
-        Tải dữ liệu lên
+        {t('templates09DashboardOverview.uploadCta')}
       </Button>
       <p className="text-xs text-[var(--text-secondary)] mt-6">
-        Hoặc xem{' '}
+        {t('templates09DashboardOverview.orSeePrefix')}{' '}
         <a href="/docs/getting-started" className="text-[var(--primary-gold-dark)] underline">
-          hướng dẫn 5 phút
+          {t('templates09DashboardOverview.fiveMinGuide')}
         </a>
       </p>
     </div>
@@ -196,18 +217,20 @@ function EmptyState() {
 }
 
 function UploadingState() {
+  const t = useT();
   return (
     <div className="rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-10 text-center shadow-soft-sm">
       <div className="mx-auto w-16 h-16 rounded-full bg-[var(--state-info)]/15 flex items-center justify-center mb-5 animate-pulse">
         <UploadCloud className="w-8 h-8 text-[var(--state-info)]" />
       </div>
-      <h2 className="font-serif text-xl text-[var(--text-primary)] mb-2">Đang tải file lên...</h2>
-      <p className="text-sm text-[var(--text-secondary)]">Vui lòng giữ kết nối — quá trình tải có thể mất vài phút với file lớn.</p>
+      <h2 className="font-serif text-xl text-[var(--text-primary)] mb-2">{t('templates09DashboardOverview.uploadingTitle')}</h2>
+      <p className="text-sm text-[var(--text-secondary)]">{t('templates09DashboardOverview.uploadingHint')}</p>
     </div>
   );
 }
 
 function ProcessingState({ recent }: { recent: any[] }) {
+  const t = useT();
   return (
     <div className="rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-8 shadow-soft-sm">
       <div className="flex items-center gap-3 mb-6">
@@ -215,8 +238,8 @@ function ProcessingState({ recent }: { recent: any[] }) {
           <Activity className="w-5 h-5 text-[var(--state-warning)] animate-pulse" />
         </div>
         <div>
-          <h2 className="font-serif text-lg text-[var(--text-primary)]">Đang xử lý dữ liệu</h2>
-          <p className="text-xs text-[var(--text-secondary)]">Bronze → Silver → Gold đang chạy.</p>
+          <h2 className="font-serif text-lg text-[var(--text-primary)]">{t('templates09DashboardOverview.processingTitle')}</h2>
+          <p className="text-xs text-[var(--text-secondary)]">{t('templates09DashboardOverview.processingHint')}</p>
         </div>
       </div>
       <div className="space-y-3">
@@ -229,13 +252,18 @@ function ProcessingState({ recent }: { recent: any[] }) {
 }
 
 function CompletedState({ snap }: { snap: DashboardSnapshot }) {
+  const t = useT();
+  const k = snap.kpis ?? ({} as DashboardSnapshot['kpis']);
+  const recentRuns = snap.recent_runs ?? [];
+  const alerts = snap.alerts ?? [];
+  const insights = snap.insights ?? [];
   const kpis = [
-    { label: 'Pipeline 30 ngày',       value: snap.kpis.pipeline_runs_30d.toLocaleString('vi-VN') },
-    { label: 'Bronze files',           value: snap.kpis.bronze_files.toLocaleString('vi-VN') },
-    { label: 'Insight sinh ra',         value: snap.kpis.insights_30d.toLocaleString('vi-VN') },
-    { label: 'Cảnh báo mở',            value: snap.kpis.open_alerts.toLocaleString('vi-VN') },
-    { label: 'Dữ liệu đã xử lý (GB)', value: snap.kpis.data_processed_gb.toFixed(1) },
-    { label: 'Người dùng hoạt động',  value: snap.kpis.active_users.toLocaleString('vi-VN') },
+    { label: t('templates09DashboardOverview.kpiPipeline30d'),   value: (k.pipeline_runs_30d ?? 0).toLocaleString('vi-VN') },
+    { label: t('templates09DashboardOverview.kpiBronzeFiles'),   value: (k.bronze_files ?? 0).toLocaleString('vi-VN') },
+    { label: t('templates09DashboardOverview.kpiInsights30d'),   value: (k.insights_30d ?? 0).toLocaleString('vi-VN') },
+    { label: t('templates09DashboardOverview.kpiOpenAlerts'),    value: (k.open_alerts ?? 0).toLocaleString('vi-VN') },
+    { label: t('templates09DashboardOverview.kpiDataProcessedGb'), value: (k.data_processed_gb ?? 0).toFixed(1) },
+    { label: t('templates09DashboardOverview.kpiActiveUsers'),   value: (k.active_users ?? 0).toLocaleString('vi-VN') },
   ];
 
   return (
@@ -254,31 +282,31 @@ function CompletedState({ snap }: { snap: DashboardSnapshot }) {
         {/* Recent pipelines (2/3) */}
         <div className="lg:col-span-2 rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-6 shadow-soft-sm">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-serif text-base text-[var(--text-primary)]">Pipeline gần đây</h3>
+            <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates09DashboardOverview.recentPipelines')}</h3>
             <a href="/p2/pipelines" className="text-xs text-[var(--primary-gold-dark)] hover:underline flex items-center gap-1">
-              Xem tất cả <ArrowRight className="w-3.5 h-3.5" />
+              {t('templates09DashboardOverview.viewAll')} <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>
           <div className="space-y-2">
-            {snap.recent_runs.length === 0 ? (
-              <p className="text-sm text-[var(--text-secondary)] text-center py-6">Chưa có pipeline nào.</p>
-            ) : snap.recent_runs.map((r) => <RunRow key={r.id} run={r} />)}
+            {recentRuns.length === 0 ? (
+              <p className="text-sm text-[var(--text-secondary)] text-center py-6">{t('templates09DashboardOverview.noPipelinesYet')}</p>
+            ) : recentRuns.map((r) => <RunRow key={r.id} run={r} />)}
           </div>
         </div>
 
         {/* Alerts (1/3) */}
         <div className="rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-6 shadow-soft-sm">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-serif text-base text-[var(--text-primary)]">Cảnh báo</h3>
+            <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates09DashboardOverview.alerts')}</h3>
             <a href="/p2/alerts" className="text-xs text-[var(--primary-gold-dark)] hover:underline flex items-center gap-1">
-              Xem tất cả <ArrowRight className="w-3.5 h-3.5" />
+              {t('templates09DashboardOverview.viewAll')} <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>
-          {snap.alerts.length === 0 ? (
-            <p className="text-sm text-[var(--text-secondary)] text-center py-6">Không có cảnh báo nào.</p>
+          {alerts.length === 0 ? (
+            <p className="text-sm text-[var(--text-secondary)] text-center py-6">{t('templates09DashboardOverview.noAlerts')}</p>
           ) : (
             <div className="space-y-3">
-              {snap.alerts.map((a) => (
+              {alerts.map((a) => (
                 <div key={a.id} className="flex items-start gap-3 p-3 rounded-md-custom bg-[var(--bg-app)]/60">
                   <AlertIcon severity={a.severity} />
                   <div className="flex-1 min-w-0">
@@ -293,19 +321,19 @@ function CompletedState({ snap }: { snap: DashboardSnapshot }) {
       </div>
 
       {/* North Star insights — preview F-060 (Phase 2 full) */}
-      {snap.insights.length > 0 && (
+      {insights.length > 0 && (
         <div className="rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-6 shadow-soft-sm">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Lightbulb className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-              <h3 className="font-serif text-base text-[var(--text-primary)]">Insight ưu tiên</h3>
+              <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates09DashboardOverview.priorityInsights')}</h3>
             </div>
             <a href="/p2/insights" className="text-xs text-[var(--primary-gold-dark)] hover:underline flex items-center gap-1">
-              Xem tất cả <ArrowRight className="w-3.5 h-3.5" />
+              {t('templates09DashboardOverview.viewAll')} <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {snap.insights.slice(0, 4).map((i) => (
+            {insights.slice(0, 4).map((i) => (
               <a
                 key={i.id}
                 href={`/p2/insights/${i.id}`}
@@ -316,12 +344,12 @@ function CompletedState({ snap }: { snap: DashboardSnapshot }) {
                     <p className="text-sm font-medium text-[var(--text-primary)]">{i.title}</p>
                     {i.revenue_at_risk_vnd != null && (
                       <p className="text-xs text-[var(--text-secondary)] mt-1">
-                        Doanh thu tiềm ẩn rủi ro:{' '}
+                        {t('templates09DashboardOverview.revenueAtRiskLabel')}{' '}
                         <span className="font-medium text-[#9B5050]">{formatVND(i.revenue_at_risk_vnd)}</span>
                       </p>
                     )}
                   </div>
-                  {i.is_actioned ? <Badge variant="success">Đã hành động</Badge> : <Badge variant="warning">Chưa</Badge>}
+                  {i.is_actioned ? <Badge variant="success">{t('templates09DashboardOverview.actioned')}</Badge> : <Badge variant="warning">{t('templates09DashboardOverview.notActioned')}</Badge>}
                 </div>
               </a>
             ))}
@@ -333,18 +361,19 @@ function CompletedState({ snap }: { snap: DashboardSnapshot }) {
 }
 
 function ErrorPanel({ problem, onRetry }: { problem: ProblemDetails | null; onRetry: () => void }) {
+  const t = useT();
   return (
     <div className="rounded-lg-custom bg-[var(--bg-card)] border border-[var(--state-error)]/30 p-10 text-center shadow-soft-sm">
       <div className="mx-auto w-16 h-16 rounded-full bg-[var(--state-error)]/12 flex items-center justify-center mb-5">
         <ShieldAlert className="w-8 h-8 text-[var(--state-error)]" />
       </div>
-      <h2 className="font-serif text-xl text-[var(--text-primary)] mb-2">Không tải được dashboard</h2>
+      <h2 className="font-serif text-xl text-[var(--text-primary)] mb-2">{t('templates09DashboardOverview.errorTitle')}</h2>
       <div className="max-w-md mx-auto mb-6">
         <ErrorBanner problem={problem} />
       </div>
       <Button onClick={onRetry}>
         <RefreshCw className="w-4 h-4 mr-2" />
-        Thử lại
+        {t('templates09DashboardOverview.retry')}
       </Button>
     </div>
   );
@@ -355,7 +384,9 @@ function ErrorPanel({ problem, onRetry }: { problem: ProblemDetails | null; onRe
 // ============================================================================
 
 function RunRow({ run }: { run: any }) {
-  const cfg = STATUS_BADGE[run.status] ?? STATUS_BADGE.schema_review;
+  const t = useT();
+  const statusBadge = getStatusBadge(t);
+  const cfg = statusBadge[run.status] ?? statusBadge.schema_review;
   return (
     <a
       href={`/p2/pipelines/${run.id}`}
@@ -364,7 +395,7 @@ function RunRow({ run }: { run: any }) {
       <div className="flex items-center justify-between gap-4">
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-[var(--text-primary)] truncate">{run.name}</p>
-          <p className="text-xs text-[var(--text-secondary)] mt-0.5">{run.template_id} · cập nhật {run.updated_at}</p>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">{run.template_id} · {t('templates09DashboardOverview.updatedAt', { time: run.updated_at })}</p>
         </div>
         <Badge variant={cfg.variant}>{cfg.label}</Badge>
       </div>

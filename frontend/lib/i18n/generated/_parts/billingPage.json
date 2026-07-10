@@ -1,0 +1,114 @@
+{
+  "billingPage.statusNormal": {
+    "vi": "Bình thường",
+    "en": "Normal",
+    "ja": "正常",
+    "ko": "정상",
+    "zh": "正常"
+  },
+  "billingPage.statusWarn": {
+    "vi": "Cảnh báo (≥80%)",
+    "en": "Warning (≥80%)",
+    "ja": "警告 (≥80%)",
+    "ko": "경고 (≥80%)",
+    "zh": "警告 (≥80%)"
+  },
+  "billingPage.statusCritical": {
+    "vi": "Nghiêm trọng (≥95%)",
+    "en": "Critical (≥95%)",
+    "ja": "重大 (≥95%)",
+    "ko": "심각 (≥95%)",
+    "zh": "严重 (≥95%)"
+  },
+  "billingPage.statusOverage": {
+    "vi": "Vượt hạn mức",
+    "en": "Over quota",
+    "ja": "上限超過",
+    "ko": "한도 초과",
+    "zh": "超出配额"
+  },
+  "billingPage.errNotReady": {
+    "vi": "Backend billing cho workspace {id} chưa sẵn sàng.",
+    "en": "Billing backend for workspace {id} is not ready yet.",
+    "ja": "ワークスペース {id} の課金バックエンドはまだ準備できていません。",
+    "ko": "워크스페이스 {id}의 청구 백엔드가 아직 준비되지 않았습니다.",
+    "zh": "工作区 {id} 的计费后端尚未就绪。"
+  },
+  "billingPage.kpiUniqueCustomers": {
+    "vi": "Khách hàng duy nhất tháng này",
+    "en": "Unique customers this month",
+    "ja": "今月のユニーク顧客数",
+    "ko": "이번 달 고유 고객 수",
+    "zh": "本月唯一客户数"
+  },
+  "billingPage.kpiQuotaHint": {
+    "vi": "Hạn mức: {quota} (gói {plan})",
+    "en": "Quota: {quota} ({plan} plan)",
+    "ja": "上限: {quota} ({plan} プラン)",
+    "ko": "한도: {quota} ({plan} 플랜)",
+    "zh": "配额：{quota}（{plan} 套餐）"
+  },
+  "billingPage.kpiTotalAmount": {
+    "vi": "Tổng cước tháng này",
+    "en": "Total charges this month",
+    "ja": "今月の合計料金",
+    "ko": "이번 달 총 요금",
+    "zh": "本月总费用"
+  },
+  "billingPage.kpiAmountBreakdown": {
+    "vi": "Cơ bản {base} + vượt mức {overage}",
+    "en": "Base {base} + overage {overage}",
+    "ja": "基本 {base} + 超過分 {overage}",
+    "ko": "기본 {base} + 초과 {overage}",
+    "zh": "基础 {base} + 超额 {overage}"
+  },
+  "billingPage.kpiOverageUnits": {
+    "vi": "Đơn vị vượt mức",
+    "en": "Overage units",
+    "ja": "超過ユニット数",
+    "ko": "초과 단위",
+    "zh": "超额单位"
+  },
+  "billingPage.hintOverageCharged": {
+    "vi": "Đã tính cước vượt",
+    "en": "Overage charged",
+    "ja": "超過料金を計上済み",
+    "ko": "초과 요금 청구됨",
+    "zh": "已计超额费用"
+  },
+  "billingPage.hintWithinQuota": {
+    "vi": "Trong hạn mức",
+    "en": "Within quota",
+    "ja": "上限内",
+    "ko": "한도 내",
+    "zh": "在配额内"
+  },
+  "billingPage.periodTitle": {
+    "vi": "Kỳ thanh toán {month}",
+    "en": "Billing period {month}",
+    "ja": "請求期間 {month}",
+    "ko": "청구 기간 {month}",
+    "zh": "计费周期 {month}"
+  },
+  "billingPage.periodDesc": {
+    "vi": "Tính theo SỐ LƯỢNG khách hàng duy nhất (K-11). Cảnh báo tự động ở mốc {pct}% hạn mức.",
+    "en": "Calculated by the NUMBER of unique customers (K-11). Automatic warning at {pct}% of quota.",
+    "ja": "ユニーク顧客の「数」で計算されます (K-11)。上限の {pct}% で自動警告が発生します。",
+    "ko": "고유 고객 수를 기준으로 계산됩니다 (K-11). 한도의 {pct}%에서 자동 경고가 발생합니다.",
+    "zh": "按唯一客户「数量」计算 (K-11)。达到配额 {pct}% 时自动预警。"
+  },
+  "billingPage.unitUniqueCustomers": {
+    "vi": "khách hàng duy nhất",
+    "en": "unique customers",
+    "ja": "ユニーク顧客",
+    "ko": "고유 고객",
+    "zh": "唯一客户"
+  },
+  "billingPage.nextInvoiceLabel": {
+    "vi": "Ngày phát hành hóa đơn kế tiếp:",
+    "en": "Next invoice date:",
+    "ja": "次回請求書発行日:",
+    "ko": "다음 청구서 발행일:",
+    "zh": "下次开票日期："
+  }
+}

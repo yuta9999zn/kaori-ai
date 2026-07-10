@@ -1,0 +1,37 @@
+{
+  "componentsBrandpanel.headline": {
+    "vi": "Trí tuệ,",
+    "en": "Intelligence,",
+    "ja": "知性を、",
+    "ko": "지성을,",
+    "zh": "智慧,"
+  },
+  "componentsBrandpanel.italicTail": {
+    "vi": "được trao một cách bình thản.",
+    "en": "delivered with quiet confidence.",
+    "ja": "静かな自信とともに届ける。",
+    "ko": "차분하게 전달하다.",
+    "zh": "从容地传递。"
+  },
+  "componentsBrandpanel.subhead": {
+    "vi": "Nền tảng phân tích dữ liệu B2B đa khách hàng. Quy mô vững vàng, giao diện rõ ràng, vận hành nhẹ nhàng.",
+    "en": "A multi-tenant B2B data analytics platform. Solid at scale, clear by design, effortless to run.",
+    "ja": "マルチテナント対応のB2Bデータ分析プラットフォーム。堅実なスケール、明快な設計、軽やかな運用。",
+    "ko": "멀티 테넌트 B2B 데이터 분석 플랫폼. 안정적인 확장성, 명료한 디자인, 가벼운 운영.",
+    "zh": "多租户 B2B 数据分析平台。规模稳健、界面清晰、运行轻盈。"
+  },
+  "componentsBrandpanel.copyright": {
+    "vi": "© 2026 Kaori Platform",
+    "en": "© 2026 Kaori Platform",
+    "ja": "© 2026 Kaori Platform",
+    "ko": "© 2026 Kaori Platform",
+    "zh": "© 2026 Kaori Platform"
+  },
+  "componentsBrandpanel.privacyPolicy": {
+    "vi": "Chính sách bảo mật",
+    "en": "Privacy Policy",
+    "ja": "プライバシーポリシー",
+    "ko": "개인정보 처리방침",
+    "zh": "隐私政策"
+  }
+}

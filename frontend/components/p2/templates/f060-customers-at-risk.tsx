@@ -29,6 +29,7 @@ import {
   api, formatVND, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types — mirror BE Pydantic shape
 // ============================================================================
@@ -72,6 +73,7 @@ type ActionedFilter = 'all' | 'pending' | 'resolved';
 // ============================================================================
 
 export default function CustomersAtRiskPage() {
+  const t = useT();
   const [tile, setTile] = useState<NorthStarTilePayload | null>(null);
   const [tileLoading, setTileLoading] = useState(true);
   const [tileProblem, setTileProblem] = useState<ProblemDetails | null>(null);
@@ -134,14 +136,13 @@ export default function CustomersAtRiskPage() {
     let notes: string | undefined;
     if (next) {
       const input = window.prompt(
-        'Ghi chú (tuỳ chọn) — bạn đã làm gì với khách này?',
+        t('templatesF060CustomersAtRisk.promptNotes'),
         '',
       );
       if (input === null) return;            // cancelled
       notes = input.trim() || undefined;
     } else {
-      if (!window.confirm(`Bỏ đánh dấu "${c.customer_external_id}"? `
-        + 'Doanh thu rủi ro sẽ trở lại danh sách "Chưa xử lý".')) return;
+      if (!window.confirm(t('templatesF060CustomersAtRisk.confirmUnaction', { id: c.customer_external_id }))) return;
     }
 
     setPendingId(c.customer_external_id);
@@ -152,8 +153,8 @@ export default function CustomersAtRiskPage() {
         body:   JSON.stringify({ is_actioned: next, notes }),
       });
       setSuccess(next
-        ? `Đã đánh dấu ${c.customer_external_id} — tính vào North Star.`
-        : `Đã bỏ đánh dấu ${c.customer_external_id}.`,
+        ? t('templatesF060CustomersAtRisk.successActioned', { id: c.customer_external_id })
+        : t('templatesF060CustomersAtRisk.successUnactioned', { id: c.customer_external_id }),
       );
       // Refresh both — tile updates resolution rate, list updates the row.
       await Promise.all([loadTile(), loadList(cursorStack.at(-1) ?? null)]);
@@ -179,8 +180,8 @@ export default function CustomersAtRiskPage() {
   return (
     <>
       <PageHeader
-        title="Khách hàng rủi ro"
-        description="North Star Metric — đánh dấu khách hàng đã được xử lý để tính ROI."
+        title={t('templatesF060CustomersAtRisk.pageTitle')}
+        description={t('templatesF060CustomersAtRisk.pageDescription')}
       />
 
       <div className="px-6 lg:px-8 py-6 max-w-[1300px] mx-auto space-y-6">
@@ -188,7 +189,7 @@ export default function CustomersAtRiskPage() {
           <ErrorBanner
             problem={{
               ...tileProblem,
-              title:  'Không tải được KPI',
+              title:  t('templatesF060CustomersAtRisk.errTileTitle'),
               detail: `${tileProblem.title}${tileProblem.detail ? ' — ' + tileProblem.detail : ''}.`,
             }}
           />
@@ -200,12 +201,12 @@ export default function CustomersAtRiskPage() {
         {/* Filter bar */}
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-3 flex items-center gap-3 shadow-soft-sm flex-wrap">
           <span className="text-xs text-[var(--text-secondary)] inline-flex items-center gap-1">
-            <Filter className="w-3.5 h-3.5" /> Lọc:
+            <Filter className="w-3.5 h-3.5" /> {t('templatesF060CustomersAtRisk.filterLabel')}
           </span>
           {([
-            { code: 'pending',  label: 'Chưa xử lý' },
-            { code: 'resolved', label: 'Đã xử lý' },
-            { code: 'all',      label: 'Tất cả' },
+            { code: 'pending',  label: t('templatesF060CustomersAtRisk.filterPending') },
+            { code: 'resolved', label: t('templatesF060CustomersAtRisk.filterResolved') },
+            { code: 'all',      label: t('templatesF060CustomersAtRisk.filterAll') },
           ] as const).map((f) => (
             <button
               key={f.code}
@@ -229,7 +230,7 @@ export default function CustomersAtRiskPage() {
               <ErrorBanner
                 problem={{
                   ...listProblem,
-                  title:  listProblem.title ?? 'Không cập nhật được',
+                  title:  listProblem.title ?? t('templatesF060CustomersAtRisk.errListTitle'),
                   detail: listProblem.detail ?? '',
                 }}
               />
@@ -239,28 +240,28 @@ export default function CustomersAtRiskPage() {
             <table className="w-full text-sm text-left">
               <thead className="bg-[var(--bg-app)] border-b border-[var(--border-color)] text-[11px] font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                 <tr>
-                  <th className="px-5 py-3">Khách hàng</th>
-                  <th className="px-5 py-3 text-right">Doanh thu rủi ro</th>
-                  <th className="px-5 py-3">Mua gần nhất</th>
-                  <th className="px-5 py-3 text-center">Số đơn</th>
-                  <th className="px-5 py-3">Trạng thái</th>
-                  <th className="px-5 py-3 text-right">Thao tác</th>
+                  <th className="px-5 py-3">{t('templatesF060CustomersAtRisk.thCustomer')}</th>
+                  <th className="px-5 py-3 text-right">{t('templatesF060CustomersAtRisk.thRevenueAtRisk')}</th>
+                  <th className="px-5 py-3">{t('templatesF060CustomersAtRisk.thLastPurchase')}</th>
+                  <th className="px-5 py-3 text-center">{t('templatesF060CustomersAtRisk.thOrderCount')}</th>
+                  <th className="px-5 py-3">{t('templatesF060CustomersAtRisk.thStatus')}</th>
+                  <th className="px-5 py-3 text-right">{t('templatesF060CustomersAtRisk.thAction')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-color)]/60">
                 {listLoading && customers.length === 0 ? (
                   <tr><td colSpan={6} className="px-5 py-12 text-center text-[var(--text-secondary)]">
-                    <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> Đang tải...
+                    <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> {t('templatesF060CustomersAtRisk.loading')}
                   </td></tr>
                 ) : customers.length === 0 ? (
                   <tr><td colSpan={6} className="px-5 py-12 text-center">
                     <CheckCircle2 className="w-10 h-10 mx-auto text-[var(--state-success)]/40 mb-3" />
                     <p className="text-sm text-[var(--text-secondary)]">
                       {filter === 'pending'
-                        ? 'Tuyệt — không còn khách hàng rủi ro nào chưa xử lý.'
+                        ? t('templatesF060CustomersAtRisk.emptyPending')
                         : filter === 'resolved'
-                          ? 'Chưa có khách hàng nào được đánh dấu đã xử lý.'
-                          : 'Không có khách hàng rủi ro nào trong dữ liệu hiện tại.'}
+                          ? t('templatesF060CustomersAtRisk.emptyResolved')
+                          : t('templatesF060CustomersAtRisk.emptyAll')}
                     </p>
                   </td></tr>
                 ) : (
@@ -285,17 +286,17 @@ export default function CustomersAtRiskPage() {
                 onClick={pagePrev}
                 disabled={cursorStack.length === 0 || listLoading}
               >
-                <ChevronLeft className="w-3.5 h-3.5 mr-1" /> Trang trước
+                <ChevronLeft className="w-3.5 h-3.5 mr-1" /> {t('templatesF060CustomersAtRisk.pagePrev')}
               </Button>
               <span className="text-xs text-[var(--text-secondary)]">
-                Trang {cursorStack.length + 1}
+                {t('templatesF060CustomersAtRisk.pageIndicator', { page: cursorStack.length + 1 })}
               </span>
               <Button
                 variant="tertiary" size="sm"
                 onClick={pageNext}
                 disabled={!nextCursor || listLoading}
               >
-                Trang sau <ChevronRight className="w-3.5 h-3.5 ml-1" />
+                {t('templatesF060CustomersAtRisk.pageNext')} <ChevronRight className="w-3.5 h-3.5 ml-1" />
               </Button>
             </div>
           )}
@@ -305,10 +306,10 @@ export default function CustomersAtRiskPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Mỗi lần đánh dấu phát Kafka <span className="font-mono">kaori.feedback.actions</span> với action{' '}
+            {t('templatesF060CustomersAtRisk.footerPart1')} <span className="font-mono">kaori.feedback.actions</span> {t('templatesF060CustomersAtRisk.footerPart2')}{' '}
             <span className="font-mono">customer.actioned</span> / <span className="font-mono">customer.unactioned</span>.
-            Số liệu trên tile cập nhật ngay sau khi BE ghi <span className="font-mono">gold_features.is_actioned=true</span>.
-            Bộ lọc <em>Chưa xử lý</em> ưu tiên hiển thị các khách doanh thu rủi ro cao nhất chưa được team đụng tới.
+            {t('templatesF060CustomersAtRisk.footerPart3')} <span className="font-mono">gold_features.is_actioned=true</span>.
+            {t('templatesF060CustomersAtRisk.footerPart4')} <em>{t('templatesF060CustomersAtRisk.filterPending')}</em> {t('templatesF060CustomersAtRisk.footerPart5')}
           </p>
         </div>
       </div>
@@ -323,6 +324,7 @@ export default function CustomersAtRiskPage() {
 export function NorthStarTile({
   tile, loading,
 }: { tile: NorthStarTilePayload | null; loading: boolean }) {
+  const t = useT();
   if (loading && !tile) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -341,30 +343,30 @@ export function NorthStarTile({
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <KpiCard
-          label="Doanh thu đã giải quyết"
+          label={t('templatesF060CustomersAtRisk.kpiResolvedLabel')}
           value={formatVND(tile.resolved_vnd)}
-          secondary="North Star — tính khi is_actioned=true"
+          secondary={t('templatesF060CustomersAtRisk.kpiResolvedSecondary')}
           icon={Target}
           tone="success"
           highlight
         />
         <KpiCard
-          label="Tổng doanh thu rủi ro"
+          label={t('templatesF060CustomersAtRisk.kpiTotalAtRiskLabel')}
           value={formatVND(tile.total_at_risk_vnd)}
-          secondary={`${tile.at_risk_count} khách hàng được model gắn cờ`}
+          secondary={t('templatesF060CustomersAtRisk.kpiTotalAtRiskSecondary', { count: tile.at_risk_count })}
           icon={TrendingUp}
         />
         <KpiCard
-          label="Tỷ lệ giải quyết"
+          label={t('templatesF060CustomersAtRisk.kpiResolutionRateLabel')}
           value={`${tile.resolution_rate_pct.toFixed(1)}%`}
-          secondary={`${tile.actioned_count}/${tile.at_risk_count} khách đã xử lý`}
+          secondary={t('templatesF060CustomersAtRisk.kpiResolutionRateSecondary', { actioned: tile.actioned_count, total: tile.at_risk_count })}
           icon={Sparkles}
         />
         <KpiCard
-          label="Khách đã xử lý"
+          label={t('templatesF060CustomersAtRisk.kpiActionedLabel')}
           value={tile.actioned_count.toLocaleString('vi-VN')}
           secondary={tile.at_risk_count > 0
-            ? `${tile.at_risk_count - tile.actioned_count} khách còn lại`
+            ? t('templatesF060CustomersAtRisk.kpiActionedSecondary', { count: tile.at_risk_count - tile.actioned_count })
             : '—'
           }
           icon={Users}
@@ -376,7 +378,7 @@ export function NorthStarTile({
           <div className="flex items-center gap-2 mb-3">
             <CheckCircle2 className="w-4 h-4 text-[var(--state-success)]" />
             <h3 className="font-serif text-sm font-medium text-[var(--text-primary)]">
-              Hoạt động gần đây
+              {t('templatesF060CustomersAtRisk.recentActivity')}
             </h3>
             <Badge variant="default">{tile.recent_actions.length}</Badge>
           </div>
@@ -393,7 +395,7 @@ export function NorthStarTile({
                   {formatVND(a.revenue_at_risk)}
                 </span>
                 <span className="text-[var(--text-secondary)] inline-flex items-center gap-1 shrink-0">
-                  <Clock className="w-3 h-3" /> {formatRelative(a.actioned_at)}
+                  <Clock className="w-3 h-3" /> {formatRelative(a.actioned_at, t)}
                 </span>
               </li>
             ))}
@@ -451,12 +453,13 @@ function CustomerRow({
   pending: boolean;
   onToggle: () => void;
 }) {
+  const t = useT();
   return (
     <tr className="hover:bg-[var(--bg-app)]/40 transition-colors">
       <td className="px-5 py-4">
         <p className="font-mono text-sm text-[var(--text-primary)]">{c.customer_external_id}</p>
         <p className="text-[10px] text-[var(--text-secondary)] mt-0.5">
-          Tính lúc {formatRelative(c.computed_at)}
+          {t('templatesF060CustomersAtRisk.computedAt')} {formatRelative(c.computed_at, t)}
         </p>
       </td>
       <td className="px-5 py-4 text-right">
@@ -465,7 +468,7 @@ function CustomerRow({
         </p>
       </td>
       <td className="px-5 py-4 text-xs text-[var(--text-secondary)]">
-        {c.last_purchase_at ? formatRelative(c.last_purchase_at) : '—'}
+        {c.last_purchase_at ? formatRelative(c.last_purchase_at, t) : '—'}
       </td>
       <td className="px-5 py-4 text-center text-xs text-[var(--text-primary)]">
         {c.purchase_count}
@@ -474,17 +477,17 @@ function CustomerRow({
         {c.is_actioned ? (
           <div className="inline-flex flex-col gap-0.5">
             <Badge variant="success">
-              <CheckCircle2 className="w-3 h-3 mr-1" /> Đã xử lý
+              <CheckCircle2 className="w-3 h-3 mr-1" /> {t('templatesF060CustomersAtRisk.filterResolved')}
             </Badge>
             {c.actioned_at && (
               <span className="text-[10px] text-[var(--text-secondary)]">
-                {formatRelative(c.actioned_at)}
+                {formatRelative(c.actioned_at, t)}
               </span>
             )}
           </div>
         ) : (
           <Badge variant="warning">
-            <AlertTriangle className="w-3 h-3 mr-1" /> Chưa xử lý
+            <AlertTriangle className="w-3 h-3 mr-1" /> {t('templatesF060CustomersAtRisk.filterPending')}
           </Badge>
         )}
       </td>
@@ -496,11 +499,11 @@ function CustomerRow({
           disabled={pending}
         >
           {pending ? (
-            <><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Đang ghi...</>
+            <><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> {t('templatesF060CustomersAtRisk.writingInProgress')}</>
           ) : c.is_actioned ? (
-            <><RotateCcw className="w-3.5 h-3.5 mr-1" /> Bỏ đánh dấu</>
+            <><RotateCcw className="w-3.5 h-3.5 mr-1" /> {t('templatesF060CustomersAtRisk.unmarkAction')}</>
           ) : (
-            <><CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Đánh dấu đã xử lý</>
+            <><CheckCircle2 className="w-3.5 h-3.5 mr-1" /> {t('templatesF060CustomersAtRisk.markResolvedAction')}</>
           )}
         </Button>
       </td>
@@ -512,13 +515,13 @@ function CustomerRow({
 // Helpers
 // ============================================================================
 
-function formatRelative(iso: string | null): string {
+function formatRelative(iso: string | null, t: ReturnType<typeof useT>): string {
   if (!iso) return '—';
   const diff = Date.now() - +new Date(iso);
   if (Number.isNaN(diff)) return iso;
-  if (diff < 60_000)         return 'vừa xong';
-  if (diff < 3_600_000)      return `${Math.round(diff / 60_000)} phút trước`;
-  if (diff < 86_400_000)     return `${Math.round(diff / 3_600_000)} giờ trước`;
-  if (diff < 7 * 86_400_000) return `${Math.round(diff / 86_400_000)} ngày trước`;
+  if (diff < 60_000)         return t('templatesF060CustomersAtRisk.timeJustNow');
+  if (diff < 3_600_000)      return t('templatesF060CustomersAtRisk.timeMinutesAgo', { count: Math.round(diff / 60_000) });
+  if (diff < 86_400_000)     return t('templatesF060CustomersAtRisk.timeHoursAgo', { count: Math.round(diff / 3_600_000) });
+  if (diff < 7 * 86_400_000) return t('templatesF060CustomersAtRisk.timeDaysAgo', { count: Math.round(diff / 86_400_000) });
   return new Date(iso).toLocaleDateString('vi-VN');
 }

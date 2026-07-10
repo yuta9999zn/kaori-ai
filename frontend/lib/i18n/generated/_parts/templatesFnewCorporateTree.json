@@ -1,0 +1,247 @@
+{
+  "templatesFnewCorporateTree.pageTitle": {
+    "vi": "Cơ cấu tổ chức",
+    "en": "Corporate structure",
+    "ja": "組織体制",
+    "ko": "조직 구조",
+    "zh": "组织架构"
+  },
+  "templatesFnewCorporateTree.pageDescription": {
+    "vi": "Cây phả hệ tập đoàn → mảng → công ty con → chi nhánh → phòng ban. Click phòng ban để tạo workflow.",
+    "en": "Corporate hierarchy tree — group → division → subsidiary → branch → department. Click a department to create a workflow.",
+    "ja": "企業階層ツリー — 企業グループ → 事業部門 → 子会社 → 支店 → 部門。部門をクリックしてワークフローを作成します。",
+    "ko": "기업 계층 트리 — 기업 그룹 → 사업부문 → 자회사 → 지점 → 부서. 부서를 클릭하여 워크플로우를 생성하세요.",
+    "zh": "企业层级树 — 集团 → 业务板块 → 子公司 → 分支 → 部门。点击部门以创建工作流。"
+  },
+  "templatesFnewCorporateTree.badgeMultiLevel": {
+    "vi": "Đa cấp tổ chức",
+    "en": "Multi-level organization",
+    "ja": "多階層組織",
+    "ko": "다단계 조직",
+    "zh": "多层级组织"
+  },
+  "templatesFnewCorporateTree.treeHeader": {
+    "vi": "Cây phả hệ",
+    "en": "Hierarchy tree",
+    "ja": "階層ツリー",
+    "ko": "계층 트리",
+    "zh": "层级树"
+  },
+  "templatesFnewCorporateTree.selectNodeHint": {
+    "vi": "Chọn 1 nút trong cây để xem chi tiết.",
+    "en": "Select a node in the tree to view details.",
+    "ja": "ツリー内のノードを選択して詳細を表示します。",
+    "ko": "트리에서 노드를 선택하여 세부 정보를 확인하세요.",
+    "zh": "选择树中的一个节点以查看详情。"
+  },
+  "templatesFnewCorporateTree.wordDivisions": {
+    "vi": "mảng kinh doanh",
+    "en": "business divisions",
+    "ja": "事業部門",
+    "ko": "사업부문",
+    "zh": "业务板块"
+  },
+  "templatesFnewCorporateTree.wordSubsidiaries": {
+    "vi": "công ty con",
+    "en": "subsidiary companies",
+    "ja": "子会社",
+    "ko": "자회사",
+    "zh": "子公司"
+  },
+  "templatesFnewCorporateTree.noDivisionsYet": {
+    "vi": "Chưa có mảng nào.",
+    "en": "No business divisions yet.",
+    "ja": "事業部門はまだありません。",
+    "ko": "아직 사업부문이 없습니다.",
+    "zh": "尚无业务板块。"
+  },
+  "templatesFnewCorporateTree.noSubsidiariesYet": {
+    "vi": "Chưa có công ty con nào.",
+    "en": "No subsidiary companies yet.",
+    "ja": "子会社はまだありません。",
+    "ko": "아직 자회사가 없습니다.",
+    "zh": "尚无子公司。"
+  },
+  "templatesFnewCorporateTree.selectLeafHint": {
+    "vi": "Chọn 1 công ty (lá) để xem chi nhánh + phòng ban + tạo workflow.",
+    "en": "Select a company (leaf) to view branches + departments and create a workflow.",
+    "ja": "会社（末端ノード）を選択すると、支店＋部門の表示とワークフローの作成ができます。",
+    "ko": "회사(리프 노드)를 선택하면 지점 + 부서를 확인하고 워크플로우를 생성할 수 있습니다.",
+    "zh": "选择一家公司（叶节点）以查看分支 + 部门并创建工作流。"
+  },
+  "templatesFnewCorporateTree.subsidiaryLabel": {
+    "vi": "Công ty con",
+    "en": "Subsidiary company",
+    "ja": "子会社",
+    "ko": "자회사",
+    "zh": "子公司"
+  },
+  "templatesFnewCorporateTree.moveButton": {
+    "vi": "Di chuyển",
+    "en": "Move",
+    "ja": "移動",
+    "ko": "이동",
+    "zh": "移动"
+  },
+  "templatesFnewCorporateTree.moveHint": {
+    "vi": "Chọn mảng kinh doanh mới — calls PUT /enterprises/{id}…/parent.",
+    "en": "Select a new business division — calls PUT /enterprises/{id}…/parent.",
+    "ja": "新しい事業部門を選択 — calls PUT /enterprises/{id}…/parent.",
+    "ko": "새 사업부문 선택 — calls PUT /enterprises/{id}…/parent.",
+    "zh": "选择新的业务板块 — calls PUT /enterprises/{id}…/parent."
+  },
+  "templatesFnewCorporateTree.currentTag": {
+    "vi": "(hiện tại)",
+    "en": "(current)",
+    "ja": "（現在）",
+    "ko": "(현재)",
+    "zh": "（当前）"
+  },
+  "templatesFnewCorporateTree.loadingDetail": {
+    "vi": "Đang tải chi tiết…",
+    "en": "Loading details…",
+    "ja": "詳細を読み込み中…",
+    "ko": "세부 정보 로딩 중…",
+    "zh": "正在加载详情…"
+  },
+  "templatesFnewCorporateTree.branchesHeader": {
+    "vi": "Chi nhánh",
+    "en": "Branches",
+    "ja": "支店",
+    "ko": "지점",
+    "zh": "分支"
+  },
+  "templatesFnewCorporateTree.noBranches": {
+    "vi": "Chưa có chi nhánh.",
+    "en": "No branches yet.",
+    "ja": "支店はまだありません。",
+    "ko": "아직 지점이 없습니다.",
+    "zh": "尚无分支。"
+  },
+  "templatesFnewCorporateTree.defaultBadge": {
+    "vi": "Mặc định",
+    "en": "Default",
+    "ja": "デフォルト",
+    "ko": "기본값",
+    "zh": "默认"
+  },
+  "templatesFnewCorporateTree.departmentsHeader": {
+    "vi": "Phòng ban",
+    "en": "Departments",
+    "ja": "部門",
+    "ko": "부서",
+    "zh": "部门"
+  },
+  "templatesFnewCorporateTree.noDepartments": {
+    "vi": "Chưa có phòng ban.",
+    "en": "No departments yet.",
+    "ja": "部門はまだありません。",
+    "ko": "아직 부서가 없습니다.",
+    "zh": "尚无部门。"
+  },
+  "templatesFnewCorporateTree.viewWorkflow": {
+    "vi": "Xem workflow",
+    "en": "View workflow",
+    "ja": "ワークフローを見る",
+    "ko": "워크플로우 보기",
+    "zh": "查看工作流"
+  },
+  "templatesFnewCorporateTree.createNew": {
+    "vi": "Tạo mới",
+    "en": "Create new",
+    "ja": "新規作成",
+    "ko": "새로 만들기",
+    "zh": "新建"
+  },
+  "templatesFnewCorporateTree.emptyTitle": {
+    "vi": "Chưa có cơ cấu tổ chức",
+    "en": "No corporate structure yet",
+    "ja": "組織体制がまだありません",
+    "ko": "아직 조직 구조가 없습니다",
+    "zh": "尚无组织架构"
+  },
+  "templatesFnewCorporateTree.emptyBody": {
+    "vi": "Workspace của anh chưa khai báo tập đoàn. Apply migration 056 để có demo Vingroup, hoặc tạo tập đoàn mới qua API",
+    "en": "Your workspace hasn't declared a corporate group yet. Apply migration 056 to get the Vingroup demo, or create a new corporate group via the API",
+    "ja": "ワークスペースにまだ企業グループが登録されていません。マイグレーション056を適用するとVingroupのデモが利用できます。またはAPI経由で新しい企業グループを作成できます",
+    "ko": "워크스페이스에 아직 기업 그룹이 등록되지 않았습니다. 마이그레이션 056을 적용하면 Vingroup 데모를 사용할 수 있습니다. 또는 API를 통해 새 기업 그룹을 생성하세요",
+    "zh": "工作区尚未创建企业集团。应用迁移056可获得Vingroup演示，或通过API创建新的企业集团"
+  },
+  "templatesFnewCorporateTree.emptyFooter": {
+    "vi": "FE inline creation đang đợi Tuần 9 polish.",
+    "en": "FE inline creation is pending Week 9 polish.",
+    "ja": "FEインライン作成はWeek 9のポリッシュ待ちです。",
+    "ko": "FE 인라인 생성은 Week 9 폴리시를 기다리고 있습니다.",
+    "zh": "FE 内联创建功能待第9周打磨完成。"
+  },
+  "templatesFnewCorporateTree.nodeGroup": {
+    "vi": "Tập đoàn",
+    "en": "Corporate group",
+    "ja": "企業グループ",
+    "ko": "기업 그룹",
+    "zh": "企业集团"
+  },
+  "templatesFnewCorporateTree.nodeDivision": {
+    "vi": "Mảng kinh doanh",
+    "en": "Business division",
+    "ja": "事業部門",
+    "ko": "사업부문",
+    "zh": "业务板块"
+  },
+  "templatesFnewCorporateTree.nodeEnterprise": {
+    "vi": "Công ty",
+    "en": "Company",
+    "ja": "会社",
+    "ko": "회사",
+    "zh": "公司"
+  },
+  "templatesFnewCorporateTree.deptMarketing": {
+    "vi": "Marketing",
+    "en": "Marketing",
+    "ja": "マーケティング",
+    "ko": "마케팅",
+    "zh": "市场营销"
+  },
+  "templatesFnewCorporateTree.deptSales": {
+    "vi": "Sales",
+    "en": "Sales",
+    "ja": "営業",
+    "ko": "영업",
+    "zh": "销售"
+  },
+  "templatesFnewCorporateTree.deptCustomerService": {
+    "vi": "CSKH",
+    "en": "Customer Service",
+    "ja": "カスタマーサポート",
+    "ko": "고객서비스",
+    "zh": "客户服务"
+  },
+  "templatesFnewCorporateTree.deptWarehouse": {
+    "vi": "Kho vận",
+    "en": "Warehouse",
+    "ja": "倉庫",
+    "ko": "창고",
+    "zh": "仓储"
+  },
+  "templatesFnewCorporateTree.deptHr": {
+    "vi": "Nhân sự",
+    "en": "HR",
+    "ja": "人事",
+    "ko": "인사",
+    "zh": "人力资源"
+  },
+  "templatesFnewCorporateTree.deptFinance": {
+    "vi": "Tài chính",
+    "en": "Finance",
+    "ja": "財務",
+    "ko": "재무",
+    "zh": "财务"
+  },
+  "templatesFnewCorporateTree.deptCustom": {
+    "vi": "Tùy chỉnh",
+    "en": "Custom",
+    "ja": "カスタム",
+    "ko": "사용자 지정",
+    "zh": "自定义"
+  }
+}

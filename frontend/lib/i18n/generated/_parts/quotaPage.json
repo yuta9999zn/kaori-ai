@@ -1,0 +1,142 @@
+{
+  "quotaPage.filterBy": {
+    "vi": "Lọc theo:",
+    "en": "Filter by:",
+    "ja": "絞り込み:",
+    "ko": "필터:",
+    "zh": "筛选条件:"
+  },
+  "quotaPage.planLabel": {
+    "vi": "Gói",
+    "en": "Plan",
+    "ja": "プラン",
+    "ko": "플랜",
+    "zh": "套餐"
+  },
+  "quotaPage.allPlans": {
+    "vi": "Tất cả gói",
+    "en": "All plans",
+    "ja": "すべてのプラン",
+    "ko": "모든 플랜",
+    "zh": "所有套餐"
+  },
+  "quotaPage.statusLabel": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "quotaPage.allStatuses": {
+    "vi": "Tất cả trạng thái",
+    "en": "All statuses",
+    "ja": "すべてのステータス",
+    "ko": "모든 상태",
+    "zh": "所有状态"
+  },
+  "quotaPage.clearFilter": {
+    "vi": "Xoá bộ lọc",
+    "en": "Clear filter",
+    "ja": "フィルターをクリア",
+    "ko": "필터 지우기",
+    "zh": "清除筛选"
+  },
+  "quotaPage.enterpriseCountSuffix": {
+    "vi": "doanh nghiệp",
+    "en": "enterprises",
+    "ja": "企業",
+    "ko": "기업",
+    "zh": "家企业"
+  },
+  "quotaPage.errLoadQuota": {
+    "vi": "Không thể tải danh sách hạn mức.",
+    "en": "Unable to load the quota list.",
+    "ja": "上限リストを読み込めませんでした。",
+    "ko": "할당량 목록을 불러올 수 없습니다.",
+    "zh": "无法加载配额列表。"
+  },
+  "quotaPage.colEnterprise": {
+    "vi": "Doanh nghiệp",
+    "en": "Enterprise",
+    "ja": "企業",
+    "ko": "기업",
+    "zh": "企业"
+  },
+  "quotaPage.colUsage": {
+    "vi": "Sử dụng",
+    "en": "Usage",
+    "ja": "使用状況",
+    "ko": "사용량",
+    "zh": "使用量"
+  },
+  "quotaPage.colOverage": {
+    "vi": "Vượt",
+    "en": "Overage",
+    "ja": "超過",
+    "ko": "초과",
+    "zh": "超额"
+  },
+  "quotaPage.colRevenue": {
+    "vi": "Doanh thu",
+    "en": "Revenue",
+    "ja": "売上",
+    "ko": "매출",
+    "zh": "营收"
+  },
+  "quotaPage.emptyFiltered": {
+    "vi": "Không có doanh nghiệp khớp bộ lọc.",
+    "en": "No enterprises match the filter.",
+    "ja": "フィルターに一致する企業がありません。",
+    "ko": "필터와 일치하는 기업이 없습니다.",
+    "zh": "没有符合筛选条件的企业。"
+  },
+  "quotaPage.emptyAll": {
+    "vi": "Chưa có doanh nghiệp nào trong kỳ thanh toán hiện tại.",
+    "en": "No enterprises yet in the current billing period.",
+    "ja": "現在の請求期間にはまだ企業がありません。",
+    "ko": "현재 청구 기간에 등록된 기업이 없습니다.",
+    "zh": "当前计费周期内还没有企业。"
+  },
+  "quotaPage.detail": {
+    "vi": "Chi tiết",
+    "en": "Detail",
+    "ja": "詳細",
+    "ko": "상세",
+    "zh": "详情"
+  },
+  "quotaPage.loadMore": {
+    "vi": "Tải thêm",
+    "en": "Load more",
+    "ja": "さらに読み込む",
+    "ko": "더 보기",
+    "zh": "加载更多"
+  },
+  "quotaPage.statusNormal": {
+    "vi": "Bình thường",
+    "en": "Normal",
+    "ja": "正常",
+    "ko": "정상",
+    "zh": "正常"
+  },
+  "quotaPage.statusWarn": {
+    "vi": "Cảnh báo",
+    "en": "Warning",
+    "ja": "警告",
+    "ko": "경고",
+    "zh": "警告"
+  },
+  "quotaPage.statusCritical": {
+    "vi": "Nguy hiểm",
+    "en": "Critical",
+    "ja": "危険",
+    "ko": "위험",
+    "zh": "危险"
+  },
+  "quotaPage.statusOverage": {
+    "vi": "Vượt hạn mức",
+    "en": "Over quota",
+    "ja": "上限超過",
+    "ko": "한도 초과",
+    "zh": "超出配额"
+  }
+}

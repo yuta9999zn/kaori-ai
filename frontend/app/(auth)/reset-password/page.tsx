@@ -28,15 +28,15 @@ function ResetPasswordForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (password !== confirm) { setError("Mật khẩu không khớp."); return; }
-    if (password.length < 8)  { setError("Mật khẩu phải có ít nhất 8 ký tự."); return; }
+    if (password !== confirm) { setError(t("resetPasswordPage.errMismatch")); return; }
+    if (password.length < 8)  { setError(t("resetPasswordPage.errTooShort")); return; }
     setError("");
     setLoading(true);
     try {
       await authApi.resetPassword(token, password);
       router.push("/login?reset=success");
     } catch {
-      setError("Link không hợp lệ hoặc đã hết hạn. Vui lòng yêu cầu link mới.");
+      setError(t("resetPasswordPage.errInvalidExpired"));
     } finally {
       setLoading(false);
     }
@@ -45,9 +45,9 @@ function ResetPasswordForm() {
   return (
     <div className="min-h-screen w-full flex bg-canvas overflow-hidden">
       <AuthBrandPanel
-        headline="Mật khẩu mới,"
-        italicTail="khởi đầu vững chắc."
-        subhead="Chọn một mật khẩu đủ mạnh — ít nhất 8 ký tự. Sau khi đặt xong bạn sẽ được đưa về trang đăng nhập."
+        headline={t("resetPasswordPage.brandHeadline")}
+        italicTail={t("resetPasswordPage.brandItalicTail")}
+        subhead={t("resetPasswordPage.brandSubhead")}
       />
 
       <div className="relative flex w-full lg:w-1/2 flex-col items-center justify-center p-6 sm:p-12">
@@ -61,12 +61,12 @@ function ResetPasswordForm() {
                   <AlertCircle className="w-7 h-7 text-[var(--color-danger-600)]" strokeWidth={1.5} />
                 </div>
               </div>
-              <p className="text-sm text-[var(--color-danger-700)]">Link không hợp lệ.</p>
+              <p className="text-sm text-[var(--color-danger-700)]">{t("resetPasswordPage.linkInvalid")}</p>
               <Link
                 href="/forgot-password"
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--color-ink)] hover:text-[var(--color-brand-500)] transition-colors"
               >
-                Yêu cầu link mới →
+                {t("resetPasswordPage.requestNewLink")}
               </Link>
             </div>
           ) : (
@@ -76,13 +76,13 @@ function ResetPasswordForm() {
                   {t("auth.reset.title")}
                 </h2>
                 <p className="text-sm text-[var(--color-ink-muted)]">
-                  Chọn mật khẩu mới cho tài khoản của bạn
+                  {t("resetPasswordPage.subtitle")}
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="password">Mật khẩu mới</Label>
+                  <Label htmlFor="password">{t("resetPasswordPage.newPasswordLabel")}</Label>
                   <Input
                     id="password"
                     type="password"
@@ -97,7 +97,7 @@ function ResetPasswordForm() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="confirm">Xác nhận mật khẩu</Label>
+                  <Label htmlFor="confirm">{t("resetPasswordPage.confirmPasswordLabel")}</Label>
                   <Input
                     id="confirm"
                     type="password"
@@ -118,7 +118,7 @@ function ResetPasswordForm() {
                 )}
 
                 <Button type="submit" loading={loading} className="w-full">
-                  {loading ? "Đang lưu…" : "Đặt lại mật khẩu"}
+                  {loading ? t("resetPasswordPage.saving") : t("resetPasswordPage.submitButton")}
                 </Button>
               </form>
 
@@ -127,7 +127,7 @@ function ResetPasswordForm() {
                   href="/login"
                   className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] transition-colors"
                 >
-                  <ArrowLeft className="w-4 h-4" /> Quay lại đăng nhập
+                  <ArrowLeft className="w-4 h-4" /> {t("resetPasswordPage.backToLogin")}
                 </Link>
               </div>
             </>

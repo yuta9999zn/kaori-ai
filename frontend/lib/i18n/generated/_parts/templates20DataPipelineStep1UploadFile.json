@@ -1,0 +1,303 @@
+{
+  "templates20DataPipelineStep1UploadFile.title": {
+    "vi": "Tải lên file",
+    "en": "Upload file",
+    "ja": "ファイルをアップロード",
+    "ko": "파일 업로드",
+    "zh": "上传文件"
+  },
+  "templates20DataPipelineStep1UploadFile.descWorkflow": {
+    "vi": "Đang tải lên cho workflow \"{name}\" — bước \"{step}\".",
+    "en": "Uploading for workflow \"{name}\" — step \"{step}\".",
+    "ja": "ワークフロー「{name}」— ステップ「{step}」にアップロード中です。",
+    "ko": "워크플로우 \"{name}\" — 단계 \"{step}\"에 업로드 중입니다.",
+    "zh": "正在为工作流「{name}」— 步骤「{step}」上传。"
+  },
+  "templates20DataPipelineStep1UploadFile.descDefault": {
+    "vi": "Bước 1 / 5 — tải một hoặc nhiều file dữ liệu gốc để bắt đầu pipeline.",
+    "en": "Step 1 / 5 — upload one or more raw data files to start the pipeline.",
+    "ja": "ステップ 1 / 5 — パイプラインを開始するために元データファイルを1つ以上アップロードしてください。",
+    "ko": "1단계 / 5 — 파이프라인을 시작하려면 원본 데이터 파일을 하나 이상 업로드하세요.",
+    "zh": "步骤 1 / 5 — 上传一个或多个原始数据文件以启动数据管道。"
+  },
+  "templates20DataPipelineStep1UploadFile.backToWorkflowButton": {
+    "vi": "Quay lại workflow",
+    "en": "Back to workflow",
+    "ja": "ワークフローに戻る",
+    "ko": "워크플로우로 돌아가기",
+    "zh": "返回工作流"
+  },
+  "templates20DataPipelineStep1UploadFile.workflowColonLabel": {
+    "vi": "Workflow:",
+    "en": "Workflow:",
+    "ja": "ワークフロー:",
+    "ko": "워크플로우:",
+    "zh": "工作流："
+  },
+  "templates20DataPipelineStep1UploadFile.stepColonLabel": {
+    "vi": "Bước:",
+    "en": "Step:",
+    "ja": "ステップ:",
+    "ko": "단계:",
+    "zh": "步骤："
+  },
+  "templates20DataPipelineStep1UploadFile.stepHint": {
+    "vi": "File upload sẽ được gắn vào bước này — xem ở tab \"Cây tài liệu\" sau khi upload.",
+    "en": "The uploaded file will be attached to this step — see the \"Document tree\" tab after uploading.",
+    "ja": "アップロードしたファイルはこのステップに紐付けられます — アップロード後「ドキュメントツリー」タブでご確認ください。",
+    "ko": "업로드한 파일은 이 단계에 첨부됩니다 — 업로드 후 \"문서 트리\" 탭에서 확인하세요.",
+    "zh": "上传的文件将附加到此步骤 — 上传后请在「文档树」标签页查看。"
+  },
+  "templates20DataPipelineStep1UploadFile.dropzoneTitle": {
+    "vi": "Kéo thả nhiều file vào đây",
+    "en": "Drag and drop multiple files here",
+    "ja": "複数のファイルをここにドラッグ＆ドロップ",
+    "ko": "여러 파일을 이곳에 끌어다 놓으세요",
+    "zh": "将多个文件拖放到此处"
+  },
+  "templates20DataPipelineStep1UploadFile.dropzoneSubtitle": {
+    "vi": "hoặc bấm để chọn từ máy tính (Ctrl/⌘+click để chọn nhiều)",
+    "en": "or click to browse from your computer (Ctrl/⌘+click to select multiple)",
+    "ja": "またはクリックしてパソコンから選択（複数選択は Ctrl/⌘+クリック）",
+    "ko": "또는 클릭하여 컴퓨터에서 선택하세요 (여러 개 선택은 Ctrl/⌘+클릭)",
+    "zh": "或点击从电脑中选择（按住 Ctrl/⌘ 点击可多选）"
+  },
+  "templates20DataPipelineStep1UploadFile.dropzoneFormats": {
+    "vi": "CSV · Excel (.xlsx, .xls) · TSV · ZIP · tối đa 500 MB / file",
+    "en": "CSV · Excel (.xlsx, .xls) · TSV · ZIP · max 500 MB / file",
+    "ja": "CSV · Excel (.xlsx, .xls) · TSV · ZIP · 最大 500 MB / ファイル",
+    "ko": "CSV · Excel (.xlsx, .xls) · TSV · ZIP · 파일당 최대 500 MB",
+    "zh": "CSV · Excel (.xlsx, .xls) · TSV · ZIP · 每个文件最大 500 MB"
+  },
+  "templates20DataPipelineStep1UploadFile.queueLabel": {
+    "vi": "Hàng đợi",
+    "en": "Queue",
+    "ja": "キュー",
+    "ko": "대기열",
+    "zh": "队列"
+  },
+  "templates20DataPipelineStep1UploadFile.queueFilesCount": {
+    "vi": "{count} file",
+    "en": "{count} files",
+    "ja": "{count} ファイル",
+    "ko": "{count}개 파일",
+    "zh": "{count} 个文件"
+  },
+  "templates20DataPipelineStep1UploadFile.queueDoneCount": {
+    "vi": "· {count} xong",
+    "en": "· {count} done",
+    "ja": "· {count} 件完了",
+    "ko": "· {count}개 완료",
+    "zh": "· {count} 个已完成"
+  },
+  "templates20DataPipelineStep1UploadFile.queueHashingCount": {
+    "vi": "· {count} đang hash",
+    "en": "· {count} hashing",
+    "ja": "· {count} 件ハッシュ計算中",
+    "ko": "· {count}개 해시 계산 중",
+    "zh": "· {count} 个正在计算哈希"
+  },
+  "templates20DataPipelineStep1UploadFile.uploadBronzeButton": {
+    "vi": "Tải lên Bronze",
+    "en": "Upload to Bronze",
+    "ja": "Bronze にアップロード",
+    "ko": "Bronze에 업로드",
+    "zh": "上传到 Bronze"
+  },
+  "templates20DataPipelineStep1UploadFile.allReadyMsg": {
+    "vi": "Mọi file đã sẵn sàng cho bước 2.",
+    "en": "All files are ready for step 2.",
+    "ja": "すべてのファイルがステップ2の準備が整いました。",
+    "ko": "모든 파일이 2단계 진행 준비가 되었습니다.",
+    "zh": "所有文件已准备好进入步骤 2。"
+  },
+  "templates20DataPipelineStep1UploadFile.partialReadyMsg": {
+    "vi": "Có file đã ingest xong — bạn có thể sang bước 2 ngay (các file còn lại vẫn tiếp tục).",
+    "en": "Some files have finished ingesting — you can move to step 2 now (the remaining files will keep processing).",
+    "ja": "取り込みが完了したファイルがあります — 今すぐステップ2に進めます（残りのファイルは処理を続行します）。",
+    "ko": "일부 파일의 수집이 완료되었습니다 — 지금 바로 2단계로 이동할 수 있습니다 (나머지 파일은 계속 처리됩니다).",
+    "zh": "部分文件已完成导入 — 您现在可以进入步骤 2（其余文件将继续处理）。"
+  },
+  "templates20DataPipelineStep1UploadFile.openingStep2": {
+    "vi": "Đang mở Bước 2…",
+    "en": "Opening step 2…",
+    "ja": "ステップ2を開いています…",
+    "ko": "2단계 여는 중…",
+    "zh": "正在打开步骤 2…"
+  },
+  "templates20DataPipelineStep1UploadFile.toStep2ColumnsButton": {
+    "vi": "Sang Bước 2 — Cột",
+    "en": "Go to step 2 — Columns",
+    "ja": "ステップ2へ — 項目",
+    "ko": "2단계로 이동 — 컬럼",
+    "zh": "前往步骤 2 — 字段"
+  },
+  "templates20DataPipelineStep1UploadFile.trustPart1": {
+    "vi": "Mỗi file được lưu nguyên vẹn ở",
+    "en": "Each file is stored intact in",
+    "ja": "各ファイルはそのままの状態で",
+    "ko": "각 파일은 원본 그대로",
+    "zh": "每个文件都会原样保存在"
+  },
+  "templates20DataPipelineStep1UploadFile.bronzeLayerTerm": {
+    "vi": "Bronze layer",
+    "en": "Bronze layer",
+    "ja": "Bronze レイヤー",
+    "ko": "Bronze 레이어",
+    "zh": "Bronze 层"
+  },
+  "templates20DataPipelineStep1UploadFile.trustAppendOnly": {
+    "vi": "(append-only, K-2)",
+    "en": "(append-only, K-2)",
+    "ja": "（append-only、K-2）",
+    "ko": "(append-only, K-2)",
+    "zh": "（append-only，K-2）"
+  },
+  "templates20DataPipelineStep1UploadFile.trustPart2": {
+    "vi": "và tạo một",
+    "en": "and creates a separate",
+    "ja": "に保存され、個別の",
+    "ko": "에 저장되며, 별도의",
+    "zh": "中，并创建独立的"
+  },
+  "templates20DataPipelineStep1UploadFile.trustPart3": {
+    "vi": "riêng. SHA-256 fingerprint chống upload trùng — nếu file đã tồn tại, hệ thống sẽ tái dùng record cũ thay vì ingest lại.",
+    "en": "of its own. A SHA-256 fingerprint prevents duplicate uploads — if the file already exists, the system reuses the old record instead of ingesting it again.",
+    "ja": "を作成します。SHA-256 フィンガープリントで重複アップロードを防止します — ファイルが既に存在する場合、システムは再取り込みせず既存のレコードを再利用します。",
+    "ko": "를 생성합니다. SHA-256 지문으로 중복 업로드를 방지합니다 — 파일이 이미 존재하면 시스템은 다시 수집하지 않고 기존 레코드를 재사용합니다.",
+    "zh": "。SHA-256 指纹可防止重复上传 — 如果文件已存在，系统会重用旧记录，而不会重新导入。"
+  },
+  "templates20DataPipelineStep1UploadFile.uploadingLabel": {
+    "vi": "Đang upload...",
+    "en": "Uploading...",
+    "ja": "アップロード中...",
+    "ko": "업로드 중...",
+    "zh": "上传中..."
+  },
+  "templates20DataPipelineStep1UploadFile.rowsUnit": {
+    "vi": "hàng",
+    "en": "rows",
+    "ja": "行",
+    "ko": "행",
+    "zh": "行"
+  },
+  "templates20DataPipelineStep1UploadFile.toStep2Link": {
+    "vi": "sang bước 2 →",
+    "en": "go to step 2 →",
+    "ja": "ステップ2へ →",
+    "ko": "2단계로 →",
+    "zh": "前往步骤 2 →"
+  },
+  "templates20DataPipelineStep1UploadFile.duplicateReuseMsg": {
+    "vi": "↺ File đã upload trước đó — tái dùng",
+    "en": "↺ File already uploaded before — reusing",
+    "ja": "↺ このファイルは以前にアップロード済みです — 再利用",
+    "ko": "↺ 이미 업로드된 파일입니다 — 재사용",
+    "zh": "↺ 该文件之前已上传 — 复用"
+  },
+  "templates20DataPipelineStep1UploadFile.badgeHash": {
+    "vi": "Hash",
+    "en": "Hash",
+    "ja": "ハッシュ",
+    "ko": "해시",
+    "zh": "哈希"
+  },
+  "templates20DataPipelineStep1UploadFile.badgeReady": {
+    "vi": "Sẵn sàng",
+    "en": "Ready",
+    "ja": "準備完了",
+    "ko": "준비 완료",
+    "zh": "就绪"
+  },
+  "templates20DataPipelineStep1UploadFile.badgeUploading": {
+    "vi": "Tải lên",
+    "en": "Uploading",
+    "ja": "アップロード",
+    "ko": "업로드",
+    "zh": "上传中"
+  },
+  "templates20DataPipelineStep1UploadFile.badgeNew": {
+    "vi": "Mới",
+    "en": "New",
+    "ja": "新規",
+    "ko": "신규",
+    "zh": "新"
+  },
+  "templates20DataPipelineStep1UploadFile.badgeDuplicate": {
+    "vi": "Trùng",
+    "en": "Duplicate",
+    "ja": "重複",
+    "ko": "중복",
+    "zh": "重复"
+  },
+  "templates20DataPipelineStep1UploadFile.badgeError": {
+    "vi": "Lỗi",
+    "en": "Error",
+    "ja": "エラー",
+    "ko": "오류",
+    "zh": "错误"
+  },
+  "templates20DataPipelineStep1UploadFile.removeFromQueueTitle": {
+    "vi": "Xoá khỏi hàng đợi",
+    "en": "Remove from queue",
+    "ja": "キューから削除",
+    "ko": "대기열에서 삭제",
+    "zh": "从队列中删除"
+  },
+  "templates20DataPipelineStep1UploadFile.cannotRemoveTitle": {
+    "vi": "Đang upload — không xoá được",
+    "en": "Uploading — cannot be removed",
+    "ja": "アップロード中 — 削除できません",
+    "ko": "업로드 중 — 삭제할 수 없습니다",
+    "zh": "上传中 — 无法删除"
+  },
+  "templates20DataPipelineStep1UploadFile.processFailedTitle": {
+    "vi": "Xử lý file thất bại",
+    "en": "File processing failed",
+    "ja": "ファイル処理に失敗しました",
+    "ko": "파일 처리에 실패했습니다",
+    "zh": "文件处理失败"
+  },
+  "templates20DataPipelineStep1UploadFile.timeoutTitle": {
+    "vi": "Quá thời gian xử lý file",
+    "en": "File processing timed out",
+    "ja": "ファイル処理がタイムアウトしました",
+    "ko": "파일 처리 시간이 초과되었습니다",
+    "zh": "文件处理超时"
+  },
+  "templates20DataPipelineStep1UploadFile.oversizeTitleSingle": {
+    "vi": "File quá lớn",
+    "en": "File too large",
+    "ja": "ファイルが大きすぎます",
+    "ko": "파일이 너무 큽니다",
+    "zh": "文件过大"
+  },
+  "templates20DataPipelineStep1UploadFile.oversizeTitleMulti": {
+    "vi": "{count} file quá lớn",
+    "en": "{count} files too large",
+    "ja": "{count} 件のファイルが大きすぎます",
+    "ko": "{count}개 파일이 너무 큽니다",
+    "zh": "{count} 个文件过大"
+  },
+  "templates20DataPipelineStep1UploadFile.oversizeDetail": {
+    "vi": "Tối đa 500 MB. Bỏ qua: {list}",
+    "en": "Max 500 MB. Skipped: {list}",
+    "ja": "最大 500 MB。スキップ: {list}",
+    "ko": "최대 500 MB. 건너뜀: {list}",
+    "zh": "最大 500 MB。已跳过：{list}"
+  },
+  "templates20DataPipelineStep1UploadFile.invalidResponseTitle": {
+    "vi": "Phản hồi không hợp lệ từ server",
+    "en": "Invalid response from server",
+    "ja": "サーバーからの応答が無効です",
+    "ko": "서버로부터 유효하지 않은 응답을 받았습니다",
+    "zh": "服务器返回的响应无效"
+  },
+  "templates20DataPipelineStep1UploadFile.networkErrorTitle": {
+    "vi": "Mạng lỗi khi upload",
+    "en": "Network error during upload",
+    "ja": "アップロード中にネットワークエラーが発生しました",
+    "ko": "업로드 중 네트워크 오류가 발생했습니다",
+    "zh": "上传时发生网络错误"
+  }
+}

@@ -1,0 +1,233 @@
+{
+  "templates76BootstrapPreview.errNoIndustryTitle": {
+    "vi": "Thiếu ngành",
+    "en": "Missing industry",
+    "ja": "業種が未指定です",
+    "ko": "업종 누락",
+    "zh": "缺少行业"
+  },
+  "templates76BootstrapPreview.errNoIndustryDetail": {
+    "vi": "Không có industry_id trong URL. Quay lại Thư viện ngành để chọn ngành.",
+    "en": "No industry_id in the URL. Go back to the Industry Library to pick an industry.",
+    "ja": "URLにindustry_idがありません。業種ライブラリに戻って業種を選択してください。",
+    "ko": "URL에 industry_id가 없습니다. 업종 라이브러리로 돌아가 업종을 선택하세요.",
+    "zh": "URL 中缺少 industry_id。请返回行业库选择行业。"
+  },
+  "templates76BootstrapPreview.errNoSessionTitle": {
+    "vi": "Thiếu phiên đăng nhập",
+    "en": "Missing session",
+    "ja": "セッションがありません",
+    "ko": "세션 누락",
+    "zh": "缺少登录会话"
+  },
+  "templates76BootstrapPreview.errNoSessionDetail": {
+    "vi": "Không xác định được doanh nghiệp. Đăng nhập lại.",
+    "en": "Could not determine the enterprise. Please sign in again.",
+    "ja": "企業を特定できませんでした。再度ログインしてください。",
+    "ko": "기업을 확인할 수 없습니다. 다시 로그인해 주세요.",
+    "zh": "无法确定企业。请重新登录。"
+  },
+  "templates76BootstrapPreview.pageTitle": {
+    "vi": "Xem trước bootstrap",
+    "en": "Bootstrap preview",
+    "ja": "ブートストラップのプレビュー",
+    "ko": "부트스트랩 미리보기",
+    "zh": "引导预览"
+  },
+  "templates76BootstrapPreview.pageDescLoading": {
+    "vi": "Đang tải cấu hình ngành…",
+    "en": "Loading industry configuration…",
+    "ja": "業種の設定を読み込み中…",
+    "ko": "업종 구성을 불러오는 중…",
+    "zh": "正在加载行业配置…"
+  },
+  "templates76BootstrapPreview.pageDescWithIndustry": {
+    "vi": "Ngành: {name} — xem trước hệ thống sẽ tạo gì cho doanh nghiệp anh.",
+    "en": "Industry: {name} — preview what the system will create for your enterprise.",
+    "ja": "業種: {name} — このシステムが貴社向けに作成する内容をプレビューします。",
+    "ko": "업종: {name} — 시스템이 귀사에 생성할 항목을 미리 봅니다.",
+    "zh": "行业：{name} — 预览系统将为贵企业创建的内容。"
+  },
+  "templates76BootstrapPreview.pageDescDefault": {
+    "vi": "Xem trước cấu hình ngành.",
+    "en": "Preview the industry configuration.",
+    "ja": "業種の設定をプレビューします。",
+    "ko": "업종 구성을 미리 봅니다.",
+    "zh": "预览行业配置。"
+  },
+  "templates76BootstrapPreview.summaryDepts": {
+    "vi": "phòng ban",
+    "en": "departments",
+    "ja": "部門",
+    "ko": "부서",
+    "zh": "部门"
+  },
+  "templates76BootstrapPreview.summaryWorkflowsCore": {
+    "vi": "workflow lõi (tự tạo)",
+    "en": "core workflows (auto-created)",
+    "ja": "コアワークフロー（自動作成）",
+    "ko": "핵심 워크플로우 (자동 생성)",
+    "zh": "核心工作流（自动创建）"
+  },
+  "templates76BootstrapPreview.summaryWorkflowsSuggested": {
+    "vi": "· {count} gợi ý (thêm sau)",
+    "en": "· {count} suggested (add later)",
+    "ja": "・提案 {count} 件（後で追加）",
+    "ko": "· 추천 {count}개 (나중에 추가)",
+    "zh": "· {count} 项建议（稍后添加）"
+  },
+  "templates76BootstrapPreview.kpiLabel": {
+    "vi": "KPI",
+    "en": "KPI",
+    "ja": "KPI",
+    "ko": "KPI",
+    "zh": "KPI"
+  },
+  "templates76BootstrapPreview.summaryDataSchema": {
+    "vi": "data schema",
+    "en": "data schemas",
+    "ja": "データスキーマ",
+    "ko": "데이터 스키마",
+    "zh": "数据模式"
+  },
+  "templates76BootstrapPreview.cautionTitle": {
+    "vi": "Lưu ý không thể hoàn tác",
+    "en": "This action cannot be undone",
+    "ja": "この操作は元に戻せません",
+    "ko": "이 작업은 되돌릴 수 없습니다",
+    "zh": "此操作无法撤销"
+  },
+  "templates76BootstrapPreview.cautionBody": {
+    "vi": "Sau khi tạo, không thể bootstrap lại trừ khi admin chạy lại với chế độ ghi đè. Toàn bộ phòng ban + workflow + KPI + schema sẽ được khởi tạo cho doanh nghiệp anh.",
+    "en": "Once created, bootstrap cannot run again unless an admin re-runs it in overwrite mode. All departments + workflows + KPIs + schemas will be created for your enterprise.",
+    "ja": "作成後、管理者が上書きモードで再実行しない限りブートストラップは再実行できません。貴社向けにすべての部門・ワークフロー・KPI・スキーマが作成されます。",
+    "ko": "생성 후에는 관리자가 덮어쓰기 모드로 다시 실행하지 않는 한 부트스트랩을 다시 실행할 수 없습니다. 귀사를 위해 모든 부서 + 워크플로우 + KPI + 스키마가 생성됩니다.",
+    "zh": "创建后，除非管理员以覆盖模式重新运行，否则无法再次引导。将为贵企业创建全部部门、工作流、KPI 和数据模式。"
+  },
+  "templates76BootstrapPreview.panelTitleDepts": {
+    "vi": "Phòng ban",
+    "en": "Departments",
+    "ja": "部門",
+    "ko": "부서",
+    "zh": "部门"
+  },
+  "templates76BootstrapPreview.panelTitleWorkflows": {
+    "vi": "Workflow mẫu",
+    "en": "Workflow templates",
+    "ja": "ワークフローテンプレート",
+    "ko": "워크플로우 템플릿",
+    "zh": "工作流模板"
+  },
+  "templates76BootstrapPreview.panelTitleDataSchema": {
+    "vi": "Data schema",
+    "en": "Data schema",
+    "ja": "データスキーマ",
+    "ko": "데이터 스키마",
+    "zh": "数据模式"
+  },
+  "templates76BootstrapPreview.footerDefault": {
+    "vi": "Bootstrap với cấu hình mặc định",
+    "en": "Bootstrap with default configuration",
+    "ja": "デフォルト設定でブートストラップします",
+    "ko": "기본 구성으로 부트스트랩",
+    "zh": "使用默认配置进行引导"
+  },
+  "templates76BootstrapPreview.footerSkipCount": {
+    "vi": "{count} mục đã bỏ chọn",
+    "en": "{count} items deselected",
+    "ja": "{count} 件の項目が選択解除されました",
+    "ko": "{count}개 항목 선택 해제됨",
+    "zh": "已取消选择 {count} 项"
+  },
+  "templates76BootstrapPreview.continueButton": {
+    "vi": "Tiếp tục → Xác nhận",
+    "en": "Continue → Confirm",
+    "ja": "続行 → 確認",
+    "ko": "계속 → 확인",
+    "zh": "继续 → 确认"
+  },
+  "templates76BootstrapPreview.panelEmpty": {
+    "vi": "Không có mục nào.",
+    "en": "No items.",
+    "ja": "項目がありません。",
+    "ko": "항목이 없습니다.",
+    "zh": "没有项目。"
+  },
+  "templates76BootstrapPreview.levelCore": {
+    "vi": "lõi",
+    "en": "core",
+    "ja": "コア",
+    "ko": "핵심",
+    "zh": "核心"
+  },
+  "templates76BootstrapPreview.levelSuggested": {
+    "vi": "gợi ý",
+    "en": "suggested",
+    "ja": "提案",
+    "ko": "추천",
+    "zh": "建议"
+  },
+  "templates76BootstrapPreview.confirm1Title": {
+    "vi": "Xác nhận hành động",
+    "en": "Confirm action",
+    "ja": "操作を確認",
+    "ko": "작업 확인",
+    "zh": "确认操作"
+  },
+  "templates76BootstrapPreview.confirm1Body": {
+    "vi": "Bước 1/2 — Em sẽ tạo toàn bộ phòng ban + workflow + KPI + schema cho doanh nghiệp anh. Hành động này không thể hoàn tác. Tiếp tục?",
+    "en": "Step 1/2 — I will create all departments + workflows + KPIs + schemas for your enterprise. This action cannot be undone. Continue?",
+    "ja": "ステップ1/2 — 貴社向けにすべての部門・ワークフロー・KPI・スキーマを作成します。この操作は元に戻せません。続行しますか？",
+    "ko": "1/2단계 — 귀사를 위해 모든 부서 + 워크플로우 + KPI + 스키마를 생성합니다. 이 작업은 되돌릴 수 없습니다. 계속하시겠습니까?",
+    "zh": "第 1/2 步 — 将为贵企业创建全部部门、工作流、KPI 和数据模式。此操作无法撤销。是否继续？"
+  },
+  "templates76BootstrapPreview.cancelButton": {
+    "vi": "Huỷ",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "templates76BootstrapPreview.nextButton": {
+    "vi": "Tiếp →",
+    "en": "Next →",
+    "ja": "次へ →",
+    "ko": "다음 →",
+    "zh": "下一步 →"
+  },
+  "templates76BootstrapPreview.confirm2Title": {
+    "vi": "Gõ tên doanh nghiệp",
+    "en": "Type the enterprise name",
+    "ja": "企業名を入力してください",
+    "ko": "기업 이름을 입력하세요",
+    "zh": "输入企业名称"
+  },
+  "templates76BootstrapPreview.confirm2DescPre": {
+    "vi": "Bước 2/2 — Gõ chính xác tên",
+    "en": "Step 2/2 — Type the exact name",
+    "ja": "ステップ2/2 — 正確な名前を入力してください",
+    "ko": "2/2단계 — 정확한 이름을 입력하세요",
+    "zh": "第 2/2 步 — 请输入准确名称"
+  },
+  "templates76BootstrapPreview.confirm2DescPost": {
+    "vi": "để xác nhận.",
+    "en": "to confirm.",
+    "ja": "を入力して確認してください。",
+    "ko": "를 입력하여 확인하세요.",
+    "zh": "以确认。"
+  },
+  "templates76BootstrapPreview.confirm2NoNameFallback": {
+    "vi": "(doanh nghiệp)",
+    "en": "(enterprise)",
+    "ja": "（企業）",
+    "ko": "(기업)",
+    "zh": "（企业）"
+  },
+  "templates76BootstrapPreview.confirmBootstrapButton": {
+    "vi": "Xác nhận Bootstrap",
+    "en": "Confirm Bootstrap",
+    "ja": "ブートストラップを確認",
+    "ko": "부트스트랩 확인",
+    "zh": "确认引导"
+  }
+}

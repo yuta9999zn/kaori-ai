@@ -1,0 +1,184 @@
+{
+  "templates72AuthzAudits.kindPermissionDenied": {
+    "vi": "Từ chối quyền",
+    "en": "Permission denied",
+    "ja": "権限拒否",
+    "ko": "권한 거부",
+    "zh": "拒绝权限"
+  },
+  "templates72AuthzAudits.kindPermissionAllowed": {
+    "vi": "Cấp quyền",
+    "en": "Permission granted",
+    "ja": "権限付与",
+    "ko": "권한 부여",
+    "zh": "授予权限"
+  },
+  "templates72AuthzAudits.kindRoleChanged": {
+    "vi": "Đổi vai trò",
+    "en": "Role changed",
+    "ja": "ロール変更",
+    "ko": "역할 변경",
+    "zh": "更改角色"
+  },
+  "templates72AuthzAudits.kindRoleEscalated": {
+    "vi": "Nâng vai trò",
+    "en": "Role escalated",
+    "ja": "ロール昇格",
+    "ko": "역할 상승",
+    "zh": "角色提升"
+  },
+  "templates72AuthzAudits.kindCrossWorkspaceAccess": {
+    "vi": "Truy cập cross-workspace",
+    "en": "Cross-workspace access",
+    "ja": "クロスワークスペースアクセス",
+    "ko": "크로스 워크스페이스 접근",
+    "zh": "跨工作区访问"
+  },
+  "templates72AuthzAudits.kindAbacMatch": {
+    "vi": "ABAC match",
+    "en": "ABAC match",
+    "ja": "ABAC match",
+    "ko": "ABAC match",
+    "zh": "ABAC match"
+  },
+  "templates72AuthzAudits.pageTitle": {
+    "vi": "Authz Audit",
+    "en": "Authz Audit",
+    "ja": "Authz Audit",
+    "ko": "Authz Audit",
+    "zh": "Authz Audit"
+  },
+  "templates72AuthzAudits.pageDescription": {
+    "vi": "Mọi sự kiện cấp/từ chối quyền + đổi vai trò + truy cập cross-workspace.",
+    "en": "Every permission grant/deny event + role changes + cross-workspace access.",
+    "ja": "権限の付与/拒否イベント、ロール変更、クロスワークスペースアクセスをすべて記録。",
+    "ko": "모든 권한 부여/거부 이벤트 + 역할 변경 + 크로스 워크스페이스 접근.",
+    "zh": "所有权限授予/拒绝事件 + 角色变更 + 跨工作区访问。"
+  },
+  "templates72AuthzAudits.refresh": {
+    "vi": "Làm mới",
+    "en": "Refresh",
+    "ja": "更新",
+    "ko": "새로고침",
+    "zh": "刷新"
+  },
+  "templates72AuthzAudits.exportCsv": {
+    "vi": "Xuất CSV",
+    "en": "Export CSV",
+    "ja": "CSVエクスポート",
+    "ko": "CSV 내보내기",
+    "zh": "导出 CSV"
+  },
+  "templates72AuthzAudits.exportCsvFailedTitle": {
+    "vi": "Xuất CSV thất bại",
+    "en": "CSV export failed",
+    "ja": "CSVエクスポートに失敗しました",
+    "ko": "CSV 내보내기 실패",
+    "zh": "导出 CSV 失败"
+  },
+  "templates72AuthzAudits.searchPlaceholder": {
+    "vi": "Tìm theo email actor...",
+    "en": "Search by actor email...",
+    "ja": "実行者のメールで検索...",
+    "ko": "실행자 이메일로 검색...",
+    "zh": "按操作者邮箱搜索..."
+  },
+  "templates72AuthzAudits.allKinds": {
+    "vi": "Mọi loại sự kiện",
+    "en": "All event types",
+    "ja": "すべてのイベント種別",
+    "ko": "모든 이벤트 유형",
+    "zh": "所有事件类型"
+  },
+  "templates72AuthzAudits.filter": {
+    "vi": "Lọc",
+    "en": "Filter",
+    "ja": "絞り込み",
+    "ko": "필터",
+    "zh": "筛选"
+  },
+  "templates72AuthzAudits.summary": {
+    "vi": "{total} sự kiện · Đang hiển thị {shown}",
+    "en": "{total} events · Showing {shown}",
+    "ja": "{total} 件のイベント · {shown} 件表示中",
+    "ko": "이벤트 {total}건 · {shown}건 표시 중",
+    "zh": "共 {total} 个事件 · 正在显示 {shown} 个"
+  },
+  "templates72AuthzAudits.colType": {
+    "vi": "Loại",
+    "en": "Type",
+    "ja": "種別",
+    "ko": "유형",
+    "zh": "类型"
+  },
+  "templates72AuthzAudits.colActor": {
+    "vi": "Actor",
+    "en": "Actor",
+    "ja": "実行者",
+    "ko": "실행자",
+    "zh": "操作者"
+  },
+  "templates72AuthzAudits.colResourceAction": {
+    "vi": "Resource · Action",
+    "en": "Resource · Action",
+    "ja": "リソース・操作",
+    "ko": "리소스 · 작업",
+    "zh": "资源 · 操作"
+  },
+  "templates72AuthzAudits.colDecision": {
+    "vi": "Decision",
+    "en": "Decision",
+    "ja": "決定",
+    "ko": "결정",
+    "zh": "决策"
+  },
+  "templates72AuthzAudits.colIpTime": {
+    "vi": "IP · Thời gian",
+    "en": "IP · Time",
+    "ja": "IP・日時",
+    "ko": "IP · 시간",
+    "zh": "IP · 时间"
+  },
+  "templates72AuthzAudits.emptyState": {
+    "vi": "Chưa có sự kiện authz nào.",
+    "en": "No authz events yet.",
+    "ja": "authzイベントはまだありません。",
+    "ko": "아직 authz 이벤트가 없습니다.",
+    "zh": "暂无 authz 事件。"
+  },
+  "templates72AuthzAudits.actionLabel": {
+    "vi": "action:",
+    "en": "action:",
+    "ja": "action:",
+    "ko": "action:",
+    "zh": "action:"
+  },
+  "templates72AuthzAudits.policyLabel": {
+    "vi": "policy:",
+    "en": "policy:",
+    "ja": "policy:",
+    "ko": "policy:",
+    "zh": "policy:"
+  },
+  "templates72AuthzAudits.loadMore": {
+    "vi": "Tải thêm",
+    "en": "Load more",
+    "ja": "さらに読み込む",
+    "ko": "더 불러오기",
+    "zh": "加载更多"
+  },
+  "templates72AuthzAudits.retentionPre": {
+    "vi": "Authz audit retention: 2 năm (CLAUDE.md §7 —",
+    "en": "Authz audit retention: 2 years (CLAUDE.md §7 —",
+    "ja": "Authz監査保持期間: 2年（CLAUDE.md §7 —",
+    "ko": "Authz 감사 보존 기간: 2년 (CLAUDE.md §7 —",
+    "zh": "Authz 审计留存期：2 年（CLAUDE.md §7 —"
+  },
+  "templates72AuthzAudits.retentionPost": {
+    "vi": "). Tất cả row đều immutable. Phase 2 sẽ thêm filter theo workspace_id (đa workspace).",
+    "en": "). All rows are immutable. Phase 2 will add a workspace_id filter (multi-workspace).",
+    "ja": "）。すべての行はimmutableです。Phase 2でworkspace_idフィルタ（マルチワークスペース）を追加予定。",
+    "ko": "). 모든 행은 immutable입니다. Phase 2에서 workspace_id 필터(다중 워크스페이스)를 추가할 예정입니다.",
+    "zh": "）。所有行均为不可变（immutable）。Phase 2 将新增按 workspace_id 筛选（多工作区）。"
+  }
+}

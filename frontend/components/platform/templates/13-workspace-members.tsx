@@ -56,6 +56,7 @@ import {
   Mail,
   Send
 } from 'lucide-react';
+import { useT } from '@/lib/i18n/provider';
 
 // --- UTILS ---
 const cn = (...classes) => classes.filter(Boolean).join(' ');
@@ -228,7 +229,9 @@ const Input = React.forwardRef<any, any>(({ className, label, error, helperText,
 Input.displayName = "Input";
 
 // --- SELECT (Simulated Radix Select) ---
-const Select = ({  label, placeholder = "Select an option", options = [], value, onChange, error  }: any) => {
+const Select = ({  label, placeholder, options = [], value, onChange, error  }: any) => {
+  const t = useT();
+  const resolvedPlaceholder = placeholder ?? t('templates13WorkspaceMembers.selectDefaultPlaceholder');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -254,7 +257,7 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
           !selectedOption ? "text-[var(--text-secondary)]/60" : "text-[var(--text-primary)]"
         )}
       >
-        {selectedOption ? selectedOption.label : placeholder}
+        {selectedOption ? selectedOption.label : resolvedPlaceholder}
         <ChevronDown className="h-4 w-4 opacity-50" />
       </button>
       {isOpen && (
@@ -338,6 +341,7 @@ const Card = ({  className, ...props  }: any) => (
 );
 
 const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className  }: any) => {
+  const t = useT();
   const isPositive = (isUp && !inverseGood) || (!isUp && inverseGood);
   const trendColor = trend === '0%' ? 'text-[var(--text-secondary)]' : isPositive ? 'text-[#5C856A]' : 'text-[#9B5050]';
   return (
@@ -353,7 +357,7 @@ const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className
             </div>
           )}
         </div>
-        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">vs yesterday</div>
+        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">{t('templates13WorkspaceMembers.metricVsYesterday')}</div>
       </div>
     </Card>
   );
@@ -372,6 +376,7 @@ const TableHead = ({  className, ...props  }: any) => <th className={cn("h-12 px
 const TableCell = ({  className, ...props  }: any) => <td className={cn("p-4 align-middle text-[var(--text-primary)]", className)} {...props} />;
 
 const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
+  const t = useT();
   return (
     <div className="rounded-lg-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm overflow-hidden w-full">
       <Table>
@@ -396,8 +401,8 @@ const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
                   <div className="w-10 h-10 rounded-full bg-[var(--bg-app)] flex items-center justify-center mb-2">
                     <Search className="w-5 h-5 text-[var(--text-secondary)]" />
                   </div>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">No results found</span>
-                  <span className="text-xs text-[var(--text-secondary)]">Try adjusting your filters</span>
+                  <span className="text-sm font-medium text-[var(--text-primary)]">{t('templates13WorkspaceMembers.dtEmptyTitle')}</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{t('templates13WorkspaceMembers.dtEmptyHint')}</span>
                 </div>
               </TableCell>
             </TableRow>
@@ -412,10 +417,10 @@ const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
       </Table>
       {pagination && (
         <div className="border-t border-[var(--border-color)] px-4 py-3 flex items-center justify-between bg-[#FCFBF9]">
-          <span className="text-xs text-[var(--text-secondary)]">Showing 1 to {data.length} of {data.length} results</span>
+          <span className="text-xs text-[var(--text-secondary)]">{t('templates13WorkspaceMembers.dtShowing', { count: data.length })}</span>
           <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled>Previous</Button>
-              <Button variant="outline" size="sm">Next</Button>
+              <Button variant="outline" size="sm" disabled>{t('templates13WorkspaceMembers.dtPrevious')}</Button>
+              <Button variant="outline" size="sm">{t('templates13WorkspaceMembers.dtNext')}</Button>
           </div>
         </div>
       )}
@@ -567,25 +572,25 @@ const Section = ({  title, description, actions, children, className = ''  }: an
 // --- CONFIG ---
 const NAVIGATION_CONFIG = [
   {
-    group: 'Main',
+    groupKey: 'templates13WorkspaceMembers.navGroupMain',
     items: [
-      { id: 'overview', label: 'Platform Health', icon: LayoutDashboard, route: '/platform' },
-      { id: 'workspaces', label: 'Workspaces', icon: Briefcase, route: '/platform/workspaces', badge: '4' },
+      { id: 'overview', labelKey: 'templates13WorkspaceMembers.navPlatformHealth', icon: LayoutDashboard, route: '/platform' },
+      { id: 'workspaces', labelKey: 'templates13WorkspaceMembers.navWorkspaces', icon: Briefcase, route: '/platform/workspaces', badge: '4' },
     ]
   },
   {
-    group: 'Management',
+    groupKey: 'templates13WorkspaceMembers.navGroupManagement',
     items: [
-      { id: 'keys', label: 'API Keys', icon: Key, route: '/platform/keys' },
-      { id: 'billing', label: 'Billing', icon: CreditCard, route: '/platform/billing' },
-      { id: 'admin', label: 'Admins', icon: Shield, route: '/platform/admins', role: 'admin' },
+      { id: 'keys', labelKey: 'templates13WorkspaceMembers.navApiKeys', icon: Key, route: '/platform/keys' },
+      { id: 'billing', labelKey: 'templates13WorkspaceMembers.navBilling', icon: CreditCard, route: '/platform/billing' },
+      { id: 'admin', labelKey: 'templates13WorkspaceMembers.navAdmins', icon: Shield, route: '/platform/admins', role: 'admin' },
     ]
   },
   {
-    group: 'System',
+    groupKey: 'templates13WorkspaceMembers.navGroupSystem',
     items: [
-      { id: 'components', label: 'Component Library', icon: Component, route: '/platform/components' },
-      { id: 'sessions', label: 'Security & Sessions', icon: Settings, route: '/p1/auth/sessions' },
+      { id: 'components', labelKey: 'templates13WorkspaceMembers.navComponentLibrary', icon: Component, route: '/platform/components' },
+      { id: 'sessions', labelKey: 'templates13WorkspaceMembers.navSecuritySessions', icon: Settings, route: '/p1/auth/sessions' },
     ]
   }
 ];
@@ -605,6 +610,7 @@ const EnvBadge = ({  env = 'production'  }: any) => {
 };
 
 const NotificationDropdown = () => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -614,7 +620,7 @@ const NotificationDropdown = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const notifications = [{ id: 1, title: 'Data sync completed successfully', time: '10m ago', read: false }];
+  const notifications = [{ id: 1, title: t('templates13WorkspaceMembers.notifSyncCompleted'), time: '10m ago', read: false }];
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -625,7 +631,7 @@ const NotificationDropdown = () => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-[320px] bg-[var(--bg-card)] rounded-lg-custom shadow-soft-md border border-[var(--border-color)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 z-50">
           <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] bg-[#FCFBF9]">
-            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Notifications</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates13WorkspaceMembers.notifHeaderTitle')}</h3>
           </div>
           <div className="max-h-[300px] overflow-y-auto">
             {notifications.map((n) => (
@@ -645,6 +651,7 @@ const NotificationDropdown = () => {
 };
 
 const HeaderUserMenu = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -667,13 +674,13 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
           </div>
           <div className="p-1.5">
             <button onClick={() => { setActiveRoute('sessions'); setIsOpen(false); }} className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> Security & Sessions
+              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> {t('templates13WorkspaceMembers.navSecuritySessions')}
             </button>
           </div>
           <div className="h-[1px] bg-[var(--border-color)]/50 mx-1.5" />
           <div className="p-1.5">
             <button className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] transition-colors flex items-center gap-2 font-medium">
-              <LogOut className="w-4 h-4" /> Sign out
+              <LogOut className="w-4 h-4" /> {t('templates13WorkspaceMembers.userMenuSignOut')}
             </button>
           </div>
         </div>
@@ -683,10 +690,12 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
 };
 
 const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: any) => {
+  const t = useT();
   // If the route is a detail route, show custom label.
-  let routeLabel = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label;
-  if (activeRoute === 'workspace-details') routeLabel = 'Workspaces / Overview';
-  else if (activeRoute === 'workspace-members') routeLabel = 'Workspaces / Members';
+  const navLabelKey = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.labelKey;
+  let routeLabel = navLabelKey ? t(navLabelKey) : undefined;
+  if (activeRoute === 'workspace-details') routeLabel = t('templates13WorkspaceMembers.routeWorkspaceOverview');
+  else if (activeRoute === 'workspace-members') routeLabel = t('templates13WorkspaceMembers.routeWorkspaceMembers');
   else if (!routeLabel) routeLabel = activeRoute;
 
   return (
@@ -696,7 +705,7 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
           <Menu className="w-5 h-5" />
         </button>
         <div className="hidden sm:flex items-center text-sm font-medium">
-          <span className="text-[var(--text-secondary)]">Platform</span>
+          <span className="text-[var(--text-secondary)]">{t('templates13WorkspaceMembers.breadcrumbPlatform')}</span>
           <ChevronRight className="w-4 h-4 mx-2 text-[var(--border-color)] shrink-0 opacity-50" />
           <span className="text-[var(--text-primary)] capitalize">{routeLabel}</span>
         </div>
@@ -707,9 +716,9 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
         <div className="hidden sm:flex items-center gap-2">
            <div className="relative group hidden lg:block">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-[var(--text-secondary)] group-focus-within:text-[var(--primary-gold)] transition-colors" />
-              <input type="text" placeholder="Search..." className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
+              <input type="text" placeholder={t('templates13WorkspaceMembers.searchPlaceholderGeneric')} className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
             </div>
-            <Button variant="outline" size="sm" className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> Workspace</Button>
+            <Button variant="outline" size="sm" className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> {t('templates13WorkspaceMembers.headerAddWorkspace')}</Button>
         </div>
         <NotificationDropdown />
         <HeaderUserMenu setActiveRoute={setActiveRoute} />
@@ -733,6 +742,7 @@ const SidebarTooltip = ({  children, content, isCollapsed  }: any) => {
 };
 
 const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, setIsCollapsed  }: any) => {
+  const t = useT();
   const collapsed = isCollapsed && !isMobile;
   // If activeRoute is a workspace sub-page, keep "Workspaces" highlighted.
   const currentHighlight = (activeRoute === 'workspace-details' || activeRoute === 'workspace-members') ? 'workspaces' : activeRoute;
@@ -758,7 +768,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
         {NAVIGATION_CONFIG.map((group, idx) => (
           <div key={idx} className="flex flex-col">
             {!collapsed ? (
-              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{group.group}</div>
+              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{t(group.groupKey)}</div>
             ) : (
               <div className="w-full h-[1px] bg-[var(--border-color)]/60 my-2 rounded-full" />
             )}
@@ -767,7 +777,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
                 const isActive = currentHighlight === item.id;
                 const Icon = item.icon;
                 return (
-                  <SidebarTooltip key={item.id} content={item.label} isCollapsed={collapsed}>
+                  <SidebarTooltip key={item.id} content={t(item.labelKey)} isCollapsed={collapsed}>
                     <button
                       onClick={() => setActiveRoute(item.id)}
                       className={cn(
@@ -778,7 +788,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
                     >
                       {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[var(--primary-gold)] rounded-r-md transition-all" />}
                       <Icon className={`shrink-0 transition-colors ${isActive ? 'text-[var(--primary-gold)] w-5 h-5' : 'w-[18px] h-[18px] group-hover:text-[var(--text-primary)]'}`} />
-                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{item.label}</span>}
+                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{t(item.labelKey)}</span>}
                       {!collapsed && item.badge && (
                         <span className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[var(--primary-gold)] text-white text-[10px] font-bold shadow-sm ml-2">
                           {item.badge}
@@ -803,7 +813,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
             className={cn("w-full flex items-center h-8 rounded-md-custom text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors border border-transparent hover:border-[var(--border-color)]/50", collapsed ? 'justify-center' : 'px-3 gap-3')}
           >
             {collapsed ? <PanelLeftOpen className="w-[18px] h-[18px]" /> : <PanelLeftClose className="w-[18px] h-[18px]" />}
-            {!collapsed && <span className="text-xs font-medium">Collapse sidebar</span>}
+            {!collapsed && <span className="text-xs font-medium">{t('templates13WorkspaceMembers.sidebarCollapse')}</span>}
           </button>
         )}
       </div>
@@ -825,6 +835,7 @@ const MOCK_MEMBERS = [
 ];
 
 const MemberActionsDropdown = ({  member, onRemove  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
 
@@ -847,27 +858,27 @@ const MemberActionsDropdown = ({  member, onRemove  }: any) => {
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 animate-in fade-in zoom-in-95 duration-100">
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> Change role
+            <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates13WorkspaceMembers.memberChangeRole')}
           </button>
-          
+
           {member.status === 'Pending' && (
             <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-              <Send className="w-4 h-4 text-[var(--text-secondary)]"/> Resend invite
+              <Send className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates13WorkspaceMembers.memberResendInvite')}
             </button>
           )}
 
           {member.role === 'Owner' && (
             <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-              <Key className="w-4 h-4 text-[var(--text-secondary)]"/> Transfer ownership
+              <Key className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates13WorkspaceMembers.memberTransferOwnership')}
             </button>
           )}
 
           <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2" />
-          <button 
+          <button
             onClick={() => { onRemove(member); setIsOpen(false); }}
             className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] flex items-center gap-2 transition-colors font-medium"
           >
-            <Trash2 className="w-4 h-4 opacity-80"/> Remove member
+            <Trash2 className="w-4 h-4 opacity-80"/> {t('templates13WorkspaceMembers.memberRemoveAction')}
           </button>
         </div>
       )}
@@ -876,6 +887,7 @@ const MemberActionsDropdown = ({  member, onRemove  }: any) => {
 };
 
 const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -898,7 +910,7 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
     if (memberToRemove?.role === 'Owner') {
       const ownerCount = members.filter(m => m.role === 'Owner').length;
       if (ownerCount <= 1) {
-        setRemoveError("You cannot remove the last owner. Please transfer ownership first.");
+        setRemoveError(t('templates13WorkspaceMembers.errCannotRemoveLastOwner'));
         return;
       }
     }
@@ -945,7 +957,7 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
        <div>
          <div className="font-medium text-[var(--text-primary)] flex items-center gap-2">
            {m.name} 
-           {m.id === 'm1' && <span className="text-[10px] bg-[var(--bg-app)] border border-[var(--border-color)] px-1.5 py-0.5 rounded text-[var(--text-secondary)]">You</span>}
+           {m.id === 'm1' && <span className="text-[10px] bg-[var(--bg-app)] border border-[var(--border-color)] px-1.5 py-0.5 rounded text-[var(--text-secondary)]">{t('templates13WorkspaceMembers.youBadge')}</span>}
          </div>
          <div className="text-xs text-[var(--text-secondary)] mt-0.5">{m.email}</div>
        </div>
@@ -959,16 +971,16 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        showBack 
+      <PageHeader
+        showBack
         onBack={() => setActiveRoute('workspace-details')}
-        title="Members" 
-        subtitle="Manage users and access levels for Production AI workspace." 
+        title={t('templates13WorkspaceMembers.pageTitle')}
+        subtitle={t('templates13WorkspaceMembers.pageSubtitle')}
         actions={
           <Button onClick={() => setIsInviteOpen(true)}>
-            <UserPlus className="w-4 h-4 mr-2"/> Invite member
+            <UserPlus className="w-4 h-4 mr-2"/> {t('templates13WorkspaceMembers.inviteMemberBtn')}
           </Button>
-        } 
+        }
       />
 
       <Section>
@@ -978,98 +990,98 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               className="h-10 w-full pl-9 pr-3 rounded-md-custom border border-[var(--border-color)] bg-white text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
-              placeholder="Search by name or email..."
+              placeholder={t('templates13WorkspaceMembers.searchMembersPlaceholder')}
               value={search}
               onChange={(e: any) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex w-full sm:w-auto gap-3 shrink-0">
             <div className="w-full sm:w-36">
-              <Select 
-                value={roleFilter} 
-                onChange={setRoleFilter} 
+              <Select
+                value={roleFilter}
+                onChange={setRoleFilter}
                 options={[
-                  {label: 'All Roles', value: 'all'}, 
-                  {label: 'Owner', value: 'Owner'}, 
+                  {label: t('templates13WorkspaceMembers.filterAllRoles'), value: 'all'},
+                  {label: 'Owner', value: 'Owner'},
                   {label: 'Admin', value: 'Admin'},
                   {label: 'Member', value: 'Member'},
                   {label: 'Viewer', value: 'Viewer'}
-                ]} 
-                placeholder="Role" 
+                ]}
+                placeholder={t('templates13WorkspaceMembers.filterRolePlaceholder')}
               />
             </div>
             <div className="w-full sm:w-36">
-              <Select 
-                value={statusFilter} 
-                onChange={setStatusFilter} 
-                options={[{label: 'All Statuses', value: 'all'}, {label: 'Active', value: 'Active'}, {label: 'Pending', value: 'Pending'}]} 
-                placeholder="Status" 
+              <Select
+                value={statusFilter}
+                onChange={setStatusFilter}
+                options={[{label: t('templates13WorkspaceMembers.filterAllStatuses'), value: 'all'}, {label: 'Active', value: 'Active'}, {label: 'Pending', value: 'Pending'}]}
+                placeholder={t('templates13WorkspaceMembers.filterStatusPlaceholder')}
               />
             </div>
           </div>
           {(search || roleFilter !== 'all' || statusFilter !== 'all') && (
             <Button variant="tertiary" onClick={() => {setSearch(''); setRoleFilter('all'); setStatusFilter('all');}} className="px-3">
-              Clear filters
+              {t('templates13WorkspaceMembers.clearFiltersBtn')}
             </Button>
           )}
         </div>
       </Section>
 
       <Section>
-        <DataTable 
-          columns={["Name", "Role", "Status", "Last Active", "Joined", ""]} 
-          data={mappedData} 
-          loading={isLoading} 
+        <DataTable
+          columns={[t('templates13WorkspaceMembers.colName'), t('templates13WorkspaceMembers.colRole'), t('templates13WorkspaceMembers.colStatus'), t('templates13WorkspaceMembers.colLastActive'), t('templates13WorkspaceMembers.colJoined'), ""]}
+          data={mappedData}
+          loading={isLoading}
         />
       </Section>
 
       {/* Invite Modal */}
-      <Modal 
-        isOpen={isInviteOpen} 
+      <Modal
+        isOpen={isInviteOpen}
         onClose={() => setIsInviteOpen(false)}
-        title="Invite Member"
-        description="Send an email invitation to join this workspace."
+        title={t('templates13WorkspaceMembers.inviteModalTitle')}
+        description={t('templates13WorkspaceMembers.inviteModalDesc')}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsInviteOpen(false)}>Cancel</Button>
-            <Button onClick={handleInvite}><Mail className="w-4 h-4 mr-2"/> Send Invite</Button>
+            <Button variant="outline" onClick={() => setIsInviteOpen(false)}>{t('templates13WorkspaceMembers.btnCancel')}</Button>
+            <Button onClick={handleInvite}><Mail className="w-4 h-4 mr-2"/> {t('templates13WorkspaceMembers.btnSendInvite')}</Button>
           </>
         }
       >
         <div className="space-y-4">
-          <Input 
-            label="Email Address" 
-            placeholder="colleague@company.com" 
+          <Input
+            label={t('templates13WorkspaceMembers.labelEmailAddress')}
+            placeholder={t('templates13WorkspaceMembers.placeholderColleagueEmail')}
             value={inviteEmail}
             onChange={e => setInviteEmail(e.target.value)}
           />
-          <Select 
-            label="Workspace Role" 
-            placeholder="Select a role..."
+          <Select
+            label={t('templates13WorkspaceMembers.labelWorkspaceRole')}
+            placeholder={t('templates13WorkspaceMembers.placeholderSelectRole')}
             options={[
-              {label: 'Admin', value: 'admin'}, 
-              {label: 'Member', value: 'member'}, 
+              {label: 'Admin', value: 'admin'},
+              {label: 'Member', value: 'member'},
               {label: 'Viewer', value: 'viewer'}
             ]}
             value="member"
             onChange={() => {}}
           />
           <Alert variant="info" className="mt-2">
-            Members can view and interact with all resources, but cannot manage billing or workspace settings.
+            {t('templates13WorkspaceMembers.inviteRoleHint')}
           </Alert>
         </div>
       </Modal>
 
       {/* Remove Confirmation Modal */}
-      <Modal 
-        isOpen={!!memberToRemove} 
+      <Modal
+        isOpen={!!memberToRemove}
         onClose={() => { setMemberToRemove(null); setRemoveError(''); }}
-        title="Remove Member"
-        description={`Are you sure you want to remove ${memberToRemove?.name} from this workspace? They will lose access immediately.`}
+        title={t('templates13WorkspaceMembers.removeModalTitle')}
+        description={t('templates13WorkspaceMembers.removeModalDesc', { name: memberToRemove?.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => { setMemberToRemove(null); setRemoveError(''); }}>Cancel</Button>
-            <Button variant="destructive" onClick={handleRemove}>Remove Member</Button>
+            <Button variant="outline" onClick={() => { setMemberToRemove(null); setRemoveError(''); }}>{t('templates13WorkspaceMembers.btnCancel')}</Button>
+            <Button variant="destructive" onClick={handleRemove}>{t('templates13WorkspaceMembers.removeModalTitle')}</Button>
           </>
         }
       >
@@ -1079,7 +1091,7 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
           </Alert>
         )}
         <div className="text-sm text-[var(--text-secondary)]">
-          This action cannot be undone. To restore access later, you will need to send a new invitation.
+          {t('templates13WorkspaceMembers.removeModalFootnote')}
         </div>
       </Modal>
 
@@ -1089,20 +1101,21 @@ const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
 
 // --- WORKSPACE OVERVIEW PAGE ---
 const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        showBack 
+      <PageHeader
+        showBack
         onBack={() => setActiveRoute('workspaces')}
-        title="Production AI" 
-        subtitle="ws_prod_01 • Main production environment for ML models" 
+        title="Production AI"
+        subtitle={t('templates13WorkspaceMembers.overviewSubtitle')}
         actions={
           <>
-            <Button variant="outline" className="hidden sm:flex"><Edit2 className="w-4 h-4 mr-2"/> Edit details</Button>
-            <Button variant="outline" className="hidden sm:flex" onClick={() => setActiveRoute('workspace-members')}><Users className="w-4 h-4 mr-2"/> Manage members</Button>
+            <Button variant="outline" className="hidden sm:flex"><Edit2 className="w-4 h-4 mr-2"/> {t('templates13WorkspaceMembers.btnEditDetails')}</Button>
+            <Button variant="outline" className="hidden sm:flex" onClick={() => setActiveRoute('workspace-members')}><Users className="w-4 h-4 mr-2"/> {t('templates13WorkspaceMembers.btnManageMembers')}</Button>
             <Button variant="tertiary" size="icon"><MoreVertical className="w-4 h-4" /></Button>
           </>
-        } 
+        }
       />
 
       <Section>
@@ -1110,23 +1123,23 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
            <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-[var(--primary-gold)]/5 to-transparent pointer-events-none" />
            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 relative z-10">
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Status</p>
-                <Badge variant="operational" className="py-1">Active</Badge>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates13WorkspaceMembers.labelStatus')}</p>
+                <Badge variant="operational" className="py-1">{t('templates13WorkspaceMembers.badgeActiveStatus')}</Badge>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Plan</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates13WorkspaceMembers.labelPlan')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">Enterprise</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Region</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates13WorkspaceMembers.labelRegion')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">US-East</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Created</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates13WorkspaceMembers.labelCreated')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">Oct 12, 2026</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Owner</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates13WorkspaceMembers.labelOwner')}</p>
                 <div className="flex items-center gap-2">
                    <div className="w-5 h-5 rounded bg-[var(--bg-app)] border border-[var(--border-color)] flex items-center justify-center text-[10px] font-bold text-[var(--primary-gold)]">A</div>
                    <div className="text-sm font-medium text-[var(--text-primary)]">Admin User</div>
@@ -1138,28 +1151,28 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
 
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="API Requests (Today)" value="124.5K" trend="+5.2%" isUp={true} />
-          <MetricCard title="Active Users" value="14" trend="0%" />
-          <MetricCard title="Error Rate" value="0.01%" trend="-0.04%" isUp={false} inverseGood={true} />
-          <MetricCard title="Storage Used" value="84 GB" trend="+2.1%" isUp={true} />
+          <MetricCard title={t('templates13WorkspaceMembers.metricApiRequestsToday')} value="124.5K" trend="+5.2%" isUp={true} />
+          <MetricCard title={t('templates13WorkspaceMembers.metricActiveUsers')} value="14" trend="0%" />
+          <MetricCard title={t('templates13WorkspaceMembers.metricErrorRate')} value="0.01%" trend="-0.04%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates13WorkspaceMembers.metricStorageUsed')} value="84 GB" trend="+2.1%" isUp={true} />
         </div>
       </Section>
 
       <Section>
         <Tabs defaultValue="overview" tabs={[
-          { 
-            id: 'overview', 
-            label: 'Overview', 
+          {
+            id: 'overview',
+            label: t('templates13WorkspaceMembers.tabOverview'),
             content: (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
                 <div className="lg:col-span-2 space-y-4">
                   <div className="flex items-center justify-between">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Recent Activity</h3>
-                     <Button variant="tertiary" size="sm">View all</Button>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates13WorkspaceMembers.headingRecentActivity')}</h3>
+                     <Button variant="tertiary" size="sm">{t('templates13WorkspaceMembers.btnViewAll')}</Button>
                   </div>
-                  <DataTable 
+                  <DataTable
                     pagination={false}
-                    columns={["Event", "Actor", "Time"]}
+                    columns={[t('templates13WorkspaceMembers.colEvent'), t('templates13WorkspaceMembers.colActor'), t('templates13WorkspaceMembers.colTime')]}
                     data={[
                       ["Billing updated to Enterprise", "Admin User", "2 days ago"],
                       ["API Key 'Prod Token' generated", "System", "Oct 18, 2026"],
@@ -1170,27 +1183,27 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
                 </div>
                 <div className="space-y-6 sm:space-y-8">
                    <div className="space-y-4">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Alerts</h3>
-                     <Alert variant="success" title="Healthy">No issues detected for this workspace.</Alert>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates13WorkspaceMembers.headingAlerts')}</h3>
+                     <Alert variant="success" title={t('templates13WorkspaceMembers.alertHealthyTitle')}>{t('templates13WorkspaceMembers.alertHealthyDesc')}</Alert>
                    </div>
                    <div className="space-y-4">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Quick Actions</h3>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates13WorkspaceMembers.headingQuickActions')}</h3>
                      <div className="bg-[var(--bg-card)] rounded-md-custom border border-[var(--border-color)] p-4 shadow-soft-sm flex flex-col gap-2">
-                        <Button variant="outline" className="w-full justify-start"><Key className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> Generate API Key</Button>
-                        <Button variant="outline" className="w-full justify-start" onClick={() => setActiveRoute('workspace-members')}><UserPlus className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> Invite User</Button>
-                        <Button variant="outline" className="w-full justify-start"><CreditCard className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> Upgrade Plan</Button>
+                        <Button variant="outline" className="w-full justify-start"><Key className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> {t('templates13WorkspaceMembers.btnGenerateApiKey')}</Button>
+                        <Button variant="outline" className="w-full justify-start" onClick={() => setActiveRoute('workspace-members')}><UserPlus className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> {t('templates13WorkspaceMembers.btnInviteUser')}</Button>
+                        <Button variant="outline" className="w-full justify-start"><CreditCard className="w-4 h-4 mr-3 text-[var(--text-secondary)]" /> {t('templates13WorkspaceMembers.btnUpgradePlan')}</Button>
                      </div>
                    </div>
                 </div>
               </div>
             )
           },
-          { 
-            id: 'activity', 
-            label: 'Activity', 
+          {
+            id: 'activity',
+            label: t('templates13WorkspaceMembers.tabActivity'),
             content: (
-               <DataTable 
-                columns={["Event", "Resource", "Actor", "Time"]}
+               <DataTable
+                columns={[t('templates13WorkspaceMembers.colEvent'), t('templates13WorkspaceMembers.colResource'), t('templates13WorkspaceMembers.colActor'), t('templates13WorkspaceMembers.colTime')]}
                 data={[
                   ["Billing updated", "Plan: Enterprise", "Admin User", "2 days ago"],
                   ["Key generated", "Prod Token", "System", "Oct 18, 2026"],
@@ -1201,9 +1214,9 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
               />
             )
           },
-          { 
-            id: 'usage', 
-            label: 'Usage', 
+          {
+            id: 'usage',
+            label: t('templates13WorkspaceMembers.tabUsage'),
             content: (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="p-6">
@@ -1212,12 +1225,12 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
                       <Zap className="w-5 h-5 text-[var(--text-secondary)]" />
                     </div>
                     <div>
-                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">API Calls</h3>
-                       <p className="text-xs text-[var(--text-secondary)]">Last 30 days</p>
+                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates13WorkspaceMembers.labelApiCalls')}</h3>
+                       <p className="text-xs text-[var(--text-secondary)]">{t('templates13WorkspaceMembers.labelLast30Days')}</p>
                     </div>
                   </div>
                   <div className="text-3xl font-semibold text-[var(--text-primary)]">2.4M</div>
-                  <div className="text-sm text-[var(--text-secondary)] mt-2">12% of Enterprise Limit (20M)</div>
+                  <div className="text-sm text-[var(--text-secondary)] mt-2">{t('templates13WorkspaceMembers.usageApiCallsLimit')}</div>
                   <div className="w-full bg-[var(--bg-app)] rounded-full h-2 mt-4 border border-[var(--border-color)] overflow-hidden">
                      <div className="bg-[var(--primary-gold)] h-2 rounded-full" style={{width: '12%'}}></div>
                   </div>
@@ -1228,12 +1241,12 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
                       <Server className="w-5 h-5 text-[var(--text-secondary)]" />
                     </div>
                     <div>
-                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">Storage</h3>
-                       <p className="text-xs text-[var(--text-secondary)]">Current usage</p>
+                       <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates13WorkspaceMembers.labelStorage')}</h3>
+                       <p className="text-xs text-[var(--text-secondary)]">{t('templates13WorkspaceMembers.labelCurrentUsage')}</p>
                     </div>
                   </div>
                   <div className="text-3xl font-semibold text-[var(--text-primary)]">84 GB</div>
-                  <div className="text-sm text-[var(--text-secondary)] mt-2">16% of Enterprise Limit (500 GB)</div>
+                  <div className="text-sm text-[var(--text-secondary)] mt-2">{t('templates13WorkspaceMembers.usageStorageLimit')}</div>
                   <div className="w-full bg-[var(--bg-app)] rounded-full h-2 mt-4 border border-[var(--border-color)] overflow-hidden">
                      <div className="bg-[#5C856A] h-2 rounded-full" style={{width: '16%'}}></div>
                   </div>
@@ -1241,13 +1254,13 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
               </div>
             )
           },
-          { id: 'keys', label: 'API Keys', content: <Alert variant="info" title="Keys">Manage API keys here.</Alert> },
-          { id: 'members', label: 'Members', content: (
+          { id: 'keys', label: t('templates13WorkspaceMembers.navApiKeys'), content: <Alert variant="info" title={t('templates13WorkspaceMembers.alertKeysTitle')}>{t('templates13WorkspaceMembers.alertKeysDesc')}</Alert> },
+          { id: 'members', label: t('templates13WorkspaceMembers.tabMembers'), content: (
             <Card className="p-8 text-center flex flex-col items-center">
               <Users className="w-8 h-8 text-[var(--text-secondary)] mb-3" />
-              <h3 className="text-sm font-medium text-[var(--text-primary)]">Workspace Members</h3>
-              <p className="text-xs text-[var(--text-secondary)] mt-1 mb-4">Manage active members and roles.</p>
-              <Button onClick={() => setActiveRoute('workspace-members')}>Open Members Management</Button>
+              <h3 className="text-sm font-medium text-[var(--text-primary)]">{t('templates13WorkspaceMembers.headingWorkspaceMembers')}</h3>
+              <p className="text-xs text-[var(--text-secondary)] mt-1 mb-4">{t('templates13WorkspaceMembers.descManageMembersRoles')}</p>
+              <Button onClick={() => setActiveRoute('workspace-members')}>{t('templates13WorkspaceMembers.btnOpenMembersManagement')}</Button>
             </Card>
           )}
         ]} />
@@ -1265,6 +1278,7 @@ const MOCK_WORKSPACES = [
 ];
 
 const RowActionsDropdown = ({  workspaceId, onViewDetails  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
 
@@ -1284,20 +1298,20 @@ const RowActionsDropdown = ({  workspaceId, onViewDetails  }: any) => {
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 animate-in fade-in zoom-in-95 duration-100">
           <button onClick={() => { onViewDetails(); setIsOpen(false); }} className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> View details
+            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates13WorkspaceMembers.rowViewDetails')}
           </button>
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Edit2 className="w-4 h-4 text-[var(--text-secondary)]"/> Edit workspace
+            <Edit2 className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates13WorkspaceMembers.rowEditWorkspace')}
           </button>
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Users className="w-4 h-4 text-[var(--text-secondary)]"/> Manage members
+            <Users className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates13WorkspaceMembers.btnManageMembers')}
           </button>
           <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2" />
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-warning)] hover:bg-[#FDF9F0] flex items-center gap-2 transition-colors font-medium">
-            <Ban className="w-4 h-4 opacity-80"/> Suspend
+            <Ban className="w-4 h-4 opacity-80"/> {t('templates13WorkspaceMembers.rowSuspend')}
           </button>
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] flex items-center gap-2 transition-colors font-medium">
-            <Trash2 className="w-4 h-4 opacity-80"/> Delete
+            <Trash2 className="w-4 h-4 opacity-80"/> {t('templates13WorkspaceMembers.rowDelete')}
           </button>
         </div>
       )}
@@ -1306,6 +1320,7 @@ const RowActionsDropdown = ({  workspaceId, onViewDetails  }: any) => {
 };
 
 const WorkspacesPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
   const [plan, setPlan] = useState('all');
@@ -1351,15 +1366,15 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Workspaces" 
-        subtitle="Manage all tenant environments and access." 
+      <PageHeader
+        title={t('templates13WorkspaceMembers.navWorkspaces')}
+        subtitle={t('templates13WorkspaceMembers.workspacesPageSubtitle')}
         actions={
           <>
-            <Button variant="outline" className="hidden sm:flex"><Search className="w-4 h-4 mr-2"/> Import</Button>
-            <Button onClick={() => setIsCreateOpen(true)}><Plus className="w-4 h-4 mr-2"/> Create workspace</Button>
+            <Button variant="outline" className="hidden sm:flex"><Search className="w-4 h-4 mr-2"/> {t('templates13WorkspaceMembers.btnImport')}</Button>
+            <Button onClick={() => setIsCreateOpen(true)}><Plus className="w-4 h-4 mr-2"/> {t('templates13WorkspaceMembers.btnCreateWorkspace')}</Button>
           </>
-        } 
+        }
       />
 
       <Section>
@@ -1368,40 +1383,40 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               className="h-10 w-full pl-9 pr-3 rounded-md-custom border border-[var(--border-color)] bg-white text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
-              placeholder="Search workspaces..."
+              placeholder={t('templates13WorkspaceMembers.searchWorkspacesPlaceholder')}
               value={search}
               onChange={(e: any) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex w-full sm:w-auto gap-3 shrink-0">
             <div className="w-full sm:w-36">
-              <Select value={status} onChange={setStatus} options={[{label: 'All Statuses', value: 'all'}, {label: 'Active', value: 'Active'}, {label: 'Suspended', value: 'Suspended'}]} placeholder="Status" />
+              <Select value={status} onChange={setStatus} options={[{label: t('templates13WorkspaceMembers.filterAllStatuses'), value: 'all'}, {label: 'Active', value: 'Active'}, {label: 'Suspended', value: 'Suspended'}]} placeholder={t('templates13WorkspaceMembers.filterStatusPlaceholder')} />
             </div>
             <div className="w-full sm:w-36">
-              <Select value={plan} onChange={setPlan} options={[{label: 'All Plans', value: 'all'}, {label: 'Free', value: 'Free'}, {label: 'Pro', value: 'Pro'}, {label: 'Enterprise', value: 'Enterprise'}]} placeholder="Plan" />
+              <Select value={plan} onChange={setPlan} options={[{label: t('templates13WorkspaceMembers.filterAllPlans'), value: 'all'}, {label: 'Free', value: 'Free'}, {label: 'Pro', value: 'Pro'}, {label: 'Enterprise', value: 'Enterprise'}]} placeholder={t('templates13WorkspaceMembers.filterPlanPlaceholder')} />
             </div>
           </div>
           {(search || status !== 'all' || plan !== 'all') && (
-            <Button variant="tertiary" onClick={() => {setSearch(''); setStatus('all'); setPlan('all');}} className="px-3">Clear filters</Button>
+            <Button variant="tertiary" onClick={() => {setSearch(''); setStatus('all'); setPlan('all');}} className="px-3">{t('templates13WorkspaceMembers.clearFiltersBtn')}</Button>
           )}
         </div>
       </Section>
 
       <Section>
-        <DataTable columns={["Workspace", "Owner", "Plan", "Members", "Usage", "Status", "Created", ""]} data={mappedData} loading={isLoading} />
+        <DataTable columns={[t('templates13WorkspaceMembers.colWorkspace'), t('templates13WorkspaceMembers.colOwner'), t('templates13WorkspaceMembers.colPlan'), t('templates13WorkspaceMembers.colMembers'), t('templates13WorkspaceMembers.colUsage'), t('templates13WorkspaceMembers.colStatus'), t('templates13WorkspaceMembers.colCreated'), ""]} data={mappedData} loading={isLoading} />
       </Section>
 
-      <Modal 
-        isOpen={isCreateOpen} 
+      <Modal
+        isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
-        title="Create Workspace"
-        description="Provision a new tenant environment."
-        footer={<><Button variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button><Button onClick={() => setIsCreateOpen(false)}>Create Environment</Button></>}
+        title={t('templates13WorkspaceMembers.createWsModalTitle')}
+        description={t('templates13WorkspaceMembers.createWsModalDesc')}
+        footer={<><Button variant="outline" onClick={() => setIsCreateOpen(false)}>{t('templates13WorkspaceMembers.btnCancel')}</Button><Button onClick={() => setIsCreateOpen(false)}>{t('templates13WorkspaceMembers.btnCreateEnvironment')}</Button></>}
       >
         <div className="space-y-4">
-          <Input label="Workspace Name" placeholder="e.g. Acme Corp Production" />
-          <Select label="Plan Tier" placeholder="Select plan..." options={[{label: 'Free Tier', value: 'free'}, {label: 'Pro', value: 'pro'}, {label: 'Enterprise', value: 'enterprise'}]} value="free" onChange={() => {}} />
-          <Input label="Admin Email" placeholder="owner@company.com" helperText="An invitation will be sent to this email." />
+          <Input label={t('templates13WorkspaceMembers.labelWorkspaceName')} placeholder={t('templates13WorkspaceMembers.placeholderWorkspaceNameExample')} />
+          <Select label={t('templates13WorkspaceMembers.labelPlanTier')} placeholder={t('templates13WorkspaceMembers.placeholderSelectPlan')} options={[{label: 'Free Tier', value: 'free'}, {label: 'Pro', value: 'pro'}, {label: 'Enterprise', value: 'enterprise'}]} value="free" onChange={() => {}} />
+          <Input label={t('templates13WorkspaceMembers.labelAdminEmail')} placeholder={t('templates13WorkspaceMembers.placeholderOwnerEmail')} helperText={t('templates13WorkspaceMembers.helperInvitationSent')} />
         </div>
       </Modal>
 
@@ -1411,49 +1426,51 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
 
 // --- REMAINING PREVIOUS PAGES ---
 const ComponentsPage = () => {
+  const t = useT();
   const [date, setDate] = useState("");
   const [selectVal, setSelectVal] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  
+
   return (
     <PageContainer maxWidth="default">
-      <PageHeader title="Component Library" subtitle="Foundational UI system for Kaori Platform following strict design tokens." actions={<Button>Deploy System</Button>} />
+      <PageHeader title={t('templates13WorkspaceMembers.navComponentLibrary')} subtitle={t('templates13WorkspaceMembers.componentsPageSubtitle')} actions={<Button>{t('templates13WorkspaceMembers.btnDeploySystem')}</Button>} />
       <Tabs defaultValue="form" tabs={[
-        { id: 'form', label: 'Forms & Inputs', content: (
+        { id: 'form', label: t('templates13WorkspaceMembers.tabFormsInputs'), content: (
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <Section title="Buttons" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)]">
-               <div className="flex flex-wrap gap-4 mb-4"><Button variant="primary">Primary</Button><Button variant="secondary">Secondary</Button><Button variant="tertiary">Ghost</Button></div>
-               <div className="flex flex-wrap gap-4 items-center"><Button variant="primary" isLoading>Loading</Button><Button variant="destructive">Destructive</Button><Button variant="primary" size="icon"><Plus className="w-4 h-4"/></Button></div>
+             <Section title={t('templates13WorkspaceMembers.sectionButtons')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)]">
+               <div className="flex flex-wrap gap-4 mb-4"><Button variant="primary">{t('templates13WorkspaceMembers.labelPrimary')}</Button><Button variant="secondary">{t('templates13WorkspaceMembers.labelSecondary')}</Button><Button variant="tertiary">{t('templates13WorkspaceMembers.labelGhost')}</Button></div>
+               <div className="flex flex-wrap gap-4 items-center"><Button variant="primary" isLoading>{t('templates13WorkspaceMembers.labelLoadingDemo')}</Button><Button variant="destructive">{t('templates13WorkspaceMembers.labelDestructive')}</Button><Button variant="primary" size="icon"><Plus className="w-4 h-4"/></Button></div>
              </Section>
-             <Section title="Inputs & Selects" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] space-y-4">
-                <Input label="Email Address" placeholder="admin@kaori.io" helperText="We will never share your email." />
-                <Select label="Environment" placeholder="Select environment..." options={[{label: 'Production', value: 'prod'}]} value={selectVal} onChange={setSelectVal} />
+             <Section title={t('templates13WorkspaceMembers.sectionInputsSelects')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] space-y-4">
+                <Input label={t('templates13WorkspaceMembers.labelEmailAddress')} placeholder={t('templates13WorkspaceMembers.placeholderAdminKaoriEmail')} helperText={t('templates13WorkspaceMembers.helperNeverShareEmail')} />
+                <Select label={t('templates13WorkspaceMembers.labelEnvironment')} placeholder={t('templates13WorkspaceMembers.placeholderSelectEnvironment')} options={[{label: 'Production', value: 'prod'}]} value={selectVal} onChange={setSelectVal} />
              </Section>
            </div>
         )},
-        { id: 'data', label: 'Data Display', content: ( <Alert variant="info" title="Data Components">Use Data Tables & Metric Cards for display.</Alert> )},
-        { id: 'feedback', label: 'Feedback & Overlays', content: ( <Alert variant="info" title="Feedback Components">Modals, Drawers and Alerts provide user feedback.</Alert> )}
+        { id: 'data', label: t('templates13WorkspaceMembers.tabDataDisplay'), content: ( <Alert variant="info" title={t('templates13WorkspaceMembers.alertDataComponentsTitle')}>{t('templates13WorkspaceMembers.alertDataComponentsDesc')}</Alert> )},
+        { id: 'feedback', label: t('templates13WorkspaceMembers.tabFeedbackOverlays'), content: ( <Alert variant="info" title={t('templates13WorkspaceMembers.alertFeedbackComponentsTitle')}>{t('templates13WorkspaceMembers.alertFeedbackComponentsDesc')}</Alert> )}
       ]} />
     </PageContainer>
   );
 };
 
 const PlatformOverview = () => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader title="Platform Overview" subtitle="Monitor system health, usage, and recent activity." actions={<Button variant="outline"><RefreshCw className="w-4 h-4 mr-2" /> Refresh Data</Button>} />
+      <PageHeader title={t('templates13WorkspaceMembers.platformOverviewTitle')} subtitle={t('templates13WorkspaceMembers.platformOverviewSubtitle')} actions={<Button variant="outline"><RefreshCw className="w-4 h-4 mr-2" /> {t('templates13WorkspaceMembers.btnRefreshData')}</Button>} />
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="Total Workspaces" value="124" trend="+4" isUp={true} />
-          <MetricCard title="Active Users" value="1,892" trend="+12.5%" isUp={true} />
-          <MetricCard title="API Requests" value="2.4M" trend="+5.2%" isUp={true} />
-          <MetricCard title="Failed Requests" value="482" trend="-18%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates13WorkspaceMembers.metricTotalWorkspaces')} value="124" trend="+4" isUp={true} />
+          <MetricCard title={t('templates13WorkspaceMembers.metricActiveUsers')} value="1,892" trend="+12.5%" isUp={true} />
+          <MetricCard title={t('templates13WorkspaceMembers.metricApiRequests')} value="2.4M" trend="+5.2%" isUp={true} />
+          <MetricCard title={t('templates13WorkspaceMembers.metricFailedRequests')} value="482" trend="-18%" isUp={false} inverseGood={true} />
         </div>
       </Section>
-      <Section title="Recent Activity">
-         <DataTable 
-            columns={["Event", "Workspace", "Time"]}
+      <Section title={t('templates13WorkspaceMembers.headingRecentActivity')}>
+         <DataTable
+            columns={[t('templates13WorkspaceMembers.colEvent'), t('templates13WorkspaceMembers.colWorkspace'), t('templates13WorkspaceMembers.colTime')]}
             data={[
               ["API Key Generated", "Production AI", "2 mins ago"],
               ["Workspace Created", "Staging Env", "1 hour ago"],
@@ -1467,14 +1484,15 @@ const PlatformOverview = () => {
 };
 
 const SessionsPage = () => {
+  const t = useT();
   return (
     <PageContainer maxWidth="narrow">
-      <PageHeader title="Active Sessions" subtitle="Manage devices where your account is currently signed in." actions={<Button variant="outline">Sign out all</Button>} />
-      <Section title="Security & Sessions">
+      <PageHeader title={t('templates13WorkspaceMembers.activeSessionsTitle')} subtitle={t('templates13WorkspaceMembers.activeSessionsSubtitle')} actions={<Button variant="outline">{t('templates13WorkspaceMembers.btnSignOutAll')}</Button>} />
+      <Section title={t('templates13WorkspaceMembers.navSecuritySessions')}>
         <Card className="p-8 text-center flex flex-col items-center">
           <Shield className="w-8 h-8 text-[var(--text-secondary)] mb-3" />
-          <h3 className="text-sm font-medium text-[var(--text-primary)]">Security & Sessions</h3>
-          <p className="text-xs text-[var(--text-secondary)] mt-1">Manage active logins here.</p>
+          <h3 className="text-sm font-medium text-[var(--text-primary)]">{t('templates13WorkspaceMembers.navSecuritySessions')}</h3>
+          <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates13WorkspaceMembers.descManageLoginsHere')}</p>
         </Card>
       </Section>
     </PageContainer>
@@ -1487,6 +1505,7 @@ const SessionsPage = () => {
 // ==========================================
 
 export default function KaoriPlatformShell() {
+  const t = useT();
   const [activeRoute, setActiveRoute] = useState('workspace-members'); // Defaulted to members for review
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
@@ -1532,14 +1551,14 @@ export default function KaoriPlatformShell() {
              activeRoute === 'overview' ? <PlatformOverview /> : 
              activeRoute === 'sessions' ? <SessionsPage /> : (
               <PageContainer maxWidth="narrow">
-                <PageHeader title={`${NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label} module`} subtitle="This section of the platform is currently being designed." />
+                <PageHeader title={t('templates13WorkspaceMembers.fallbackModuleTitle', { name: NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.labelKey ? t(NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute).labelKey) : activeRoute })} subtitle={t('templates13WorkspaceMembers.fallbackModuleSubtitle')} />
                 <Section>
                   <Card className="flex flex-col items-center justify-center py-20 px-4 text-center border-dashed bg-[var(--bg-card)]/50 mx-auto w-full animate-in fade-in duration-300">
                     <div className="w-12 h-12 rounded-lg-custom bg-[var(--bg-sidebar)] flex items-center justify-center border border-[var(--border-color)] mb-4">
                       {React.createElement(NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.icon || LayoutDashboard, { className: 'w-6 h-6 text-[var(--text-secondary)]' })}
                     </div>
-                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">Work in Progress</h3>
-                    <p className="text-sm text-[var(--text-secondary)] max-w-sm">Content for {activeRoute} will populate here inside the Shell Wrapper.</p>
+                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">{t('templates13WorkspaceMembers.workInProgressTitle')}</h3>
+                    <p className="text-sm text-[var(--text-secondary)] max-w-sm">{t('templates13WorkspaceMembers.fallbackModuleBody', { route: activeRoute })}</p>
                   </Card>
                 </Section>
               </PageContainer>

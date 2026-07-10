@@ -28,8 +28,14 @@ async def dashboard_state(
     x_enterprise_id: Annotated[str, Header()],
 ):
     """
-    Returns one of 5 states so the frontend can render the correct view:
-      no_data → first_upload → pending_review → analysis_ready → results_ready
+    Returns the 5-state machine plus the FE view vocabulary:
+      state ∈ no_data → first_upload → pending_review → analysis_ready → results_ready
+      view  ∈ empty | uploading | processing | completed   (what the FE renders)
+
+    State derives from the tenant's OVERALL pipeline history, not just the
+    latest run — one failed .md upload must not flip a data-rich tenant back
+    to the "upload your first file" empty state (Đồng Xanh pilot bug: latest
+    run failed → every earlier silver_complete run was masked as no_data).
     """
     async with acquire_for_tenant(x_enterprise_id) as conn:
         # Check latest pipeline run. PK is run_id (uuid); the older code
@@ -43,43 +49,90 @@ async def dashboard_state(
         """, x_enterprise_id)
 
         if not run:
-            return {"state": "no_data", "run_id": None}
+            return {"state": "no_data", "run_id": None, "view": "empty"}
+
+        # A failed/cancelled LATEST run must not mask earlier good history —
+        # fall back to the most recent run that still carries dashboard state.
+        last_run_failed = run["status"] in ("failed", "cancelled")
+        if last_run_failed:
+            run = await conn.fetchrow("""
+                SELECT run_id, status, created_at
+                FROM pipeline_runs
+                WHERE enterprise_id = $1
+                  AND status NOT IN ('failed', 'cancelled')
+                ORDER BY created_at DESC
+                LIMIT 1
+            """, x_enterprise_id)
+            if run is None:
+                # Every run this tenant ever made failed — genuinely no data.
+                return {"state": "no_data", "run_id": None,
+                        "view": "empty", "last_run_failed": True}
 
         run_status = run["status"]
         run_id = str(run["run_id"])
 
-        # Status enum canonical names per migration 002 + Sprint 7 PR C:
-        # uploading | bronze_complete | schema_review | silver_complete
-        # | analyzing | analysis_complete | failed | cancelled.
-        if run_status in ("uploading", "bronze_complete"):
-            return {"state": "first_upload", "run_id": run_id, "pipeline_status": run_status}
+        # Steady state: any cleaned/analysed run in history means the tenant
+        # is past the first-upload journey → render the full dashboard.
+        mature = await conn.fetchrow("""
+            SELECT run_id, status
+            FROM pipeline_runs
+            WHERE enterprise_id = $1
+              AND status IN ('silver_complete', 'analysis_complete')
+            ORDER BY created_at DESC
+            LIMIT 1
+        """, x_enterprise_id)
 
-        if run_status == "schema_review":
-            return {"state": "pending_review", "run_id": run_id, "pipeline_status": run_status}
+        base = {
+            "run_id": run_id,
+            "kpis": await _dashboard_kpis(x_enterprise_id, conn),
+            "recent_runs": await _recent_runs(x_enterprise_id, conn),
+            "alerts": [],
+            "insights": [],
+        }
+        if last_run_failed:
+            base["last_run_failed"] = True
 
-        if run_status == "silver_complete":
-            return {"state": "analysis_ready", "run_id": run_id}
+        if mature:
+            mature_id = str(mature["run_id"])
+            base["run_id"] = mature_id
+            if mature["status"] == "analysis_complete":
+                analysis = await conn.fetchrow("""
+                    SELECT id, templates, status, overview, completed_at
+                    FROM analysis_runs
+                    WHERE run_id = $1 AND enterprise_id = $2
+                    ORDER BY created_at DESC LIMIT 1
+                """, mature_id, x_enterprise_id)
+                return {
+                    **base,
+                    "state": "results_ready",
+                    "view": "completed",
+                    "analysis_run_id": str(analysis["id"]) if analysis else None,
+                    "templates_run": analysis["templates"] if analysis else [],
+                    # stats-card blocks (old "kpis" list) — "kpis" is now the
+                    # aggregate object the FE dashboard grid renders.
+                    "kpi_blocks": await _compute_kpis(mature_id, x_enterprise_id, conn),
+                }
+            return {**base, "state": "analysis_ready", "view": "completed"}
 
-        if run_status in ("analyzing", "analysis_complete"):
-            # Get analysis results summary
-            analysis = await conn.fetchrow("""
-                SELECT id, templates, status, overview, completed_at
-                FROM analysis_runs
-                WHERE run_id = $1 AND enterprise_id = $2
-                ORDER BY created_at DESC LIMIT 1
-            """, run_id, x_enterprise_id)
+        # Young tenant: status enum canonical names per migration 002 +
+        # Sprint 7 PR C + Phase 2.5 (unstructured_pending): uploading |
+        # bronze_complete | schema_review | silver_complete |
+        # analysis_complete | unstructured_pending | failed | cancelled.
+        if run_status == "uploading":
+            return {**base, "state": "first_upload",
+                    "pipeline_status": run_status, "view": "uploading"}
 
-            kpis = await _compute_kpis(run_id, x_enterprise_id, conn)
+        if run_status == "bronze_complete":
+            return {**base, "state": "first_upload",
+                    "pipeline_status": run_status, "view": "processing"}
 
-            return {
-                "state": "results_ready",
-                "run_id": run_id,
-                "analysis_run_id": str(analysis["id"]) if analysis else None,
-                "templates_run": analysis["templates"] if analysis else [],
-                "kpis": kpis,
-            }
+        if run_status in ("schema_review", "unstructured_pending"):
+            return {**base, "state": "pending_review",
+                    "pipeline_status": run_status, "view": "processing"}
 
-        return {"state": "no_data", "run_id": run_id}
+        # Unknown/new status — treat as mid-pipeline rather than erasing data.
+        return {**base, "state": "pending_review",
+                "pipeline_status": run_status, "view": "processing"}
 
 
 # ── GET /api/v1/insights/feed ─────────────────────────────────────────────────
@@ -258,6 +311,80 @@ async def billing_summary(
 
 
 # ── Helper ────────────────────────────────────────────────────────────────────
+
+# Pipeline progress by stage (share of the 5-step upload→analysis journey).
+_RUN_PROGRESS = {
+    "uploading": 20,
+    "bronze_complete": 40,
+    "schema_review": 40,
+    "unstructured_pending": 40,
+    "silver_complete": 60,
+    "analysis_complete": 100,
+}
+
+# Map raw pipeline status → the badge vocabulary the FE RunRow knows
+# (schema_review | analyzing | analysis_complete).
+_RUN_BADGE = {
+    "schema_review": "schema_review",
+    "silver_complete": "analysis_complete",
+    "analysis_complete": "analysis_complete",
+}
+
+
+async def _dashboard_kpis(enterprise_id: str, conn) -> dict:
+    """Aggregate KPI object for the dashboard grid (FE contract)."""
+    row = await conn.fetchrow("""
+        SELECT
+          (SELECT COUNT(*) FROM bronze_files
+             WHERE enterprise_id = $1)                          AS bronze_files,
+          (SELECT COUNT(*) FROM pipeline_runs
+             WHERE enterprise_id = $1
+               AND created_at > NOW() - INTERVAL '30 days')     AS pipeline_runs_30d,
+          (SELECT COUNT(*) FROM analysis_runs
+             WHERE enterprise_id = $1 AND status = 'done'
+               AND created_at > NOW() - INTERVAL '30 days')     AS insights_30d,
+          (SELECT COUNT(*) FROM alert_events
+             WHERE enterprise_id = $1 AND suppressed = FALSE
+               AND fired_at > NOW() - INTERVAL '30 days')       AS open_alerts,
+          (SELECT COALESCE(SUM(original_size_bytes), 0) FROM pipeline_runs
+             WHERE enterprise_id = $1)                          AS bytes_total,
+          (SELECT COUNT(*) FROM enterprise_users
+             WHERE enterprise_id = $1)                          AS active_users
+    """, enterprise_id)
+    return {
+        "bronze_files": row["bronze_files"],
+        "pipeline_runs_30d": row["pipeline_runs_30d"],
+        "insights_30d": row["insights_30d"],
+        "open_alerts": row["open_alerts"],
+        # SUM(bigint) arrives as Decimal via asyncpg — cast before mixing
+        # with the float literal.
+        "data_processed_gb": round(float(row["bytes_total"] or 0) / 1e9, 2),
+        "active_users": row["active_users"],
+    }
+
+
+async def _recent_runs(enterprise_id: str, conn) -> list[dict]:
+    """Last 5 non-failed runs for the dashboard activity list."""
+    rows = await conn.fetch("""
+        SELECT run_id, filename, status, updated_at
+        FROM pipeline_runs
+        WHERE enterprise_id = $1
+          AND status NOT IN ('failed', 'cancelled')
+        ORDER BY created_at DESC
+        LIMIT 5
+    """, enterprise_id)
+    return [
+        {
+            "id": str(r["run_id"]),
+            "name": r["filename"] or str(r["run_id"])[:8],
+            "template_id": "",
+            "status": _RUN_BADGE.get(r["status"], "schema_review"),
+            "progress_pct": _RUN_PROGRESS.get(r["status"], 40),
+            "updated_at": r["updated_at"].isoformat() if r["updated_at"] else "",
+        }
+        for r in rows
+    ]
+
 
 async def _compute_kpis(run_id: str, enterprise_id: str, conn) -> list[dict]:
     """Extract top-level KPI values from analysis_results for dashboard cards.

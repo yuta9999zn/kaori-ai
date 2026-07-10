@@ -24,6 +24,7 @@ import {
   api, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 interface Section {
   id:        string;
   title:     string;
@@ -39,6 +40,7 @@ const newSection = (): Section => ({
 });
 
 export default function CustomFrameworkPage() {
+  const t = useT();
   const [name,        setName]        = useState('');
   const [description, setDescription] = useState('');
   const [sections,    setSections]    = useState<Section[]>([newSection(), newSection()]);
@@ -67,7 +69,7 @@ export default function CustomFrameworkPage() {
           sections:    sections.map(({ id, ...rest }) => rest),
         }),
       });
-      setSuccess(`Đã tạo khung "${name.trim()}" — sẵn sàng dùng trong Insight Generator.`);
+      setSuccess(t('templates46FrameworksCustomAnalyst.successMsg', { name: name.trim() }));
     } catch (err: any) {
       setProblem(err);
     } finally {
@@ -80,14 +82,14 @@ export default function CustomFrameworkPage() {
   return (
     <>
       <PageHeader
-        title="Custom Framework"
-        description="Tự thiết kế khung phân tích cho industry / domain riêng. Chỉ MANAGER tạo được."
+        title={t('templates46FrameworksCustomAnalyst.title')}
+        description={t('templates46FrameworksCustomAnalyst.pageDescription')}
         actions={
           <>
             <Badge variant="info">Phase 2 · F-034</Badge>
             <Button variant="tertiary" onClick={() => (window.location.href = '/p2/frameworks')}>
               <ChevronLeft className="w-4 h-4 mr-1" />
-              Khung khác
+              {t('templates46FrameworksCustomAnalyst.otherFrameworks')}
             </Button>
           </>
         }
@@ -100,22 +102,22 @@ export default function CustomFrameworkPage() {
         {/* Metadata */}
         <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm space-y-3">
           <div>
-            <label className="text-sm font-medium text-[var(--text-primary)]">Tên khung</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates46FrameworksCustomAnalyst.nameLabel')}</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Ví dụ: Bán lẻ — Phân tích chương trình khuyến mãi"
+              placeholder={t('templates46FrameworksCustomAnalyst.namePlaceholder')}
               className="mt-1 w-full px-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-[var(--text-primary)]">Mô tả ngắn</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates46FrameworksCustomAnalyst.descLabel')}</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
-              placeholder="Khi nào dùng khung này, output mong đợi..."
+              placeholder={t('templates46FrameworksCustomAnalyst.descPlaceholder')}
               className="mt-1 w-full px-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
             />
           </div>
@@ -125,12 +127,12 @@ export default function CustomFrameworkPage() {
         <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-[var(--border-color)]/60 flex items-center justify-between">
             <div>
-              <h3 className="font-serif text-base text-[var(--text-primary)]">Sections ({sections.length})</h3>
-              <p className="text-xs text-[var(--text-secondary)] mt-0.5">Mỗi section là 1 LLM call qua llm_router.py.</p>
+              <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates46FrameworksCustomAnalyst.sectionsCount', { count: sections.length })}</h3>
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5">{t('templates46FrameworksCustomAnalyst.sectionsHint')}</p>
             </div>
             <Button size="sm" variant="secondary" onClick={add}>
               <Plus className="w-3.5 h-3.5 mr-1" />
-              Thêm section
+              {t('templates46FrameworksCustomAnalyst.addSection')}
             </Button>
           </div>
           <div className="divide-y divide-[var(--border-color)]/60">
@@ -146,7 +148,7 @@ export default function CustomFrameworkPage() {
                       type="text"
                       value={s.title}
                       onChange={(e) => update(s.id, { title: e.target.value })}
-                      placeholder="Tiêu đề section (vd: Hiệu quả khuyến mãi)"
+                      placeholder={t('templates46FrameworksCustomAnalyst.sectionTitlePlaceholder')}
                       className="flex-1 px-3 py-1.5 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
                     />
                     <select
@@ -154,16 +156,16 @@ export default function CustomFrameworkPage() {
                       onChange={(e) => update(s.id, { output: e.target.value as Section['output'] })}
                       className="px-2 py-1.5 bg-white border border-[var(--border-color)] rounded-md-custom text-xs focus:outline-none"
                     >
-                      <option value="bullets">Bullets</option>
-                      <option value="narrative">Narrative</option>
-                      <option value="kpi">KPI</option>
+                      <option value="bullets">{t('templates46FrameworksCustomAnalyst.outputBullets')}</option>
+                      <option value="narrative">{t('templates46FrameworksCustomAnalyst.outputNarrative')}</option>
+                      <option value="kpi">{t('templates46FrameworksCustomAnalyst.outputKpi')}</option>
                     </select>
                   </div>
                   <textarea
                     value={s.prompt}
                     onChange={(e) => update(s.id, { prompt: e.target.value })}
                     rows={2}
-                    placeholder="Prompt cho section (vd: Liệt kê 3-5 yếu tố ảnh hưởng đến uplift của chương trình)"
+                    placeholder={t('templates46FrameworksCustomAnalyst.sectionPromptPlaceholder')}
                     className="w-full px-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
                   />
                 </div>
@@ -175,7 +177,7 @@ export default function CustomFrameworkPage() {
                     'p-2 text-[var(--text-secondary)] hover:text-[var(--state-error)] rounded-sm-custom',
                     sections.length <= 2 && 'opacity-30 cursor-not-allowed',
                   )}
-                  aria-label="Xoá section"
+                  aria-label={t('templates46FrameworksCustomAnalyst.removeSectionAria')}
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -186,14 +188,14 @@ export default function CustomFrameworkPage() {
 
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
-          <p>K-10 vẫn áp dụng — mỗi câu hỏi chỉ chạy 1 framework. Khung custom xuất hiện trong Insight Generator picker sau khi save.</p>
+          <p>{t('templates46FrameworksCustomAnalyst.k10Note')}</p>
         </div>
 
         <div className="flex justify-end gap-2">
-          <Button variant="secondary" onClick={() => (window.location.href = '/p2/frameworks')}>Huỷ</Button>
+          <Button variant="secondary" onClick={() => (window.location.href = '/p2/frameworks')}>{t('templates46FrameworksCustomAnalyst.cancel')}</Button>
           <Button onClick={save} isLoading={saving} disabled={!canSave}>
             <Save className="w-4 h-4 mr-2" />
-            Lưu khung
+            {t('templates46FrameworksCustomAnalyst.saveFramework')}
           </Button>
         </div>
       </div>

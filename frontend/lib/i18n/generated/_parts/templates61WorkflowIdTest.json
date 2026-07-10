@@ -1,0 +1,54 @@
+{
+  "templates61WorkflowIdTest.kindDataQuery": { "vi": "Truy vấn", "en": "Query", "ja": "クエリ", "ko": "쿼리", "zh": "查询" },
+  "templates61WorkflowIdTest.kindLlmCall": { "vi": "LLM call", "en": "LLM call", "ja": "LLM call", "ko": "LLM call", "zh": "LLM call" },
+  "templates61WorkflowIdTest.kindCondition": { "vi": "Điều kiện", "en": "Condition", "ja": "条件", "ko": "조건", "zh": "条件" },
+  "templates61WorkflowIdTest.kindNotification": { "vi": "Thông báo", "en": "Notification", "ja": "通知", "ko": "알림", "zh": "通知" },
+  "templates61WorkflowIdTest.kindWait": { "vi": "Chờ", "en": "Wait", "ja": "待機", "ko": "대기", "zh": "等待" },
+
+  "templates61WorkflowIdTest.statePending": { "vi": "Chờ", "en": "Pending", "ja": "保留中", "ko": "대기 중", "zh": "待处理" },
+  "templates61WorkflowIdTest.stateRunning": { "vi": "Đang chạy", "en": "Running", "ja": "実行中", "ko": "실행 중", "zh": "运行中" },
+  "templates61WorkflowIdTest.stateSuccess": { "vi": "Thành công", "en": "Success", "ja": "成功", "ko": "성공", "zh": "成功" },
+  "templates61WorkflowIdTest.stateFailed": { "vi": "Lỗi", "en": "Failed", "ja": "失敗", "ko": "실패", "zh": "失败" },
+  "templates61WorkflowIdTest.stateSkipped": { "vi": "Bỏ qua", "en": "Skipped", "ja": "スキップ", "ko": "건너뜀", "zh": "已跳过" },
+
+  "templates61WorkflowIdTest.stepNameInsight": { "vi": "Lấy insight 24h", "en": "Get 24h insights", "ja": "24時間のインサイトを取得", "ko": "24시간 인사이트 가져오기", "zh": "获取24小时洞察" },
+  "templates61WorkflowIdTest.stepNameSummarize": { "vi": "Tóm tắt 3 insight chính", "en": "Summarize top 3 insights", "ja": "主要インサイト3件を要約", "ko": "핵심 인사이트 3건 요약", "zh": "总结3条核心洞察" },
+  "templates61WorkflowIdTest.stepNameEmailManager": { "vi": "Email MANAGER", "en": "Email MANAGER", "ja": "MANAGERにメール送信", "ko": "MANAGER에게 이메일 발송", "zh": "向MANAGER发送邮件" },
+
+  "templates61WorkflowIdTest.errForceFail": { "vi": "Mô phỏng lỗi: forceFailStep được bật.", "en": "Simulated error: forceFailStep is enabled.", "ja": "模擬エラー: forceFailStep が有効になっています。", "ko": "시뮬레이션 오류: forceFailStep이 활성화되었습니다.", "zh": "模拟错误：forceFailStep 已启用。" },
+  "templates61WorkflowIdTest.problemStepFailed": { "vi": "Bước \"{name}\" thất bại. Phase 2 retry 5 lần trước khi đẩy DLQ.", "en": "Step \"{name}\" failed. Phase 2 retries 5 times before pushing to DLQ.", "ja": "ステップ「{name}」が失敗しました。Phase 2 では DLQ に送る前に5回リトライします。", "ko": "\"{name}\" 단계가 실패했습니다. Phase 2에서는 DLQ로 보내기 전에 5회 재시도합니다.", "zh": "步骤 \"{name}\" 失败。Phase 2 会在推送到 DLQ 前重试 5 次。" },
+
+  "templates61WorkflowIdTest.outDataQuery": { "vi": "Trả về 12 dòng insight (cutoff: {cutoff})", "en": "Returned 12 insight rows (cutoff: {cutoff})", "ja": "インサイト12件を返却しました（cutoff: {cutoff}）", "ko": "인사이트 12건 반환됨 (cutoff: {cutoff})", "zh": "返回了12条洞察数据（cutoff: {cutoff}）" },
+  "templates61WorkflowIdTest.outLlmCall": { "vi": "[Qwen 2.5 - 1.243 token] Top 3 insight: 1) Doanh thu SME +18% tuần này · 2) Churn APAC tăng 0.4 điểm · 3) Pilot khách số 5 trễ approval.", "en": "[Qwen 2.5 - 1,243 tokens] Top 3 insights: 1) SME revenue +18% this week · 2) APAC churn up 0.4 points · 3) Pilot customer #5 approval delayed.", "ja": "[Qwen 2.5 - 1,243トークン] トップ3インサイト: 1) 今週のSME売上+18% · 2) APACのチャーンが0.4ポイント上昇 · 3) パイロット顧客5番の承認が遅延。", "ko": "[Qwen 2.5 - 1,243 토큰] 상위 3개 인사이트: 1) 이번 주 SME 매출 +18% · 2) APAC 이탈률 0.4포인트 상승 · 3) 파일럿 고객 5번 승인 지연.", "zh": "[Qwen 2.5 - 1,243 token] 前3条洞察：1) 本周SME营收+18% · 2) APAC流失率上升0.4个百分点 · 3) 试点客户第5号审批延迟。" },
+  "templates61WorkflowIdTest.outCondition": { "vi": "Điều kiện đúng → đi nhánh true.", "en": "Condition true → follows the true branch.", "ja": "条件が真 → trueブランチへ進みます。", "ko": "조건 참 → true 분기로 진행.", "zh": "条件为真 → 进入true分支。" },
+  "templates61WorkflowIdTest.outNotification": { "vi": "Dry-run: KHÔNG gửi email thật. Sẽ gửi tới {email} trong production.", "en": "Dry-run: NOT sending a real email. Will send to {email} in production.", "ja": "Dry-run: 実際のメールは送信されません。本番環境では{email}宛に送信されます。", "ko": "Dry-run: 실제 이메일을 보내지 않습니다. 프로덕션에서는 {email}로 발송됩니다.", "zh": "Dry-run：不会发送真实邮件。生产环境中将发送到 {email}。" },
+  "templates61WorkflowIdTest.outWait": { "vi": "Đã chờ 5s (mô phỏng).", "en": "Waited 5s (simulated).", "ja": "5秒待機しました（模擬）。", "ko": "5초 대기함 (시뮬레이션).", "zh": "已等待5秒（模拟）。" },
+
+  "templates61WorkflowIdTest.pageTitle": { "vi": "Test workflow", "en": "Test workflow", "ja": "ワークフローをテスト", "ko": "워크플로우 테스트", "zh": "测试工作流" },
+  "templates61WorkflowIdTest.pageDescription": { "vi": "Chạy thử trong sandbox — KHÔNG ghi Kafka, KHÔNG gửi email thật.", "en": "Run a trial in the sandbox — does NOT write to Kafka, does NOT send real emails.", "ja": "サンドボックスで試行 — Kafkaへの書き込みや実際のメール送信は行いません。", "ko": "샌드박스에서 시험 실행 — Kafka에 기록하지 않고 실제 이메일도 보내지 않습니다.", "zh": "在沙盒中试运行 — 不会写入Kafka，也不会发送真实邮件。" },
+  "templates61WorkflowIdTest.backToBuilder": { "vi": "Quay lại builder", "en": "Back to builder", "ja": "ビルダーに戻る", "ko": "빌더로 돌아가기", "zh": "返回构建器" },
+
+  "templates61WorkflowIdTest.testFailedTitle": { "vi": "Test thất bại", "en": "Test failed", "ja": "テスト失敗", "ko": "테스트 실패", "zh": "测试失败" },
+  "templates61WorkflowIdTest.testSuccessMsg": { "vi": "Test chạy xong tất cả bước. Không có lỗi.", "en": "Test completed all steps. No errors.", "ja": "テストは全ステップを完了しました。エラーはありません。", "ko": "테스트가 모든 단계를 완료했습니다. 오류 없음.", "zh": "测试已完成所有步骤，没有错误。" },
+
+  "templates61WorkflowIdTest.inputVarsHeading": { "vi": "Biến input", "en": "Input variables", "ja": "入力変数", "ko": "입력 변수", "zh": "输入变量" },
+  "templates61WorkflowIdTest.insightCutoffLabel": { "vi": "Insight cutoff", "en": "Insight cutoff", "ja": "Insight cutoff", "ko": "Insight cutoff", "zh": "Insight cutoff" },
+  "templates61WorkflowIdTest.insightCutoffHelper": { "vi": "Thời gian lùi để lấy insight.", "en": "Lookback window used to fetch insights.", "ja": "インサイトを取得する遡及期間です。", "ko": "인사이트를 가져올 조회 기간입니다.", "zh": "用于获取洞察的回溯时间范围。" },
+  "templates61WorkflowIdTest.recipientEmailLabel": { "vi": "Email người nhận (mock)", "en": "Recipient email (mock)", "ja": "受信者メール（モック）", "ko": "수신자 이메일 (모의)", "zh": "收件人邮箱（模拟）" },
+  "templates61WorkflowIdTest.forceFailLabel": { "vi": "Mô phỏng lỗi tại bước", "en": "Simulate a failure at step", "ja": "エラーを模擬するステップ", "ko": "오류를 시뮬레이션할 단계", "zh": "在步骤模拟错误" },
+  "templates61WorkflowIdTest.forceFailNone": { "vi": "Không (chạy bình thường)", "en": "None (run normally)", "ja": "なし（通常実行）", "ko": "없음 (정상 실행)", "zh": "无（正常运行）" },
+  "templates61WorkflowIdTest.forceFailHelper": { "vi": "Để test retry policy + DLQ flow.", "en": "Used to test the retry policy + DLQ flow.", "ja": "リトライポリシーとDLQフローをテストするためのものです。", "ko": "재시도 정책 및 DLQ 흐름을 테스트하는 용도입니다.", "zh": "用于测试重试策略和DLQ流程。" },
+
+  "templates61WorkflowIdTest.runTestBtn": { "vi": "Chạy thử", "en": "Run test", "ja": "テスト実行", "ko": "테스트 실행", "zh": "运行测试" },
+  "templates61WorkflowIdTest.resetBtn": { "vi": "Reset", "en": "Reset", "ja": "リセット", "ko": "재설정", "zh": "重置" },
+
+  "templates61WorkflowIdTest.sandboxPrefix": { "vi": "Sandbox dry-run:", "en": "Sandbox dry-run:", "ja": "サンドボックス dry-run:", "ko": "샌드박스 dry-run:", "zh": "沙盒 dry-run：" },
+  "templates61WorkflowIdTest.no": { "vi": "không", "en": "not", "ja": "しない", "ko": "하지 않음", "zh": "不会" },
+  "templates61WorkflowIdTest.sandboxKafka": { "vi": "ghi Kafka,", "en": "write to Kafka,", "ja": "Kafkaに書き込み、", "ko": "Kafka에 기록,", "zh": "写入Kafka，" },
+  "templates61WorkflowIdTest.sandboxEmail": { "vi": "gửi email,", "en": "send email,", "ja": "メールを送信、", "ko": "이메일 발송,", "zh": "发送邮件，" },
+  "templates61WorkflowIdTest.sandboxBilling": { "vi": "tính billing token.", "en": "count billing tokens.", "ja": "課金トークンを計算します。", "ko": "청구 토큰을 계산합니다.", "zh": "计算计费token。" },
+
+  "templates61WorkflowIdTest.executionProgressHeading": { "vi": "Tiến trình thực thi", "en": "Execution progress", "ja": "実行進捗", "ko": "실행 진행 상황", "zh": "执行进度" },
+  "templates61WorkflowIdTest.runningEllipsis": { "vi": "Đang chạy...", "en": "Running...", "ja": "実行中...", "ko": "실행 중...", "zh": "运行中..." },
+  "templates61WorkflowIdTest.stepIndexKind": { "vi": "Bước {n} · {kind}", "en": "Step {n} · {kind}", "ja": "ステップ {n} · {kind}", "ko": "단계 {n} · {kind}", "zh": "步骤 {n} · {kind}" }
+}

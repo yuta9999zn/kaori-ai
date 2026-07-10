@@ -23,13 +23,14 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type Role = 'MANAGER' | 'OPERATOR' | 'ANALYST' | 'VIEWER';
 
-const ROLES: Array<{ id: Role; title: string; desc: string }> = [
-  { id: 'MANAGER',  title: 'MANAGER',  desc: 'Toàn quyền — quản trị workspace, người dùng, billing.' },
-  { id: 'OPERATOR', title: 'OPERATOR', desc: 'Tạo + chạy pipeline, sửa data; không quản lý người dùng.' },
-  { id: 'ANALYST',  title: 'ANALYST',  desc: 'Sinh insight, báo cáo, dashboard.' },
-  { id: 'VIEWER',   title: 'VIEWER',   desc: 'Chỉ đọc dashboard + báo cáo.' },
+const ROLES: Array<{ id: Role; title: string; descKey: string }> = [
+  { id: 'MANAGER',  title: 'MANAGER',  descKey: 'templates12UserInvite.roleManagerDesc' },
+  { id: 'OPERATOR', title: 'OPERATOR', descKey: 'templates12UserInvite.roleOperatorDesc' },
+  { id: 'ANALYST',  title: 'ANALYST',  descKey: 'templates12UserInvite.roleAnalystDesc' },
+  { id: 'VIEWER',   title: 'VIEWER',   descKey: 'templates12UserInvite.roleViewerDesc' },
 ];
 
 interface InviteResult {
@@ -39,6 +40,7 @@ interface InviteResult {
 }
 
 export default function UserInvite() {
+  const t = useT();
   const [emailsRaw, setEmailsRaw] = useState('');
   const [role,      setRole]      = useState<Role>('OPERATOR');
   const [message,   setMessage]   = useState('');
@@ -62,7 +64,7 @@ export default function UserInvite() {
 
     const emails = parseEmails();
     if (emails.length === 0) {
-      setProblem({ title: 'Vui lòng nhập ít nhất một email hợp lệ.' });
+      setProblem({ title: t('templates12UserInvite.errNoValidEmail') });
       emailsRef.current?.focus();
       return;
     }
@@ -102,12 +104,12 @@ export default function UserInvite() {
   return (
     <>
       <PageHeader
-        title="Mời người dùng mới"
-        description="Gửi email kích hoạt — người được mời sẽ đặt mật khẩu lần đầu khi nhấn liên kết."
+        title={t('templates12UserInvite.pageTitle')}
+        description={t('templates12UserInvite.pageDesc')}
         actions={
           <Button variant="secondary" onClick={() => (window.location.href = '/p2/users')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Danh sách
+            {t('templates12UserInvite.listBtn')}
           </Button>
         }
       />
@@ -118,7 +120,7 @@ export default function UserInvite() {
         {results && (
           <div className="mb-6 rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-5 shadow-soft-sm space-y-3">
             <h3 className="font-serif text-base text-[var(--text-primary)] flex items-center gap-2">
-              Kết quả mời
+              {t('templates12UserInvite.resultsTitle')}
               <button onClick={() => setResults(null)} className="ml-auto text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
                 <X className="w-4 h-4" />
               </button>
@@ -126,9 +128,9 @@ export default function UserInvite() {
             {results.map((r) => (
               <div key={r.email} className="flex items-center justify-between p-3 rounded-md-custom bg-[var(--bg-app)]/50">
                 <span className="text-sm text-[var(--text-primary)]">{r.email}</span>
-                {r.status === 'sent'      && <span className="text-xs text-[#5C856A] flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> Đã gửi</span>}
-                {r.status === 'duplicate' && <span className="text-xs text-[#9E814D]">Đã có trong workspace</span>}
-                {r.status === 'failed'    && <span className="text-xs text-[#9B5050]">{r.message ?? 'Thất bại'}</span>}
+                {r.status === 'sent'      && <span className="text-xs text-[#5C856A] flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> {t('templates12UserInvite.statusSent')}</span>}
+                {r.status === 'duplicate' && <span className="text-xs text-[#9E814D]">{t('templates12UserInvite.statusDuplicate')}</span>}
+                {r.status === 'failed'    && <span className="text-xs text-[#9B5050]">{r.message ?? t('templates12UserInvite.statusFailed')}</span>}
               </div>
             ))}
           </div>
@@ -136,7 +138,7 @@ export default function UserInvite() {
 
         <form onSubmit={handleSubmit} className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-6 shadow-soft-sm space-y-6">
           <div>
-            <Label>Email người được mời</Label>
+            <Label>{t('templates12UserInvite.emailLabel')}</Label>
             <textarea
               ref={emailsRef}
               value={emailsRaw}
@@ -147,15 +149,15 @@ export default function UserInvite() {
               disabled={isSending}
             />
             <p className="text-xs text-[var(--text-secondary)] mt-2">
-              Mỗi email một dòng (hoặc cách bằng dấu phẩy/chấm phẩy).
+              {t('templates12UserInvite.emailHint')}
               {parsed.length > 0 && (
-                <> Đã nhận <span className="font-medium text-[var(--text-primary)]">{parsed.length}</span> email hợp lệ.</>
+                <> {t('templates12UserInvite.receivedPrefix')} <span className="font-medium text-[var(--text-primary)]">{parsed.length}</span> {t('templates12UserInvite.receivedSuffix')}</>
               )}
             </p>
           </div>
 
           <div>
-            <Label>Vai trò</Label>
+            <Label>{t('templates12UserInvite.roleLabel')}</Label>
             <div className="mt-2 space-y-2">
               {ROLES.map((r) => (
                 <button
@@ -177,7 +179,7 @@ export default function UserInvite() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-[var(--text-primary)]">{r.title}</p>
-                    <p className="text-xs text-[var(--text-secondary)] mt-0.5">{r.desc}</p>
+                    <p className="text-xs text-[var(--text-secondary)] mt-0.5">{t(r.descKey)}</p>
                   </div>
                 </button>
               ))}
@@ -186,25 +188,24 @@ export default function UserInvite() {
               <div className="mt-3 flex items-start gap-2 p-3 rounded-md-custom bg-[var(--state-warning)]/10 border border-[var(--state-warning)]/30 text-xs text-[#9E814D]">
                 <Info className="w-4 h-4 shrink-0 mt-0.5 text-[var(--state-warning)]" />
                 <p>
-                  MANAGER có toàn quyền workspace bao gồm xoá thành viên khác và truy cập billing.
-                  Chỉ mời MANAGER khi thật sự cần.
+                  {t('templates12UserInvite.managerWarning')}
                 </p>
               </div>
             )}
           </div>
 
           <div>
-            <Label>Lời nhắn (tuỳ chọn)</Label>
+            <Label>{t('templates12UserInvite.messageLabel')}</Label>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Vài dòng giới thiệu workspace cho người được mời..."
+              placeholder={t('templates12UserInvite.messagePlaceholder')}
               rows={3}
               maxLength={500}
               className="mt-2 w-full rounded-md-custom border border-[var(--border-color)] bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/40 focus:border-[var(--primary-gold)]"
               disabled={isSending}
             />
-            <p className="text-xs text-[var(--text-secondary)] mt-1">{message.length}/500 ký tự — đính kèm trong email kích hoạt.</p>
+            <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates12UserInvite.msgCharCount', { count: message.length })}</p>
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--border-color)]/60">
@@ -214,11 +215,13 @@ export default function UserInvite() {
               onClick={() => (window.location.href = '/p2/users')}
               disabled={isSending}
             >
-              Huỷ
+              {t('templates12UserInvite.cancelBtn')}
             </Button>
             <Button type="submit" isLoading={isSending} disabled={parsed.length === 0}>
               <Send className="w-4 h-4 mr-2" />
-              Gửi {parsed.length > 0 ? `${parsed.length} ` : ''}lời mời
+              {parsed.length > 0
+                ? t('templates12UserInvite.sendWithCount', { count: parsed.length })
+                : t('templates12UserInvite.sendInvite')}
             </Button>
           </div>
         </form>

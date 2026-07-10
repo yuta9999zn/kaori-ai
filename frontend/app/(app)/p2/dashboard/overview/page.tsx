@@ -38,6 +38,7 @@ import {
   useDashboardState, useNorthStar, useBillingSummary, useInsightsFeed,
   type DashboardStateName,
 } from '@/lib/hooks';
+import { useT } from '@/lib/i18n/provider';
 import { useChromeT } from '@/lib/i18n/chrome-i18n';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { KpiCard } from '@/components/ui/kpi-card';
@@ -51,13 +52,16 @@ import { fmtVNDShort } from '@/lib/format';
 
 // ── State-machine copy (in-progress states get a banner + a continue CTA) ────
 
+// NOTE: values below are i18n keys (not display text) — resolved via t() at
+// the render site inside the component, since this Record is module-scope
+// and cannot call the useT() hook.
 const PROGRESS_COPY: Record<
   Exclude<DashboardStateName, 'no_data' | 'results_ready'>,
   { label: string; tone: BadgeTone; cta: { href: string; label: string } }
 > = {
-  first_upload:   { label: 'Đang tải dữ liệu lên', tone: 'info',    cta: { href: '/p2/pipelines', label: 'Xem tiến trình' } },
-  pending_review: { label: 'Chờ xác nhận schema',  tone: 'warning', cta: { href: '/p2/pipelines', label: 'Xác nhận cột' } },
-  analysis_ready: { label: 'Sẵn sàng phân tích',   tone: 'brand',   cta: { href: '/p2/analysis/hub', label: 'Bắt đầu phân tích' } },
+  first_upload:   { label: 'overviewPage.stateFirstUpload',   tone: 'info',    cta: { href: '/p2/pipelines', label: 'overviewPage.ctaViewProgress' } },
+  pending_review: { label: 'overviewPage.statePendingReview', tone: 'warning', cta: { href: '/p2/pipelines', label: 'overviewPage.ctaConfirmColumns' } },
+  analysis_ready: { label: 'overviewPage.stateAnalysisReady', tone: 'brand',   cta: { href: '/p2/analysis/hub', label: 'overviewPage.ctaStartAnalysis' } },
 };
 
 const INSIGHT_TONE: Record<string, BadgeTone> = {
@@ -68,6 +72,7 @@ export default function DashboardOverviewPage() {
   // S0b: per-domain hooks replace the inline useQuery boilerplate. Same
   // independent-queries contract — a slow insights (LLM) query never blocks
   // the cheap SQL tiles.
+  const t = useT();
   const stateQ = useDashboardState();
   const northStarQ = useNorthStar();
   const billingQ = useBillingSummary();
@@ -93,17 +98,21 @@ export default function DashboardOverviewPage() {
         <CardContent className="flex flex-col items-start gap-3 py-8">
           <div className="flex items-center gap-2 text-danger-700">
             <ShieldAlert className="h-5 w-5" />
-            <span className="font-semibold">Không tải được dashboard</span>
+            <span className="font-semibold">{t('overviewPage.errLoadFailed')}</span>
           </div>
           <p className="text-sm text-ink-muted">
             {stateQ.error.message}
-            {stateQ.error.trace_id ? <span className="ml-1 opacity-60">(mã: {stateQ.error.trace_id})</span> : null}
+            {stateQ.error.trace_id ? (
+              <span className="ml-1 opacity-60">
+                {t('overviewPage.errTraceId', { traceId: stateQ.error.trace_id })}
+              </span>
+            ) : null}
           </p>
           <button
             onClick={() => stateQ.refetch()}
             className="inline-flex items-center gap-1.5 rounded-lg border border-subtle px-3 py-1.5 text-sm font-medium hover:bg-canvas"
           >
-            <RefreshCw className="h-4 w-4" /> Thử lại
+            <RefreshCw className="h-4 w-4" /> {t('overviewPage.retry')}
           </button>
         </CardContent>
       </Card>
@@ -117,9 +126,9 @@ export default function DashboardOverviewPage() {
     return (
       <EmptyState
         icon={UploadCloud}
-        title="Chưa có dữ liệu"
-        description="Tải lên tệp dữ liệu đầu tiên để Kaori bắt đầu phân tích và sinh insight cho doanh nghiệp của anh."
-        action={{ href: '/p2/pipelines/new/upload', label: 'Tải dữ liệu lên' }}
+        title={t('overviewPage.emptyTitle')}
+        description={t('overviewPage.emptyDescription')}
+        action={{ href: '/p2/pipelines/new/upload', label: t('overviewPage.emptyActionLabel') }}
       />
     );
   }
@@ -129,12 +138,12 @@ export default function DashboardOverviewPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-[#2E2A24]">Tổng quan</h1>
+        <h1 className="text-xl font-semibold text-[#2E2A24]">{t('overviewPage.title')}</h1>
         {progress ? (
-          <Badge tone={progress.tone}>{progress.label}</Badge>
+          <Badge tone={progress.tone}>{t(progress.label)}</Badge>
         ) : (
           <Badge tone="success">
-            <CheckCircle2 className="mr-1 inline h-3.5 w-3.5" /> Có kết quả
+            <CheckCircle2 className="mr-1 inline h-3.5 w-3.5" /> {t('overviewPage.resultsReady')}
           </Badge>
         )}
       </div>
@@ -145,13 +154,13 @@ export default function DashboardOverviewPage() {
           <CardContent className="flex items-center justify-between py-4">
             <div className="flex items-center gap-2 text-sm text-[#2E2A24]">
               <Activity className="h-4 w-4 text-brand-700" />
-              Pipeline đang ở bước: <strong>{state.pipeline_status ?? state.state}</strong>
+              {t('overviewPage.pipelineStepPrefix')} <strong>{state.pipeline_status ?? state.state}</strong>
             </div>
             <Link
               href={progress.cta.href}
               className="inline-flex items-center gap-1 rounded-lg bg-brand-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-800"
             >
-              {progress.cta.label} <ArrowRight className="h-4 w-4" />
+              {t(progress.cta.label)} <ArrowRight className="h-4 w-4" />
             </Link>
           </CardContent>
         </Card>
@@ -162,14 +171,14 @@ export default function DashboardOverviewPage() {
         <KpiCard
           label={cT('Doanh thu đã cứu (North Star)')}
           value={northStarQ.isLoading ? '…' : fmtVNDShort(northStarQ.data?.resolved_vnd)}
-          hint={northStarQ.data ? `${northStarQ.data.resolution_rate_pct}% đã xử lý` : undefined}
+          hint={northStarQ.data ? t('overviewPage.hintResolved', { pct: northStarQ.data.resolution_rate_pct }) : undefined}
           trendPct={northStarQ.data?.resolution_rate_pct}
           icon={<TrendingUp className="h-4 w-4" />}
         />
         <KpiCard
           label={cT('Doanh thu rủi ro')}
           value={northStarQ.isLoading ? '…' : fmtVNDShort(northStarQ.data?.total_at_risk_vnd)}
-          hint={northStarQ.data ? `${northStarQ.data.at_risk_count} khách hàng` : undefined}
+          hint={northStarQ.data ? t('overviewPage.hintAtRiskCount', { count: northStarQ.data.at_risk_count }) : undefined}
           icon={<AlertTriangle className="h-4 w-4" />}
         />
         <KpiCard
@@ -180,7 +189,7 @@ export default function DashboardOverviewPage() {
         <KpiCard
           label={cT('Hạn mức khách / tháng (K-11)')}
           value={billingQ.isLoading ? '…' : `${billingQ.data?.unique_customers ?? 0}${billingQ.data?.monthly_quota ? ` / ${billingQ.data.monthly_quota}` : ''}`}
-          hint={billingQ.data ? `Gói ${billingQ.data.plan_code} · ${billingQ.data.usage_pct}%` : undefined}
+          hint={billingQ.data ? t('overviewPage.hintPlanUsage', { plan: billingQ.data.plan_code, pct: billingQ.data.usage_pct }) : undefined}
           trendPct={billingQ.data?.usage_pct}
         />
       </div>
@@ -188,7 +197,7 @@ export default function DashboardOverviewPage() {
       {/* Analysis-result KPI cards (state-machine: results_ready) */}
       {state.kpis && state.kpis.length > 0 ? (
         <Card>
-          <CardHeader><CardTitle>Chỉ số phân tích</CardTitle></CardHeader>
+          <CardHeader><CardTitle>{t('overviewPage.analysisKpisTitle')}</CardTitle></CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {state.kpis.map((k, i) => (
@@ -213,7 +222,7 @@ export default function DashboardOverviewPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-brand-700" /> Insight nổi bật
+            <Sparkles className="h-4 w-4 text-brand-700" /> {t('overviewPage.insightsTitle')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -223,9 +232,9 @@ export default function DashboardOverviewPage() {
               <Skeleton className="h-12 w-full" />
             </div>
           ) : insightsQ.isError ? (
-            <p className="text-sm text-ink-muted">Chưa tải được insight — {insightsQ.error.message}</p>
+            <p className="text-sm text-ink-muted">{t('overviewPage.insightsErrorPrefix')} {insightsQ.error.message}</p>
           ) : (insightsQ.data?.insights.length ?? 0) === 0 ? (
-            <p className="text-sm text-ink-muted">{insightsQ.data?.note ?? 'Chạy phân tích để xem insight.'}</p>
+            <p className="text-sm text-ink-muted">{insightsQ.data?.note ?? t('overviewPage.insightsEmptyDefault')}</p>
           ) : (
             <ul className="space-y-3">
               {insightsQ.data!.insights.map((ins) => (

@@ -1,0 +1,156 @@
+{
+  "templates81CsChurnSave.errPortfolio": {
+    "vi": "Không tải được portfolio.",
+    "en": "Could not load the portfolio.",
+    "ja": "ポートフォリオを読み込めませんでした。",
+    "ko": "포트폴리오를 불러올 수 없습니다.",
+    "zh": "无法加载客户组合。"
+  },
+  "templates81CsChurnSave.title": {
+    "vi": "Churn Save Workspace",
+    "en": "Churn Save Workspace",
+    "ja": "Churn Save ワークスペース",
+    "ko": "Churn Save 워크스페이스",
+    "zh": "流失挽回工作台"
+  },
+  "templates81CsChurnSave.subtitle": {
+    "vi": "Kanban khách hàng theo risk tier · NOV impact · playbook gợi ý.",
+    "en": "Customer kanban by risk tier · NOV impact · suggested playbook.",
+    "ja": "リスク層別の顧客カンバン · NOVインパクト · 推奨プレイブック。",
+    "ko": "위험 등급별 고객 칸반 · NOV 영향 · 추천 플레이북.",
+    "zh": "按风险等级划分的客户看板 · NOV 影响 · 建议的行动方案。"
+  },
+  "templates81CsChurnSave.optionAllPlans": {
+    "vi": "Tất cả plan",
+    "en": "All plans",
+    "ja": "すべてのプラン",
+    "ko": "모든 플랜",
+    "zh": "所有套餐"
+  },
+  "templates81CsChurnSave.novAtRisk": {
+    "vi": "NOV at risk",
+    "en": "NOV at risk",
+    "ja": "リスクにさらされているNOV",
+    "ko": "위험에 처한 NOV",
+    "zh": "面临风险的 NOV"
+  },
+  "templates81CsChurnSave.emptyPortfolio": {
+    "vi": "Portfolio sạch — 0 khách HIGH risk 🎉.",
+    "en": "Clean portfolio — 0 HIGH-risk customers 🎉.",
+    "ja": "クリーンなポートフォリオ — HIGHリスク顧客0件 🎉。",
+    "ko": "깨끗한 포트폴리오 — HIGH 위험 고객 0명 🎉.",
+    "zh": "客户组合干净 — 0 个高风险客户 🎉。"
+  },
+  "templates81CsChurnSave.effectivenessTitle": {
+    "vi": "Hiệu quả intervention (30d)",
+    "en": "Intervention effectiveness (30d)",
+    "ja": "介入の効果(30日間)",
+    "ko": "개입 효과 (30일)",
+    "zh": "干预效果(30天)"
+  },
+  "templates81CsChurnSave.comingSoon": {
+    "vi": "Tính năng đang hoàn thiện",
+    "en": "Feature in progress",
+    "ja": "機能は準備中です",
+    "ko": "기능 준비 중입니다",
+    "zh": "功能开发中"
+  },
+  "templates81CsChurnSave.emptyColumn": {
+    "vi": "Không có khách.",
+    "en": "No customers.",
+    "ja": "顧客はいません。",
+    "ko": "고객이 없습니다.",
+    "zh": "暂无客户。"
+  },
+  "templates81CsChurnSave.runningAction": {
+    "vi": "Đang chạy",
+    "en": "Running",
+    "ja": "実行中",
+    "ko": "실행 중",
+    "zh": "进行中"
+  },
+  "templates81CsChurnSave.close": {
+    "vi": "Đóng",
+    "en": "Close",
+    "ja": "閉じる",
+    "ko": "닫기",
+    "zh": "关闭"
+  },
+  "templates81CsChurnSave.riskFactorLabel": {
+    "vi": "Risk factor (SHAP top-1)",
+    "en": "Risk factor (SHAP top-1)",
+    "ja": "リスク要因(SHAP上位1)",
+    "ko": "위험 요인 (SHAP 1위)",
+    "zh": "风险因素(SHAP 首要因素)"
+  },
+  "templates81CsChurnSave.adoptionSignalsLabel": {
+    "vi": "Adoption signals (EPIC-13)",
+    "en": "Adoption signals (EPIC-13)",
+    "ja": "アダプションシグナル(EPIC-13)",
+    "ko": "어답션 신호 (EPIC-13)",
+    "zh": "采用信号(EPIC-13)"
+  },
+  "templates81CsChurnSave.interventionHistoryLabel": {
+    "vi": "Intervention history",
+    "en": "Intervention history",
+    "ja": "介入履歴",
+    "ko": "개입 이력",
+    "zh": "干预历史"
+  },
+  "templates81CsChurnSave.assignAe": {
+    "vi": "Assign AE",
+    "en": "Assign AE",
+    "ja": "AEを割り当て",
+    "ko": "AE 배정",
+    "zh": "指派 AE"
+  },
+  "templates81CsChurnSave.runPlaybook": {
+    "vi": "Run playbook",
+    "en": "Run playbook",
+    "ja": "プレイブックを実行",
+    "ko": "플레이북 실행",
+    "zh": "运行行动方案"
+  },
+  "templates81CsChurnSave.selectPlaybookTitle": {
+    "vi": "Chọn playbook",
+    "en": "Select playbook",
+    "ja": "プレイブックを選択",
+    "ko": "플레이북 선택",
+    "zh": "选择行动方案"
+  },
+  "templates81CsChurnSave.noPlaybooksYet": {
+    "vi": "Chưa có playbook — định nghĩa trong P2-37 setup.",
+    "en": "No playbooks yet — define them in P2-37 setup.",
+    "ja": "プレイブックはまだありません — P2-37セットアップで定義してください。",
+    "ko": "아직 플레이북이 없습니다 — P2-37 설정에서 정의하세요.",
+    "zh": "尚无行动方案 — 请在 P2-37 设置中定义。"
+  },
+  "templates81CsChurnSave.tierCritical": {
+    "vi": "Critical",
+    "en": "Critical",
+    "ja": "クリティカル",
+    "ko": "심각",
+    "zh": "严重"
+  },
+  "templates81CsChurnSave.tierHigh": {
+    "vi": "High",
+    "en": "High",
+    "ja": "高",
+    "ko": "높음",
+    "zh": "高"
+  },
+  "templates81CsChurnSave.tierMedium": {
+    "vi": "Medium",
+    "en": "Medium",
+    "ja": "中",
+    "ko": "중간",
+    "zh": "中"
+  },
+  "templates81CsChurnSave.tierLow": {
+    "vi": "Low",
+    "en": "Low",
+    "ja": "低",
+    "ko": "낮음",
+    "zh": "低"
+  }
+}

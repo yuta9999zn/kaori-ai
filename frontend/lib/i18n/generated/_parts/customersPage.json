@@ -1,0 +1,212 @@
+{
+  "customersPage.pageTitle": {
+    "vi": "Khách hàng",
+    "en": "Customers",
+    "ja": "顧客",
+    "ko": "고객",
+    "zh": "客户"
+  },
+  "customersPage.pageDesc": {
+    "vi": "Danh sách khách hàng + thông tin doanh thu, tín dụng, danh hiệu. Mig 062 — pilot Vingroup demo.",
+    "en": "Customer list with revenue, credit, and tier information. Mig 062 — Vingroup pilot demo.",
+    "ja": "顧客一覧 + 売上・与信・ランク情報。Mig 062 — Vingroup パイロットデモ。",
+    "ko": "매출·신용·등급 정보를 포함한 고객 목록. Mig 062 — Vingroup 파일럿 데모.",
+    "zh": "客户列表及营收、信用、等级信息。Mig 062 — Vingroup 试点演示。"
+  },
+  "customersPage.colCode": {
+    "vi": "Mã KH",
+    "en": "Customer code",
+    "ja": "顧客コード",
+    "ko": "고객 코드",
+    "zh": "客户编号"
+  },
+  "customersPage.colCustomer": {
+    "vi": "Khách hàng",
+    "en": "Customer",
+    "ja": "顧客",
+    "ko": "고객",
+    "zh": "客户"
+  },
+  "customersPage.colType": {
+    "vi": "Loại",
+    "en": "Type",
+    "ja": "種類",
+    "ko": "유형",
+    "zh": "类型"
+  },
+  "customersPage.colIndustry": {
+    "vi": "Ngành",
+    "en": "Industry",
+    "ja": "業種",
+    "ko": "업종",
+    "zh": "行业"
+  },
+  "customersPage.colRevenue": {
+    "vi": "Doanh thu/năm",
+    "en": "Annual revenue",
+    "ja": "年間売上",
+    "ko": "연 매출",
+    "zh": "年营收"
+  },
+  "customersPage.colCredit": {
+    "vi": "Tín dụng",
+    "en": "Credit",
+    "ja": "与信",
+    "ko": "신용",
+    "zh": "信用"
+  },
+  "customersPage.colTier": {
+    "vi": "Tier",
+    "en": "Tier",
+    "ja": "Tier",
+    "ko": "Tier",
+    "zh": "Tier"
+  },
+  "customersPage.colAm": {
+    "vi": "AM",
+    "en": "AM",
+    "ja": "AM",
+    "ko": "AM",
+    "zh": "AM"
+  },
+  "customersPage.typeIndividual": {
+    "vi": "Cá nhân",
+    "en": "Individual",
+    "ja": "個人",
+    "ko": "개인",
+    "zh": "个人"
+  },
+  "customersPage.typeSmb": {
+    "vi": "SMB",
+    "en": "SMB",
+    "ja": "SMB",
+    "ko": "SMB",
+    "zh": "SMB"
+  },
+  "customersPage.typeEnterprise": {
+    "vi": "Enterprise",
+    "en": "Enterprise",
+    "ja": "Enterprise",
+    "ko": "Enterprise",
+    "zh": "Enterprise"
+  },
+  "customersPage.typeStrategic": {
+    "vi": "Chiến lược",
+    "en": "Strategic",
+    "ja": "戦略",
+    "ko": "전략",
+    "zh": "战略"
+  },
+  "customersPage.tierPlatinum": {
+    "vi": "Platinum",
+    "en": "Platinum",
+    "ja": "Platinum",
+    "ko": "Platinum",
+    "zh": "Platinum"
+  },
+  "customersPage.tierGold": {
+    "vi": "Gold",
+    "en": "Gold",
+    "ja": "Gold",
+    "ko": "Gold",
+    "zh": "Gold"
+  },
+  "customersPage.tierSilver": {
+    "vi": "Silver",
+    "en": "Silver",
+    "ja": "Silver",
+    "ko": "Silver",
+    "zh": "Silver"
+  },
+  "customersPage.tierBronze": {
+    "vi": "Bronze",
+    "en": "Bronze",
+    "ja": "Bronze",
+    "ko": "Bronze",
+    "zh": "Bronze"
+  },
+  "customersPage.filterStatus": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "customersPage.filterType": {
+    "vi": "Loại KH",
+    "en": "Customer type",
+    "ja": "顧客種類",
+    "ko": "고객 유형",
+    "zh": "客户类型"
+  },
+  "customersPage.filterTier": {
+    "vi": "Tier",
+    "en": "Tier",
+    "ja": "Tier",
+    "ko": "Tier",
+    "zh": "Tier"
+  },
+  "customersPage.optAll": {
+    "vi": "Tất cả",
+    "en": "All",
+    "ja": "すべて",
+    "ko": "전체",
+    "zh": "全部"
+  },
+  "customersPage.statusActive": {
+    "vi": "Đang hoạt động",
+    "en": "Active",
+    "ja": "稼働中",
+    "ko": "활성",
+    "zh": "活跃中"
+  },
+  "customersPage.statusInactive": {
+    "vi": "Tạm ngưng",
+    "en": "Inactive",
+    "ja": "休止中",
+    "ko": "비활성",
+    "zh": "暂停"
+  },
+  "customersPage.statusArchived": {
+    "vi": "Đã lưu trữ",
+    "en": "Archived",
+    "ja": "アーカイブ済み",
+    "ko": "보관됨",
+    "zh": "已归档"
+  },
+  "customersPage.statusBlacklisted": {
+    "vi": "Blacklist",
+    "en": "Blacklist",
+    "ja": "ブラックリスト",
+    "ko": "블랙리스트",
+    "zh": "黑名单"
+  },
+  "customersPage.errLoadFailed": {
+    "vi": "Lỗi khi tải khách hàng. Reload trang để thử lại.",
+    "en": "Failed to load customers. Reload the page to try again.",
+    "ja": "顧客データの読み込みに失敗しました。ページを再読み込みして再試行してください。",
+    "ko": "고객 목록을 불러오지 못했습니다. 페이지를 새로고침하여 다시 시도하세요.",
+    "zh": "加载客户数据失败。请刷新页面重试。"
+  },
+  "customersPage.emptyTitle": {
+    "vi": "Chưa có khách hàng nào",
+    "en": "No customers yet",
+    "ja": "顧客がまだいません",
+    "ko": "아직 고객이 없습니다",
+    "zh": "暂无客户"
+  },
+  "customersPage.emptyDesc": {
+    "vi": "Đổi bộ lọc hoặc thêm khách hàng mới.",
+    "en": "Change the filters or add a new customer.",
+    "ja": "フィルターを変更するか、新しい顧客を追加してください。",
+    "ko": "필터를 변경하거나 새 고객을 추가하세요.",
+    "zh": "更改筛选条件或添加新客户。"
+  },
+  "customersPage.emptyTableMsg": {
+    "vi": "Không có khách hàng nào khớp bộ lọc.",
+    "en": "No customers match the current filters.",
+    "ja": "フィルター条件に一致する顧客がありません。",
+    "ko": "필터 조건에 맞는 고객이 없습니다.",
+    "zh": "没有符合筛选条件的客户。"
+  }
+}

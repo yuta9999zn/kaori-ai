@@ -1,0 +1,156 @@
+{
+  "pipelineCleaningreview.catUniversal": {
+    "vi": "Cơ bản (áp dụng cho mọi dataset)",
+    "en": "Basic (applies to every dataset)",
+    "ja": "基本（すべてのデータセットに適用）",
+    "ko": "기본 (모든 데이터셋에 적용)",
+    "zh": "基础（适用于所有数据集）"
+  },
+  "pipelineCleaningreview.catByType": {
+    "vi": "Theo kiểu dữ liệu",
+    "en": "By data type",
+    "ja": "データ型別",
+    "ko": "데이터 유형별",
+    "zh": "按数据类型"
+  },
+  "pipelineCleaningreview.catByPurpose": {
+    "vi": "Theo mục đích",
+    "en": "By purpose",
+    "ja": "目的別",
+    "ko": "목적별",
+    "zh": "按用途"
+  },
+  "pipelineCleaningreview.catAiDetected": {
+    "vi": "AI phát hiện",
+    "en": "AI-detected",
+    "ja": "AI検出",
+    "ko": "AI 감지",
+    "zh": "AI 检测"
+  },
+  "pipelineCleaningreview.errFetchSuggestions": {
+    "vi": "Không thể lấy gợi ý làm sạch",
+    "en": "Unable to fetch cleaning suggestions",
+    "ja": "クレンジング提案を取得できませんでした",
+    "ko": "정제 제안을 가져올 수 없습니다",
+    "zh": "无法获取清洗建议"
+  },
+  "pipelineCleaningreview.errApply": {
+    "vi": "Lỗi khi áp dụng quy tắc làm sạch",
+    "en": "Error applying cleaning rules",
+    "ja": "クレンジングルールの適用中にエラーが発生しました",
+    "ko": "정제 규칙 적용 중 오류가 발생했습니다",
+    "zh": "应用清洗规则时出错"
+  },
+  "pipelineCleaningreview.loadingAnalyzing": {
+    "vi": "Đang phân tích dữ liệu…",
+    "en": "Analyzing data…",
+    "ja": "データを分析しています…",
+    "ko": "데이터를 분석하는 중…",
+    "zh": "正在分析数据…"
+  },
+  "pipelineCleaningreview.title": {
+    "vi": "Làm sạch dữ liệu",
+    "en": "Clean data",
+    "ja": "データクレンジング",
+    "ko": "데이터 정제",
+    "zh": "数据清洗"
+  },
+  "pipelineCleaningreview.subtitle": {
+    "vi": "Chọn quy tắc để áp dụng. Dữ liệu gốc (Bronze) không bị thay đổi.",
+    "en": "Select the rules to apply. The original data (Bronze) is not changed.",
+    "ja": "適用するルールを選択してください。元データ（Bronze）は変更されません。",
+    "ko": "적용할 규칙을 선택하세요. 원본 데이터(Bronze)는 변경되지 않습니다.",
+    "zh": "选择要应用的规则。原始数据（Bronze）不会被修改。"
+  },
+  "pipelineCleaningreview.badgeSafe": {
+    "vi": "An toàn",
+    "en": "Safe",
+    "ja": "安全",
+    "ko": "안전",
+    "zh": "安全"
+  },
+  "pipelineCleaningreview.badgeNeedsConfirm": {
+    "vi": "Cần xác nhận",
+    "en": "Needs confirmation",
+    "ja": "確認が必要",
+    "ko": "확인 필요",
+    "zh": "需要确认"
+  },
+  "pipelineCleaningreview.badgeSuggested": {
+    "vi": "Gợi ý nên áp dụng",
+    "en": "Recommended to apply",
+    "ja": "適用を推奨",
+    "ko": "적용 권장",
+    "zh": "建议应用"
+  },
+  "pipelineCleaningreview.signalUnitPrice": {
+    "vi": "Đơn giá (median): {value}",
+    "en": "Unit price (median): {value}",
+    "ja": "単価（中央値）: {value}",
+    "ko": "단가 (중앙값): {value}",
+    "zh": "单价（中位数）：{value}"
+  },
+  "pipelineCleaningreview.signalQuantity": {
+    "vi": "Số lượng (median): {value}",
+    "en": "Quantity (median): {value}",
+    "ja": "数量（中央値）: {value}",
+    "ko": "수량 (중앙값): {value}",
+    "zh": "数量（中位数）：{value}"
+  },
+  "pipelineCleaningreview.signalImpliedTotal": {
+    "vi": "Thành tiền ước: {value}",
+    "en": "Estimated line total: {value}",
+    "ja": "推定小計: {value}",
+    "ko": "예상 합계: {value}",
+    "zh": "估算小计：{value}"
+  },
+  "pipelineCleaningreview.signalHasTotalColumn": {
+    "vi": "Có cột thành tiền: {status}",
+    "en": "Has line-total column: {status}",
+    "ja": "小計列の有無: {status}",
+    "ko": "합계 컬럼 여부: {status}",
+    "zh": "是否有小计字段：{status}"
+  },
+  "pipelineCleaningreview.signalHasTotalYes": {
+    "vi": "có",
+    "en": "yes",
+    "ja": "あり",
+    "ko": "있음",
+    "zh": "有"
+  },
+  "pipelineCleaningreview.signalHasTotalNo": {
+    "vi": "chưa",
+    "en": "no",
+    "ja": "なし",
+    "ko": "없음",
+    "zh": "无"
+  },
+  "pipelineCleaningreview.signalMatchRatio": {
+    "vi": "Khớp đơn giá×SL: {percent}%",
+    "en": "Unit price×qty match: {percent}%",
+    "ja": "単価×数量の一致率: {percent}%",
+    "ko": "단가×수량 일치율: {percent}%",
+    "zh": "单价×数量匹配率：{percent}%"
+  },
+  "pipelineCleaningreview.selectedCount": {
+    "vi": "Đã chọn {selected} / {total} quy tắc",
+    "en": "Selected {selected} / {total} rules",
+    "ja": "{selected} / {total} 件のルールを選択済み",
+    "ko": "{selected} / {total}개 규칙 선택됨",
+    "zh": "已选择 {selected} / {total} 条规则"
+  },
+  "pipelineCleaningreview.applying": {
+    "vi": "Đang áp dụng…",
+    "en": "Applying…",
+    "ja": "適用中…",
+    "ko": "적용 중…",
+    "zh": "正在应用…"
+  },
+  "pipelineCleaningreview.applyAndContinue": {
+    "vi": "Áp dụng và tiếp tục →",
+    "en": "Apply and continue →",
+    "ja": "適用して続行 →",
+    "ko": "적용하고 계속 →",
+    "zh": "应用并继续 →"
+  }
+}

@@ -22,6 +22,7 @@ import {
 
 import { Button, Badge, cn } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types
 // ============================================================================
@@ -48,11 +49,11 @@ interface InsightPack {
   upcoming_milestones: { title: string; due_date: string }[];
 }
 
-const KIND_LABEL: Record<MeetingKind, string> = {
-  qbr:           'QBR',
-  okr_weekly:    'OKR Weekly',
-  risk_monthly:  'Risk Monthly',
-  custom:        'Tuỳ chỉnh',
+const KIND_LABEL_KEY: Record<MeetingKind, string> = {
+  qbr:           'templates55StrategyReviewMeeting.kindQbr',
+  okr_weekly:    'templates55StrategyReviewMeeting.kindOkrWeekly',
+  risk_monthly:  'templates55StrategyReviewMeeting.kindRiskMonthly',
+  custom:        'templates55StrategyReviewMeeting.kindCustom',
 };
 
 const NOW = new Date('2026-05-01T10:00:00+07:00');
@@ -112,6 +113,7 @@ function isPast(m: Meeting) { return new Date(m.scheduled_at) < NOW; }
 // ============================================================================
 
 export default function ReviewMeetingsPage() {
+  const t = useT();
   const upcoming = useMemo(
     () => MEETINGS.filter((m) => !isPast(m)).sort((a, b) => +new Date(a.scheduled_at) - +new Date(b.scheduled_at)),
     [],
@@ -127,14 +129,14 @@ export default function ReviewMeetingsPage() {
   return (
     <>
       <PageHeader
-        title="Họp review"
-        description="Lịch họp QBR · OKR weekly · Risk monthly với insight pack chuẩn bị sẵn từ Kaori AI."
+        title={t('templates55StrategyReviewMeeting.title')}
+        description={t('templates55StrategyReviewMeeting.description')}
         actions={
           <>
             <Badge variant="info">Phase 2 · F-054</Badge>
-            <a href="/p2/strategy"><Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> Tổng quan</Button></a>
+            <a href="/p2/strategy"><Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> {t('templates55StrategyReviewMeeting.btnOverview')}</Button></a>
             <Button variant="primary" size="md">
-              <Plus className="w-4 h-4 mr-2" /> Tạo cuộc họp
+              <Plus className="w-4 h-4 mr-2" /> {t('templates55StrategyReviewMeeting.btnCreateMeeting')}
             </Button>
           </>
         }
@@ -144,9 +146,9 @@ export default function ReviewMeetingsPage() {
         <div className="grid grid-cols-1 xl:grid-cols-[380px_1fr] gap-4">
           {/* Left list */}
           <div className="space-y-4">
-            <ListSection title="Sắp tới" badge={upcoming.length}>
+            <ListSection title={t('templates55StrategyReviewMeeting.sectionUpcoming')} badge={upcoming.length}>
               {upcoming.length === 0 ? (
-                <p className="text-xs text-[var(--text-secondary)] py-3 text-center">Không có cuộc họp sắp tới.</p>
+                <p className="text-xs text-[var(--text-secondary)] py-3 text-center">{t('templates55StrategyReviewMeeting.noUpcoming')}</p>
               ) : (
                 upcoming.map((m) => (
                   <MeetingListItem
@@ -158,9 +160,9 @@ export default function ReviewMeetingsPage() {
                 ))
               )}
             </ListSection>
-            <ListSection title="Đã qua" badge={past.length}>
+            <ListSection title={t('templates55StrategyReviewMeeting.sectionPast')} badge={past.length}>
               {past.length === 0 ? (
-                <p className="text-xs text-[var(--text-secondary)] py-3 text-center">Chưa có lịch sử họp.</p>
+                <p className="text-xs text-[var(--text-secondary)] py-3 text-center">{t('templates55StrategyReviewMeeting.noPastHistory')}</p>
               ) : (
                 past.map((m) => (
                   <MeetingListItem
@@ -181,7 +183,7 @@ export default function ReviewMeetingsPage() {
           ) : (
             <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-12 text-center">
               <CalendarCheck className="w-12 h-12 mx-auto text-[var(--text-secondary)]/30 mb-3" />
-              <p className="text-sm text-[var(--text-secondary)]">Chọn 1 cuộc họp để xem agenda + insight pack.</p>
+              <p className="text-sm text-[var(--text-secondary)]">{t('templates55StrategyReviewMeeting.selectMeetingHint')}</p>
             </div>
           )}
         </div>
@@ -210,6 +212,7 @@ function ListSection({ title, badge, children }: { title: string; badge: number;
 function MeetingListItem({
   meeting: m, active, onSelect, muted,
 }: { meeting: Meeting; active: boolean; onSelect: () => void; muted?: boolean }) {
+  const t = useT();
   const dt = new Date(m.scheduled_at);
   const pastDone = m.notes_filled && muted;
   return (
@@ -227,7 +230,7 @@ function MeetingListItem({
       <div className="flex items-start justify-between gap-2 mb-1">
         <p className="font-medium text-sm text-[var(--text-primary)] line-clamp-2">{m.title}</p>
         <Badge variant={pastDone ? 'success' : muted ? 'default' : 'info'}>
-          {pastDone ? 'Đã ghi chú' : KIND_LABEL[m.kind]}
+          {pastDone ? t('templates55StrategyReviewMeeting.notesFilledBadge') : t(KIND_LABEL_KEY[m.kind])}
         </Badge>
       </div>
       <div className="flex items-center gap-3 text-[11px] text-[var(--text-secondary)]">
@@ -244,26 +247,27 @@ function MeetingListItem({
 }
 
 function MeetingDetail({ meeting: m }: { meeting: Meeting }) {
+  const t = useT();
   const dt = new Date(m.scheduled_at);
   return (
     <div className="space-y-4">
       <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-5 lg:p-6 shadow-soft-sm">
         <div className="flex items-start justify-between gap-3 mb-4 pb-4 border-b border-[var(--border-color)]/60">
           <div>
-            <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">{KIND_LABEL[m.kind]}</p>
+            <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">{t(KIND_LABEL_KEY[m.kind])}</p>
             <h2 className="font-serif text-xl text-[var(--text-primary)]">{m.title}</h2>
           </div>
           <Badge variant="current">
             <Clock className="w-3 h-3 mr-1" />
             {dt.toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
-            {' · '}{m.duration_min} phút
+            {' · '}{m.duration_min} {t('templates55StrategyReviewMeeting.minutesUnit')}
           </Badge>
         </div>
 
         {/* Agenda */}
         <div className="space-y-2 mb-4">
           <p className="text-sm font-medium text-[var(--text-primary)] flex items-center gap-2">
-            <FileText className="w-4 h-4 text-[var(--primary-gold-dark)]" /> Agenda
+            <FileText className="w-4 h-4 text-[var(--primary-gold-dark)]" /> {t('templates55StrategyReviewMeeting.agendaLabel')}
           </p>
           <ul className="space-y-1.5 ml-6 list-disc text-sm text-[var(--text-primary)]">
             {m.agenda.map((a) => <li key={a}>{a}</li>)}
@@ -273,7 +277,7 @@ function MeetingDetail({ meeting: m }: { meeting: Meeting }) {
         {/* Attendees */}
         <div className="space-y-2">
           <p className="text-sm font-medium text-[var(--text-primary)] flex items-center gap-2">
-            <Users className="w-4 h-4 text-[var(--primary-gold-dark)]" /> Tham dự ({m.attendees.length})
+            <Users className="w-4 h-4 text-[var(--primary-gold-dark)]" /> {t('templates55StrategyReviewMeeting.attendeesLabel')} ({m.attendees.length})
           </p>
           <div className="flex flex-wrap gap-1.5">
             {m.attendees.map((email) => (
@@ -294,10 +298,10 @@ function MeetingDetail({ meeting: m }: { meeting: Meeting }) {
       ) : (
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] border-dashed rounded-lg-custom p-6 text-center">
           <Sparkles className="w-10 h-10 mx-auto text-[var(--primary-gold-dark)]/40 mb-3" />
-          <p className="text-sm text-[var(--text-primary)] font-medium">Insight pack chưa được tạo</p>
-          <p className="text-xs text-[var(--text-secondary)] mt-1 mb-4">Kaori AI sẽ tự sinh trước cuộc họp 1h. Hoặc tạo ngay:</p>
+          <p className="text-sm text-[var(--text-primary)] font-medium">{t('templates55StrategyReviewMeeting.insightPackNotGenerated')}</p>
+          <p className="text-xs text-[var(--text-secondary)] mt-1 mb-4">{t('templates55StrategyReviewMeeting.insightPackAutoGenHint')}</p>
           <Button variant="primary" size="sm">
-            <RefreshCw className="w-3.5 h-3.5 mr-1.5" /> Sinh insight ngay (K-3)
+            <RefreshCw className="w-3.5 h-3.5 mr-1.5" /> {t('templates55StrategyReviewMeeting.btnGenerateInsightNow')}
           </Button>
         </div>
       )}
@@ -305,8 +309,7 @@ function MeetingDetail({ meeting: m }: { meeting: Meeting }) {
       <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
         <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
         <p>
-          Insight pack đi qua <span className="font-mono">llm_router.py</span> (K-3). Mặc định Qwen 2.5 nội bộ — chỉ dùng AI ngoài
-          khi workspace bật consent_external và đã PII-mask (K-4 + K-5).
+          {t('templates55StrategyReviewMeeting.llmRouterNote1')} <span className="font-mono">llm_router.py</span> {t('templates55StrategyReviewMeeting.llmRouterNote2')}
         </p>
       </div>
     </div>
@@ -314,6 +317,7 @@ function MeetingDetail({ meeting: m }: { meeting: Meeting }) {
 }
 
 function InsightPackCard({ pack: p }: { pack: InsightPack }) {
+  const t = useT();
   const SEVERITY_META = {
     info:     { icon: TrendingUp,    tone: 'text-[var(--state-info)]' },
     warning:  { icon: AlertTriangle, tone: 'text-[var(--state-warning)]' },
@@ -325,17 +329,17 @@ function InsightPackCard({ pack: p }: { pack: InsightPack }) {
       <div className="flex items-center justify-between gap-3 pb-3 border-b border-[var(--border-color)]/60 mb-4">
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-          <h3 className="font-serif text-base text-[var(--text-primary)]">Insight pack</h3>
+          <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates55StrategyReviewMeeting.insightPackTitle')}</h3>
         </div>
         <span className="text-[11px] text-[var(--text-secondary)]">
-          Sinh lúc {new Date(p.generated_at).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+          {t('templates55StrategyReviewMeeting.generatedAtLabel')} {new Date(p.generated_at).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
         </span>
       </div>
 
       {/* OKR movements */}
       <div className="mb-4">
         <p className="text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)] mb-2 flex items-center gap-1.5">
-          <Target className="w-3.5 h-3.5" /> Biến động OKR
+          <Target className="w-3.5 h-3.5" /> {t('templates55StrategyReviewMeeting.okrMovementsLabel')}
         </p>
         <div className="space-y-1.5">
           {p.okr_movements.map((o) => (
@@ -351,7 +355,7 @@ function InsightPackCard({ pack: p }: { pack: InsightPack }) {
 
       {/* Top insights */}
       <div className="mb-4">
-        <p className="text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)] mb-2">Insight chính</p>
+        <p className="text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)] mb-2">{t('templates55StrategyReviewMeeting.topInsightsLabel')}</p>
         <div className="space-y-2">
           {p.top_insights.map((ins) => {
             const meta = SEVERITY_META[ins.severity];
@@ -368,7 +372,7 @@ function InsightPackCard({ pack: p }: { pack: InsightPack }) {
 
       {/* Upcoming milestones */}
       <div>
-        <p className="text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)] mb-2">Milestone đến hạn</p>
+        <p className="text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)] mb-2">{t('templates55StrategyReviewMeeting.upcomingMilestonesLabel')}</p>
         <div className="space-y-1.5">
           {p.upcoming_milestones.map((mile) => (
             <div key={mile.title} className="flex items-center justify-between text-sm py-1.5 px-3 rounded-sm-custom bg-[var(--bg-app)]">

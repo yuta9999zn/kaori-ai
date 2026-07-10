@@ -1,0 +1,233 @@
+{
+  "templates66AutodbFormGenerate.title": {
+    "vi": "Sinh form CRUD",
+    "en": "Generate CRUD form",
+    "ja": "CRUDフォームを生成",
+    "ko": "CRUD 폼 생성",
+    "zh": "生成 CRUD 表单"
+  },
+  "templates66AutodbFormGenerate.description": {
+    "vi": "Chọn schema + loại form → AI sinh form Next.js TSX với label tiếng Việt + validation.",
+    "en": "Pick a schema + form type → AI generates a Next.js TSX form with Vietnamese labels + validation.",
+    "ja": "スキーマとフォームタイプを選択 → AIがベトナム語ラベルとバリデーション付きのNext.js TSXフォームを生成します。",
+    "ko": "스키마 + 폼 유형 선택 → AI가 베트남어 레이블과 유효성 검사가 포함된 Next.js TSX 폼을 생성합니다.",
+    "zh": "选择模式 + 表单类型 → AI 生成带越南语标签和校验规则的 Next.js TSX 表单。"
+  },
+  "templates66AutodbFormGenerate.generateButton": {
+    "vi": "Sinh code",
+    "en": "Generate code",
+    "ja": "コード生成",
+    "ko": "코드 생성",
+    "zh": "生成代码"
+  },
+  "templates66AutodbFormGenerate.schemaPickerTitle": {
+    "vi": "Chọn schema",
+    "en": "Choose schema",
+    "ja": "スキーマを選択",
+    "ko": "스키마 선택",
+    "zh": "选择模式"
+  },
+  "templates66AutodbFormGenerate.schemaColCount": {
+    "vi": "cột",
+    "en": "columns",
+    "ja": "項目",
+    "ko": "컬럼",
+    "zh": "字段"
+  },
+  "templates66AutodbFormGenerate.formKindTitle": {
+    "vi": "Loại form",
+    "en": "Form type",
+    "ja": "フォームタイプ",
+    "ko": "폼 유형",
+    "zh": "表单类型"
+  },
+  "templates66AutodbFormGenerate.columnsTitle": {
+    "vi": "Cột muốn hiển thị",
+    "en": "Columns to display",
+    "ja": "表示する項目",
+    "ko": "표시할 컬럼",
+    "zh": "要显示的字段"
+  },
+  "templates66AutodbFormGenerate.requiredLabel": {
+    "vi": "Bắt buộc",
+    "en": "Required",
+    "ja": "必須",
+    "ko": "필수",
+    "zh": "必填"
+  },
+  "templates66AutodbFormGenerate.noteValidation": {
+    "vi": "Validation auto-derived: NOT NULL → required, NUMERIC → number input + decimal mask, DATE → date picker. Label tiếng Việt lấy từ",
+    "en": "Validation auto-derived: NOT NULL → required, NUMERIC → number input + decimal mask, DATE → date picker. The Vietnamese label is taken from",
+    "ja": "バリデーションは自動導出されます: NOT NULL → 必須、NUMERIC → 数値入力 + 小数マスク、DATE → 日付選択。ベトナム語ラベルの取得元は",
+    "ko": "유효성 검사는 자동 도출됩니다: NOT NULL → 필수, NUMERIC → 숫자 입력 + 소수 마스크, DATE → 날짜 선택기. 베트남어 레이블 출처는",
+    "zh": "校验规则自动推导：NOT NULL → 必填，NUMERIC → 数字输入 + 小数掩码，DATE → 日期选择器。越南语标签取自"
+  },
+  "templates66AutodbFormGenerate.kindCreateLabel": {
+    "vi": "Create",
+    "en": "Create",
+    "ja": "作成",
+    "ko": "생성",
+    "zh": "新建"
+  },
+  "templates66AutodbFormGenerate.kindCreateDesc": {
+    "vi": "Form thêm bản ghi mới.",
+    "en": "Form to add a new record.",
+    "ja": "新規レコードを追加するフォーム。",
+    "ko": "새 레코드를 추가하는 폼입니다.",
+    "zh": "用于新增记录的表单。"
+  },
+  "templates66AutodbFormGenerate.kindEditLabel": {
+    "vi": "Edit",
+    "en": "Edit",
+    "ja": "編集",
+    "ko": "수정",
+    "zh": "编辑"
+  },
+  "templates66AutodbFormGenerate.kindEditDesc": {
+    "vi": "Form sửa 1 bản ghi.",
+    "en": "Form to edit a single record.",
+    "ja": "1件のレコードを編集するフォーム。",
+    "ko": "레코드 1건을 수정하는 폼입니다.",
+    "zh": "用于编辑单条记录的表单。"
+  },
+  "templates66AutodbFormGenerate.kindListLabel": {
+    "vi": "List + filter",
+    "en": "List + filter",
+    "ja": "一覧 + フィルター",
+    "ko": "목록 + 필터",
+    "zh": "列表 + 筛选"
+  },
+  "templates66AutodbFormGenerate.kindListDesc": {
+    "vi": "Bảng list + filter + pagination.",
+    "en": "List table + filter + pagination.",
+    "ja": "一覧テーブル + フィルター + ページネーション。",
+    "ko": "목록 테이블 + 필터 + 페이지네이션입니다.",
+    "zh": "列表表格 + 筛选 + 分页。"
+  },
+  "templates66AutodbFormGenerate.kindDetailLabel": {
+    "vi": "Detail",
+    "en": "Detail",
+    "ja": "詳細",
+    "ko": "상세",
+    "zh": "详情"
+  },
+  "templates66AutodbFormGenerate.kindDetailDesc": {
+    "vi": "Trang chi tiết read-only.",
+    "en": "Read-only detail page.",
+    "ja": "読み取り専用の詳細ページ。",
+    "ko": "읽기 전용 상세 페이지입니다.",
+    "zh": "只读详情页面。"
+  },
+  "templates66AutodbFormGenerate.kindDeleteLabel": {
+    "vi": "Delete confirm",
+    "en": "Delete confirm",
+    "ja": "削除確認",
+    "ko": "삭제 확인",
+    "zh": "删除确认"
+  },
+  "templates66AutodbFormGenerate.kindDeleteDesc": {
+    "vi": "Modal xác nhận xoá.",
+    "en": "Delete confirmation modal.",
+    "ja": "削除確認モーダル。",
+    "ko": "삭제 확인 모달입니다.",
+    "zh": "删除确认弹窗。"
+  },
+  "templates66AutodbFormGenerate.previewLabel": {
+    "vi": "Preview",
+    "en": "Preview",
+    "ja": "プレビュー",
+    "ko": "미리보기",
+    "zh": "预览"
+  },
+  "templates66AutodbFormGenerate.inputPlaceholder": {
+    "vi": "Nhập {label}",
+    "en": "Enter {label}",
+    "ja": "{label}を入力",
+    "ko": "{label} 입력",
+    "zh": "请输入{label}"
+  },
+  "templates66AutodbFormGenerate.submitCreate": {
+    "vi": "Tạo mới",
+    "en": "Create",
+    "ja": "作成する",
+    "ko": "생성",
+    "zh": "创建"
+  },
+  "templates66AutodbFormGenerate.submitEdit": {
+    "vi": "Cập nhật",
+    "en": "Update",
+    "ja": "更新する",
+    "ko": "업데이트",
+    "zh": "更新"
+  },
+  "templates66AutodbFormGenerate.sampleRow": {
+    "vi": "Mẫu {i}",
+    "en": "Sample {i}",
+    "ja": "サンプル{i}",
+    "ko": "샘플 {i}",
+    "zh": "示例 {i}"
+  },
+  "templates66AutodbFormGenerate.sampleValue": {
+    "vi": "Giá trị mẫu",
+    "en": "Sample value",
+    "ja": "サンプル値",
+    "ko": "샘플 값",
+    "zh": "示例值"
+  },
+  "templates66AutodbFormGenerate.deleteConfirmTitle": {
+    "vi": "Xác nhận xoá?",
+    "en": "Confirm delete?",
+    "ja": "削除しますか?",
+    "ko": "삭제하시겠습니까?",
+    "zh": "确认删除？"
+  },
+  "templates66AutodbFormGenerate.deleteConfirmDesc": {
+    "vi": "Hành động này không thể hoàn tác.",
+    "en": "This action cannot be undone.",
+    "ja": "この操作は元に戻せません。",
+    "ko": "이 작업은 되돌릴 수 없습니다.",
+    "zh": "此操作无法撤销。"
+  },
+  "templates66AutodbFormGenerate.cancelButton": {
+    "vi": "Huỷ",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "templates66AutodbFormGenerate.confirmDeleteButton": {
+    "vi": "Xác nhận xoá",
+    "en": "Confirm delete",
+    "ja": "削除を確定",
+    "ko": "삭제 확인",
+    "zh": "确认删除"
+  },
+  "templates66AutodbFormGenerate.codeTsxLabel": {
+    "vi": "Code TSX",
+    "en": "TSX code",
+    "ja": "TSXコード",
+    "ko": "TSX 코드",
+    "zh": "TSX 代码"
+  },
+  "templates66AutodbFormGenerate.copyButton": {
+    "vi": "Copy",
+    "en": "Copy",
+    "ja": "コピー",
+    "ko": "복사",
+    "zh": "复制"
+  },
+  "templates66AutodbFormGenerate.successCopied": {
+    "vi": "Đã sinh code TSX và copy vào clipboard. Paste vào file Next.js để dùng.",
+    "en": "TSX code generated and copied to clipboard. Paste it into a Next.js file to use.",
+    "ja": "TSXコードを生成し、クリップボードにコピーしました。Next.jsファイルに貼り付けてご利用ください。",
+    "ko": "TSX 코드가 생성되어 클립보드에 복사되었습니다. Next.js 파일에 붙여넣어 사용하세요.",
+    "zh": "已生成 TSX 代码并复制到剪贴板。粘贴到 Next.js 文件中即可使用。"
+  },
+  "templates66AutodbFormGenerate.successGenerated": {
+    "vi": "Đã sinh code TSX (xem preview bên phải).",
+    "en": "TSX code generated (see the preview on the right).",
+    "ja": "TSXコードを生成しました（右側のプレビューをご確認ください）。",
+    "ko": "TSX 코드가 생성되었습니다 (오른쪽 미리보기를 확인하세요).",
+    "zh": "已生成 TSX 代码（请查看右侧预览）。"
+  }
+}

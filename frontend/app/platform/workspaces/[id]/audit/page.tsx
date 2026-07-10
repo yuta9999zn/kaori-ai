@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { workspaceAuditApi, type AuditEvent } from '@/lib/api/platform';
 import { Badge, Button, ErrorBanner, type ProblemDetails } from '@/components/platform/foundation';
 import { fmtDateTime } from '@/lib/format';
+import { useT } from '@/lib/i18n/provider';
 
 const PAGE_SIZE = 50;
 
@@ -15,6 +16,7 @@ export default function WorkspaceAuditPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const t = useT();
 
   const [cursors, setCursors] = useState<(string | null)[]>([]);
   const currentCursor = cursors.length === 0 ? null : cursors[cursors.length - 1];
@@ -36,8 +38,7 @@ export default function WorkspaceAuditPage({
   return (
     <div className="space-y-5">
       <p className="text-sm text-[var(--text-secondary)]">
-        Nhật ký kiểm toán bất biến (K-6). Mỗi quyết định tự động và hành động
-        quản trị đều được ghi lại với confidence và alternatives.
+        {t('auditPage.subtitle')}
       </p>
 
       {query.isLoading && (
@@ -54,7 +55,7 @@ export default function WorkspaceAuditPage({
       {query.isError && (
         <ErrorBanner
           problem={problem}
-          message={`Backend audit log cho workspace ${id} chưa sẵn sàng.`}
+          message={t('auditPage.errMsg', { id })}
         />
       )}
 
@@ -65,19 +66,19 @@ export default function WorkspaceAuditPage({
               <table className="w-full text-sm">
                 <thead className="bg-[var(--bg-app)]/60 text-[var(--text-secondary)]">
                   <tr>
-                    <th className="text-left font-medium px-4 py-2.5 whitespace-nowrap">Thời gian</th>
-                    <th className="text-left font-medium px-4 py-2.5">Sự kiện</th>
-                    <th className="text-left font-medium px-4 py-2.5">Tác nhân</th>
-                    <th className="text-left font-medium px-4 py-2.5">Tài nguyên</th>
-                    <th className="text-left font-medium px-4 py-2.5">Chi tiết</th>
-                    <th className="text-left font-medium px-4 py-2.5">IP</th>
+                    <th className="text-left font-medium px-4 py-2.5 whitespace-nowrap">{t('auditPage.colTime')}</th>
+                    <th className="text-left font-medium px-4 py-2.5">{t('auditPage.colEvent')}</th>
+                    <th className="text-left font-medium px-4 py-2.5">{t('auditPage.colActor')}</th>
+                    <th className="text-left font-medium px-4 py-2.5">{t('auditPage.colResource')}</th>
+                    <th className="text-left font-medium px-4 py-2.5">{t('auditPage.colDetail')}</th>
+                    <th className="text-left font-medium px-4 py-2.5">{t('auditPage.colIp')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--border-color)]/60">
                   {events.length === 0 && (
                     <tr>
                       <td colSpan={6} className="px-4 py-10 text-center text-[var(--text-secondary)]">
-                        Chưa có sự kiện nào được ghi lại.
+                        {t('auditPage.emptyState')}
                       </td>
                     </tr>
                   )}
@@ -100,7 +101,7 @@ export default function WorkspaceAuditPage({
                             )}
                           </div>
                         ) : (
-                          <Badge variant="default">Hệ thống</Badge>
+                          <Badge variant="default">{t('auditPage.systemActor')}</Badge>
                         )}
                       </td>
                       <td className="px-4 py-2.5 text-sm text-[var(--text-secondary)] truncate">{e.resource ?? '—'}</td>
@@ -114,7 +115,7 @@ export default function WorkspaceAuditPage({
 
             {(canBack || canNext || events.length > 0) && (
               <div className="px-4 py-2.5 border-t border-[var(--border-color)]/60 flex items-center justify-between bg-[var(--bg-app)]/40 text-xs text-[var(--text-secondary)]">
-                <span>Trang <strong className="text-[var(--text-primary)]">{pageNumber}</strong></span>
+                <span>{t('auditPage.pageLabel')} <strong className="text-[var(--text-primary)]">{pageNumber}</strong></span>
                 <div className="flex items-center gap-1">
                   <Button
                     variant="secondary"
@@ -122,7 +123,7 @@ export default function WorkspaceAuditPage({
                     onClick={() => setCursors((s) => s.slice(0, -1))}
                     disabled={!canBack || query.isFetching}
                   >
-                    ← Trước
+                    ← {t('auditPage.prevBtn')}
                   </Button>
                   <Button
                     variant="secondary"
@@ -130,7 +131,7 @@ export default function WorkspaceAuditPage({
                     onClick={() => nextCursor && setCursors((s) => [...s, nextCursor])}
                     disabled={!canNext || query.isFetching}
                   >
-                    Sau →
+                    {t('auditPage.nextBtn')} →
                   </Button>
                 </div>
               </div>

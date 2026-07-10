@@ -14,6 +14,7 @@ import {
   Badge, Button, ErrorBanner, type ProblemDetails,
 } from '@/components/platform/foundation';
 import { fmtDateTime } from '@/lib/format';
+import { useT } from '@/lib/i18n/provider';
 
 function deviceIcon(label: string | null) {
   const l = (label ?? '').toLowerCase();
@@ -24,6 +25,7 @@ function deviceIcon(label: string | null) {
 }
 
 export default function PlatformSessionsPage() {
+  const t     = useT();
   const qc    = useQueryClient();
   const query = useQuery({
     queryKey: ['platform-sessions'],
@@ -44,7 +46,7 @@ export default function PlatformSessionsPage() {
       setRevokeTarget(null);
       if (res.meta.signed_out) {
         setPostRevokeMessage(
-          'Bạn vừa thu hồi phiên hiện tại. Có thể cần đăng nhập lại sau khi token hết hạn.',
+          t('sessionsPage.revokedCurrentWarning'),
         );
       } else {
         setPostRevokeMessage(null);
@@ -60,8 +62,8 @@ export default function PlatformSessionsPage() {
       setRevokeAllError(null);
       setRevokeAllSuccess(
         res.data.revoked_count > 0
-          ? `Đã thu hồi ${res.data.revoked_count} phiên khác. Phiên hiện tại của bạn vẫn hoạt động.`
-          : 'Không có phiên nào khác để thu hồi.',
+          ? t('sessionsPage.revokedOthersSuccess', { count: res.data.revoked_count })
+          : t('sessionsPage.revokedNoneToRevoke'),
       );
     },
     onError: (e: unknown) => setRevokeAllError(e as ProblemDetails),
@@ -76,9 +78,9 @@ export default function PlatformSessionsPage() {
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <p className="text-sm text-[var(--text-secondary)]">
           {sessions.length > 0 ? (
-            <><strong className="text-[var(--text-primary)]">{sessions.length}</strong> phiên đang hoạt động</>
+            <><strong className="text-[var(--text-primary)]">{sessions.length}</strong> {t('sessionsPage.activeSessionsSuffix')}</>
           ) : (
-            'Mọi thiết bị bạn đang đăng nhập sẽ xuất hiện ở đây.'
+            t('sessionsPage.emptyHint')
           )}
         </p>
         {otherCount > 0 && (
@@ -88,7 +90,7 @@ export default function PlatformSessionsPage() {
             onClick={() => { setRevokeAllError(null); setRevokeAllOpen(true); }}
           >
             <ShieldAlert className="w-3.5 h-3.5 mr-1.5" />
-            Thu hồi tất cả phiên khác ({otherCount})
+            {t('sessionsPage.revokeAllBtn', { count: otherCount })}
           </Button>
         )}
       </div>
@@ -119,12 +121,12 @@ export default function PlatformSessionsPage() {
       )}
 
       {query.isError && (
-        <ErrorBanner problem={listProblem} message="Không thể tải danh sách phiên đăng nhập." />
+        <ErrorBanner problem={listProblem} message={t('sessionsPage.errLoadList')} />
       )}
 
       {!query.isLoading && !query.isError && sessions.length === 0 && (
         <section className="rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm p-6 text-sm text-[var(--text-secondary)]">
-          Chưa có phiên hoạt động nào được ghi nhận.
+          {t('sessionsPage.emptyState')}
         </section>
       )}
 
@@ -145,9 +147,9 @@ export default function PlatformSessionsPage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="font-medium text-[var(--text-primary)]">
-                    {s.device_label || 'Thiết bị không xác định'}
+                    {s.device_label || t('sessionsPage.unknownDevice')}
                   </p>
-                  {s.is_current && <Badge variant="current">Phiên hiện tại</Badge>}
+                  {s.is_current && <Badge variant="current">{t('sessionsPage.currentSessionBadge')}</Badge>}
                 </div>
                 <div className="text-xs text-[var(--text-secondary)] mt-1 space-y-0.5">
                   <div className="flex items-center gap-1.5">
@@ -156,8 +158,8 @@ export default function PlatformSessionsPage() {
                   </div>
                   <p className="font-mono opacity-70 truncate">{s.user_agent ?? '—'}</p>
                   <p>
-                    Hoạt động lần cuối <strong className="text-[var(--text-primary)]">{fmtDateTime(s.last_active_at)}</strong>
-                    <span className="opacity-60"> · Bắt đầu {fmtDateTime(s.created_at)}</span>
+                    {t('sessionsPage.lastActiveLabel')} <strong className="text-[var(--text-primary)]">{fmtDateTime(s.last_active_at)}</strong>
+                    <span className="opacity-60"> · {t('sessionsPage.startedLabel')} {fmtDateTime(s.created_at)}</span>
                   </p>
                 </div>
               </div>
@@ -168,7 +170,7 @@ export default function PlatformSessionsPage() {
                 className="text-[#9B5050] hover:bg-[var(--state-error)]/8"
               >
                 <Trash2 className="w-3.5 h-3.5 mr-1" />
-                Thu hồi
+                {t('sessionsPage.revokeBtn')}
               </Button>
             </div>
           </section>
@@ -178,21 +180,21 @@ export default function PlatformSessionsPage() {
       {revokeAllOpen && (
         <Modal onClose={() => setRevokeAllOpen(false)} small>
           <header className="mb-3">
-            <h3 className="font-serif text-lg text-[var(--text-primary)]">Thu hồi tất cả phiên khác?</h3>
+            <h3 className="font-serif text-lg text-[var(--text-primary)]">{t('sessionsPage.revokeAllModalTitle')}</h3>
             <p className="text-sm text-[var(--text-secondary)] mt-1">
-              Sẽ đăng xuất {otherCount} thiết bị khác đang dùng tài khoản này. Phiên hiện tại của bạn sẽ vẫn hoạt động bình thường.
+              {t('sessionsPage.revokeAllModalBody', { count: otherCount })}
             </p>
           </header>
           {revokeAllError && <ErrorBanner problem={revokeAllError} />}
           <div className="flex justify-end gap-2 pt-3">
-            <Button variant="secondary" onClick={() => setRevokeAllOpen(false)}>Hủy</Button>
+            <Button variant="secondary" onClick={() => setRevokeAllOpen(false)}>{t('sessionsPage.cancelBtn')}</Button>
             <Button
               variant="destructive"
               isLoading={revokeAllMut.isPending}
               onClick={() => revokeAllMut.mutate()}
             >
               <ShieldAlert className="w-4 h-4 mr-1.5" />
-              Thu hồi tất cả ({otherCount})
+              {t('sessionsPage.revokeAllConfirmBtn', { count: otherCount })}
             </Button>
           </div>
         </Modal>
@@ -202,23 +204,23 @@ export default function PlatformSessionsPage() {
         <Modal onClose={() => setRevokeTarget(null)} small>
           <header className="mb-3">
             <h3 className="font-serif text-lg text-[var(--text-primary)]">
-              {revokeTarget.is_current ? 'Đăng xuất khỏi thiết bị này?' : 'Thu hồi phiên'}
+              {revokeTarget.is_current ? t('sessionsPage.logoutThisDeviceTitle') : t('sessionsPage.revokeSessionTitle')}
             </h3>
             <p className="text-sm text-[var(--text-secondary)] mt-1">
               {revokeTarget.is_current
-                ? 'Đây là phiên bạn đang dùng. Sau khi thu hồi, token sẽ hết hạn và bạn cần đăng nhập lại.'
-                : `Thu hồi phiên trên ${revokeTarget.device_label || 'thiết bị này'}? Người dùng sẽ bị đăng xuất ngay.`}
+                ? t('sessionsPage.revokeCurrentBody')
+                : t('sessionsPage.revokeOtherBody', { device: revokeTarget.device_label || t('sessionsPage.thisDevice') })}
             </p>
           </header>
           <div className="flex justify-end gap-2 pt-3">
-            <Button variant="secondary" onClick={() => setRevokeTarget(null)}>Hủy</Button>
+            <Button variant="secondary" onClick={() => setRevokeTarget(null)}>{t('sessionsPage.cancelBtn')}</Button>
             <Button
               variant="destructive"
               isLoading={revokeMut.isPending}
               onClick={() => revokeTarget && revokeMut.mutate(revokeTarget.session_id)}
             >
               <Trash2 className="w-4 h-4 mr-1.5" />
-              Thu hồi phiên
+              {t('sessionsPage.revokeConfirmBtn')}
             </Button>
           </div>
         </Modal>

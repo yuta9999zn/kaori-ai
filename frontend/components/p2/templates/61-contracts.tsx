@@ -26,20 +26,22 @@ import {
   Button, Badge, ErrorBanner, cn, api, formatVND, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 
 const STATUS_VARIANT: Record<string, any> = {
   nhap: 'default', cho_ky: 'warning', hieu_luc: 'success',
   het_han: 'neutral', thanh_ly: 'neutral', tu_choi: 'error',
 };
-const STATUS_FILTERS = [
-  { key: '', label: 'Tất cả' },
-  { key: 'cho_ky', label: 'Chờ ký' },
-  { key: 'hieu_luc', label: 'Hiệu lực' },
-  { key: 'nhap', label: 'Nháp' },
-  { key: 'tu_choi', label: 'Từ chối' },
-];
 
 export default function ContractsLibrary() {
+  const t = useT();
+  const STATUS_FILTERS = [
+    { key: '', label: t('templates61Contracts.filterAll') },
+    { key: 'cho_ky', label: t('templates61Contracts.filterPendingSign') },
+    { key: 'hieu_luc', label: t('templates61Contracts.filterEffective') },
+    { key: 'nhap', label: t('templates61Contracts.filterDraft') },
+    { key: 'tu_choi', label: t('templates61Contracts.filterRejected') },
+  ];
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -67,9 +69,9 @@ export default function ContractsLibrary() {
   return (
     <>
       <PageHeader
-        title="Hợp đồng"
-        description="Hợp đồng phát sinh từ quy trình — soạn, gửi ký, theo dõi hiệu lực."
-        actions={<Button onClick={() => setCreating(true)}><Plus className="w-4 h-4 mr-2" /> Tạo hợp đồng</Button>}
+        title={t('templates61Contracts.title')}
+        description={t('templates61Contracts.description')}
+        actions={<Button onClick={() => setCreating(true)}><Plus className="w-4 h-4 mr-2" /> {t('templates61Contracts.createContract')}</Button>}
       />
 
       <div className="px-6 lg:px-8 py-6 max-w-[1280px] mx-auto space-y-5">
@@ -78,7 +80,7 @@ export default function ContractsLibrary() {
         {expiringSoon > 0 && (
           <div className="rounded-md-custom bg-[var(--state-warning)]/10 border border-[var(--state-warning)]/35 p-3 flex items-center gap-2.5">
             <Clock className="w-4 h-4 text-[var(--state-warning)] shrink-0" />
-            <span className="text-sm text-[#9E814D]"><b>{expiringSoon}</b> hợp đồng hết hạn trong 30 ngày tới.</span>
+            <span className="text-sm text-[#9E814D]"><b>{expiringSoon}</b> {t('templates61Contracts.expiringSoonSuffix')}</span>
           </div>
         )}
 
@@ -99,7 +101,7 @@ export default function ContractsLibrary() {
         ) : rows.length === 0 ? (
           <div className="p-12 text-center text-[var(--text-secondary)] bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)]">
             <FileSignature className="w-8 h-8 mx-auto mb-2 opacity-40" />
-            Chưa có hợp đồng nào. Tạo mới hoặc chạy quy trình có bước "Hợp đồng".
+            {t('templates61Contracts.emptyState')}
           </div>
         ) : (
           <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden divide-y divide-[var(--border-color)]/60">
@@ -120,7 +122,7 @@ export default function ContractsLibrary() {
 
         <div className="flex items-start gap-3 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
-          <p>Chữ ký nội bộ được lưu bất biến (người ký + thời điểm + IP + mã băm tài liệu) làm bằng chứng. Ký số nhà cung cấp ngoài sẽ bổ sung sau.</p>
+          <p>{t('templates61Contracts.signatureNote')}</p>
         </div>
       </div>
 
@@ -131,6 +133,7 @@ export default function ContractsLibrary() {
 }
 
 function ContractDetail({ contractId, onClose, onChanged }: { contractId: string; onClose: () => void; onChanged: () => void }) {
+  const t = useT();
   const [c, setC] = useState<any>(null);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -163,22 +166,22 @@ function ContractDetail({ contractId, onClose, onChanged }: { contractId: string
         </div>
 
         {!c ? (
-          <div className="flex items-center justify-center py-16 text-[var(--text-secondary)]"><Loader2 className="w-5 h-5 animate-spin mr-2" /> Đang tải…</div>
+          <div className="flex items-center justify-center py-16 text-[var(--text-secondary)]"><Loader2 className="w-5 h-5 animate-spin mr-2" /> {t('templates61Contracts.loading')}</div>
         ) : (
           <div className="p-5 space-y-5">
             <ErrorBanner problem={problem} />
 
             {/* header facts */}
             <div className="grid grid-cols-2 gap-3">
-              {c.value_vnd != null && <Fact label="Giá trị" value={formatVND(c.value_vnd)} />}
-              <Fact label="Hình thức ký" value={c.sign_mode === 'all' ? 'Tất cả các bên' : `Tối thiểu ${c.required_signatures ?? '?'} bên`} />
-              {c.effective_at && <Fact label="Hiệu lực từ" value={new Date(c.effective_at).toLocaleDateString('vi-VN')} />}
-              {c.expires_at && <Fact label="Hết hạn" value={new Date(c.expires_at).toLocaleDateString('vi-VN')} />}
+              {c.value_vnd != null && <Fact label={t('templates61Contracts.factValue')} value={formatVND(c.value_vnd)} />}
+              <Fact label={t('templates61Contracts.factSignMode')} value={c.sign_mode === 'all' ? t('templates61Contracts.signModeAll') : t('templates61Contracts.signModeMin', { count: c.required_signatures ?? '?' })} />
+              {c.effective_at && <Fact label={t('templates61Contracts.factEffectiveFrom')} value={new Date(c.effective_at).toLocaleDateString('vi-VN')} />}
+              {c.expires_at && <Fact label={t('templates61Contracts.factExpires')} value={new Date(c.expires_at).toLocaleDateString('vi-VN')} />}
             </div>
 
             {/* parties + signing */}
             <div>
-              <h3 className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] font-medium mb-2">Các bên ký</h3>
+              <h3 className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] font-medium mb-2">{t('templates61Contracts.partiesHeading')}</h3>
               <div className="space-y-2">
                 {(c.parties ?? []).map((p: any) => (
                   <div key={p.party_id} className="flex items-center gap-3 rounded-md-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-3">
@@ -188,13 +191,13 @@ function ContractDetail({ contractId, onClose, onChanged }: { contractId: string
                       <p className="text-[11px] text-[var(--text-secondary)] truncate">{p.external_name || p.internal_user_id || '—'}</p>
                     </div>
                     {p.has_signed ? (
-                      <Badge variant="success" className="text-[10px]"><Check className="w-2.5 h-2.5 mr-0.5 inline" /> Đã ký</Badge>
+                      <Badge variant="success" className="text-[10px]"><Check className="w-2.5 h-2.5 mr-0.5 inline" /> {t('templates61Contracts.signed')}</Badge>
                     ) : c.status === 'cho_ky' && p.is_turn ? (
                       <Button variant="secondary" className="!py-1 !px-2.5 !text-xs" isLoading={busy} onClick={() => act('sign', { party_id: p.party_id })}>
-                        <PenLine className="w-3.5 h-3.5 mr-1" /> Ký
+                        <PenLine className="w-3.5 h-3.5 mr-1" /> {t('templates61Contracts.sign')}
                       </Button>
                     ) : (
-                      <Badge variant="default" className="text-[10px]">{c.status === 'cho_ky' ? 'Chờ lượt' : 'Chưa ký'}</Badge>
+                      <Badge variant="default" className="text-[10px]">{c.status === 'cho_ky' ? t('templates61Contracts.waitingTurn') : t('templates61Contracts.notSigned')}</Badge>
                     )}
                   </div>
                 ))}
@@ -204,7 +207,7 @@ function ContractDetail({ contractId, onClose, onChanged }: { contractId: string
             {/* signatures timeline */}
             {(c.signatures ?? []).length > 0 && (
               <div>
-                <h3 className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] font-medium mb-2">Lịch sử ký</h3>
+                <h3 className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] font-medium mb-2">{t('templates61Contracts.signHistoryHeading')}</h3>
                 <div className="space-y-1.5">
                   {c.signatures.map((s: any) => (
                     <div key={s.signature_id} className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
@@ -221,16 +224,16 @@ function ContractDetail({ contractId, onClose, onChanged }: { contractId: string
             {/* actions */}
             <div className="flex items-center gap-2 pt-2 border-t border-[var(--border-color)]">
               {c.status === 'nhap' && (
-                <Button isLoading={busy} onClick={() => act('send')}><Send className="w-4 h-4 mr-2" /> Gửi ký</Button>
+                <Button isLoading={busy} onClick={() => act('send')}><Send className="w-4 h-4 mr-2" /> {t('templates61Contracts.sendForSign')}</Button>
               )}
               {c.status === 'cho_ky' && (
                 <Button variant="secondary" isLoading={busy}
                   onClick={() => act('reject', { party_id: c.parties?.[0]?.party_id, reason: 'từ chối' })}>
-                  <X className="w-4 h-4 mr-2" /> Từ chối
+                  <X className="w-4 h-4 mr-2" /> {t('templates61Contracts.reject')}
                 </Button>
               )}
               {c.status === 'hieu_luc' && (
-                <p className="text-sm text-[var(--state-success)] flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" /> Hợp đồng đã có hiệu lực</p>
+                <p className="text-sm text-[var(--state-success)] flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" /> {t('templates61Contracts.contractEffective')}</p>
               )}
             </div>
           </div>
@@ -250,6 +253,7 @@ function Fact({ label, value }: { label: string; value: string }) {
 }
 
 function CreateContractModal({ onClose, onCreated }: { onClose: () => void; onCreated: (id: string) => void }) {
+  const t = useT();
   const [title, setTitle] = useState('');
   const [dept, setDept] = useState('');
   const [value, setValue] = useState('');
@@ -278,18 +282,18 @@ function CreateContractModal({ onClose, onCreated }: { onClose: () => void; onCr
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/40" onClick={onClose}>
       <div className="w-full max-w-md bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-2xl p-5 space-y-4" onClick={(e) => e.stopPropagation()}>
-        <h2 className="font-serif text-base text-[var(--text-primary)]">Tạo hợp đồng</h2>
+        <h2 className="font-serif text-base text-[var(--text-primary)]">{t('templates61Contracts.createContract')}</h2>
         <ErrorBanner problem={problem} />
-        <Field label="Tên hợp đồng"><input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Hợp đồng dịch vụ…" /></Field>
-        <Field label="Mã phòng ban (department_id)"><input className={inputCls} value={dept} onChange={(e) => setDept(e.target.value)} placeholder="UUID phòng ban" /></Field>
-        <Field label="Giá trị (VNĐ)"><input className={inputCls} type="number" value={value} onChange={(e) => setValue(e.target.value)} placeholder="50000000" /></Field>
+        <Field label={t('templates61Contracts.fieldContractName')}><input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t('templates61Contracts.placeholderContractName')} /></Field>
+        <Field label={t('templates61Contracts.fieldDepartmentId')}><input className={inputCls} value={dept} onChange={(e) => setDept(e.target.value)} placeholder={t('templates61Contracts.placeholderDepartmentId')} /></Field>
+        <Field label={t('templates61Contracts.fieldValue')}><input className={inputCls} type="number" value={value} onChange={(e) => setValue(e.target.value)} placeholder="50000000" /></Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Bên ký"><input className={inputCls} value={partyRole} onChange={(e) => setPartyRole(e.target.value)} /></Field>
-          <Field label="Tên người ký"><input className={inputCls} value={partyName} onChange={(e) => setPartyName(e.target.value)} placeholder="Nguyễn Văn A" /></Field>
+          <Field label={t('templates61Contracts.fieldPartyRole')}><input className={inputCls} value={partyRole} onChange={(e) => setPartyRole(e.target.value)} /></Field>
+          <Field label={t('templates61Contracts.fieldSignerName')}><input className={inputCls} value={partyName} onChange={(e) => setPartyName(e.target.value)} placeholder={t('templates61Contracts.placeholderSignerName')} /></Field>
         </div>
         <div className="flex items-center justify-end gap-2 pt-1">
-          <Button variant="secondary" onClick={onClose}>Huỷ</Button>
-          <Button isLoading={busy} disabled={!title || !dept} onClick={submit}>Tạo</Button>
+          <Button variant="secondary" onClick={onClose}>{t('templates61Contracts.cancel')}</Button>
+          <Button isLoading={busy} disabled={!title || !dept} onClick={submit}>{t('templates61Contracts.create')}</Button>
         </div>
       </div>
     </div>

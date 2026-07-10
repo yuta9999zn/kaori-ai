@@ -26,10 +26,12 @@ import { useAuth } from "@/lib/auth-store";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { KaoriLogo } from "@/components/brand/KaoriLogo";
+import { useT } from "@/lib/i18n/provider";
 
 const KEY_PATTERN = /^KAORI(-[A-Z0-9]{4,8}){2,5}$/i;
 
 export default function RegisterPage() {
+  const t = useT();
   const router = useRouter();
   const { setAuth } = useAuth();
 
@@ -48,7 +50,7 @@ export default function RegisterPage() {
     setError("");
     const trimmed = workspaceKey.trim();
     if (!KEY_PATTERN.test(trimmed)) {
-      setError("Khoá kích hoạt không đúng định dạng. Vui lòng kiểm tra lại.");
+      setError(t("registerPage.errBadKeyFormat"));
       return;
     }
     setWorkspaceKey(trimmed);
@@ -59,11 +61,11 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
     if (adminPwd !== adminPwd2) {
-      setError("Mật khẩu nhập lại không khớp.");
+      setError(t("registerPage.errPwdMismatch"));
       return;
     }
     if (adminPwd.length < 8) {
-      setError("Mật khẩu cần tối thiểu 8 ký tự.");
+      setError(t("registerPage.errPwdTooShort"));
       return;
     }
 
@@ -90,9 +92,9 @@ export default function RegisterPage() {
     } catch (err: unknown) {
       const res = (err as { response?: { status?: number; data?: { message?: string } } })?.response;
       if (res?.status === 400) {
-        setError(res.data?.message ?? "Khoá không hợp lệ hoặc đã hết hạn.");
+        setError(res.data?.message ?? t("registerPage.errKeyInvalidOrExpired"));
       } else {
-        setError("Không thể đăng ký workspace. Vui lòng thử lại.");
+        setError(t("registerPage.errActivateFailed"));
       }
     } finally {
       setLoading(false);
@@ -116,12 +118,11 @@ export default function RegisterPage() {
 
         <div className="relative z-10 flex flex-col max-w-lg mb-20 animate-fade-in">
           <h1 className="font-serif text-5xl leading-[1.15] text-[var(--color-ink)] font-medium mb-6">
-            Đăng ký doanh nghiệp,<br />
-            <span className="text-[var(--color-ink-muted)] italic">khởi đầu sau một phút.</span>
+            {t("registerPage.heroTitleLine1")}<br />
+            <span className="text-[var(--color-ink-muted)] italic">{t("registerPage.heroTitleLine2")}</span>
           </h1>
           <p className="text-[var(--color-ink-muted)] text-lg leading-relaxed">
-            Doanh nghiệp đăng ký Kaori cần khoá kích hoạt do đội Kaori cấp sau khi liên hệ.
-            Dán khoá, đặt tài khoản quản trị đầu tiên — workspace của bạn sẵn sàng dùng.
+            {t("registerPage.heroDesc")}
           </p>
         </div>
 
@@ -129,7 +130,7 @@ export default function RegisterPage() {
           <span>© 2026 Kaori Platform</span>
           <span className="w-1 h-1 rounded-full bg-[var(--color-brand-500)]" />
           <Link href="/login" className="hover:text-[var(--color-ink)] transition-colors">
-            Đã có tài khoản? Đăng nhập
+            {t("registerPage.haveAccountLogin")}
           </Link>
         </div>
       </div>
@@ -162,13 +163,13 @@ export default function RegisterPage() {
             <>
               <div className="flex flex-col space-y-2 mb-6">
                 <span className="inline-flex w-fit items-center gap-1 rounded-full bg-[var(--color-brand-500)]/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-brand-700)]">
-                  <Building2 className="h-3 w-3" /> Đăng ký doanh nghiệp
+                  <Building2 className="h-3 w-3" /> {t("registerPage.badgeRegisterBusiness")}
                 </span>
                 <h2 className="font-serif text-3xl font-semibold tracking-tight text-[var(--color-ink)]">
-                  Khoá kích hoạt
+                  {t("registerPage.step1Title")}
                 </h2>
                 <p className="text-sm text-[var(--color-ink-muted)]">
-                  Dán khoá một lần đội Kaori đã gửi cho tổ chức bạn qua email.
+                  {t("registerPage.step1Desc")}
                 </p>
               </div>
 
@@ -180,7 +181,7 @@ export default function RegisterPage() {
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="workspace-key">Khoá kích hoạt</Label>
+                  <Label htmlFor="workspace-key">{t("registerPage.labelActivationKey")}</Label>
                   <div className="relative">
                     <KeyRound className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-ink-muted)]" />
                     <Input
@@ -195,22 +196,22 @@ export default function RegisterPage() {
                     />
                   </div>
                   <p className="text-tiny text-[var(--color-ink-muted)]">
-                    Định dạng: bắt đầu bằng <code>KAORI-</code>, tiếp theo là 2-5 nhóm chữ số.
+                    {t("registerPage.keyFormatHintPrefix")} <code>KAORI-</code> {t("registerPage.keyFormatHintSuffix")}
                   </p>
                 </div>
 
                 <Button type="submit" className="w-full" disabled={!workspaceKey.trim()}>
-                  Tiếp tục <ArrowRight className="w-4 h-4 ml-1.5" />
+                  {t("registerPage.btnContinue")} <ArrowRight className="w-4 h-4 ml-1.5" />
                 </Button>
 
                 <div className="rounded-xl bg-[var(--color-subtle)]/30 border border-[var(--color-subtle)]/60 p-3 text-xs text-[var(--color-ink-muted)]">
-                  <strong className="text-[var(--color-ink)]">Chưa có khoá?</strong>{" "}
-                  Kaori là nền tảng B2B có sales-assist — vui lòng liên hệ{" "}
+                  <strong className="text-[var(--color-ink)]">{t("registerPage.noKeyYet")}</strong>{" "}
+                  {t("registerPage.contactSalesPrefix")}{" "}
                   <a href="mailto:hello@kaori.io?subject=Đăng%20ký%20doanh%20nghiệp%20Kaori"
                      className="font-medium text-[var(--color-ink)] underline-offset-2 hover:underline">
                     hello@kaori.io
                   </a>{" "}
-                  để được tư vấn gói + cấp khoá kích hoạt.
+                  {t("registerPage.contactSalesSuffix")}
                 </div>
               </form>
             </>
@@ -221,15 +222,15 @@ export default function RegisterPage() {
                 onClick={() => { setStep(1); setError(""); }}
                 className="text-sm text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] transition-colors flex items-center gap-1 mb-4"
               >
-                <ChevronLeft className="w-4 h-4" /> Đổi khoá khác
+                <ChevronLeft className="w-4 h-4" /> {t("registerPage.btnChangeKey")}
               </button>
 
               <div className="flex flex-col space-y-2 mb-8">
                 <h2 className="font-serif text-3xl font-semibold tracking-tight text-[var(--color-ink)]">
-                  Tài khoản quản trị
+                  {t("registerPage.step2Title")}
                 </h2>
                 <p className="text-sm text-[var(--color-ink-muted)]">
-                  Tài khoản đầu tiên của workspace — sẽ có quyền MANAGER.
+                  {t("registerPage.step2Desc")}
                 </p>
               </div>
 
@@ -241,7 +242,7 @@ export default function RegisterPage() {
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="admin-name">Họ và tên</Label>
+                  <Label htmlFor="admin-name">{t("registerPage.labelFullName")}</Label>
                   <Input
                     id="admin-name"
                     type="text"
@@ -268,7 +269,7 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="admin-pwd">Mật khẩu</Label>
+                  <Label htmlFor="admin-pwd">{t("registerPage.labelPassword")}</Label>
                   <div className="relative">
                     <Input
                       id="admin-pwd"
@@ -278,7 +279,7 @@ export default function RegisterPage() {
                       required
                       minLength={8}
                       autoComplete="new-password"
-                      placeholder="Tối thiểu 8 ký tự"
+                      placeholder={t("registerPage.pwdPlaceholder")}
                       disabled={loading}
                     />
                     <button
@@ -293,7 +294,7 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="admin-pwd2">Nhập lại mật khẩu</Label>
+                  <Label htmlFor="admin-pwd2">{t("registerPage.labelPwdConfirm")}</Label>
                   <Input
                     id="admin-pwd2"
                     type={showPwd ? "text" : "password"}
@@ -306,7 +307,7 @@ export default function RegisterPage() {
                 </div>
 
                 <Button type="submit" className="w-full" loading={loading}>
-                  Hoàn tất đăng ký
+                  {t("registerPage.btnCompleteRegister")}
                 </Button>
               </form>
             </>
@@ -314,12 +315,12 @@ export default function RegisterPage() {
         </div>
 
         <p className="mt-8 text-center text-sm text-[var(--color-ink-muted)] animate-fade-in">
-          Đã có tài khoản?{" "}
+          {t("registerPage.haveAccountQuestion")}{" "}
           <Link
             href="/login"
             className="font-medium text-[var(--color-ink)] hover:text-[var(--color-brand-500)] transition-colors underline-offset-4 hover:underline"
           >
-            Đăng nhập
+            {t("registerPage.btnLogin")}
           </Link>
         </p>
       </div>

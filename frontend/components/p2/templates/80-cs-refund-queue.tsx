@@ -29,6 +29,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 
 // ─── Types ───────────────────────────────────────────────────────────
 
@@ -52,6 +53,7 @@ interface RefundRequest {
 // ─── Page component ──────────────────────────────────────────────────
 
 export default function RefundQueuePage() {
+  const t = useT();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   // TODO P2-36-DATA: useQuery(['refund-queue', filters], poll 60s)
   const refunds: RefundRequest[] = [];
@@ -60,21 +62,21 @@ export default function RefundQueuePage() {
 
   // TODO P2-36-PERM: hide approve buttons for VIEWER + OPERATOR without claim.
 
-  if (error) return <ErrorBanner message={error.detail ?? 'Không tải được queue.'} />;
+  if (error) return <ErrorBanner message={error.detail ?? t('templates80CsRefundQueue.errLoadFailed')} />;
 
   return (
     <div className="space-y-4">
       <PageHeader
-        title="Refund Approval Queue"
-        subtitle="Duyệt hoàn tiền theo policy + AI gợi ý. Mỗi quyết định ghi K-6 audit log (mig 098)."
+        title={t('templates80CsRefundQueue.title')}
+        subtitle={t('templates80CsRefundQueue.subtitle')}
       />
 
       {/* Bulk action toolbar */}
       {selected.size > 0 && (
         <div className="flex items-center justify-between rounded-lg border border-primary-gold bg-primary-gold/5 px-4 py-2 text-sm">
-          <span>{selected.size} refund đã chọn</span>
+          <span>{t('templates80CsRefundQueue.selectedCount', { count: selected.size })}</span>
           {/* TODO P2-36-PERM: bulk approve gated on approve_refund claim + AUTO_OK only */}
-          <Button size="sm">Bulk approve (chỉ AUTO_OK)</Button>
+          <Button size="sm">{t('templates80CsRefundQueue.bulkApprove')}</Button>
         </div>
       )}
 
@@ -85,7 +87,7 @@ export default function RefundQueuePage() {
       {!isLoading && refunds.length === 0 && (
         <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground">
           <CheckCircle2 className="mx-auto size-8 text-green-500" />
-          <div className="mt-2">Không có refund đang chờ duyệt 🎉.</div>
+          <div className="mt-2">{t('templates80CsRefundQueue.emptyState')}</div>
         </div>
       )}
       {!isLoading && refunds.length > 0 && (
@@ -94,13 +96,13 @@ export default function RefundQueuePage() {
             <thead className="border-b bg-gray-50 text-left text-xs uppercase text-muted-foreground">
               <tr>
                 <th className="px-4 py-2"><input type="checkbox" /></th>
-                <th className="px-4 py-2">Số tiền</th>
-                <th className="px-4 py-2">Policy</th>
-                <th className="px-4 py-2">Khách (LTV)</th>
-                <th className="px-4 py-2">Lý do</th>
-                <th className="px-4 py-2">Yêu cầu bởi</th>
-                <th className="px-4 py-2">Chờ</th>
-                <th className="px-4 py-2 text-right">Hành động</th>
+                <th className="px-4 py-2">{t('templates80CsRefundQueue.colAmount')}</th>
+                <th className="px-4 py-2">{t('templates80CsRefundQueue.colPolicy')}</th>
+                <th className="px-4 py-2">{t('templates80CsRefundQueue.colCustomer')}</th>
+                <th className="px-4 py-2">{t('templates80CsRefundQueue.colReason')}</th>
+                <th className="px-4 py-2">{t('templates80CsRefundQueue.colRequestedBy')}</th>
+                <th className="px-4 py-2">{t('templates80CsRefundQueue.colWaiting')}</th>
+                <th className="px-4 py-2 text-right">{t('templates80CsRefundQueue.colAction')}</th>
               </tr>
             </thead>
             <tbody>
@@ -113,17 +115,17 @@ export default function RefundQueuePage() {
       {/* Policy config drawer placeholder */}
       <div className="rounded-lg border bg-white p-4">
         {/* TODO P2-36-PERM: MANAGER+ for policy config */}
-        <div className="font-medium">Refund Policy</div>
-        <div className="mt-2 text-sm text-muted-foreground">Tính năng đang hoàn thiện</div>
+        <div className="font-medium">{t('templates80CsRefundQueue.refundPolicyHeading')}</div>
+        <div className="mt-2 text-sm text-muted-foreground">{t('templates80CsRefundQueue.featureInProgress')}</div>
       </div>
 
       {/* Audit panel placeholder */}
       <div className="rounded-lg border bg-white p-4">
         {/* TODO P2-36-PERM: claim view_audit_log */}
         <div className="flex items-center gap-2 font-medium">
-          <ScrollText className="size-4" /> AI Decision Audit (mig 098)
+          <ScrollText className="size-4" /> {t('templates80CsRefundQueue.auditHeading')}
         </div>
-        <div className="mt-2 text-sm text-muted-foreground">Tính năng đang hoàn thiện</div>
+        <div className="mt-2 text-sm text-muted-foreground">{t('templates80CsRefundQueue.featureInProgress')}</div>
       </div>
     </div>
   );
@@ -132,6 +134,7 @@ export default function RefundQueuePage() {
 // ─── Subcomponents ───────────────────────────────────────────────────
 
 function RefundRow({ refund }: { refund: RefundRequest }) {
+  const t = useT();
   const isPolicyViolation = refund.policy_match === 'POLICY_VIOLATION';
   return (
     <tr className={cn('border-b hover:bg-gray-50', isPolicyViolation && 'bg-red-50')}>
@@ -142,7 +145,7 @@ function RefundRow({ refund }: { refund: RefundRequest }) {
       <td className="px-4 py-2">
         <PolicyBadge match={refund.policy_match} />
         {isPolicyViolation && (
-          <div className="mt-1 text-xs text-red-700">Vượt policy — cần override + reason mandatory.</div>
+          <div className="mt-1 text-xs text-red-700">{t('templates80CsRefundQueue.policyViolationHint')}</div>
         )}
       </td>
       <td className="px-4 py-2">
@@ -168,10 +171,11 @@ function RefundRow({ refund }: { refund: RefundRequest }) {
 }
 
 function PolicyBadge({ match }: { match: PolicyMatch }) {
+  const t = useT();
   const config = {
-    AUTO_OK:          { label: 'Auto OK', cls: 'bg-green-100 text-green-700' },
-    MANUAL_REVIEW:    { label: 'Manual review', cls: 'bg-yellow-100 text-yellow-700' },
-    POLICY_VIOLATION: { label: 'Violation', cls: 'bg-red-100 text-red-700' },
+    AUTO_OK:          { label: t('templates80CsRefundQueue.policyAutoOk'), cls: 'bg-green-100 text-green-700' },
+    MANUAL_REVIEW:    { label: t('templates80CsRefundQueue.policyManualReview'), cls: 'bg-yellow-100 text-yellow-700' },
+    POLICY_VIOLATION: { label: t('templates80CsRefundQueue.policyViolation'), cls: 'bg-red-100 text-red-700' },
   }[match];
   return <span className={cn('rounded-full px-2 py-0.5 text-xs', config.cls)}>{config.label}</span>;
 }

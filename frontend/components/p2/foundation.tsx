@@ -20,6 +20,7 @@
 
 import React, { useState, forwardRef } from 'react';
 import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { useT } from '@/lib/i18n/provider';
 
 // ============================================================================
 // 1. UTILS
@@ -495,6 +496,7 @@ export function PasswordField({
   error,
   ...props
 }: InputProps) {
+  const t = useT();
   const [show, setShow] = useState(false);
   return (
     <div className="space-y-2 w-full">
@@ -518,7 +520,7 @@ export function PasswordField({
           disabled={props.disabled}
           className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:opacity-50"
           tabIndex={-1}
-          aria-label={show ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+          aria-label={show ? t('foundation.hidePassword') : t('foundation.showPassword')}
         >
           {show ? <EyeOff size={18} /> : <Eye size={18} />}
         </button>
@@ -610,8 +612,9 @@ export function ErrorBanner({
   problem?: ProblemDetails | null;
   message?: string;
 }) {
+  const t = useT();
   if (!problem && !message) return null;
-  const title  = problem?.title ?? message ?? 'Có lỗi xảy ra';
+  const title  = problem?.title ?? message ?? t('foundation.genericError');
   const detail = problem?.detail;
   return (
     <div
@@ -624,7 +627,7 @@ export function ErrorBanner({
         {detail && <p className="text-xs mt-0.5 opacity-80">{detail}</p>}
         {problem?.lockout_remaining_seconds != null && (
           <p className="text-xs mt-0.5">
-            Thử lại sau {Math.ceil(problem.lockout_remaining_seconds / 60)} phút.
+            {t('foundation.retryAfter', { minutes: Math.ceil(problem.lockout_remaining_seconds / 60) })}
           </p>
         )}
       </div>
@@ -648,8 +651,10 @@ export function SuccessBanner({ message }: { message: string }) {
 export function QuotaBar({
   current,
   limit,
-  unit = 'khách hàng',
+  unit,
 }: { current: number; limit: number; unit?: string }) {
+  const t = useT();
+  const displayUnit = unit ?? t('foundation.customerUnit');
   const pct = Math.min(100, Math.round((current / Math.max(1, limit)) * 100));
   const variant: BadgeVariant =
     pct >= 95 ? 'error' : pct >= 80 ? 'warning' : 'success';
@@ -662,7 +667,7 @@ export function QuotaBar({
     <div className="space-y-2">
       <div className="flex items-baseline justify-between">
         <span className="text-sm text-[var(--text-secondary)]">
-          {current.toLocaleString('vi-VN')} / {limit.toLocaleString('vi-VN')} {unit}
+          {current.toLocaleString('vi-VN')} / {limit.toLocaleString('vi-VN')} {displayUnit}
         </span>
         <Badge variant={variant}>{pct}%</Badge>
       </div>
@@ -674,12 +679,12 @@ export function QuotaBar({
       </div>
       {pct >= 80 && pct < 95 && (
         <p className="text-xs text-[#9E814D]">
-          Đã dùng {pct}% hạn mức tháng này. Cân nhắc nâng cấp gói.
+          {t('foundation.quotaWarning', { pct })}
         </p>
       )}
       {pct >= 95 && (
         <p className="text-xs text-[#9B5050]">
-          Đã dùng {pct}% hạn mức tháng này — sắp chạm giới hạn. Nâng cấp ngay để tránh gián đoạn.
+          {t('foundation.quotaCritical', { pct })}
         </p>
       )}
     </div>

@@ -18,25 +18,26 @@ import {
   Button, Input, ErrorBanner, Badge, api, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 
 type DeptType = 'marketing' | 'sales' | 'customer_service' | 'warehouse' | 'hr' | 'finance' | 'custom';
 type PiiLevel = 'low' | 'normal' | 'high' | 'restricted';
 
-const DEPT_LABEL: Record<DeptType, string> = {
-  marketing:        'Marketing',
-  sales:            'Kinh doanh',
-  customer_service: 'Chăm sóc khách hàng',
-  warehouse:        'Kho vận',
-  hr:               'Nhân sự',
-  finance:          'Tài chính',
-  custom:           'Tùy chỉnh',
+const DEPT_LABEL_KEY: Record<DeptType, string> = {
+  marketing:        'departmentsPage.deptMarketing',
+  sales:            'departmentsPage.deptSales',
+  customer_service: 'departmentsPage.deptCustomerService',
+  warehouse:        'departmentsPage.deptWarehouse',
+  hr:               'departmentsPage.deptHr',
+  finance:          'departmentsPage.deptFinance',
+  custom:           'departmentsPage.deptCustom',
 };
 
-const PII_LABEL: Record<PiiLevel, string> = {
-  low:        'Thấp',
-  normal:     'Bình thường',
-  high:       'Cao',
-  restricted: 'Hạn chế',
+const PII_LABEL_KEY: Record<PiiLevel, string> = {
+  low:        'departmentsPage.piiLow',
+  normal:     'departmentsPage.piiNormal',
+  high:       'departmentsPage.piiHigh',
+  restricted: 'departmentsPage.piiRestricted',
 };
 
 const PII_VARIANT: Record<PiiLevel, 'default' | 'info' | 'warning' | 'error'> = {
@@ -58,6 +59,7 @@ interface Department {
 }
 
 export default function DepartmentsPage() {
+  const t = useT();
   const [list,       setList]       = useState<Department[]>([]);
   const [loading,    setLoading]    = useState(true);
   const [problem,    setProblem]    = useState<ProblemDetails | null>(null);
@@ -115,11 +117,11 @@ export default function DepartmentsPage() {
   return (
     <>
       <PageHeader
-        title="Phòng ban"
-        description="Cơ cấu phòng ban của doanh nghiệp. Mỗi phòng ban có thể có nhiều workflow."
+        title={t('departmentsPage.title')}
+        description={t('departmentsPage.description')}
         actions={
           <Button variant="primary" size="md" onClick={() => setOpen(true)}>
-            <Plus className="w-4 h-4 mr-2" /> Tạo phòng ban
+            <Plus className="w-4 h-4 mr-2" /> {t('departmentsPage.createDept')}
           </Button>
         }
       />
@@ -129,17 +131,17 @@ export default function DepartmentsPage() {
 
         {loading ? (
           <p className="text-[12px] text-[var(--text-secondary)] flex items-center gap-1.5">
-            <Loader2 className="w-3 h-3 animate-spin" /> Đang tải danh sách phòng ban…
+            <Loader2 className="w-3 h-3 animate-spin" /> {t('departmentsPage.loadingList')}
           </p>
         ) : list.length === 0 ? (
           <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-8 text-center">
             <Users className="w-8 h-8 mx-auto text-[var(--text-secondary)] mb-2" />
-            <p className="text-sm text-[var(--text-primary)] mb-1">Chưa có phòng ban nào</p>
+            <p className="text-sm text-[var(--text-primary)] mb-1">{t('departmentsPage.emptyTitle')}</p>
             <p className="text-[12px] text-[var(--text-secondary)] mb-4">
-              Tạo phòng ban đầu tiên để bắt đầu xây workflow theo từng bộ phận.
+              {t('departmentsPage.emptyHint')}
             </p>
             <Button variant="primary" size="md" onClick={() => setOpen(true)}>
-              <Plus className="w-4 h-4 mr-2" /> Tạo phòng ban đầu tiên
+              <Plus className="w-4 h-4 mr-2" /> {t('departmentsPage.createFirstDept')}
             </Button>
           </div>
         ) : (
@@ -153,12 +155,12 @@ export default function DepartmentsPage() {
                   <div>
                     <h4 className="font-medium text-[var(--text-primary)]">{d.name}</h4>
                     <p className="text-[11px] text-[var(--text-secondary)]">
-                      {DEPT_LABEL[d.dept_type] || d.dept_type}
+                      {DEPT_LABEL_KEY[d.dept_type] ? t(DEPT_LABEL_KEY[d.dept_type]) : d.dept_type}
                     </p>
                   </div>
                   <Badge variant={PII_VARIANT[d.pii_sensitivity]}>
                     <ShieldAlert className="w-3 h-3 inline mr-1" />
-                    PII: {PII_LABEL[d.pii_sensitivity]}
+                    {t('departmentsPage.piiPrefix', { level: t(PII_LABEL_KEY[d.pii_sensitivity]) })}
                   </Badge>
                 </div>
                 {d.description && (
@@ -168,13 +170,13 @@ export default function DepartmentsPage() {
                 )}
                 <div className="flex items-center justify-between pt-2 border-t border-[var(--border-color)]/60">
                   <span className="text-[11px] text-[var(--text-secondary)] flex items-center gap-1">
-                    <WorkflowIcon className="w-3 h-3" /> {d.workflow_count} workflow
+                    <WorkflowIcon className="w-3 h-3" /> {t('departmentsPage.workflowCount', { count: d.workflow_count })}
                   </span>
                   <a
                     href={`/p2/workflows/new?department_id=${d.department_id}`}
                     className="text-[11px] text-[var(--primary-gold-dark)] hover:underline"
                   >
-                    + Workflow
+                    + {t('departmentsPage.workflowLink')}
                   </a>
                 </div>
               </div>
@@ -193,7 +195,7 @@ export default function DepartmentsPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <h3 className="font-serif text-base text-[var(--text-primary)]">Tạo phòng ban mới</h3>
+              <h3 className="font-serif text-base text-[var(--text-primary)]">{t('departmentsPage.createModalTitle')}</h3>
               <button
                 onClick={() => !submitting && setOpen(false)}
                 className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
@@ -205,64 +207,64 @@ export default function DepartmentsPage() {
             {createErr && <ErrorBanner problem={createErr} />}
 
             <Input
-              label="Tên phòng ban"
+              label={t('departmentsPage.fieldName')}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="VD: Phòng kinh doanh khu vực miền Bắc"
+              placeholder={t('departmentsPage.fieldNamePlaceholder')}
               required
             />
 
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-[var(--text-primary)]">
-                Loại phòng ban <span className="text-[var(--accent-red)]">*</span>
+                {t('departmentsPage.fieldDeptType')} <span className="text-[var(--accent-red)]">*</span>
               </label>
               <select
                 value={deptType}
                 onChange={(e) => setDeptType(e.target.value as DeptType)}
                 className="w-full h-10 px-3 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
               >
-                {(Object.keys(DEPT_LABEL) as DeptType[]).map((k) => (
-                  <option key={k} value={k}>{DEPT_LABEL[k]}</option>
+                {(Object.keys(DEPT_LABEL_KEY) as DeptType[]).map((k) => (
+                  <option key={k} value={k}>{t(DEPT_LABEL_KEY[k])}</option>
                 ))}
               </select>
             </div>
 
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-[var(--text-primary)]">
-                Mức độ nhạy cảm PII
+                {t('departmentsPage.fieldPiiLevel')}
               </label>
               <select
                 value={pii}
                 onChange={(e) => setPii(e.target.value as PiiLevel)}
                 className="w-full h-10 px-3 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
               >
-                {(Object.keys(PII_LABEL) as PiiLevel[]).map((k) => (
-                  <option key={k} value={k}>{PII_LABEL[k]}</option>
+                {(Object.keys(PII_LABEL_KEY) as PiiLevel[]).map((k) => (
+                  <option key={k} value={k}>{t(PII_LABEL_KEY[k])}</option>
                 ))}
               </select>
               <p className="text-[10px] text-[var(--text-secondary)]">
-                Phòng có nhiều dữ liệu cá nhân (CSKH, HR) nên đặt "Cao". Marketing thường đặt "Thấp".
+                {t('departmentsPage.piiHint')}
               </p>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-[var(--text-primary)]">Mô tả</label>
+              <label className="text-sm font-medium text-[var(--text-primary)]">{t('departmentsPage.fieldDescription')}</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
-                placeholder="Mục tiêu của phòng ban, phạm vi công việc…"
+                placeholder={t('departmentsPage.fieldDescriptionPlaceholder')}
                 className="w-full px-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
               />
             </div>
 
             <div className="flex justify-end gap-2 pt-3 border-t border-[var(--border-color)]/60">
               <Button variant="tertiary" size="md" onClick={() => setOpen(false)} disabled={submitting}>
-                Huỷ
+                {t('departmentsPage.cancel')}
               </Button>
               <Button variant="primary" size="md" onClick={submit} disabled={!name.trim() || submitting}>
                 {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}
-                Tạo
+                {t('departmentsPage.submitCreate')}
               </Button>
             </div>
           </div>

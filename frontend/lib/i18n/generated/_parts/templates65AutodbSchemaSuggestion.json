@@ -1,0 +1,177 @@
+{
+  "templates65AutodbSchemaSuggestion.title": {
+    "vi": "Đề xuất schema",
+    "en": "Schema suggestion",
+    "ja": "スキーマ提案",
+    "ko": "스키마 제안",
+    "zh": "架构建议"
+  },
+  "templates65AutodbSchemaSuggestion.description": {
+    "vi": "Kaori AI quét file/dataset → đề xuất bảng + cột + kiểu dữ liệu.",
+    "en": "Kaori AI scans the file/dataset → suggests tables + columns + data types.",
+    "ja": "Kaori AIがファイル/データセットをスキャン → テーブル+カラム+データ型を提案します。",
+    "ko": "Kaori AI가 파일/데이터셋을 스캔하여 → 테이블 + 컬럼 + 데이터 타입을 제안합니다.",
+    "zh": "Kaori AI 扫描文件/数据集 → 建议表 + 字段 + 数据类型。"
+  },
+  "templates65AutodbSchemaSuggestion.btnRegenerate": {
+    "vi": "Tái sinh",
+    "en": "Regenerate",
+    "ja": "再生成",
+    "ko": "재생성",
+    "zh": "重新生成"
+  },
+  "templates65AutodbSchemaSuggestion.btnCommit": {
+    "vi": "Commit ({count})",
+    "en": "Commit ({count})",
+    "ja": "コミット ({count})",
+    "ko": "커밋 ({count})",
+    "zh": "提交 ({count})"
+  },
+  "templates65AutodbSchemaSuggestion.successRegenerate": {
+    "vi": "Đã tái sinh schema từ Kaori AI.",
+    "en": "Regenerated schema from Kaori AI.",
+    "ja": "Kaori AIからスキーマを再生成しました。",
+    "ko": "Kaori AI에서 스키마를 재생성했습니다.",
+    "zh": "已从 Kaori AI 重新生成架构。"
+  },
+  "templates65AutodbSchemaSuggestion.successCommit": {
+    "vi": "Đã tạo {tables} bảng với {cols} cột. Schema có hiệu lực ngay.",
+    "en": "Created {tables} table(s) with {cols} column(s). Schema is now live.",
+    "ja": "{tables}個のテーブルと{cols}個のカラムを作成しました。スキーマは即座に有効になります。",
+    "ko": "{tables}개 테이블과 {cols}개 컬럼을 생성했습니다. 스키마가 즉시 적용됩니다.",
+    "zh": "已创建 {tables} 个表、{cols} 个字段。架构立即生效。"
+  },
+  "templates65AutodbSchemaSuggestion.sourceHeading": {
+    "vi": "Nguồn phân tích",
+    "en": "Analysis source",
+    "ja": "分析ソース",
+    "ko": "분석 소스",
+    "zh": "分析来源"
+  },
+  "templates65AutodbSchemaSuggestion.sourceMeta": {
+    "vi": "{rows} dòng · {cols} cột · upload {uploadedAt} · SHA-256 {hash}",
+    "en": "{rows} rows · {cols} columns · uploaded {uploadedAt} · SHA-256 {hash}",
+    "ja": "{rows}行 · {cols}カラム · アップロード {uploadedAt} · SHA-256 {hash}",
+    "ko": "{rows}행 · {cols}컬럼 · 업로드 {uploadedAt} · SHA-256 {hash}",
+    "zh": "{rows} 行 · {cols} 字段 · 上传于 {uploadedAt} · SHA-256 {hash}"
+  },
+  "templates65AutodbSchemaSuggestion.summaryHeading": {
+    "vi": "Tổng quan đề xuất",
+    "en": "Suggestion overview",
+    "ja": "提案の概要",
+    "ko": "제안 개요",
+    "zh": "建议概览"
+  },
+  "templates65AutodbSchemaSuggestion.summaryAcceptedCols": {
+    "vi": "{accepted}/{total} cột chọn",
+    "en": "{accepted}/{total} columns selected",
+    "ja": "{accepted}/{total}カラム選択済み",
+    "ko": "{accepted}/{total}개 컬럼 선택됨",
+    "zh": "已选 {accepted}/{total} 个字段"
+  },
+  "templates65AutodbSchemaSuggestion.summaryLowConf": {
+    "vi": "{count} cột confidence < 80%. ",
+    "en": "{count} column(s) with confidence < 80%. ",
+    "ja": "confidence < 80%のカラムが{count}件あります。 ",
+    "ko": "confidence < 80%인 컬럼 {count}개. ",
+    "zh": "{count} 个字段置信度低于 80%。 "
+  },
+  "templates65AutodbSchemaSuggestion.summaryReviewNote": {
+    "vi": "Review kỹ trước khi commit.",
+    "en": "Review carefully before committing.",
+    "ja": "コミットする前によく確認してください。",
+    "ko": "커밋하기 전에 꼼꼼히 확인하세요.",
+    "zh": "提交前请仔细审核。"
+  },
+  "templates65AutodbSchemaSuggestion.consentLabel": {
+    "vi": "Cho phép gửi mẫu dữ liệu (đã PII-mask) cho AI ngoài để tăng độ chính xác",
+    "en": "Allow sending sample data (PII-masked) to external AI to improve accuracy",
+    "ja": "精度向上のため、サンプルデータ（PIIマスク済み）を外部AIに送信することを許可する",
+    "ko": "정확도 향상을 위해 샘플 데이터(PII 마스킹 완료)를 외부 AI로 전송 허용",
+    "zh": "允许将样本数据（已做 PII 脱敏）发送给外部 AI 以提高准确度"
+  },
+  "templates65AutodbSchemaSuggestion.consentDetail": {
+    "vi": "K-4: workspace cần bật consent. K-5: 100 dòng đầu mask <EMAIL>/<PHONE>/<NAME> trước khi gửi. Mặc định Qwen 2.5 nội bộ — không cần consent.",
+    "en": "K-4: the workspace must enable consent. K-5: the first 100 rows mask <EMAIL>/<PHONE>/<NAME> before sending. Default is internal Qwen 2.5 — no consent needed.",
+    "ja": "K-4: ワークスペースでconsentを有効にする必要があります。K-5: 送信前に最初の100行の<EMAIL>/<PHONE>/<NAME>をマスクします。デフォルトは内部Qwen 2.5 — consent不要。",
+    "ko": "K-4: 워크스페이스에서 consent를 활성화해야 합니다. K-5: 전송 전 처음 100행의 <EMAIL>/<PHONE>/<NAME>을 마스킹합니다. 기본값은 내부 Qwen 2.5 — consent 불필요.",
+    "zh": "K-4：工作区需要启用 consent。K-5：发送前对前 100 行的 <EMAIL>/<PHONE>/<NAME> 进行脱敏。默认使用内部 Qwen 2.5 — 无需 consent。"
+  },
+  "templates65AutodbSchemaSuggestion.colSelect": {
+    "vi": "Chọn",
+    "en": "Select",
+    "ja": "選択",
+    "ko": "선택",
+    "zh": "选择"
+  },
+  "templates65AutodbSchemaSuggestion.colName": {
+    "vi": "Tên cột",
+    "en": "Column name",
+    "ja": "カラム名",
+    "ko": "컬럼명",
+    "zh": "字段名"
+  },
+  "templates65AutodbSchemaSuggestion.colType": {
+    "vi": "Kiểu",
+    "en": "Type",
+    "ja": "型",
+    "ko": "타입",
+    "zh": "类型"
+  },
+  "templates65AutodbSchemaSuggestion.colKey": {
+    "vi": "Khoá",
+    "en": "Key",
+    "ja": "キー",
+    "ko": "키",
+    "zh": "键"
+  },
+  "templates65AutodbSchemaSuggestion.colReasoning": {
+    "vi": "Lý do AI",
+    "en": "AI reasoning",
+    "ja": "AIの理由",
+    "ko": "AI 근거",
+    "zh": "AI 理由"
+  },
+  "templates65AutodbSchemaSuggestion.footerNotePart1": {
+    "vi": "Schema commit ghi vào",
+    "en": "The schema commit writes into",
+    "ja": "スキーマのコミットは以下に書き込まれます：",
+    "ko": "스키마 커밋은 다음에 기록됩니다:",
+    "zh": "架构提交会写入"
+  },
+  "templates65AutodbSchemaSuggestion.footerNotePart2": {
+    "vi": "(K-6) với reasoning của từng cột. NUMERIC(14,4) cho tiền (K-9) — không bao giờ FLOAT.",
+    "en": "(K-6) with each column's reasoning. NUMERIC(14,4) for money (K-9) — never FLOAT.",
+    "ja": "（K-6）各カラムの理由とともに。金額はNUMERIC(14,4)（K-9）— FLOATは使用しません。",
+    "ko": "(K-6) 각 컬럼의 근거와 함께 기록됩니다. 금액은 NUMERIC(14,4)(K-9) — FLOAT는 절대 사용하지 않습니다.",
+    "zh": "(K-6)，包含每个字段的理由。金额使用 NUMERIC(14,4)（K-9）— 绝不使用 FLOAT。"
+  },
+  "templates65AutodbSchemaSuggestion.tableRowsCols": {
+    "vi": "{rows} dòng · {accepted}/{total} cột chọn",
+    "en": "{rows} rows · {accepted}/{total} columns selected",
+    "ja": "{rows}行 · {accepted}/{total}カラム選択済み",
+    "ko": "{rows}행 · {accepted}/{total}개 컬럼 선택됨",
+    "zh": "{rows} 行 · 已选 {accepted}/{total} 个字段"
+  },
+  "templates65AutodbSchemaSuggestion.tableColsBadge": {
+    "vi": "{count} cột đề xuất",
+    "en": "{count} suggested columns",
+    "ja": "提案カラム{count}件",
+    "ko": "제안된 컬럼 {count}개",
+    "zh": "建议 {count} 个字段"
+  },
+  "templates65AutodbSchemaSuggestion.ariaDeselect": {
+    "vi": "Bỏ chọn",
+    "en": "Deselect",
+    "ja": "選択解除",
+    "ko": "선택 해제",
+    "zh": "取消选择"
+  },
+  "templates65AutodbSchemaSuggestion.ariaSelect": {
+    "vi": "Chọn",
+    "en": "Select",
+    "ja": "選択",
+    "ko": "선택",
+    "zh": "选择"
+  }
+}

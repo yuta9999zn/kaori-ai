@@ -24,6 +24,7 @@ import { GlobalStyles, KaoriLockup, cn } from './foundation';
 import { NAV_TREE, SECTION_ORDER, type NavGroup, type NavChild } from './navigation';
 import { LocalePicker } from '@/components/i18n/locale-picker';
 import { useChromeT } from '@/lib/i18n/chrome-i18n';
+import { useT } from '@/lib/i18n/provider';
 
 // ============================================================================
 // 1. Workspace context (replaces hard-coded "Acme Corp")
@@ -195,6 +196,7 @@ function Sidebar({
 // ============================================================================
 
 function Header({ onMenuToggle }: { onMenuToggle: () => void }) {
+  const t = useT();
   const ws = useWorkspace();
   const [openMenu, setOpenMenu] = useState(false);
 
@@ -226,7 +228,7 @@ function Header({ onMenuToggle }: { onMenuToggle: () => void }) {
           <Search className="w-4 h-4 text-[var(--text-secondary)] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Tìm dataset, pipeline, insight..."
+            placeholder={t('shell.searchPlaceholder')}
             className="w-full bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom pl-9 pr-12 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all hover:bg-[var(--bg-card)]"
           />
           <kbd className="hidden lg:inline-flex absolute right-3 top-1/2 -translate-y-1/2 items-center border border-[var(--border-color)] rounded px-1.5 text-[10px] font-medium text-[var(--text-secondary)] bg-[var(--bg-card)]">
@@ -238,11 +240,11 @@ function Header({ onMenuToggle }: { onMenuToggle: () => void }) {
       <div className="flex items-center gap-1">
         {/* Language switcher — 5 locales (vi/en/ja/ko/zh), S0b i18n foundation */}
         <LocalePicker />
-        <button className="p-2 text-[var(--text-secondary)] hover:bg-[var(--bg-app)] rounded-full relative" aria-label="Thông báo">
+        <button className="p-2 text-[var(--text-secondary)] hover:bg-[var(--bg-app)] rounded-full relative" aria-label={t('shell.notifications')}>
           <Bell className="w-5 h-5" />
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[var(--state-error)] rounded-full border-2 border-[var(--bg-card)]" />
         </button>
-        <button className="hidden sm:block p-2 text-[var(--text-secondary)] hover:bg-[var(--bg-app)] rounded-full" aria-label="Trợ giúp">
+        <button className="hidden sm:block p-2 text-[var(--text-secondary)] hover:bg-[var(--bg-app)] rounded-full" aria-label={t('shell.help')}>
           <HelpCircle className="w-5 h-5" />
         </button>
 
@@ -250,7 +252,7 @@ function Header({ onMenuToggle }: { onMenuToggle: () => void }) {
           <button
             onClick={() => setOpenMenu(!openMenu)}
             className="ml-2 w-9 h-9 rounded-full bg-[var(--primary-gold)]/15 border border-[var(--primary-gold)]/30 flex items-center justify-center hover:ring-2 hover:ring-[var(--primary-gold)]/30 transition-all"
-            aria-label="Tài khoản"
+            aria-label={t('shell.account')}
           >
             <span className="text-xs font-semibold text-[var(--primary-gold-dark)]">{ws.user_initials}</span>
           </button>
@@ -258,18 +260,18 @@ function Header({ onMenuToggle }: { onMenuToggle: () => void }) {
           {openMenu && (
             <div className="absolute right-0 mt-2 w-60 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-md-custom shadow-soft-md py-1 animate-slide-up-fade z-50">
               <div className="px-4 py-3 border-b border-[var(--border-color)]/60">
-                <p className="text-sm font-semibold text-[var(--text-primary)]">{ws.user_email || 'Tài khoản'}</p>
-                <p className="text-xs text-[var(--text-secondary)] mt-0.5">Vai trò: <span className="font-medium">{ws.user_role}</span></p>
+                <p className="text-sm font-semibold text-[var(--text-primary)]">{ws.user_email || t('shell.account')}</p>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">{t('shell.roleLabel')}: <span className="font-medium">{ws.user_role}</span></p>
               </div>
               <a href="/settings" className="flex items-center px-4 py-2 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)]">
-                <Settings className="w-4 h-4 mr-2 text-[var(--text-secondary)]" /> Cài đặt
+                <Settings className="w-4 h-4 mr-2 text-[var(--text-secondary)]" /> {t('shell.settings')}
               </a>
               <a href="/p2/auth/sessions" className="flex items-center px-4 py-2 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)]">
-                <ShieldCheck className="w-4 h-4 mr-2 text-[var(--text-secondary)]" /> Phiên đăng nhập
+                <ShieldCheck className="w-4 h-4 mr-2 text-[var(--text-secondary)]" /> {t('shell.sessions')}
               </a>
               <div className="border-t border-[var(--border-color)]/60 mt-1 pt-1">
                 <button onClick={logout} className="w-full flex items-center px-4 py-2 text-sm text-[var(--state-error)] hover:bg-[var(--state-error)]/8">
-                  <LogOut className="w-4 h-4 mr-2" /> Đăng xuất
+                  <LogOut className="w-4 h-4 mr-2" /> {t('shell.logout')}
                 </button>
               </div>
             </div>

@@ -1,0 +1,72 @@
+{
+  "platformShell.menuAriaLabel": {
+    "vi": "Mở menu",
+    "en": "Open menu",
+    "ja": "メニューを開く",
+    "ko": "메뉴 열기",
+    "zh": "打开菜单"
+  },
+  "platformShell.brandBadge": {
+    "vi": "Kaori Platform",
+    "en": "Kaori Platform",
+    "ja": "Kaori プラットフォーム",
+    "ko": "Kaori 플랫폼",
+    "zh": "Kaori 平台"
+  },
+  "platformShell.searchPlaceholder": {
+    "vi": "Tìm workspace, admin, key...",
+    "en": "Search workspace, admin, key...",
+    "ja": "workspace、admin、key を検索...",
+    "ko": "workspace, admin, key 검색...",
+    "zh": "搜索 workspace、admin、key..."
+  },
+  "platformShell.notificationsAriaLabel": {
+    "vi": "Thông báo",
+    "en": "Notifications",
+    "ja": "通知",
+    "ko": "알림",
+    "zh": "通知"
+  },
+  "platformShell.helpAriaLabel": {
+    "vi": "Trợ giúp",
+    "en": "Help",
+    "ja": "ヘルプ",
+    "ko": "도움말",
+    "zh": "帮助"
+  },
+  "platformShell.accountAriaLabel": {
+    "vi": "Tài khoản",
+    "en": "Account",
+    "ja": "アカウント",
+    "ko": "계정",
+    "zh": "账户"
+  },
+  "platformShell.accountFallback": {
+    "vi": "Tài khoản",
+    "en": "Account",
+    "ja": "アカウント",
+    "ko": "계정",
+    "zh": "账户"
+  },
+  "platformShell.roleLabel": {
+    "vi": "Vai trò:",
+    "en": "Role:",
+    "ja": "役割:",
+    "ko": "역할:",
+    "zh": "角色："
+  },
+  "platformShell.sessionsSecurity": {
+    "vi": "Phiên & bảo mật",
+    "en": "Sessions & security",
+    "ja": "セッションとセキュリティ",
+    "ko": "세션 및 보안",
+    "zh": "会话与安全"
+  },
+  "platformShell.logout": {
+    "vi": "Đăng xuất",
+    "en": "Log out",
+    "ja": "ログアウト",
+    "ko": "로그아웃",
+    "zh": "退出登录"
+  }
+}

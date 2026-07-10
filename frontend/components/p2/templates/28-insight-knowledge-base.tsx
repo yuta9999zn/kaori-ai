@@ -19,27 +19,29 @@ import {
 import { Button, Badge, Input, Label, ErrorBanner, SuccessBanner, cn } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
 import { knowledgeApi } from '@/lib/api/client';
+import { useT } from '@/lib/i18n/provider';
 
-const TIER_LABEL: Record<number, string> = {
-  1: 'Quy định',
-  2: 'Kaori curated',
-  3: 'Ngành (tham khảo)',
-  4: 'Workspace của bạn',
+const TIER_KEY: Record<number, string> = {
+  1: 'templates28InsightKnowledgeBase.tier1',
+  2: 'templates28InsightKnowledgeBase.tier2',
+  3: 'templates28InsightKnowledgeBase.tier3',
+  4: 'templates28InsightKnowledgeBase.tier4',
 };
 
-function errText(err: any): string {
+function errText(err: any, t: (key: string, params?: Record<string, any>) => string): string {
   const d = err?.response?.data;
-  return d?.detail?.title || d?.title || d?.detail || err?.message || 'Có lỗi xảy ra';
+  return d?.detail?.title || d?.title || d?.detail || err?.message || t('templates28InsightKnowledgeBase.errGeneric');
 }
 
 function DocCard({ doc, showSimilarity }: { doc: any; showSimilarity?: boolean }) {
+  const t = useT();
   const isGlobal = doc.scope === 'global';
   return (
     <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-4 shadow-soft-sm">
       <div className="flex items-start justify-between gap-3">
         <p className="font-medium text-sm text-[var(--text-primary)]">{doc.title}</p>
         {showSimilarity && doc.similarity != null && (
-          <Badge variant="info">{Math.round(doc.similarity * 100)}% khớp</Badge>
+          <Badge variant="info">{t('templates28InsightKnowledgeBase.matchPercent', { percent: Math.round(doc.similarity * 100) })}</Badge>
         )}
       </div>
       {doc.snippet && (
@@ -48,10 +50,10 @@ function DocCard({ doc, showSimilarity }: { doc: any; showSimilarity?: boolean }
       <div className="mt-2.5 flex items-center gap-2 flex-wrap">
         <Badge variant={isGlobal ? 'default' : 'info'}>
           {isGlobal
-            ? <><Globe className="w-3 h-3 mr-1 inline" />Toàn hệ thống</>
-            : <><Building2 className="w-3 h-3 mr-1 inline" />Workspace</>}
+            ? <><Globe className="w-3 h-3 mr-1 inline" />{t('templates28InsightKnowledgeBase.scopeGlobal')}</>
+            : <><Building2 className="w-3 h-3 mr-1 inline" />{t('templates28InsightKnowledgeBase.scopeWorkspace')}</>}
         </Badge>
-        <Badge variant="default">{TIER_LABEL[doc.tier] ?? `tier ${doc.tier}`}</Badge>
+        <Badge variant="default">{TIER_KEY[doc.tier] ? t(TIER_KEY[doc.tier]) : `tier ${doc.tier}`}</Badge>
         {doc.category && <Badge variant="default">{doc.category}</Badge>}
         {doc.source && (
           <span className="text-xs text-[var(--text-secondary)]/80">· {doc.source}</span>
@@ -62,6 +64,7 @@ function DocCard({ doc, showSimilarity }: { doc: any; showSimilarity?: boolean }
 }
 
 export default function KnowledgeBasePage() {
+  const t = useT();
   const [query, setQuery]       = useState('');
   const [results, setResults]   = useState<any[] | null>(null);
   const [searching, setSearching] = useState(false);
@@ -82,7 +85,7 @@ export default function KnowledgeBasePage() {
       const { data } = await knowledgeApi.list();
       setDocs(data.documents ?? []);
     } catch (err: any) {
-      setError(errText(err));
+      setError(errText(err, t));
     } finally {
       setListLoading(false);
     }
@@ -100,7 +103,7 @@ export default function KnowledgeBasePage() {
       const { data } = await knowledgeApi.search(q, 8);
       setResults(data.results ?? []);
     } catch (err: any) {
-      setError(errText(err));
+      setError(errText(err, t));
     } finally {
       setSearching(false);
     }
@@ -118,12 +121,12 @@ export default function KnowledgeBasePage() {
         content: form.content.trim(),
         category: form.category.trim() || undefined,
       });
-      setSuccess('Đã thêm tri thức vào workspace — có thể tìm kiếm ngay.');
+      setSuccess(t('templates28InsightKnowledgeBase.successIngest'));
       setForm({ title: '', content: '', category: '' });
       setShowAdd(false);
       loadList();
     } catch (err: any) {
-      setError(errText(err));
+      setError(errText(err, t));
     } finally {
       setSaving(false);
     }
@@ -132,11 +135,11 @@ export default function KnowledgeBasePage() {
   return (
     <>
       <PageHeader
-        title="Knowledge Base"
-        description="Tri thức ngành (toàn hệ thống) + tri thức riêng của workspace — tìm bằng câu hỏi tự nhiên."
+        title={t('templates28InsightKnowledgeBase.title')}
+        description={t('templates28InsightKnowledgeBase.description')}
         actions={
           <Button variant="secondary" onClick={() => setShowAdd((v) => !v)}>
-            <Plus className="w-4 h-4 mr-2" />Thêm tri thức
+            <Plus className="w-4 h-4 mr-2" />{t('templates28InsightKnowledgeBase.addKnowledge')}
           </Button>
         }
       />
@@ -152,7 +155,7 @@ export default function KnowledgeBasePage() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Hỏi tự nhiên, vd: dấu hiệu khách sắp rời bỏ là gì?"
+            placeholder={t('templates28InsightKnowledgeBase.searchPlaceholder')}
             className="w-full pl-9 pr-28 py-3 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/40"
           />
           <Button
@@ -160,7 +163,7 @@ export default function KnowledgeBasePage() {
             disabled={searching || !query.trim()}
             className="absolute right-1.5 top-1/2 -translate-y-1/2"
           >
-            {searching ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Tìm'}
+            {searching ? <Loader2 className="w-4 h-4 animate-spin" /> : t('templates28InsightKnowledgeBase.searchButton')}
           </Button>
         </form>
 
@@ -170,39 +173,39 @@ export default function KnowledgeBasePage() {
             onSubmit={onIngest}
             className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm space-y-3"
           >
-            <p className="font-serif text-base text-[var(--text-primary)]">Thêm tri thức riêng (chỉ workspace của bạn thấy)</p>
+            <p className="font-serif text-base text-[var(--text-primary)]">{t('templates28InsightKnowledgeBase.addFormTitle')}</p>
             <div>
-              <Label htmlFor="kb-title">Tiêu đề</Label>
+              <Label htmlFor="kb-title">{t('templates28InsightKnowledgeBase.labelTitle')}</Label>
               <Input
                 id="kb-title"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                placeholder="vd: Quy trình win-back khách VIP"
+                placeholder={t('templates28InsightKnowledgeBase.titlePlaceholder')}
               />
             </div>
             <div>
-              <Label htmlFor="kb-content">Nội dung</Label>
+              <Label htmlFor="kb-content">{t('templates28InsightKnowledgeBase.labelContent')}</Label>
               <textarea
                 id="kb-content"
                 value={form.content}
                 onChange={(e) => setForm({ ...form, content: e.target.value })}
                 rows={4}
-                placeholder="Mô tả nguyên tắc / SOP / mục tiêu nội bộ…"
+                placeholder={t('templates28InsightKnowledgeBase.contentPlaceholder')}
                 className="w-full px-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/40"
               />
             </div>
             <div className="flex items-end gap-3">
               <div className="flex-1">
-                <Label htmlFor="kb-cat">Danh mục (tuỳ chọn)</Label>
+                <Label htmlFor="kb-cat">{t('templates28InsightKnowledgeBase.labelCategory')}</Label>
                 <Input
                   id="kb-cat"
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
-                  placeholder="churn / retention / pricing…"
+                  placeholder={t('templates28InsightKnowledgeBase.categoryPlaceholder')}
                 />
               </div>
               <Button type="submit" disabled={saving || !form.title.trim() || !form.content.trim()}>
-                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Lưu'}
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : t('templates28InsightKnowledgeBase.save')}
               </Button>
             </div>
           </form>
@@ -212,11 +215,11 @@ export default function KnowledgeBasePage() {
         {results !== null && (
           <div>
             <h3 className="font-serif text-base text-[var(--text-primary)] mb-3">
-              Kết quả tìm kiếm {results.length > 0 && `(${results.length})`}
+              {t('templates28InsightKnowledgeBase.searchResultsTitle')} {results.length > 0 && `(${results.length})`}
             </h3>
             {results.length === 0 ? (
               <p className="text-sm text-[var(--text-secondary)]">
-                Không tìm thấy tri thức phù hợp. Thử câu hỏi khác, hoặc tri thức ngành chưa được nạp embedding.
+                {t('templates28InsightKnowledgeBase.noResults')}
               </p>
             ) : (
               <div className="space-y-3">
@@ -230,18 +233,17 @@ export default function KnowledgeBasePage() {
         {results === null && (
           <div>
             <h3 className="font-serif text-base text-[var(--text-primary)] mb-3">
-              Tất cả tri thức {!listLoading && `(${docs.length})`}
+              {t('templates28InsightKnowledgeBase.allKnowledgeTitle')} {!listLoading && `(${docs.length})`}
             </h3>
             {listLoading ? (
               <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
-                <Loader2 className="w-4 h-4 animate-spin" /> Đang tải…
+                <Loader2 className="w-4 h-4 animate-spin" /> {t('templates28InsightKnowledgeBase.loading')}
               </div>
             ) : docs.length === 0 ? (
               <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-6 text-center">
                 <BookOpen className="w-6 h-6 text-[var(--text-secondary)]/50 mx-auto mb-2" />
                 <p className="text-sm text-[var(--text-secondary)]">
-                  Chưa có tri thức nào hiển thị. Tri thức ngành sẽ xuất hiện sau khi được nạp embedding;
-                  bạn cũng có thể "Thêm tri thức" riêng cho workspace.
+                  {t('templates28InsightKnowledgeBase.emptyState')}
                 </p>
               </div>
             ) : (
@@ -256,9 +258,7 @@ export default function KnowledgeBasePage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            RLS được tôn trọng — workspace của bạn chỉ thấy tri thức toàn hệ thống (curated) + tri thức riêng của
-            workspace, không bao giờ thấy của workspace khác. Embedding sinh bằng BGE-M3 nội bộ (K-3), không gọi
-            OpenAI/Cohere.
+            {t('templates28InsightKnowledgeBase.privacyNote')}
           </p>
         </div>
       </div>

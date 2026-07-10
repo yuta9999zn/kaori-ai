@@ -6,7 +6,8 @@
 // the script to regenerate. Lazy `any` types added; not meant for strict tsc.
 
 import React, { useState, useEffect, useRef } from 'react';
-import { 
+import { useT } from '@/lib/i18n/provider';
+import {
   LayoutDashboard, 
   Briefcase, 
   Key, 
@@ -262,9 +263,11 @@ const Input = React.forwardRef<any, any>(({ className, label, error, helperText,
 Input.displayName = "Input";
 
 // --- SELECT (Simulated Radix Select) ---
-const Select = ({  label, placeholder = "Select an option", options = [], value, onChange, error, disabled  }: any) => {
+const Select = ({  label, placeholder, options = [], value, onChange, error, disabled  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
+  const resolvedPlaceholder = placeholder ?? t('templates22PlatformAdminInvite.selectDefaultPlaceholder');
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -289,7 +292,7 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
           !selectedOption ? "text-[var(--text-secondary)]/60" : "text-[var(--text-primary)]"
         )}
       >
-        {selectedOption ? selectedOption.label : placeholder}
+        {selectedOption ? selectedOption.label : resolvedPlaceholder}
         <ChevronDown className="h-4 w-4 opacity-50" />
       </button>
       {isOpen && !disabled && (
@@ -373,6 +376,7 @@ const Card = ({  className, ...props  }: any) => (
 );
 
 const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className  }: any) => {
+  const t = useT();
   const isPositive = (isUp && !inverseGood) || (!isUp && inverseGood);
   const trendColor = trend === '0%' ? 'text-[var(--text-secondary)]' : isPositive ? 'text-[#5C856A]' : 'text-[#9B5050]';
   return (
@@ -388,7 +392,7 @@ const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className
             </div>
           )}
         </div>
-        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">vs yesterday</div>
+        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">{t('templates22PlatformAdminInvite.vsYesterday')}</div>
       </div>
     </Card>
   );
@@ -407,6 +411,7 @@ const TableHead = ({  className, ...props  }: any) => <th className={cn("h-12 px
 const TableCell = ({  className, ...props  }: any) => <td className={cn("p-4 align-middle text-[var(--text-primary)]", className)} {...props} />;
 
 const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
+  const t = useT();
   return (
     <div className="rounded-lg-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm overflow-hidden w-full">
       <Table>
@@ -431,8 +436,8 @@ const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
                   <div className="w-10 h-10 rounded-full bg-[var(--bg-app)] flex items-center justify-center mb-2">
                     <Search className="w-5 h-5 text-[var(--text-secondary)]" />
                   </div>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">No results found</span>
-                  <span className="text-xs text-[var(--text-secondary)]">Try adjusting your filters</span>
+                  <span className="text-sm font-medium text-[var(--text-primary)]">{t('templates22PlatformAdminInvite.tableNoResultsFound')}</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{t('templates22PlatformAdminInvite.tableTryAdjustingFilters')}</span>
                 </div>
               </TableCell>
             </TableRow>
@@ -447,10 +452,10 @@ const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
       </Table>
       {pagination && data.length > 0 && (
         <div className="border-t border-[var(--border-color)] px-4 py-3 flex items-center justify-between bg-[#FCFBF9]">
-          <span className="text-xs text-[var(--text-secondary)]">Showing 1 to {data.length} of {data.length} results</span>
+          <span className="text-xs text-[var(--text-secondary)]">{t('templates22PlatformAdminInvite.tableShowingResults', { count: data.length })}</span>
           <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled>Previous</Button>
-              <Button variant="outline" size="sm">Next</Button>
+              <Button variant="outline" size="sm" disabled>{t('templates22PlatformAdminInvite.tablePrevious')}</Button>
+              <Button variant="outline" size="sm">{t('templates22PlatformAdminInvite.tableNext')}</Button>
           </div>
         </div>
       )}
@@ -547,6 +552,7 @@ const Tabs = ({  defaultValue, tabs, className  }: any) => {
 
 // --- COPY BUTTON HELPER ---
 const CopyButton = ({  text, className  }: any) => {
+  const t = useT();
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
     navigator.clipboard.writeText(text);
@@ -554,10 +560,10 @@ const CopyButton = ({  text, className  }: any) => {
     setTimeout(() => setCopied(false), 2000);
   };
   return (
-    <button 
-      onClick={handleCopy} 
+    <button
+      onClick={handleCopy}
       className={cn("p-1 hover:bg-[var(--bg-app)] rounded transition-colors text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/50", className)}
-      aria-label="Copy to clipboard"
+      aria-label={t('templates22PlatformAdminInvite.copyToClipboardLabel')}
     >
       {copied ? <Check className="w-3.5 h-3.5 text-[#5C856A]" /> : <Copy className="w-3.5 h-3.5" />}
     </button>
@@ -644,6 +650,22 @@ const NAVIGATION_CONFIG = [
   }
 ];
 
+// i18n key lookups for the (module-level, non-reactive) NAVIGATION_CONFIG labels
+const NAV_GROUP_KEYS: Record<string, string> = {
+  Main: 'templates22PlatformAdminInvite.navGroupMain',
+  Management: 'templates22PlatformAdminInvite.navGroupManagement',
+  System: 'templates22PlatformAdminInvite.navGroupSystem',
+};
+const NAV_LABEL_KEYS: Record<string, string> = {
+  overview: 'templates22PlatformAdminInvite.navPlatformHealth',
+  workspaces: 'templates22PlatformAdminInvite.navWorkspaces',
+  keys: 'templates22PlatformAdminInvite.navApiKeys',
+  billing: 'templates22PlatformAdminInvite.navBilling',
+  admin: 'templates22PlatformAdminInvite.navAdmins',
+  components: 'templates22PlatformAdminInvite.navComponentLibrary',
+  sessions: 'templates22PlatformAdminInvite.navSecuritySessions',
+};
+
 // --- HEADER SUB-COMPONENTS ---
 const EnvBadge = ({  env = 'production'  }: any) => {
   const config = {
@@ -659,6 +681,7 @@ const EnvBadge = ({  env = 'production'  }: any) => {
 };
 
 const NotificationDropdown = () => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -679,7 +702,7 @@ const NotificationDropdown = () => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-[320px] bg-[var(--bg-card)] rounded-lg-custom shadow-soft-md border border-[var(--border-color)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 z-50">
           <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] bg-[#FCFBF9]">
-            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Notifications</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates22PlatformAdminInvite.notificationsHeading')}</h3>
           </div>
           <div className="max-h-[300px] overflow-y-auto">
             {notifications.map((n) => (
@@ -699,6 +722,7 @@ const NotificationDropdown = () => {
 };
 
 const HeaderUserMenu = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -721,13 +745,13 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
           </div>
           <div className="p-1.5">
             <button onClick={() => { setActiveRoute('sessions'); setIsOpen(false); }} className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> Security & Sessions
+              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> {t(NAV_LABEL_KEYS.sessions)}
             </button>
           </div>
           <div className="h-[1px] bg-[var(--border-color)]/50 mx-1.5" />
           <div className="p-1.5">
             <button className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] transition-colors flex items-center gap-2 font-medium">
-              <LogOut className="w-4 h-4" /> Sign out
+              <LogOut className="w-4 h-4" /> {t('templates22PlatformAdminInvite.signOut')}
             </button>
           </div>
         </div>
@@ -737,16 +761,18 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
 };
 
 const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: any) => {
-  let routeLabel = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label;
-  if (activeRoute === 'workspace-details') routeLabel = 'Workspaces / Overview';
-  else if (activeRoute === 'workspace-members') routeLabel = 'Workspaces / Members';
-  else if (activeRoute === 'billing') routeLabel = 'Workspaces / Billing';
-  else if (activeRoute === 'audit-logs') routeLabel = 'Workspaces / Audit Logs';
-  else if (activeRoute === 'workspace-new') routeLabel = 'Workspaces / New Workspace';
-  else if (activeRoute === 'workspace-edit') routeLabel = 'Workspaces / Settings';
-  else if (activeRoute === 'keys-new') routeLabel = 'API Keys / Create Key';
-  else if (activeRoute === 'key-details') routeLabel = 'API Keys / Details';
-  else if (activeRoute === 'admin-invite') routeLabel = 'Admins / Invite';
+  const t = useT();
+  const navItem = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute);
+  let routeLabel = navItem ? t(NAV_LABEL_KEYS[navItem.id] || navItem.label) : undefined;
+  if (activeRoute === 'workspace-details') routeLabel = t('templates22PlatformAdminInvite.breadcrumbWorkspacesOverview');
+  else if (activeRoute === 'workspace-members') routeLabel = t('templates22PlatformAdminInvite.breadcrumbWorkspacesMembers');
+  else if (activeRoute === 'billing') routeLabel = t('templates22PlatformAdminInvite.breadcrumbWorkspacesBilling');
+  else if (activeRoute === 'audit-logs') routeLabel = t('templates22PlatformAdminInvite.breadcrumbWorkspacesAuditLogs');
+  else if (activeRoute === 'workspace-new') routeLabel = t('templates22PlatformAdminInvite.breadcrumbWorkspacesNew');
+  else if (activeRoute === 'workspace-edit') routeLabel = t('templates22PlatformAdminInvite.breadcrumbWorkspacesSettings');
+  else if (activeRoute === 'keys-new') routeLabel = t('templates22PlatformAdminInvite.breadcrumbApiKeysNew');
+  else if (activeRoute === 'key-details') routeLabel = t('templates22PlatformAdminInvite.breadcrumbApiKeyDetails');
+  else if (activeRoute === 'admin-invite') routeLabel = t('templates22PlatformAdminInvite.breadcrumbAdminInvite');
   else if (!routeLabel) routeLabel = activeRoute;
 
   return (
@@ -756,7 +782,7 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
           <Menu className="w-5 h-5" />
         </button>
         <div className="hidden sm:flex items-center text-sm font-medium">
-          <span className="text-[var(--text-secondary)]">Platform</span>
+          <span className="text-[var(--text-secondary)]">{t('templates22PlatformAdminInvite.breadcrumbPlatformRoot')}</span>
           <ChevronRight className="w-4 h-4 mx-2 text-[var(--border-color)] shrink-0 opacity-50" />
           <span className="text-[var(--text-primary)] capitalize">{routeLabel}</span>
         </div>
@@ -767,9 +793,9 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
         <div className="hidden sm:flex items-center gap-2">
            <div className="relative group hidden lg:block">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-[var(--text-secondary)] group-focus-within:text-[var(--primary-gold)] transition-colors" />
-              <input type="text" placeholder="Search..." className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
+              <input type="text" placeholder={t('templates22PlatformAdminInvite.headerSearchPlaceholder')} className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
             </div>
-            <Button variant="outline" size="sm" onClick={() => setActiveRoute('workspace-new')} className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> Workspace</Button>
+            <Button variant="outline" size="sm" onClick={() => setActiveRoute('workspace-new')} className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> {t('templates22PlatformAdminInvite.newWorkspaceButton')}</Button>
         </div>
         <NotificationDropdown />
         <HeaderUserMenu setActiveRoute={setActiveRoute} />
@@ -793,6 +819,7 @@ const SidebarTooltip = ({  children, content, isCollapsed  }: any) => {
 };
 
 const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, setIsCollapsed  }: any) => {
+  const t = useT();
   const collapsed = isCollapsed && !isMobile;
   const currentHighlight = 
     (activeRoute === 'workspace-details' || activeRoute === 'workspace-members' || activeRoute === 'billing' || activeRoute === 'audit-logs' || activeRoute === 'workspace-new' || activeRoute === 'workspace-edit') ? 'workspaces' : 
@@ -812,16 +839,16 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
         {!collapsed && (
           <div className="flex flex-col overflow-hidden animate-in fade-in duration-300">
             <span className="font-serif text-[17px] leading-none font-semibold text-[var(--text-primary)] tracking-wide">Kaori</span>
-            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">Platform</span>
+            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">{t('templates22PlatformAdminInvite.breadcrumbPlatformRoot')}</span>
           </div>
         )}
       </div>
 
-      <nav aria-label="Main Navigation" className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-6">
+      <nav aria-label={t('templates22PlatformAdminInvite.mainNavigationLabel')} className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-6">
         {NAVIGATION_CONFIG.map((group, idx) => (
           <div key={idx} className="flex flex-col">
             {!collapsed ? (
-              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{group.group}</div>
+              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{t(NAV_GROUP_KEYS[group.group] || group.group)}</div>
             ) : (
               <div className="w-full h-[1px] bg-[var(--border-color)]/60 my-2 rounded-full" />
             )}
@@ -829,8 +856,9 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
               {group.items.map((item) => {
                 const isActive = currentHighlight === item.id;
                 const Icon = item.icon;
+                const itemLabel = t(NAV_LABEL_KEYS[item.id] || item.label);
                 return (
-                  <SidebarTooltip key={item.id} content={item.label} isCollapsed={collapsed}>
+                  <SidebarTooltip key={item.id} content={itemLabel} isCollapsed={collapsed}>
                     <button
                       onClick={() => setActiveRoute(item.id)}
                       className={cn(
@@ -841,7 +869,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
                     >
                       {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[var(--primary-gold)] rounded-r-md transition-all" />}
                       <Icon className={`shrink-0 transition-colors ${isActive ? 'text-[var(--primary-gold)] w-5 h-5' : 'w-[18px] h-[18px] group-hover:text-[var(--text-primary)]'}`} />
-                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{item.label}</span>}
+                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{itemLabel}</span>}
                       {!collapsed && item.badge && (
                         <span className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[var(--primary-gold)] text-white text-[10px] font-bold shadow-sm ml-2">
                           {item.badge}
@@ -866,7 +894,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
             className={cn("w-full flex items-center h-8 rounded-md-custom text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors border border-transparent hover:border-[var(--border-color)]/50", collapsed ? 'justify-center' : 'px-3 gap-3')}
           >
             {collapsed ? <PanelLeftOpen className="w-[18px] h-[18px]" /> : <PanelLeftClose className="w-[18px] h-[18px]" />}
-            {!collapsed && <span className="text-xs font-medium">Collapse sidebar</span>}
+            {!collapsed && <span className="text-xs font-medium">{t('templates22PlatformAdminInvite.collapseSidebar')}</span>}
           </button>
         )}
       </div>
@@ -881,21 +909,22 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
 
 // --- PLATFORM ADMINS INVITE PAGE ---
 const PlatformAdminInvitePage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [step, setStep] = useState('form');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     email: '',
     role: 'Admin',
     message: ''
   });
-  
+
   const [errors, setErrors] = useState({});
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.email) newErrors.email = 'Email address is required';
-    else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = 'Please enter a valid email address';
+    if (!formData.email) newErrors.email = t('templates22PlatformAdminInvite.errEmailRequired');
+    else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = t('templates22PlatformAdminInvite.errEmailInvalid');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -913,65 +942,65 @@ const PlatformAdminInvitePage = ({  setActiveRoute  }: any) => {
       
       {step === 'form' && (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <PageHeader 
-            showBack 
+          <PageHeader
+            showBack
             onBack={() => setActiveRoute('admin')}
-            title="Invite Platform Admin" 
-            subtitle="Grant administrative access to manage platform resources."
+            title={t('templates22PlatformAdminInvite.inviteTitle')}
+            subtitle={t('templates22PlatformAdminInvite.inviteSubtitle')}
           />
-          
+
           <Card className="p-6 sm:p-8 mt-8 shadow-soft-md">
             <div className="space-y-6">
-              
-              <Input 
-                label="Email address" 
-                placeholder="admin@company.com" 
+
+              <Input
+                label={t('templates22PlatformAdminInvite.emailLabel')}
+                placeholder="admin@company.com"
                 value={formData.email}
                 onChange={e => { setFormData({...formData, email: e.target.value}); setErrors({}); }}
                 error={errors.email}
                 autoFocus
               />
-              
+
               <div className="space-y-2">
-                <Select 
-                  label="Role" 
+                <Select
+                  label={t('templates22PlatformAdminInvite.roleLabelWord')}
                   options={[
-                    {label: 'Super Admin', value: 'Super Admin'}, 
-                    {label: 'Admin', value: 'Admin'},
-                    {label: 'Support', value: 'Support'}
+                    {label: t('templates22PlatformAdminInvite.roleSuperAdmin'), value: 'Super Admin'},
+                    {label: t('templates22PlatformAdminInvite.roleAdmin'), value: 'Admin'},
+                    {label: t('templates22PlatformAdminInvite.roleSupport'), value: 'Support'}
                   ]}
                   value={formData.role}
                   onChange={v => setFormData({...formData, role: v})}
                 />
-                
+
                 {/* Dynamic Role Description */}
                 <div className="mt-2 text-xs text-[var(--text-secondary)] bg-[var(--bg-app)] p-3 rounded-md-custom border border-[var(--border-color)]">
                   {formData.role === 'Super Admin' && (
                     <div className="flex flex-col gap-2">
                       <span className="text-[#9B5050] font-medium flex items-center gap-1.5">
-                        <AlertTriangle className="w-3.5 h-3.5" /> Full system access
+                        <AlertTriangle className="w-3.5 h-3.5" /> {t('templates22PlatformAdminInvite.roleDescSuperAdminBadge')}
                       </span>
-                      <span>Super Admins have unrestricted access to all platform settings, billing, and global user management. Grant this role with caution.</span>
+                      <span>{t('templates22PlatformAdminInvite.roleDescSuperAdminBody')}</span>
                     </div>
                   )}
-                  {formData.role === 'Admin' && "Can manage workspaces, API keys, and platform-level users. Cannot access billing."}
-                  {formData.role === 'Support' && "Read-only access to workspaces and logs. Useful for troubleshooting without operational risk."}
+                  {formData.role === 'Admin' && t('templates22PlatformAdminInvite.roleDescAdmin')}
+                  {formData.role === 'Support' && t('templates22PlatformAdminInvite.roleDescSupport')}
                 </div>
               </div>
-              
-              <Input 
-                label="Add a message (optional)" 
-                placeholder="Include a personal note with the invitation..." 
+
+              <Input
+                label={t('templates22PlatformAdminInvite.messageLabel')}
+                placeholder={t('templates22PlatformAdminInvite.messagePlaceholder')}
                 value={formData.message}
                 onChange={e => setFormData({...formData, message: e.target.value})}
                 multiline
               />
 
             </div>
-            
+
             <div className="mt-8 pt-6 border-t border-[var(--border-color)] flex items-center justify-between">
-               <Button variant="tertiary" onClick={() => setActiveRoute('admin')} disabled={isSubmitting}>Cancel</Button>
-               <Button onClick={handleInvite} isLoading={isSubmitting}><Mail className="w-4 h-4 mr-2"/> Send invitation</Button>
+               <Button variant="tertiary" onClick={() => setActiveRoute('admin')} disabled={isSubmitting}>{t('templates22PlatformAdminInvite.cancel')}</Button>
+               <Button onClick={handleInvite} isLoading={isSubmitting}><Mail className="w-4 h-4 mr-2"/> {t('templates22PlatformAdminInvite.sendInvitation')}</Button>
             </div>
           </Card>
         </div>
@@ -979,18 +1008,18 @@ const PlatformAdminInvitePage = ({  setActiveRoute  }: any) => {
 
       {step === 'success' && (
         <div className="animate-in fade-in zoom-in-[0.98] duration-500">
-           <PageHeader title="Invitation sent" />
+           <PageHeader title={t('templates22PlatformAdminInvite.invitationSentTitle')} />
            <Card className="p-8 mt-8 shadow-soft-md flex flex-col items-center text-center">
              <div className="w-16 h-16 rounded-full bg-[#F3F9F5] border border-[#8FBFA0]/40 flex items-center justify-center mb-6">
                <CheckCircle2 className="w-8 h-8 text-[#5C856A]" />
              </div>
-             <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">Invitation successfully sent</h2>
+             <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">{t('templates22PlatformAdminInvite.invitationSentHeading')}</h2>
              <p className="text-sm text-[var(--text-secondary)] mb-8 max-w-sm">
-               An email has been sent to <strong className="text-[var(--text-primary)]">{formData.email}</strong> with instructions to join the platform as {formData.role}.
+               {t('templates22PlatformAdminInvite.invitationSentBodyPre')} <strong className="text-[var(--text-primary)]">{formData.email}</strong> {t('templates22PlatformAdminInvite.invitationSentBodyPost', { role: formData.role })}
              </p>
              <div className="flex gap-3">
-               <Button variant="outline" onClick={() => { setFormData({email:'', role:'Admin', message:''}); setStep('form'); }}>Invite another</Button>
-               <Button onClick={() => setActiveRoute('admin')}>Back to Admins</Button>
+               <Button variant="outline" onClick={() => { setFormData({email:'', role:'Admin', message:''}); setStep('form'); }}>{t('templates22PlatformAdminInvite.inviteAnother')}</Button>
+               <Button onClick={() => setActiveRoute('admin')}>{t('templates22PlatformAdminInvite.backToAdmins')}</Button>
              </div>
            </Card>
         </div>
@@ -1009,6 +1038,7 @@ const MOCK_ADMINS = [
 ];
 
 const AdminActionsDropdown = ({  admin, onRemove, onSuspend, onActivate, onResetPassword  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
 
@@ -1032,39 +1062,39 @@ const AdminActionsDropdown = ({  admin, onRemove, onSuspend, onActivate, onReset
         <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 animate-in fade-in zoom-in-95 duration-100">
           
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> Change role
+            <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates22PlatformAdminInvite.changeRole')}
           </button>
-          
-          <button 
+
+          <button
             onClick={() => { onResetPassword(admin); setIsOpen(false); }}
             className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors"
           >
-            <Lock className="w-4 h-4 text-[var(--text-secondary)]"/> Reset password
+            <Lock className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates22PlatformAdminInvite.resetPassword')}
           </button>
-          
+
           <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2" />
-          
+
           {admin.status === 'Active' || admin.status === 'Invited' ? (
-            <button 
+            <button
               onClick={() => { onSuspend(admin); setIsOpen(false); }}
               className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-warning)] hover:bg-[#FDF9F0] flex items-center gap-2 transition-colors font-medium"
             >
-              <Ban className="w-4 h-4 opacity-80"/> Suspend access
+              <Ban className="w-4 h-4 opacity-80"/> {t('templates22PlatformAdminInvite.suspendAccess')}
             </button>
           ) : (
-            <button 
+            <button
               onClick={() => { onActivate(admin); setIsOpen(false); }}
               className="w-full text-left px-3 py-1.5 text-sm text-[#5C856A] hover:bg-[#F3F9F5] flex items-center gap-2 transition-colors font-medium"
             >
-              <Unlock className="w-4 h-4 opacity-80"/> Restore access
+              <Unlock className="w-4 h-4 opacity-80"/> {t('templates22PlatformAdminInvite.restoreAccess')}
             </button>
           )}
 
-          <button 
+          <button
             onClick={() => { onRemove(admin); setIsOpen(false); }}
             className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] flex items-center gap-2 transition-colors font-medium"
           >
-            <Trash2 className="w-4 h-4 opacity-80"/> Remove admin
+            <Trash2 className="w-4 h-4 opacity-80"/> {t('templates22PlatformAdminInvite.removeAdmin')}
           </button>
         </div>
       )}
@@ -1073,6 +1103,7 @@ const AdminActionsDropdown = ({  admin, onRemove, onSuspend, onActivate, onReset
 };
 
 const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -1092,7 +1123,7 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
     if (adminToRemove?.role === 'Super Admin') {
       const superAdminCount = admins.filter(a => a.role === 'Super Admin').length;
       if (superAdminCount <= 1) {
-        setRemoveError("You cannot remove the last Super Admin. Promote another user first.");
+        setRemoveError(t('templates22PlatformAdminInvite.errCannotRemoveLastSuperAdmin'));
         return;
       }
     }
@@ -1105,7 +1136,7 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
     if (admin.role === 'Super Admin') {
       const superAdminCount = admins.filter(a => a.role === 'Super Admin' && a.status === 'Active').length;
       if (superAdminCount <= 1) {
-        alert("Cannot suspend the last active Super Admin."); 
+        alert(t('templates22PlatformAdminInvite.errCannotSuspendLastSuperAdmin'));
         return;
       }
     }
@@ -1117,7 +1148,7 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
   };
 
   const handleResetPassword = (admin) => {
-     alert(`Password reset link sent to ${admin.email}`);
+     alert(t('templates22PlatformAdminInvite.resetPasswordSentAlert', { email: admin.email }));
   };
 
   const filteredAdmins = admins.filter(a => {
@@ -1140,8 +1171,8 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
        </div>
        <div>
          <div className="font-medium text-[var(--text-primary)] flex items-center gap-2">
-           {a.name} 
-           {a.id === 'adm_1' && <span className="text-[10px] bg-[var(--bg-app)] border border-[var(--border-color)] px-1.5 py-0.5 rounded text-[var(--text-secondary)]">You</span>}
+           {a.name}
+           {a.id === 'adm_1' && <span className="text-[10px] bg-[var(--bg-app)] border border-[var(--border-color)] px-1.5 py-0.5 rounded text-[var(--text-secondary)]">{t('templates22PlatformAdminInvite.youBadge')}</span>}
          </div>
          <div className="text-xs text-[var(--text-secondary)] mt-0.5">{a.email}</div>
        </div>
@@ -1162,14 +1193,14 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Platform Admins" 
-        subtitle="Manage global administrators and access permissions across the platform." 
+      <PageHeader
+        title={t('templates22PlatformAdminInvite.adminsTitle')}
+        subtitle={t('templates22PlatformAdminInvite.adminsSubtitle')}
         actions={
           <Button onClick={() => setActiveRoute('admin-invite')}>
-            <UserPlus className="w-4 h-4 mr-2"/> Invite admin
+            <UserPlus className="w-4 h-4 mr-2"/> {t('templates22PlatformAdminInvite.inviteAdminButton')}
           </Button>
-        } 
+        }
       />
 
       <Section>
@@ -1179,65 +1210,65 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               className="h-10 w-full pl-9 pr-3 rounded-md-custom border border-[var(--border-color)] bg-white text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
-              placeholder="Search by name or email..."
+              placeholder={t('templates22PlatformAdminInvite.searchAdminsPlaceholder')}
               value={search}
               onChange={(e: any) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex w-full sm:w-auto gap-3 shrink-0">
             <div className="w-full sm:w-40">
-              <Select 
-                value={roleFilter} 
-                onChange={setRoleFilter} 
+              <Select
+                value={roleFilter}
+                onChange={setRoleFilter}
                 options={[
-                  {label: 'All Roles', value: 'all'}, 
-                  {label: 'Super Admin', value: 'Super Admin'}, 
-                  {label: 'Admin', value: 'Admin'},
-                  {label: 'Support', value: 'Support'}
-                ]} 
-                placeholder="Role" 
+                  {label: t('templates22PlatformAdminInvite.roleAllRoles'), value: 'all'},
+                  {label: t('templates22PlatformAdminInvite.roleSuperAdmin'), value: 'Super Admin'},
+                  {label: t('templates22PlatformAdminInvite.roleAdmin'), value: 'Admin'},
+                  {label: t('templates22PlatformAdminInvite.roleSupport'), value: 'Support'}
+                ]}
+                placeholder={t('templates22PlatformAdminInvite.roleLabelWord')}
               />
             </div>
             <div className="w-full sm:w-40">
-              <Select 
-                value={statusFilter} 
-                onChange={setStatusFilter} 
+              <Select
+                value={statusFilter}
+                onChange={setStatusFilter}
                 options={[
-                  {label: 'All Statuses', value: 'all'}, 
-                  {label: 'Active', value: 'Active'}, 
-                  {label: 'Invited', value: 'Invited'},
-                  {label: 'Suspended', value: 'Suspended'}
-                ]} 
-                placeholder="Status" 
+                  {label: t('templates22PlatformAdminInvite.statusAllStatuses'), value: 'all'},
+                  {label: t('templates22PlatformAdminInvite.statusActive'), value: 'Active'},
+                  {label: t('templates22PlatformAdminInvite.statusInvited'), value: 'Invited'},
+                  {label: t('templates22PlatformAdminInvite.statusSuspended'), value: 'Suspended'}
+                ]}
+                placeholder={t('templates22PlatformAdminInvite.colStatus')}
               />
             </div>
           </div>
           {(search || roleFilter !== 'all' || statusFilter !== 'all') && (
             <Button variant="tertiary" onClick={() => {setSearch(''); setRoleFilter('all'); setStatusFilter('all');}} className="px-3">
-              Clear filters
+              {t('templates22PlatformAdminInvite.clearFilters')}
             </Button>
           )}
         </div>
       </Section>
 
       <Section>
-        <DataTable 
-          columns={["Name / Email", "Role", "Status", "Last Active", "Created At", ""]} 
-          data={mappedData} 
-          loading={isLoading} 
+        <DataTable
+          columns={[t('templates22PlatformAdminInvite.colNameEmail'), t('templates22PlatformAdminInvite.roleLabelWord'), t('templates22PlatformAdminInvite.colStatus'), t('templates22PlatformAdminInvite.colLastActive'), t('templates22PlatformAdminInvite.colCreatedAt'), ""]}
+          data={mappedData}
+          loading={isLoading}
         />
       </Section>
 
       {/* Remove Confirmation Modal */}
-      <Modal 
-        isOpen={!!adminToRemove} 
+      <Modal
+        isOpen={!!adminToRemove}
         onClose={() => { setAdminToRemove(null); setRemoveError(''); }}
-        title="Remove Platform Admin"
-        description={`Are you sure you want to remove ${adminToRemove?.name} from platform administration? They will lose all access immediately.`}
+        title={t('templates22PlatformAdminInvite.removeAdminTitle')}
+        description={t('templates22PlatformAdminInvite.removeAdminDesc', { name: adminToRemove?.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => { setAdminToRemove(null); setRemoveError(''); }}>Cancel</Button>
-            <Button variant="destructive" onClick={handleRemove}>Remove Admin</Button>
+            <Button variant="outline" onClick={() => { setAdminToRemove(null); setRemoveError(''); }}>{t('templates22PlatformAdminInvite.cancel')}</Button>
+            <Button variant="destructive" onClick={handleRemove}>{t('templates22PlatformAdminInvite.removeAdminConfirm')}</Button>
           </>
         }
       >
@@ -1247,7 +1278,7 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
           </Alert>
         )}
         <div className="text-sm text-[var(--text-secondary)]">
-          This action cannot be undone. To restore access later, you will need to send a new invitation.
+          {t('templates22PlatformAdminInvite.removeAdminIrreversible')}
         </div>
       </Modal>
 
@@ -1259,6 +1290,7 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
 // --- API KEY DETAILS PAGE ---
 
 const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isRotateOpen, setIsRotateOpen] = useState(false);
   const [isRevokeOpen, setIsRevokeOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -1314,32 +1346,32 @@ const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
       {showSavedToast && (
         <div className="absolute top-0 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="bg-[#F3F9F5] border border-[#8FBFA0] text-[#427A5B] px-4 py-2 rounded-full shadow-soft-md flex items-center gap-2 text-sm font-medium">
-            <CheckCircle2 className="w-4 h-4" /> Key settings updated
+            <CheckCircle2 className="w-4 h-4" /> {t('templates22PlatformAdminInvite.keySettingsUpdated')}
           </div>
         </div>
       )}
 
-      <PageHeader 
-        showBack 
+      <PageHeader
+        showBack
         onBack={() => setActiveRoute('keys')}
-        title={keyData.name} 
+        title={keyData.name}
         subtitle={maskKey(keyData.keyHash)}
         actions={
           keyData.status === 'Active' ? (
             <>
               <Button variant="outline" onClick={() => setIsRotateOpen(true)} className="hidden sm:flex">
-                <RefreshCcw className="w-4 h-4 mr-2" /> Rotate key
+                <RefreshCcw className="w-4 h-4 mr-2" /> {t('templates22PlatformAdminInvite.rotateKey')}
               </Button>
               <Button variant="destructive-soft" onClick={() => setIsRevokeOpen(true)}>
-                <Ban className="w-4 h-4 mr-2" /> Revoke
+                <Ban className="w-4 h-4 mr-2" /> {t('templates22PlatformAdminInvite.revoke')}
               </Button>
             </>
           ) : (
             <Button variant="destructive" onClick={() => setActiveRoute('keys')}>
-              <Trash2 className="w-4 h-4 mr-2" /> Delete
+              <Trash2 className="w-4 h-4 mr-2" /> {t('templates22PlatformAdminInvite.deleteAction')}
             </Button>
           )
-        } 
+        }
       />
 
       {/* Summary Card */}
@@ -1348,23 +1380,23 @@ const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
            <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-[var(--primary-gold)]/5 to-transparent pointer-events-none" />
            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 relative z-10">
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Status</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates22PlatformAdminInvite.colStatus')}</p>
                 <Badge variant={keyData.status === 'Active' ? 'success' : 'default'} className="py-1">{keyData.status}</Badge>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Scope</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates22PlatformAdminInvite.scopeLabel')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">{keyData.scope}</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Created</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates22PlatformAdminInvite.createdLabel')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">{keyData.created}</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Last Used</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates22PlatformAdminInvite.lastUsedLabel')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">{keyData.lastUsed}</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Expiration</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates22PlatformAdminInvite.expirationLabel')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">{keyData.expires}</div>
              </div>
            </div>
@@ -1374,9 +1406,9 @@ const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
       {/* Metrics */}
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-          <MetricCard title="Requests (24h)" value="18,492" trend="+1.2%" isUp={true} />
-          <MetricCard title="Error Rate (24h)" value="0.05%" trend="-0.01%" isUp={false} inverseGood={true} />
-          <MetricCard title="Avg Latency (24h)" value="45ms" trend="0%" />
+          <MetricCard title={t('templates22PlatformAdminInvite.metricRequests24h')} value="18,492" trend="+1.2%" isUp={true} />
+          <MetricCard title={t('templates22PlatformAdminInvite.metricErrorRate24h')} value="0.05%" trend="-0.01%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates22PlatformAdminInvite.metricAvgLatency24h')} value="45ms" trend="0%" />
         </div>
       </Section>
 
@@ -1385,23 +1417,23 @@ const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
         <Tabs defaultValue="usage" tabs={[
           {
             id: 'usage',
-            label: 'Usage',
+            label: t('templates22PlatformAdminInvite.tabUsage'),
             content: (
               <div className="space-y-6">
                 <Card className="p-6">
                    <div className="flex items-center justify-between mb-4 border-b border-[var(--border-color)] pb-3">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Top Endpoints</h3>
-                     <span className="text-xs text-[var(--text-secondary)]">Last 30 days</span>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates22PlatformAdminInvite.topEndpoints')}</h3>
+                     <span className="text-xs text-[var(--text-secondary)]">{t('templates22PlatformAdminInvite.last30Days')}</span>
                    </div>
-                   <DataTable 
-                     columns={["Endpoint", "Requests", "Error Rate"]} 
+                   <DataTable
+                     columns={[t('templates22PlatformAdminInvite.colEndpoint'), t('templates22PlatformAdminInvite.colRequests'), t('templates22PlatformAdminInvite.colErrorRate')]}
                      data={[
-                       ["POST /v1/completions", "45.2K", "0.01%"], 
-                       ["GET /v1/workspaces", "12.0K", "0.00%"], 
+                       ["POST /v1/completions", "45.2K", "0.01%"],
+                       ["GET /v1/workspaces", "12.0K", "0.00%"],
                        ["POST /v1/embeddings", "8.2K", "0.08%"]
-                     ]} 
-                     pagination={false} 
-                     loading={false} 
+                     ]}
+                     pagination={false}
+                     loading={false}
                    />
                 </Card>
               </div>
@@ -1409,16 +1441,16 @@ const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
           },
           {
             id: 'activity',
-            label: 'Activity Log',
+            label: t('templates22PlatformAdminInvite.tabActivityLog'),
             content: (
               <div className="space-y-6">
-                 <DataTable 
-                  columns={["Timestamp", "Action", "IP Address", "Status"]}
+                 <DataTable
+                  columns={[t('templates22PlatformAdminInvite.colTimestamp'), t('templates22PlatformAdminInvite.colAction'), t('templates22PlatformAdminInvite.colIpAddress'), t('templates22PlatformAdminInvite.colStatus')]}
                   data={[
-                    ["Oct 25, 2026 14:32:01", "Request made (POST /v1/completions)", "103.142.12.33", <Badge variant="operational" key="1">Success</Badge>],
-                    ["Oct 25, 2026 14:31:45", "Request made (POST /v1/completions)", "103.142.12.33", <Badge variant="operational" key="2">Success</Badge>],
-                    ["Oct 25, 2026 14:15:22", "Request made (GET /v1/workspaces)", "103.142.12.33", <Badge variant="operational" key="3">Success</Badge>],
-                    ["Oct 25, 2026 10:05:11", "Request made (POST /v1/embeddings)", "202.168.1.99", <Badge variant="error" key="4">Rate Limited</Badge>],
+                    ["Oct 25, 2026 14:32:01", "Request made (POST /v1/completions)", "103.142.12.33", <Badge variant="operational" key="1">{t('templates22PlatformAdminInvite.statusSuccess')}</Badge>],
+                    ["Oct 25, 2026 14:31:45", "Request made (POST /v1/completions)", "103.142.12.33", <Badge variant="operational" key="2">{t('templates22PlatformAdminInvite.statusSuccess')}</Badge>],
+                    ["Oct 25, 2026 14:15:22", "Request made (GET /v1/workspaces)", "103.142.12.33", <Badge variant="operational" key="3">{t('templates22PlatformAdminInvite.statusSuccess')}</Badge>],
+                    ["Oct 25, 2026 10:05:11", "Request made (POST /v1/embeddings)", "202.168.1.99", <Badge variant="error" key="4">{t('templates22PlatformAdminInvite.statusRateLimited')}</Badge>],
                   ]}
                   loading={false}
                 />
@@ -1427,26 +1459,26 @@ const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
           },
           {
             id: 'settings',
-            label: 'Settings',
+            label: t('templates22PlatformAdminInvite.tabSettings'),
             content: (
               <div className="max-w-2xl space-y-6">
                 <Card className="p-6">
-                   <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">Key Settings</h3>
+                   <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">{t('templates22PlatformAdminInvite.keySettingsHeading')}</h3>
                    <div className="space-y-5">
-                     <Input 
-                       label="Key Name" 
-                       value={editName} 
-                       onChange={e => setEditName(e.target.value)} 
-                       helperText="A descriptive name to help you identify this key."
+                     <Input
+                       label={t('templates22PlatformAdminInvite.keyNameLabel')}
+                       value={editName}
+                       onChange={e => setEditName(e.target.value)}
+                       helperText={t('templates22PlatformAdminInvite.keyNameHelper')}
                      />
-                     <Input 
-                       label="Scope" 
-                       value={keyData.scope} 
-                       disabled 
-                       helperText="Scope cannot be modified after creation. To change scopes, generate a new key."
+                     <Input
+                       label={t('templates22PlatformAdminInvite.scopeLabel')}
+                       value={keyData.scope}
+                       disabled
+                       helperText={t('templates22PlatformAdminInvite.scopeHelper')}
                      />
                      <div className="pt-4 flex justify-end">
-                       <Button onClick={handleSaveSettings} disabled={editName === keyData.name} isLoading={isProcessing}>Save changes</Button>
+                       <Button onClick={handleSaveSettings} disabled={editName === keyData.name} isLoading={isProcessing}>{t('templates22PlatformAdminInvite.saveChanges')}</Button>
                      </div>
                    </div>
                 </Card>
@@ -1457,48 +1489,48 @@ const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
       </Section>
 
       {/* Revoke Key Modal */}
-      <Modal 
-        isOpen={isRevokeOpen} 
+      <Modal
+        isOpen={isRevokeOpen}
         onClose={() => !isProcessing && setIsRevokeOpen(false)}
-        title="Revoke API Key"
-        description={`Are you sure you want to revoke "${keyData.name}"?`}
+        title={t('templates22PlatformAdminInvite.revokeApiKeyTitle')}
+        description={t('templates22PlatformAdminInvite.revokeApiKeyDesc', { name: keyData.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsRevokeOpen(false)} disabled={isProcessing}>Cancel</Button>
-            <Button variant="destructive" onClick={handleRevokeConfirm} isLoading={isProcessing}>Revoke Key</Button>
+            <Button variant="outline" onClick={() => setIsRevokeOpen(false)} disabled={isProcessing}>{t('templates22PlatformAdminInvite.cancel')}</Button>
+            <Button variant="destructive" onClick={handleRevokeConfirm} isLoading={isProcessing}>{t('templates22PlatformAdminInvite.revokeKeyConfirm')}</Button>
           </>
         }
       >
         <Alert variant="error" className="mb-2">
-          Any integrations currently using this key will immediately fail. This action cannot be undone.
+          {t('templates22PlatformAdminInvite.revokeKeyWarning')}
         </Alert>
       </Modal>
 
       {/* Rotate Key Modal */}
-      <Modal 
-        isOpen={isRotateOpen} 
+      <Modal
+        isOpen={isRotateOpen}
         onClose={() => { if(!generatedKey && !isProcessing) setIsRotateOpen(false); }}
-        title={generatedKey ? "Save new API Key" : "Rotate API Key"}
-        description={generatedKey ? "Please copy your new key. The old one is now invalid." : `Are you sure you want to rotate "${keyData.name}"?`}
+        title={generatedKey ? t('templates22PlatformAdminInvite.saveNewApiKeyTitle') : t('templates22PlatformAdminInvite.rotateApiKeyTitle')}
+        description={generatedKey ? t('templates22PlatformAdminInvite.saveNewApiKeyDesc') : t('templates22PlatformAdminInvite.rotateApiKeyDesc', { name: keyData.name })}
         footer={
           generatedKey ? (
-            <Button onClick={() => { setIsRotateOpen(false); setGeneratedKey(null); }} className="w-full">Done</Button>
+            <Button onClick={() => { setIsRotateOpen(false); setGeneratedKey(null); }} className="w-full">{t('templates22PlatformAdminInvite.done')}</Button>
           ) : (
             <>
-              <Button variant="outline" onClick={() => setIsRotateOpen(false)} disabled={isProcessing}>Cancel</Button>
-              <Button onClick={handleRotateConfirm} isLoading={isProcessing}>Rotate Key</Button>
+              <Button variant="outline" onClick={() => setIsRotateOpen(false)} disabled={isProcessing}>{t('templates22PlatformAdminInvite.cancel')}</Button>
+              <Button onClick={handleRotateConfirm} isLoading={isProcessing}>{t('templates22PlatformAdminInvite.rotateKeyConfirm')}</Button>
             </>
           )
         }
       >
         {!generatedKey ? (
           <Alert variant="warning">
-            This will immediately invalidate the current key and generate a new one. Applications using the old key will lose access until updated.
+            {t('templates22PlatformAdminInvite.rotateKeyWarning')}
           </Alert>
         ) : (
           <div className="space-y-4">
-            <Alert variant="success" title="Key Rotated Successfully">
-              Your new key is ready. Remember to update your environments.
+            <Alert variant="success" title={t('templates22PlatformAdminInvite.keyRotatedSuccessTitle')}>
+              {t('templates22PlatformAdminInvite.keyRotatedSuccessBody')}
             </Alert>
             <div className="flex items-center gap-2 p-3 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom">
               <span className="font-mono text-sm text-[var(--text-primary)] flex-1 overflow-x-auto whitespace-nowrap scrollbar-hide select-all">
@@ -1527,6 +1559,7 @@ const maskKey = (hash) => {
 };
 
 const KeyActionsDropdown = ({  apiKey, onRevoke, onRotate, onViewDetails  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -1540,45 +1573,45 @@ const KeyActionsDropdown = ({  apiKey, onRevoke, onRotate, onViewDetails  }: any
 
   return (
     <div className="relative flex justify-end" ref={dropdownRef}>
-      <button 
-        onClick={() => setIsOpen(!isOpen)} 
+      <button
+        onClick={() => setIsOpen(!isOpen)}
         className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] rounded-md-custom transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-gold)]/50"
-        aria-label="Key Actions"
+        aria-label={t('templates22PlatformAdminInvite.keyActionsLabel')}
       >
         <MoreVertical className="w-4 h-4"/>
       </button>
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 w-44 bg-[var(--bg-card)] border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 animate-in fade-in zoom-in-95 duration-100">
-          <button 
+          <button
             onClick={() => { onViewDetails(); setIsOpen(false); }}
             className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors"
           >
-            <Eye className="w-4 h-4 text-[var(--text-secondary)]" /> View details
+            <Eye className="w-4 h-4 text-[var(--text-secondary)]" /> {t('templates22PlatformAdminInvite.viewDetails')}
           </button>
-          
+
           {apiKey.status === 'Active' && (
             <>
-              <button 
+              <button
                 onClick={() => { onRotate(apiKey); setIsOpen(false); }}
                 className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors"
               >
-                <RefreshCcw className="w-4 h-4 text-[var(--text-secondary)]" /> Rotate key
+                <RefreshCcw className="w-4 h-4 text-[var(--text-secondary)]" /> {t('templates22PlatformAdminInvite.rotateKey')}
               </button>
-              
+
               <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2" />
-              
-              <button 
+
+              <button
                 onClick={() => { onRevoke(apiKey); setIsOpen(false); }}
                 className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-warning)] hover:bg-[#FDF9F0] flex items-center gap-2 transition-colors font-medium"
               >
-                <Ban className="w-4 h-4 opacity-80" /> Revoke key
+                <Ban className="w-4 h-4 opacity-80" /> {t('templates22PlatformAdminInvite.revokeKeyConfirm')}
               </button>
             </>
           )}
 
           {apiKey.status === 'Revoked' && (
             <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] flex items-center gap-2 transition-colors font-medium mt-1">
-              <Trash2 className="w-4 h-4 opacity-80" /> Delete
+              <Trash2 className="w-4 h-4 opacity-80" /> {t('templates22PlatformAdminInvite.deleteAction')}
             </button>
           )}
         </div>
@@ -1588,6 +1621,7 @@ const KeyActionsDropdown = ({  apiKey, onRevoke, onRotate, onViewDetails  }: any
 };
 
 const ApiKeysPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [keys, setKeys] = useState(MOCK_API_KEYS);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -1662,12 +1696,12 @@ const ApiKeysPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="API Keys" 
-        subtitle="Manage and secure programmatic access to your platform."
+      <PageHeader
+        title={t('templates22PlatformAdminInvite.apiKeysTitle')}
+        subtitle={t('templates22PlatformAdminInvite.apiKeysSubtitle')}
         actions={
           <Button onClick={() => setActiveRoute('keys-new')}>
-            <Plus className="w-4 h-4 mr-2" /> Create key
+            <Plus className="w-4 h-4 mr-2" /> {t('templates22PlatformAdminInvite.createKeyButton')}
           </Button>
         }
       />
@@ -1678,78 +1712,78 @@ const ApiKeysPage = ({  setActiveRoute  }: any) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               className="h-10 w-full pl-9 pr-3 rounded-md-custom border border-[var(--border-color)] bg-white text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
-              placeholder="Search key name..."
+              placeholder={t('templates22PlatformAdminInvite.searchKeysPlaceholder')}
               value={search}
               onChange={(e: any) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex w-full sm:w-auto gap-3 shrink-0">
             <div className="w-full sm:w-40">
-              <Select 
-                value={statusFilter} 
-                onChange={setStatusFilter} 
-                options={[{label: 'All Statuses', value: 'all'}, {label: 'Active', value: 'Active'}, {label: 'Revoked', value: 'Revoked'}]} 
-                placeholder="Status" 
+              <Select
+                value={statusFilter}
+                onChange={setStatusFilter}
+                options={[{label: t('templates22PlatformAdminInvite.statusAllStatuses'), value: 'all'}, {label: t('templates22PlatformAdminInvite.statusActive'), value: 'Active'}, {label: t('templates22PlatformAdminInvite.statusRevoked'), value: 'Revoked'}]}
+                placeholder={t('templates22PlatformAdminInvite.colStatus')}
               />
             </div>
           </div>
           {(search || statusFilter !== 'all') && (
-            <Button variant="tertiary" onClick={() => {setSearch(''); setStatusFilter('all');}} className="px-3">Clear filters</Button>
+            <Button variant="tertiary" onClick={() => {setSearch(''); setStatusFilter('all');}} className="px-3">{t('templates22PlatformAdminInvite.clearFilters')}</Button>
           )}
         </div>
       </Section>
 
       <Section>
-        <DataTable 
-          columns={["Key Name", "Secret Key", "Scope", "Created At", "Last Used", "Status", ""]}
+        <DataTable
+          columns={[t('templates22PlatformAdminInvite.colKeyName'), t('templates22PlatformAdminInvite.colSecretKey'), t('templates22PlatformAdminInvite.scopeLabel'), t('templates22PlatformAdminInvite.colCreatedAt'), t('templates22PlatformAdminInvite.lastUsedLabel'), t('templates22PlatformAdminInvite.colStatus'), ""]}
           data={tableData}
           loading={isLoading}
         />
       </Section>
 
       {/* Revoke Key Modal */}
-      <Modal 
-        isOpen={isRevokeOpen} 
+      <Modal
+        isOpen={isRevokeOpen}
         onClose={() => !isProcessing && setIsRevokeOpen(false)}
-        title="Revoke API Key"
-        description={`Are you sure you want to revoke "${selectedKey?.name}"?`}
+        title={t('templates22PlatformAdminInvite.revokeApiKeyTitle')}
+        description={t('templates22PlatformAdminInvite.revokeApiKeyDesc', { name: selectedKey?.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsRevokeOpen(false)} disabled={isProcessing}>Cancel</Button>
-            <Button variant="destructive" onClick={handleRevokeConfirm} isLoading={isProcessing}>Revoke Key</Button>
+            <Button variant="outline" onClick={() => setIsRevokeOpen(false)} disabled={isProcessing}>{t('templates22PlatformAdminInvite.cancel')}</Button>
+            <Button variant="destructive" onClick={handleRevokeConfirm} isLoading={isProcessing}>{t('templates22PlatformAdminInvite.revokeKeyConfirm')}</Button>
           </>
         }
       >
         <Alert variant="error" className="mb-2">
-          Any integrations currently using this key will immediately fail. This action cannot be undone.
+          {t('templates22PlatformAdminInvite.revokeKeyWarning')}
         </Alert>
       </Modal>
 
       {/* Rotate Key Modal */}
-      <Modal 
-        isOpen={isRotateOpen} 
+      <Modal
+        isOpen={isRotateOpen}
         onClose={() => { if(!generatedKey && !isProcessing) setIsRotateOpen(false); }}
-        title={generatedKey ? "Save new API Key" : "Rotate API Key"}
-        description={generatedKey ? "Please copy your new key. The old one is now invalid." : `Are you sure you want to rotate "${selectedKey?.name}"?`}
+        title={generatedKey ? t('templates22PlatformAdminInvite.saveNewApiKeyTitle') : t('templates22PlatformAdminInvite.rotateApiKeyTitle')}
+        description={generatedKey ? t('templates22PlatformAdminInvite.saveNewApiKeyDesc') : t('templates22PlatformAdminInvite.rotateApiKeyDesc', { name: selectedKey?.name })}
         footer={
           generatedKey ? (
-            <Button onClick={() => { setIsRotateOpen(false); setGeneratedKey(null); }} className="w-full">Done</Button>
+            <Button onClick={() => { setIsRotateOpen(false); setGeneratedKey(null); }} className="w-full">{t('templates22PlatformAdminInvite.done')}</Button>
           ) : (
             <>
-              <Button variant="outline" onClick={() => setIsRotateOpen(false)} disabled={isProcessing}>Cancel</Button>
-              <Button onClick={handleRotateConfirm} isLoading={isProcessing}>Rotate Key</Button>
+              <Button variant="outline" onClick={() => setIsRotateOpen(false)} disabled={isProcessing}>{t('templates22PlatformAdminInvite.cancel')}</Button>
+              <Button onClick={handleRotateConfirm} isLoading={isProcessing}>{t('templates22PlatformAdminInvite.rotateKeyConfirm')}</Button>
             </>
           )
         }
       >
         {!generatedKey ? (
           <Alert variant="warning">
-            This will immediately invalidate the current key and generate a new one. Applications using the old key will lose access until updated.
+            {t('templates22PlatformAdminInvite.rotateKeyWarning')}
           </Alert>
         ) : (
           <div className="space-y-4">
-            <Alert variant="success" title="Key Rotated Successfully">
-              Your new key is ready. Remember to update your environments.
+            <Alert variant="success" title={t('templates22PlatformAdminInvite.keyRotatedSuccessTitle')}>
+              {t('templates22PlatformAdminInvite.keyRotatedSuccessBody')}
             </Alert>
             <div className="flex items-center gap-2 p-3 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom">
               <span className="font-mono text-sm text-[var(--text-primary)] flex-1 overflow-x-auto whitespace-nowrap scrollbar-hide select-all">
@@ -1766,6 +1800,7 @@ const ApiKeysPage = ({  setActiveRoute  }: any) => {
 };
 
 const ApiKeyNewPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [step, setStep] = useState(1);
   const [isCreating, setIsCreating] = useState(false);
   const [generatedKey, setGeneratedKey] = useState(null);
@@ -1774,7 +1809,7 @@ const ApiKeyNewPage = ({  setActiveRoute  }: any) => {
 
   const handleCreate = async () => {
     if (!formData.name) {
-      setErrors({ name: 'Key name is required' });
+      setErrors({ name: t('templates22PlatformAdminInvite.errKeyNameRequired') });
       return;
     }
     setIsCreating(true);
@@ -1791,38 +1826,38 @@ const ApiKeyNewPage = ({  setActiveRoute  }: any) => {
        {/* Step 1 */}
        {step === 1 && (
          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-           <PageHeader 
-             showBack 
+           <PageHeader
+             showBack
              onBack={() => setActiveRoute('keys')}
-             title="Create API Key" 
-             subtitle="Generate a secure key to allow programmatic access to your platform."
+             title={t('templates22PlatformAdminInvite.createApiKeyTitle')}
+             subtitle={t('templates22PlatformAdminInvite.createApiKeySubtitle')}
            />
            <Card className="p-6 sm:p-8 mt-8 shadow-soft-md">
              <div className="space-y-6">
-                <Input 
-                  label="Key Name" 
-                  placeholder="e.g. Production Backend" 
+                <Input
+                  label={t('templates22PlatformAdminInvite.keyNameLabel')}
+                  placeholder={t('templates22PlatformAdminInvite.keyNamePlaceholder')}
                   value={formData.name}
                   onChange={e => { setFormData({...formData, name: e.target.value}); setErrors({}); }}
                   error={errors.name}
                   autoFocus
                 />
-                <Select 
-                  label="Scope" 
-                  options={[{label: 'Full Access', value: 'Full Access'}, {label: 'Read-only', value: 'Read-only'}]}
+                <Select
+                  label={t('templates22PlatformAdminInvite.scopeLabel')}
+                  options={[{label: t('templates22PlatformAdminInvite.scopeFullAccess'), value: 'Full Access'}, {label: t('templates22PlatformAdminInvite.scopeReadOnly'), value: 'Read-only'}]}
                   value={formData.scope}
                   onChange={v => setFormData({...formData, scope: v})}
                 />
-                <Select 
-                  label="Expiration" 
-                  options={[{label: 'Never', value: 'never'}, {label: '30 days', value: '30'}, {label: '90 days', value: '90'}]}
+                <Select
+                  label={t('templates22PlatformAdminInvite.expirationLabel')}
+                  options={[{label: t('templates22PlatformAdminInvite.expirationNever'), value: 'never'}, {label: t('templates22PlatformAdminInvite.expiration30Days'), value: '30'}, {label: t('templates22PlatformAdminInvite.expiration90Days'), value: '90'}]}
                   value={formData.expiration}
                   onChange={v => setFormData({...formData, expiration: v})}
                 />
              </div>
              <div className="mt-8 pt-6 border-t border-[var(--border-color)] flex items-center justify-between">
-                <Button variant="tertiary" onClick={() => setActiveRoute('keys')}>Cancel</Button>
-                <Button onClick={handleCreate} isLoading={isCreating}>Create key</Button>
+                <Button variant="tertiary" onClick={() => setActiveRoute('keys')}>{t('templates22PlatformAdminInvite.cancel')}</Button>
+                <Button onClick={handleCreate} isLoading={isCreating}>{t('templates22PlatformAdminInvite.createKeyButton')}</Button>
              </div>
            </Card>
          </div>
@@ -1831,22 +1866,22 @@ const ApiKeyNewPage = ({  setActiveRoute  }: any) => {
        {/* Step 2 */}
        {step === 2 && (
          <div className="animate-in fade-in zoom-in-[0.98] duration-500">
-           <PageHeader 
-             title="Your API key has been created" 
-             subtitle="Please store this key securely. We cannot show it to you again."
+           <PageHeader
+             title={t('templates22PlatformAdminInvite.apiKeyCreatedTitle')}
+             subtitle={t('templates22PlatformAdminInvite.apiKeyCreatedSubtitle')}
            />
            <Card className="p-6 sm:p-8 mt-8 shadow-soft-md border-[var(--primary-gold)]/30">
              <Alert variant="warning" className="mb-6 bg-[#FDF9F0] border-[#E6C07B]/40">
                <div className="flex items-start gap-2">
                  <div>
-                   <h4 className="text-sm font-semibold text-[#9E814D] mb-1">Make sure to copy your key now</h4>
-                   <p className="text-xs text-[#9E814D]/90">You will not be able to see it again after you leave this page. If you lose it, you will need to generate a new one.</p>
+                   <h4 className="text-sm font-semibold text-[#9E814D] mb-1">{t('templates22PlatformAdminInvite.copyKeyNowTitle')}</h4>
+                   <p className="text-xs text-[#9E814D]/90">{t('templates22PlatformAdminInvite.copyKeyNowBody')}</p>
                  </div>
                </div>
              </Alert>
 
              <div className="space-y-2 mb-8">
-               <Label>Secret API Key</Label>
+               <Label>{t('templates22PlatformAdminInvite.secretApiKeyLabel')}</Label>
                <div className="flex items-center gap-3 p-3 sm:p-4 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom shadow-inner">
                  <span className="font-mono text-sm sm:text-base text-[var(--text-primary)] flex-1 overflow-x-auto whitespace-nowrap scrollbar-hide select-all">
                    {generatedKey}
@@ -1856,7 +1891,7 @@ const ApiKeyNewPage = ({  setActiveRoute  }: any) => {
              </div>
 
              <div className="pt-6 border-t border-[var(--border-color)] flex justify-end">
-                <Button onClick={() => setActiveRoute('keys')}>Done</Button>
+                <Button onClick={() => setActiveRoute('keys')}>{t('templates22PlatformAdminInvite.done')}</Button>
              </div>
            </Card>
          </div>
@@ -1864,6 +1899,28 @@ const ApiKeyNewPage = ({  setActiveRoute  }: any) => {
     </PageContainer>
   )
 }
+
+// --- FALLBACK "UNDER CONSTRUCTION" MODULE PAGE ---
+const FallbackModulePage = ({  activeRoute  }: any) => {
+  const t = useT();
+  const navItem = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute);
+  const label = navItem ? t(NAV_LABEL_KEYS[navItem.id] || navItem.label) : activeRoute;
+  const Icon = navItem?.icon || LayoutDashboard;
+  return (
+    <PageContainer maxWidth="narrow">
+      <PageHeader title={t('templates22PlatformAdminInvite.moduleTitle', { label })} subtitle={t('templates22PlatformAdminInvite.moduleSubtitle')} />
+      <Section>
+        <Card className="flex flex-col items-center justify-center py-20 px-4 text-center border-dashed bg-[var(--bg-card)]/50 mx-auto w-full animate-in fade-in duration-300">
+          <div className="w-12 h-12 rounded-lg-custom bg-[var(--bg-sidebar)] flex items-center justify-center border border-[var(--border-color)] mb-4">
+            {React.createElement(Icon, { className: 'w-6 h-6 text-[var(--text-secondary)]' })}
+          </div>
+          <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">{t('templates22PlatformAdminInvite.workInProgressTitle')}</h3>
+          <p className="text-sm text-[var(--text-secondary)] max-w-sm">{t('templates22PlatformAdminInvite.workInProgressDesc', { route: activeRoute })}</p>
+        </Card>
+      </Section>
+    </PageContainer>
+  );
+};
 
 // ==========================================
 // MAIN PLATFORM SHELL COMPONENT
@@ -1923,18 +1980,7 @@ export default function KaoriPlatformShell() {
              activeRoute === 'admin-invite' ? <PlatformAdminInvitePage setActiveRoute={setActiveRoute} /> :
              activeRoute === 'overview' ? <PlatformOverview /> : 
              activeRoute === 'sessions' ? <SessionsPage /> : (
-              <PageContainer maxWidth="narrow">
-                <PageHeader title={`${NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label} module`} subtitle="This section of the platform is currently being designed." />
-                <Section>
-                  <Card className="flex flex-col items-center justify-center py-20 px-4 text-center border-dashed bg-[var(--bg-card)]/50 mx-auto w-full animate-in fade-in duration-300">
-                    <div className="w-12 h-12 rounded-lg-custom bg-[var(--bg-sidebar)] flex items-center justify-center border border-[var(--border-color)] mb-4">
-                      {React.createElement(NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.icon || LayoutDashboard, { className: 'w-6 h-6 text-[var(--text-secondary)]' })}
-                    </div>
-                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">Work in Progress</h3>
-                    <p className="text-sm text-[var(--text-secondary)] max-w-sm">Content for {activeRoute} will populate here inside the Shell Wrapper.</p>
-                  </Card>
-                </Section>
-              </PageContainer>
+              <FallbackModulePage activeRoute={activeRoute} />
             )}
           </main>
         </div>

@@ -1,0 +1,289 @@
+{
+  "templates31DecisionLog.frameworkFree": {
+    "vi": "Tự do",
+    "en": "Free-form",
+    "ja": "自由形式",
+    "ko": "자유 형식",
+    "zh": "自由形式"
+  },
+  "templates31DecisionLog.riskHigh": {
+    "vi": "Churn cao",
+    "en": "High churn",
+    "ja": "解約リスク高",
+    "ko": "이탈 위험 높음",
+    "zh": "流失风险高"
+  },
+  "templates31DecisionLog.riskMedium": {
+    "vi": "Churn vừa",
+    "en": "Medium churn",
+    "ja": "解約リスク中",
+    "ko": "이탈 위험 중간",
+    "zh": "流失风险中"
+  },
+  "templates31DecisionLog.riskLow": {
+    "vi": "Churn thấp",
+    "en": "Low churn",
+    "ja": "解約リスク低",
+    "ko": "이탈 위험 낮음",
+    "zh": "流失风险低"
+  },
+  "templates31DecisionLog.pageTitle": {
+    "vi": "Nhật ký quyết định",
+    "en": "Decision log",
+    "ja": "決定ログ",
+    "ko": "결정 로그",
+    "zh": "决策日志"
+  },
+  "templates31DecisionLog.pageDescription": {
+    "vi": "Mọi quyết định AI đề xuất đều được audit log (K-6). Đánh dấu 'Đã hành động' để đóng góp vào North Star.",
+    "en": "Every AI-proposed decision is audit-logged (K-6). Mark 'Actioned' to contribute to the North Star metric.",
+    "ja": "AIが提案するすべての決定は監査ログに記録されます（K-6）。「対応済み」にチェックを入れるとNorth Starに反映されます。",
+    "ko": "AI가 제안한 모든 결정은 감사 로그에 기록됩니다(K-6). '조치 완료'로 표시하면 North Star 지표에 반영됩니다.",
+    "zh": "AI 提出的每个决策都会记录审计日志（K-6）。标记为「已处理」将计入 North Star 指标。"
+  },
+  "templates31DecisionLog.btnRefresh": {
+    "vi": "Làm mới",
+    "en": "Refresh",
+    "ja": "更新",
+    "ko": "새로고침",
+    "zh": "刷新"
+  },
+  "templates31DecisionLog.btnExportCsv": {
+    "vi": "Xuất CSV",
+    "en": "Export CSV",
+    "ja": "CSVエクスポート",
+    "ko": "CSV 내보내기",
+    "zh": "导出 CSV"
+  },
+  "templates31DecisionLog.searchPlaceholder": {
+    "vi": "Tìm theo tiêu đề hoặc tóm tắt...",
+    "en": "Search by title or summary...",
+    "ja": "タイトルまたは概要で検索...",
+    "ko": "제목 또는 요약으로 검색...",
+    "zh": "按标题或摘要搜索..."
+  },
+  "templates31DecisionLog.optAllFrameworks": {
+    "vi": "Mọi khung",
+    "en": "All frameworks",
+    "ja": "すべてのフレームワーク",
+    "ko": "모든 프레임워크",
+    "zh": "所有框架"
+  },
+  "templates31DecisionLog.optAllRisk": {
+    "vi": "Mọi mức rủi ro",
+    "en": "All risk levels",
+    "ja": "すべてのリスクレベル",
+    "ko": "모든 위험 수준",
+    "zh": "所有风险级别"
+  },
+  "templates31DecisionLog.optAllStatus": {
+    "vi": "Mọi trạng thái",
+    "en": "All statuses",
+    "ja": "すべてのステータス",
+    "ko": "모든 상태",
+    "zh": "所有状态"
+  },
+  "templates31DecisionLog.optActioned": {
+    "vi": "Đã hành động",
+    "en": "Actioned",
+    "ja": "対応済み",
+    "ko": "조치 완료",
+    "zh": "已处理"
+  },
+  "templates31DecisionLog.optPending": {
+    "vi": "Chờ hành động",
+    "en": "Pending action",
+    "ja": "対応待ち",
+    "ko": "조치 대기",
+    "zh": "待处理"
+  },
+  "templates31DecisionLog.btnFilter": {
+    "vi": "Lọc",
+    "en": "Filter",
+    "ja": "絞り込み",
+    "ko": "필터",
+    "zh": "筛选"
+  },
+  "templates31DecisionLog.summaryLine": {
+    "vi": "{total} quyết định · Đang hiển thị {showing} · Xuất CSV giới hạn {cap} dòng",
+    "en": "{total} decisions · Showing {showing} · CSV export limited to {cap} rows",
+    "ja": "{total}件の決定 · {showing}件表示中 · CSVエクスポートは最大{cap}行",
+    "ko": "결정 {total}건 · {showing}건 표시 중 · CSV 내보내기 최대 {cap}행",
+    "zh": "共 {total} 条决策 · 当前显示 {showing} 条 · CSV 导出上限 {cap} 行"
+  },
+  "templates31DecisionLog.colActioned": {
+    "vi": "Đã hành động?",
+    "en": "Actioned?",
+    "ja": "対応済み？",
+    "ko": "조치 완료?",
+    "zh": "已处理？"
+  },
+  "templates31DecisionLog.colDecision": {
+    "vi": "Quyết định",
+    "en": "Decision",
+    "ja": "決定",
+    "ko": "결정",
+    "zh": "决策"
+  },
+  "templates31DecisionLog.colFramework": {
+    "vi": "Khung",
+    "en": "Framework",
+    "ja": "フレームワーク",
+    "ko": "프레임워크",
+    "zh": "框架"
+  },
+  "templates31DecisionLog.colConfidence": {
+    "vi": "Độ tin cậy",
+    "en": "Confidence",
+    "ja": "信頼度",
+    "ko": "신뢰도",
+    "zh": "置信度"
+  },
+  "templates31DecisionLog.colRevenueAtRisk": {
+    "vi": "Doanh thu rủi ro",
+    "en": "Revenue at risk",
+    "ja": "リスク売上",
+    "ko": "위험 매출",
+    "zh": "风险营收"
+  },
+  "templates31DecisionLog.colAlternatives": {
+    "vi": "Phương án thay thế",
+    "en": "Alternatives",
+    "ja": "代替案",
+    "ko": "대안",
+    "zh": "备选方案"
+  },
+  "templates31DecisionLog.colCreatedAt": {
+    "vi": "Tạo lúc",
+    "en": "Created at",
+    "ja": "作成日時",
+    "ko": "생성 시각",
+    "zh": "创建时间"
+  },
+  "templates31DecisionLog.emptyState": {
+    "vi": "Không có quyết định phù hợp với bộ lọc.",
+    "en": "No decisions match the current filters.",
+    "ja": "フィルター条件に一致する決定はありません。",
+    "ko": "필터 조건에 맞는 결정이 없습니다.",
+    "zh": "没有符合筛选条件的决策。"
+  },
+  "templates31DecisionLog.linkInsightSource": {
+    "vi": "Insight nguồn",
+    "en": "Source insight",
+    "ja": "元のインサイト",
+    "ko": "원본 인사이트",
+    "zh": "来源洞察"
+  },
+  "templates31DecisionLog.altCount": {
+    "vi": "{count} phương án",
+    "en": "{count} alternatives",
+    "ja": "{count}件の代替案",
+    "ko": "대안 {count}개",
+    "zh": "{count} 个备选方案"
+  },
+  "templates31DecisionLog.altRejected": {
+    "vi": "Bị từ chối · {reason}",
+    "en": "Rejected · {reason}",
+    "ja": "却下 · {reason}",
+    "ko": "거부됨 · {reason}",
+    "zh": "已拒绝 · {reason}"
+  },
+  "templates31DecisionLog.noAlternatives": {
+    "vi": "Không có",
+    "en": "None",
+    "ja": "なし",
+    "ko": "없음",
+    "zh": "无"
+  },
+  "templates31DecisionLog.linkDetail": {
+    "vi": "Chi tiết",
+    "en": "Details",
+    "ja": "詳細",
+    "ko": "상세",
+    "zh": "详情"
+  },
+  "templates31DecisionLog.btnLoadMore": {
+    "vi": "Tải thêm",
+    "en": "Load more",
+    "ja": "さらに読み込む",
+    "ko": "더 불러오기",
+    "zh": "加载更多"
+  },
+  "templates31DecisionLog.footerLabel": {
+    "vi": "North Star (Sprint 7 PR D):",
+    "en": "North Star (Sprint 7 PR D):",
+    "ja": "North Star（Sprint 7 PR D）：",
+    "ko": "North Star(Sprint 7 PR D):",
+    "zh": "North Star（Sprint 7 PR D）："
+  },
+  "templates31DecisionLog.footerPart1": {
+    "vi": "mỗi lần bật \"Đã hành động\" sẽ UPSERT một dòng vào",
+    "en": "toggling \"Actioned\" on UPSERTs a row into",
+    "ja": "「対応済み」を有効にするたびに、次の場所に1行をUPSERTします：",
+    "ko": "'조치 완료'를 켤 때마다 다음 위치에 한 행을 UPSERT합니다:",
+    "zh": "每次开启「已处理」都会向以下表 UPSERT 一行："
+  },
+  "templates31DecisionLog.footerPart2": {
+    "vi": "(1 dòng / decision, FK CASCADE). Phase 2 F-060 sẽ promote sang cột canonical",
+    "en": "(1 row / decision, FK CASCADE). Phase 2 F-060 will promote this to the canonical column",
+    "ja": "（1決定につき1行、FK CASCADE）。Phase 2 F-060では、正規カラムへ昇格されます：",
+    "ko": "(결정당 1행, FK CASCADE). Phase 2 F-060에서 정규 컬럼으로 승격됩니다:",
+    "zh": "（每条决策 1 行，FK CASCADE）。Phase 2 F-060 将其提升为规范列"
+  },
+  "templates31DecisionLog.footerPart3": {
+    "vi": "và thay thế side table này.",
+    "en": "and replace this side table.",
+    "ja": "、このサイドテーブルは置き換えられます。",
+    "ko": "이 사이드 테이블을 대체합니다.",
+    "zh": "，并取代此附属表。"
+  },
+  "templates31DecisionLog.errExportLimitTitle": {
+    "vi": "Vượt giới hạn xuất",
+    "en": "Export limit exceeded",
+    "ja": "エクスポート上限を超えました",
+    "ko": "내보내기 한도 초과",
+    "zh": "超出导出限制"
+  },
+  "templates31DecisionLog.errExportLimitDetail": {
+    "vi": "File CSV vượt quá {cap} dòng. Vui lòng thu hẹp bộ lọc.",
+    "en": "The CSV file exceeds {cap} rows. Please narrow your filters.",
+    "ja": "CSVファイルが{cap}行を超えています。フィルターを絞り込んでください。",
+    "ko": "CSV 파일이 {cap}행을 초과했습니다. 필터를 좁혀 주세요.",
+    "zh": "CSV 文件超过 {cap} 行，请缩小筛选范围。"
+  },
+  "templates31DecisionLog.exportSuccess": {
+    "vi": "Đã xuất CSV (UTF-8 BOM) — tối đa {cap} dòng/file",
+    "en": "CSV exported (UTF-8 BOM) — up to {cap} rows/file",
+    "ja": "CSVをエクスポートしました（UTF-8 BOM）— 最大{cap}行/ファイル",
+    "ko": "CSV 내보내기 완료(UTF-8 BOM) — 파일당 최대 {cap}행",
+    "zh": "已导出 CSV（UTF-8 BOM）— 每个文件最多 {cap} 行"
+  },
+  "templates31DecisionLog.errExportFailedTitle": {
+    "vi": "Xuất CSV thất bại",
+    "en": "CSV export failed",
+    "ja": "CSVエクスポートに失敗しました",
+    "ko": "CSV 내보내기 실패",
+    "zh": "CSV 导出失败"
+  },
+  "templates31DecisionLog.ariaUnmarkActioned": {
+    "vi": "Bỏ đánh dấu đã hành động",
+    "en": "Unmark as actioned",
+    "ja": "対応済みの印を外す",
+    "ko": "조치 완료 표시 해제",
+    "zh": "取消已处理标记"
+  },
+  "templates31DecisionLog.ariaMarkActioned": {
+    "vi": "Đánh dấu đã hành động",
+    "en": "Mark as actioned",
+    "ja": "対応済みとしてマーク",
+    "ko": "조치 완료로 표시",
+    "zh": "标记为已处理"
+  },
+  "templates31DecisionLog.toggleLabelPending": {
+    "vi": "Chờ xử lý",
+    "en": "Pending",
+    "ja": "処理待ち",
+    "ko": "처리 대기",
+    "zh": "待处理"
+  }
+}

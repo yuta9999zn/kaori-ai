@@ -30,6 +30,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types
 // ============================================================================
@@ -58,6 +59,7 @@ type ActionedFilter = 'all' | 'pending' | 'actioned';
 // ============================================================================
 
 export default function GoldDrillDownPage() {
+  const t = useT();
   const [customers, setCustomers]     = useState<GoldCustomer[]>([]);
   const [loading, setLoading]         = useState(true);
   const [problem, setProblem]         = useState<ProblemDetails | null>(null);
@@ -104,18 +106,18 @@ export default function GoldDrillDownPage() {
   return (
     <>
       <PageHeader
-        title="Gold — features chuẩn hoá"
-        description="Một dòng / khách hàng · revenue_at_risk + purchase metrics · is_actioned audit (K-9)."
+        title={t('templatesFnew3v1Gold.pageTitle')}
+        description={t('templatesFnew3v1Gold.pageDescription')}
         actions={
           <>
             <Badge variant="info">F-NEW3 v1</Badge>
             <a href="/p2/customers/at-risk">
               <Button variant="secondary" size="md">
-                Khách hàng rủi ro (F-060)
+                {t('templatesFnew3v1Gold.atRiskCustomers')}
               </Button>
             </a>
             <a href="/p2/data">
-              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> Khám phá</Button>
+              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> {t('templatesFnew3v1Gold.explore')}</Button>
             </a>
           </>
         }
@@ -126,12 +128,12 @@ export default function GoldDrillDownPage() {
 
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-3 flex items-center gap-3 shadow-soft-sm flex-wrap">
           <span className="text-xs text-[var(--text-secondary)] inline-flex items-center gap-1">
-            <Filter className="w-3.5 h-3.5" /> Lọc:
+            <Filter className="w-3.5 h-3.5" /> {t('templatesFnew3v1Gold.filterLabel')}
           </span>
           {([
-            { code: 'all',      label: 'Tất cả' },
-            { code: 'pending',  label: 'Chưa xử lý' },
-            { code: 'actioned', label: 'Đã xử lý' },
+            { code: 'all',      label: t('templatesFnew3v1Gold.filterAll') },
+            { code: 'pending',  label: t('templatesFnew3v1Gold.filterPending') },
+            { code: 'actioned', label: t('templatesFnew3v1Gold.filterActioned') },
           ] as const).map((f) => (
             <button
               key={f.code}
@@ -153,29 +155,29 @@ export default function GoldDrillDownPage() {
             <table className="w-full text-sm text-left">
               <thead className="bg-[var(--bg-app)] border-b border-[var(--border-color)] text-[11px] font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                 <tr>
-                  <th className="px-5 py-3">Customer</th>
-                  <th className="px-5 py-3 text-right">Revenue at risk</th>
-                  <th className="px-5 py-3 text-right">Lifetime</th>
-                  <th className="px-5 py-3 text-center">Số đơn</th>
+                  <th className="px-5 py-3">{t('templatesFnew3v1Gold.colCustomer')}</th>
+                  <th className="px-5 py-3 text-right">{t('templatesFnew3v1Gold.colRevenueAtRisk')}</th>
+                  <th className="px-5 py-3 text-right">{t('templatesFnew3v1Gold.colLifetime')}</th>
+                  <th className="px-5 py-3 text-center">{t('templatesFnew3v1Gold.colOrderCount')}</th>
                   <th className="px-5 py-3 text-right">AOV</th>
-                  <th className="px-5 py-3">Mua gần nhất</th>
-                  <th className="px-5 py-3">Actioned</th>
+                  <th className="px-5 py-3">{t('templatesFnew3v1Gold.colLastPurchase')}</th>
+                  <th className="px-5 py-3">{t('templatesFnew3v1Gold.colActioned')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-color)]/60">
                 {loading && customers.length === 0 ? (
                   <tr><td colSpan={7} className="px-5 py-12 text-center text-[var(--text-secondary)]">
-                    <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> Đang tải...
+                    <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> {t('templatesFnew3v1Gold.loading')}
                   </td></tr>
                 ) : customers.length === 0 ? (
                   <tr><td colSpan={7} className="px-5 py-12 text-center">
                     <Database className="w-10 h-10 mx-auto text-[var(--text-secondary)]/40 mb-3" />
                     <p className="text-sm text-[var(--text-secondary)]">
-                      Không có dòng gold_features nào khớp bộ lọc — chạy aggregator hoặc ingest dữ liệu mới.
+                      {t('templatesFnew3v1Gold.emptyGoldRows')}
                     </p>
                   </td></tr>
                 ) : (
-                  customers.map((c) => <GoldCustomerRow key={c.customer_external_id} customer={c} />)
+                  customers.map((c) => <GoldCustomerRow key={c.customer_external_id} customer={c} t={t} />)
                 )}
               </tbody>
             </table>
@@ -187,14 +189,14 @@ export default function GoldDrillDownPage() {
                 variant="tertiary" size="sm" onClick={pagePrev}
                 disabled={cursorStack.length === 0 || loading}
               >
-                <ChevronLeft className="w-3.5 h-3.5 mr-1" /> Trang trước
+                <ChevronLeft className="w-3.5 h-3.5 mr-1" /> {t('templatesFnew3v1Gold.prevPage')}
               </Button>
-              <span className="text-xs text-[var(--text-secondary)]">Trang {cursorStack.length + 1}</span>
+              <span className="text-xs text-[var(--text-secondary)]">{t('templatesFnew3v1Gold.pageNumber', { n: cursorStack.length + 1 })}</span>
               <Button
                 variant="tertiary" size="sm" onClick={pageNext}
                 disabled={!nextCursor || loading}
               >
-                Trang sau <ChevronRight className="w-3.5 h-3.5 ml-1" />
+                {t('templatesFnew3v1Gold.nextPage')} <ChevronRight className="w-3.5 h-3.5 ml-1" />
               </Button>
             </div>
           )}
@@ -203,12 +205,11 @@ export default function GoldDrillDownPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <Sparkles className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            K-9 — money fields dùng NUMERIC(14,4) ở DB (VNĐ chính xác đến 4 chữ số thập phân);
-            FE chỉ render. Để mark customer đã xử lý + ghi audit Kafka, dùng trang{' '}
+            {t('templatesFnew3v1Gold.k9Note')}{' '}
             <a href="/p2/customers/at-risk" className="text-[var(--primary-gold-dark)] hover:underline">
-              Khách hàng rủi ro
+              {t('templatesFnew3v1Gold.atRiskCustomersLink')}
             </a>{' '}
-            (F-060) — trang này chỉ là browse view.
+            {t('templatesFnew3v1Gold.k9NoteSuffix')}
           </p>
         </div>
       </div>
@@ -220,13 +221,13 @@ export default function GoldDrillDownPage() {
 // Sub-components
 // ============================================================================
 
-function GoldCustomerRow({ customer: c }: { customer: GoldCustomer }) {
+function GoldCustomerRow({ customer: c, t }: { customer: GoldCustomer; t: ReturnType<typeof useT> }) {
   return (
     <tr className="hover:bg-[var(--bg-app)]/40 transition-colors">
       <td className="px-5 py-4">
         <p className="font-mono text-sm text-[var(--text-primary)]">{c.customer_external_id}</p>
         <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
-          tính lúc {formatRelative(c.computed_at)}
+          {t('templatesFnew3v1Gold.computedAt', { time: formatRelative(c.computed_at, t) })}
         </p>
       </td>
       <td className="px-5 py-4 text-right">
@@ -248,20 +249,20 @@ function GoldCustomerRow({ customer: c }: { customer: GoldCustomer }) {
         {c.avg_purchase_value != null ? formatVND(c.avg_purchase_value) : '—'}
       </td>
       <td className="px-5 py-4 text-xs text-[var(--text-secondary)]">
-        {c.last_purchase_at ? formatRelative(c.last_purchase_at) : '—'}
+        {c.last_purchase_at ? formatRelative(c.last_purchase_at, t) : '—'}
       </td>
       <td className="px-5 py-4">
         {c.is_actioned ? (
           <Badge variant="success">
-            <CheckCircle2 className="w-3 h-3 mr-1" /> Đã xử lý
+            <CheckCircle2 className="w-3 h-3 mr-1" /> {t('templatesFnew3v1Gold.statusActioned')}
           </Badge>
         ) : c.revenue_at_risk > 0 ? (
           <Badge variant="warning">
-            <AlertTriangle className="w-3 h-3 mr-1" /> Chưa xử lý
+            <AlertTriangle className="w-3 h-3 mr-1" /> {t('templatesFnew3v1Gold.statusPending')}
           </Badge>
         ) : (
           <Badge variant="default">
-            <Users className="w-3 h-3 mr-1" /> Khách OK
+            <Users className="w-3 h-3 mr-1" /> {t('templatesFnew3v1Gold.statusCustomerOk')}
           </Badge>
         )}
       </td>
@@ -273,13 +274,13 @@ function GoldCustomerRow({ customer: c }: { customer: GoldCustomer }) {
 // Helpers
 // ============================================================================
 
-function formatRelative(iso: string | null): string {
+function formatRelative(iso: string | null, t: ReturnType<typeof useT>): string {
   if (!iso) return '—';
   const diff = Date.now() - +new Date(iso);
   if (Number.isNaN(diff))     return iso;
-  if (diff < 60_000)          return 'vừa xong';
-  if (diff < 3_600_000)       return `${Math.round(diff / 60_000)} phút trước`;
-  if (diff < 86_400_000)      return `${Math.round(diff / 3_600_000)} giờ trước`;
-  if (diff < 7 * 86_400_000)  return `${Math.round(diff / 86_400_000)} ngày trước`;
+  if (diff < 60_000)          return t('templatesFnew3v1Gold.relJustNow');
+  if (diff < 3_600_000)       return t('templatesFnew3v1Gold.relMinutesAgo', { n: Math.round(diff / 60_000) });
+  if (diff < 86_400_000)      return t('templatesFnew3v1Gold.relHoursAgo', { n: Math.round(diff / 3_600_000) });
+  if (diff < 7 * 86_400_000)  return t('templatesFnew3v1Gold.relDaysAgo', { n: Math.round(diff / 86_400_000) });
   return new Date(iso).toLocaleDateString('vi-VN');
 }

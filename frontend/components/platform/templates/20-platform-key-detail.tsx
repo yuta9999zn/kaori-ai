@@ -6,7 +6,8 @@
 // the script to regenerate. Lazy `any` types added; not meant for strict tsc.
 
 import React, { useState, useEffect, useRef } from 'react';
-import { 
+import { useT } from '@/lib/i18n/provider';
+import {
   LayoutDashboard, 
   Briefcase, 
   Key, 
@@ -246,7 +247,9 @@ const Input = React.forwardRef<any, any>(({ className, label, error, helperText,
 Input.displayName = "Input";
 
 // --- SELECT (Simulated Radix Select) ---
-const Select = ({  label, placeholder = "Select an option", options = [], value, onChange, error, disabled  }: any) => {
+const Select = ({  label, placeholder, options = [], value, onChange, error, disabled  }: any) => {
+  const t = useT();
+  const resolvedPlaceholder = placeholder ?? t('templates20PlatformKeyDetail.selectPlaceholderDefault');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -273,7 +276,7 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
           !selectedOption ? "text-[var(--text-secondary)]/60" : "text-[var(--text-primary)]"
         )}
       >
-        {selectedOption ? selectedOption.label : placeholder}
+        {selectedOption ? selectedOption.label : resolvedPlaceholder}
         <ChevronDown className="h-4 w-4 opacity-50" />
       </button>
       {isOpen && !disabled && (
@@ -299,7 +302,9 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
 };
 
 // --- DATEPICKER (Simulated) ---
-const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any) => {
+const DatePicker = ({  label, placeholder, date, setDate  }: any) => {
+  const t = useT();
+  const resolvedPlaceholder = placeholder ?? t('templates20PlatformKeyDetail.datePickerPlaceholderDefault');
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
   useEffect(() => {
@@ -320,19 +325,27 @@ const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any
         )}
       >
         <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
-        {date ? date : placeholder}
+        {date ? date : resolvedPlaceholder}
       </button>
       {isOpen && (
         <div className="absolute top-full left-0 z-50 mt-1 p-3 bg-white rounded-md-custom border border-[var(--border-color)] shadow-soft-md animate-in fade-in zoom-in-95 duration-150 w-[280px]">
            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm font-semibold text-[var(--text-primary)]">October 2026</span>
+              <span className="text-sm font-semibold text-[var(--text-primary)]">{t('templates20PlatformKeyDetail.datePickerMonthYearSample')}</span>
               <div className="flex gap-1">
                 <button className="p-1 hover:bg-[var(--bg-app)] rounded"><ChevronLeft className="w-4 h-4 text-[var(--text-secondary)]"/></button>
                 <button className="p-1 hover:bg-[var(--bg-app)] rounded"><ChevronRight className="w-4 h-4 text-[var(--text-secondary)]"/></button>
               </div>
            </div>
            <div className="grid grid-cols-7 gap-1 text-center text-xs text-[var(--text-secondary)] mb-2">
-             {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => <div key={d}>{d}</div>)}
+             {[
+               t('templates20PlatformKeyDetail.dayAbbrSun'),
+               t('templates20PlatformKeyDetail.dayAbbrMon'),
+               t('templates20PlatformKeyDetail.dayAbbrTue'),
+               t('templates20PlatformKeyDetail.dayAbbrWed'),
+               t('templates20PlatformKeyDetail.dayAbbrThu'),
+               t('templates20PlatformKeyDetail.dayAbbrFri'),
+               t('templates20PlatformKeyDetail.dayAbbrSat'),
+             ].map((d, i) => <div key={i}>{d}</div>)}
            </div>
            <div className="grid grid-cols-7 gap-1 text-sm">
              {Array.from({length: 31}).map((_, i) => (
@@ -357,6 +370,7 @@ const Card = ({  className, ...props  }: any) => (
 );
 
 const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className  }: any) => {
+  const t = useT();
   const isPositive = (isUp && !inverseGood) || (!isUp && inverseGood);
   const trendColor = trend === '0%' ? 'text-[var(--text-secondary)]' : isPositive ? 'text-[#5C856A]' : 'text-[#9B5050]';
   return (
@@ -372,7 +386,7 @@ const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className
             </div>
           )}
         </div>
-        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">vs yesterday</div>
+        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">{t('templates20PlatformKeyDetail.metricVsYesterday')}</div>
       </div>
     </Card>
   );
@@ -391,6 +405,7 @@ const TableHead = ({  className, ...props  }: any) => <th className={cn("h-12 px
 const TableCell = ({  className, ...props  }: any) => <td className={cn("p-4 align-middle text-[var(--text-primary)]", className)} {...props} />;
 
 const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
+  const t = useT();
   return (
     <div className="rounded-lg-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm overflow-hidden w-full">
       <Table>
@@ -415,8 +430,8 @@ const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
                   <div className="w-10 h-10 rounded-full bg-[var(--bg-app)] flex items-center justify-center mb-2">
                     <Search className="w-5 h-5 text-[var(--text-secondary)]" />
                   </div>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">No results found</span>
-                  <span className="text-xs text-[var(--text-secondary)]">Try adjusting your filters</span>
+                  <span className="text-sm font-medium text-[var(--text-primary)]">{t('templates20PlatformKeyDetail.tableNoResults')}</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{t('templates20PlatformKeyDetail.tableTryAdjustingFilters')}</span>
                 </div>
               </TableCell>
             </TableRow>
@@ -431,10 +446,10 @@ const DataTable = ({  columns, data, loading, pagination = true  }: any) => {
       </Table>
       {pagination && data.length > 0 && (
         <div className="border-t border-[var(--border-color)] px-4 py-3 flex items-center justify-between bg-[#FCFBF9]">
-          <span className="text-xs text-[var(--text-secondary)]">Showing 1 to {data.length} of {data.length} results</span>
+          <span className="text-xs text-[var(--text-secondary)]">{t('templates20PlatformKeyDetail.tableShowingResults', { count: data.length })}</span>
           <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled>Previous</Button>
-              <Button variant="outline" size="sm">Next</Button>
+              <Button variant="outline" size="sm" disabled>{t('templates20PlatformKeyDetail.tablePrevious')}</Button>
+              <Button variant="outline" size="sm">{t('templates20PlatformKeyDetail.tableNext')}</Button>
           </div>
         </div>
       )}
@@ -531,6 +546,7 @@ const Tabs = ({  defaultValue, tabs, className  }: any) => {
 
 // --- COPY BUTTON HELPER ---
 const CopyButton = ({  text, className  }: any) => {
+  const t = useT();
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
     navigator.clipboard.writeText(text);
@@ -538,10 +554,10 @@ const CopyButton = ({  text, className  }: any) => {
     setTimeout(() => setCopied(false), 2000);
   };
   return (
-    <button 
-      onClick={handleCopy} 
+    <button
+      onClick={handleCopy}
       className={cn("p-1 hover:bg-[var(--bg-app)] rounded transition-colors text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/50", className)}
-      aria-label="Copy to clipboard"
+      aria-label={t('templates20PlatformKeyDetail.copyToClipboard')}
     >
       {copied ? <Check className="w-3.5 h-3.5 text-[#5C856A]" /> : <Copy className="w-3.5 h-3.5" />}
     </button>
@@ -605,25 +621,25 @@ const Section = ({  title, description, actions, children, className = ''  }: an
 // --- CONFIG ---
 const NAVIGATION_CONFIG = [
   {
-    group: 'Main',
+    groupKey: 'templates20PlatformKeyDetail.navGroupMain',
     items: [
-      { id: 'overview', label: 'Platform Health', icon: LayoutDashboard, route: '/platform' },
-      { id: 'workspaces', label: 'Workspaces', icon: Briefcase, route: '/platform/workspaces', badge: '4' },
+      { id: 'overview', labelKey: 'templates20PlatformKeyDetail.navOverview', icon: LayoutDashboard, route: '/platform' },
+      { id: 'workspaces', labelKey: 'templates20PlatformKeyDetail.navWorkspaces', icon: Briefcase, route: '/platform/workspaces', badge: '4' },
     ]
   },
   {
-    group: 'Management',
+    groupKey: 'templates20PlatformKeyDetail.navGroupManagement',
     items: [
-      { id: 'keys', label: 'API Keys', icon: Key, route: '/platform/keys' },
-      { id: 'billing', label: 'Billing', icon: CreditCard, route: '/platform/billing' },
-      { id: 'admin', label: 'Admins', icon: Shield, route: '/platform/admins', role: 'admin' },
+      { id: 'keys', labelKey: 'templates20PlatformKeyDetail.navApiKeys', icon: Key, route: '/platform/keys' },
+      { id: 'billing', labelKey: 'templates20PlatformKeyDetail.navBilling', icon: CreditCard, route: '/platform/billing' },
+      { id: 'admin', labelKey: 'templates20PlatformKeyDetail.navAdmins', icon: Shield, route: '/platform/admins', role: 'admin' },
     ]
   },
   {
-    group: 'System',
+    groupKey: 'templates20PlatformKeyDetail.navGroupSystem',
     items: [
-      { id: 'components', label: 'Component Library', icon: Component, route: '/platform/components' },
-      { id: 'sessions', label: 'Security & Sessions', icon: Settings, route: '/p1/auth/sessions' },
+      { id: 'components', labelKey: 'templates20PlatformKeyDetail.navComponentLibrary', icon: Component, route: '/platform/components' },
+      { id: 'sessions', labelKey: 'templates20PlatformKeyDetail.navSecuritySessions', icon: Settings, route: '/p1/auth/sessions' },
     ]
   }
 ];
@@ -643,6 +659,7 @@ const EnvBadge = ({  env = 'production'  }: any) => {
 };
 
 const NotificationDropdown = () => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -652,7 +669,7 @@ const NotificationDropdown = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const notifications = [{ id: 1, title: 'Data sync completed successfully', time: '10m ago', read: false }];
+  const notifications = [{ id: 1, title: t('templates20PlatformKeyDetail.notifSyncCompleted'), time: '10m ago', read: false }];
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -663,7 +680,7 @@ const NotificationDropdown = () => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-[320px] bg-[var(--bg-card)] rounded-lg-custom shadow-soft-md border border-[var(--border-color)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 z-50">
           <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] bg-[#FCFBF9]">
-            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Notifications</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates20PlatformKeyDetail.notificationsTitle')}</h3>
           </div>
           <div className="max-h-[300px] overflow-y-auto">
             {notifications.map((n) => (
@@ -683,6 +700,7 @@ const NotificationDropdown = () => {
 };
 
 const HeaderUserMenu = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -700,18 +718,18 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-[240px] bg-[var(--bg-card)] rounded-lg-custom shadow-soft-md border border-[var(--border-color)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 z-50">
           <div className="px-4 py-3 border-b border-[var(--border-color)] bg-[#FCFBF9]">
-            <p className="text-sm font-semibold text-[var(--text-primary)] truncate">Admin User</p>
+            <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{t('templates20PlatformKeyDetail.adminUserName')}</p>
             <p className="text-xs text-[var(--text-secondary)] truncate">admin@kaori.io</p>
           </div>
           <div className="p-1.5">
             <button onClick={() => { setActiveRoute('sessions'); setIsOpen(false); }} className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> Security & Sessions
+              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> {t('templates20PlatformKeyDetail.navSecuritySessions')}
             </button>
           </div>
           <div className="h-[1px] bg-[var(--border-color)]/50 mx-1.5" />
           <div className="p-1.5">
             <button className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] transition-colors flex items-center gap-2 font-medium">
-              <LogOut className="w-4 h-4" /> Sign out
+              <LogOut className="w-4 h-4" /> {t('templates20PlatformKeyDetail.signOut')}
             </button>
           </div>
         </div>
@@ -721,15 +739,17 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
 };
 
 const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: any) => {
-  let routeLabel = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label;
-  if (activeRoute === 'workspace-details') routeLabel = 'Workspaces / Overview';
-  else if (activeRoute === 'workspace-members') routeLabel = 'Workspaces / Members';
-  else if (activeRoute === 'billing') routeLabel = 'Workspaces / Billing';
-  else if (activeRoute === 'audit-logs') routeLabel = 'Workspaces / Audit Logs';
-  else if (activeRoute === 'workspace-new') routeLabel = 'Workspaces / New Workspace';
-  else if (activeRoute === 'workspace-edit') routeLabel = 'Workspaces / Settings';
-  else if (activeRoute === 'keys-new') routeLabel = 'API Keys / Create Key';
-  else if (activeRoute === 'key-details') routeLabel = 'API Keys / Details';
+  const t = useT();
+  const navItem = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute);
+  let routeLabel = navItem ? t(navItem.labelKey) : undefined;
+  if (activeRoute === 'workspace-details') routeLabel = t('templates20PlatformKeyDetail.crumbWorkspacesOverview');
+  else if (activeRoute === 'workspace-members') routeLabel = t('templates20PlatformKeyDetail.crumbWorkspacesMembers');
+  else if (activeRoute === 'billing') routeLabel = t('templates20PlatformKeyDetail.crumbWorkspacesBilling');
+  else if (activeRoute === 'audit-logs') routeLabel = t('templates20PlatformKeyDetail.crumbWorkspacesAuditLogs');
+  else if (activeRoute === 'workspace-new') routeLabel = t('templates20PlatformKeyDetail.crumbWorkspacesNew');
+  else if (activeRoute === 'workspace-edit') routeLabel = t('templates20PlatformKeyDetail.crumbWorkspacesSettings');
+  else if (activeRoute === 'keys-new') routeLabel = t('templates20PlatformKeyDetail.crumbKeysCreate');
+  else if (activeRoute === 'key-details') routeLabel = t('templates20PlatformKeyDetail.crumbKeysDetails');
   else if (!routeLabel) routeLabel = activeRoute;
 
   return (
@@ -739,7 +759,7 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
           <Menu className="w-5 h-5" />
         </button>
         <div className="hidden sm:flex items-center text-sm font-medium">
-          <span className="text-[var(--text-secondary)]">Platform</span>
+          <span className="text-[var(--text-secondary)]">{t('templates20PlatformKeyDetail.breadcrumbPlatform')}</span>
           <ChevronRight className="w-4 h-4 mx-2 text-[var(--border-color)] shrink-0 opacity-50" />
           <span className="text-[var(--text-primary)] capitalize">{routeLabel}</span>
         </div>
@@ -750,9 +770,9 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
         <div className="hidden sm:flex items-center gap-2">
            <div className="relative group hidden lg:block">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-[var(--text-secondary)] group-focus-within:text-[var(--primary-gold)] transition-colors" />
-              <input type="text" placeholder="Search..." className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
+              <input type="text" placeholder={t('templates20PlatformKeyDetail.searchPlaceholder')} className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
             </div>
-            <Button variant="outline" size="sm" onClick={() => setActiveRoute('workspace-new')} className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> Workspace</Button>
+            <Button variant="outline" size="sm" onClick={() => setActiveRoute('workspace-new')} className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> {t('templates20PlatformKeyDetail.wordWorkspace')}</Button>
         </div>
         <NotificationDropdown />
         <HeaderUserMenu setActiveRoute={setActiveRoute} />
@@ -776,6 +796,7 @@ const SidebarTooltip = ({  children, content, isCollapsed  }: any) => {
 };
 
 const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, setIsCollapsed  }: any) => {
+  const t = useT();
   const collapsed = isCollapsed && !isMobile;
   const currentHighlight = (activeRoute === 'workspace-details' || activeRoute === 'workspace-members' || activeRoute === 'billing' || activeRoute === 'audit-logs' || activeRoute === 'workspace-new' || activeRoute === 'workspace-edit') ? 'workspaces' : (activeRoute === 'keys-new' || activeRoute === 'key-details' ? 'keys' : activeRoute);
 
@@ -791,16 +812,16 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
         {!collapsed && (
           <div className="flex flex-col overflow-hidden animate-in fade-in duration-300">
             <span className="font-serif text-[17px] leading-none font-semibold text-[var(--text-primary)] tracking-wide">Kaori</span>
-            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">Platform</span>
+            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">{t('templates20PlatformKeyDetail.breadcrumbPlatform')}</span>
           </div>
         )}
       </div>
 
-      <nav aria-label="Main Navigation" className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-6">
+      <nav aria-label={t('templates20PlatformKeyDetail.mainNavigationAriaLabel')} className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-6">
         {NAVIGATION_CONFIG.map((group, idx) => (
           <div key={idx} className="flex flex-col">
             {!collapsed ? (
-              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{group.group}</div>
+              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{t(group.groupKey)}</div>
             ) : (
               <div className="w-full h-[1px] bg-[var(--border-color)]/60 my-2 rounded-full" />
             )}
@@ -809,7 +830,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
                 const isActive = currentHighlight === item.id;
                 const Icon = item.icon;
                 return (
-                  <SidebarTooltip key={item.id} content={item.label} isCollapsed={collapsed}>
+                  <SidebarTooltip key={item.id} content={t(item.labelKey)} isCollapsed={collapsed}>
                     <button
                       onClick={() => setActiveRoute(item.id)}
                       className={cn(
@@ -820,7 +841,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
                     >
                       {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[var(--primary-gold)] rounded-r-md transition-all" />}
                       <Icon className={`shrink-0 transition-colors ${isActive ? 'text-[var(--primary-gold)] w-5 h-5' : 'w-[18px] h-[18px] group-hover:text-[var(--text-primary)]'}`} />
-                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{item.label}</span>}
+                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{t(item.labelKey)}</span>}
                       {!collapsed && item.badge && (
                         <span className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[var(--primary-gold)] text-white text-[10px] font-bold shadow-sm ml-2">
                           {item.badge}
@@ -845,7 +866,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
             className={cn("w-full flex items-center h-8 rounded-md-custom text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors border border-transparent hover:border-[var(--border-color)]/50", collapsed ? 'justify-center' : 'px-3 gap-3')}
           >
             {collapsed ? <PanelLeftOpen className="w-[18px] h-[18px]" /> : <PanelLeftClose className="w-[18px] h-[18px]" />}
-            {!collapsed && <span className="text-xs font-medium">Collapse sidebar</span>}
+            {!collapsed && <span className="text-xs font-medium">{t('templates20PlatformKeyDetail.collapseSidebar')}</span>}
           </button>
         )}
       </div>
@@ -861,6 +882,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
 // --- API KEY DETAILS PAGE ---
 
 const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isRotateOpen, setIsRotateOpen] = useState(false);
   const [isRevokeOpen, setIsRevokeOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -916,7 +938,7 @@ const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
       {showSavedToast && (
         <div className="absolute top-0 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="bg-[#F3F9F5] border border-[#8FBFA0] text-[#427A5B] px-4 py-2 rounded-full shadow-soft-md flex items-center gap-2 text-sm font-medium">
-            <CheckCircle2 className="w-4 h-4" /> Key settings updated
+            <CheckCircle2 className="w-4 h-4" /> {t('templates20PlatformKeyDetail.toastKeySettingsUpdated')}
           </div>
         </div>
       )}
@@ -930,18 +952,18 @@ const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
           keyData.status === 'Active' ? (
             <>
               <Button variant="outline" onClick={() => setIsRotateOpen(true)} className="hidden sm:flex">
-                <RefreshCcw className="w-4 h-4 mr-2" /> Rotate key
+                <RefreshCcw className="w-4 h-4 mr-2" /> {t('templates20PlatformKeyDetail.actionRotateKey')}
               </Button>
               <Button variant="destructive-soft" onClick={() => setIsRevokeOpen(true)}>
-                <Ban className="w-4 h-4 mr-2" /> Revoke
+                <Ban className="w-4 h-4 mr-2" /> {t('templates20PlatformKeyDetail.actionRevoke')}
               </Button>
             </>
           ) : (
             <Button variant="destructive" onClick={() => setActiveRoute('keys')}>
-              <Trash2 className="w-4 h-4 mr-2" /> Delete
+              <Trash2 className="w-4 h-4 mr-2" /> {t('templates20PlatformKeyDetail.actionDelete')}
             </Button>
           )
-        } 
+        }
       />
 
       {/* Summary Card */}
@@ -950,23 +972,23 @@ const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
            <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-[var(--primary-gold)]/5 to-transparent pointer-events-none" />
            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 relative z-10">
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Status</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates20PlatformKeyDetail.labelStatus')}</p>
                 <Badge variant={keyData.status === 'Active' ? 'success' : 'default'} className="py-1">{keyData.status}</Badge>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Scope</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates20PlatformKeyDetail.labelScope')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">{keyData.scope}</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Created</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates20PlatformKeyDetail.labelCreated')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">{keyData.created}</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Last Used</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates20PlatformKeyDetail.labelLastUsed')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">{keyData.lastUsed}</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Expiration</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates20PlatformKeyDetail.labelExpiration')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">{keyData.expires}</div>
              </div>
            </div>
@@ -976,9 +998,9 @@ const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
       {/* Metrics */}
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-          <MetricCard title="Requests (24h)" value="18,492" trend="+1.2%" isUp={true} />
-          <MetricCard title="Error Rate (24h)" value="0.05%" trend="-0.01%" isUp={false} inverseGood={true} />
-          <MetricCard title="Avg Latency (24h)" value="45ms" trend="0%" />
+          <MetricCard title={t('templates20PlatformKeyDetail.metricRequests24h')} value="18,492" trend="+1.2%" isUp={true} />
+          <MetricCard title={t('templates20PlatformKeyDetail.metricErrorRate24h')} value="0.05%" trend="-0.01%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates20PlatformKeyDetail.metricAvgLatency24h')} value="45ms" trend="0%" />
         </div>
       </Section>
 
@@ -987,16 +1009,16 @@ const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
         <Tabs defaultValue="usage" tabs={[
           {
             id: 'usage',
-            label: 'Usage',
+            label: t('templates20PlatformKeyDetail.tabUsage'),
             content: (
               <div className="space-y-6">
                 <Card className="p-6">
                    <div className="flex items-center justify-between mb-4 border-b border-[var(--border-color)] pb-3">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Top Endpoints</h3>
-                     <span className="text-xs text-[var(--text-secondary)]">Last 30 days</span>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates20PlatformKeyDetail.topEndpoints')}</h3>
+                     <span className="text-xs text-[var(--text-secondary)]">{t('templates20PlatformKeyDetail.last30Days')}</span>
                    </div>
-                   <DataTable 
-                     columns={["Endpoint", "Requests", "Error Rate"]} 
+                   <DataTable
+                     columns={[t('templates20PlatformKeyDetail.colEndpoint'), t('templates20PlatformKeyDetail.colRequests'), t('templates20PlatformKeyDetail.colErrorRate')]}
                      data={[
                        ["POST /v1/completions", "45.2K", "0.01%"], 
                        ["GET /v1/workspaces", "12.0K", "0.00%"], 
@@ -1011,16 +1033,16 @@ const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
           },
           {
             id: 'activity',
-            label: 'Activity Log',
+            label: t('templates20PlatformKeyDetail.tabActivityLog'),
             content: (
               <div className="space-y-6">
-                 <DataTable 
-                  columns={["Timestamp", "Action", "IP Address", "Status"]}
+                 <DataTable
+                  columns={[t('templates20PlatformKeyDetail.colTimestamp'), t('templates20PlatformKeyDetail.colAction'), t('templates20PlatformKeyDetail.colIpAddress'), t('templates20PlatformKeyDetail.labelStatus')]}
                   data={[
-                    ["Oct 25, 2026 14:32:01", "Request made (POST /v1/completions)", "103.142.12.33", <Badge variant="operational" key="1">Success</Badge>],
-                    ["Oct 25, 2026 14:31:45", "Request made (POST /v1/completions)", "103.142.12.33", <Badge variant="operational" key="2">Success</Badge>],
-                    ["Oct 25, 2026 14:15:22", "Request made (GET /v1/workspaces)", "103.142.12.33", <Badge variant="operational" key="3">Success</Badge>],
-                    ["Oct 25, 2026 10:05:11", "Request made (POST /v1/embeddings)", "202.168.1.99", <Badge variant="error" key="4">Rate Limited</Badge>],
+                    ["Oct 25, 2026 14:32:01", t('templates20PlatformKeyDetail.activityRequestMade', { call: 'POST /v1/completions' }), "103.142.12.33", <Badge variant="operational" key="1">{t('templates20PlatformKeyDetail.statusSuccess')}</Badge>],
+                    ["Oct 25, 2026 14:31:45", t('templates20PlatformKeyDetail.activityRequestMade', { call: 'POST /v1/completions' }), "103.142.12.33", <Badge variant="operational" key="2">{t('templates20PlatformKeyDetail.statusSuccess')}</Badge>],
+                    ["Oct 25, 2026 14:15:22", t('templates20PlatformKeyDetail.activityRequestMade', { call: 'GET /v1/workspaces' }), "103.142.12.33", <Badge variant="operational" key="3">{t('templates20PlatformKeyDetail.statusSuccess')}</Badge>],
+                    ["Oct 25, 2026 10:05:11", t('templates20PlatformKeyDetail.activityRequestMade', { call: 'POST /v1/embeddings' }), "202.168.1.99", <Badge variant="error" key="4">{t('templates20PlatformKeyDetail.statusRateLimited')}</Badge>],
                   ]}
                   loading={false}
                 />
@@ -1029,26 +1051,26 @@ const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
           },
           {
             id: 'settings',
-            label: 'Settings',
+            label: t('templates20PlatformKeyDetail.tabSettings'),
             content: (
               <div className="max-w-2xl space-y-6">
                 <Card className="p-6">
-                   <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">Key Settings</h3>
+                   <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">{t('templates20PlatformKeyDetail.keySettingsHeading')}</h3>
                    <div className="space-y-5">
-                     <Input 
-                       label="Key Name" 
-                       value={editName} 
-                       onChange={e => setEditName(e.target.value)} 
-                       helperText="A descriptive name to help you identify this key."
+                     <Input
+                       label={t('templates20PlatformKeyDetail.labelKeyName')}
+                       value={editName}
+                       onChange={e => setEditName(e.target.value)}
+                       helperText={t('templates20PlatformKeyDetail.helperKeyName')}
                      />
-                     <Input 
-                       label="Scope" 
-                       value={keyData.scope} 
-                       disabled 
-                       helperText="Scope cannot be modified after creation. To change scopes, generate a new key."
+                     <Input
+                       label={t('templates20PlatformKeyDetail.labelScope')}
+                       value={keyData.scope}
+                       disabled
+                       helperText={t('templates20PlatformKeyDetail.helperScopeLocked')}
                      />
                      <div className="pt-4 flex justify-end">
-                       <Button onClick={handleSaveSettings} disabled={editName === keyData.name} isLoading={isProcessing}>Save changes</Button>
+                       <Button onClick={handleSaveSettings} disabled={editName === keyData.name} isLoading={isProcessing}>{t('templates20PlatformKeyDetail.actionSaveChanges')}</Button>
                      </div>
                    </div>
                 </Card>
@@ -1059,48 +1081,48 @@ const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
       </Section>
 
       {/* Revoke Key Modal */}
-      <Modal 
-        isOpen={isRevokeOpen} 
+      <Modal
+        isOpen={isRevokeOpen}
         onClose={() => !isProcessing && setIsRevokeOpen(false)}
-        title="Revoke API Key"
-        description={`Are you sure you want to revoke "${keyData.name}"?`}
+        title={t('templates20PlatformKeyDetail.modalRevokeTitle')}
+        description={t('templates20PlatformKeyDetail.modalRevokeDesc', { name: keyData.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsRevokeOpen(false)} disabled={isProcessing}>Cancel</Button>
-            <Button variant="destructive" onClick={handleRevokeConfirm} isLoading={isProcessing}>Revoke Key</Button>
+            <Button variant="outline" onClick={() => setIsRevokeOpen(false)} disabled={isProcessing}>{t('templates20PlatformKeyDetail.actionCancel')}</Button>
+            <Button variant="destructive" onClick={handleRevokeConfirm} isLoading={isProcessing}>{t('templates20PlatformKeyDetail.actionRevokeKeyConfirm')}</Button>
           </>
         }
       >
         <Alert variant="error" className="mb-2">
-          Any integrations currently using this key will immediately fail. This action cannot be undone.
+          {t('templates20PlatformKeyDetail.alertRevokeWarning')}
         </Alert>
       </Modal>
 
       {/* Rotate Key Modal */}
-      <Modal 
-        isOpen={isRotateOpen} 
+      <Modal
+        isOpen={isRotateOpen}
         onClose={() => { if(!generatedKey && !isProcessing) setIsRotateOpen(false); }}
-        title={generatedKey ? "Save new API Key" : "Rotate API Key"}
-        description={generatedKey ? "Please copy your new key. The old one is now invalid." : `Are you sure you want to rotate "${keyData.name}"?`}
+        title={generatedKey ? t('templates20PlatformKeyDetail.modalSaveNewKeyTitle') : t('templates20PlatformKeyDetail.modalRotateKeyTitle')}
+        description={generatedKey ? t('templates20PlatformKeyDetail.descCopyNewKey') : t('templates20PlatformKeyDetail.modalRotateDesc', { name: keyData.name })}
         footer={
           generatedKey ? (
-            <Button onClick={() => { setIsRotateOpen(false); setGeneratedKey(null); }} className="w-full">Done</Button>
+            <Button onClick={() => { setIsRotateOpen(false); setGeneratedKey(null); }} className="w-full">{t('templates20PlatformKeyDetail.actionDone')}</Button>
           ) : (
             <>
-              <Button variant="outline" onClick={() => setIsRotateOpen(false)} disabled={isProcessing}>Cancel</Button>
-              <Button onClick={handleRotateConfirm} isLoading={isProcessing}>Rotate Key</Button>
+              <Button variant="outline" onClick={() => setIsRotateOpen(false)} disabled={isProcessing}>{t('templates20PlatformKeyDetail.actionCancel')}</Button>
+              <Button onClick={handleRotateConfirm} isLoading={isProcessing}>{t('templates20PlatformKeyDetail.actionRotateKeyConfirm')}</Button>
             </>
           )
         }
       >
         {!generatedKey ? (
           <Alert variant="warning">
-            This will immediately invalidate the current key and generate a new one. Applications using the old key will lose access until updated.
+            {t('templates20PlatformKeyDetail.alertRotateWarning')}
           </Alert>
         ) : (
           <div className="space-y-4">
-            <Alert variant="success" title="Key Rotated Successfully">
-              Your new key is ready. Remember to update your environments.
+            <Alert variant="success" title={t('templates20PlatformKeyDetail.alertRotateSuccessTitle')}>
+              {t('templates20PlatformKeyDetail.alertRotateSuccessBody')}
             </Alert>
             <div className="flex items-center gap-2 p-3 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom">
               <span className="font-mono text-sm text-[var(--text-primary)] flex-1 overflow-x-auto whitespace-nowrap scrollbar-hide select-all">
@@ -1129,6 +1151,7 @@ const maskKey = (hash) => {
 };
 
 const KeyActionsDropdown = ({  apiKey, onRevoke, onRotate, onViewDetails  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -1142,45 +1165,45 @@ const KeyActionsDropdown = ({  apiKey, onRevoke, onRotate, onViewDetails  }: any
 
   return (
     <div className="relative flex justify-end" ref={dropdownRef}>
-      <button 
-        onClick={() => setIsOpen(!isOpen)} 
+      <button
+        onClick={() => setIsOpen(!isOpen)}
         className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] rounded-md-custom transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-gold)]/50"
-        aria-label="Key Actions"
+        aria-label={t('templates20PlatformKeyDetail.keyActionsAriaLabel')}
       >
         <MoreVertical className="w-4 h-4"/>
       </button>
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 w-44 bg-[var(--bg-card)] border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 animate-in fade-in zoom-in-95 duration-100">
-          <button 
+          <button
             onClick={() => { onViewDetails(); setIsOpen(false); }}
             className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors"
           >
-            <Eye className="w-4 h-4 text-[var(--text-secondary)]" /> View details
+            <Eye className="w-4 h-4 text-[var(--text-secondary)]" /> {t('templates20PlatformKeyDetail.actionViewDetails')}
           </button>
-          
+
           {apiKey.status === 'Active' && (
             <>
-              <button 
+              <button
                 onClick={() => { onRotate(apiKey); setIsOpen(false); }}
                 className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors"
               >
-                <RefreshCcw className="w-4 h-4 text-[var(--text-secondary)]" /> Rotate key
+                <RefreshCcw className="w-4 h-4 text-[var(--text-secondary)]" /> {t('templates20PlatformKeyDetail.actionRotateKey')}
               </button>
-              
+
               <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2" />
-              
-              <button 
+
+              <button
                 onClick={() => { onRevoke(apiKey); setIsOpen(false); }}
                 className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-warning)] hover:bg-[#FDF9F0] flex items-center gap-2 transition-colors font-medium"
               >
-                <Ban className="w-4 h-4 opacity-80" /> Revoke key
+                <Ban className="w-4 h-4 opacity-80" /> {t('templates20PlatformKeyDetail.actionRevokeKeyMenu')}
               </button>
             </>
           )}
 
           {apiKey.status === 'Revoked' && (
             <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] flex items-center gap-2 transition-colors font-medium mt-1">
-              <Trash2 className="w-4 h-4 opacity-80" /> Delete
+              <Trash2 className="w-4 h-4 opacity-80" /> {t('templates20PlatformKeyDetail.actionDelete')}
             </button>
           )}
         </div>
@@ -1190,6 +1213,7 @@ const KeyActionsDropdown = ({  apiKey, onRevoke, onRotate, onViewDetails  }: any
 };
 
 const ApiKeysPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [keys, setKeys] = useState(MOCK_API_KEYS);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -1264,12 +1288,12 @@ const ApiKeysPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="API Keys" 
-        subtitle="Manage and secure programmatic access to your platform."
+      <PageHeader
+        title={t('templates20PlatformKeyDetail.navApiKeys')}
+        subtitle={t('templates20PlatformKeyDetail.apiKeysPageSubtitle')}
         actions={
           <Button onClick={() => setActiveRoute('keys-new')}>
-            <Plus className="w-4 h-4 mr-2" /> Create key
+            <Plus className="w-4 h-4 mr-2" /> {t('templates20PlatformKeyDetail.actionCreateKey')}
           </Button>
         }
       />
@@ -1280,78 +1304,78 @@ const ApiKeysPage = ({  setActiveRoute  }: any) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               className="h-10 w-full pl-9 pr-3 rounded-md-custom border border-[var(--border-color)] bg-white text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
-              placeholder="Search key name..."
+              placeholder={t('templates20PlatformKeyDetail.searchKeyNamePlaceholder')}
               value={search}
               onChange={(e: any) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex w-full sm:w-auto gap-3 shrink-0">
             <div className="w-full sm:w-40">
-              <Select 
-                value={statusFilter} 
-                onChange={setStatusFilter} 
-                options={[{label: 'All Statuses', value: 'all'}, {label: 'Active', value: 'Active'}, {label: 'Revoked', value: 'Revoked'}]} 
-                placeholder="Status" 
+              <Select
+                value={statusFilter}
+                onChange={setStatusFilter}
+                options={[{label: t('templates20PlatformKeyDetail.filterAllStatuses'), value: 'all'}, {label: t('templates20PlatformKeyDetail.statusActive'), value: 'Active'}, {label: t('templates20PlatformKeyDetail.statusRevoked'), value: 'Revoked'}]}
+                placeholder={t('templates20PlatformKeyDetail.labelStatus')}
               />
             </div>
           </div>
           {(search || statusFilter !== 'all') && (
-            <Button variant="tertiary" onClick={() => {setSearch(''); setStatusFilter('all');}} className="px-3">Clear filters</Button>
+            <Button variant="tertiary" onClick={() => {setSearch(''); setStatusFilter('all');}} className="px-3">{t('templates20PlatformKeyDetail.actionClearFilters')}</Button>
           )}
         </div>
       </Section>
 
       <Section>
-        <DataTable 
-          columns={["Key Name", "Secret Key", "Scope", "Created At", "Last Used", "Status", ""]}
+        <DataTable
+          columns={[t('templates20PlatformKeyDetail.labelKeyName'), t('templates20PlatformKeyDetail.colSecretKey'), t('templates20PlatformKeyDetail.labelScope'), t('templates20PlatformKeyDetail.colCreatedAt'), t('templates20PlatformKeyDetail.labelLastUsed'), t('templates20PlatformKeyDetail.labelStatus'), ""]}
           data={tableData}
           loading={isLoading}
         />
       </Section>
 
       {/* Revoke Key Modal */}
-      <Modal 
-        isOpen={isRevokeOpen} 
+      <Modal
+        isOpen={isRevokeOpen}
         onClose={() => !isProcessing && setIsRevokeOpen(false)}
-        title="Revoke API Key"
-        description={`Are you sure you want to revoke "${selectedKey?.name}"?`}
+        title={t('templates20PlatformKeyDetail.modalRevokeTitle')}
+        description={t('templates20PlatformKeyDetail.modalRevokeDesc', { name: selectedKey?.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsRevokeOpen(false)} disabled={isProcessing}>Cancel</Button>
-            <Button variant="destructive" onClick={handleRevokeConfirm} isLoading={isProcessing}>Revoke Key</Button>
+            <Button variant="outline" onClick={() => setIsRevokeOpen(false)} disabled={isProcessing}>{t('templates20PlatformKeyDetail.actionCancel')}</Button>
+            <Button variant="destructive" onClick={handleRevokeConfirm} isLoading={isProcessing}>{t('templates20PlatformKeyDetail.actionRevokeKeyConfirm')}</Button>
           </>
         }
       >
         <Alert variant="error" className="mb-2">
-          Any integrations currently using this key will immediately fail. This action cannot be undone.
+          {t('templates20PlatformKeyDetail.alertRevokeWarning')}
         </Alert>
       </Modal>
 
       {/* Rotate Key Modal */}
-      <Modal 
-        isOpen={isRotateOpen} 
+      <Modal
+        isOpen={isRotateOpen}
         onClose={() => { if(!generatedKey && !isProcessing) setIsRotateOpen(false); }}
-        title={generatedKey ? "Save new API Key" : "Rotate API Key"}
-        description={generatedKey ? "Please copy your new key. The old one is now invalid." : `Are you sure you want to rotate "${selectedKey?.name}"?`}
+        title={generatedKey ? t('templates20PlatformKeyDetail.modalSaveNewKeyTitle') : t('templates20PlatformKeyDetail.modalRotateKeyTitle')}
+        description={generatedKey ? t('templates20PlatformKeyDetail.descCopyNewKey') : t('templates20PlatformKeyDetail.modalRotateDesc', { name: selectedKey?.name })}
         footer={
           generatedKey ? (
-            <Button onClick={() => { setIsRotateOpen(false); setGeneratedKey(null); }} className="w-full">Done</Button>
+            <Button onClick={() => { setIsRotateOpen(false); setGeneratedKey(null); }} className="w-full">{t('templates20PlatformKeyDetail.actionDone')}</Button>
           ) : (
             <>
-              <Button variant="outline" onClick={() => setIsRotateOpen(false)} disabled={isProcessing}>Cancel</Button>
-              <Button onClick={handleRotateConfirm} isLoading={isProcessing}>Rotate Key</Button>
+              <Button variant="outline" onClick={() => setIsRotateOpen(false)} disabled={isProcessing}>{t('templates20PlatformKeyDetail.actionCancel')}</Button>
+              <Button onClick={handleRotateConfirm} isLoading={isProcessing}>{t('templates20PlatformKeyDetail.actionRotateKeyConfirm')}</Button>
             </>
           )
         }
       >
         {!generatedKey ? (
           <Alert variant="warning">
-            This will immediately invalidate the current key and generate a new one. Applications using the old key will lose access until updated.
+            {t('templates20PlatformKeyDetail.alertRotateWarning')}
           </Alert>
         ) : (
           <div className="space-y-4">
-            <Alert variant="success" title="Key Rotated Successfully">
-              Your new key is ready. Remember to update your environments.
+            <Alert variant="success" title={t('templates20PlatformKeyDetail.alertRotateSuccessTitle')}>
+              {t('templates20PlatformKeyDetail.alertRotateSuccessBody')}
             </Alert>
             <div className="flex items-center gap-2 p-3 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom">
               <span className="font-mono text-sm text-[var(--text-primary)] flex-1 overflow-x-auto whitespace-nowrap scrollbar-hide select-all">
@@ -1368,6 +1392,7 @@ const ApiKeysPage = ({  setActiveRoute  }: any) => {
 };
 
 const ApiKeyNewPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [step, setStep] = useState(1);
   const [isCreating, setIsCreating] = useState(false);
   const [generatedKey, setGeneratedKey] = useState(null);
@@ -1376,7 +1401,7 @@ const ApiKeyNewPage = ({  setActiveRoute  }: any) => {
 
   const handleCreate = async () => {
     if (!formData.name) {
-      setErrors({ name: 'Key name is required' });
+      setErrors({ name: t('templates20PlatformKeyDetail.errKeyNameRequired') });
       return;
     }
     setIsCreating(true);
@@ -1393,38 +1418,38 @@ const ApiKeyNewPage = ({  setActiveRoute  }: any) => {
        {/* Step 1 */}
        {step === 1 && (
          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-           <PageHeader 
-             showBack 
+           <PageHeader
+             showBack
              onBack={() => setActiveRoute('keys')}
-             title="Create API Key" 
-             subtitle="Generate a secure key to allow programmatic access to your platform."
+             title={t('templates20PlatformKeyDetail.createApiKeyTitle')}
+             subtitle={t('templates20PlatformKeyDetail.createApiKeySubtitle')}
            />
            <Card className="p-6 sm:p-8 mt-8 shadow-soft-md">
              <div className="space-y-6">
-                <Input 
-                  label="Key Name" 
-                  placeholder="e.g. Production Backend" 
+                <Input
+                  label={t('templates20PlatformKeyDetail.labelKeyName')}
+                  placeholder={t('templates20PlatformKeyDetail.placeholderKeyNameExample')}
                   value={formData.name}
                   onChange={e => { setFormData({...formData, name: e.target.value}); setErrors({}); }}
                   error={errors.name}
                   autoFocus
                 />
-                <Select 
-                  label="Scope" 
-                  options={[{label: 'Full Access', value: 'Full Access'}, {label: 'Read-only', value: 'Read-only'}]}
+                <Select
+                  label={t('templates20PlatformKeyDetail.labelScope')}
+                  options={[{label: t('templates20PlatformKeyDetail.scopeFullAccess'), value: 'Full Access'}, {label: t('templates20PlatformKeyDetail.scopeReadOnly'), value: 'Read-only'}]}
                   value={formData.scope}
                   onChange={v => setFormData({...formData, scope: v})}
                 />
-                <Select 
-                  label="Expiration" 
-                  options={[{label: 'Never', value: 'never'}, {label: '30 days', value: '30'}, {label: '90 days', value: '90'}]}
+                <Select
+                  label={t('templates20PlatformKeyDetail.labelExpiration')}
+                  options={[{label: t('templates20PlatformKeyDetail.expirationNever'), value: 'never'}, {label: t('templates20PlatformKeyDetail.expiration30Days'), value: '30'}, {label: t('templates20PlatformKeyDetail.expiration90Days'), value: '90'}]}
                   value={formData.expiration}
                   onChange={v => setFormData({...formData, expiration: v})}
                 />
              </div>
              <div className="mt-8 pt-6 border-t border-[var(--border-color)] flex items-center justify-between">
-                <Button variant="tertiary" onClick={() => setActiveRoute('keys')}>Cancel</Button>
-                <Button onClick={handleCreate} isLoading={isCreating}>Create key</Button>
+                <Button variant="tertiary" onClick={() => setActiveRoute('keys')}>{t('templates20PlatformKeyDetail.actionCancel')}</Button>
+                <Button onClick={handleCreate} isLoading={isCreating}>{t('templates20PlatformKeyDetail.actionCreateKey')}</Button>
              </div>
            </Card>
          </div>
@@ -1433,22 +1458,22 @@ const ApiKeyNewPage = ({  setActiveRoute  }: any) => {
        {/* Step 2 */}
        {step === 2 && (
          <div className="animate-in fade-in zoom-in-[0.98] duration-500">
-           <PageHeader 
-             title="Your API key has been created" 
-             subtitle="Please store this key securely. We cannot show it to you again."
+           <PageHeader
+             title={t('templates20PlatformKeyDetail.keyCreatedTitle')}
+             subtitle={t('templates20PlatformKeyDetail.keyCreatedSubtitle')}
            />
            <Card className="p-6 sm:p-8 mt-8 shadow-soft-md border-[var(--primary-gold)]/30">
              <Alert variant="warning" className="mb-6 bg-[#FDF9F0] border-[#E6C07B]/40">
                <div className="flex items-start gap-2">
                  <div>
-                   <h4 className="text-sm font-semibold text-[#9E814D] mb-1">Make sure to copy your key now</h4>
-                   <p className="text-xs text-[#9E814D]/90">You will not be able to see it again after you leave this page. If you lose it, you will need to generate a new one.</p>
+                   <h4 className="text-sm font-semibold text-[#9E814D] mb-1">{t('templates20PlatformKeyDetail.copyKeyNowHeading')}</h4>
+                   <p className="text-xs text-[#9E814D]/90">{t('templates20PlatformKeyDetail.copyKeyNowBody')}</p>
                  </div>
                </div>
              </Alert>
 
              <div className="space-y-2 mb-8">
-               <Label>Secret API Key</Label>
+               <Label>{t('templates20PlatformKeyDetail.labelSecretApiKey')}</Label>
                <div className="flex items-center gap-3 p-3 sm:p-4 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom shadow-inner">
                  <span className="font-mono text-sm sm:text-base text-[var(--text-primary)] flex-1 overflow-x-auto whitespace-nowrap scrollbar-hide select-all">
                    {generatedKey}
@@ -1458,7 +1483,7 @@ const ApiKeyNewPage = ({  setActiveRoute  }: any) => {
              </div>
 
              <div className="pt-6 border-t border-[var(--border-color)] flex justify-end">
-                <Button onClick={() => setActiveRoute('keys')}>Done</Button>
+                <Button onClick={() => setActiveRoute('keys')}>{t('templates20PlatformKeyDetail.actionDone')}</Button>
              </div>
            </Card>
          </div>
@@ -1469,6 +1494,7 @@ const ApiKeyNewPage = ({  setActiveRoute  }: any) => {
 
 // --- EDIT WORKSPACE SETTINGS PAGE ---
 const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isSaving, setIsSaving] = useState(false);
   const [showSavedToast, setShowSavedToast] = useState(false);
   
@@ -1512,21 +1538,21 @@ const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
       {showSavedToast && (
         <div className="absolute top-0 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="bg-[#F3F9F5] border border-[#8FBFA0] text-[#427A5B] px-4 py-2 rounded-full shadow-soft-md flex items-center gap-2 text-sm font-medium">
-            <CheckCircle2 className="w-4 h-4" /> Changes saved successfully
+            <CheckCircle2 className="w-4 h-4" /> {t('templates20PlatformKeyDetail.toastChangesSaved')}
           </div>
         </div>
       )}
 
-      <PageHeader 
-        showBack 
+      <PageHeader
+        showBack
         onBack={() => setActiveRoute('workspace-details')}
-        title="Workspace Settings" 
-        subtitle="Update configuration and preferences for this environment."
+        title={t('templates20PlatformKeyDetail.workspaceSettingsTitle')}
+        subtitle={t('templates20PlatformKeyDetail.workspaceSettingsSubtitle')}
         actions={
           <>
-            <Button variant="tertiary" onClick={() => setActiveRoute('workspace-details')} className="hidden sm:flex">Cancel</Button>
+            <Button variant="tertiary" onClick={() => setActiveRoute('workspace-details')} className="hidden sm:flex">{t('templates20PlatformKeyDetail.actionCancel')}</Button>
             <Button onClick={handleSave} disabled={!isDirty} isLoading={isSaving}>
-              <Save className="w-4 h-4 mr-2" /> Save changes
+              <Save className="w-4 h-4 mr-2" /> {t('templates20PlatformKeyDetail.actionSaveChanges')}
             </Button>
           </>
         }
@@ -1535,45 +1561,45 @@ const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
       <Tabs defaultValue="general" tabs={[
         {
           id: 'general',
-          label: 'General',
+          label: t('templates20PlatformKeyDetail.tabGeneral'),
           content: (
             <div className="space-y-8 animate-step">
               <Section>
                 <Card className="p-6">
-                  <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">Basic Information</h3>
+                  <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">{t('templates20PlatformKeyDetail.basicInformation')}</h3>
                   <div className="space-y-5">
-                    <Input 
-                      label="Workspace Name" 
+                    <Input
+                      label={t('templates20PlatformKeyDetail.labelWorkspaceName')}
                       value={formData.name}
                       onChange={(e: any) => setFormData({...formData, name: e.target.value})}
                     />
-                    <Input 
-                      label="Description" 
+                    <Input
+                      label={t('templates20PlatformKeyDetail.labelDescription')}
                       value={formData.description}
                       onChange={(e: any) => setFormData({...formData, description: e.target.value})}
                     />
-                    <Input 
-                      label="Deployment Region" 
-                      value="US East (N. Virginia)" 
-                      disabled 
-                      helperText="Region cannot be changed after workspace creation for data compliance reasons."
+                    <Input
+                      label={t('templates20PlatformKeyDetail.labelDeploymentRegion')}
+                      value="US East (N. Virginia)"
+                      disabled
+                      helperText={t('templates20PlatformKeyDetail.helperRegionLocked')}
                     />
                   </div>
                 </Card>
               </Section>
               <Section>
                 <Card className="p-6">
-                  <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">Display Settings</h3>
+                  <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">{t('templates20PlatformKeyDetail.displaySettingsHeading')}</h3>
                   <div className="space-y-5">
-                    <Select 
-                      label="Default Timezone" 
+                    <Select
+                      label={t('templates20PlatformKeyDetail.labelDefaultTimezone')}
                       value={formData.timezone}
                       onChange={(v: any) => setFormData({...formData, timezone: v})}
                       options={[
-                        {label: 'UTC (Coordinated Universal Time)', value: 'UTC'},
-                        {label: 'PST (Pacific Standard Time)', value: 'PST'},
-                        {label: 'EST (Eastern Standard Time)', value: 'EST'},
-                        {label: 'CET (Central European Time)', value: 'CET'}
+                        {label: t('templates20PlatformKeyDetail.tzUtc'), value: 'UTC'},
+                        {label: t('templates20PlatformKeyDetail.tzPst'), value: 'PST'},
+                        {label: t('templates20PlatformKeyDetail.tzEst'), value: 'EST'},
+                        {label: t('templates20PlatformKeyDetail.tzCet'), value: 'CET'}
                       ]}
                     />
                   </div>
@@ -1584,22 +1610,22 @@ const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
         },
         {
           id: 'advanced',
-          label: 'Advanced',
+          label: t('templates20PlatformKeyDetail.tabAdvanced'),
           content: (
             <div className="space-y-8 animate-step">
               <Section>
                 <Card className="p-6">
-                  <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">Resource Limits</h3>
-                  <p className="text-xs text-[var(--text-secondary)] mb-5">Override default workspace limits. Requires Enterprise plan.</p>
+                  <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">{t('templates20PlatformKeyDetail.resourceLimitsHeading')}</h3>
+                  <p className="text-xs text-[var(--text-secondary)] mb-5">{t('templates20PlatformKeyDetail.resourceLimitsDesc')}</p>
                   <div className="space-y-5">
-                    <Input 
-                      label="API Rate Limit (req/sec)" 
+                    <Input
+                      label={t('templates20PlatformKeyDetail.labelApiRateLimit')}
                       type="number"
                       value={formData.rateLimit}
                       onChange={(e: any) => setFormData({...formData, rateLimit: e.target.value})}
                     />
-                    <Input 
-                      label="Storage Quota (GB)" 
+                    <Input
+                      label={t('templates20PlatformKeyDetail.labelStorageQuota')}
                       type="number"
                       value={formData.storageQuota}
                       onChange={(e: any) => setFormData({...formData, storageQuota: e.target.value})}
@@ -1610,9 +1636,9 @@ const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
               <Section>
                  <Card className="p-6 opacity-60 pointer-events-none">
                     <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3 flex items-center justify-between">
-                      Integrations <Badge>Coming Soon</Badge>
+                      {t('templates20PlatformKeyDetail.integrationsHeading')} <Badge>{t('templates20PlatformKeyDetail.badgeComingSoon')}</Badge>
                     </h3>
-                    <p className="text-xs text-[var(--text-secondary)]">External connections (Slack, Datadog) will be configured here.</p>
+                    <p className="text-xs text-[var(--text-secondary)]">{t('templates20PlatformKeyDetail.integrationsDesc')}</p>
                  </Card>
               </Section>
             </div>
@@ -1620,29 +1646,29 @@ const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
         },
         {
           id: 'danger',
-          label: 'Danger Zone',
+          label: t('templates20PlatformKeyDetail.tabDangerZone'),
           content: (
             <div className="space-y-8 animate-step">
               <Section>
                 <Card className="p-6 border-[#D97C7C]/40 bg-[#FDF8F8]">
                   <h3 className="text-sm font-semibold text-[#9B5050] mb-4 border-b border-[#D97C7C]/30 pb-3 flex items-center">
-                    <AlertTriangle className="w-4 h-4 mr-2" /> Danger Zone
+                    <AlertTriangle className="w-4 h-4 mr-2" /> {t('templates20PlatformKeyDetail.tabDangerZone')}
                   </h3>
-                  
+
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4 border-b border-[#D97C7C]/20">
                     <div>
-                      <h4 className="text-sm font-medium text-[var(--text-primary)]">Suspend Workspace</h4>
-                      <p className="text-xs text-[var(--text-secondary)] mt-1">Temporarily disable all API access and logins for this workspace.</p>
+                      <h4 className="text-sm font-medium text-[var(--text-primary)]">{t('templates20PlatformKeyDetail.suspendWorkspaceHeading')}</h4>
+                      <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates20PlatformKeyDetail.suspendWorkspaceDesc')}</p>
                     </div>
-                    <Button variant="secondary" className="shrink-0 text-[#9B5050] hover:bg-[#D97C7C]/10 border-[#D97C7C]/40">Suspend</Button>
+                    <Button variant="secondary" className="shrink-0 text-[#9B5050] hover:bg-[#D97C7C]/10 border-[#D97C7C]/40">{t('templates20PlatformKeyDetail.actionSuspend')}</Button>
                   </div>
 
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
                     <div>
-                      <h4 className="text-sm font-medium text-[var(--text-primary)]">Delete Workspace</h4>
-                      <p className="text-xs text-[var(--text-secondary)] mt-1">Permanently remove this workspace and all its data. This action is irreversible.</p>
+                      <h4 className="text-sm font-medium text-[var(--text-primary)]">{t('templates20PlatformKeyDetail.deleteWorkspaceHeading')}</h4>
+                      <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates20PlatformKeyDetail.deleteWorkspaceDesc')}</p>
                     </div>
-                    <Button variant="destructive" className="shrink-0" onClick={() => setIsDeleteModalOpen(true)}>Delete Workspace</Button>
+                    <Button variant="destructive" className="shrink-0" onClick={() => setIsDeleteModalOpen(true)}>{t('templates20PlatformKeyDetail.deleteWorkspaceHeading')}</Button>
                   </div>
                 </Card>
               </Section>
@@ -1652,28 +1678,28 @@ const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
       ]} />
 
       {/* Delete Confirmation Modal */}
-      <Modal 
-        isOpen={isDeleteModalOpen} 
+      <Modal
+        isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        title="Delete Workspace"
-        description="This action cannot be undone. This will permanently delete the workspace and remove all associated data."
+        title={t('templates20PlatformKeyDetail.deleteWorkspaceHeading')}
+        description={t('templates20PlatformKeyDetail.deleteWorkspaceModalDesc')}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={deleteConfirmText !== formData.name}>I understand, delete this workspace</Button>
+            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>{t('templates20PlatformKeyDetail.actionCancel')}</Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={deleteConfirmText !== formData.name}>{t('templates20PlatformKeyDetail.actionConfirmDeleteWorkspace')}</Button>
           </>
         }
       >
         <div className="space-y-4">
-          <Alert variant="error" title="Warning">
-            All API keys will be revoked immediately and active sessions will be terminated.
+          <Alert variant="error" title={t('templates20PlatformKeyDetail.warningTitle')}>
+            {t('templates20PlatformKeyDetail.deleteWorkspaceAlertBody')}
           </Alert>
           <div className="space-y-2 mt-4">
-            <Label>Please type <strong className="font-bold text-[var(--text-primary)]">{formData.name}</strong> to confirm.</Label>
-            <Input 
+            <Label>{t('templates20PlatformKeyDetail.pleaseTypePrefix')} <strong className="font-bold text-[var(--text-primary)]">{formData.name}</strong> {t('templates20PlatformKeyDetail.pleaseTypeSuffix')}</Label>
+            <Input
               value={deleteConfirmText}
               onChange={(e: any) => setDeleteConfirmText(e.target.value)}
-              placeholder="Workspace name"
+              placeholder={t('templates20PlatformKeyDetail.placeholderWorkspaceName')}
             />
           </div>
         </div>
@@ -1685,107 +1711,108 @@ const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
 
 // --- COMPONENTS PAGE ---
 const ComponentsPage = () => {
+  const t = useT();
   const [date, setDate] = useState("");
   const [selectVal, setSelectVal] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  
+
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Component Library" 
-        subtitle="Foundational UI system for Kaori Platform following strict design tokens."
-        actions={<Button>Deploy System</Button>}
+      <PageHeader
+        title={t('templates20PlatformKeyDetail.navComponentLibrary')}
+        subtitle={t('templates20PlatformKeyDetail.componentLibrarySubtitle')}
+        actions={<Button>{t('templates20PlatformKeyDetail.actionDeploySystem')}</Button>}
       />
-      
+
       <Tabs defaultValue="form" tabs={[
-        { id: 'form', label: 'Forms & Inputs', content: (
+        { id: 'form', label: t('templates20PlatformKeyDetail.tabFormsInputs'), content: (
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <Section title="Buttons" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)]">
+             <Section title={t('templates20PlatformKeyDetail.sectionButtons')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)]">
                <div className="flex flex-wrap gap-4 mb-4">
-                 <Button variant="primary">Primary Button</Button>
-                 <Button variant="secondary">Secondary Button</Button>
-                 <Button variant="tertiary">Tertiary Ghost</Button>
+                 <Button variant="primary">{t('templates20PlatformKeyDetail.demoPrimaryButton')}</Button>
+                 <Button variant="secondary">{t('templates20PlatformKeyDetail.demoSecondaryButton')}</Button>
+                 <Button variant="tertiary">{t('templates20PlatformKeyDetail.demoTertiaryGhost')}</Button>
                </div>
                <div className="flex flex-wrap gap-4 items-center">
-                 <Button variant="primary" isLoading>Loading</Button>
-                 <Button variant="destructive">Destructive Action</Button>
+                 <Button variant="primary" isLoading>{t('templates20PlatformKeyDetail.demoLoading')}</Button>
+                 <Button variant="destructive">{t('templates20PlatformKeyDetail.demoDestructiveAction')}</Button>
                  <Button variant="primary" size="icon"><Plus className="w-4 h-4"/></Button>
                </div>
              </Section>
-             
-             <Section title="Inputs & Selects" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] space-y-4">
-                <Input label="Email Address" placeholder="admin@kaori.io" helperText="We will never share your email." />
-                <Input label="Workspace Name" placeholder="e.g. Production AI" error="This workspace name is already taken." />
-                <Select 
-                  label="Environment" 
-                  placeholder="Select environment..." 
-                  options={[{label: 'Production', value: 'prod'}, {label: 'Staging', value: 'stage'}]}
+
+             <Section title={t('templates20PlatformKeyDetail.sectionInputsSelects')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] space-y-4">
+                <Input label={t('templates20PlatformKeyDetail.labelEmailAddress')} placeholder="admin@kaori.io" helperText={t('templates20PlatformKeyDetail.helperNeverShareEmail')} />
+                <Input label={t('templates20PlatformKeyDetail.labelWorkspaceName')} placeholder={t('templates20PlatformKeyDetail.placeholderWorkspaceNameExample')} error={t('templates20PlatformKeyDetail.errWorkspaceNameTaken')} />
+                <Select
+                  label={t('templates20PlatformKeyDetail.labelEnvironment')}
+                  placeholder={t('templates20PlatformKeyDetail.placeholderSelectEnvironment')}
+                  options={[{label: t('templates20PlatformKeyDetail.envProduction'), value: 'prod'}, {label: t('templates20PlatformKeyDetail.envStaging'), value: 'stage'}]}
                   value={selectVal}
                   onChange={setSelectVal}
                 />
-                <DatePicker label="Billing Cycle Start" date={date} setDate={setDate} />
+                <DatePicker label={t('templates20PlatformKeyDetail.labelBillingCycleStart')} date={date} setDate={setDate} />
              </Section>
            </div>
         )},
-        { id: 'data', label: 'Data Display', content: (
+        { id: 'data', label: t('templates20PlatformKeyDetail.tabDataDisplay'), content: (
            <div className="space-y-8">
-             <Section title="Metric Cards">
+             <Section title={t('templates20PlatformKeyDetail.sectionMetricCards')}>
                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                 <MetricCard title="Total Revenue" value="$45,231" trend="+20.1%" isUp={true} />
-                 <MetricCard title="Active Workspaces" value="12" trend="0%" />
-                 <MetricCard title="Error Rate" value="1.2%" trend="+0.4%" isUp={false} inverseGood={true} />
+                 <MetricCard title={t('templates20PlatformKeyDetail.metricTotalRevenue')} value="$45,231" trend="+20.1%" isUp={true} />
+                 <MetricCard title={t('templates20PlatformKeyDetail.metricActiveWorkspaces')} value="12" trend="0%" />
+                 <MetricCard title={t('templates20PlatformKeyDetail.metricErrorRate')} value="1.2%" trend="+0.4%" isUp={false} inverseGood={true} />
                </div>
              </Section>
-             
-             <Section title="Data Table">
-                <DataTable 
-                  columns={["Workspace", "Environment", "Status", "Created"]}
+
+             <Section title={t('templates20PlatformKeyDetail.sectionDataTable')}>
+                <DataTable
+                  columns={[t('templates20PlatformKeyDetail.wordWorkspace'), t('templates20PlatformKeyDetail.labelEnvironment'), t('templates20PlatformKeyDetail.labelStatus'), t('templates20PlatformKeyDetail.labelCreated')]}
                   data={[
-                    ["Production AI", "Production", <Badge variant="operational" key="1">Healthy</Badge>, "Oct 12, 2026"],
-                    ["Staging Data", "Staging", <Badge variant="degraded" key="2">Degraded</Badge>, "Oct 14, 2026"],
-                    ["Dev Cluster", "Development", <Badge variant="operational" key="3">Healthy</Badge>, "Oct 15, 2026"]
+                    ["Production AI", t('templates20PlatformKeyDetail.envProduction'), <Badge variant="operational" key="1">{t('templates20PlatformKeyDetail.statusHealthy')}</Badge>, "Oct 12, 2026"],
+                    ["Staging Data", t('templates20PlatformKeyDetail.envStaging'), <Badge variant="degraded" key="2">{t('templates20PlatformKeyDetail.statusDegraded')}</Badge>, "Oct 14, 2026"],
+                    ["Dev Cluster", "Development", <Badge variant="operational" key="3">{t('templates20PlatformKeyDetail.statusHealthy')}</Badge>, "Oct 15, 2026"]
                   ]}
                   loading={false}
                 />
              </Section>
            </div>
         )},
-        { id: 'feedback', label: 'Feedback & Overlays', content: (
+        { id: 'feedback', label: t('templates20PlatformKeyDetail.tabFeedbackOverlays'), content: (
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <Section title="Alerts" className="space-y-4">
-               <Alert variant="info" title="System Update">A new version of the platform shell is available.</Alert>
-               <Alert variant="success" title="Backup Complete">All workspace data has been successfully backed up.</Alert>
-               <Alert variant="warning" title="High Latency">We are detecting high latency in the EU-Central region.</Alert>
-               <Alert variant="error" title="Payment Failed">Your last invoice could not be processed.</Alert>
+             <Section title={t('templates20PlatformKeyDetail.sectionAlerts')} className="space-y-4">
+               <Alert variant="info" title={t('templates20PlatformKeyDetail.demoAlertSystemUpdateTitle')}>{t('templates20PlatformKeyDetail.demoAlertSystemUpdateBody')}</Alert>
+               <Alert variant="success" title={t('templates20PlatformKeyDetail.demoAlertBackupTitle')}>{t('templates20PlatformKeyDetail.demoAlertBackupBody')}</Alert>
+               <Alert variant="warning" title={t('templates20PlatformKeyDetail.demoAlertHighLatencyTitle')}>{t('templates20PlatformKeyDetail.demoAlertHighLatencyBody')}</Alert>
+               <Alert variant="error" title={t('templates20PlatformKeyDetail.demoAlertPaymentFailedTitle')}>{t('templates20PlatformKeyDetail.demoAlertPaymentFailedBody')}</Alert>
              </Section>
-             
-             <Section title="Modals & Drawers" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] flex flex-col gap-4 items-start">
-               <Button variant="secondary" onClick={() => setIsModalOpen(true)}>Open Modal</Button>
-               <Button variant="secondary" onClick={() => setIsDrawerOpen(true)}>Open Drawer</Button>
-               
-               <Modal 
-                 isOpen={isModalOpen} 
+
+             <Section title={t('templates20PlatformKeyDetail.sectionModalsDrawers')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] flex flex-col gap-4 items-start">
+               <Button variant="secondary" onClick={() => setIsModalOpen(true)}>{t('templates20PlatformKeyDetail.actionOpenModal')}</Button>
+               <Button variant="secondary" onClick={() => setIsDrawerOpen(true)}>{t('templates20PlatformKeyDetail.actionOpenDrawer')}</Button>
+
+               <Modal
+                 isOpen={isModalOpen}
                  onClose={() => setIsModalOpen(false)}
-                 title="Delete Workspace"
-                 description="Are you sure you want to delete this workspace? This action cannot be undone."
-                 footer={<><Button variant="outline" onClick={()=>setIsModalOpen(false)}>Cancel</Button><Button variant="destructive">Confirm Delete</Button></>}
+                 title={t('templates20PlatformKeyDetail.deleteWorkspaceHeading')}
+                 description={t('templates20PlatformKeyDetail.demoDeleteWorkspaceDesc')}
+                 footer={<><Button variant="outline" onClick={()=>setIsModalOpen(false)}>{t('templates20PlatformKeyDetail.actionCancel')}</Button><Button variant="destructive">{t('templates20PlatformKeyDetail.actionConfirmDelete')}</Button></>}
                >
                  <div className="space-y-4">
-                    <Input label="Type workspace name to confirm" placeholder="Production AI" />
+                    <Input label={t('templates20PlatformKeyDetail.labelTypeWorkspaceNameConfirm')} placeholder="Production AI" />
                  </div>
                </Modal>
 
                <Drawer
                  isOpen={isDrawerOpen}
                  onClose={() => setIsDrawerOpen(false)}
-                 title="Edit Profile"
-                 footer={<><Button variant="outline" className="w-full" onClick={()=>setIsDrawerOpen(false)}>Cancel</Button><Button className="w-full">Save Changes</Button></>}
+                 title={t('templates20PlatformKeyDetail.editProfileTitle')}
+                 footer={<><Button variant="outline" className="w-full" onClick={()=>setIsDrawerOpen(false)}>{t('templates20PlatformKeyDetail.actionCancel')}</Button><Button className="w-full">{t('templates20PlatformKeyDetail.actionSaveChanges')}</Button></>}
                >
                  <div className="space-y-4">
-                    <Input label="Full Name" placeholder="Admin User" />
-                    <Input label="Email" placeholder="admin@kaori.io" disabled />
-                    <Select label="Role" options={[{label:'Admin', value:'admin'}, {label:'Member', value:'member'}]} value="admin" onChange={()=>{}} />
+                    <Input label={t('templates20PlatformKeyDetail.labelFullName')} placeholder={t('templates20PlatformKeyDetail.adminUserName')} />
+                    <Input label={t('templates20PlatformKeyDetail.labelEmail')} placeholder="admin@kaori.io" disabled />
+                    <Select label={t('templates20PlatformKeyDetail.labelRole')} options={[{label: t('templates20PlatformKeyDetail.roleAdmin'), value:'admin'}, {label: t('templates20PlatformKeyDetail.roleMember'), value:'member'}]} value="admin" onChange={()=>{}} />
                  </div>
                </Drawer>
              </Section>
@@ -1798,24 +1825,25 @@ const ComponentsPage = () => {
 
 // --- PLATFORM OVERVIEW PAGE ---
 const PlatformOverview = () => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader title="Platform Overview" subtitle="Monitor system health, usage, and recent activity." actions={<Button variant="outline"><RefreshCw className="w-4 h-4 mr-2" /> Refresh Data</Button>} />
+      <PageHeader title={t('templates20PlatformKeyDetail.platformOverviewTitle')} subtitle={t('templates20PlatformKeyDetail.platformOverviewSubtitle')} actions={<Button variant="outline"><RefreshCw className="w-4 h-4 mr-2" /> {t('templates20PlatformKeyDetail.actionRefreshData')}</Button>} />
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="Total Workspaces" value="124" trend="+4" isUp={true} />
-          <MetricCard title="Active Users" value="1,892" trend="+12.5%" isUp={true} />
-          <MetricCard title="API Requests" value="2.4M" trend="+5.2%" isUp={true} />
-          <MetricCard title="Failed Requests" value="482" trend="-18%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates20PlatformKeyDetail.metricTotalWorkspaces')} value="124" trend="+4" isUp={true} />
+          <MetricCard title={t('templates20PlatformKeyDetail.metricActiveUsers')} value="1,892" trend="+12.5%" isUp={true} />
+          <MetricCard title={t('templates20PlatformKeyDetail.metricApiRequests')} value="2.4M" trend="+5.2%" isUp={true} />
+          <MetricCard title={t('templates20PlatformKeyDetail.metricFailedRequests')} value="482" trend="-18%" isUp={false} inverseGood={true} />
         </div>
       </Section>
-      <Section title="Recent Activity">
-         <DataTable 
-            columns={["Event", "Workspace", "Time"]}
+      <Section title={t('templates20PlatformKeyDetail.sectionRecentActivity')}>
+         <DataTable
+            columns={[t('templates20PlatformKeyDetail.colEvent'), t('templates20PlatformKeyDetail.wordWorkspace'), t('templates20PlatformKeyDetail.colTime')]}
             data={[
-              ["API Key Generated", "Production AI", "2 mins ago"],
-              ["Workspace Created", "Staging Env", "1 hour ago"],
-              ["User Invited", "Design System", "Yesterday"]
+              [t('templates20PlatformKeyDetail.eventApiKeyGenerated'), "Production AI", "2 mins ago"],
+              [t('templates20PlatformKeyDetail.eventWorkspaceCreated'), "Staging Env", "1 hour ago"],
+              [t('templates20PlatformKeyDetail.eventUserInvited'), "Design System", "Yesterday"]
             ]}
             loading={false}
           />
@@ -1826,14 +1854,15 @@ const PlatformOverview = () => {
 
 // --- SESSIONS PAGE ---
 const SessionsPage = () => {
+  const t = useT();
   return (
     <PageContainer maxWidth="narrow">
-      <PageHeader title="Active Sessions" subtitle="Manage devices where your account is currently signed in." actions={<Button variant="outline">Sign out all</Button>} />
-      <Section title="Security & Sessions">
+      <PageHeader title={t('templates20PlatformKeyDetail.activeSessionsTitle')} subtitle={t('templates20PlatformKeyDetail.activeSessionsSubtitle')} actions={<Button variant="outline">{t('templates20PlatformKeyDetail.actionSignOutAll')}</Button>} />
+      <Section title={t('templates20PlatformKeyDetail.navSecuritySessions')}>
         <Card className="p-8 text-center flex flex-col items-center">
           <Shield className="w-8 h-8 text-[var(--text-secondary)] mb-3" />
-          <h3 className="text-sm font-medium text-[var(--text-primary)]">Security & Sessions</h3>
-          <p className="text-xs text-[var(--text-secondary)] mt-1">Manage active logins here.</p>
+          <h3 className="text-sm font-medium text-[var(--text-primary)]">{t('templates20PlatformKeyDetail.navSecuritySessions')}</h3>
+          <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates20PlatformKeyDetail.manageActiveLoginsDesc')}</p>
         </Card>
       </Section>
     </PageContainer>
@@ -1843,6 +1872,7 @@ const SessionsPage = () => {
 // --- MAIN PLATFORM SHELL COMPONENT ---
 
 export default function KaoriPlatformShell() {
+  const t = useT();
   const [activeRoute, setActiveRoute] = useState('key-details'); // Setting default to API Key Detail for demo
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
@@ -1895,14 +1925,14 @@ export default function KaoriPlatformShell() {
              activeRoute === 'overview' ? <PlatformOverview /> : 
              activeRoute === 'sessions' ? <SessionsPage /> : (
               <PageContainer maxWidth="narrow">
-                <PageHeader title={`${NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label} module`} subtitle="This section of the platform is currently being designed." />
+                <PageHeader title={t('templates20PlatformKeyDetail.moduleTitle', { label: t(NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.labelKey || '') })} subtitle={t('templates20PlatformKeyDetail.sectionBeingDesigned')} />
                 <Section>
                   <Card className="flex flex-col items-center justify-center py-20 px-4 text-center border-dashed bg-[var(--bg-card)]/50 mx-auto w-full animate-in fade-in duration-300">
                     <div className="w-12 h-12 rounded-lg-custom bg-[var(--bg-sidebar)] flex items-center justify-center border border-[var(--border-color)] mb-4">
                       {React.createElement(NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.icon || LayoutDashboard, { className: 'w-6 h-6 text-[var(--text-secondary)]' })}
                     </div>
-                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">Work in Progress</h3>
-                    <p className="text-sm text-[var(--text-secondary)] max-w-sm">Content for {activeRoute} will populate here inside the Shell Wrapper.</p>
+                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">{t('templates20PlatformKeyDetail.workInProgress')}</h3>
+                    <p className="text-sm text-[var(--text-secondary)] max-w-sm">{t('templates20PlatformKeyDetail.contentPlaceholder', { route: activeRoute })}</p>
                   </Card>
                 </Section>
               </PageContainer>

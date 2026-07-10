@@ -26,7 +26,7 @@ export function Header() {
       </div>
       <div className="flex items-center gap-2">
         <LocalePicker />
-        <Button variant="ghost" size="sm" aria-label="Thông báo">
+        <Button variant="ghost" size="sm" aria-label={t('layoutHeader.notifications')}>
           <Bell className="w-[18px] h-[18px]" strokeWidth={1.5} />
         </Button>
         <Button variant="ghost" size="sm" aria-label={t('auth.logout')} onClick={handleLogout}>

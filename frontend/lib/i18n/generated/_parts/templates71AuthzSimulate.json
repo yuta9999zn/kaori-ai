@@ -1,0 +1,184 @@
+{
+  "templates71AuthzSimulate.title": {
+    "vi": "ABAC Simulator",
+    "en": "ABAC Simulator",
+    "ja": "ABAC シミュレーター",
+    "ko": "ABAC 시뮬레이터",
+    "zh": "ABAC 模拟器"
+  },
+  "templates71AuthzSimulate.description": {
+    "vi": "Test chính sách bằng cặp subject + resource giả. Không gây side-effect lên dữ liệu thật.",
+    "en": "Test a policy with a synthetic subject + resource pair. No side effects on real data.",
+    "ja": "サブジェクトとリソースの疑似ペアでポリシーをテストします。実データへの副作用はありません。",
+    "ko": "가상 subject + resource 쌍으로 정책을 테스트합니다. 실제 데이터에는 영향을 주지 않습니다.",
+    "zh": "使用合成的 subject + resource 组合测试策略,不会对真实数据产生副作用。"
+  },
+  "templates71AuthzSimulate.phase2Badge": {
+    "vi": "Phase 2",
+    "en": "Phase 2",
+    "ja": "フェーズ2",
+    "ko": "2단계",
+    "zh": "阶段 2"
+  },
+  "templates71AuthzSimulate.builderBtn": {
+    "vi": "Builder",
+    "en": "Builder",
+    "ja": "ビルダー",
+    "ko": "빌더",
+    "zh": "构建器"
+  },
+  "templates71AuthzSimulate.presetsLabel": {
+    "vi": "Tình huống mẫu",
+    "en": "Sample scenarios",
+    "ja": "サンプルシナリオ",
+    "ko": "샘플 시나리오",
+    "zh": "示例场景"
+  },
+  "templates71AuthzSimulate.presetViewerRead": {
+    "vi": "VIEWER đọc Gold revenue",
+    "en": "VIEWER reads Gold revenue",
+    "ja": "VIEWER が Gold revenue を読み取る",
+    "ko": "VIEWER가 Gold revenue 읽기",
+    "zh": "VIEWER 读取 Gold revenue"
+  },
+  "templates71AuthzSimulate.presetOperatorExportPii": {
+    "vi": "OPERATOR export PII",
+    "en": "OPERATOR exports PII",
+    "ja": "OPERATOR が PII をエクスポート",
+    "ko": "OPERATOR가 PII 내보내기",
+    "zh": "OPERATOR 导出 PII"
+  },
+  "templates71AuthzSimulate.presetAnalystMarkActioned": {
+    "vi": "ANALYST mark is_actioned",
+    "en": "ANALYST marks is_actioned",
+    "ja": "ANALYST が is_actioned をマーク",
+    "ko": "ANALYST가 is_actioned 표시",
+    "zh": "ANALYST 标记 is_actioned"
+  },
+  "templates71AuthzSimulate.subjectTitle": {
+    "vi": "Subject",
+    "en": "Subject",
+    "ja": "Subject",
+    "ko": "Subject",
+    "zh": "Subject"
+  },
+  "templates71AuthzSimulate.resourceTitle": {
+    "vi": "Resource",
+    "en": "Resource",
+    "ja": "Resource",
+    "ko": "Resource",
+    "zh": "Resource"
+  },
+  "templates71AuthzSimulate.roleLabel": {
+    "vi": "Role",
+    "en": "Role",
+    "ja": "ロール",
+    "ko": "역할",
+    "zh": "角色"
+  },
+  "templates71AuthzSimulate.departmentLabel": {
+    "vi": "Department",
+    "en": "Department",
+    "ja": "部門",
+    "ko": "부서",
+    "zh": "部门"
+  },
+  "templates71AuthzSimulate.locationLabel": {
+    "vi": "Location",
+    "en": "Location",
+    "ja": "拠点",
+    "ko": "위치",
+    "zh": "地点"
+  },
+  "templates71AuthzSimulate.mfaLabel": {
+    "vi": "MFA",
+    "en": "MFA",
+    "ja": "MFA",
+    "ko": "MFA",
+    "zh": "MFA"
+  },
+  "templates71AuthzSimulate.tableLabel": {
+    "vi": "Table",
+    "en": "Table",
+    "ja": "テーブル",
+    "ko": "테이블",
+    "zh": "表"
+  },
+  "templates71AuthzSimulate.sensitivityLabel": {
+    "vi": "Sensitivity",
+    "en": "Sensitivity",
+    "ja": "機密度",
+    "ko": "민감도",
+    "zh": "敏感度"
+  },
+  "templates71AuthzSimulate.ownerTeamLabel": {
+    "vi": "Owner team",
+    "en": "Owner team",
+    "ja": "所有チーム",
+    "ko": "소유 팀",
+    "zh": "所属团队"
+  },
+  "templates71AuthzSimulate.actionLabel": {
+    "vi": "Action",
+    "en": "Action",
+    "ja": "アクション",
+    "ko": "액션",
+    "zh": "操作"
+  },
+  "templates71AuthzSimulate.runBtnTooltip": {
+    "vi": "Phase 2 — Sắp ra mắt",
+    "en": "Phase 2 — Coming soon",
+    "ja": "フェーズ2 — 近日公開",
+    "ko": "2단계 — 출시 예정",
+    "zh": "阶段 2 — 即将上线"
+  },
+  "templates71AuthzSimulate.runBtn": {
+    "vi": "Chạy mô phỏng",
+    "en": "Run simulation",
+    "ja": "シミュレーションを実行",
+    "ko": "시뮬레이션 실행",
+    "zh": "运行模拟"
+  },
+  "templates71AuthzSimulate.pdpDecisionLabel": {
+    "vi": "PDP decision",
+    "en": "PDP decision",
+    "ja": "PDP の判定",
+    "ko": "PDP 결정",
+    "zh": "PDP 决策"
+  },
+  "templates71AuthzSimulate.policyIdLabel": {
+    "vi": "Policy ID:",
+    "en": "Policy ID:",
+    "ja": "ポリシー ID:",
+    "ko": "정책 ID:",
+    "zh": "策略 ID:"
+  },
+  "templates71AuthzSimulate.missingPermsLabel": {
+    "vi": "Quyền thiếu",
+    "en": "Missing permissions",
+    "ja": "不足している権限",
+    "ko": "누락된 권한",
+    "zh": "缺失权限"
+  },
+  "templates71AuthzSimulate.matchedRulesLabel": {
+    "vi": "Rule matched",
+    "en": "Rule matched",
+    "ja": "一致したルール",
+    "ko": "일치한 규칙",
+    "zh": "匹配的规则"
+  },
+  "templates71AuthzSimulate.emptyStateHint": {
+    "vi": "Điền thông tin và chạy mô phỏng để xem decision.",
+    "en": "Fill in the fields and run the simulation to see the decision.",
+    "ja": "情報を入力してシミュレーションを実行すると判定が表示されます。",
+    "ko": "정보를 입력하고 시뮬레이션을 실행하면 결정을 확인할 수 있습니다.",
+    "zh": "填写信息并运行模拟以查看决策。"
+  },
+  "templates71AuthzSimulate.footerNote": {
+    "vi": "Simulator KHÔNG ghi vào dữ liệu thật. DENY luôn override ALLOW. Trong Hybrid PDP (Phase 2), RBAC chạy trước ABAC — nếu RBAC đã DENY thì ABAC không được gọi.",
+    "en": "The simulator does NOT write to real data. DENY always overrides ALLOW. In the Hybrid PDP (Phase 2), RBAC runs before ABAC — if RBAC already DENYs, ABAC is not called.",
+    "ja": "シミュレーターは実データに書き込みません。DENY は常に ALLOW より優先されます。ハイブリッド PDP(フェーズ2)では RBAC が ABAC より先に実行され、RBAC が既に DENY した場合 ABAC は呼び出されません。",
+    "ko": "시뮬레이터는 실제 데이터에 기록하지 않습니다. DENY는 항상 ALLOW보다 우선합니다. 하이브리드 PDP(2단계)에서는 RBAC이 ABAC보다 먼저 실행되며, RBAC이 이미 DENY한 경우 ABAC은 호출되지 않습니다.",
+    "zh": "模拟器不会写入真实数据。DENY 始终优先于 ALLOW。在混合 PDP(阶段 2)中,RBAC 先于 ABAC 执行 —— 如果 RBAC 已经 DENY,则不会调用 ABAC。"
+  }
+}

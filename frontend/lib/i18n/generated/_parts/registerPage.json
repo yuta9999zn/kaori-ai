@@ -1,0 +1,205 @@
+{
+  "registerPage.errBadKeyFormat": {
+    "vi": "Khoá kích hoạt không đúng định dạng. Vui lòng kiểm tra lại.",
+    "en": "The activation key format is invalid. Please check it again.",
+    "ja": "アクティベーションキーの形式が正しくありません。もう一度ご確認ください。",
+    "ko": "활성화 키 형식이 올바르지 않습니다. 다시 확인해 주세요.",
+    "zh": "激活密钥格式不正确。请重新检查。"
+  },
+  "registerPage.errPwdMismatch": {
+    "vi": "Mật khẩu nhập lại không khớp.",
+    "en": "The confirmation password does not match.",
+    "ja": "確認用パスワードが一致しません。",
+    "ko": "비밀번호 확인이 일치하지 않습니다.",
+    "zh": "确认密码不匹配。"
+  },
+  "registerPage.errPwdTooShort": {
+    "vi": "Mật khẩu cần tối thiểu 8 ký tự.",
+    "en": "The password must be at least 8 characters.",
+    "ja": "パスワードは8文字以上で入力してください。",
+    "ko": "비밀번호는 최소 8자 이상이어야 합니다.",
+    "zh": "密码至少需要 8 个字符。"
+  },
+  "registerPage.errKeyInvalidOrExpired": {
+    "vi": "Khoá không hợp lệ hoặc đã hết hạn.",
+    "en": "The key is invalid or has expired.",
+    "ja": "キーが無効か、有効期限が切れています。",
+    "ko": "키가 유효하지 않거나 만료되었습니다.",
+    "zh": "密钥无效或已过期。"
+  },
+  "registerPage.errActivateFailed": {
+    "vi": "Không thể đăng ký workspace. Vui lòng thử lại.",
+    "en": "Could not register the workspace. Please try again.",
+    "ja": "ワークスペースを登録できませんでした。もう一度お試しください。",
+    "ko": "워크스페이스를 등록할 수 없습니다. 다시 시도해 주세요.",
+    "zh": "无法注册工作区。请重试。"
+  },
+  "registerPage.heroTitleLine1": {
+    "vi": "Đăng ký doanh nghiệp,",
+    "en": "Register your business,",
+    "ja": "法人登録、",
+    "ko": "기업 등록,",
+    "zh": "注册企业，"
+  },
+  "registerPage.heroTitleLine2": {
+    "vi": "khởi đầu sau một phút.",
+    "en": "get started in a minute.",
+    "ja": "1分で始める。",
+    "ko": "1분 만에 시작하세요.",
+    "zh": "一分钟即可开始。"
+  },
+  "registerPage.heroDesc": {
+    "vi": "Doanh nghiệp đăng ký Kaori cần khoá kích hoạt do đội Kaori cấp sau khi liên hệ. Dán khoá, đặt tài khoản quản trị đầu tiên — workspace của bạn sẵn sàng dùng.",
+    "en": "Businesses registering with Kaori need an activation key issued by the Kaori team after contact. Paste the key, set up the first admin account — your workspace is ready to use.",
+    "ja": "Kaoriに登録する企業は、お問い合わせ後にKaoriチームが発行するアクティベーションキーが必要です。キーを貼り付けて最初の管理者アカウントを設定すれば、ワークスペースがすぐに使えます。",
+    "ko": "Kaori에 등록하는 기업은 문의 후 Kaori 팀이 발급하는 활성화 키가 필요합니다. 키를 붙여넣고 첫 관리자 계정을 설정하면 워크스페이스를 바로 사용할 수 있습니다.",
+    "zh": "注册 Kaori 的企业需要在联系后由 Kaori 团队签发激活密钥。粘贴密钥、设置首个管理员账户——您的工作区即可使用。"
+  },
+  "registerPage.haveAccountLogin": {
+    "vi": "Đã có tài khoản? Đăng nhập",
+    "en": "Already have an account? Log in",
+    "ja": "アカウントをお持ちですか？ログイン",
+    "ko": "이미 계정이 있으신가요? 로그인",
+    "zh": "已有账户？登录"
+  },
+  "registerPage.badgeRegisterBusiness": {
+    "vi": "Đăng ký doanh nghiệp",
+    "en": "Business registration",
+    "ja": "法人登録",
+    "ko": "기업 등록",
+    "zh": "企业注册"
+  },
+  "registerPage.step1Title": {
+    "vi": "Khoá kích hoạt",
+    "en": "Activation key",
+    "ja": "アクティベーションキー",
+    "ko": "활성화 키",
+    "zh": "激活密钥"
+  },
+  "registerPage.step1Desc": {
+    "vi": "Dán khoá một lần đội Kaori đã gửi cho tổ chức bạn qua email.",
+    "en": "Paste the one-time key the Kaori team sent to your organization by email.",
+    "ja": "Kaoriチームが貴社にメールで送付したワンタイムキーを貼り付けてください。",
+    "ko": "Kaori 팀이 귀사에 이메일로 보낸 일회용 키를 붙여넣으세요.",
+    "zh": "粘贴 Kaori 团队通过邮件发送给贵组织的一次性密钥。"
+  },
+  "registerPage.labelActivationKey": {
+    "vi": "Khoá kích hoạt",
+    "en": "Activation key",
+    "ja": "アクティベーションキー",
+    "ko": "활성화 키",
+    "zh": "激活密钥"
+  },
+  "registerPage.keyFormatHintPrefix": {
+    "vi": "Định dạng: bắt đầu bằng",
+    "en": "Format: starts with",
+    "ja": "形式：",
+    "ko": "형식:",
+    "zh": "格式："
+  },
+  "registerPage.keyFormatHintSuffix": {
+    "vi": ", tiếp theo là 2-5 nhóm chữ số.",
+    "en": ", followed by 2-5 alphanumeric groups.",
+    "ja": "で始まり、その後に2〜5個の英数字グループが続きます。",
+    "ko": "로 시작하고 뒤에 2~5개의 영숫자 그룹이 이어집니다.",
+    "zh": "开头，后接 2-5 组字母数字。"
+  },
+  "registerPage.btnContinue": {
+    "vi": "Tiếp tục",
+    "en": "Continue",
+    "ja": "続ける",
+    "ko": "계속",
+    "zh": "继续"
+  },
+  "registerPage.noKeyYet": {
+    "vi": "Chưa có khoá?",
+    "en": "Don't have a key yet?",
+    "ja": "キーをお持ちでない場合",
+    "ko": "키가 아직 없으신가요?",
+    "zh": "还没有密钥？"
+  },
+  "registerPage.contactSalesPrefix": {
+    "vi": "Kaori là nền tảng B2B có sales-assist — vui lòng liên hệ",
+    "en": "Kaori is a B2B platform with a sales-assist motion — please contact",
+    "ja": "Kaoriはセールスアシスト型のB2Bプラットフォームです。お問い合わせは",
+    "ko": "Kaori는 세일즈 어시스트 방식의 B2B 플랫폼입니다 — 문의는",
+    "zh": "Kaori 是销售协助型的 B2B 平台——请联系"
+  },
+  "registerPage.contactSalesSuffix": {
+    "vi": "để được tư vấn gói + cấp khoá kích hoạt.",
+    "en": "for plan consultation and an activation key.",
+    "ja": "までご連絡いただき、プランのご相談とアクティベーションキーの発行を行います。",
+    "ko": "로 연락 주시면 요금제 상담과 활성화 키 발급을 도와드립니다.",
+    "zh": "以获取套餐咨询和激活密钥。"
+  },
+  "registerPage.btnChangeKey": {
+    "vi": "Đổi khoá khác",
+    "en": "Use a different key",
+    "ja": "別のキーを使用",
+    "ko": "다른 키 사용",
+    "zh": "更换密钥"
+  },
+  "registerPage.step2Title": {
+    "vi": "Tài khoản quản trị",
+    "en": "Admin account",
+    "ja": "管理者アカウント",
+    "ko": "관리자 계정",
+    "zh": "管理员账户"
+  },
+  "registerPage.step2Desc": {
+    "vi": "Tài khoản đầu tiên của workspace — sẽ có quyền MANAGER.",
+    "en": "The workspace's first account — will have MANAGER permissions.",
+    "ja": "ワークスペースの最初のアカウント — MANAGER権限を持ちます。",
+    "ko": "워크스페이스의 첫 계정으로 MANAGER 권한을 갖습니다.",
+    "zh": "工作区的首个账户——将拥有 MANAGER 权限。"
+  },
+  "registerPage.labelFullName": {
+    "vi": "Họ và tên",
+    "en": "Full name",
+    "ja": "氏名",
+    "ko": "이름",
+    "zh": "姓名"
+  },
+  "registerPage.labelPassword": {
+    "vi": "Mật khẩu",
+    "en": "Password",
+    "ja": "パスワード",
+    "ko": "비밀번호",
+    "zh": "密码"
+  },
+  "registerPage.pwdPlaceholder": {
+    "vi": "Tối thiểu 8 ký tự",
+    "en": "At least 8 characters",
+    "ja": "8文字以上",
+    "ko": "최소 8자",
+    "zh": "至少 8 个字符"
+  },
+  "registerPage.labelPwdConfirm": {
+    "vi": "Nhập lại mật khẩu",
+    "en": "Confirm password",
+    "ja": "パスワード（確認）",
+    "ko": "비밀번호 확인",
+    "zh": "确认密码"
+  },
+  "registerPage.btnCompleteRegister": {
+    "vi": "Hoàn tất đăng ký",
+    "en": "Complete registration",
+    "ja": "登録を完了する",
+    "ko": "등록 완료",
+    "zh": "完成注册"
+  },
+  "registerPage.haveAccountQuestion": {
+    "vi": "Đã có tài khoản?",
+    "en": "Already have an account?",
+    "ja": "アカウントをお持ちですか？",
+    "ko": "이미 계정이 있으신가요?",
+    "zh": "已有账户？"
+  },
+  "registerPage.btnLogin": {
+    "vi": "Đăng nhập",
+    "en": "Log in",
+    "ja": "ログイン",
+    "ko": "로그인",
+    "zh": "登录"
+  }
+}

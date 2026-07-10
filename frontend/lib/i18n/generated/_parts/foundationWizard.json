@@ -1,0 +1,11 @@
+{
+  "foundationWizard.stepUpload": { "vi": "Upload", "en": "Upload", "ja": "アップロード", "ko": "업로드", "zh": "上传" },
+  "foundationWizard.stepColumn": { "vi": "Cột", "en": "Column", "ja": "項目", "ko": "컬럼", "zh": "字段" },
+  "foundationWizard.stepClean": { "vi": "Làm sạch", "en": "Clean", "ja": "クレンジング", "ko": "정제", "zh": "清洗" },
+  "foundationWizard.stepAnalyze": { "vi": "Phân tích", "en": "Analysis", "ja": "分析", "ko": "분석", "zh": "分析" },
+  "foundationWizard.stepResults": { "vi": "Kết quả", "en": "Results", "ja": "結果", "ko": "결과", "zh": "结果" },
+  "foundationWizard.statusSchemaReview": { "vi": "Chờ duyệt cột", "en": "Pending column review", "ja": "項目確認待ち", "ko": "컬럼 검토 대기", "zh": "待审核字段" },
+  "foundationWizard.statusAnalyzing": { "vi": "Đang phân tích", "en": "Analyzing", "ja": "分析中", "ko": "분석 중", "zh": "分析中" },
+  "foundationWizard.statusComplete": { "vi": "Hoàn tất", "en": "Complete", "ja": "完了", "ko": "완료", "zh": "完成" },
+  "foundationWizard.statusFailed": { "vi": "Lỗi", "en": "Failed", "ja": "エラー", "ko": "오류", "zh": "错误" }
+}

@@ -31,6 +31,7 @@ import {
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
 import { WizardStepper } from '@/components/p2/foundation-wizard';
+import { useT } from '@/lib/i18n/provider';
 
 type Category = 'UNIVERSAL' | 'BY_TYPE' | 'BY_PURPOSE' | 'AI_DETECTED';
 
@@ -46,14 +47,17 @@ interface CleaningRule {
   is_destructive:   boolean;
 }
 
-const CATEGORY_META: Record<Category, { label: string; icon: any; desc: string }> = {
-  UNIVERSAL:    { label: 'Phổ quát',         icon: Layers,    desc: 'Quy tắc cơ bản áp dụng cho mọi dataset' },
-  BY_TYPE:      { label: 'Theo kiểu dữ liệu', icon: Filter,    desc: 'Coerce kiểu, kiểm tra null-rate theo cột' },
-  BY_PURPOSE:   { label: 'Theo nghiệp vụ',    icon: Eraser,    desc: 'Validate email, chuẩn hoá phone, parse currency' },
-  AI_DETECTED:  { label: 'Do AI phát hiện',   icon: Brain,     desc: 'Anomaly heuristic — review thủ công trước khi áp dụng' },
-};
+function getCategoryMeta(t: (key: string) => string): Record<Category, { label: string; icon: any; desc: string }> {
+  return {
+    UNIVERSAL:    { label: t('templates22DataPipelineStep3CleanData.categoryUniversalLabel'),   icon: Layers, desc: t('templates22DataPipelineStep3CleanData.categoryUniversalDesc') },
+    BY_TYPE:      { label: t('templates22DataPipelineStep3CleanData.categoryByTypeLabel'),       icon: Filter, desc: t('templates22DataPipelineStep3CleanData.categoryByTypeDesc') },
+    BY_PURPOSE:   { label: t('templates22DataPipelineStep3CleanData.categoryByPurposeLabel'),    icon: Eraser, desc: t('templates22DataPipelineStep3CleanData.categoryByPurposeDesc') },
+    AI_DETECTED:  { label: t('templates22DataPipelineStep3CleanData.categoryAiDetectedLabel'),   icon: Brain,  desc: t('templates22DataPipelineStep3CleanData.categoryAiDetectedDesc') },
+  };
+}
 
 export default function PipelineStep3Clean() {
+  const t = useT();
   const params = useParams<{ id: string }>();
   const pipelineId = params?.id ?? '';
 
@@ -143,10 +147,10 @@ export default function PipelineStep3Clean() {
       );
       if (s.status === 'silver_complete') return;
       if (s.status === 'failed') {
-        throw { title: s.error_message || 'Làm sạch dữ liệu thất bại', status: 500 } as ProblemDetails;
+        throw { title: s.error_message || t('templates22DataPipelineStep3CleanData.errCleanFailed'), status: 500 } as ProblemDetails;
       }
     }
-    throw { title: 'Quá thời gian chờ làm sạch dữ liệu. Vui lòng thử lại.', status: 504 } as ProblemDetails;
+    throw { title: t('templates22DataPipelineStep3CleanData.errCleanTimeout'), status: 504 } as ProblemDetails;
   }
 
   const byCat: Record<Category, CleaningRule[]> = {
@@ -155,12 +159,13 @@ export default function PipelineStep3Clean() {
   rules.forEach((r) => byCat[r.category].push(r));
 
   const destructiveSelected = rules.filter((r) => selected.has(r.id) && r.is_destructive);
+  const categoryMeta = getCategoryMeta(t);
 
   return (
     <>
       <PageHeader
-        title="Làm sạch dữ liệu"
-        description="Bước 3 / 5 — chọn quy tắc làm sạch áp dụng từ Bronze sang Silver."
+        title={t('templates22DataPipelineStep3CleanData.pageTitle')}
+        description={t('templates22DataPipelineStep3CleanData.pageDescription')}
       />
 
       <div className="px-6 lg:px-8 py-6 max-w-[1100px] mx-auto space-y-6">
@@ -172,10 +177,9 @@ export default function PipelineStep3Clean() {
               <ShieldCheck className="w-6 h-6 text-[var(--state-success)]" />
             </div>
             <div>
-              <h3 className="font-serif text-lg text-[var(--text-primary)]">Dữ liệu đã được làm sạch</h3>
+              <h3 className="font-serif text-lg text-[var(--text-primary)]">{t('templates22DataPipelineStep3CleanData.cleanedTitle')}</h3>
               <p className="text-sm text-[var(--text-secondary)] mt-1 max-w-md mx-auto">
-                Bước này đã hoàn tất cho lần chạy hiện tại (Silver đã sẵn sàng). Bạn có thể sang Bước 4
-                để phân tích. Muốn làm sạch lại với quy tắc khác? Tải lại file ở Bước 1.
+                {t('templates22DataPipelineStep3CleanData.cleanedDesc')}
               </p>
             </div>
             <div className="flex items-center justify-center gap-3 pt-1">
@@ -184,10 +188,10 @@ export default function PipelineStep3Clean() {
                 onClick={() => (window.location.href = `/p2/pipelines/${pipelineId}/step-2-columns`)}
               >
                 <ChevronLeft className="w-4 h-4 mr-1" />
-                Quay lại Bước 2
+                {t('templates22DataPipelineStep3CleanData.backStep2')}
               </Button>
               <Button onClick={() => (window.location.href = `/p2/pipelines/${pipelineId}/step-4-analyze`)}>
-                Sang Bước 4 — Phân tích
+                {t('templates22DataPipelineStep3CleanData.goStep4')}
                 <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             </div>
@@ -201,10 +205,10 @@ export default function PipelineStep3Clean() {
             <AlertCircle className="w-4 h-4 text-[var(--state-warning)] shrink-0 mt-0.5" />
             <div className="flex-1 text-sm">
               <p className="font-medium text-[#9E814D]">
-                {destructiveSelected.length} quy tắc đang chọn sẽ XOÁ hàng dữ liệu
+                {t('templates22DataPipelineStep3CleanData.destructiveWarning', { count: destructiveSelected.length })}
               </p>
               <p className="text-xs text-[#9E814D]/90 mt-0.5">
-                Bronze gốc vẫn nguyên vẹn (K-2) — bạn có thể replay bất kỳ lúc nào nếu cần điều chỉnh.
+                {t('templates22DataPipelineStep3CleanData.destructiveNote')}
               </p>
             </div>
           </div>
@@ -218,7 +222,7 @@ export default function PipelineStep3Clean() {
           (Object.keys(byCat) as Category[]).map((cat) => {
             const cRules = byCat[cat];
             if (cRules.length === 0) return null;
-            const meta = CATEGORY_META[cat];
+            const meta = categoryMeta[cat];
             const Icon = meta.icon;
             return (
               <div key={cat} className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
@@ -231,7 +235,7 @@ export default function PipelineStep3Clean() {
                     <p className="text-xs text-[var(--text-secondary)] mt-0.5">{meta.desc}</p>
                   </div>
                   <Badge variant="default">
-                    {cRules.filter((r) => selected.has(r.id)).length} / {cRules.length} đang chọn
+                    {t('templates22DataPipelineStep3CleanData.selectedCount', { selected: cRules.filter((r) => selected.has(r.id)).length, total: cRules.length })}
                   </Badge>
                 </div>
                 <div className="divide-y divide-[var(--border-color)]/60">
@@ -247,8 +251,7 @@ export default function PipelineStep3Clean() {
         <div className="flex items-start gap-3 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Mỗi quy tắc apply đều được ghi vào <span className="font-medium text-[var(--text-primary)]">decision_audit_log</span> (K-6).
-            Bronze giữ nguyên (K-2) — Silver chỉ là kết quả tái tạo. Bạn có thể tinh chỉnh quy tắc và chạy lại.
+            {t('templates22DataPipelineStep3CleanData.auditNotePrefix')} <span className="font-medium text-[var(--text-primary)]">decision_audit_log</span> {t('templates22DataPipelineStep3CleanData.auditNoteSuffix')}
           </p>
         </div>
 
@@ -259,10 +262,10 @@ export default function PipelineStep3Clean() {
             disabled={applying}
           >
             <ChevronLeft className="w-4 h-4 mr-1" />
-            Quay lại
+            {t('templates22DataPipelineStep3CleanData.back')}
           </Button>
           <Button onClick={apply} isLoading={applying} disabled={selected.size === 0}>
-            Áp dụng {selected.size} quy tắc + sang Bước 4
+            {t('templates22DataPipelineStep3CleanData.applyRules', { count: selected.size })}
             <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
         </div>
@@ -274,6 +277,7 @@ export default function PipelineStep3Clean() {
 }
 
 function RuleRow({ rule, checked, onToggle }: any) {
+  const t = useT();
   return (
     <div className={cn(
       'p-4 flex items-start gap-4 transition-colors',
@@ -285,8 +289,8 @@ function RuleRow({ rule, checked, onToggle }: any) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center flex-wrap gap-2 mb-1">
           <p className="text-sm font-medium text-[var(--text-primary)]">{rule.name}</p>
-          {rule.is_recommended && <Badge variant="success">Khuyến nghị</Badge>}
-          {rule.is_destructive && <Badge variant="warning">Xoá hàng</Badge>}
+          {rule.is_recommended && <Badge variant="success">{t('templates22DataPipelineStep3CleanData.badgeRecommended')}</Badge>}
+          {rule.is_destructive && <Badge variant="warning">{t('templates22DataPipelineStep3CleanData.badgeDeleteRows')}</Badge>}
           {rule.ai_confidence != null && (
             <Badge variant="info" className="font-mono">
               AI {(rule.ai_confidence * 100).toFixed(0)}%
@@ -297,13 +301,13 @@ function RuleRow({ rule, checked, onToggle }: any) {
         <div className="flex items-center flex-wrap gap-x-4 gap-y-1 mt-2 text-[11px] text-[var(--text-secondary)]">
           {rule.affected_columns.length > 0 && (
             <span>
-              Cột: {rule.affected_columns.slice(0, 3).map((c: string) => (
+              {t('templates22DataPipelineStep3CleanData.columnsLabel')} {rule.affected_columns.slice(0, 3).map((c: string) => (
                 <span key={c} className="font-mono mr-1.5">{c}</span>
               ))}
-              {rule.affected_columns.length > 3 && <span>+{rule.affected_columns.length - 3} nữa</span>}
+              {rule.affected_columns.length > 3 && <span>+{rule.affected_columns.length - 3} {t('templates22DataPipelineStep3CleanData.moreSuffix')}</span>}
             </span>
           )}
-          <span>Tác động: <span className="font-medium text-[var(--text-primary)]">{rule.estimated_impact}</span></span>
+          <span>{t('templates22DataPipelineStep3CleanData.impactLabel')} <span className="font-medium text-[var(--text-primary)]">{rule.estimated_impact}</span></span>
         </div>
       </div>
     </div>

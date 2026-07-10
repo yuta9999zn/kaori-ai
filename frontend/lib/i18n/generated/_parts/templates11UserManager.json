@@ -1,0 +1,219 @@
+{
+  "templates11UserManager.roleDescManager": {
+    "vi": "Toàn quyền — quản trị workspace, người dùng, billing",
+    "en": "Full access — manages workspace, users, billing",
+    "ja": "全権限 — ワークスペース、ユーザー、請求を管理",
+    "ko": "전체 권한 — 워크스페이스, 사용자, 결제 관리",
+    "zh": "全部权限 — 管理工作区、用户、账单"
+  },
+  "templates11UserManager.roleDescOperator": {
+    "vi": "Tạo + chạy pipeline, xem/sửa data",
+    "en": "Creates + runs data pipelines, views/edits data",
+    "ja": "データパイプラインの作成・実行、データの閲覧・編集",
+    "ko": "데이터 파이프라인 생성 및 실행, 데이터 조회/수정",
+    "zh": "创建并运行数据管道，查看/编辑数据"
+  },
+  "templates11UserManager.roleDescAnalyst": {
+    "vi": "Sinh insight + báo cáo, không quản lý người dùng",
+    "en": "Generates insights + reports, cannot manage users",
+    "ja": "インサイト・レポートの生成、ユーザー管理は不可",
+    "ko": "인사이트 및 보고서 생성, 사용자 관리 불가",
+    "zh": "生成洞察和报告，无法管理用户"
+  },
+  "templates11UserManager.roleDescViewer": {
+    "vi": "Chỉ xem dashboard + báo cáo",
+    "en": "View-only access to dashboard + reports",
+    "ja": "ダッシュボード・レポートの閲覧のみ",
+    "ko": "대시보드 및 보고서 조회만 가능",
+    "zh": "仅可查看仪表盘和报告"
+  },
+  "templates11UserManager.statusActive": {
+    "vi": "Đang hoạt động",
+    "en": "Active",
+    "ja": "有効",
+    "ko": "활성",
+    "zh": "活跃"
+  },
+  "templates11UserManager.statusInvited": {
+    "vi": "Đã mời",
+    "en": "Invited",
+    "ja": "招待済み",
+    "ko": "초대됨",
+    "zh": "已邀请"
+  },
+  "templates11UserManager.statusSuspended": {
+    "vi": "Đã khoá",
+    "en": "Suspended",
+    "ja": "停止中",
+    "ko": "정지됨",
+    "zh": "已停用"
+  },
+  "templates11UserManager.pageTitle": {
+    "vi": "Người dùng workspace",
+    "en": "Workspace users",
+    "ja": "ワークスペースのユーザー",
+    "ko": "워크스페이스 사용자",
+    "zh": "工作区用户"
+  },
+  "templates11UserManager.pageDescription": {
+    "vi": "Quản lý vai trò và quyền truy cập của từng thành viên.",
+    "en": "Manage each member's role and access permissions.",
+    "ja": "各メンバーの役割とアクセス権限を管理します。",
+    "ko": "각 구성원의 역할과 접근 권한을 관리합니다.",
+    "zh": "管理每位成员的角色和访问权限。"
+  },
+  "templates11UserManager.exportCsv": {
+    "vi": "Xuất CSV",
+    "en": "Export CSV",
+    "ja": "CSVをエクスポート",
+    "ko": "CSV 내보내기",
+    "zh": "导出 CSV"
+  },
+  "templates11UserManager.inviteUser": {
+    "vi": "Mời người dùng",
+    "en": "Invite user",
+    "ja": "ユーザーを招待",
+    "ko": "사용자 초대",
+    "zh": "邀请用户"
+  },
+  "templates11UserManager.lastManagerWarningTitle": {
+    "vi": "Workspace chỉ còn duy nhất 1 MANAGER.",
+    "en": "This workspace only has 1 MANAGER left.",
+    "ja": "このワークスペースにはMANAGERが1人しか残っていません。",
+    "ko": "이 워크스페이스에는 MANAGER가 1명만 남아 있습니다.",
+    "zh": "该工作区仅剩 1 位 MANAGER。"
+  },
+  "templates11UserManager.lastManagerWarningDetail": {
+    "vi": "Không thể xoá hoặc giáng cấp người này. Mời thêm MANAGER trước nếu cần thay đổi.",
+    "en": "This person cannot be deleted or demoted. Invite another MANAGER first if you need to make changes.",
+    "ja": "このユーザーは削除・降格できません。変更が必要な場合は先に別のMANAGERを招待してください。",
+    "ko": "이 사용자는 삭제하거나 강등할 수 없습니다. 변경이 필요하면 먼저 다른 MANAGER를 초대하세요.",
+    "zh": "无法删除或降级此用户。如需变更，请先邀请另一位 MANAGER。"
+  },
+  "templates11UserManager.searchPlaceholder": {
+    "vi": "Tìm theo tên hoặc email...",
+    "en": "Search by name or email...",
+    "ja": "名前またはメールで検索...",
+    "ko": "이름 또는 이메일로 검색...",
+    "zh": "按姓名或邮箱搜索..."
+  },
+  "templates11UserManager.allRoles": {
+    "vi": "Tất cả vai trò",
+    "en": "All roles",
+    "ja": "すべての役割",
+    "ko": "모든 역할",
+    "zh": "所有角色"
+  },
+  "templates11UserManager.emptyFiltered": {
+    "vi": "Không có người dùng nào khớp bộ lọc.",
+    "en": "No users match the current filter.",
+    "ja": "フィルターに一致するユーザーがいません。",
+    "ko": "필터와 일치하는 사용자가 없습니다.",
+    "zh": "没有符合筛选条件的用户。"
+  },
+  "templates11UserManager.colUser": {
+    "vi": "Người dùng",
+    "en": "User",
+    "ja": "ユーザー",
+    "ko": "사용자",
+    "zh": "用户"
+  },
+  "templates11UserManager.colRole": {
+    "vi": "Vai trò",
+    "en": "Role",
+    "ja": "役割",
+    "ko": "역할",
+    "zh": "角色"
+  },
+  "templates11UserManager.colStatus": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "templates11UserManager.colLastActive": {
+    "vi": "Hoạt động cuối",
+    "en": "Last active",
+    "ja": "最終アクティブ",
+    "ko": "최근 활동",
+    "zh": "最近活跃"
+  },
+  "templates11UserManager.colJoined": {
+    "vi": "Tham gia",
+    "en": "Joined",
+    "ja": "参加日",
+    "ko": "가입일",
+    "zh": "加入日期"
+  },
+  "templates11UserManager.colActions": {
+    "vi": "Hành động",
+    "en": "Actions",
+    "ja": "操作",
+    "ko": "작업",
+    "zh": "操作"
+  },
+  "templates11UserManager.soleManager": {
+    "vi": "MANAGER duy nhất",
+    "en": "Sole MANAGER",
+    "ja": "唯一のMANAGER",
+    "ko": "유일한 MANAGER",
+    "zh": "唯一 MANAGER"
+  },
+  "templates11UserManager.viewDetail": {
+    "vi": "Xem chi tiết",
+    "en": "View details",
+    "ja": "詳細を見る",
+    "ko": "상세 보기",
+    "zh": "查看详情"
+  },
+  "templates11UserManager.changeRole": {
+    "vi": "Đổi vai trò",
+    "en": "Change role",
+    "ja": "役割を変更",
+    "ko": "역할 변경",
+    "zh": "更改角色"
+  },
+  "templates11UserManager.unsuspend": {
+    "vi": "Bỏ khoá",
+    "en": "Unsuspend",
+    "ja": "停止解除",
+    "ko": "정지 해제",
+    "zh": "解除停用"
+  },
+  "templates11UserManager.suspendAccount": {
+    "vi": "Khoá tài khoản",
+    "en": "Suspend account",
+    "ja": "アカウントを停止",
+    "ko": "계정 정지",
+    "zh": "停用账户"
+  },
+  "templates11UserManager.delete": {
+    "vi": "Xoá",
+    "en": "Delete",
+    "ja": "削除",
+    "ko": "삭제",
+    "zh": "删除"
+  },
+  "templates11UserManager.deleteModalTitle": {
+    "vi": "Xoá người dùng?",
+    "en": "Delete user?",
+    "ja": "ユーザーを削除しますか？",
+    "ko": "사용자를 삭제하시겠습니까?",
+    "zh": "删除用户？"
+  },
+  "templates11UserManager.deleteModalDetail": {
+    "vi": "sẽ mất toàn bộ quyền truy cập workspace. Hành động này không thể hoàn tác.",
+    "en": "will lose all access to the workspace. This action cannot be undone.",
+    "ja": "はワークスペースへのすべてのアクセス権を失います。この操作は元に戻せません。",
+    "ko": "은(는) 워크스페이스에 대한 모든 접근 권한을 잃게 됩니다. 이 작업은 되돌릴 수 없습니다.",
+    "zh": "将失去对该工作区的全部访问权限。此操作无法撤销。"
+  },
+  "templates11UserManager.cancel": {
+    "vi": "Huỷ",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  }
+}

@@ -35,6 +35,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type Framework = 'NONE' | 'SWOT' | '6W' | '2H' | 'Fishbone' | 'MoM' | 'YoY';
 type RiskLabel = 'HIGH' | 'MEDIUM' | 'LOW';
 
@@ -78,6 +79,8 @@ interface DecisionPage {
   meta?: { cursor?: string | null };
 }
 
+// NONE is display-translated at render time (t('templates31DecisionLog.frameworkFree'));
+// the rest are framework codes (SWOT/6W/2H/...) and stay as-is in every locale.
 const FRAMEWORK_LABEL: Record<Framework, string> = {
   NONE:     'Tự do',
   SWOT:     'SWOT',
@@ -88,16 +91,23 @@ const FRAMEWORK_LABEL: Record<Framework, string> = {
   YoY:      'YoY',
 };
 
-const RISK_BADGE: Record<RiskLabel, { variant: any; label: string }> = {
-  HIGH:   { variant: 'error',   label: 'Churn cao' },
-  MEDIUM: { variant: 'warning', label: 'Churn vừa' },
-  LOW:    { variant: 'default', label: 'Churn thấp' },
+const RISK_VARIANT: Record<RiskLabel, any> = {
+  HIGH:   'error',
+  MEDIUM: 'warning',
+  LOW:    'default',
+};
+
+const RISK_LABEL_KEY: Record<RiskLabel, string> = {
+  HIGH:   'templates31DecisionLog.riskHigh',
+  MEDIUM: 'templates31DecisionLog.riskMedium',
+  LOW:    'templates31DecisionLog.riskLow',
 };
 
 const PAGE_LIMIT       = 50;
 const CSV_EXPORT_CAP   = 10_000;
 
 export default function DecisionLogPage() {
+  const t = useT();
   const [items,    setItems]    = useState<Decision[]>([]);
   const [cursor,   setCursor]   = useState<string | null>(null);
   const [hasMore,  setHasMore]  = useState(false);
@@ -194,8 +204,8 @@ export default function DecisionLogPage() {
       if (!res.ok) {
         if (res.status === 413) {
           setProblem({
-            title:  'Vượt giới hạn xuất',
-            detail: `File CSV vượt quá ${CSV_EXPORT_CAP.toLocaleString('vi-VN')} dòng. Vui lòng thu hẹp bộ lọc.`,
+            title:  t('templates31DecisionLog.errExportLimitTitle'),
+            detail: t('templates31DecisionLog.errExportLimitDetail', { cap: CSV_EXPORT_CAP.toLocaleString('vi-VN') }),
             status: 413,
           });
           return;
@@ -217,9 +227,9 @@ export default function DecisionLogPage() {
       a.download = `decisions-${ts}.csv`;
       a.click();
       URL.revokeObjectURL(url);
-      setSuccess(`Đã xuất CSV (UTF-8 BOM) — tối đa ${CSV_EXPORT_CAP.toLocaleString('vi-VN')} dòng/file`);
+      setSuccess(t('templates31DecisionLog.exportSuccess', { cap: CSV_EXPORT_CAP.toLocaleString('vi-VN') }));
     } catch (err: any) {
-      setProblem(err?.title ? err : { title: 'Xuất CSV thất bại', detail: String(err?.message ?? err) });
+      setProblem(err?.title ? err : { title: t('templates31DecisionLog.errExportFailedTitle'), detail: String(err?.message ?? err) });
     } finally {
       setExporting(false);
     }
@@ -228,17 +238,17 @@ export default function DecisionLogPage() {
   return (
     <>
       <PageHeader
-        title="Nhật ký quyết định"
-        description="Mọi quyết định AI đề xuất đều được audit log (K-6). Đánh dấu 'Đã hành động' để đóng góp vào North Star."
+        title={t('templates31DecisionLog.pageTitle')}
+        description={t('templates31DecisionLog.pageDescription')}
         actions={
           <>
             <Button variant="secondary" onClick={() => load(true)}>
               <RefreshCw className="w-4 h-4 mr-2" />
-              Làm mới
+              {t('templates31DecisionLog.btnRefresh')}
             </Button>
             <Button variant="secondary" onClick={exportCsv} isLoading={exporting}>
               <Download className="w-4 h-4 mr-2" />
-              Xuất CSV
+              {t('templates31DecisionLog.btnExportCsv')}
             </Button>
           </>
         }
@@ -259,7 +269,7 @@ export default function DecisionLogPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm theo tiêu đề hoặc tóm tắt..."
+              placeholder={t('templates31DecisionLog.searchPlaceholder')}
               className="w-full pl-9 pr-4 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)]"
             />
           </div>
@@ -268,9 +278,9 @@ export default function DecisionLogPage() {
             onChange={(e) => setFrameworkFilter(e.target.value as any)}
             className="px-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-xs font-medium focus:outline-none"
           >
-            <option value="ALL">Mọi khung</option>
+            <option value="ALL">{t('templates31DecisionLog.optAllFrameworks')}</option>
             {(Object.keys(FRAMEWORK_LABEL) as Framework[]).map((f) => (
-              <option key={f} value={f}>{FRAMEWORK_LABEL[f]}</option>
+              <option key={f} value={f}>{f === 'NONE' ? t('templates31DecisionLog.frameworkFree') : FRAMEWORK_LABEL[f]}</option>
             ))}
           </select>
           <select
@@ -278,28 +288,32 @@ export default function DecisionLogPage() {
             onChange={(e) => setRiskFilter(e.target.value as any)}
             className="px-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-xs font-medium focus:outline-none"
           >
-            <option value="ALL">Mọi mức rủi ro</option>
-            <option value="HIGH">Churn cao</option>
-            <option value="MEDIUM">Churn vừa</option>
-            <option value="LOW">Churn thấp</option>
+            <option value="ALL">{t('templates31DecisionLog.optAllRisk')}</option>
+            <option value="HIGH">{t(RISK_LABEL_KEY.HIGH)}</option>
+            <option value="MEDIUM">{t(RISK_LABEL_KEY.MEDIUM)}</option>
+            <option value="LOW">{t(RISK_LABEL_KEY.LOW)}</option>
           </select>
           <select
             value={actionedFilter}
             onChange={(e) => setActionedFilter(e.target.value as any)}
             className="px-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-xs font-medium focus:outline-none"
           >
-            <option value="ALL">Mọi trạng thái</option>
-            <option value="ACTIONED">Đã hành động</option>
-            <option value="PENDING">Chờ hành động</option>
+            <option value="ALL">{t('templates31DecisionLog.optAllStatus')}</option>
+            <option value="ACTIONED">{t('templates31DecisionLog.optActioned')}</option>
+            <option value="PENDING">{t('templates31DecisionLog.optPending')}</option>
           </select>
           <button type="submit" className="px-3 py-2 bg-[var(--primary-gold)]/10 border border-[var(--primary-gold)]/30 text-[var(--primary-gold-dark)] text-xs font-medium rounded-md-custom hover:bg-[var(--primary-gold)]/20">
             <Filter className="w-3.5 h-3.5 inline mr-1" />
-            Lọc
+            {t('templates31DecisionLog.btnFilter')}
           </button>
         </form>
 
         <p className="text-xs text-[var(--text-secondary)]">
-          {(total ?? 0).toLocaleString('vi-VN')} quyết định · Đang hiển thị {items.length} · Xuất CSV giới hạn {CSV_EXPORT_CAP.toLocaleString('vi-VN')} dòng
+          {t('templates31DecisionLog.summaryLine', {
+            total: (total ?? 0).toLocaleString('vi-VN'),
+            showing: items.length,
+            cap: CSV_EXPORT_CAP.toLocaleString('vi-VN'),
+          })}
         </p>
 
         {/* Table */}
@@ -308,13 +322,13 @@ export default function DecisionLogPage() {
             <table className="w-full text-sm">
               <thead className="bg-[var(--bg-app)]/50 border-b border-[var(--border-color)]/60">
                 <tr>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-32">Đã hành động?</th>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Quyết định</th>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-32">Khung</th>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-32">Độ tin cậy</th>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-40">Doanh thu rủi ro</th>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-40">Phương án thay thế</th>
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-32">Tạo lúc</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-32">{t('templates31DecisionLog.colActioned')}</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">{t('templates31DecisionLog.colDecision')}</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-32">{t('templates31DecisionLog.colFramework')}</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-32">{t('templates31DecisionLog.colConfidence')}</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-40">{t('templates31DecisionLog.colRevenueAtRisk')}</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-40">{t('templates31DecisionLog.colAlternatives')}</th>
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-32">{t('templates31DecisionLog.colCreatedAt')}</th>
                   <th className="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] w-24" />
                 </tr>
               </thead>
@@ -331,7 +345,7 @@ export default function DecisionLogPage() {
                   <tr>
                     <td colSpan={8} className="px-4 py-12 text-center text-[var(--text-secondary)]">
                       <Gavel className="w-10 h-10 mx-auto mb-2 text-[var(--text-secondary)]/40" />
-                      Không có quyết định phù hợp với bộ lọc.
+                      {t('templates31DecisionLog.emptyState')}
                     </td>
                   </tr>
                 ) : items.map((d) => (
@@ -353,8 +367,8 @@ export default function DecisionLogPage() {
                       <p className="text-xs text-[var(--text-secondary)] mt-0.5 line-clamp-2 max-w-md leading-snug">{d.summary}</p>
                       <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
                         {d.churn_risk_label && (
-                          <Badge variant={RISK_BADGE[d.churn_risk_label].variant}>
-                            {RISK_BADGE[d.churn_risk_label].label}
+                          <Badge variant={RISK_VARIANT[d.churn_risk_label]}>
+                            {t(RISK_LABEL_KEY[d.churn_risk_label])}
                           </Badge>
                         )}
                         {d.insight_id && (
@@ -362,14 +376,14 @@ export default function DecisionLogPage() {
                             href={`/p2/insights/${d.insight_id}`}
                             className="text-[11px] text-[var(--primary-gold-dark)] hover:underline inline-flex items-center gap-0.5"
                           >
-                            Insight nguồn
+                            {t('templates31DecisionLog.linkInsightSource')}
                             <ExternalLink className="w-3 h-3" />
                           </a>
                         )}
                       </div>
                     </td>
                     <td className="px-4 py-3 align-top">
-                      <Badge variant="default">{FRAMEWORK_LABEL[d.framework]}</Badge>
+                      <Badge variant="default">{d.framework === 'NONE' ? t('templates31DecisionLog.frameworkFree') : FRAMEWORK_LABEL[d.framework]}</Badge>
                     </td>
                     <td className="px-4 py-3 align-top">
                       <ConfidencePill confidence={d.confidence} />
@@ -387,21 +401,21 @@ export default function DecisionLogPage() {
                       {(d.alternatives_considered ?? []).length > 0 ? (
                         <details className="text-xs">
                           <summary className="cursor-pointer text-[var(--primary-gold-dark)] hover:underline">
-                            {(d.alternatives_considered ?? []).length} phương án
+                            {t('templates31DecisionLog.altCount', { count: (d.alternatives_considered ?? []).length })}
                           </summary>
                           <ul className="mt-2 space-y-1.5">
                             {(d.alternatives_considered ?? []).map((alt, i) => (
                               <li key={i} className="border-l-2 border-[var(--border-color)] pl-2">
                                 <p className="font-medium text-[var(--text-primary)]">{alt.title}</p>
                                 <p className="text-[var(--text-secondary)] mt-0.5">
-                                  Bị từ chối · {alt.rejected_reason}
+                                  {t('templates31DecisionLog.altRejected', { reason: alt.rejected_reason })}
                                 </p>
                               </li>
                             ))}
                           </ul>
                         </details>
                       ) : (
-                        <span className="text-xs text-[var(--text-secondary)]">Không có</span>
+                        <span className="text-xs text-[var(--text-secondary)]">{t('templates31DecisionLog.noAlternatives')}</span>
                       )}
                     </td>
                     <td className="px-4 py-3 align-top text-xs text-[var(--text-secondary)] whitespace-nowrap">
@@ -412,7 +426,7 @@ export default function DecisionLogPage() {
                         href={`/p2/decisions/${d.id}`}
                         className="inline-flex items-center text-xs font-medium text-[var(--primary-gold-dark)] hover:underline"
                       >
-                        Chi tiết
+                        {t('templates31DecisionLog.linkDetail')}
                         <ChevronRight className="w-3 h-3 ml-0.5" />
                       </a>
                     </td>
@@ -425,7 +439,7 @@ export default function DecisionLogPage() {
           {hasMore && (
             <div className="px-4 py-3 border-t border-[var(--border-color)]/60 flex justify-center">
               <Button variant="secondary" onClick={() => load(false)} isLoading={loading}>
-                Tải thêm
+                {t('templates31DecisionLog.btnLoadMore')}
               </Button>
             </div>
           )}
@@ -435,9 +449,9 @@ export default function DecisionLogPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            <span className="font-medium text-[var(--text-primary)]">North Star (Sprint 7 PR D):</span> mỗi lần bật "Đã hành động" sẽ
-            UPSERT một dòng vào <span className="font-mono">decision_actions</span> (1 dòng / decision, FK CASCADE). Phase 2 F-060 sẽ promote sang
-            cột canonical <span className="font-mono">gold_features.is_actioned</span> và thay thế side table này.
+            <span className="font-medium text-[var(--text-primary)]">{t('templates31DecisionLog.footerLabel')}</span> {t('templates31DecisionLog.footerPart1')}{' '}
+            <span className="font-mono">decision_actions</span> {t('templates31DecisionLog.footerPart2')}{' '}
+            <span className="font-mono">gold_features.is_actioned</span> {t('templates31DecisionLog.footerPart3')}
           </p>
         </div>
       </div>
@@ -452,13 +466,14 @@ export default function DecisionLogPage() {
 function ActionedToggle({
   decision: d, pending, onToggle,
 }: { decision: Decision; pending: boolean; onToggle: () => void }) {
+  const t = useT();
   return (
     <button
       type="button"
       onClick={onToggle}
       disabled={pending}
       aria-pressed={d.is_actioned}
-      aria-label={d.is_actioned ? 'Bỏ đánh dấu đã hành động' : 'Đánh dấu đã hành động'}
+      aria-label={d.is_actioned ? t('templates31DecisionLog.ariaUnmarkActioned') : t('templates31DecisionLog.ariaMarkActioned')}
       className={cn(
         'inline-flex items-center gap-2 px-2.5 py-1 rounded-md-custom border text-xs font-medium transition-colors',
         d.is_actioned
@@ -474,7 +489,7 @@ function ActionedToggle({
       ) : (
         <Square className="w-3.5 h-3.5" />
       )}
-      {d.is_actioned ? 'Đã hành động' : 'Chờ xử lý'}
+      {d.is_actioned ? t('templates31DecisionLog.optActioned') : t('templates31DecisionLog.toggleLabelPending')}
     </button>
   );
 }

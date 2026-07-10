@@ -1,0 +1,65 @@
+{
+  "llmConfigPage.errLoadFailed": {
+    "vi": "Không thể tải cấu hình AI (cần quyền SUPER_ADMIN).",
+    "en": "Unable to load AI configuration (SUPER_ADMIN role required).",
+    "ja": "AI設定を読み込めません(SUPER_ADMIN権限が必要です)。",
+    "ko": "AI 설정을 불러올 수 없습니다(SUPER_ADMIN 권한 필요).",
+    "zh": "无法加载AI配置(需要SUPER_ADMIN权限)。"
+  },
+  "llmConfigPage.title": {
+    "vi": "Tinh chỉnh AI",
+    "en": "AI Tuning",
+    "ja": "AIチューニング",
+    "ko": "AI 튜닝",
+    "zh": "AI 调优"
+  },
+  "llmConfigPage.descIntro": {
+    "vi": "Chỉnh knob RAG / memory / grounding / embedding tại runtime, không cần redeploy.",
+    "en": "Adjust RAG / memory / grounding / embedding knobs at runtime, without redeploying.",
+    "ja": "再デプロイなしでランタイム中にRAG / メモリ / グラウンディング / 埋め込みのノブを調整します。",
+    "ko": "재배포 없이 런타임에서 RAG / 메모리 / 그라운딩 / 임베딩 노브를 조정합니다.",
+    "zh": "在运行时调整 RAG / 记忆 / grounding / 嵌入等参数,无需重新部署。"
+  },
+  "llmConfigPage.descKnobPrefix": {
+    "vi": "Knob",
+    "en": "A knob",
+    "ja": "ノブが",
+    "ko": "노브가",
+    "zh": "参数为"
+  },
+  "llmConfigPage.descKnobSuffix": {
+    "vi": " đã hiển thị nhưng runtime chưa đọc — sẽ wire dần.",
+    "en": " is shown but not yet read by the runtime — will be wired progressively.",
+    "ja": "は表示されていますが、ランタイムはまだ読み込んでいません — 順次配線予定です。",
+    "ko": "는 표시되지만 런타임에서 아직 읽지 않습니다 — 점진적으로 연결될 예정입니다.",
+    "zh": "已显示,但运行时尚未读取 — 将逐步接入。"
+  },
+  "llmConfigPage.statusApplied": {
+    "vi": "đang áp dụng",
+    "en": "applied",
+    "ja": "適用中",
+    "ko": "적용 중",
+    "zh": "已应用"
+  },
+  "llmConfigPage.statusNotApplied": {
+    "vi": "chưa áp dụng",
+    "en": "not applied",
+    "ja": "未適用",
+    "ko": "미적용",
+    "zh": "未应用"
+  },
+  "llmConfigPage.errUpdateFailed": {
+    "vi": "Lỗi cập nhật",
+    "en": "Update failed",
+    "ja": "更新エラー",
+    "ko": "업데이트 오류",
+    "zh": "更新失败"
+  },
+  "llmConfigPage.btnSave": {
+    "vi": "Lưu",
+    "en": "Save",
+    "ja": "保存",
+    "ko": "저장",
+    "zh": "保存"
+  }
+}

@@ -14,19 +14,10 @@ import { Workflow, ArrowLeft, Plus, Loader2, Lock } from 'lucide-react';
 import { Button, Input, ErrorBanner, api, type ProblemDetails } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
 import { useAuth } from '@/lib/auth-store';
+import { useT } from '@/lib/i18n/provider';
 
 
 type DeptType = 'marketing' | 'sales' | 'customer_service' | 'warehouse' | 'hr' | 'finance' | 'custom';
-
-const DEPT_LABEL: Record<DeptType, string> = {
-  marketing: 'Marketing',
-  sales: 'Sales',
-  customer_service: 'CSKH',
-  warehouse: 'Kho vận',
-  hr: 'Nhân sự',
-  finance: 'Tài chính',
-  custom: 'Tùy chỉnh',
-};
 
 interface DepartmentSnapshot {
   department_id: string;
@@ -47,6 +38,7 @@ export default function NewWorkflowPage() {
 }
 
 function NewWorkflowPageInner() {
+  const t = useT();
   const router = useRouter();
   const searchParams = useSearchParams();
   // Pre-filled from /p2/org-tree click-through (org-tree always sends both).
@@ -56,6 +48,16 @@ function NewWorkflowPageInner() {
   // still needs to load the dept list.
   const userEntId    = useAuth((s) => s.user?.enterprise_id);
   const preEntId     = searchParams?.get('enterprise_id') ?? userEntId ?? null;
+
+  const DEPT_LABEL: Record<DeptType, string> = {
+    marketing: t('newPage.deptMarketing'),
+    sales: t('newPage.deptSales'),
+    customer_service: t('newPage.deptCustomerService'),
+    warehouse: t('newPage.deptWarehouse'),
+    hr: t('newPage.deptHr'),
+    finance: t('newPage.deptFinance'),
+    custom: t('newPage.deptCustom'),
+  };
 
   const [name, setName] = useState('');
   const [nameVi, setNameVi] = useState('');
@@ -160,11 +162,11 @@ function NewWorkflowPageInner() {
   return (
     <>
       <PageHeader
-        title="Workflow mới"
-        description="Tạo workflow trắng. Sau khi tạo, thêm từng bước và gắn tài liệu."
+        title={t('newPage.title')}
+        description={t('newPage.description')}
         actions={
           <a href="/p2/workflows">
-            <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> Quay lại</Button>
+            <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> {t('newPage.back')}</Button>
           </a>
         }
       />
@@ -178,41 +180,41 @@ function NewWorkflowPageInner() {
               <Workflow className="w-5 h-5 text-[var(--primary-gold-dark)]" />
             </div>
             <div>
-              <h3 className="font-serif text-base text-[var(--text-primary)]">Thông tin workflow</h3>
-              <p className="text-[11px] text-[var(--text-secondary)]">Có thể chỉnh sau khi tạo.</p>
+              <h3 className="font-serif text-base text-[var(--text-primary)]">{t('newPage.infoTitle')}</h3>
+              <p className="text-[11px] text-[var(--text-secondary)]">{t('newPage.infoHint')}</p>
             </div>
           </div>
 
           <Input
-            label="Tên workflow (Tiếng Việt)"
+            label={t('newPage.nameViLabel')}
             value={nameVi}
             onChange={(e) => setNameVi(e.target.value)}
-            placeholder="VD: Quy trình thẩm định lead"
+            placeholder={t('newPage.nameViPlaceholder')}
           />
           <Input
-            label="Tên workflow (English / internal)"
+            label={t('newPage.nameLabel')}
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="VD: Lead Qualification Workflow"
+            placeholder={t('newPage.namePlaceholder')}
             required
           />
 
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-[var(--text-primary)] flex items-center gap-1.5">
-              Phòng ban
+              {t('newPage.department')}
               {preDeptId && <Lock className="w-3 h-3 text-[var(--text-secondary)]" />}
             </label>
             {loadingDepts ? (
               <p className="text-[11px] text-[var(--text-secondary)] flex items-center gap-1.5">
-                <Loader2 className="w-3 h-3 animate-spin" /> Đang tải danh sách phòng ban…
+                <Loader2 className="w-3 h-3 animate-spin" /> {t('newPage.loadingDepartments')}
               </p>
             ) : departments.length === 0 ? (
               <div className="text-[11px] text-[var(--text-secondary)] bg-[var(--bg-app)] border border-[var(--border-color)]/60 rounded-md-custom px-3 py-2">
-                Doanh nghiệp chưa có phòng ban nào. Vào{' '}
+                {t('newPage.noDepartmentsPrefix')}{' '}
                 <a href="/p2/departments" className="text-[var(--primary-gold-dark)] hover:underline">
                   /p2/departments
                 </a>
-                {' '}tạo phòng ban trước (cần quyền MANAGER).
+                {' '}{t('newPage.noDepartmentsSuffix')}
               </div>
             ) : (
               <select
@@ -226,26 +228,25 @@ function NewWorkflowPageInner() {
                     {/* Real dept name first; dept_type label only as a last
                         resort when name is unavailable (sniff fallback). */}
                     {d.name || DEPT_LABEL[d.dept_type] || d.dept_type}
-                    {d.department_id === preDeptId ? ' (từ cây tổ chức)' : ''}
+                    {d.department_id === preDeptId ? ` ${t('newPage.fromOrgTree')}` : ''}
                   </option>
                 ))}
               </select>
             )}
             {preDeptId && (
               <p className="text-[10px] text-[var(--text-secondary)]">
-                Phòng ban đã chọn từ /p2/org-tree. Đổi phòng ban bằng cách bấm
-                "Quay lại" rồi chọn phòng khác.
+                {t('newPage.preDeptHint')}
               </p>
             )}
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-[var(--text-primary)]">Mô tả</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('newPage.descriptionLabel')}</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              placeholder="Mục tiêu workflow + ai sử dụng + tần suất chạy…"
+              placeholder={t('newPage.descriptionPlaceholder')}
               className="w-full px-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
             />
           </div>
@@ -253,13 +254,13 @@ function NewWorkflowPageInner() {
           <div className="flex justify-end pt-3 border-t border-[var(--border-color)]/60">
             <Button variant="primary" size="md" onClick={submit} disabled={!name || !deptId || submitting}>
               {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}
-              Tạo workflow
+              {t('newPage.submit')}
             </Button>
           </div>
         </div>
 
         <p className="text-[11px] text-[var(--text-secondary)] text-center">
-          Hoặc <a href="/p2/workflows" className="text-[var(--primary-gold-dark)] hover:underline">tạo từ template</a> để có sẵn 5 bước theo phòng ban.
+          {t('newPage.footerPrefix')} <a href="/p2/workflows" className="text-[var(--primary-gold-dark)] hover:underline">{t('newPage.footerLink')}</a> {t('newPage.footerSuffix')}
         </p>
       </div>
     </>

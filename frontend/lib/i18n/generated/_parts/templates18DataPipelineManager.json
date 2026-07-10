@@ -1,0 +1,233 @@
+{
+  "templates18DataPipelineManager.statusUploading": {
+    "vi": "Đang tải lên",
+    "en": "Uploading",
+    "ja": "アップロード中",
+    "ko": "업로드 중",
+    "zh": "上传中"
+  },
+  "templates18DataPipelineManager.statusBronzeComplete": {
+    "vi": "Đã nhận file",
+    "en": "File received",
+    "ja": "ファイル受信済み",
+    "ko": "파일 수신됨",
+    "zh": "已接收文件"
+  },
+  "templates18DataPipelineManager.statusUnstructuredPending": {
+    "vi": "Chờ trích xuất",
+    "en": "Awaiting extraction",
+    "ja": "抽出待ち",
+    "ko": "추출 대기 중",
+    "zh": "待提取"
+  },
+  "templates18DataPipelineManager.statusSchemaReview": {
+    "vi": "Chờ duyệt cột",
+    "en": "Awaiting column review",
+    "ja": "項目確認待ち",
+    "ko": "컬럼 검토 대기",
+    "zh": "待审核字段"
+  },
+  "templates18DataPipelineManager.statusCleaning": {
+    "vi": "Đang làm sạch",
+    "en": "Cleaning",
+    "ja": "クレンジング中",
+    "ko": "정제 중",
+    "zh": "清洗中"
+  },
+  "templates18DataPipelineManager.statusSilverComplete": {
+    "vi": "Đã làm sạch",
+    "en": "Cleaned",
+    "ja": "クレンジング済み",
+    "ko": "정제 완료",
+    "zh": "已清洗"
+  },
+  "templates18DataPipelineManager.statusAnalyzing": {
+    "vi": "Đang phân tích",
+    "en": "Analyzing",
+    "ja": "分析中",
+    "ko": "분석 중",
+    "zh": "分析中"
+  },
+  "templates18DataPipelineManager.statusAnalysisComplete": {
+    "vi": "Hoàn tất",
+    "en": "Complete",
+    "ja": "完了",
+    "ko": "완료",
+    "zh": "完成"
+  },
+  "templates18DataPipelineManager.statusFailed": {
+    "vi": "Lỗi",
+    "en": "Failed",
+    "ja": "エラー",
+    "ko": "오류",
+    "zh": "失败"
+  },
+  "templates18DataPipelineManager.statusCancelled": {
+    "vi": "Đã hủy",
+    "en": "Cancelled",
+    "ja": "キャンセル済み",
+    "ko": "취소됨",
+    "zh": "已取消"
+  },
+  "templates18DataPipelineManager.stepUpload": {
+    "vi": "Upload",
+    "en": "Upload",
+    "ja": "アップロード",
+    "ko": "업로드",
+    "zh": "上传"
+  },
+  "templates18DataPipelineManager.stepColumn": {
+    "vi": "Cột",
+    "en": "Column",
+    "ja": "項目",
+    "ko": "컬럼",
+    "zh": "字段"
+  },
+  "templates18DataPipelineManager.stepClean": {
+    "vi": "Làm sạch",
+    "en": "Clean",
+    "ja": "クレンジング",
+    "ko": "정제",
+    "zh": "清洗"
+  },
+  "templates18DataPipelineManager.stepAnalyze": {
+    "vi": "Phân tích",
+    "en": "Analysis",
+    "ja": "分析",
+    "ko": "분석",
+    "zh": "分析"
+  },
+  "templates18DataPipelineManager.stepResult": {
+    "vi": "Kết quả",
+    "en": "Result",
+    "ja": "結果",
+    "ko": "결과",
+    "zh": "结果"
+  },
+  "templates18DataPipelineManager.title": {
+    "vi": "Pipeline đã chạy",
+    "en": "Pipeline runs",
+    "ja": "実行済みパイプライン",
+    "ko": "실행된 파이프라인",
+    "zh": "已运行的管道"
+  },
+  "templates18DataPipelineManager.description": {
+    "vi": "Lịch sử pipeline — bấm dòng để mở wizard ở bước hiện tại.",
+    "en": "Pipeline history — click a row to open the wizard at its current step.",
+    "ja": "パイプライン履歴 — 行をクリックすると現在のステップのウィザードが開きます。",
+    "ko": "파이프라인 이력 — 행을 클릭하면 현재 단계의 마법사가 열립니다.",
+    "zh": "管道历史记录 — 点击某一行以在当前步骤打开向导。"
+  },
+  "templates18DataPipelineManager.refresh": {
+    "vi": "Làm mới",
+    "en": "Refresh",
+    "ja": "更新",
+    "ko": "새로고침",
+    "zh": "刷新"
+  },
+  "templates18DataPipelineManager.newPipeline": {
+    "vi": "Pipeline mới",
+    "en": "New pipeline",
+    "ja": "新規パイプライン",
+    "ko": "새 파이프라인",
+    "zh": "新建管道"
+  },
+  "templates18DataPipelineManager.sseConnected": {
+    "vi": "Đang nhận cập nhật trực tiếp",
+    "en": "Receiving live updates",
+    "ja": "リアルタイム更新を受信中",
+    "ko": "실시간 업데이트 수신 중",
+    "zh": "正在接收实时更新"
+  },
+  "templates18DataPipelineManager.sseDisconnected": {
+    "vi": "Không có kết nối realtime — bấm Làm mới để cập nhật",
+    "en": "No realtime connection — click Refresh to update",
+    "ja": "リアルタイム接続なし — 「更新」をクリックして更新してください",
+    "ko": "실시간 연결 없음 — 새로고침을 클릭하여 업데이트하세요",
+    "zh": "无实时连接 — 点击「刷新」以更新"
+  },
+  "templates18DataPipelineManager.searchPlaceholder": {
+    "vi": "Tìm pipeline theo tên...",
+    "en": "Search pipeline by name...",
+    "ja": "名前でパイプラインを検索...",
+    "ko": "이름으로 파이프라인 검색...",
+    "zh": "按名称搜索管道..."
+  },
+  "templates18DataPipelineManager.allStatuses": {
+    "vi": "Tất cả trạng thái",
+    "en": "All statuses",
+    "ja": "すべてのステータス",
+    "ko": "모든 상태",
+    "zh": "所有状态"
+  },
+  "templates18DataPipelineManager.emptyFiltered": {
+    "vi": "Chưa có pipeline nào khớp bộ lọc.",
+    "en": "No pipelines match the filter yet.",
+    "ja": "フィルターに一致するパイプラインはまだありません。",
+    "ko": "필터와 일치하는 파이프라인이 아직 없습니다.",
+    "zh": "暂无符合筛选条件的管道。"
+  },
+  "templates18DataPipelineManager.thPipeline": {
+    "vi": "Pipeline",
+    "en": "Pipeline",
+    "ja": "パイプライン",
+    "ko": "파이프라인",
+    "zh": "管道"
+  },
+  "templates18DataPipelineManager.thStep": {
+    "vi": "Bước",
+    "en": "Step",
+    "ja": "ステップ",
+    "ko": "단계",
+    "zh": "步骤"
+  },
+  "templates18DataPipelineManager.thStatus": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "templates18DataPipelineManager.thRows": {
+    "vi": "Hàng",
+    "en": "Rows",
+    "ja": "行数",
+    "ko": "행",
+    "zh": "行数"
+  },
+  "templates18DataPipelineManager.thOwner": {
+    "vi": "Người tạo",
+    "en": "Owner",
+    "ja": "作成者",
+    "ko": "생성자",
+    "zh": "创建者"
+  },
+  "templates18DataPipelineManager.thUpdated": {
+    "vi": "Cập nhật",
+    "en": "Updated",
+    "ja": "更新日時",
+    "ko": "업데이트",
+    "zh": "更新时间"
+  },
+  "templates18DataPipelineManager.rowsSuffix": {
+    "vi": "{count} hàng",
+    "en": "{count} rows",
+    "ja": "{count}行",
+    "ko": "{count}행",
+    "zh": "{count}行"
+  },
+  "templates18DataPipelineManager.loadMore": {
+    "vi": "Tải thêm",
+    "en": "Load more",
+    "ja": "さらに読み込む",
+    "ko": "더 보기",
+    "zh": "加载更多"
+  },
+  "templates18DataPipelineManager.errRunTitle": {
+    "vi": "Lỗi",
+    "en": "Error",
+    "ja": "エラー",
+    "ko": "오류",
+    "zh": "错误"
+  }
+}

@@ -20,54 +20,55 @@ import {
 
 import { Badge, Button, cn } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type Category = 'comparison' | 'composition' | 'distribution' | 'relationship';
 
 interface ChartItem {
-  kind:        string;
-  label:       string;
-  description: string;
-  use_case:    string;
-  icon:        any;
+  kind:           string;
+  labelKey:       string;
+  descriptionKey: string;
+  useCaseKey:     string;
+  icon:           any;
 }
 
-const CATALOGUE: Record<Category, { title: string; description: string; items: ChartItem[] }> = {
+const CATALOGUE: Record<Category, { titleKey: string; descriptionKey: string; items: ChartItem[] }> = {
   comparison: {
-    title:       'So sánh',
-    description: 'Đối chiếu giá trị giữa các nhóm hoặc theo thời gian',
+    titleKey:       'templates30ChartCategories.catComparisonTitle',
+    descriptionKey: 'templates30ChartCategories.catComparisonDesc',
     items: [
-      { kind: 'bar',         label: 'Cột ngang',  description: 'So sánh giá trị giữa các category',  use_case: 'Doanh thu theo chi nhánh', icon: BarChart2 },
-      { kind: 'column',      label: 'Cột dọc',    description: 'Cột dọc — mặc định cho category',     use_case: 'Số khách theo tháng',     icon: BarChart },
-      { kind: 'stacked_bar', label: 'Cột chồng',  description: 'Nhiều series cùng trục',                use_case: 'Doanh thu theo product line × tháng', icon: Layers },
-      { kind: 'line',        label: 'Đường',      description: 'Xu hướng theo thời gian',              use_case: 'MAU 12 tháng',           icon: LineChart },
-      { kind: 'area',        label: 'Vùng',       description: 'Xu hướng cumulative',                   use_case: 'Khách lũy kế',           icon: AreaChart },
+      { kind: 'bar',         labelKey: 'templates30ChartCategories.barLabel',        descriptionKey: 'templates30ChartCategories.barDesc',        useCaseKey: 'templates30ChartCategories.barUseCase',        icon: BarChart2 },
+      { kind: 'column',      labelKey: 'templates30ChartCategories.columnLabel',     descriptionKey: 'templates30ChartCategories.columnDesc',     useCaseKey: 'templates30ChartCategories.columnUseCase',     icon: BarChart },
+      { kind: 'stacked_bar', labelKey: 'templates30ChartCategories.stackedBarLabel', descriptionKey: 'templates30ChartCategories.stackedBarDesc', useCaseKey: 'templates30ChartCategories.stackedBarUseCase', icon: Layers },
+      { kind: 'line',        labelKey: 'templates30ChartCategories.lineLabel',       descriptionKey: 'templates30ChartCategories.lineDesc',       useCaseKey: 'templates30ChartCategories.lineUseCase',       icon: LineChart },
+      { kind: 'area',        labelKey: 'templates30ChartCategories.areaLabel',       descriptionKey: 'templates30ChartCategories.areaDesc',       useCaseKey: 'templates30ChartCategories.areaUseCase',       icon: AreaChart },
     ],
   },
   composition: {
-    title:       'Tỉ trọng',
-    description: 'Một tổng thể được chia thành các phần như thế nào',
+    titleKey:       'templates30ChartCategories.catCompositionTitle',
+    descriptionKey: 'templates30ChartCategories.catCompositionDesc',
     items: [
-      { kind: 'pie',     label: 'Tròn',       description: 'Tỉ trọng cho ≤6 nhóm',                use_case: 'Cơ cấu doanh thu theo segment', icon: PieChart },
-      { kind: 'donut',   label: 'Tròn rỗng',  description: 'Pie + tổng giữa',                       use_case: 'Cơ cấu khách + tổng',           icon: PieChart },
-      { kind: 'treemap', label: 'Treemap',    description: 'Phân cấp theo diện tích',              use_case: 'Cơ cấu chi phí phòng ban',      icon: Box },
-      { kind: 'funnel',  label: 'Funnel',     description: 'Conversion qua các bước',              use_case: 'Bước trong sales funnel',       icon: TrendingDown },
+      { kind: 'pie',     labelKey: 'templates30ChartCategories.pieLabel',     descriptionKey: 'templates30ChartCategories.pieDesc',     useCaseKey: 'templates30ChartCategories.pieUseCase',     icon: PieChart },
+      { kind: 'donut',   labelKey: 'templates30ChartCategories.donutLabel',   descriptionKey: 'templates30ChartCategories.donutDesc',   useCaseKey: 'templates30ChartCategories.donutUseCase',   icon: PieChart },
+      { kind: 'treemap', labelKey: 'templates30ChartCategories.treemapLabel', descriptionKey: 'templates30ChartCategories.treemapDesc', useCaseKey: 'templates30ChartCategories.treemapUseCase', icon: Box },
+      { kind: 'funnel',  labelKey: 'templates30ChartCategories.funnelLabel',  descriptionKey: 'templates30ChartCategories.funnelDesc',  useCaseKey: 'templates30ChartCategories.funnelUseCase',  icon: TrendingDown },
     ],
   },
   distribution: {
-    title:       'Phân phối',
-    description: 'Cách giá trị phân bố trên một dải số',
+    titleKey:       'templates30ChartCategories.catDistributionTitle',
+    descriptionKey: 'templates30ChartCategories.catDistributionDesc',
     items: [
-      { kind: 'histogram', label: 'Histogram',  description: 'Tần suất theo bin',                    use_case: 'Phân phối giá trị đơn hàng',    icon: BarChart },
-      { kind: 'box_plot',  label: 'Box plot',   description: 'Median + quartiles + outlier',         use_case: 'So sánh phân phối lương',       icon: Hash },
-      { kind: 'density',   label: 'Density',    description: 'Phân phối liên tục (KDE)',             use_case: 'Phân phối tuổi khách',          icon: Activity },
+      { kind: 'histogram', labelKey: 'templates30ChartCategories.histogramLabel', descriptionKey: 'templates30ChartCategories.histogramDesc', useCaseKey: 'templates30ChartCategories.histogramUseCase', icon: BarChart },
+      { kind: 'box_plot',  labelKey: 'templates30ChartCategories.boxPlotLabel',   descriptionKey: 'templates30ChartCategories.boxPlotDesc',   useCaseKey: 'templates30ChartCategories.boxPlotUseCase',   icon: Hash },
+      { kind: 'density',   labelKey: 'templates30ChartCategories.densityLabel',   descriptionKey: 'templates30ChartCategories.densityDesc',   useCaseKey: 'templates30ChartCategories.densityUseCase',   icon: Activity },
     ],
   },
   relationship: {
-    title:       'Tương quan',
-    description: 'Hai (hoặc ba) biến quan hệ với nhau ra sao',
+    titleKey:       'templates30ChartCategories.catRelationshipTitle',
+    descriptionKey: 'templates30ChartCategories.catRelationshipDesc',
     items: [
-      { kind: 'scatter', label: 'Scatter', description: 'Tương quan 2 biến',                      use_case: 'Marketing spend vs conversion', icon: ScatterChart },
-      { kind: 'bubble',  label: 'Bubble',  description: 'Scatter + size theo biến thứ 3',       use_case: 'Spend × ROI × volume',          icon: Box },
-      { kind: 'heatmap', label: 'Heatmap', description: 'Mật độ theo 2 chiều rời rạc',           use_case: 'Hour-of-day × day-of-week',     icon: Map },
+      { kind: 'scatter', labelKey: 'templates30ChartCategories.scatterLabel', descriptionKey: 'templates30ChartCategories.scatterDesc', useCaseKey: 'templates30ChartCategories.scatterUseCase', icon: ScatterChart },
+      { kind: 'bubble',  labelKey: 'templates30ChartCategories.bubbleLabel',  descriptionKey: 'templates30ChartCategories.bubbleDesc',  useCaseKey: 'templates30ChartCategories.bubbleUseCase',  icon: Box },
+      { kind: 'heatmap', labelKey: 'templates30ChartCategories.heatmapLabel', descriptionKey: 'templates30ChartCategories.heatmapDesc', useCaseKey: 'templates30ChartCategories.heatmapUseCase', icon: Map },
     ],
   },
 };
@@ -75,15 +76,16 @@ const CATALOGUE: Record<Category, { title: string; description: string; items: C
 const ALL_CATEGORIES: Category[] = ['comparison', 'composition', 'distribution', 'relationship'];
 
 export default function ChartCategoriesPage() {
+  const t = useT();
   const [active, setActive] = useState<Category>('comparison');
   const cat = CATALOGUE[active];
 
   return (
     <>
       <PageHeader
-        title="Biểu đồ theo loại"
-        description="Tài liệu 15 loại biểu đồ chia theo mục đích phân tích. Phase 2 sẽ thêm tính năng lưu template."
-        actions={<Badge variant="info">Phase 2 · Lưu template</Badge>}
+        title={t('templates30ChartCategories.pageTitle')}
+        description={t('templates30ChartCategories.pageDescription')}
+        actions={<Badge variant="info">{t('templates30ChartCategories.phase2Badge')}</Badge>}
       />
 
       <div className="px-6 lg:px-8 py-6 max-w-[1200px] mx-auto space-y-5">
@@ -107,10 +109,10 @@ export default function ChartCategoriesPage() {
                   'font-serif text-sm',
                   isActive ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]',
                 )}>
-                  {CATALOGUE[c].title}
+                  {t(CATALOGUE[c].titleKey)}
                 </p>
                 <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 line-clamp-1">
-                  {CATALOGUE[c].description}
+                  {t(CATALOGUE[c].descriptionKey)}
                 </p>
               </button>
             );
@@ -120,8 +122,8 @@ export default function ChartCategoriesPage() {
         {/* Category detail */}
         <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-[var(--border-color)]/60">
-            <h3 className="font-serif text-lg text-[var(--text-primary)]">{cat.title}</h3>
-            <p className="text-sm text-[var(--text-secondary)] mt-1">{cat.description}</p>
+            <h3 className="font-serif text-lg text-[var(--text-primary)]">{t(cat.titleKey)}</h3>
+            <p className="text-sm text-[var(--text-secondary)] mt-1">{t(cat.descriptionKey)}</p>
           </div>
 
           <div className="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -140,15 +142,15 @@ export default function ChartCategoriesPage() {
                     <Badge variant="default">{item.kind}</Badge>
                   </div>
                   <p className="font-medium text-sm text-[var(--text-primary)] group-hover:text-[var(--primary-gold-dark)] transition-colors">
-                    {item.label}
+                    {t(item.labelKey)}
                   </p>
-                  <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">{item.description}</p>
+                  <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">{t(item.descriptionKey)}</p>
                   <div className="mt-3 pt-3 border-t border-[var(--border-color)]/60">
-                    <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Ví dụ</p>
-                    <p className="text-xs text-[var(--text-primary)] mt-1">{item.use_case}</p>
+                    <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates30ChartCategories.exampleLabel')}</p>
+                    <p className="text-xs text-[var(--text-primary)] mt-1">{t(item.useCaseKey)}</p>
                   </div>
                   <div className="mt-3 flex items-center text-xs font-medium text-[var(--primary-gold-dark)] group-hover:translate-x-0.5 transition-transform">
-                    Mở trong picker
+                    {t('templates30ChartCategories.openInPicker')}
                     <ChevronRight className="w-3 h-3 ml-0.5" />
                   </div>
                 </a>
@@ -162,14 +164,14 @@ export default function ChartCategoriesPage() {
           <div className="flex items-start gap-3">
             <Sparkles className="w-5 h-5 text-[var(--primary-gold-dark)] shrink-0 mt-1" />
             <div className="flex-1">
-              <h3 className="font-serif text-base text-[var(--text-primary)]">Phase 2 — Chart Templates</h3>
+              <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates30ChartCategories.teaserTitle')}</h3>
               <p className="text-sm text-[var(--text-secondary)] mt-1 leading-relaxed">
-                Sắp tới bạn sẽ lưu được tổ hợp <span className="font-medium text-[var(--text-primary)]">loại + cột mặc định + theme</span> thành
-                template, dùng lại cho mọi pipeline mới mà không cần config từ đầu.
+                {t('templates30ChartCategories.teaserPre')} <span className="font-medium text-[var(--text-primary)]">{t('templates30ChartCategories.teaserSpan')}</span>{' '}
+                {t('templates30ChartCategories.teaserPost')}
               </p>
             </div>
             <Button variant="secondary" onClick={() => (window.location.href = '/p2/charts/picker')}>
-              Mở Chart Picker
+              {t('templates30ChartCategories.openChartPicker')}
               <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </div>

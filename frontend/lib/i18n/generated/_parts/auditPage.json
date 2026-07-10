@@ -1,0 +1,93 @@
+{
+  "auditPage.subtitle": {
+    "vi": "Nhật ký kiểm toán bất biến (K-6). Mỗi quyết định tự động và hành động quản trị đều được ghi lại với confidence và alternatives.",
+    "en": "Immutable audit log (K-6). Every automated decision and admin action is recorded with confidence and alternatives.",
+    "ja": "改ざん不可の監査ログ（K-6）。すべての自動決定と管理操作は confidence と alternatives とともに記録されます。",
+    "ko": "변경 불가능한 감사 로그(K-6). 모든 자동 결정과 관리 작업은 confidence 및 alternatives와 함께 기록됩니다.",
+    "zh": "不可变审计日志（K-6）。每个自动决策和管理操作都会连同 confidence 和 alternatives 一并记录。"
+  },
+  "auditPage.errMsg": {
+    "vi": "Backend audit log cho workspace {id} chưa sẵn sàng.",
+    "en": "The backend audit log for workspace {id} is not ready yet.",
+    "ja": "ワークスペース {id} のバックエンド監査ログはまだ準備できていません。",
+    "ko": "워크스페이스 {id}의 백엔드 감사 로그가 아직 준비되지 않았습니다.",
+    "zh": "工作区 {id} 的后端审计日志尚未就绪。"
+  },
+  "auditPage.colTime": {
+    "vi": "Thời gian",
+    "en": "Time",
+    "ja": "日時",
+    "ko": "시간",
+    "zh": "时间"
+  },
+  "auditPage.colEvent": {
+    "vi": "Sự kiện",
+    "en": "Event",
+    "ja": "イベント",
+    "ko": "이벤트",
+    "zh": "事件"
+  },
+  "auditPage.colActor": {
+    "vi": "Tác nhân",
+    "en": "Actor",
+    "ja": "実行者",
+    "ko": "행위자",
+    "zh": "操作者"
+  },
+  "auditPage.colResource": {
+    "vi": "Tài nguyên",
+    "en": "Resource",
+    "ja": "リソース",
+    "ko": "리소스",
+    "zh": "资源"
+  },
+  "auditPage.colDetail": {
+    "vi": "Chi tiết",
+    "en": "Detail",
+    "ja": "詳細",
+    "ko": "세부정보",
+    "zh": "详情"
+  },
+  "auditPage.colIp": {
+    "vi": "IP",
+    "en": "IP",
+    "ja": "IP",
+    "ko": "IP",
+    "zh": "IP"
+  },
+  "auditPage.emptyState": {
+    "vi": "Chưa có sự kiện nào được ghi lại.",
+    "en": "No events have been recorded yet.",
+    "ja": "まだ記録されたイベントはありません。",
+    "ko": "아직 기록된 이벤트가 없습니다.",
+    "zh": "尚未记录任何事件。"
+  },
+  "auditPage.systemActor": {
+    "vi": "Hệ thống",
+    "en": "System",
+    "ja": "システム",
+    "ko": "시스템",
+    "zh": "系统"
+  },
+  "auditPage.pageLabel": {
+    "vi": "Trang",
+    "en": "Page",
+    "ja": "ページ",
+    "ko": "페이지",
+    "zh": "页"
+  },
+  "auditPage.prevBtn": {
+    "vi": "Trước",
+    "en": "Previous",
+    "ja": "前へ",
+    "ko": "이전",
+    "zh": "上一页"
+  },
+  "auditPage.nextBtn": {
+    "vi": "Sau",
+    "en": "Next",
+    "ja": "次へ",
+    "ko": "다음",
+    "zh": "下一页"
+  }
+}

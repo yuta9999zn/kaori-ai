@@ -1,0 +1,19 @@
+{
+  "idPage6.statusNormal": { "vi": "Bình thường", "en": "Normal", "ja": "正常", "ko": "정상", "zh": "正常" },
+  "idPage6.statusWarn": { "vi": "Cảnh báo", "en": "Warning", "ja": "警告", "ko": "경고", "zh": "警告" },
+  "idPage6.statusCritical": { "vi": "Nguy hiểm", "en": "Critical", "ja": "危険", "ko": "위험", "zh": "危险" },
+  "idPage6.statusOverage": { "vi": "Vượt hạn mức", "en": "Over quota", "ja": "クォータ超過", "ko": "할당량 초과", "zh": "超出配额" },
+  "idPage6.backToList": { "vi": "Quay lại danh sách", "en": "Back to list", "ja": "一覧に戻る", "ko": "목록으로 돌아가기", "zh": "返回列表" },
+  "idPage6.enterpriseNotFound": { "vi": "Không tìm thấy doanh nghiệp {id}.", "en": "Enterprise {id} not found.", "ja": "企業 {id} が見つかりません。", "ko": "기업 {id}을(를) 찾을 수 없습니다.", "zh": "未找到企业 {id}。" },
+  "idPage6.backToQuotaList": { "vi": "Quay lại danh sách hạn mức", "en": "Back to quota list", "ja": "クォータ一覧に戻る", "ko": "할당량 목록으로 돌아가기", "zh": "返回配额列表" },
+  "idPage6.viewWorkspace": { "vi": "Xem workspace gốc", "en": "View source workspace", "ja": "元のワークスペースを見る", "ko": "원본 워크스페이스 보기", "zh": "查看原始工作区" },
+  "idPage6.usage": { "vi": "Sử dụng", "en": "Usage", "ja": "使用状況", "ko": "사용량", "zh": "使用量" },
+  "idPage6.usageDesc": { "vi": "{pct} hạn mức tháng — Ngưỡng cảnh báo {warnPct}%", "en": "{pct} of monthly quota — warning threshold {warnPct}%", "ja": "月間クォータの{pct} — 警告しきい値 {warnPct}%", "ko": "월간 할당량의 {pct} — 경고 임계값 {warnPct}%", "zh": "月度配额的 {pct} — 警告阈值 {warnPct}%" },
+  "idPage6.overagePrefix": { "vi": "Đã vượt hạn mức", "en": "Exceeded quota by", "ja": "クォータを超過:", "ko": "할당량 초과:", "zh": "已超出配额" },
+  "idPage6.overageSuffix": { "vi": "đơn vị. Phụ phí sẽ áp dụng từ F-059 (hiện tạm tính 0).", "en": "units. Surcharge will apply per F-059 (currently estimated at 0).", "ja": "ユニット。追加料金はF-059に基づき適用されます(現在は0として試算)。", "ko": "단위. 추가 요금은 F-059에 따라 적용됩니다(현재 0으로 추정).", "zh": "个单位。附加费将根据 F-059 应用(目前暂计为 0)。" },
+  "idPage6.revenuePeriod": { "vi": "Doanh thu kỳ {billingMonth}", "en": "Revenue for period {billingMonth}", "ja": "{billingMonth}期間の売上", "ko": "{billingMonth} 기간 매출", "zh": "{billingMonth} 期间营收" },
+  "idPage6.baseFee": { "vi": "Phí cơ sở", "en": "Base fee", "ja": "基本料金", "ko": "기본 요금", "zh": "基础费用" },
+  "idPage6.overageFee": { "vi": "Phí vượt hạn mức", "en": "Overage fee", "ja": "超過料金", "ko": "초과 요금", "zh": "超额费用" },
+  "idPage6.totalThisPeriod": { "vi": "Tổng kỳ này", "en": "Total this period", "ja": "今期の合計", "ko": "이번 기간 총액", "zh": "本期总额" },
+  "idPage6.nextInvoiceDate": { "vi": "Kỳ thanh toán tiếp theo", "en": "Next invoice date", "ja": "次回請求日", "ko": "다음 청구일", "zh": "下次结算日" }
+}

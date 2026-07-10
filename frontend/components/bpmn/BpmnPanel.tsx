@@ -9,14 +9,20 @@
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { api, type ApiError } from '@/lib/api';
+import { useT } from '@/lib/i18n/provider';
+
+function BpmnEditorLoading() {
+  const t = useT();
+  return (
+    <div className="flex h-[640px] items-center justify-center rounded-md-custom border border-[var(--border-color)] text-sm text-[var(--text-secondary)]">
+      {t('bpmnBpmnpanel.loadingEditor')}
+    </div>
+  );
+}
 
 const BpmnEditor = dynamic(() => import('./BpmnEditor'), {
   ssr: false,
-  loading: () => (
-    <div className="flex h-[640px] items-center justify-center rounded-md-custom border border-[var(--border-color)] text-sm text-[var(--text-secondary)]">
-      Đang tải trình thiết kế BPMN…
-    </div>
-  ),
+  loading: BpmnEditorLoading,
 });
 
 interface BpmnDoc {
@@ -44,6 +50,7 @@ interface BpmnSyncResult {
 }
 
 export default function BpmnPanel({ workflowId }: { workflowId: string }) {
+  const t = useT();
   const [loaded, setLoaded] = useState(false);
   const [initialXml, setInitialXml] = useState<string | null>(null);
   const [summary, setSummary] = useState<BpmnSummary | null>(null);
@@ -74,7 +81,7 @@ export default function BpmnPanel({ workflowId }: { workflowId: string }) {
       setSummary(doc.design_summary);
       setReloadKey((k) => k + 1); // remount editor with fresh XML
     } catch (e) {
-      flash('err', (e as ApiError)?.message ?? 'Không tải được BPMN');
+      flash('err', (e as ApiError)?.message ?? t('bpmnBpmnpanel.errLoad'));
     } finally {
       setLoaded(true);
     }
@@ -86,7 +93,7 @@ export default function BpmnPanel({ workflowId }: { workflowId: string }) {
 
   const save = async () => {
     if (!currentXml.current) {
-      flash('err', 'Chưa có sơ đồ để lưu');
+      flash('err', t('bpmnBpmnpanel.errNoDiagram'));
       return;
     }
     setBusy('save');
@@ -96,9 +103,9 @@ export default function BpmnPanel({ workflowId }: { workflowId: string }) {
         body: JSON.stringify({ bpmn_xml: currentXml.current }),
       });
       setSummary(doc.design_summary);
-      flash('ok', 'Đã lưu sơ đồ BPMN');
+      flash('ok', t('bpmnBpmnpanel.savedDiagram'));
     } catch (e) {
-      flash('err', (e as ApiError)?.message ?? 'Lưu thất bại (BPMN không hợp lệ?)');
+      flash('err', (e as ApiError)?.message ?? t('bpmnBpmnpanel.errSaveFailed'));
     } finally {
       setBusy(null);
     }
@@ -117,9 +124,9 @@ export default function BpmnPanel({ workflowId }: { workflowId: string }) {
       currentXml.current = doc.bpmn_xml;
       setSummary(doc.design_summary);
       setReloadKey((k) => k + 1);
-      flash('ok', 'Đã dựng sơ đồ BPMN từ các bước trong Builder');
+      flash('ok', t('bpmnBpmnpanel.builtFromSteps'));
     } catch (e) {
-      flash('err', (e as ApiError)?.message ?? 'Không dựng được sơ đồ từ bước');
+      flash('err', (e as ApiError)?.message ?? t('bpmnBpmnpanel.errFromStepsFailed'));
     } finally {
       setBusy(null);
     }
@@ -127,10 +134,7 @@ export default function BpmnPanel({ workflowId }: { workflowId: string }) {
 
   const sync = async () => {
     // BPMN→nodes is a REPLACE (Model A). Warn before overwriting builder steps.
-    if (!window.confirm(
-      'Đồng bộ sẽ GHI ĐÈ toàn bộ các bước trong Builder bằng sơ đồ BPMN hiện tại. '
-      + 'Nếu bạn vừa dựng bước trong Builder mà sơ đồ này chưa phản ánh, hãy bấm '
-      + '“Tạo sơ đồ từ bước” trước. Tiếp tục đồng bộ?')) {
+    if (!window.confirm(t('bpmnBpmnpanel.confirmSync'))) {
       return;
     }
     setBusy('sync');
@@ -148,9 +152,9 @@ export default function BpmnPanel({ workflowId }: { workflowId: string }) {
       );
       setSyncResult(res);
       setSummary(res.design_summary);
-      flash('ok', `Đã đồng bộ: ${res.nodes_created} bước, ${res.edges_created} luồng`);
+      flash('ok', t('bpmnBpmnpanel.syncedResult', { nodes: res.nodes_created, edges: res.edges_created }));
     } catch (e) {
-      flash('err', (e as ApiError)?.message ?? 'Đồng bộ thất bại');
+      flash('err', (e as ApiError)?.message ?? t('bpmnBpmnpanel.errSyncFailed'));
     } finally {
       setBusy(null);
     }
@@ -161,7 +165,7 @@ export default function BpmnPanel({ workflowId }: { workflowId: string }) {
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-2">
         <span className="inline-flex items-center gap-1 rounded bg-amber-50 px-2 py-1 text-[11px] font-medium text-amber-700">
-          ⚙ Thiết kế — chưa thực thi
+          ⚙ {t('bpmnBpmnpanel.designBadge')}
         </span>
         <div className="flex-1" />
         <button
@@ -169,29 +173,29 @@ export default function BpmnPanel({ workflowId }: { workflowId: string }) {
           disabled={busy !== null}
           className="rounded-md-custom border border-[var(--border-color)] px-3 py-1.5 text-sm hover:bg-black/5 disabled:opacity-50"
         >
-          Tải lại
+          {t('bpmnBpmnpanel.reload')}
         </button>
         <button
           onClick={() => void fromSteps()}
           disabled={busy !== null}
-          title="Dựng sơ đồ BPMN từ các bước đã tạo trong Builder (không ghi đè bước)"
+          title={t('bpmnBpmnpanel.fromStepsTitle')}
           className="rounded-md-custom border border-[var(--border-color)] px-3 py-1.5 text-sm hover:bg-black/5 disabled:opacity-50"
         >
-          {busy === 'fromsteps' ? 'Đang dựng…' : 'Tạo sơ đồ từ bước'}
+          {busy === 'fromsteps' ? t('bpmnBpmnpanel.buildingEllipsis') : t('bpmnBpmnpanel.fromStepsBtn')}
         </button>
         <button
           onClick={() => void save()}
           disabled={busy !== null}
           className="rounded-md-custom border border-[var(--border-color)] px-3 py-1.5 text-sm hover:bg-black/5 disabled:opacity-50"
         >
-          {busy === 'save' ? 'Đang lưu…' : 'Lưu sơ đồ'}
+          {busy === 'save' ? t('bpmnBpmnpanel.savingEllipsis') : t('bpmnBpmnpanel.saveBtn')}
         </button>
         <button
           onClick={() => void sync()}
           disabled={busy !== null}
           className="rounded-md-custom bg-[var(--primary-gold)] px-3 py-1.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
         >
-          {busy === 'sync' ? 'Đang đồng bộ…' : 'Lưu & Đồng bộ bước'}
+          {busy === 'sync' ? t('bpmnBpmnpanel.syncingEllipsis') : t('bpmnBpmnpanel.saveSyncBtn')}
         </button>
       </div>
 
@@ -206,19 +210,19 @@ export default function BpmnPanel({ workflowId }: { workflowId: string }) {
                 start/end events + gateways, so it legitimately exceeds the
                 workflow's authored step count (shown on the Builder/Báo cáo
                 tabs). Labelling it "Bước" made the 3 tabs look contradictory. */}
-            <span title="Tổng phần tử sơ đồ BPMN — gồm cả sự kiện bắt đầu/kết thúc và cổng (gateway), nên nhiều hơn số bước nghiệp vụ.">Phần tử: <b className="text-[var(--text-primary)]">{summary.node_count}</b></span>
-            <span>Luồng: <b className="text-[var(--text-primary)]">{summary.edge_count}</b></span>
-            <span>Thực thi được: <b className="text-emerald-700">{summary.executable_count}</b></span>
-            <span>Trigger: <b className="text-[var(--text-primary)]">{summary.trigger_count}</b></span>
-            {!!summary.message_flow_count && <span>Message flow: <b>{summary.message_flow_count}</b></span>}
-            {!!summary.pools?.length && <span>Pool: <b>{summary.pools.length}</b></span>}
+            <span title={t('bpmnBpmnpanel.nodeCountTitle')}>{t('bpmnBpmnpanel.nodeCountLabel')} <b className="text-[var(--text-primary)]">{summary.node_count}</b></span>
+            <span>{t('bpmnBpmnpanel.edgeCountLabel')} <b className="text-[var(--text-primary)]">{summary.edge_count}</b></span>
+            <span>{t('bpmnBpmnpanel.executableCountLabel')} <b className="text-emerald-700">{summary.executable_count}</b></span>
+            <span>{t('bpmnBpmnpanel.triggerCountLabel')} <b className="text-[var(--text-primary)]">{summary.trigger_count}</b></span>
+            {!!summary.message_flow_count && <span>{t('bpmnBpmnpanel.messageFlowLabel')} <b>{summary.message_flow_count}</b></span>}
+            {!!summary.pools?.length && <span>{t('bpmnBpmnpanel.poolLabel')} <b>{summary.pools.length}</b></span>}
           </div>
           {!!summary.pools?.length && (
             <div className="mt-2 text-[var(--text-secondary)]">
               {summary.pools.map((p) => (
                 <div key={p.name}>
                   <b className="text-[var(--text-primary)]">{p.name}</b>
-                  {p.lanes.length ? ` — lane: ${p.lanes.join(', ')}` : ''}
+                  {p.lanes.length ? ` ${t('bpmnBpmnpanel.laneList', { lanes: p.lanes.join(', ') })}` : ''}
                 </div>
               ))}
             </div>
@@ -234,10 +238,10 @@ export default function BpmnPanel({ workflowId }: { workflowId: string }) {
       {/* Sync result — dangling branches block activation */}
       {syncResult?.dangling_branches?.length ? (
         <div className="rounded-md-custom border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">
-          <b>Nhánh chưa nối đủ (cần xử lý trước khi chạy):</b>
+          <b>{t('bpmnBpmnpanel.danglingHeading')}</b>
           <ul className="mt-1 list-disc pl-4">
             {syncResult.dangling_branches.map((d, i) => (
-              <li key={i}>{d.title}: có {d.actual_edges}/{d.expected_edges} nhánh</li>
+              <li key={i}>{d.title}: {t('bpmnBpmnpanel.danglingItem', { actual: d.actual_edges, expected: d.expected_edges })}</li>
             ))}
           </ul>
         </div>

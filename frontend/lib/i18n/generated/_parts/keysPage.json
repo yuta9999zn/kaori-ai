@@ -1,0 +1,247 @@
+{
+  "keysPage.activeOfTotal": {
+    "vi": "khoá đang hoạt động trên tổng số",
+    "en": "active keys out of a total of",
+    "ja": "件のアクティブなキー(全体数",
+    "ko": "개의 활성 키 (전체",
+    "zh": "个活跃密钥,共"
+  },
+  "keysPage.headerBlurb": {
+    "vi": "Khoá API dùng để kích hoạt workspace và xác thực tích hợp.",
+    "en": "API keys are used to activate the workspace and authenticate integrations.",
+    "ja": "APIキーはワークスペースの有効化と連携認証に使用します。",
+    "ko": "API 키는 워크스페이스를 활성화하고 통합을 인증하는 데 사용됩니다.",
+    "zh": "API 密钥用于激活工作区并验证集成。"
+  },
+  "keysPage.createBtn": {
+    "vi": "Tạo khoá mới",
+    "en": "Create new key",
+    "ja": "新しいキーを作成",
+    "ko": "새 키 생성",
+    "zh": "创建新密钥"
+  },
+  "keysPage.errLoadList": {
+    "vi": "Không thể tải danh sách khoá API.",
+    "en": "Unable to load the API key list.",
+    "ja": "APIキー一覧を読み込めませんでした。",
+    "ko": "API 키 목록을 불러올 수 없습니다.",
+    "zh": "无法加载 API 密钥列表。"
+  },
+  "keysPage.colKey": {
+    "vi": "Khoá",
+    "en": "Key",
+    "ja": "キー",
+    "ko": "키",
+    "zh": "密钥"
+  },
+  "keysPage.colStatus": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "keysPage.colCreatedAt": {
+    "vi": "Tạo lúc",
+    "en": "Created at",
+    "ja": "作成日時",
+    "ko": "생성 시각",
+    "zh": "创建时间"
+  },
+  "keysPage.colRevokedAt": {
+    "vi": "Thu hồi lúc",
+    "en": "Revoked at",
+    "ja": "失効日時",
+    "ko": "취소 시각",
+    "zh": "撤销时间"
+  },
+  "keysPage.emptyState": {
+    "vi": "Chưa có khoá API nào trong workspace này.",
+    "en": "There are no API keys in this workspace yet.",
+    "ja": "このワークスペースにはまだAPIキーがありません。",
+    "ko": "이 워크스페이스에는 아직 API 키가 없습니다.",
+    "zh": "此工作区中还没有 API 密钥。"
+  },
+  "keysPage.noLabel": {
+    "vi": "Không có nhãn",
+    "en": "No label",
+    "ja": "ラベルなし",
+    "ko": "라벨 없음",
+    "zh": "无标签"
+  },
+  "keysPage.statusActive": {
+    "vi": "Đang hoạt động",
+    "en": "Active",
+    "ja": "有効",
+    "ko": "활성",
+    "zh": "启用中"
+  },
+  "keysPage.statusRevoked": {
+    "vi": "Đã thu hồi",
+    "en": "Revoked",
+    "ja": "失効済み",
+    "ko": "취소됨",
+    "zh": "已撤销"
+  },
+  "keysPage.ariaRevoke": {
+    "vi": "Thu hồi khoá",
+    "en": "Revoke key",
+    "ja": "キーを失効",
+    "ko": "키 취소",
+    "zh": "撤销密钥"
+  },
+  "keysPage.modalTitleCreated": {
+    "vi": "Khoá đã được tạo",
+    "en": "Key created",
+    "ja": "キーが作成されました",
+    "ko": "키가 생성되었습니다",
+    "zh": "密钥已创建"
+  },
+  "keysPage.modalTitleCreate": {
+    "vi": "Tạo khoá API mới",
+    "en": "Create a new API key",
+    "ja": "新しいAPIキーを作成",
+    "ko": "새 API 키 생성",
+    "zh": "创建新的 API 密钥"
+  },
+  "keysPage.modalDescRevealed": {
+    "vi": "Sao chép khoá ngay — sau khi đóng cửa sổ, khoá sẽ không thể hiển thị lại.",
+    "en": "Copy the key now — once you close this window, it can never be shown again.",
+    "ja": "今すぐキーをコピーしてください。このウィンドウを閉じると二度と表示されません。",
+    "ko": "지금 키를 복사하세요 — 창을 닫으면 다시 표시되지 않습니다.",
+    "zh": "请立即复制密钥——关闭此窗口后将无法再次显示。"
+  },
+  "keysPage.modalDescCreate": {
+    "vi": "Khoá sẽ chỉ hiển thị một lần duy nhất sau khi tạo.",
+    "en": "The key will only be shown once, right after creation.",
+    "ja": "キーは作成直後の一度だけ表示されます。",
+    "ko": "키는 생성 직후 단 한 번만 표시됩니다.",
+    "zh": "密钥仅在创建后显示一次。"
+  },
+  "keysPage.ariaClose": {
+    "vi": "Đóng",
+    "en": "Close",
+    "ja": "閉じる",
+    "ko": "닫기",
+    "zh": "关闭"
+  },
+  "keysPage.warnOneTime": {
+    "vi": "Đây là lần duy nhất khoá hiển thị đầy đủ. Hãy lưu vào kho mật khẩu hoặc biến môi trường ngay bây giờ.",
+    "en": "This is the only time the full key will be shown. Save it to a password manager or environment variable now.",
+    "ja": "完全なキーが表示されるのはこの一度限りです。今すぐパスワードマネージャーまたは環境変数に保存してください。",
+    "ko": "전체 키가 표시되는 것은 이번이 유일합니다. 지금 비밀번호 관리자나 환경 변수에 저장하세요.",
+    "zh": "这是完整密钥唯一一次显示的机会,请立即保存到密码管理器或环境变量中。"
+  },
+  "keysPage.labelApiKey": {
+    "vi": "Khoá API",
+    "en": "API key",
+    "ja": "APIキー",
+    "ko": "API 키",
+    "zh": "API 密钥"
+  },
+  "keysPage.copiedLabel": {
+    "vi": "Đã sao",
+    "en": "Copied",
+    "ja": "コピー済み",
+    "ko": "복사됨",
+    "zh": "已复制"
+  },
+  "keysPage.copyLabel": {
+    "vi": "Sao chép",
+    "en": "Copy",
+    "ja": "コピー",
+    "ko": "복사",
+    "zh": "复制"
+  },
+  "keysPage.confirmedCopy": {
+    "vi": "Tôi đã sao chép",
+    "en": "I've copied it",
+    "ja": "コピーしました",
+    "ko": "복사했습니다",
+    "zh": "我已复制"
+  },
+  "keysPage.labelOptional": {
+    "vi": "Nhãn (không bắt buộc)",
+    "en": "Label (optional)",
+    "ja": "ラベル(任意)",
+    "ko": "라벨 (선택사항)",
+    "zh": "标签(可选)"
+  },
+  "keysPage.labelPlaceholder": {
+    "vi": "ví dụ: ci-runner, stg-deploy",
+    "en": "e.g. ci-runner, stg-deploy",
+    "ja": "例:ci-runner, stg-deploy",
+    "ko": "예: ci-runner, stg-deploy",
+    "zh": "例如:ci-runner、stg-deploy"
+  },
+  "keysPage.labelHint": {
+    "vi": "Tối đa 100 ký tự. Chỉ phục vụ mục đích nhận diện.",
+    "en": "Up to 100 characters. For identification purposes only.",
+    "ja": "最大100文字。識別目的のみに使用されます。",
+    "ko": "최대 100자. 식별 목적으로만 사용됩니다.",
+    "zh": "最多 100 个字符,仅用于识别目的。"
+  },
+  "keysPage.keyGenInfoPre": {
+    "vi": "Khoá được sinh ngẫu nhiên 160-bit (định dạng",
+    "en": "The key is randomly generated at 160-bit (format",
+    "ja": "キーは160ビットでランダムに生成されます(形式:",
+    "ko": "키는 160비트로 무작위 생성됩니다 (형식",
+    "zh": "密钥为随机生成的 160 位(格式为"
+  },
+  "keysPage.keyGenInfoPost": {
+    "vi": ") và chỉ lưu hash SHA-256 trên máy chủ.",
+    "en": ") and only the SHA-256 hash is stored on the server.",
+    "ja": ")。サーバーにはSHA-256ハッシュのみが保存されます。",
+    "ko": ") 서버에는 SHA-256 해시만 저장됩니다.",
+    "zh": "),服务器上仅存储 SHA-256 哈希值。"
+  },
+  "keysPage.cancelBtn": {
+    "vi": "Hủy",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "keysPage.createKeyBtn": {
+    "vi": "Tạo khoá",
+    "en": "Create key",
+    "ja": "キーを作成",
+    "ko": "키 생성",
+    "zh": "创建密钥"
+  },
+  "keysPage.revokeModalTitle": {
+    "vi": "Thu hồi khoá API",
+    "en": "Revoke API key",
+    "ja": "APIキーを失効",
+    "ko": "API 키 취소",
+    "zh": "撤销 API 密钥"
+  },
+  "keysPage.revokeConfirmPre": {
+    "vi": "Thu hồi",
+    "en": "Revoke",
+    "ja": "失効させますか:",
+    "ko": "취소하시겠습니까:",
+    "zh": "确认撤销"
+  },
+  "keysPage.unlabeledKey": {
+    "vi": "khoá không nhãn",
+    "en": "unlabeled key",
+    "ja": "ラベルなしのキー",
+    "ko": "라벨 없는 키",
+    "zh": "无标签密钥"
+  },
+  "keysPage.revokeConfirmPost": {
+    "vi": "Mọi tích hợp đang dùng khoá này sẽ ngừng hoạt động ngay lập tức.",
+    "en": "Any integration using this key will stop working immediately.",
+    "ja": "このキーを使用しているすべての連携は直ちに停止します。",
+    "ko": "이 키를 사용하는 모든 통합이 즉시 작동을 멈춥니다.",
+    "zh": "使用此密钥的所有集成将立即停止工作。"
+  },
+  "keysPage.revokeBtn": {
+    "vi": "Thu hồi",
+    "en": "Revoke",
+    "ja": "失効",
+    "ko": "취소",
+    "zh": "撤销"
+  }
+}

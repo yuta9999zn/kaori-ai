@@ -36,6 +36,7 @@ import {
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
 import { WizardStepper } from '@/components/p2/foundation-wizard';
+import { useT } from '@/lib/i18n/provider';
 // (NOTE: file 20-24 share the wizard stepper from _foundation_wizard.tsx.)
 
 interface UploadResponse {
@@ -83,6 +84,7 @@ let _seq = 0;
 const nextId = () => `up_${++_seq}_${Date.now().toString(36)}`;
 
 export default function PipelineStep1Upload() {
+  const t = useT();
   const [items, setItems]       = useState<UploadItem[]>([]);
   const [running, setRunning]   = useState(false);   // a sequential upload pass is in flight
   const [problem, setProblem]   = useState<ProblemDetails | null>(null);
@@ -162,7 +164,7 @@ export default function PipelineStep1Upload() {
         if (st.status === 'failed') {
           patchItem(itemId, {
             status: 'failed',
-            problem: { title: 'Xử lý file thất bại', detail: st.error_message ?? undefined },
+            problem: { title: t('templates20DataPipelineStep1UploadFile.processFailedTitle'), detail: st.error_message ?? undefined },
           });
           return;
         }
@@ -170,7 +172,7 @@ export default function PipelineStep1Upload() {
         // 404 while the background INSERT hasn't landed yet → keep polling.
       }
       if (tries < 150) setTimeout(tick, 2000);   // ~5 min ceiling
-      else patchItem(itemId, { status: 'failed', problem: { title: 'Quá thời gian xử lý file' } });
+      else patchItem(itemId, { status: 'failed', problem: { title: t('templates20DataPipelineStep1UploadFile.timeoutTitle') } });
     };
     setTimeout(tick, 1500);
   }
@@ -219,8 +221,10 @@ export default function PipelineStep1Upload() {
 
     if (oversize.length > 0) {
       setProblem({
-        title:  oversize.length === 1 ? 'File quá lớn' : `${oversize.length} file quá lớn`,
-        detail: `Tối đa 500 MB. Bỏ qua: ${oversize.join(', ')}`,
+        title:  oversize.length === 1
+          ? t('templates20DataPipelineStep1UploadFile.oversizeTitleSingle')
+          : t('templates20DataPipelineStep1UploadFile.oversizeTitleMulti', { count: oversize.length }),
+        detail: t('templates20DataPipelineStep1UploadFile.oversizeDetail', { list: oversize.join(', ') }),
       });
     }
     if (accepted.length === 0) return;
@@ -273,7 +277,7 @@ export default function PipelineStep1Upload() {
           } catch (e) {
             patchItem(item.id, {
               status:  'failed',
-              problem: { title: 'Phản hồi không hợp lệ từ server' },
+              problem: { title: t('templates20DataPipelineStep1UploadFile.invalidResponseTitle') },
             });
           }
         } else {
@@ -286,7 +290,7 @@ export default function PipelineStep1Upload() {
       xhr.onerror = () => {
         patchItem(item.id, {
           status:  'failed',
-          problem: { title: 'Mạng lỗi khi upload', detail: item.file.name },
+          problem: { title: t('templates20DataPipelineStep1UploadFile.networkErrorTitle'), detail: item.file.name },
         });
         resolve();
       };
@@ -348,16 +352,16 @@ export default function PipelineStep1Upload() {
   return (
     <>
       <PageHeader
-        title="Upload file"
+        title={t('templates20DataPipelineStep1UploadFile.title')}
         description={
           workflowCtx
-            ? `Đang tải lên cho workflow "${workflowCtx.workflowName}" — bước "${workflowCtx.stepTitle}".`
-            : 'Bước 1 / 5 — tải một hoặc nhiều file dữ liệu gốc để bắt đầu pipeline.'
+            ? t('templates20DataPipelineStep1UploadFile.descWorkflow', { name: workflowCtx.workflowName, step: workflowCtx.stepTitle })
+            : t('templates20DataPipelineStep1UploadFile.descDefault')
         }
         actions={workflowId ? (
           <a href={`/p2/workflows/${workflowId}`}>
             <Button variant="tertiary" size="md">
-              <ArrowLeft className="w-4 h-4 mr-2" /> Quay lại workflow
+              <ArrowLeft className="w-4 h-4 mr-2" /> {t('templates20DataPipelineStep1UploadFile.backToWorkflowButton')}
             </Button>
           </a>
         ) : null}
@@ -373,11 +377,11 @@ export default function PipelineStep1Upload() {
             <WorkflowIcon className="w-5 h-5 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0 text-xs">
               <p className="font-medium text-[var(--text-primary)]">
-                Workflow: <span className="font-serif">{workflowCtx.workflowName}</span>
+                {t('templates20DataPipelineStep1UploadFile.workflowColonLabel')} <span className="font-serif">{workflowCtx.workflowName}</span>
               </p>
               <p className="text-[var(--text-secondary)] mt-0.5">
-                Bước: <span className="font-medium">{workflowCtx.stepTitle}</span>.
-                {' '}File upload sẽ được gắn vào bước này — xem ở tab "Cây tài liệu" sau khi upload.
+                {t('templates20DataPipelineStep1UploadFile.stepColonLabel')} <span className="font-medium">{workflowCtx.stepTitle}</span>.
+                {' '}{t('templates20DataPipelineStep1UploadFile.stepHint')}
               </p>
             </div>
           </div>
@@ -415,13 +419,13 @@ export default function PipelineStep1Upload() {
           />
           <UploadCloud className="w-12 h-12 mx-auto text-[var(--primary-gold-dark)] mb-3" />
           <p className="font-serif text-lg text-[var(--text-primary)] mb-1">
-            Kéo thả nhiều file vào đây
+            {t('templates20DataPipelineStep1UploadFile.dropzoneTitle')}
           </p>
           <p className="text-sm text-[var(--text-secondary)] mb-4">
-            hoặc bấm để chọn từ máy tính (Ctrl/⌘+click để chọn nhiều)
+            {t('templates20DataPipelineStep1UploadFile.dropzoneSubtitle')}
           </p>
           <p className="text-xs text-[var(--text-secondary)]">
-            CSV · Excel (.xlsx, .xls) · TSV · ZIP · tối đa 500 MB / file
+            {t('templates20DataPipelineStep1UploadFile.dropzoneFormats')}
           </p>
         </div>
 
@@ -430,9 +434,9 @@ export default function PipelineStep1Upload() {
             <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--border-color)]">
               <h3 className="text-sm font-medium text-[var(--text-primary)] flex items-center gap-2">
                 <FileSpreadsheet className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-                Hàng đợi ({items.length} file
-                {items.length > 0 && doneCount > 0 && ` · ${doneCount} xong`}
-                {hashingCount > 0 && ` · ${hashingCount} đang hash`})
+                {t('templates20DataPipelineStep1UploadFile.queueLabel')} ({t('templates20DataPipelineStep1UploadFile.queueFilesCount', { count: items.length })}
+                {items.length > 0 && doneCount > 0 && ` ${t('templates20DataPipelineStep1UploadFile.queueDoneCount', { count: doneCount })}`}
+                {hashingCount > 0 && ` ${t('templates20DataPipelineStep1UploadFile.queueHashingCount', { count: hashingCount })}`})
               </h3>
               <Button
                 onClick={uploadAll}
@@ -441,7 +445,7 @@ export default function PipelineStep1Upload() {
                 size="sm"
               >
                 <UploadCloud className="w-4 h-4 mr-2" />
-                Tải lên Bronze
+                {t('templates20DataPipelineStep1UploadFile.uploadBronzeButton')}
                 {readyCount > 0 && ` (${readyCount})`}
               </Button>
             </div>
@@ -461,7 +465,7 @@ export default function PipelineStep1Upload() {
         {advance && (
           <div className="rounded-lg-custom bg-[var(--state-success)]/10 border border-[var(--state-success)]/30 p-5 shadow-soft-sm flex items-center justify-between gap-4">
             <p className="text-sm text-[#5C856A]">
-              {allDone ? 'Mọi file đã sẵn sàng cho bước 2.' : 'Có file đã ingest xong — bạn có thể sang bước 2 ngay (các file còn lại vẫn tiếp tục).'}
+              {allDone ? t('templates20DataPipelineStep1UploadFile.allReadyMsg') : t('templates20DataPipelineStep1UploadFile.partialReadyMsg')}
             </p>
             <Button
               isLoading={navigating}
@@ -472,7 +476,7 @@ export default function PipelineStep1Upload() {
                   `/p2/pipelines/${advance.result?.pipeline_run_id}/step-2-columns`;
               }}
             >
-              {navigating ? 'Đang mở Bước 2…' : <>Sang Bước 2 — Cột<ChevronRight className="w-4 h-4 ml-2" /></>}
+              {navigating ? t('templates20DataPipelineStep1UploadFile.openingStep2') : <>{t('templates20DataPipelineStep1UploadFile.toStep2ColumnsButton')}<ChevronRight className="w-4 h-4 ml-2" /></>}
             </Button>
           </div>
         )}
@@ -480,9 +484,8 @@ export default function PipelineStep1Upload() {
         <div className="flex items-start gap-3 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Mỗi file được lưu nguyên vẹn ở <span className="font-medium text-[var(--text-primary)]">Bronze layer</span> (append-only, K-2)
-            và tạo một <span className="font-mono">pipeline_run</span> riêng. SHA-256 fingerprint chống upload trùng — nếu
-            file đã tồn tại, hệ thống sẽ tái dùng record cũ thay vì ingest lại.
+            {t('templates20DataPipelineStep1UploadFile.trustPart1')} <span className="font-medium text-[var(--text-primary)]">{t('templates20DataPipelineStep1UploadFile.bronzeLayerTerm')}</span> {t('templates20DataPipelineStep1UploadFile.trustAppendOnly')}
+            {' '}{t('templates20DataPipelineStep1UploadFile.trustPart2')} <span className="font-mono">pipeline_run</span> {t('templates20DataPipelineStep1UploadFile.trustPart3')}
           </p>
         </div>
       </div>
@@ -501,6 +504,7 @@ function UploadRow({
   onRemove: () => void;
   removable: boolean;
 }) {
+  const t = useT();
   return (
     <li className="px-5 py-3 flex items-start gap-3">
       <FileSpreadsheet className="w-4 h-4 text-[var(--primary-gold-dark)] mt-1 shrink-0" />
@@ -519,7 +523,7 @@ function UploadRow({
         {it.status === 'uploading' && (
           <div className="space-y-1">
             <div className="flex items-baseline justify-between text-[11px]">
-              <span className="text-[var(--text-secondary)]">Đang upload...</span>
+              <span className="text-[var(--text-secondary)]">{t('templates20DataPipelineStep1UploadFile.uploadingLabel')}</span>
               <span className="font-medium text-[var(--text-primary)]">{it.progress}%</span>
             </div>
             <div className="h-1.5 w-full rounded-full bg-[var(--border-color)]/40 overflow-hidden">
@@ -542,19 +546,19 @@ function UploadRow({
             {/* Defensive: a 200 with a partial/odd body (or a detector that
                 returned null) must NOT crash the React tree via .toUpperCase()
                 on undefined. */}
-            ✓ {(it.result.detected_format ?? '?').toUpperCase()} · {(it.result.rows ?? 0).toLocaleString('vi-VN')} hàng ·{' '}
+            ✓ {(it.result.detected_format ?? '?').toUpperCase()} · {(it.result.rows ?? 0).toLocaleString('vi-VN')} {t('templates20DataPipelineStep1UploadFile.rowsUnit')} ·{' '}
             <a
               href={it.result.next_step_path || `/p2/pipelines/${it.result.pipeline_run_id}/step-2-columns`}
               className="text-[var(--primary-gold-dark)] hover:underline"
             >
-              sang bước 2 →
+              {t('templates20DataPipelineStep1UploadFile.toStep2Link')}
             </a>
           </p>
         )}
 
         {it.status === 'duplicate' && it.result && (
           <p className="text-[11px] text-[#52647D]">
-            ↺ File đã upload trước đó — tái dùng <span className="font-mono">{(it.result.bronze_file_id ?? '').slice(0, 8)}…</span>
+            {t('templates20DataPipelineStep1UploadFile.duplicateReuseMsg')} <span className="font-mono">{(it.result.bronze_file_id ?? '').slice(0, 8)}…</span>
           </p>
         )}
       </div>
@@ -564,7 +568,7 @@ function UploadRow({
       <button
         onClick={onRemove}
         disabled={!removable}
-        title={removable ? 'Xoá khỏi hàng đợi' : 'Đang upload — không xoá được'}
+        title={removable ? t('templates20DataPipelineStep1UploadFile.removeFromQueueTitle') : t('templates20DataPipelineStep1UploadFile.cannotRemoveTitle')}
         className="text-[var(--text-secondary)] hover:text-[var(--state-error)] disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
       >
         <X className="w-4 h-4" />
@@ -574,21 +578,22 @@ function UploadRow({
 }
 
 function StatusBadge({ status }: { status: ItemStatus }) {
+  const t = useT();
   if (status === 'hashing') return (
-    <Badge variant="default"><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Hash</Badge>
+    <Badge variant="default"><Loader2 className="w-3 h-3 mr-1 animate-spin" /> {t('templates20DataPipelineStep1UploadFile.badgeHash')}</Badge>
   );
-  if (status === 'ready')   return <Badge variant="default">Sẵn sàng</Badge>;
+  if (status === 'ready')   return <Badge variant="default">{t('templates20DataPipelineStep1UploadFile.badgeReady')}</Badge>;
   if (status === 'uploading') return (
-    <Badge variant="info"><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Tải lên</Badge>
+    <Badge variant="info"><Loader2 className="w-3 h-3 mr-1 animate-spin" /> {t('templates20DataPipelineStep1UploadFile.badgeUploading')}</Badge>
   );
   if (status === 'success') return (
-    <Badge variant="success"><CheckCircle2 className="w-3 h-3 mr-1" /> Mới</Badge>
+    <Badge variant="success"><CheckCircle2 className="w-3 h-3 mr-1" /> {t('templates20DataPipelineStep1UploadFile.badgeNew')}</Badge>
   );
   if (status === 'duplicate') return (
-    <Badge variant="info"><FileDigit className="w-3 h-3 mr-1" /> Trùng</Badge>
+    <Badge variant="info"><FileDigit className="w-3 h-3 mr-1" /> {t('templates20DataPipelineStep1UploadFile.badgeDuplicate')}</Badge>
   );
   return (
-    <Badge variant="error"><AlertCircle className="w-3 h-3 mr-1" /> Lỗi</Badge>
+    <Badge variant="error"><AlertCircle className="w-3 h-3 mr-1" /> {t('templates20DataPipelineStep1UploadFile.badgeError')}</Badge>
   );
 }
 

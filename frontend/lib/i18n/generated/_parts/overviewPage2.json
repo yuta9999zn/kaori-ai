@@ -1,0 +1,233 @@
+{
+  "overviewPage2.statusNormal": {
+    "vi": "Bình thường",
+    "en": "Normal",
+    "ja": "正常",
+    "ko": "정상",
+    "zh": "正常"
+  },
+  "overviewPage2.statusWarn": {
+    "vi": "Cảnh báo (≥80%)",
+    "en": "Warning (≥80%)",
+    "ja": "警告 (≥80%)",
+    "ko": "경고 (≥80%)",
+    "zh": "警告 (≥80%)"
+  },
+  "overviewPage2.statusCritical": {
+    "vi": "Nguy hiểm (≥95%)",
+    "en": "Critical (≥95%)",
+    "ja": "危険 (≥95%)",
+    "ko": "위험 (≥95%)",
+    "zh": "危险 (≥95%)"
+  },
+  "overviewPage2.statusOverage": {
+    "vi": "Vượt hạn mức",
+    "en": "Over quota",
+    "ja": "上限超過",
+    "ko": "한도 초과",
+    "zh": "超出配额"
+  },
+  "overviewPage2.errLoadFailed": {
+    "vi": "Không thể tải tổng quan thanh toán.",
+    "en": "Failed to load billing overview.",
+    "ja": "請求概要を読み込めませんでした。",
+    "ko": "청구 개요를 불러올 수 없습니다.",
+    "zh": "无法加载账单概览。"
+  },
+  "overviewPage2.kpiRevenueLabel": {
+    "vi": "Doanh thu tháng này",
+    "en": "Revenue this month",
+    "ja": "今月の売上",
+    "ko": "이번 달 매출",
+    "zh": "本月营收"
+  },
+  "overviewPage2.kpiActiveEnterprisesLabel": {
+    "vi": "Doanh nghiệp đang hoạt động",
+    "en": "Active enterprises",
+    "ja": "稼働中の企業",
+    "ko": "활동 중인 기업",
+    "zh": "活跃企业"
+  },
+  "overviewPage2.kpiBillingPeriodHint": {
+    "vi": "Kỳ thanh toán {month}",
+    "en": "Billing period {month}",
+    "ja": "請求期間 {month}",
+    "ko": "청구 기간 {month}",
+    "zh": "账单周期 {month}"
+  },
+  "overviewPage2.kpiUniqueCustomersLabel": {
+    "vi": "Khách hàng độc nhất",
+    "en": "Unique customers",
+    "ja": "ユニーク顧客数",
+    "ko": "고유 고객",
+    "zh": "唯一客户"
+  },
+  "overviewPage2.kpiUtilisationHint": {
+    "vi": "{pct}% trên tổng hạn mức {quota}",
+    "en": "{pct}% of total quota {quota}",
+    "ja": "総上限 {quota} のうち {pct}%",
+    "ko": "총 한도 {quota} 중 {pct}%",
+    "zh": "占总配额 {quota} 的 {pct}%"
+  },
+  "overviewPage2.kpiNeedsAttentionLabel": {
+    "vi": "Cần chú ý",
+    "en": "Needs attention",
+    "ja": "要注意",
+    "ko": "주의 필요",
+    "zh": "需要关注"
+  },
+  "overviewPage2.kpiNeedsAttentionHint": {
+    "vi": "Doanh nghiệp ≥80% hạn mức hoặc đã vượt",
+    "en": "Enterprises at ≥80% of quota or over",
+    "ja": "上限の80%以上、または超過している企業",
+    "ko": "한도의 80% 이상이거나 초과한 기업",
+    "zh": "配额达到或超过80%的企业"
+  },
+  "overviewPage2.statusDistributionTitle": {
+    "vi": "Phân bố theo trạng thái",
+    "en": "Distribution by status",
+    "ja": "ステータス別の分布",
+    "ko": "상태별 분포",
+    "zh": "按状态分布"
+  },
+  "overviewPage2.statusThresholdsHint": {
+    "vi": "Ngưỡng cảnh báo: 80% · Ngưỡng nguy hiểm: 95% · Vượt hạn mức ngay khi có overage.",
+    "en": "Warning threshold: 80% · Critical threshold: 95% · Over quota as soon as there is overage.",
+    "ja": "警告しきい値: 80% ・危険しきい値: 95% ・オーバーが発生次第、上限超過。",
+    "ko": "경고 임계값: 80% · 위험 임계값: 95% · 초과 사용이 발생하면 즉시 한도 초과.",
+    "zh": "警告阈值：80% · 危险阈值：95% · 一旦出现超额即视为超出配额。"
+  },
+  "overviewPage2.noActiveEnterprises": {
+    "vi": "Chưa có doanh nghiệp đang hoạt động.",
+    "en": "No active enterprises yet.",
+    "ja": "稼働中の企業はまだありません。",
+    "ko": "아직 활동 중인 기업이 없습니다.",
+    "zh": "目前尚无活跃企业。"
+  },
+  "overviewPage2.revenueDetailTitle": {
+    "vi": "Chi tiết doanh thu",
+    "en": "Revenue detail",
+    "ja": "売上詳細",
+    "ko": "매출 상세",
+    "zh": "营收明细"
+  },
+  "overviewPage2.dtBaseRevenue": {
+    "vi": "Doanh thu cơ sở",
+    "en": "Base revenue",
+    "ja": "基本売上",
+    "ko": "기본 매출",
+    "zh": "基础营收"
+  },
+  "overviewPage2.dtOverageRevenue": {
+    "vi": "Doanh thu vượt hạn mức",
+    "en": "Overage revenue",
+    "ja": "超過分売上",
+    "ko": "초과 매출",
+    "zh": "超额营收"
+  },
+  "overviewPage2.overageNote": {
+    "vi": "Phụ phí theo đơn giá sẽ áp dụng từ F-059 (hiện tạm tính 0).",
+    "en": "Unit-based surcharge applies starting F-059 (currently calculated as 0).",
+    "ja": "単価に基づく追加料金はF-059から適用されます（現在は0として計算）。",
+    "ko": "단가 기반 추가 요금은 F-059부터 적용됩니다(현재는 0으로 계산).",
+    "zh": "按单价计算的附加费将从 F-059 起适用（目前暂计为 0）。"
+  },
+  "overviewPage2.dtTotalRevenue": {
+    "vi": "Tổng doanh thu",
+    "en": "Total revenue",
+    "ja": "総売上",
+    "ko": "총 매출",
+    "zh": "总营收"
+  },
+  "overviewPage2.dtOverageUnits": {
+    "vi": "Đơn vị vượt hạn mức",
+    "en": "Overage units",
+    "ja": "超過ユニット数",
+    "ko": "초과 단위",
+    "zh": "超额单位"
+  },
+  "overviewPage2.dtNextInvoiceDate": {
+    "vi": "Kỳ thanh toán tiếp theo",
+    "en": "Next invoice date",
+    "ja": "次回請求日",
+    "ko": "다음 청구일",
+    "zh": "下次账单日期"
+  },
+  "overviewPage2.dtTrend": {
+    "vi": "Xu hướng",
+    "en": "Trend",
+    "ja": "傾向",
+    "ko": "추세",
+    "zh": "趋势"
+  },
+  "overviewPage2.trendUpdatedDaily": {
+    "vi": "Cập nhật theo ngày",
+    "en": "Updated daily",
+    "ja": "毎日更新",
+    "ko": "매일 업데이트",
+    "zh": "每日更新"
+  },
+  "overviewPage2.cronTierOk": {
+    "vi": "Bình thường",
+    "en": "Normal",
+    "ja": "正常",
+    "ko": "정상",
+    "zh": "正常"
+  },
+  "overviewPage2.cronTierWarn": {
+    "vi": "Cảnh báo — có doanh nghiệp chưa cập nhật",
+    "en": "Warning — some enterprises have not updated",
+    "ja": "警告 — 更新されていない企業があります",
+    "ko": "경고 — 업데이트되지 않은 기업이 있습니다",
+    "zh": "警告 — 有企业尚未更新"
+  },
+  "overviewPage2.cronTierCritical": {
+    "vi": "Sự cố — cron có thể đang dừng",
+    "en": "Incident — cron may be stopped",
+    "ja": "障害 — cronが停止している可能性があります",
+    "ko": "장애 — cron이 중지되었을 수 있습니다",
+    "zh": "故障 — cron 可能已停止"
+  },
+  "overviewPage2.cronHealthTitle": {
+    "vi": "Sức khoẻ tác vụ tổng hợp (F-031)",
+    "en": "Aggregation job health (F-031)",
+    "ja": "集計ジョブの健全性 (F-031)",
+    "ko": "집계 작업 상태 (F-031)",
+    "zh": "汇总任务健康状况 (F-031)"
+  },
+  "overviewPage2.cronHealthDescPre": {
+    "vi": "Cron chạy hằng ngày 02:00 ICT — cập nhật",
+    "en": "Cron runs daily at 02:00 ICT — updates",
+    "ja": "Cronは毎日ICT 02:00に実行され、更新します",
+    "ko": "Cron은 매일 ICT 02:00에 실행되어",
+    "zh": "Cron 每天 ICT 02:00 运行 — 更新"
+  },
+  "overviewPage2.cronHealthDescPost": {
+    "vi": "trên mỗi doanh nghiệp.",
+    "en": "on each enterprise.",
+    "ja": "各企業に対して更新します。",
+    "ko": "각 기업에 대해 업데이트합니다.",
+    "zh": "每个企业的该字段。"
+  },
+  "overviewPage2.lastRunAt": {
+    "vi": "Lần chạy gần nhất: {time}",
+    "en": "Last run: {time}",
+    "ja": "最終実行: {time}",
+    "ko": "마지막 실행: {time}",
+    "zh": "上次运行：{time}"
+  },
+  "overviewPage2.noRunThisMonth": {
+    "vi": "Chưa có lần chạy nào trong tháng này.",
+    "en": "No runs yet this month.",
+    "ja": "今月はまだ実行がありません。",
+    "ko": "이번 달에는 아직 실행 기록이 없습니다.",
+    "zh": "本月尚无运行记录。"
+  },
+  "overviewPage2.staleEnterprisesLabel": {
+    "vi": "Doanh nghiệp chưa cập nhật trong 25h:",
+    "en": "Enterprises not updated in 25h:",
+    "ja": "25時間以上更新されていない企業:",
+    "ko": "25시간 동안 업데이트되지 않은 기업:",
+    "zh": "25小时内未更新的企业："
+  }
+}

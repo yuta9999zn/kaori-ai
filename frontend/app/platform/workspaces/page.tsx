@@ -27,6 +27,7 @@ import {
 import { PageHeader } from '@/components/platform/shell';
 import { useAuth } from '@/lib/auth-store';
 import { workspaceApi, type Workspace, type WsStatus } from '@/lib/api/platform';
+import { useT } from '@/lib/i18n/provider';
 
 const PAGE_SIZE = 50;
 
@@ -39,10 +40,10 @@ function statusBadgeVariant(s: WsStatus): 'operational' | 'warning' | 'degraded'
   return 'degraded';
 }
 
-function statusLabel(s: WsStatus): string {
-  if (s === 'active')    return 'Đang hoạt động';
-  if (s === 'suspended') return 'Tạm ngưng';
-  return 'Ngừng hoạt động';
+function statusLabel(s: WsStatus, t: (key: string, params?: Record<string, string | number>) => string): string {
+  if (s === 'active')    return t('workspacesPage.statusActive');
+  if (s === 'suspended') return t('workspacesPage.statusSuspended');
+  return t('workspacesPage.statusInactive');
 }
 
 function planLabel(code: string): string {
@@ -71,6 +72,7 @@ function formatDateVi(iso: string): string {
 }
 
 export default function PlatformWorkspacesPage() {
+  const t = useT();
   const canCreate = useAuth((s) => s.canSee(['SUPER_ADMIN']));
 
   // Cursor history: index N holds the cursor used to fetch page N+1.
@@ -129,14 +131,14 @@ export default function PlatformWorkspacesPage() {
   return (
     <>
       <PageHeader
-        title="Workspaces"
-        description={`Quản lý workspace của các enterprise đang dùng nền tảng.${total ? ` Tổng ${total} workspace.` : ''}`}
+        title={t('workspacesPage.title')}
+        description={`${t('workspacesPage.descBase')}${total ? ` ${t('workspacesPage.descTotal', { total })}` : ''}`}
         actions={
           canCreate ? (
             <Link href="/platform/workspaces/new">
               <Button variant="primary" size="sm">
                 <Plus className="w-4 h-4 mr-1.5" />
-                Tạo workspace mới
+                {t('workspacesPage.createNew')}
               </Button>
             </Link>
           ) : null
@@ -153,29 +155,29 @@ export default function PlatformWorkspacesPage() {
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm theo tên hoặc workspace ID"
+              placeholder={t('workspacesPage.searchPlaceholder')}
               className="pl-9"
-              aria-label="Tìm workspace"
+              aria-label={t('workspacesPage.searchAriaLabel')}
             />
           </div>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value as StatusFilter)}
-            aria-label="Lọc theo trạng thái"
+            aria-label={t('workspacesPage.filterStatusAriaLabel')}
             className="h-10 rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
           >
-            <option value="all">Mọi trạng thái</option>
-            <option value="active">Đang hoạt động</option>
-            <option value="suspended">Tạm ngưng</option>
-            <option value="inactive">Ngừng hoạt động</option>
+            <option value="all">{t('workspacesPage.statusAll')}</option>
+            <option value="active">{t('workspacesPage.statusActive')}</option>
+            <option value="suspended">{t('workspacesPage.statusSuspended')}</option>
+            <option value="inactive">{t('workspacesPage.statusInactive')}</option>
           </select>
           <select
             value={plan}
             onChange={(e) => setPlan(e.target.value)}
-            aria-label="Lọc theo gói cước"
+            aria-label={t('workspacesPage.filterPlanAriaLabel')}
             className="h-10 rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
           >
-            <option value="all">Mọi gói cước</option>
+            <option value="all">{t('workspacesPage.planAll')}</option>
             {planOptions.map((code) => (
               <option key={code} value={code}>{planLabel(code)}</option>
             ))}
@@ -187,19 +189,19 @@ export default function PlatformWorkspacesPage() {
             <table className="w-full text-sm">
               <thead className="bg-[var(--bg-app)]/60 text-[var(--text-secondary)]">
                 <tr>
-                  <th className="text-left font-medium px-4 py-2.5">Workspace</th>
-                  <th className="text-left font-medium px-4 py-2.5">Ngành</th>
-                  <th className="text-left font-medium px-4 py-2.5">Gói cước</th>
-                  <th className="text-left font-medium px-4 py-2.5">Trạng thái</th>
-                  <th className="text-left font-medium px-4 py-2.5">Tạo lúc</th>
-                  <th className="text-right font-medium px-4 py-2.5 w-24">Hành động</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('workspacesPage.colWorkspace')}</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('workspacesPage.colIndustry')}</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('workspacesPage.colPlan')}</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('workspacesPage.colStatus')}</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('workspacesPage.colCreatedAt')}</th>
+                  <th className="text-right font-medium px-4 py-2.5 w-24">{t('workspacesPage.colActions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-color)]/60">
                 {query.isLoading && (
                   <tr>
                     <td colSpan={6} className="px-4 py-10 text-center text-[var(--text-secondary)]">
-                      Đang tải workspace…
+                      {t('workspacesPage.loading')}
                     </td>
                   </tr>
                 )}
@@ -208,8 +210,8 @@ export default function PlatformWorkspacesPage() {
                   <tr>
                     <td colSpan={6} className="px-4 py-10 text-center text-[var(--text-secondary)]">
                       {data.length === 0
-                        ? 'Chưa có workspace nào.'
-                        : 'Không có workspace nào khớp bộ lọc hiện tại.'}
+                        ? t('workspacesPage.emptyNone')
+                        : t('workspacesPage.emptyFiltered')}
                     </td>
                   </tr>
                 )}
@@ -230,7 +232,7 @@ export default function PlatformWorkspacesPage() {
                       <Badge variant="current">{planLabel(ws.plan_code)}</Badge>
                     </td>
                     <td className="px-4 py-3">
-                      <Badge variant={statusBadgeVariant(ws.status)}>{statusLabel(ws.status)}</Badge>
+                      <Badge variant={statusBadgeVariant(ws.status)}>{statusLabel(ws.status, t)}</Badge>
                     </td>
                     <td className="px-4 py-3 text-[var(--text-secondary)]">{formatDateVi(ws.created_at)}</td>
                     <td className="px-4 py-3">
@@ -238,7 +240,7 @@ export default function PlatformWorkspacesPage() {
                         <Link
                           href={`/platform/workspaces/${ws.workspace_id}`}
                           className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] rounded-md-custom transition-colors"
-                          aria-label="Xem chi tiết"
+                          aria-label={t('workspacesPage.viewDetail')}
                         >
                           <Eye className="w-4 h-4" />
                         </Link>
@@ -246,7 +248,7 @@ export default function PlatformWorkspacesPage() {
                           <Link
                             href={`/platform/workspaces/${ws.workspace_id}/edit`}
                             className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] rounded-md-custom transition-colors"
-                            aria-label="Chỉnh sửa"
+                            aria-label={t('workspacesPage.edit')}
                           >
                             <Edit2 className="w-4 h-4" />
                           </Link>
@@ -255,8 +257,8 @@ export default function PlatformWorkspacesPage() {
                           <button
                             type="button"
                             className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--state-warning)] hover:bg-[var(--bg-app)] rounded-md-custom transition-colors"
-                            aria-label="Tạm ngưng"
-                            title="Tạm ngưng workspace"
+                            aria-label={t('workspacesPage.statusSuspended')}
+                            title={t('workspacesPage.suspendWorkspaceTooltip')}
                           >
                             <Ban className="w-4 h-4" />
                           </button>
@@ -272,9 +274,9 @@ export default function PlatformWorkspacesPage() {
           {(canGoBack || canGoNext || data.length > 0) && (
             <div className="px-4 py-2.5 border-t border-[var(--border-color)]/60 flex items-center justify-between bg-[var(--bg-app)]/40 text-xs text-[var(--text-secondary)]">
               <span>
-                Trang <strong className="text-[var(--text-primary)]">{pageNumber}</strong>
+                {t('workspacesPage.pageLabel')} <strong className="text-[var(--text-primary)]">{pageNumber}</strong>
                 {' · '}
-                Hiển thị <strong className="text-[var(--text-primary)]">{filtered.length}</strong> / <strong className="text-[var(--text-primary)]">{data.length}</strong>
+                {t('workspacesPage.showingLabel')} <strong className="text-[var(--text-primary)]">{filtered.length}</strong> / <strong className="text-[var(--text-primary)]">{data.length}</strong>
               </span>
               <div className="flex items-center gap-1">
                 <Button
@@ -283,7 +285,7 @@ export default function PlatformWorkspacesPage() {
                   onClick={goBack}
                   disabled={!canGoBack || query.isFetching}
                 >
-                  ← Trước
+                  ← {t('workspacesPage.prevPage')}
                 </Button>
                 <Button
                   variant="secondary"
@@ -291,7 +293,7 @@ export default function PlatformWorkspacesPage() {
                   onClick={goNext}
                   disabled={!canGoNext || query.isFetching}
                 >
-                  Sau →
+                  {t('workspacesPage.nextPage')} →
                 </Button>
               </div>
             </div>

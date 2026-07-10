@@ -1,0 +1,142 @@
+{
+  "templates80CsRefundQueue.title": {
+    "vi": "Hàng đợi duyệt hoàn tiền",
+    "en": "Refund Approval Queue",
+    "ja": "返金承認キュー",
+    "ko": "환불 승인 대기열",
+    "zh": "退款审批队列"
+  },
+  "templates80CsRefundQueue.subtitle": {
+    "vi": "Duyệt hoàn tiền theo policy + AI gợi ý. Mỗi quyết định ghi K-6 audit log (mig 098).",
+    "en": "Approve refunds by policy + AI suggestion. Every decision writes a K-6 audit log (mig 098).",
+    "ja": "ポリシーとAI提案に基づいて返金を承認します。各決定はK-6監査ログ(mig 098)に記録されます。",
+    "ko": "정책 및 AI 제안에 따라 환불을 승인합니다. 모든 결정은 K-6 감사 로그(mig 098)에 기록됩니다.",
+    "zh": "根据政策和AI建议审批退款。每次决策都会写入K-6审计日志(mig 098)。"
+  },
+  "templates80CsRefundQueue.errLoadFailed": {
+    "vi": "Không tải được queue.",
+    "en": "Failed to load the queue.",
+    "ja": "キューを読み込めませんでした。",
+    "ko": "대기열을 불러오지 못했습니다.",
+    "zh": "无法加载队列。"
+  },
+  "templates80CsRefundQueue.selectedCount": {
+    "vi": "{count} refund đã chọn",
+    "en": "{count} refunds selected",
+    "ja": "返金 {count} 件を選択中",
+    "ko": "환불 {count}건 선택됨",
+    "zh": "已选择 {count} 笔退款"
+  },
+  "templates80CsRefundQueue.bulkApprove": {
+    "vi": "Bulk approve (chỉ AUTO_OK)",
+    "en": "Bulk approve (AUTO_OK only)",
+    "ja": "一括承認(AUTO_OKのみ)",
+    "ko": "일괄 승인(AUTO_OK만)",
+    "zh": "批量批准(仅AUTO_OK)"
+  },
+  "templates80CsRefundQueue.emptyState": {
+    "vi": "Không có refund đang chờ duyệt 🎉.",
+    "en": "No refunds waiting for approval 🎉.",
+    "ja": "承認待ちの返金はありません 🎉。",
+    "ko": "승인 대기 중인 환불이 없습니다 🎉.",
+    "zh": "没有待审批的退款 🎉。"
+  },
+  "templates80CsRefundQueue.colAmount": {
+    "vi": "Số tiền",
+    "en": "Amount",
+    "ja": "金額",
+    "ko": "금액",
+    "zh": "金额"
+  },
+  "templates80CsRefundQueue.colPolicy": {
+    "vi": "Policy",
+    "en": "Policy",
+    "ja": "ポリシー",
+    "ko": "정책",
+    "zh": "政策"
+  },
+  "templates80CsRefundQueue.colCustomer": {
+    "vi": "Khách (LTV)",
+    "en": "Customer (LTV)",
+    "ja": "顧客(LTV)",
+    "ko": "고객(LTV)",
+    "zh": "客户(LTV)"
+  },
+  "templates80CsRefundQueue.colReason": {
+    "vi": "Lý do",
+    "en": "Reason",
+    "ja": "理由",
+    "ko": "사유",
+    "zh": "原因"
+  },
+  "templates80CsRefundQueue.colRequestedBy": {
+    "vi": "Yêu cầu bởi",
+    "en": "Requested by",
+    "ja": "依頼者",
+    "ko": "요청자",
+    "zh": "申请人"
+  },
+  "templates80CsRefundQueue.colWaiting": {
+    "vi": "Chờ",
+    "en": "Waiting",
+    "ja": "待機",
+    "ko": "대기",
+    "zh": "等待"
+  },
+  "templates80CsRefundQueue.colAction": {
+    "vi": "Hành động",
+    "en": "Action",
+    "ja": "アクション",
+    "ko": "작업",
+    "zh": "操作"
+  },
+  "templates80CsRefundQueue.refundPolicyHeading": {
+    "vi": "Chính sách hoàn tiền",
+    "en": "Refund Policy",
+    "ja": "返金ポリシー",
+    "ko": "환불 정책",
+    "zh": "退款政策"
+  },
+  "templates80CsRefundQueue.featureInProgress": {
+    "vi": "Tính năng đang hoàn thiện",
+    "en": "Feature in progress",
+    "ja": "機能は現在開発中です",
+    "ko": "기능 준비 중입니다",
+    "zh": "功能开发中"
+  },
+  "templates80CsRefundQueue.auditHeading": {
+    "vi": "AI Decision Audit (mig 098)",
+    "en": "AI Decision Audit (mig 098)",
+    "ja": "AI意思決定監査(mig 098)",
+    "ko": "AI 의사결정 감사(mig 098)",
+    "zh": "AI决策审计(mig 098)"
+  },
+  "templates80CsRefundQueue.policyViolationHint": {
+    "vi": "Vượt policy — cần override + reason mandatory.",
+    "en": "Exceeds policy — requires override + mandatory reason.",
+    "ja": "ポリシー超過 — 上書きと理由の入力が必須です。",
+    "ko": "정책 초과 — 재정의 및 사유 입력이 필수입니다.",
+    "zh": "超出政策 — 需要覆盖并强制填写原因。"
+  },
+  "templates80CsRefundQueue.policyAutoOk": {
+    "vi": "Tự động duyệt",
+    "en": "Auto OK",
+    "ja": "自動承認",
+    "ko": "자동 승인",
+    "zh": "自动通过"
+  },
+  "templates80CsRefundQueue.policyManualReview": {
+    "vi": "Cần xem xét thủ công",
+    "en": "Manual review",
+    "ja": "手動確認",
+    "ko": "수동 검토",
+    "zh": "人工审核"
+  },
+  "templates80CsRefundQueue.policyViolation": {
+    "vi": "Vi phạm chính sách",
+    "en": "Violation",
+    "ja": "違反",
+    "ko": "위반",
+    "zh": "违规"
+  }
+}

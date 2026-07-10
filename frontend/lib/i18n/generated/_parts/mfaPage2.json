@@ -1,0 +1,142 @@
+{
+  "mfaPage2.title": {
+    "vi": "Xác thực 2 lớp (TOTP)",
+    "en": "Two-factor authentication (TOTP)",
+    "ja": "2要素認証(TOTP)",
+    "ko": "2단계 인증(TOTP)",
+    "zh": "双因素认证(TOTP)"
+  },
+  "mfaPage2.badgeEnabled": {
+    "vi": "Đã bật",
+    "en": "Enabled",
+    "ja": "有効",
+    "ko": "활성화됨",
+    "zh": "已启用"
+  },
+  "mfaPage2.badgeDisabled": {
+    "vi": "Chưa bật",
+    "en": "Disabled",
+    "ja": "無効",
+    "ko": "비활성화됨",
+    "zh": "未启用"
+  },
+  "mfaPage2.desc": {
+    "vi": "Mỗi lần đăng nhập sẽ yêu cầu mã 6 chữ số từ ứng dụng xác thực (Google Authenticator, 1Password, Authy…). Khoá bí mật được lưu mã hoá AES-256-GCM trên máy chủ.",
+    "en": "Each login will require a 6-digit code from your authenticator app (Google Authenticator, 1Password, Authy…). The secret key is stored AES-256-GCM encrypted on the server.",
+    "ja": "ログインのたびに認証アプリ(Google Authenticator、1Password、Authyなど)からの6桁のコードが必要になります。秘密鍵はサーバー上でAES-256-GCM暗号化されて保存されます。",
+    "ko": "로그인할 때마다 인증 앱(Google Authenticator, 1Password, Authy 등)에서 발급된 6자리 코드가 필요합니다. 비밀 키는 서버에서 AES-256-GCM으로 암호화되어 저장됩니다.",
+    "zh": "每次登录都需要输入认证应用(Google Authenticator、1Password、Authy等)生成的6位数验证码。密钥在服务器上以AES-256-GCM加密存储。"
+  },
+  "mfaPage2.enableButton": {
+    "vi": "Bật MFA",
+    "en": "Enable MFA",
+    "ja": "MFAを有効化",
+    "ko": "MFA 활성화",
+    "zh": "启用MFA"
+  },
+  "mfaPage2.secretWarning": {
+    "vi": "Khoá bí mật chỉ hiển thị MỘT LẦN. Quét bằng ứng dụng xác thực hoặc lưu lại trước khi đóng trang.",
+    "en": "The secret key is shown ONLY ONCE. Scan it with your authenticator app or save it before closing this page.",
+    "ja": "秘密鍵は一度だけ表示されます。認証アプリでスキャンするか、このページを閉じる前に保存してください。",
+    "ko": "비밀 키는 단 한 번만 표시됩니다. 인증 앱으로 스캔하거나 이 페이지를 닫기 전에 저장하세요.",
+    "zh": "密钥仅显示一次。请使用认证应用扫描,或在关闭本页前保存下来。"
+  },
+  "mfaPage2.step1Title": {
+    "vi": "Bước 1: Quét QR",
+    "en": "Step 1: Scan the QR code",
+    "ja": "ステップ1: QRコードをスキャン",
+    "ko": "1단계: QR 코드 스캔",
+    "zh": "步骤1:扫描二维码"
+  },
+  "mfaPage2.step1Desc": {
+    "vi": "Mở Google Authenticator → \"+\" → \"Quét mã QR\" rồi đưa camera đến mã bên dưới.",
+    "en": "Open Google Authenticator → \"+\" → \"Scan QR code\" then point your camera at the code below.",
+    "ja": "Google Authenticatorを開く→「+」→「QRコードをスキャン」を選び、カメラを下のコードに向けてください。",
+    "ko": "Google Authenticator를 열고 → \"+\" → \"QR 코드 스캔\"을 선택한 뒤 아래 코드에 카메라를 비추세요.",
+    "zh": "打开Google Authenticator → 点击“+” → “扫描二维码”,然后将摄像头对准下方的二维码。"
+  },
+  "mfaPage2.qrAriaLabel": {
+    "vi": "QR code chứa khoá TOTP — quét bằng Google Authenticator",
+    "en": "QR code containing the TOTP key — scan with Google Authenticator",
+    "ja": "TOTPキーを含むQRコード — Google Authenticatorでスキャン",
+    "ko": "TOTP 키가 포함된 QR 코드 — Google Authenticator로 스캔",
+    "zh": "包含TOTP密钥的二维码 — 使用Google Authenticator扫描"
+  },
+  "mfaPage2.qrFallbackHint": {
+    "vi": "Không quét được? Dùng cách nhập thủ công bên cạnh.",
+    "en": "Can't scan? Use the manual entry option to the side.",
+    "ja": "スキャンできない場合は、隣の手動入力をご利用ください。",
+    "ko": "스캔이 안 되나요? 옆의 수동 입력 방법을 사용하세요.",
+    "zh": "无法扫描?请使用旁边的手动输入方式。"
+  },
+  "mfaPage2.manualEntryTitle": {
+    "vi": "Hoặc nhập thủ công",
+    "en": "Or enter manually",
+    "ja": "または手動で入力",
+    "ko": "또는 수동으로 입력",
+    "zh": "或手动输入"
+  },
+  "mfaPage2.secretLabel": {
+    "vi": "Khoá bí mật (Base32)",
+    "en": "Secret key (Base32)",
+    "ja": "秘密鍵(Base32)",
+    "ko": "비밀 키(Base32)",
+    "zh": "密钥(Base32)"
+  },
+  "mfaPage2.urlLabel": {
+    "vi": "otpauth URL",
+    "en": "otpauth URL",
+    "ja": "otpauth URL",
+    "ko": "otpauth URL",
+    "zh": "otpauth URL"
+  },
+  "mfaPage2.accountLabel": {
+    "vi": "Tài khoản:",
+    "en": "Account:",
+    "ja": "アカウント:",
+    "ko": "계정:",
+    "zh": "账户:"
+  },
+  "mfaPage2.step2Title": {
+    "vi": "Bước 2: Nhập mã 6 chữ số",
+    "en": "Step 2: Enter the 6-digit code",
+    "ja": "ステップ2: 6桁のコードを入力",
+    "ko": "2단계: 6자리 코드 입력",
+    "zh": "步骤2:输入6位数验证码"
+  },
+  "mfaPage2.step2Desc": {
+    "vi": "Nhập mã hiện tại đang hiển thị trên ứng dụng. Mã đổi mỗi 30 giây.",
+    "en": "Enter the code currently shown in your authenticator app. It changes every 30 seconds.",
+    "ja": "認証アプリに現在表示されているコードを入力してください。コードは30秒ごとに変わります。",
+    "ko": "인증 앱에 현재 표시된 코드를 입력하세요. 코드는 30초마다 변경됩니다.",
+    "zh": "输入认证应用当前显示的验证码。验证码每30秒更新一次。"
+  },
+  "mfaPage2.verifyButton": {
+    "vi": "Xác thực",
+    "en": "Verify",
+    "ja": "認証する",
+    "ko": "인증",
+    "zh": "验证"
+  },
+  "mfaPage2.verifyErrorMsg": {
+    "vi": "Không thể xác thực. Hãy chắc chắn đồng hồ điện thoại đúng giờ.",
+    "en": "Verification failed. Make sure your phone's clock is set correctly.",
+    "ja": "認証に失敗しました。スマートフォンの時計が正しく設定されているか確認してください。",
+    "ko": "인증에 실패했습니다. 휴대폰 시계가 정확한지 확인하세요.",
+    "zh": "验证失败。请确保手机时钟时间准确。"
+  },
+  "mfaPage2.verifiedTitle": {
+    "vi": "MFA đã được bật.",
+    "en": "MFA has been enabled.",
+    "ja": "MFAが有効になりました。",
+    "ko": "MFA가 활성화되었습니다.",
+    "zh": "MFA已启用。"
+  },
+  "mfaPage2.verifiedDesc": {
+    "vi": "Lần đăng nhập tiếp theo bạn sẽ cần nhập mã 6 chữ số từ ứng dụng xác thực.",
+    "en": "The next time you log in, you'll need to enter the 6-digit code from your authenticator app.",
+    "ja": "次回のログイン時には、認証アプリの6桁のコードを入力する必要があります。",
+    "ko": "다음 로그인 시 인증 앱의 6자리 코드를 입력해야 합니다.",
+    "zh": "下次登录时,您需要输入认证应用生成的6位数验证码。"
+  }
+}

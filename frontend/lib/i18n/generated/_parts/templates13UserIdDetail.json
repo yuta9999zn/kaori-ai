@@ -1,0 +1,205 @@
+{
+  "templates13UserIdDetail.loading": {
+    "vi": "Đang tải...",
+    "en": "Loading...",
+    "ja": "読み込み中...",
+    "ko": "로딩 중...",
+    "zh": "加载中..."
+  },
+  "templates13UserIdDetail.back": {
+    "vi": "Quay lại",
+    "en": "Back",
+    "ja": "戻る",
+    "ko": "뒤로",
+    "zh": "返回"
+  },
+  "templates13UserIdDetail.edit": {
+    "vi": "Chỉnh sửa",
+    "en": "Edit",
+    "ja": "編集",
+    "ko": "편집",
+    "zh": "编辑"
+  },
+  "templates13UserIdDetail.cancel": {
+    "vi": "Huỷ",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "templates13UserIdDetail.save": {
+    "vi": "Lưu",
+    "en": "Save",
+    "ja": "保存",
+    "ko": "저장",
+    "zh": "保存"
+  },
+  "templates13UserIdDetail.resetSentMsg": {
+    "vi": "Đã gửi email đặt lại mật khẩu cho {email}.",
+    "en": "Password reset email sent to {email}.",
+    "ja": "{email} 宛にパスワード再設定メールを送信しました。",
+    "ko": "{email}(으)로 비밀번호 재설정 이메일을 보냈습니다.",
+    "zh": "已向 {email} 发送密码重置邮件。"
+  },
+  "templates13UserIdDetail.sectionAccountInfo": {
+    "vi": "Thông tin tài khoản",
+    "en": "Account information",
+    "ja": "アカウント情報",
+    "ko": "계정 정보",
+    "zh": "账户信息"
+  },
+  "templates13UserIdDetail.fieldName": {
+    "vi": "Họ tên",
+    "en": "Full name",
+    "ja": "氏名",
+    "ko": "이름",
+    "zh": "姓名"
+  },
+  "templates13UserIdDetail.fieldEmail": {
+    "vi": "Email",
+    "en": "Email",
+    "ja": "メール",
+    "ko": "이메일",
+    "zh": "邮箱"
+  },
+  "templates13UserIdDetail.fieldRole": {
+    "vi": "Vai trò",
+    "en": "Role",
+    "ja": "役割",
+    "ko": "역할",
+    "zh": "角色"
+  },
+  "templates13UserIdDetail.fieldStatus": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "状態",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "templates13UserIdDetail.statusActive": {
+    "vi": "Hoạt động",
+    "en": "Active",
+    "ja": "有効",
+    "ko": "활성",
+    "zh": "活跃"
+  },
+  "templates13UserIdDetail.statusInvited": {
+    "vi": "Đã mời",
+    "en": "Invited",
+    "ja": "招待済み",
+    "ko": "초대됨",
+    "zh": "已邀请"
+  },
+  "templates13UserIdDetail.statusLocked": {
+    "vi": "Đã khoá",
+    "en": "Locked",
+    "ja": "ロック済み",
+    "ko": "잠김",
+    "zh": "已锁定"
+  },
+  "templates13UserIdDetail.sectionContact": {
+    "vi": "Liên hệ",
+    "en": "Contact",
+    "ja": "連絡先",
+    "ko": "연락처",
+    "zh": "联系方式"
+  },
+  "templates13UserIdDetail.fieldPhone": {
+    "vi": "Điện thoại",
+    "en": "Phone",
+    "ja": "電話番号",
+    "ko": "전화번호",
+    "zh": "电话"
+  },
+  "templates13UserIdDetail.fieldAddress": {
+    "vi": "Địa chỉ",
+    "en": "Address",
+    "ja": "住所",
+    "ko": "주소",
+    "zh": "地址"
+  },
+  "templates13UserIdDetail.fieldJoined": {
+    "vi": "Tham gia",
+    "en": "Joined",
+    "ja": "登録日",
+    "ko": "가입일",
+    "zh": "加入时间"
+  },
+  "templates13UserIdDetail.fieldLastActive": {
+    "vi": "Hoạt động cuối",
+    "en": "Last active",
+    "ja": "最終アクティブ",
+    "ko": "마지막 활동",
+    "zh": "最后活跃"
+  },
+  "templates13UserIdDetail.sectionActivity": {
+    "vi": "Hoạt động gần đây",
+    "en": "Recent activity",
+    "ja": "最近のアクティビティ",
+    "ko": "최근 활동",
+    "zh": "近期活动"
+  },
+  "templates13UserIdDetail.noActivity": {
+    "vi": "Chưa có hoạt động nào.",
+    "en": "No activity yet.",
+    "ja": "まだアクティビティがありません。",
+    "ko": "아직 활동이 없습니다.",
+    "zh": "暂无活动记录。"
+  },
+  "templates13UserIdDetail.activityMeta": {
+    "vi": "{module} · {at} · IP {ip}",
+    "en": "{module} · {at} · IP {ip}",
+    "ja": "{module} · {at} · IP {ip}",
+    "ko": "{module} · {at} · IP {ip}",
+    "zh": "{module} · {at} · IP {ip}"
+  },
+  "templates13UserIdDetail.security": {
+    "vi": "Bảo mật",
+    "en": "Security",
+    "ja": "セキュリティ",
+    "ko": "보안",
+    "zh": "安全"
+  },
+  "templates13UserIdDetail.sendResetLink": {
+    "vi": "Gửi liên kết đặt lại mật khẩu",
+    "en": "Send password reset link",
+    "ja": "パスワード再設定リンクを送信",
+    "ko": "비밀번호 재설정 링크 보내기",
+    "zh": "发送密码重置链接"
+  },
+  "templates13UserIdDetail.resetHint": {
+    "vi": "Gửi email yêu cầu user đặt lại — không bao giờ hiển thị mật khẩu trực tiếp.",
+    "en": "Sends an email asking the user to reset it — the password is never shown directly.",
+    "ja": "ユーザーに再設定を依頼するメールを送信します。パスワードが直接表示されることはありません。",
+    "ko": "사용자에게 재설정을 요청하는 이메일을 보냅니다 — 비밀번호는 절대 직접 표시되지 않습니다.",
+    "zh": "发送邮件要求用户重置密码——绝不会直接显示密码。"
+  },
+  "templates13UserIdDetail.dangerZone": {
+    "vi": "Khu vực nguy hiểm",
+    "en": "Danger zone",
+    "ja": "危険な操作",
+    "ko": "위험 구역",
+    "zh": "危险操作区"
+  },
+  "templates13UserIdDetail.lockAccount": {
+    "vi": "Khoá tài khoản",
+    "en": "Lock account",
+    "ja": "アカウントをロック",
+    "ko": "계정 잠금",
+    "zh": "锁定账户"
+  },
+  "templates13UserIdDetail.deleteFromWorkspace": {
+    "vi": "Xoá khỏi workspace",
+    "en": "Remove from workspace",
+    "ja": "ワークスペースから削除",
+    "ko": "워크스페이스에서 삭제",
+    "zh": "从工作区中删除"
+  },
+  "templates13UserIdDetail.deleteHint": {
+    "vi": "Không thể xoá MANAGER cuối cùng. Mời thêm MANAGER trước.",
+    "en": "Cannot delete the last MANAGER. Invite another MANAGER first.",
+    "ja": "最後の MANAGER は削除できません。先に別の MANAGER を招待してください。",
+    "ko": "마지막 MANAGER는 삭제할 수 없습니다. 먼저 다른 MANAGER를 초대하세요.",
+    "zh": "无法删除最后一位 MANAGER。请先邀请其他 MANAGER。"
+  }
+}

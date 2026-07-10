@@ -11,6 +11,7 @@ import {
   ErrorBanner, type ProblemDetails,
 } from '@/components/platform/foundation';
 import { fmtInt, fmtVND, fmtVNDShort, fmtDate, fmtDateTime } from '@/lib/format';
+import { useT } from '@/lib/i18n/provider';
 
 const STATUS_COLOR: Record<BillingStatus, string> = {
   normal:   'bg-[var(--state-success)]',
@@ -18,14 +19,15 @@ const STATUS_COLOR: Record<BillingStatus, string> = {
   critical: 'bg-[#D97C7C]',
   overage:  'bg-[#C26B6B]',
 };
-const STATUS_LABEL: Record<BillingStatus, string> = {
-  normal:   'Bình thường',
-  warn:     'Cảnh báo (≥80%)',
-  critical: 'Nguy hiểm (≥95%)',
-  overage:  'Vượt hạn mức',
+const STATUS_LABEL_KEY: Record<BillingStatus, string> = {
+  normal:   'overviewPage2.statusNormal',
+  warn:     'overviewPage2.statusWarn',
+  critical: 'overviewPage2.statusCritical',
+  overage:  'overviewPage2.statusOverage',
 };
 
 export default function PlatformBillingOverviewPage() {
+  const t = useT();
   const query = useQuery({
     queryKey: ['platform-billing-overview'],
     queryFn:  () => platformBillingApi.overview(),
@@ -50,7 +52,7 @@ export default function PlatformBillingOverviewPage() {
     return (
       <ErrorBanner
         problem={query.error ? (query.error as unknown as ProblemDetails) : null}
-        message="Không thể tải tổng quan thanh toán."
+        message={t('overviewPage2.errLoadFailed')}
       />
     );
   }
@@ -65,30 +67,30 @@ export default function PlatformBillingOverviewPage() {
     <div className="space-y-6">
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
         <Kpi
-          label="Doanh thu tháng này"
+          label={t('overviewPage2.kpiRevenueLabel')}
           value={fmtVNDShort(o.total_revenue_vnd)}
           hint={fmtVND(o.total_revenue_vnd)}
           icon={<Wallet className="w-5 h-5" />}
           tone="gold"
         />
         <Kpi
-          label="Doanh nghiệp đang hoạt động"
+          label={t('overviewPage2.kpiActiveEnterprisesLabel')}
           value={fmtInt(o.enterprise_count)}
-          hint={`Kỳ thanh toán ${o.billing_month}`}
+          hint={t('overviewPage2.kpiBillingPeriodHint', { month: o.billing_month })}
           icon={<Building2 className="w-5 h-5" />}
           tone="gold"
         />
         <Kpi
-          label="Khách hàng độc nhất"
+          label={t('overviewPage2.kpiUniqueCustomersLabel')}
           value={fmtInt(o.total_unique_customers)}
-          hint={`${utilisationPct}% trên tổng hạn mức ${fmtInt(o.total_quota)}`}
+          hint={t('overviewPage2.kpiUtilisationHint', { pct: utilisationPct, quota: fmtInt(o.total_quota) })}
           icon={<Users className="w-5 h-5" />}
           tone="info"
         />
         <Kpi
-          label="Cần chú ý"
+          label={t('overviewPage2.kpiNeedsAttentionLabel')}
           value={fmtInt(overUsageCount)}
-          hint="Doanh nghiệp ≥80% hạn mức hoặc đã vượt"
+          hint={t('overviewPage2.kpiNeedsAttentionHint')}
           icon={<AlertTriangle className="w-5 h-5" />}
           tone={overUsageCount > 0 ? 'warning' : 'success'}
         />
@@ -97,9 +99,9 @@ export default function PlatformBillingOverviewPage() {
       <section className="rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm p-6 space-y-5">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-serif text-lg text-[var(--text-primary)]">Phân bố theo trạng thái</h2>
+            <h2 className="font-serif text-lg text-[var(--text-primary)]">{t('overviewPage2.statusDistributionTitle')}</h2>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-              Ngưỡng cảnh báo: 80% · Ngưỡng nguy hiểm: 95% · Vượt hạn mức ngay khi có overage.
+              {t('overviewPage2.statusThresholdsHint')}
             </p>
           </div>
           <Gauge className="w-5 h-5 text-[var(--text-secondary)]" />
@@ -116,7 +118,7 @@ export default function PlatformBillingOverviewPage() {
                     key={s}
                     className={STATUS_COLOR[s]}
                     style={{ width: `${w}%` }}
-                    title={`${STATUS_LABEL[s]}: ${v}`}
+                    title={`${t(STATUS_LABEL_KEY[s])}: ${v}`}
                   />
                 ) : null;
               })}
@@ -125,7 +127,7 @@ export default function PlatformBillingOverviewPage() {
               {(['normal', 'warn', 'critical', 'overage'] as BillingStatus[]).map((s) => (
                 <div key={s} className="flex items-center gap-2">
                   <span className={`w-2.5 h-2.5 rounded-full ${STATUS_COLOR[s]}`} />
-                  <span className="text-[var(--text-primary)]">{STATUS_LABEL[s]}</span>
+                  <span className="text-[var(--text-primary)]">{t(STATUS_LABEL_KEY[s])}</span>
                   <span className="ml-auto tabular-nums text-[var(--text-secondary)]">
                     {fmtInt(o.by_status[s])}
                   </span>
@@ -134,7 +136,7 @@ export default function PlatformBillingOverviewPage() {
             </div>
           </>
         ) : (
-          <p className="text-sm text-[var(--text-secondary)]">Chưa có doanh nghiệp đang hoạt động.</p>
+          <p className="text-sm text-[var(--text-secondary)]">{t('overviewPage2.noActiveEnterprises')}</p>
         )}
       </section>
 
@@ -145,43 +147,43 @@ export default function PlatformBillingOverviewPage() {
       />
 
       <section className="rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm p-6 space-y-3">
-        <h2 className="font-serif text-lg text-[var(--text-primary)]">Chi tiết doanh thu</h2>
+        <h2 className="font-serif text-lg text-[var(--text-primary)]">{t('overviewPage2.revenueDetailTitle')}</h2>
         <dl className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
           <div>
-            <dt className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">Doanh thu cơ sở</dt>
+            <dt className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">{t('overviewPage2.dtBaseRevenue')}</dt>
             <dd className="font-serif text-xl text-[var(--text-primary)] tabular-nums mt-1">
               {fmtVND(o.total_base_amount_vnd)}
             </dd>
           </div>
           <div>
-            <dt className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">Doanh thu vượt hạn mức</dt>
+            <dt className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">{t('overviewPage2.dtOverageRevenue')}</dt>
             <dd className="font-serif text-xl text-[var(--text-primary)] tabular-nums mt-1">
               {fmtVND(o.total_overage_amount_vnd)}
             </dd>
             <dd className="text-[11px] text-[var(--text-secondary)] mt-1">
-              Phụ phí theo đơn giá sẽ áp dụng từ F-059 (hiện tạm tính 0).
+              {t('overviewPage2.overageNote')}
             </dd>
           </div>
           <div>
-            <dt className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">Tổng doanh thu</dt>
+            <dt className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">{t('overviewPage2.dtTotalRevenue')}</dt>
             <dd className="font-serif text-xl text-[var(--primary-gold-dark)] tabular-nums mt-1">
               {fmtVND(o.total_revenue_vnd)}
             </dd>
           </div>
           <div>
-            <dt className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">Đơn vị vượt hạn mức</dt>
+            <dt className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">{t('overviewPage2.dtOverageUnits')}</dt>
             <dd className="font-medium text-sm text-[var(--text-primary)] tabular-nums mt-1">
               {fmtInt(o.total_overage_units)}
             </dd>
           </div>
           <div>
-            <dt className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">Kỳ thanh toán tiếp theo</dt>
+            <dt className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">{t('overviewPage2.dtNextInvoiceDate')}</dt>
             <dd className="font-medium text-sm text-[var(--text-primary)] mt-1">{fmtDate(o.next_invoice_date)}</dd>
           </div>
           <div>
-            <dt className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">Xu hướng</dt>
+            <dt className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">{t('overviewPage2.dtTrend')}</dt>
             <dd className="font-medium text-sm text-[var(--text-primary)] flex items-center gap-1.5 mt-1">
-              <TrendingUp className="w-4 h-4 text-[#5C856A]" /> Cập nhật theo ngày
+              <TrendingUp className="w-4 h-4 text-[#5C856A]" /> {t('overviewPage2.trendUpdatedDaily')}
             </dd>
           </div>
         </dl>
@@ -227,6 +229,7 @@ function CronHealthCard({
   staleCount:       number;
   totalCount:       number;
 }) {
+  const t = useT();
   const recent = lastAggregatedAt
     ? Date.now() - new Date(lastAggregatedAt).getTime() < 25 * 3600 * 1000
     : false;
@@ -236,10 +239,10 @@ function CronHealthCard({
     'ok';
 
   const label = tier === 'ok'
-    ? 'Bình thường'
+    ? t('overviewPage2.cronTierOk')
     : tier === 'warn'
-      ? 'Cảnh báo — có doanh nghiệp chưa cập nhật'
-      : 'Sự cố — cron có thể đang dừng';
+      ? t('overviewPage2.cronTierWarn')
+      : t('overviewPage2.cronTierCritical');
 
   const Icon = tier === 'ok' ? CheckCircle2 : tier === 'critical' ? XCircle : AlertTriangle;
   const tone =
@@ -251,10 +254,10 @@ function CronHealthCard({
     <section className="rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm p-6 space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-serif text-lg text-[var(--text-primary)]">Sức khoẻ tác vụ tổng hợp (F-031)</h2>
+          <h2 className="font-serif text-lg text-[var(--text-primary)]">{t('overviewPage2.cronHealthTitle')}</h2>
           <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-            Cron chạy hằng ngày 02:00 ICT — cập nhật{' '}
-            <code className="font-mono">last_aggregated_at</code> trên mỗi doanh nghiệp.
+            {t('overviewPage2.cronHealthDescPre')}{' '}
+            <code className="font-mono">last_aggregated_at</code> {t('overviewPage2.cronHealthDescPost')}
           </p>
         </div>
         <Clock className="w-5 h-5 text-[var(--text-secondary)]" />
@@ -266,10 +269,10 @@ function CronHealthCard({
           <p className="font-medium">{label}</p>
           <p className="opacity-80 mt-0.5">
             {lastAggregatedAt
-              ? `Lần chạy gần nhất: ${fmtDateTime(lastAggregatedAt)}`
-              : 'Chưa có lần chạy nào trong tháng này.'}
+              ? t('overviewPage2.lastRunAt', { time: fmtDateTime(lastAggregatedAt) })
+              : t('overviewPage2.noRunThisMonth')}
             {' · '}
-            Doanh nghiệp chưa cập nhật trong 25h:{' '}
+            {t('overviewPage2.staleEnterprisesLabel')}{' '}
             <strong>{fmtInt(staleCount)}</strong>/{fmtInt(totalCount)}.
           </p>
         </div>

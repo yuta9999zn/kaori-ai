@@ -12,12 +12,17 @@ import {
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
 import { FieldDef, FieldKind, SectionDef, TemplateDef, WIDTH_PRESETS, statusLabel } from './types';
+import { useT } from '@/lib/i18n/provider';
 
-const KIND_LABEL: Record<FieldKind, string> = {
-  text: 'Chữ ngắn', long_text: 'Đoạn văn', number: 'Số', money: 'Tiền (VNĐ)',
-  date: 'Ngày', user: 'Người', department: 'Phòng ban', select: 'Chọn 1',
-  status: 'Trạng thái', link: 'Link',
-};
+function kindLabels(t: (key: string, params?: Record<string, string | number>) => string): Record<FieldKind, string> {
+  return {
+    text: t('dmsTemplateManager.kindText'), long_text: t('dmsTemplateManager.kindLongText'),
+    number: t('dmsTemplateManager.kindNumber'), money: t('dmsTemplateManager.kindMoney'),
+    date: t('dmsTemplateManager.kindDate'), user: t('dmsTemplateManager.kindUser'),
+    department: t('dmsTemplateManager.kindDepartment'), select: t('dmsTemplateManager.kindSelect'),
+    status: t('dmsTemplateManager.kindStatus'), link: t('dmsTemplateManager.kindLink'),
+  };
+}
 
 function slugKey(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D')
@@ -28,6 +33,8 @@ function slugKey(s: string): string {
 function TemplateEditor({ tpl, onClose, onSaved }: {
   tpl: TemplateDef; onClose: () => void; onSaved: () => void;
 }) {
+  const t = useT();
+  const KIND_LABEL = kindLabels(t);
   const [name, setName] = useState(tpl.name_vi);
   const [icon, setIcon] = useState(tpl.icon || '');
   const [desc, setDesc] = useState(tpl.description || '');
@@ -68,31 +75,31 @@ function TemplateEditor({ tpl, onClose, onSaved }: {
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--primary-gold)]/40 rounded-lg-custom p-4 space-y-4">
       <div className="flex items-center gap-2">
-        <h3 className="text-sm font-semibold flex-1">Sửa mẫu: {tpl.name_vi}</h3>
-        <Button variant="secondary" onClick={onClose}><X className="w-3.5 h-3.5 mr-1" /> Đóng</Button>
+        <h3 className="text-sm font-semibold flex-1">{t('dmsTemplateManager.editorTitle', { name: tpl.name_vi })}</h3>
+        <Button variant="secondary" onClick={onClose}><X className="w-3.5 h-3.5 mr-1" /> {t('dmsTemplateManager.close')}</Button>
         <Button onClick={save} disabled={saving}>
           {saving ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Save className="w-4 h-4 mr-1.5" />}
-          Lưu mẫu
+          {t('dmsTemplateManager.saveTemplate')}
         </Button>
       </div>
       {problem && <ErrorBanner problem={problem} />}
 
       <div className="grid grid-cols-1 sm:grid-cols-[64px_1fr_1fr] gap-2">
         <div>
-          <label className="text-xs font-semibold text-[var(--text-secondary)]">Icon</label>
+          <label className="text-xs font-semibold text-[var(--text-secondary)]">{t('dmsTemplateManager.labelIcon')}</label>
           <input value={icon} onChange={(e) => setIcon(e.target.value)} className={cn(inputCls, 'w-full mt-1 text-center')} placeholder="📄" />
         </div>
         <div>
-          <label className="text-xs font-semibold text-[var(--text-secondary)]">Tên mẫu</label>
+          <label className="text-xs font-semibold text-[var(--text-secondary)]">{t('dmsTemplateManager.labelName')}</label>
           <input value={name} onChange={(e) => setName(e.target.value)} className={cn(inputCls, 'w-full mt-1')} />
         </div>
         <div>
-          <label className="text-xs font-semibold text-[var(--text-secondary)]">Nhãn tự gắn</label>
-          <input value={labels} onChange={(e) => setLabels(e.target.value)} className={cn(inputCls, 'w-full mt-1')} placeholder="loai:hop-dong" />
+          <label className="text-xs font-semibold text-[var(--text-secondary)]">{t('dmsTemplateManager.labelLabelsAuto')}</label>
+          <input value={labels} onChange={(e) => setLabels(e.target.value)} className={cn(inputCls, 'w-full mt-1')} placeholder={t('dmsTemplateManager.placeholderLabelsExample')} />
         </div>
       </div>
       <div>
-        <label className="text-xs font-semibold text-[var(--text-secondary)]">Mô tả</label>
+        <label className="text-xs font-semibold text-[var(--text-secondary)]">{t('dmsTemplateManager.labelDescription')}</label>
         <input value={desc} onChange={(e) => setDesc(e.target.value)} className={cn(inputCls, 'w-full mt-1')} />
       </div>
 
@@ -100,24 +107,24 @@ function TemplateEditor({ tpl, onClose, onSaved }: {
       <div>
         <div className="flex items-center gap-2 mb-1.5">
           <label className="text-xs font-semibold text-[var(--text-secondary)] flex-1">
-            Thuộc tính tài liệu ({fields.length}) — tài liệu theo mẫu này cần khai gì
+            {t('dmsTemplateManager.fieldsHeading', { count: fields.length })}
           </label>
           <button onClick={() => setFields((fs) => [...fs, { key: '', label_vi: '', kind: 'text', required: false }])}
             className="text-xs text-[var(--primary-gold-dark)] hover:underline inline-flex items-center gap-1">
-            <Plus className="w-3 h-3" /> Thêm thuộc tính
+            <Plus className="w-3 h-3" /> {t('dmsTemplateManager.addField')}
           </button>
         </div>
         <div className="space-y-1.5">
           {fields.map((f, i) => (
             <div key={i} className="flex items-center gap-1.5 flex-wrap bg-[var(--bg-app)]/40 border border-[var(--border-color)]/60 rounded px-2 py-1.5">
               <GripVertical className="w-3.5 h-3.5 text-[var(--text-secondary)]/50 shrink-0" />
-              <input value={f.label_vi} placeholder="Nhãn (vd Hạn chót)"
+              <input value={f.label_vi} placeholder={t('dmsTemplateManager.placeholderFieldLabel')}
                 onChange={(e) => setField(i, { label_vi: e.target.value, key: f.key || slugKey(e.target.value) })}
                 className={cn(inputCls, 'w-36')} />
-              <input value={(f as any).label_en || ''} placeholder="EN label" title="Nhãn tiếng Anh (các ngôn ngữ khác fallback EN → VI)"
+              <input value={(f as any).label_en || ''} placeholder="EN label" title={t('dmsTemplateManager.titleEnLabelHint')}
                 onChange={(e) => setField(i, { label_en: e.target.value || undefined } as any)}
                 className={cn(inputCls, 'w-32')} />
-              <input value={f.key} placeholder="key" title="Khoá kỹ thuật (tự sinh từ nhãn)"
+              <input value={f.key} placeholder="key" title={t('dmsTemplateManager.titleKeyHint')}
                 onChange={(e) => setField(i, { key: slugKey(e.target.value) })}
                 className={cn(inputCls, 'w-28 font-mono text-xs')} />
               <select value={f.kind} onChange={(e) => setField(i, { kind: e.target.value as FieldKind })}
@@ -125,14 +132,14 @@ function TemplateEditor({ tpl, onClose, onSaved }: {
                 {Object.entries(KIND_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
               </select>
               {(f.kind === 'select' || f.kind === 'status') && (
-                <input value={(f.options || []).join(', ')} placeholder="lựa chọn, cách nhau dấu phẩy"
+                <input value={(f.options || []).join(', ')} placeholder={t('dmsTemplateManager.placeholderOptionsCsv')}
                   onChange={(e) => setField(i, { options: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })}
                   className={cn(inputCls, 'flex-1 min-w-[180px]')} />
               )}
               <label className="text-xs flex items-center gap-1 shrink-0">
                 <input type="checkbox" checked={!!f.required} onChange={(e) => setField(i, { required: e.target.checked })}
                   className="accent-[var(--primary-gold-dark)]" />
-                bắt buộc
+                {t('dmsTemplateManager.required')}
               </label>
               <button onClick={() => setFields((fs) => fs.filter((_, j) => j !== i))}
                 className="text-[var(--text-secondary)] hover:text-[var(--state-error)] shrink-0">
@@ -140,7 +147,7 @@ function TemplateEditor({ tpl, onClose, onSaved }: {
               </button>
             </div>
           ))}
-          {fields.length === 0 && <p className="text-xs text-[var(--text-secondary)] italic">Chưa có thuộc tính nào.</p>}
+          {fields.length === 0 && <p className="text-xs text-[var(--text-secondary)] italic">{t('dmsTemplateManager.noFieldsYet')}</p>}
         </div>
       </div>
 
@@ -148,11 +155,11 @@ function TemplateEditor({ tpl, onClose, onSaved }: {
       <div>
         <div className="flex items-center gap-2 mb-1.5">
           <label className="text-xs font-semibold text-[var(--text-secondary)] flex-1">
-            Các mục nội dung ({sections.length}) — tài liệu cần có những phần gì
+            {t('dmsTemplateManager.sectionsHeading', { count: sections.length })}
           </label>
           <button onClick={() => setSections((ss) => [...ss, { heading_vi: '', icon: '', hint_vi: '' }])}
             className="text-xs text-[var(--primary-gold-dark)] hover:underline inline-flex items-center gap-1">
-            <Plus className="w-3 h-3" /> Thêm mục
+            <Plus className="w-3 h-3" /> {t('dmsTemplateManager.addSection')}
           </button>
         </div>
         <div className="space-y-1.5">
@@ -161,13 +168,13 @@ function TemplateEditor({ tpl, onClose, onSaved }: {
               <div className="flex items-center gap-1.5">
                 <input value={s.icon || ''} placeholder="🎯" onChange={(e) => setSection(i, { icon: e.target.value })}
                   className={cn(inputCls, 'w-12 text-center')} />
-                <input value={s.heading_vi} placeholder="Tiêu đề mục (vd Phạm vi)"
+                <input value={s.heading_vi} placeholder={t('dmsTemplateManager.placeholderSectionHeading')}
                   onChange={(e) => setSection(i, { heading_vi: e.target.value, key: (s as any).key || slugKey(e.target.value) })}
                   className={cn(inputCls, 'w-40')} />
                 <input value={(s as any).heading_en || ''} placeholder="EN heading"
                   onChange={(e) => setSection(i, { heading_en: e.target.value || undefined } as any)}
                   className={cn(inputCls, 'w-32')} />
-                <input value={s.hint_vi || ''} placeholder="Gợi ý nội dung mục này…"
+                <input value={s.hint_vi || ''} placeholder={t('dmsTemplateManager.placeholderSectionHint')}
                   onChange={(e) => setSection(i, { hint_vi: e.target.value })}
                   className={cn(inputCls, 'flex-1')} />
                 <select value={s.body_kind || 'prose'}
@@ -176,9 +183,9 @@ function TemplateEditor({ tpl, onClose, onSaved }: {
                     columns: e.target.value === 'table' ? (s.columns || []) : undefined,
                   })}
                   className={cn(inputCls, 'w-24')}>
-                  <option value="prose">Văn bản</option>
-                  <option value="table">Bảng</option>
-                  <option value="checklist">Checklist</option>
+                  <option value="prose">{t('dmsTemplateManager.bodyKindProse')}</option>
+                  <option value="table">{t('dmsTemplateManager.bodyKindTable')}</option>
+                  <option value="checklist">{t('dmsTemplateManager.bodyKindChecklist')}</option>
                 </select>
                 <button onClick={() => setSections((ss) => ss.filter((_, j) => j !== i))}
                   className="text-[var(--text-secondary)] hover:text-[var(--state-error)] shrink-0">
@@ -192,7 +199,7 @@ function TemplateEditor({ tpl, onClose, onSaved }: {
                   {(s.columns || []).map((c, ci) => (
                     <div key={ci} className="flex items-center gap-1.5 flex-wrap">
                       <span className="text-[10px] text-[var(--text-secondary)] w-4 text-right">{ci + 1}.</span>
-                      <input value={c.label_vi} placeholder="Nhãn cột (vd Mã lỗi)"
+                      <input value={c.label_vi} placeholder={t('dmsTemplateManager.placeholderColumnLabel')}
                         onChange={(e) => setSection(i, {
                           columns: (s.columns || []).map((x, j) => j === ci
                             ? { ...x, label_vi: e.target.value, key: x.key || slugKey(e.target.value) } : x),
@@ -212,7 +219,7 @@ function TemplateEditor({ tpl, onClose, onSaved }: {
                         className={cn(inputCls, 'w-24')}>
                         {Object.entries(KIND_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                       </select>
-                      <select value={c.width ?? ''} title="Độ rộng cột"
+                      <select value={c.width ?? ''} title={t('dmsTemplateManager.titleColumnWidth')}
                         onChange={(e) => setSection(i, {
                           columns: (s.columns || []).map((x, j) => j === ci
                             ? { ...x, width: e.target.value === '' ? undefined : Number(e.target.value) } : x),
@@ -223,7 +230,7 @@ function TemplateEditor({ tpl, onClose, onSaved }: {
                         ))}
                       </select>
                       {(c.kind === 'select' || c.kind === 'status') && (
-                        <input value={(c.options || []).join(', ')} placeholder="lựa chọn, phẩy"
+                        <input value={(c.options || []).join(', ')} placeholder={t('dmsTemplateManager.placeholderOptionsComma')}
                           onChange={(e) => setSection(i, {
                             columns: (s.columns || []).map((x, j) => j === ci
                               ? { ...x, options: e.target.value.split(',').map((o) => o.trim()).filter(Boolean) } : x),
@@ -240,13 +247,13 @@ function TemplateEditor({ tpl, onClose, onSaved }: {
                     columns: [...(s.columns || []), { key: '', label_vi: '', kind: 'text' as FieldKind }],
                   })}
                     className="text-xs text-[var(--primary-gold-dark)] hover:underline inline-flex items-center gap-1">
-                    <Plus className="w-3 h-3" /> Thêm cột
+                    <Plus className="w-3 h-3" /> {t('dmsTemplateManager.addColumn')}
                   </button>
                 </div>
               )}
             </div>
           ))}
-          {sections.length === 0 && <p className="text-xs text-[var(--text-secondary)] italic">Chưa có mục nào.</p>}
+          {sections.length === 0 && <p className="text-xs text-[var(--text-secondary)] italic">{t('dmsTemplateManager.noSectionsYet')}</p>}
         </div>
       </div>
     </div>
@@ -257,6 +264,7 @@ function TemplateEditor({ tpl, onClose, onSaved }: {
 const TOKEN_KEY = 'kaori.access_token';
 
 export default function TemplateManagerPage() {
+  const t = useT();
   const [templates, setTemplates] = useState<TemplateDef[] | null>(null);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
   const [editing, setEditing] = useState<TemplateDef | null>(null);
@@ -273,7 +281,7 @@ export default function TemplateManagerPage() {
   useEffect(() => { load(); }, [load]);
 
   // đang có bản nháp AI phân tích ('⏳') → poll danh sách tới khi xong
-  const analyzing = (templates || []).some((t) => (t.description || '').startsWith('⏳'));
+  const analyzing = (templates || []).some((tpl) => (tpl.description || '').startsWith('⏳'));
   useEffect(() => {
     if (!analyzing) return;
     const timer = setInterval(load, 4000);
@@ -307,14 +315,17 @@ export default function TemplateManagerPage() {
       });
       await load(); // bản nháp '⏳' xuất hiện → poll tự chạy
     } catch (err: any) {
-      setProblem(err.title ? err : { title: err?.message || 'Tải file mẫu thất bại' });
+      setProblem(err.title ? err : { title: err?.message || t('dmsTemplateManager.errUploadFailed') });
     } finally {
       setUploading(false);
     }
   }
 
   async function clone(src: TemplateDef) {
-    const name = window.prompt('Tên mẫu mới (nhân bản từ ' + src.name_vi + '):', src.name_vi + ' — tuỳ chỉnh');
+    const name = window.prompt(
+      t('dmsTemplateManager.promptCloneName', { name: src.name_vi }),
+      t('dmsTemplateManager.cloneDefaultName', { name: src.name_vi }),
+    );
     if (!name?.trim()) return;
     setBusy(src.template_id);
     try {
@@ -331,7 +342,7 @@ export default function TemplateManagerPage() {
   }
 
   async function createBlank() {
-    const name = window.prompt('Tên mẫu tài liệu mới (vd "Đơn đề nghị thanh toán"):');
+    const name = window.prompt(t('dmsTemplateManager.promptCreateBlank'));
     if (!name?.trim()) return;
     try {
       const created = await api<TemplateDef>('/api/v1/document-templates', {
@@ -343,48 +354,48 @@ export default function TemplateManagerPage() {
     } catch (e: any) { setProblem(e); }
   }
 
-  const mine = (templates || []).filter((t) => !t.is_global);
-  const globals = (templates || []).filter((t) => t.is_global);
+  const mine = (templates || []).filter((tpl) => !tpl.is_global);
+  const globals = (templates || []).filter((tpl) => tpl.is_global);
 
-  function row(t: TemplateDef) {
-    const isAnalyzing = (t.description || '').startsWith('⏳');
-    const isFailed = (t.description || '').startsWith('⚠️');
+  function row(tpl: TemplateDef) {
+    const isAnalyzing = (tpl.description || '').startsWith('⏳');
+    const isFailed = (tpl.description || '').startsWith('⚠️');
     return (
-      <div key={t.template_id}
+      <div key={tpl.template_id}
         className="flex items-center gap-2.5 px-3 py-2.5 border-b border-[var(--border-color)]/50 last:border-b-0 hover:bg-[var(--bg-app)]/40">
-        <span className="text-lg w-7 text-center shrink-0">{t.icon || '📄'}</span>
+        <span className="text-lg w-7 text-center shrink-0">{tpl.icon || '📄'}</span>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium truncate">
-            {t.name_vi}
+            {tpl.name_vi}
             {isAnalyzing && (
               <Badge variant="default" className="ml-1.5 text-[9px] inline-flex items-center gap-1">
-                <Loader2 className="w-2.5 h-2.5 animate-spin" /> AI đang phân tích
+                <Loader2 className="w-2.5 h-2.5 animate-spin" /> {t('dmsTemplateManager.badgeAiAnalyzing')}
               </Badge>
             )}
-            {!t.is_active && !isAnalyzing && (
+            {!tpl.is_active && !isAnalyzing && (
               <Badge variant="default" className="ml-1.5 text-[9px]">
-                {isFailed ? 'nháp — AI lỗi' : 'nháp — chờ duyệt'}
+                {isFailed ? t('dmsTemplateManager.badgeDraftAiError') : t('dmsTemplateManager.badgeDraftPendingApproval')}
               </Badge>
             )}
           </p>
           <p className="text-[11px] text-[var(--text-secondary)] truncate">
-            {t.metadata_schema.length} thuộc tính · {t.section_outline.length} mục
-            {t.description ? ` — ${t.description}` : ''}
+            {t('dmsTemplateManager.rowStats', { fieldCount: tpl.metadata_schema.length, sectionCount: tpl.section_outline.length })}
+            {tpl.description ? ` — ${tpl.description}` : ''}
           </p>
         </div>
-        {(t.default_labels || []).slice(0, 2).map((lb) => (
+        {(tpl.default_labels || []).slice(0, 2).map((lb) => (
           <span key={lb} className="hidden sm:inline px-1.5 py-0.5 text-[10px] font-mono rounded bg-[var(--bg-app)]/80 border border-[var(--border-color)] text-[var(--text-secondary)]">{lb}</span>
         ))}
-        <button onClick={() => clone(t)} disabled={busy === t.template_id}
-          title="Nhân bản để tuỳ chỉnh"
+        <button onClick={() => clone(tpl)} disabled={busy === tpl.template_id}
+          title={t('dmsTemplateManager.cloneTitle')}
           className="inline-flex items-center gap-1 text-xs text-[var(--text-secondary)] hover:text-[var(--primary-gold-dark)] shrink-0">
-          {busy === t.template_id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Copy className="w-3.5 h-3.5" />}
-          Nhân bản
+          {busy === tpl.template_id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Copy className="w-3.5 h-3.5" />}
+          {t('dmsTemplateManager.cloneButton')}
         </button>
-        {!t.is_global && !isAnalyzing && (
-          <button onClick={() => setEditing(t)}
+        {!tpl.is_global && !isAnalyzing && (
+          <button onClick={() => setEditing(tpl)}
             className="inline-flex items-center gap-1 text-xs text-[var(--primary-gold-dark)] hover:underline shrink-0">
-            <Pencil className="w-3.5 h-3.5" /> {t.is_active ? 'Sửa' : 'Duyệt & sửa'}
+            <Pencil className="w-3.5 h-3.5" /> {tpl.is_active ? t('dmsTemplateManager.editButton') : t('dmsTemplateManager.approveAndEdit')}
           </button>
         )}
       </div>
@@ -394,17 +405,17 @@ export default function TemplateManagerPage() {
   return (
     <div className="space-y-4">
       <PageHeader
-        title="Mẫu tài liệu"
-        description="Định nghĩa loại tài liệu: thuộc tính cần khai (bảng Page Properties) + các mục nội dung cần có. Gắn mẫu vào trang thư mục để tài liệu tải lên tự thừa hưởng."
+        title={t('dmsTemplateManager.pageTitle')}
+        description={t('dmsTemplateManager.pageDescription')}
         actions={
           <div className="flex items-center gap-2">
             <input ref={fileRef} type="file" hidden onChange={onUploadTemplateFile}
               accept=".pdf,.docx,.doc,.md,.txt" />
             <Button variant="secondary" onClick={() => fileRef.current?.click()} disabled={uploading}>
               {uploading ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <FileUp className="w-4 h-4 mr-1.5" />}
-              Tạo mẫu từ file
+              {t('dmsTemplateManager.uploadFromFile')}
             </Button>
-            <Button onClick={createBlank}><Plus className="w-4 h-4 mr-1.5" /> Tạo mẫu mới</Button>
+            <Button onClick={createBlank}><Plus className="w-4 h-4 mr-1.5" /> {t('dmsTemplateManager.createNew')}</Button>
           </div>
         }
       />
@@ -420,17 +431,17 @@ export default function TemplateManagerPage() {
       ) : (
         <>
           <section>
-            <h2 className="text-sm font-semibold mb-2">Mẫu của doanh nghiệp ({mine.length})</h2>
+            <h2 className="text-sm font-semibold mb-2">{t('dmsTemplateManager.mineHeading', { count: mine.length })}</h2>
             <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom">
               {mine.length === 0 ? (
                 <p className="px-3 py-6 text-center text-sm text-[var(--text-secondary)]">
-                  Chưa có mẫu riêng — tạo mới hoặc nhân bản một mẫu hệ thống bên dưới.
+                  {t('dmsTemplateManager.noMineTemplates')}
                 </p>
               ) : mine.map(row)}
             </div>
           </section>
           <section>
-            <h2 className="text-sm font-semibold mb-2">Mẫu hệ thống ({globals.length}) <span className="text-[11px] font-normal text-[var(--text-secondary)]">— chỉ đọc, nhân bản để tuỳ chỉnh</span></h2>
+            <h2 className="text-sm font-semibold mb-2">{t('dmsTemplateManager.globalsHeading', { count: globals.length })} <span className="text-[11px] font-normal text-[var(--text-secondary)]">{t('dmsTemplateManager.globalsHint')}</span></h2>
             <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom">
               {globals.map(row)}
             </div>

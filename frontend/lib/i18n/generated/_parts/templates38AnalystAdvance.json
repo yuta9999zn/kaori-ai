@@ -1,0 +1,212 @@
+{
+  "templates38AnalystAdvance.title": {
+    "vi": "Phân tích nâng cao",
+    "en": "Advanced analysis",
+    "ja": "高度な分析",
+    "ko": "고급 분석",
+    "zh": "高级分析"
+  },
+  "templates38AnalystAdvance.description": {
+    "vi": "Cohort cross-workspace · AI bên ngoài · cần MANAGER duyệt nếu workspace ở chế độ strict.",
+    "en": "Cross-workspace cohort · external AI · needs MANAGER approval if the workspace is in strict mode.",
+    "ja": "クロスワークスペースのコホート・外部AI・workspaceがstrictモードの場合はMANAGERの承認が必要です。",
+    "ko": "워크스페이스 간 코호트 · 외부 AI · workspace가 strict 모드인 경우 MANAGER 승인 필요.",
+    "zh": "跨workspace的cohort · 外部AI · 若workspace处于strict模式,需MANAGER批准。"
+  },
+  "templates38AnalystAdvance.tierTitle": {
+    "vi": "Nâng cao",
+    "en": "Advanced",
+    "ja": "アドバンス",
+    "ko": "고급",
+    "zh": "高级"
+  },
+  "templates38AnalystAdvance.tierSubtitle": {
+    "vi": "Cross-workspace · AI bên ngoài",
+    "en": "Cross-workspace · external AI",
+    "ja": "クロスワークスペース・外部AI",
+    "ko": "크로스 워크스페이스 · 외부 AI",
+    "zh": "跨workspace · 外部AI"
+  },
+  "templates38AnalystAdvance.quotaBadge": {
+    "vi": "AI ngoài: {used} / {limit}",
+    "en": "External AI: {used} / {limit}",
+    "ja": "外部AI: {used} / {limit}",
+    "ko": "외부 AI: {used} / {limit}",
+    "zh": "外部AI: {used} / {limit}"
+  },
+  "templates38AnalystAdvance.quotaWillDeduct": {
+    "vi": "Sẽ trừ quota",
+    "en": "Will deduct quota",
+    "ja": "クォータを消費します",
+    "ko": "쿼터가 차감됩니다",
+    "zh": "将扣除配额"
+  },
+  "templates38AnalystAdvance.cohortTitle": {
+    "vi": "Workspace tham gia cohort",
+    "en": "Workspaces in the cohort",
+    "ja": "コホートに参加するworkspace",
+    "ko": "코호트에 참여하는 워크스페이스",
+    "zh": "参与cohort的workspace"
+  },
+  "templates38AnalystAdvance.cohortSubtitle": {
+    "vi": "Bạn chỉ thấy workspace có vai trò ≥ ANALYST. RLS được giữ nguyên ở mọi query.",
+    "en": "You only see workspaces where your role is ≥ ANALYST. RLS is preserved on every query.",
+    "ja": "あなたの役割がANALYST以上のworkspaceのみ表示されます。すべてのクエリでRLSが維持されます。",
+    "ko": "역할이 ANALYST 이상인 워크스페이스만 표시됩니다. 모든 쿼리에서 RLS가 유지됩니다.",
+    "zh": "仅显示您角色 ≥ ANALYST 的workspace。所有查询均保留RLS。"
+  },
+  "templates38AnalystAdvance.cohortEmpty": {
+    "vi": "— Bạn chỉ thuộc 1 workspace —",
+    "en": "— You only belong to 1 workspace —",
+    "ja": "— あなたは1つのworkspaceにのみ所属しています —",
+    "ko": "— 워크스페이스가 1개뿐입니다 —",
+    "zh": "— 您仅属于1个workspace —"
+  },
+  "templates38AnalystAdvance.sourcesTitle": {
+    "vi": "Nguồn dữ liệu (2-5)",
+    "en": "Data sources (2-5)",
+    "ja": "データソース (2-5)",
+    "ko": "데이터 소스 (2-5)",
+    "zh": "数据源 (2-5)"
+  },
+  "templates38AnalystAdvance.sourcesSubtitle": {
+    "vi": "Silver / Gold trong workspace cohort. Đã chọn: {count}/5",
+    "en": "Silver / Gold within the workspace cohort. Selected: {count}/5",
+    "ja": "workspaceコホート内のSilver / Gold。選択済み: {count}/5",
+    "ko": "워크스페이스 코호트 내 Silver / Gold. 선택됨: {count}/5",
+    "zh": "workspace cohort内的Silver / Gold。已选择: {count}/5"
+  },
+  "templates38AnalystAdvance.clearAll": {
+    "vi": "Xoá hết",
+    "en": "Clear all",
+    "ja": "すべて削除",
+    "ko": "모두 삭제",
+    "zh": "全部清除"
+  },
+  "templates38AnalystAdvance.availableLabel": {
+    "vi": "Có sẵn",
+    "en": "Available",
+    "ja": "利用可能",
+    "ko": "사용 가능",
+    "zh": "可用"
+  },
+  "templates38AnalystAdvance.sourcesEmpty": {
+    "vi": "— Chưa có nguồn —",
+    "en": "— No sources yet —",
+    "ja": "— ソースがまだありません —",
+    "ko": "— 소스가 아직 없습니다 —",
+    "zh": "— 暂无数据源 —"
+  },
+  "templates38AnalystAdvance.selectedLabel": {
+    "vi": "Đã chọn",
+    "en": "Selected",
+    "ja": "選択済み",
+    "ko": "선택됨",
+    "zh": "已选择"
+  },
+  "templates38AnalystAdvance.selectedEmpty": {
+    "vi": "Chọn ít nhất 2 nguồn",
+    "en": "Select at least 2 sources",
+    "ja": "少なくとも2つのソースを選択してください",
+    "ko": "소스를 최소 2개 선택하세요",
+    "zh": "请至少选择2个数据源"
+  },
+  "templates38AnalystAdvance.consentOn": {
+    "vi": "Đồng ý gọi AI bên ngoài (Claude / GPT-4o) sau khi PII-mask (K-5)",
+    "en": "Agree to call external AI (Claude / GPT-4o) after PII masking (K-5)",
+    "ja": "PIIマスキング後に外部AI(Claude / GPT-4o)の呼び出しに同意します(K-5)",
+    "ko": "PII 마스킹 후 외부 AI(Claude / GPT-4o) 호출에 동의합니다(K-5)",
+    "zh": "同意在PII脱敏后调用外部AI(Claude / GPT-4o)(K-5)"
+  },
+  "templates38AnalystAdvance.consentOff": {
+    "vi": "Chỉ dùng Qwen 2.5 nội bộ",
+    "en": "Use internal Qwen 2.5 only",
+    "ja": "内部のQwen 2.5のみ使用します",
+    "ko": "내부 Qwen 2.5만 사용",
+    "zh": "仅使用内部Qwen 2.5"
+  },
+  "templates38AnalystAdvance.consentNote": {
+    "vi": "Sẽ trừ vào quota external AI tháng. PII (email/SĐT/ID) được mask trước khi gửi.",
+    "en": "This will deduct from the monthly external AI quota. PII (email/phone/ID) is masked before sending.",
+    "ja": "月間の外部AIクォータから消費されます。送信前にPII(メール/電話番号/ID)がマスキングされます。",
+    "ko": "월간 외부 AI 쿼터에서 차감됩니다. 전송 전 PII(이메일/전화번호/ID)가 마스킹됩니다.",
+    "zh": "将从每月外部AI配额中扣除。发送前会对PII(邮箱/电话/证件号)进行脱敏。"
+  },
+  "templates38AnalystAdvance.frameworkLabel": {
+    "vi": "Khung phân tích",
+    "en": "Analysis framework",
+    "ja": "分析フレームワーク",
+    "ko": "분석 프레임워크",
+    "zh": "分析框架"
+  },
+  "templates38AnalystAdvance.questionLabel": {
+    "vi": "Câu hỏi cohort",
+    "en": "Cohort question",
+    "ja": "コホートの質問",
+    "ko": "코호트 질문",
+    "zh": "Cohort问题"
+  },
+  "templates38AnalystAdvance.questionPlaceholder": {
+    "vi": "Ví dụ: So sánh churn rate Q1/Q2 giữa các workspace bán lẻ thuộc cohort SMB.",
+    "en": "Example: Compare the Q1/Q2 churn rate across retail workspaces in the SMB cohort.",
+    "ja": "例:SMBコホートの小売workspace間でQ1/Q2のchurn rateを比較する。",
+    "ko": "예: SMB 코호트에 속한 소매 워크스페이스 간 Q1/Q2 churn rate 비교.",
+    "zh": "例如:比较SMB cohort中各零售workspace的Q1/Q2 churn rate。"
+  },
+  "templates38AnalystAdvance.noticePart1": {
+    "vi": "Nếu workspace của bạn",
+    "en": "If your workspace has",
+    "ja": "もしあなたのworkspaceが",
+    "ko": "워크스페이스가",
+    "zh": "如果您的workspace"
+  },
+  "templates38AnalystAdvance.noticeChuaBat": {
+    "vi": "chưa bật",
+    "en": "not yet enabled",
+    "ja": "まだ有効になっていない",
+    "ko": "아직 활성화하지 않았다면",
+    "zh": "尚未启用"
+  },
+  "templates38AnalystAdvance.noticePart2": {
+    "vi": "external AI ở Settings, run sẽ vào trạng thái",
+    "en": "external AI in Settings, the run will enter the",
+    "ja": "external AIをSettingsで、runは以下の状態になります",
+    "ko": "Settings에서 external AI를, run은 다음 상태로 진입합니다",
+    "zh": "external AI(在Settings中),run将进入"
+  },
+  "templates38AnalystAdvance.noticePart3": {
+    "vi": "và chờ MANAGER duyệt qua endpoint",
+    "en": "state and wait for a MANAGER to approve via the endpoint",
+    "ja": "状態になり、MANAGERがエンドポイント経由で承認するのを待ちます",
+    "ko": "상태가 되어 MANAGER가 다음 엔드포인트로 승인할 때까지 기다립니다",
+    "zh": "状态,并等待MANAGER通过以下endpoint批准"
+  },
+  "templates38AnalystAdvance.noticePart4": {
+    "vi": ". Workspaces đã bật sẽ dispatch ngay.",
+    "en": ". Workspaces that already enabled it will dispatch immediately.",
+    "ja": "。すでに有効になっているworkspaceはすぐにdispatchされます。",
+    "ko": ". 이미 활성화된 워크스페이스는 즉시 dispatch됩니다.",
+    "zh": "。已启用的workspace将立即dispatch。"
+  },
+  "templates38AnalystAdvance.footerPart1": {
+    "vi": "Mọi cohort run đi qua",
+    "en": "Every cohort run goes through",
+    "ja": "すべてのコホートrunは",
+    "ko": "모든 코호트 run은",
+    "zh": "所有cohort run都会经过"
+  },
+  "templates38AnalystAdvance.footerPart2": {
+    "vi": "(K-3) →",
+    "en": "(K-3) →",
+    "ja": "(K-3) →",
+    "ko": "(K-3) →",
+    "zh": "(K-3) →"
+  },
+  "templates38AnalystAdvance.footerPart3": {
+    "vi": ". Audit log K-6 ghi đầy đủ workspace_ids + provider + prompt_hash.",
+    "en": ". Audit log K-6 fully records workspace_ids + provider + prompt_hash.",
+    "ja": "。監査ログK-6はworkspace_ids + provider + prompt_hashを完全に記録します。",
+    "ko": ". 감사 로그 K-6은 workspace_ids + provider + prompt_hash를 모두 기록합니다.",
+    "zh": "。审计日志K-6完整记录workspace_ids + provider + prompt_hash。"
+  }
+}

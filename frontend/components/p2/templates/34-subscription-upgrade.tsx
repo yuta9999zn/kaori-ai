@@ -33,6 +33,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type PlanCode = 'PILOT' | 'BASIC' | 'MID' | 'MAX' | 'ROI';
 
 interface Plan {
@@ -47,89 +48,91 @@ interface Plan {
   highlight?:   boolean;
 }
 
-const PLANS: Plan[] = [
-  {
-    code:         'PILOT',
-    name:         'Pilot',
-    tagline:      'Thử nghiệm với 1 use case',
-    monthly_vnd:  PRICING.PILOT,
-    monthly_label: '1 triệu VNĐ',
-    unique_kh:    '500 khách hàng / tháng',
-    overage:      'Không có overage — phải nâng cấp khi đầy',
-    features: [
-      { ok: true,  label: 'Toàn bộ template phân tích Phase 1' },
-      { ok: true,  label: 'Qwen 2.5 nội bộ' },
-      { ok: true,  label: '1 workspace · 3 user' },
-      { ok: false, label: 'API integration' },
-      { ok: false, label: 'Custom branding (F-026)' },
-    ],
-  },
-  {
-    code:         'BASIC',
-    name:         'Enterprise Basic',
-    tagline:      'Doanh nghiệp nhỏ · 1.000 khách / tháng',
-    monthly_vnd:  PRICING.BASIC,
-    monthly_label: '2 triệu VNĐ',
-    unique_kh:    '1.000 khách hàng / tháng',
-    overage:      '+500K mỗi 1.000 khách hàng vượt mức',
-    features: [
-      { ok: true,  label: 'Mọi tính năng Pilot' },
-      { ok: true,  label: '1 workspace · 10 user' },
-      { ok: true,  label: 'Email alerts + scheduled reports (F-038)' },
-      { ok: true,  label: 'API integration cơ bản' },
-      { ok: false, label: 'Custom AI fine-tune (Phase 2)' },
-    ],
-  },
-  {
-    code:         'MID',
-    name:         'Enterprise Mid',
-    tagline:      'Đang scale · 4.000 khách / tháng',
-    monthly_vnd:  PRICING.MID,
-    monthly_label: '5 triệu VNĐ',
-    unique_kh:    '4.000 khách hàng / tháng',
-    overage:      '+400K mỗi 1.000 khách hàng vượt mức',
-    highlight:    true,
-    features: [
-      { ok: true, label: 'Mọi tính năng Basic' },
-      { ok: true, label: '3 workspace · 25 user' },
-      { ok: true, label: 'Custom branding email + login (F-026)' },
-      { ok: true, label: 'AI bên ngoài (Claude / GPT-4o) opt-in K-4' },
-      { ok: true, label: 'Priority support trong giờ hành chính' },
-    ],
-  },
-  {
-    code:         'MAX',
-    name:         'Enterprise Max',
-    tagline:      'Doanh nghiệp lớn · 10.000 khách / tháng',
-    monthly_vnd:  PRICING.MAX,
-    monthly_label: '8 triệu VNĐ',
-    unique_kh:    '10.000 khách hàng / tháng',
-    overage:      '+250K mỗi 1.000 khách hàng vượt mức',
-    features: [
-      { ok: true, label: 'Mọi tính năng Mid' },
-      { ok: true, label: 'Workspace + user không giới hạn' },
-      { ok: true, label: 'SSO + MFA bắt buộc' },
-      { ok: true, label: 'Premium support 24/7' },
-      { ok: true, label: 'Mở khoá ENT ROI sau 3 tháng MAX' },
-    ],
-  },
-  {
-    code:         'ROI',
-    name:         'Enterprise ROI',
-    tagline:      '10.000+ khách · ăn chia theo doanh thu cứu được',
-    monthly_vnd:  PRICING.ROI_BASE,
-    monthly_label: '8 triệu VNĐ + 1.5% doanh thu cứu được',
-    unique_kh:    '10.000+ khách hàng / tháng',
-    overage:      `Tổng tối đa ${formatVND(PRICING.ROI_CAP)} / tháng`,
-    features: [
-      { ok: true, label: 'Mọi tính năng Max' },
-      { ok: true, label: '8M cố định + 1.5% revenue cứu được (cap 20M)' },
-      { ok: true, label: 'Quarterly North-Star ROI review meeting' },
-      { ok: true, label: 'Solution architect cá nhân' },
-      { ok: true, label: 'Yêu cầu: ≥3 tháng MAX liên tiếp' },
-    ],
-  },
-];
+function buildPlans(t: ReturnType<typeof useT>): Plan[] {
+  return [
+    {
+      code:         'PILOT',
+      name:         'Pilot',
+      tagline:      t('templates34SubscriptionUpgrade.planPilotTagline'),
+      monthly_vnd:  PRICING.PILOT,
+      monthly_label: t('templates34SubscriptionUpgrade.planPilotMonthlyLabel'),
+      unique_kh:    t('templates34SubscriptionUpgrade.planPilotUniqueKh'),
+      overage:      t('templates34SubscriptionUpgrade.planPilotOverage'),
+      features: [
+        { ok: true,  label: t('templates34SubscriptionUpgrade.planPilotFeature1') },
+        { ok: true,  label: t('templates34SubscriptionUpgrade.planPilotFeature2') },
+        { ok: true,  label: t('templates34SubscriptionUpgrade.planPilotFeature3') },
+        { ok: false, label: t('templates34SubscriptionUpgrade.planPilotFeature4') },
+        { ok: false, label: t('templates34SubscriptionUpgrade.planPilotFeature5') },
+      ],
+    },
+    {
+      code:         'BASIC',
+      name:         'Enterprise Basic',
+      tagline:      t('templates34SubscriptionUpgrade.planBasicTagline'),
+      monthly_vnd:  PRICING.BASIC,
+      monthly_label: t('templates34SubscriptionUpgrade.planBasicMonthlyLabel'),
+      unique_kh:    t('templates34SubscriptionUpgrade.planBasicUniqueKh'),
+      overage:      t('templates34SubscriptionUpgrade.planBasicOverage'),
+      features: [
+        { ok: true,  label: t('templates34SubscriptionUpgrade.planBasicFeature1') },
+        { ok: true,  label: t('templates34SubscriptionUpgrade.planBasicFeature2') },
+        { ok: true,  label: t('templates34SubscriptionUpgrade.planBasicFeature3') },
+        { ok: true,  label: t('templates34SubscriptionUpgrade.planBasicFeature4') },
+        { ok: false, label: t('templates34SubscriptionUpgrade.planBasicFeature5') },
+      ],
+    },
+    {
+      code:         'MID',
+      name:         'Enterprise Mid',
+      tagline:      t('templates34SubscriptionUpgrade.planMidTagline'),
+      monthly_vnd:  PRICING.MID,
+      monthly_label: t('templates34SubscriptionUpgrade.planMidMonthlyLabel'),
+      unique_kh:    t('templates34SubscriptionUpgrade.planMidUniqueKh'),
+      overage:      t('templates34SubscriptionUpgrade.planMidOverage'),
+      highlight:    true,
+      features: [
+        { ok: true, label: t('templates34SubscriptionUpgrade.planMidFeature1') },
+        { ok: true, label: t('templates34SubscriptionUpgrade.planMidFeature2') },
+        { ok: true, label: t('templates34SubscriptionUpgrade.planMidFeature3') },
+        { ok: true, label: t('templates34SubscriptionUpgrade.planMidFeature4') },
+        { ok: true, label: t('templates34SubscriptionUpgrade.planMidFeature5') },
+      ],
+    },
+    {
+      code:         'MAX',
+      name:         'Enterprise Max',
+      tagline:      t('templates34SubscriptionUpgrade.planMaxTagline'),
+      monthly_vnd:  PRICING.MAX,
+      monthly_label: t('templates34SubscriptionUpgrade.planMaxMonthlyLabel'),
+      unique_kh:    t('templates34SubscriptionUpgrade.planMaxUniqueKh'),
+      overage:      t('templates34SubscriptionUpgrade.planMaxOverage'),
+      features: [
+        { ok: true, label: t('templates34SubscriptionUpgrade.planMaxFeature1') },
+        { ok: true, label: t('templates34SubscriptionUpgrade.planMaxFeature2') },
+        { ok: true, label: t('templates34SubscriptionUpgrade.planMaxFeature3') },
+        { ok: true, label: t('templates34SubscriptionUpgrade.planMaxFeature4') },
+        { ok: true, label: t('templates34SubscriptionUpgrade.planMaxFeature5') },
+      ],
+    },
+    {
+      code:         'ROI',
+      name:         'Enterprise ROI',
+      tagline:      t('templates34SubscriptionUpgrade.planRoiTagline'),
+      monthly_vnd:  PRICING.ROI_BASE,
+      monthly_label: t('templates34SubscriptionUpgrade.planRoiMonthlyLabel'),
+      unique_kh:    t('templates34SubscriptionUpgrade.planRoiUniqueKh'),
+      overage:      t('templates34SubscriptionUpgrade.planRoiOverage', { cap: formatVND(PRICING.ROI_CAP) }),
+      features: [
+        { ok: true, label: t('templates34SubscriptionUpgrade.planRoiFeature1') },
+        { ok: true, label: t('templates34SubscriptionUpgrade.planRoiFeature2') },
+        { ok: true, label: t('templates34SubscriptionUpgrade.planRoiFeature3') },
+        { ok: true, label: t('templates34SubscriptionUpgrade.planRoiFeature4') },
+        { ok: true, label: t('templates34SubscriptionUpgrade.planRoiFeature5') },
+      ],
+    },
+  ];
+}
 
 interface CurrentSubscription {
   plan: PlanCode;
@@ -142,6 +145,8 @@ interface UpgradeEligibility {
 }
 
 export default function SubscriptionUpgradePage() {
+  const t = useT();
+  const PLANS = buildPlans(t);
   const [sub,         setSub]         = useState<CurrentSubscription | null>(null);
   const [eligibility, setEligibility] = useState<UpgradeEligibility | null>(null);
   const [loading,     setLoading]     = useState(true);
@@ -176,7 +181,7 @@ export default function SubscriptionUpgradePage() {
         method: 'POST',
         body:   JSON.stringify({ target_plan: targetPlan }),
       });
-      setSuccess(`Đã gửi yêu cầu nâng cấp lên ${PLANS.find((p) => p.code === targetPlan)?.name ?? targetPlan}. Ops sẽ liên hệ trong 1 ngày làm việc.`);
+      setSuccess(t('templates34SubscriptionUpgrade.successMsg', { planName: PLANS.find((p) => p.code === targetPlan)?.name ?? targetPlan }));
       setTarget(null);
     } catch (err: any) {
       setProblem(err);
@@ -190,12 +195,12 @@ export default function SubscriptionUpgradePage() {
   return (
     <>
       <PageHeader
-        title="Nâng cấp gói cước"
-        description="So sánh 5 gói. Quy đổi đơn vị: 1 khách hàng (DISTINCT customer_external_id) / tháng (K-11)."
+        title={t('templates34SubscriptionUpgrade.pageTitle')}
+        description={t('templates34SubscriptionUpgrade.pageDescription')}
         actions={
           <Button variant="tertiary" onClick={() => (window.location.href = '/p2/subscription')}>
             <ChevronLeft className="w-4 h-4 mr-1" />
-            Quay lại
+            {t('templates34SubscriptionUpgrade.backButton')}
           </Button>
         }
       />
@@ -209,9 +214,13 @@ export default function SubscriptionUpgradePage() {
           <div className="bg-[var(--bg-card)] rounded-md-custom border border-[var(--border-color)] p-3 flex items-start gap-3">
             <Calendar className="w-4 h-4 text-[var(--text-secondary)] shrink-0 mt-0.5" />
             <p className="text-xs text-[var(--text-secondary)]">
-              <span className="font-medium text-[var(--text-primary)]">ENT ROI</span> mở khoá khi bạn ở
-              <span className="font-medium text-[var(--text-primary)]"> Enterprise Max ≥ 3 tháng liên tiếp</span>.
-              Hiện tại: {eligibility.current_plan === 'MAX' ? `${eligibility.max_months_count} / 3 tháng MAX` : 'chưa ở gói MAX'}.
+              <span className="font-medium text-[var(--text-primary)]">{t('templates34SubscriptionUpgrade.entRoiTag')}</span> {t('templates34SubscriptionUpgrade.roiUnlockRun1')}
+              <span className="font-medium text-[var(--text-primary)]"> {t('templates34SubscriptionUpgrade.roiUnlockMaxRequirement')}</span>.
+              {' '}{t('templates34SubscriptionUpgrade.roiCurrentStatus', {
+                status: eligibility.current_plan === 'MAX'
+                  ? t('templates34SubscriptionUpgrade.roiStatusMax', { count: eligibility.max_months_count })
+                  : t('templates34SubscriptionUpgrade.roiStatusNotMax'),
+              })}
             </p>
           </div>
         )}
@@ -242,8 +251,8 @@ export default function SubscriptionUpgradePage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Mọi giao dịch nâng cấp Phase 1 đi qua workflow thủ công (PR #75 / Sprint 3) — ops sẽ chuyển khoản VietQR và xác nhận trong vòng 1 ngày làm việc.
-            Phase 2 sẽ tự động hoá thanh toán + invoice. Đơn vị tính giữ nguyên: <span className="font-medium text-[var(--text-primary)]">DISTINCT customer_external_id</span> / tháng / workspace (K-11).
+            {t('templates34SubscriptionUpgrade.footerNotePrefix')}{' '}
+            <span className="font-medium text-[var(--text-primary)]">DISTINCT customer_external_id</span> {t('templates34SubscriptionUpgrade.footerNoteSuffix')}
           </p>
         </div>
       </div>
@@ -276,6 +285,7 @@ function PlanCard({
   locked: boolean;
   onSelect: () => void;
 }) {
+  const t = useT();
   return (
     <div className={cn(
       'flex flex-col rounded-lg-custom border shadow-soft-sm overflow-hidden',
@@ -290,13 +300,13 @@ function PlanCard({
         {p.highlight && !isCurrent && (
           <Badge variant="current" className="absolute right-3 top-3">
             <Star className="w-3 h-3 mr-1 inline" />
-            Phổ biến
+            {t('templates34SubscriptionUpgrade.badgePopular')}
           </Badge>
         )}
         {isCurrent && (
           <Badge variant="success" className="absolute right-3 top-3">
             <CheckCircle2 className="w-3 h-3 mr-1 inline" />
-            Đang dùng
+            {t('templates34SubscriptionUpgrade.badgeCurrent')}
           </Badge>
         )}
 
@@ -306,16 +316,16 @@ function PlanCard({
         <p className="font-serif text-2xl text-[var(--text-primary)] mt-3">
           {p.code === 'ROI' ? formatVND(PRICING.ROI_BASE) : formatVND(p.monthly_vnd)}
         </p>
-        <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{p.monthly_label} / tháng</p>
+        <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{p.monthly_label} {t('templates34SubscriptionUpgrade.perMonthSuffix')}</p>
       </div>
 
       <div className="px-4 py-4 space-y-3 flex-1">
         <div className="rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)]/40 p-2.5">
-          <p className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">Hạn mức</p>
+          <p className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates34SubscriptionUpgrade.limitLabel')}</p>
           <p className="text-xs font-medium text-[var(--text-primary)] mt-0.5">{p.unique_kh}</p>
         </div>
         <div className="rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)]/40 p-2.5">
-          <p className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">Overage</p>
+          <p className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates34SubscriptionUpgrade.overageLabel')}</p>
           <p className="text-xs text-[var(--text-primary)] mt-0.5 leading-snug">{p.overage}</p>
         </div>
 
@@ -334,26 +344,26 @@ function PlanCard({
       <div className="px-4 py-3 border-t border-[var(--border-color)]/60 bg-[var(--bg-app)]/30">
         {isCurrent ? (
           <Button variant="secondary" disabled className="w-full">
-            Đang dùng gói này
+            {t('templates34SubscriptionUpgrade.btnCurrentPlan')}
           </Button>
         ) : locked ? (
           <Button variant="secondary" disabled className="w-full">
             <Lock className="w-3.5 h-3.5 mr-1.5" />
-            Cần ≥ 3 tháng MAX
+            {t('templates34SubscriptionUpgrade.btnLockedReq')}
           </Button>
         ) : isUpgrade ? (
           <Button onClick={onSelect} className="w-full">
             <ArrowUpRight className="w-3.5 h-3.5 mr-1.5" />
-            Nâng cấp
+            {t('templates34SubscriptionUpgrade.btnUpgrade')}
           </Button>
         ) : isDowngrade ? (
           <Button variant="secondary" onClick={onSelect} className="w-full">
             <ArrowDownRight className="w-3.5 h-3.5 mr-1.5" />
-            Hạ cấp
+            {t('templates34SubscriptionUpgrade.btnDowngrade')}
           </Button>
         ) : (
           <Button onClick={onSelect} className="w-full">
-            Chọn gói
+            {t('templates34SubscriptionUpgrade.btnSelectPlan')}
           </Button>
         )}
       </div>
@@ -374,6 +384,8 @@ function ConfirmUpgradeModal({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  const t = useT();
+  const PLANS = buildPlans(t);
   const targetPlan  = PLANS.find((p) => p.code === target);
   const currentPlan = PLANS.find((p) => p.code === current);
   if (!targetPlan || !currentPlan) return null;
@@ -384,25 +396,29 @@ function ConfirmUpgradeModal({
     <div className="fixed inset-0 z-50 bg-[var(--text-primary)]/40 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-lg w-full max-w-md p-5 animate-slide-up-fade">
         <h3 className="font-serif text-lg text-[var(--text-primary)]">
-          Xác nhận {isUpgrade ? 'nâng cấp' : 'thay đổi gói'}
+          {t('templates34SubscriptionUpgrade.modalTitle', {
+            action: isUpgrade
+              ? t('templates34SubscriptionUpgrade.modalActionUpgrade')
+              : t('templates34SubscriptionUpgrade.modalActionChange'),
+          })}
         </h3>
         <p className="text-sm text-[var(--text-secondary)] mt-1">
-          Yêu cầu sẽ được gửi tới ops để xác nhận thanh toán bằng VietQR (Phase 1 — manual workflow).
+          {t('templates34SubscriptionUpgrade.modalDesc')}
         </p>
 
         <div className="mt-4 space-y-2">
           <div className="rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-app)]/30 p-3">
-            <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Hiện tại</p>
+            <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates34SubscriptionUpgrade.modalCurrentLabel')}</p>
             <p className="font-serif text-sm text-[var(--text-primary)] mt-0.5">{currentPlan.name}</p>
-            <p className="text-xs text-[var(--text-secondary)]">{formatVND(currentPlan.monthly_vnd)} / tháng</p>
+            <p className="text-xs text-[var(--text-secondary)]">{formatVND(currentPlan.monthly_vnd)} {t('templates34SubscriptionUpgrade.perMonthSuffix')}</p>
           </div>
           <div className="flex justify-center text-[var(--primary-gold-dark)]">
             {isUpgrade ? <ArrowUpRight className="w-5 h-5" /> : <ArrowDownRight className="w-5 h-5" />}
           </div>
           <div className="rounded-md-custom border border-[var(--primary-gold)]/40 bg-[var(--primary-gold)]/8 p-3">
-            <p className="text-[11px] uppercase tracking-wider text-[var(--primary-gold-dark)]">Sau khi đổi</p>
+            <p className="text-[11px] uppercase tracking-wider text-[var(--primary-gold-dark)]">{t('templates34SubscriptionUpgrade.modalAfterLabel')}</p>
             <p className="font-serif text-sm text-[var(--text-primary)] mt-0.5">{targetPlan.name}</p>
-            <p className="text-xs text-[var(--text-secondary)]">{targetPlan.monthly_label} / tháng</p>
+            <p className="text-xs text-[var(--text-secondary)]">{targetPlan.monthly_label} {t('templates34SubscriptionUpgrade.perMonthSuffix')}</p>
           </div>
         </div>
 
@@ -410,16 +426,16 @@ function ConfirmUpgradeModal({
           <div className="mt-3 flex items-start gap-2 p-3 rounded-md-custom bg-[var(--state-warning)]/10 border border-[var(--state-warning)]/30 text-xs text-[#9E814D]">
             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
             <p>
-              Hạ cấp sẽ áp dụng từ chu kỳ tháng kế tiếp. Hạn mức tháng hiện tại giữ nguyên cho đến khi gia hạn.
+              {t('templates34SubscriptionUpgrade.downgradeWarning')}
             </p>
           </div>
         )}
 
         <div className="mt-4 flex items-center gap-2 justify-end">
-          <Button variant="tertiary" onClick={onCancel} disabled={confirming}>Huỷ</Button>
+          <Button variant="tertiary" onClick={onCancel} disabled={confirming}>{t('templates34SubscriptionUpgrade.btnCancel')}</Button>
           <Button onClick={onConfirm} isLoading={confirming}>
             {isUpgrade ? <Sparkles className="w-4 h-4 mr-2" /> : null}
-            Xác nhận
+            {t('templates34SubscriptionUpgrade.btnConfirm')}
           </Button>
         </div>
       </div>

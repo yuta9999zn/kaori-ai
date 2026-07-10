@@ -17,6 +17,7 @@ import { Badge, type BadgeTone } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
+import { useT } from "@/lib/i18n/provider";
 
 type VendorType      = "supplier" | "platform" | "consultant" | "agency" | "contractor";
 type ReliabilityTier = "platinum" | "gold" | "silver" | "bronze";
@@ -40,12 +41,12 @@ interface Vendor {
   created_at:         string;
 }
 
-const VENDOR_TYPE_LABEL: Record<VendorType, string> = {
-  supplier:   "Cung ứng",
-  platform:   "Nền tảng",
-  consultant: "Tư vấn",
-  agency:     "Agency",
-  contractor: "Nhà thầu",
+const VENDOR_TYPE_KEY: Record<VendorType, string> = {
+  supplier:   "vendorsPage.typeSupplier",
+  platform:   "vendorsPage.typePlatform",
+  consultant: "vendorsPage.typeConsultant",
+  agency:     "vendorsPage.typeAgency",
+  contractor: "vendorsPage.typeContractor",
 };
 
 const TIER_TONE: Record<ReliabilityTier, BadgeTone> = {
@@ -65,6 +66,7 @@ function fmtVnd(s: string | null): string {
 }
 
 export default function VendorsPage() {
+  const t = useT();
   const [statusFilter, setStatusFilter] = useState<string>("active");
   const [typeFilter,   setTypeFilter]   = useState<string>("");
   const [tierFilter,   setTierFilter]   = useState<string>("");
@@ -84,7 +86,7 @@ export default function VendorsPage() {
   const COLUMNS: Column<Vendor>[] = useMemo(() => [
     {
       key: "code",
-      header: "Mã NCC",
+      header: t("vendorsPage.colCode"),
       render: (r) => (
         <Link href={`/vendors/${r.vendor_id}`} className="text-tiny font-mono text-brand-600 hover:underline">
           {r.code}
@@ -93,7 +95,7 @@ export default function VendorsPage() {
     },
     {
       key: "vendor_name",
-      header: "Nhà cung cấp",
+      header: t("vendorsPage.colVendorName"),
       render: (r) => (
         <div className="min-w-0">
           <Link href={`/vendors/${r.vendor_id}`} className="text-body-strong text-ink hover:text-brand-500 truncate block">
@@ -107,39 +109,39 @@ export default function VendorsPage() {
     },
     {
       key: "vendor_type",
-      header: "Loại",
-      render: (r) => <Badge tone="neutral">{VENDOR_TYPE_LABEL[r.vendor_type] ?? r.vendor_type}</Badge>,
+      header: t("vendorsPage.colType"),
+      render: (r) => <Badge tone="neutral">{r.vendor_type in VENDOR_TYPE_KEY ? t(VENDOR_TYPE_KEY[r.vendor_type]) : r.vendor_type}</Badge>,
     },
     {
       key: "services_offered",
-      header: "Dịch vụ",
+      header: t("vendorsPage.colServices"),
       render: (r) => <span className="text-tiny text-ink-muted truncate block max-w-[200px]">{r.services_offered ?? "—"}</span>,
     },
     {
       key: "country",
-      header: "Quốc gia",
+      header: t("vendorsPage.colCountry"),
       render: (r) => <span className="text-tiny tabular-nums">{r.country}</span>,
     },
     {
       key: "credit_rating",
-      header: "Tín dụng",
+      header: t("vendorsPage.colCredit"),
       render: (r) => r.credit_rating
         ? <Badge tone={r.credit_rating.startsWith("A") ? "success" : r.credit_rating.startsWith("B") ? "warning" : "neutral"}>{r.credit_rating}</Badge>
         : <span className="text-tiny text-[#B0A698]">—</span>,
     },
     {
       key: "reliability_tier",
-      header: "Tier",
+      header: t("vendorsPage.colTier"),
       render: (r) => r.reliability_tier
         ? <Badge tone={TIER_TONE[r.reliability_tier]}>{r.reliability_tier}</Badge>
         : <span className="text-tiny text-[#B0A698]">—</span>,
     },
     {
       key: "managed_by",
-      header: "Phụ trách",
+      header: t("vendorsPage.colManagedBy"),
       render: (r) => <span className="text-tiny text-ink-muted">{r.managed_by ?? "—"}</span>,
     },
-  ], []);
+  ], [t]);
 
   return (
     <div className="space-y-6">
@@ -147,10 +149,10 @@ export default function VendorsPage() {
         <div>
           <h1 className="text-h1 font-serif text-ink flex items-center gap-3">
             <Building2 className="w-6 h-6 text-brand-500" />
-            Nhà cung cấp
+            {t("vendorsPage.title")}
           </h1>
           <p className="text-small text-ink-muted mt-1">
-            Danh sách vendor + dịch vụ, chứng nhận, độ tin cậy. Mig 062 — pilot Vingroup demo.
+            {t("vendorsPage.subtitle")}
           </p>
         </div>
       </div>
@@ -158,25 +160,25 @@ export default function VendorsPage() {
       <Card>
         <CardContent className="pt-4 pb-4">
           <div className="flex items-center gap-4 flex-wrap">
-            <FilterSelect label="Trạng thái" value={statusFilter} onChange={setStatusFilter}
+            <FilterSelect label={t("vendorsPage.filterStatus")} value={statusFilter} onChange={setStatusFilter}
               options={[
-                { value: "", label: "Tất cả" },
-                { value: "active", label: "Đang hoạt động" },
-                { value: "inactive", label: "Tạm ngưng" },
-                { value: "archived", label: "Đã lưu trữ" },
+                { value: "", label: t("vendorsPage.optAll") },
+                { value: "active", label: t("vendorsPage.optActive") },
+                { value: "inactive", label: t("vendorsPage.optInactive") },
+                { value: "archived", label: t("vendorsPage.optArchived") },
               ]} />
-            <FilterSelect label="Loại NCC" value={typeFilter} onChange={setTypeFilter}
+            <FilterSelect label={t("vendorsPage.filterType")} value={typeFilter} onChange={setTypeFilter}
               options={[
-                { value: "", label: "Tất cả" },
-                { value: "supplier", label: "Cung ứng" },
-                { value: "platform", label: "Nền tảng" },
-                { value: "consultant", label: "Tư vấn" },
-                { value: "agency", label: "Agency" },
-                { value: "contractor", label: "Nhà thầu" },
+                { value: "", label: t("vendorsPage.optAll") },
+                { value: "supplier", label: t("vendorsPage.typeSupplier") },
+                { value: "platform", label: t("vendorsPage.typePlatform") },
+                { value: "consultant", label: t("vendorsPage.typeConsultant") },
+                { value: "agency", label: t("vendorsPage.typeAgency") },
+                { value: "contractor", label: t("vendorsPage.typeContractor") },
               ]} />
-            <FilterSelect label="Tier" value={tierFilter} onChange={setTierFilter}
+            <FilterSelect label={t("vendorsPage.filterTier")} value={tierFilter} onChange={setTierFilter}
               options={[
-                { value: "", label: "Tất cả" },
+                { value: "", label: t("vendorsPage.optAll") },
                 { value: "platinum", label: "Platinum" },
                 { value: "gold", label: "Gold" },
                 { value: "silver", label: "Silver" },
@@ -191,17 +193,17 @@ export default function VendorsPage() {
       {isError && (
         <Card className="border-danger-200 bg-danger-50/30">
           <CardContent className="pt-6 text-small text-danger-700 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4" /> Lỗi khi tải vendor.
+            <AlertCircle className="w-4 h-4" /> {t("vendorsPage.errLoad")}
           </CardContent>
         </Card>
       )}
 
       {!isLoading && !isError && (data ?? []).length === 0 && (
-        <EmptyState icon={ShieldQuestion} title="Chưa có nhà cung cấp" description="Đổi bộ lọc hoặc thêm vendor mới." />
+        <EmptyState icon={ShieldQuestion} title={t("vendorsPage.emptyTitle")} description={t("vendorsPage.emptyDesc")} />
       )}
 
       {!isLoading && !isError && (data ?? []).length > 0 && (
-        <DataTable<Vendor> columns={COLUMNS} rows={data ?? []} emptyMessage="Không có vendor nào khớp bộ lọc." />
+        <DataTable<Vendor> columns={COLUMNS} rows={data ?? []} emptyMessage={t("vendorsPage.emptyFiltered")} />
       )}
     </div>
   );

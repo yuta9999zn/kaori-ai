@@ -1,0 +1,128 @@
+{
+  "platformPage.pageTitle": {
+    "vi": "Tổng quan nền tảng",
+    "en": "Platform overview",
+    "ja": "プラットフォーム概要",
+    "ko": "플랫폼 개요",
+    "zh": "平台概览"
+  },
+  "platformPage.pageDescription": {
+    "vi": "Sức khoẻ hạ tầng + đếm tăng trưởng workspace, người dùng, pipeline runs.",
+    "en": "Infrastructure health + growth counts for workspaces, users, and pipeline runs.",
+    "ja": "インフラの状態、ワークスペース・ユーザー・パイプライン実行の成長数を表示します。",
+    "ko": "인프라 상태 + 워크스페이스, 사용자, 파이프라인 실행 성장 지표.",
+    "zh": "基础设施健康状况 + 工作区、用户、数据管道运行的增长计数。"
+  },
+  "platformPage.kpiTotalWorkspaces": {
+    "vi": "Tổng workspaces",
+    "en": "Total workspaces",
+    "ja": "総ワークスペース数",
+    "ko": "전체 워크스페이스",
+    "zh": "工作区总数"
+  },
+  "platformPage.kpiActiveWorkspaces": {
+    "vi": "Đang hoạt động",
+    "en": "Active",
+    "ja": "稼働中",
+    "ko": "활성",
+    "zh": "活跃中"
+  },
+  "platformPage.kpiTotalUsers": {
+    "vi": "Tổng người dùng",
+    "en": "Total users",
+    "ja": "総ユーザー数",
+    "ko": "전체 사용자",
+    "zh": "用户总数"
+  },
+  "platformPage.kpiRunsToday": {
+    "vi": "Runs hôm nay",
+    "en": "Runs today",
+    "ja": "本日の実行数",
+    "ko": "오늘 실행 수",
+    "zh": "今日运行数"
+  },
+  "platformPage.infraSectionTitle": {
+    "vi": "Trạng thái hạ tầng",
+    "en": "Infrastructure status",
+    "ja": "インフラの状態",
+    "ko": "인프라 상태",
+    "zh": "基础设施状态"
+  },
+  "platformPage.infraSectionDescription": {
+    "vi": "Refresh mỗi 60s — cảnh báo khi vượt ngưỡng.",
+    "en": "Refreshes every 60s — alerts when a threshold is exceeded.",
+    "ja": "60秒ごとに更新 — しきい値を超えると警告します。",
+    "ko": "60초마다 새로고침 — 임계값 초과 시 경고.",
+    "zh": "每 60 秒刷新一次 — 超过阈值时告警。"
+  },
+  "platformPage.infraOllamaLabel": {
+    "vi": "Ollama (Qwen2.5)",
+    "en": "Ollama (Qwen2.5)",
+    "ja": "Ollama (Qwen2.5)",
+    "ko": "Ollama (Qwen2.5)",
+    "zh": "Ollama (Qwen2.5)"
+  },
+  "platformPage.infraKafkaLabel": {
+    "vi": "Kafka consumer lag",
+    "en": "Kafka consumer lag",
+    "ja": "Kafka コンシューマーラグ",
+    "ko": "Kafka 컨슈머 지연",
+    "zh": "Kafka 消费延迟"
+  },
+  "platformPage.infraP95Label": {
+    "vi": "P95 latency",
+    "en": "P95 latency",
+    "ja": "P95 レイテンシ",
+    "ko": "P95 지연시간",
+    "zh": "P95 延迟"
+  },
+  "platformPage.statusOnline": {
+    "vi": "Online",
+    "en": "Online",
+    "ja": "オンライン",
+    "ko": "온라인",
+    "zh": "在线"
+  },
+  "platformPage.statusOffline": {
+    "vi": "Offline",
+    "en": "Offline",
+    "ja": "オフライン",
+    "ko": "오프라인",
+    "zh": "离线"
+  },
+  "platformPage.kafkaLagDetail": {
+    "vi": "{count} tin nhắn",
+    "en": "{count} messages",
+    "ja": "{count} 件のメッセージ",
+    "ko": "메시지 {count}개",
+    "zh": "{count} 条消息"
+  },
+  "platformPage.totalRunsAllTime": {
+    "vi": "Tổng pipeline runs tất cả thời gian:",
+    "en": "Total pipeline runs all-time:",
+    "ja": "累計パイプライン実行数:",
+    "ko": "전체 기간 파이프라인 실행 수:",
+    "zh": "历史数据管道运行总数:"
+  },
+  "platformPage.statusOk": {
+    "vi": "OK",
+    "en": "OK",
+    "ja": "OK",
+    "ko": "OK",
+    "zh": "正常"
+  },
+  "platformPage.statusWarn": {
+    "vi": "Chú ý",
+    "en": "Warning",
+    "ja": "注意",
+    "ko": "주의",
+    "zh": "警告"
+  },
+  "platformPage.statusError": {
+    "vi": "Lỗi",
+    "en": "Error",
+    "ja": "エラー",
+    "ko": "오류",
+    "zh": "错误"
+  }
+}

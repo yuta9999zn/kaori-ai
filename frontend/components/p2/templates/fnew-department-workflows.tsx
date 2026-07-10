@@ -36,6 +36,7 @@ import {
 import { PageHeader } from '@/components/p2/shell';
 import { SkeletonCardGrid, SkeletonStatTiles } from '@/components/p2/skeleton';
 import { formatProblem } from '@/lib/i18n/messages';
+import { useT } from '@/lib/i18n/provider';
 
 // ─── Types ─────────────────────────────────────────────────────────
 
@@ -92,27 +93,28 @@ interface CrossLink {
   crosses_division:        boolean;
 }
 
-const DEPT_META: Record<DeptType, { label_vi: string; color: string; icon: string }> = {
-  marketing:        { label_vi: 'Marketing',  color: 'text-pink-700 bg-pink-50',     icon: '📣' },
-  sales:            { label_vi: 'Sales',      color: 'text-blue-700 bg-blue-50',     icon: '💼' },
-  customer_service: { label_vi: 'CSKH',       color: 'text-purple-700 bg-purple-50', icon: '🎧' },
-  warehouse:        { label_vi: 'Kho vận',    color: 'text-green-700 bg-green-50',   icon: '📦' },
-  hr:               { label_vi: 'Nhân sự',    color: 'text-amber-700 bg-amber-50',   icon: '👥' },
-  finance:          { label_vi: 'Tài chính',  color: 'text-teal-700 bg-teal-50',     icon: '💰' },
-  custom:           { label_vi: 'Tùy chỉnh', color: 'text-gray-700 bg-gray-50',     icon: '⚙️' },
+const DEPT_META: Record<DeptType, { labelKey: string; color: string; icon: string }> = {
+  marketing:        { labelKey: 'templatesFnewDepartmentWorkflows.deptMarketing',        color: 'text-pink-700 bg-pink-50',     icon: '📣' },
+  sales:            { labelKey: 'templatesFnewDepartmentWorkflows.deptSales',            color: 'text-blue-700 bg-blue-50',     icon: '💼' },
+  customer_service: { labelKey: 'templatesFnewDepartmentWorkflows.deptCustomerService',  color: 'text-purple-700 bg-purple-50', icon: '🎧' },
+  warehouse:        { labelKey: 'templatesFnewDepartmentWorkflows.deptWarehouse',        color: 'text-green-700 bg-green-50',   icon: '📦' },
+  hr:               { labelKey: 'templatesFnewDepartmentWorkflows.deptHr',               color: 'text-amber-700 bg-amber-50',   icon: '👥' },
+  finance:          { labelKey: 'templatesFnewDepartmentWorkflows.deptFinance',          color: 'text-teal-700 bg-teal-50',     icon: '💰' },
+  custom:           { labelKey: 'templatesFnewDepartmentWorkflows.deptCustom',           color: 'text-gray-700 bg-gray-50',     icon: '⚙️' },
 };
 
-const STATE_META: Record<WorkflowState, { label_vi: string; variant: 'default' | 'success' | 'warning' | 'destructive' }> = {
-  DRAFT:           { label_vi: 'Bản nháp',  variant: 'default' },
-  TESTING:         { label_vi: 'Đang test', variant: 'warning' },
-  ACTIVE_BASELINE: { label_vi: 'Đang chạy', variant: 'success' },
-  ARCHIVED:        { label_vi: 'Lưu trữ',   variant: 'default' },
-  BROKEN:          { label_vi: 'Lỗi',       variant: 'destructive' },
+const STATE_META: Record<WorkflowState, { labelKey: string; variant: 'default' | 'success' | 'warning' | 'destructive' }> = {
+  DRAFT:           { labelKey: 'templatesFnewDepartmentWorkflows.stateDraft',   variant: 'default' },
+  TESTING:         { labelKey: 'templatesFnewDepartmentWorkflows.stateTesting', variant: 'warning' },
+  ACTIVE_BASELINE: { labelKey: 'templatesFnewDepartmentWorkflows.stateActive',  variant: 'success' },
+  ARCHIVED:        { labelKey: 'templatesFnewDepartmentWorkflows.stateArchived', variant: 'default' },
+  BROKEN:          { labelKey: 'templatesFnewDepartmentWorkflows.stateBroken',  variant: 'destructive' },
 };
 
 // ─── Page ──────────────────────────────────────────────────────────
 
 export default function DepartmentWorkflowsPage({ departmentId }: { departmentId: string }) {
+  const t = useT();
   const [dept, setDept] = useState<DepartmentDetail | null>(null);
   const [workflows, setWorkflows] = useState<WorkflowRow[]>([]);
   const [crossLinks, setCrossLinks] = useState<CrossLink[]>([]);
@@ -199,24 +201,27 @@ export default function DepartmentWorkflowsPage({ departmentId }: { departmentId
   return (
     <>
       <PageHeader
-        title={dept ? `${meta.icon} ${meta.label_vi}` : 'Phòng ban'}
+        title={dept ? `${meta.icon} ${t(meta.labelKey)}` : t('templatesFnewDepartmentWorkflows.deptFallback')}
         description={
           dept
-            ? `${dept.workflow_count} workflow của phòng ${meta.label_vi} ${
-                dept.enterprise_name ? `· ${dept.enterprise_name}` : ''
-              }${dept.branch_name ? ` · CN ${dept.branch_name}` : ''}`
-            : 'Đang tải thông tin phòng ban…'
+            ? t('templatesFnewDepartmentWorkflows.headerDesc', {
+                count: String(dept.workflow_count),
+                dept: t(meta.labelKey),
+                enterprise: dept.enterprise_name ? `· ${dept.enterprise_name}` : '',
+                branch: dept.branch_name ? ` · ${t('templatesFnewDepartmentWorkflows.branchAbbr')} ${dept.branch_name}` : '',
+              })
+            : t('templatesFnewDepartmentWorkflows.loadingDept')
         }
         actions={
           <>
             <a href="/p2/workflows">
               <Button variant="tertiary" size="md">
-                <ArrowLeft className="w-4 h-4 mr-2" /> Tất cả phòng ban
+                <ArrowLeft className="w-4 h-4 mr-2" /> {t('templatesFnewDepartmentWorkflows.allDepartments')}
               </Button>
             </a>
             <a href={newWorkflowHref}>
               <Button variant="primary" size="md">
-                <Plus className="w-4 h-4 mr-2" /> Tạo workflow cho phòng này
+                <Plus className="w-4 h-4 mr-2" /> {t('templatesFnewDepartmentWorkflows.createWorkflowForDept')}
               </Button>
             </a>
           </>
@@ -231,11 +236,11 @@ export default function DepartmentWorkflowsPage({ departmentId }: { departmentId
           <SkeletonStatTiles count={5} />
         ) : (
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-            <StatTile label="Tổng workflow" value={stats.total}     icon={WorkflowIcon} />
-            <StatTile label="Đang chạy"     value={stats.active}    icon={CheckCircle2} tone="text-emerald-700" />
-            <StatTile label="Đang test"     value={stats.testing}   icon={AlertCircle}  tone="text-amber-700" />
-            <StatTile label="Bản nháp"      value={stats.drafts}    icon={FileText}     tone="text-slate-700" />
-            <StatTile label="Cross-link"    value={stats.crossLink} icon={GitBranch}    tone="text-violet-700" />
+            <StatTile label={t('templatesFnewDepartmentWorkflows.statTotal')}     value={stats.total}     icon={WorkflowIcon} />
+            <StatTile label={t('templatesFnewDepartmentWorkflows.statActive')}    value={stats.active}    icon={CheckCircle2} tone="text-emerald-700" />
+            <StatTile label={t('templatesFnewDepartmentWorkflows.statTesting')}   value={stats.testing}   icon={AlertCircle}  tone="text-amber-700" />
+            <StatTile label={t('templatesFnewDepartmentWorkflows.statDrafts')}    value={stats.drafts}    icon={FileText}     tone="text-slate-700" />
+            <StatTile label={t('templatesFnewDepartmentWorkflows.statCrossLink')} value={stats.crossLink} icon={GitBranch}    tone="text-violet-700" />
           </div>
         )}
 
@@ -248,19 +253,19 @@ export default function DepartmentWorkflowsPage({ departmentId }: { departmentId
               {dept.branch_name && (
                 <>
                   <span>›</span>
-                  <span>CN {dept.branch_name}</span>
+                  <span>{t('templatesFnewDepartmentWorkflows.branchAbbr')} {dept.branch_name}</span>
                 </>
               )}
               <span>›</span>
               <span className={cn('px-2 py-0.5 rounded text-[11px] font-medium', meta.color)}>
-                {meta.label_vi}
+                {t(meta.labelKey)}
               </span>
               <span className="ml-auto inline-flex items-center gap-1 text-[10px]">
                 <a
                   href={`/p2/org-tree?enterprise_id=${encodeURIComponent(dept.enterprise_id)}`}
                   className="text-[var(--primary-gold-dark)] hover:underline"
                 >
-                  Xem cây tổ chức →
+                  {t('templatesFnewDepartmentWorkflows.viewOrgTree')} →
                 </a>
               </span>
             </div>
@@ -278,7 +283,7 @@ export default function DepartmentWorkflowsPage({ departmentId }: { departmentId
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm workflow trong phòng này…"
+              placeholder={t('templatesFnewDepartmentWorkflows.searchPlaceholder')}
               className="w-full pl-9 pr-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
             />
           </div>
@@ -288,11 +293,11 @@ export default function DepartmentWorkflowsPage({ departmentId }: { departmentId
               onChange={(e) => setStateFilter(e.target.value as any)}
               className="appearance-none h-9 pl-3 pr-9 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 cursor-pointer"
             >
-              <option value="all">Trạng thái: Tất cả</option>
-              <option value="DRAFT">Bản nháp</option>
-              <option value="TESTING">Đang test</option>
-              <option value="ACTIVE_BASELINE">Đang chạy</option>
-              <option value="ARCHIVED">Lưu trữ</option>
+              <option value="all">{t('templatesFnewDepartmentWorkflows.filterAll')}</option>
+              <option value="DRAFT">{t('templatesFnewDepartmentWorkflows.stateDraft')}</option>
+              <option value="TESTING">{t('templatesFnewDepartmentWorkflows.stateTesting')}</option>
+              <option value="ACTIVE_BASELINE">{t('templatesFnewDepartmentWorkflows.stateActive')}</option>
+              <option value="ARCHIVED">{t('templatesFnewDepartmentWorkflows.stateArchived')}</option>
             </select>
             <ChevronDown className="w-3.5 h-3.5 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
@@ -335,6 +340,7 @@ function StatTile({
 }
 
 function WorkflowCard({ wf }: { wf: WorkflowRow }) {
+  const t = useT();
   const state = STATE_META[wf.state] ?? STATE_META.DRAFT;
   return (
     <a
@@ -345,7 +351,7 @@ function WorkflowCard({ wf }: { wf: WorkflowRow }) {
         <div className="w-10 h-10 rounded-md-custom bg-[var(--primary-gold)]/10 flex items-center justify-center shrink-0">
           <WorkflowIcon className="w-5 h-5 text-[var(--primary-gold-dark)]" />
         </div>
-        <Badge variant={state.variant}>{state.label_vi}</Badge>
+        <Badge variant={state.variant}>{t(state.labelKey)}</Badge>
       </div>
       <h3 className="font-serif text-base text-[var(--text-primary)] group-hover:text-[var(--primary-gold-dark)] transition-colors line-clamp-1">
         {wf.name_vi || wf.name}
@@ -356,33 +362,34 @@ function WorkflowCard({ wf }: { wf: WorkflowRow }) {
       <div className="mt-3 pt-3 border-t border-[var(--border-color)]/60 flex items-center justify-between text-[11px]">
         <span className="text-[var(--text-secondary)]">v{wf.version}</span>
         <span className="text-[var(--text-secondary)]">
-          {wf.source === 'template_based' ? '📋 từ template' :
-           wf.source === 'process_mining_discovered' ? '🔍 process-mining' :
-                                                       '✏️ tự xây'}
+          {wf.source === 'template_based' ? `📋 ${t('templatesFnewDepartmentWorkflows.sourceTemplate')}` :
+           wf.source === 'process_mining_discovered' ? `🔍 ${t('templatesFnewDepartmentWorkflows.sourceProcessMining')}` :
+                                                       `✏️ ${t('templatesFnewDepartmentWorkflows.sourceSelfBuilt')}`}
         </span>
       </div>
       <div className="mt-3 inline-flex items-center text-xs font-medium text-[var(--primary-gold-dark)] group-hover:translate-x-0.5 transition-transform">
-        Mở workflow <ArrowRight className="w-3 h-3 ml-1" />
+        {t('templatesFnewDepartmentWorkflows.openWorkflow')} <ArrowRight className="w-3 h-3 ml-1" />
       </div>
     </a>
   );
 }
 
 function EmptyState({ newHref, hasAny }: { newHref: string; hasAny: boolean }) {
+  const t = useT();
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom py-16 text-center px-6">
       <WorkflowIcon className="w-12 h-12 mx-auto text-[var(--text-secondary)]/40 mb-3" />
       <h3 className="font-serif text-lg text-[var(--text-primary)] mb-2">
-        {hasAny ? 'Không có workflow khớp lọc' : 'Phòng ban này chưa có workflow'}
+        {hasAny ? t('templatesFnewDepartmentWorkflows.emptyNoMatchTitle') : t('templatesFnewDepartmentWorkflows.emptyNoWorkflowTitle')}
       </h3>
       <p className="text-sm text-[var(--text-secondary)] max-w-md mx-auto mb-4">
         {hasAny
-          ? 'Thử bỏ lọc trạng thái / xóa từ khóa tìm kiếm.'
-          : 'Tạo workflow đầu tiên cho phòng này. Có thể bắt đầu trắng hoặc clone từ template.'}
+          ? t('templatesFnewDepartmentWorkflows.emptyNoMatchDesc')
+          : t('templatesFnewDepartmentWorkflows.emptyNoWorkflowDesc')}
       </p>
       {!hasAny && (
         <a href={newHref}>
-          <Button variant="primary" size="md"><Plus className="w-4 h-4 mr-2" /> Tạo workflow đầu tiên</Button>
+          <Button variant="primary" size="md"><Plus className="w-4 h-4 mr-2" /> {t('templatesFnewDepartmentWorkflows.createFirstWorkflow')}</Button>
         </a>
       )}
     </div>
@@ -396,16 +403,17 @@ function EmptyState({ newHref, hasAny }: { newHref: string; hasAny: boolean }) {
 // other subsidiaries.
 
 function CrossLinkPanel({ links, ownWorkflowIds }: { links: CrossLink[]; ownWorkflowIds: Set<string> }) {
+  const t = useT();
   return (
     <div className="bg-[var(--bg-card)] border border-violet-200 rounded-lg-custom p-5 shadow-soft-sm">
       <header className="flex items-center justify-between mb-3 pb-3 border-b border-violet-100">
         <div className="flex items-center gap-2">
           <GitBranch className="w-5 h-5 text-violet-700" />
           <h3 className="font-serif text-base text-[var(--text-primary)]">
-            Kết nối xuyên phòng ban / chi nhánh / mảng
+            {t('templatesFnewDepartmentWorkflows.crossLinkTitle')}
           </h3>
         </div>
-        <span className="text-xs text-[var(--text-secondary)]">{links.length} kết nối</span>
+        <span className="text-xs text-[var(--text-secondary)]">{t('templatesFnewDepartmentWorkflows.crossLinkCount', { count: String(links.length) })}</span>
       </header>
 
       <div className="space-y-2">
@@ -416,7 +424,7 @@ function CrossLinkPanel({ links, ownWorkflowIds }: { links: CrossLink[]; ownWork
             <div key={l.link_id} className="flex items-center gap-2 text-xs p-2 bg-violet-50/40 rounded">
               <a href={`/p2/workflows/${l.source_workflow_id}`}
                  className="font-medium text-[var(--text-primary)] hover:text-[var(--primary-gold-dark)] truncate max-w-[200px]">
-                {l.source_workflow_name_vi || l.source_workflow_name || '(workflow)'}
+                {l.source_workflow_name_vi || l.source_workflow_name || t('templatesFnewDepartmentWorkflows.unnamedWorkflow')}
               </a>
               <span className="text-[10px] text-violet-700 font-medium px-1.5 py-0.5 rounded bg-violet-100 border border-violet-200 shrink-0">
                 {l.link_type}
@@ -424,20 +432,20 @@ function CrossLinkPanel({ links, ownWorkflowIds }: { links: CrossLink[]; ownWork
               <ArrowRight className="w-3 h-3 text-violet-600 shrink-0" />
               <a href={`/p2/workflows/${l.target_workflow_id}`}
                  className="font-medium text-[var(--text-primary)] hover:text-[var(--primary-gold-dark)] truncate max-w-[200px]">
-                {l.target_workflow_name_vi || l.target_workflow_name || '(workflow)'}
+                {l.target_workflow_name_vi || l.target_workflow_name || t('templatesFnewDepartmentWorkflows.unnamedWorkflow')}
               </a>
               <div className="ml-auto flex gap-1 flex-wrap shrink-0">
                 {l.crosses_department && (
-                  <Pill color="amber">→ phòng khác</Pill>
+                  <Pill color="amber">→ {t('templatesFnewDepartmentWorkflows.crossesDepartment')}</Pill>
                 )}
                 {l.crosses_branch && (
-                  <Pill color="blue">→ chi nhánh khác</Pill>
+                  <Pill color="blue">→ {t('templatesFnewDepartmentWorkflows.crossesBranch')}</Pill>
                 )}
                 {l.crosses_enterprise && (
-                  <Pill color="violet">→ cty con khác</Pill>
+                  <Pill color="violet">→ {t('templatesFnewDepartmentWorkflows.crossesEnterprise')}</Pill>
                 )}
                 {l.crosses_division && (
-                  <Pill color="rose">→ mảng khác</Pill>
+                  <Pill color="rose">→ {t('templatesFnewDepartmentWorkflows.crossesDivision')}</Pill>
                 )}
               </div>
             </div>
@@ -445,7 +453,7 @@ function CrossLinkPanel({ links, ownWorkflowIds }: { links: CrossLink[]; ownWork
         })}
         {links.length > 10 && (
           <p className="text-[11px] text-[var(--text-secondary)] italic text-center pt-2">
-            +{links.length - 10} kết nối khác — mở từng workflow để xem chi tiết.
+            {t('templatesFnewDepartmentWorkflows.crossLinkMore', { count: String(links.length - 10) })}
           </p>
         )}
       </div>

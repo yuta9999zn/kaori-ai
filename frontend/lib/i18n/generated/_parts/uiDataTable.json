@@ -1,0 +1,4 @@
+{
+  "uiDataTable.empty": { "vi": "Chưa có dữ liệu", "en": "No data yet", "ja": "データがありません", "ko": "데이터가 없습니다", "zh": "暂无数据" },
+  "uiDataTable.pageInfo": { "vi": "Trang {page} / {totalPages} · {total} dòng", "en": "Page {page} / {totalPages} · {total} rows", "ja": "{page} / {totalPages} ページ · {total} 行", "ko": "{page} / {totalPages} 페이지 · {total} 행", "zh": "第 {page} / {totalPages} 页 · {total} 行" }
+}

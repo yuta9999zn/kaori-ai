@@ -38,6 +38,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type PlanCode = 'PILOT' | 'BASIC' | 'MID' | 'MAX' | 'ROI';
 type AlertLvl = 'none' | 'warning' | 'critical';
 
@@ -80,6 +81,7 @@ const PLAN_NAMES: Record<PlanCode, string> = {
 };
 
 export default function SubscriptionPage() {
+  const t = useT();
   const [tab, setTab] = useState<'quota' | 'plan' | 'history'>('quota');
 
   const [sub,     setSub]     = useState<CurrentSubscription | null>(null);
@@ -112,17 +114,17 @@ export default function SubscriptionPage() {
   return (
     <>
       <PageHeader
-        title="Gói cước & Hạn mức"
-        description="Theo dõi mức sử dụng tháng + so sánh kế hoạch + lịch sử thanh toán."
+        title={t('templates33SubscriptionQuotaScreen.pageTitle')}
+        description={t('templates33SubscriptionQuotaScreen.pageDescription')}
         actions={
           <>
             <Button variant="secondary" onClick={load}>
               <RefreshCw className="w-4 h-4 mr-2" />
-              Làm mới
+              {t('templates33SubscriptionQuotaScreen.refresh')}
             </Button>
             <Button onClick={() => (window.location.href = '/p2/subscription/upgrade')}>
               <ArrowUpRight className="w-4 h-4 mr-2" />
-              Nâng cấp gói
+              {t('templates33SubscriptionQuotaScreen.upgradePlan')}
             </Button>
           </>
         }
@@ -137,14 +139,16 @@ export default function SubscriptionPage() {
             <div className="flex items-start gap-3">
               <AlertTriangle className="w-5 h-5 text-[var(--state-error)] shrink-0 mt-0.5" />
               <div className="flex-1">
-                <p className="font-serif text-base text-[#9B5050]">Sắp chạm giới hạn ({pct(quota)}%)</p>
+                <p className="font-serif text-base text-[#9B5050]">{t('templates33SubscriptionQuotaScreen.criticalTitle', { pct: pct(quota) })}</p>
                 <p className="text-sm text-[var(--text-primary)] mt-1">
-                  Đã dùng {quota.current_unique_customers.toLocaleString('vi-VN')} / {quota.plan_limit_unique_customers.toLocaleString('vi-VN')} khách hàng tháng này.
-                  Vượt hạn mức sẽ bị tính phí overage hoặc gián đoạn — nâng cấp ngay để tránh.
+                  {t('templates33SubscriptionQuotaScreen.criticalBody', {
+                    current: quota.current_unique_customers.toLocaleString('vi-VN'),
+                    limit: quota.plan_limit_unique_customers.toLocaleString('vi-VN'),
+                  })}
                 </p>
               </div>
               <Button variant="destructive" size="sm" onClick={() => (window.location.href = '/p2/subscription/upgrade')}>
-                Nâng cấp ngay
+                {t('templates33SubscriptionQuotaScreen.upgradeNow')}
               </Button>
             </div>
           </div>
@@ -155,16 +159,16 @@ export default function SubscriptionPage() {
           <div className="bg-[var(--state-warning)]/10 border border-[var(--state-warning)]/30 rounded-md-custom p-3 flex items-start gap-3">
             <AlertTriangle className="w-4 h-4 text-[var(--state-warning)] shrink-0 mt-0.5" />
             <p className="text-sm text-[#9E814D]">
-              Đã dùng {pct(quota)}% hạn mức tháng này. Cân nhắc nâng cấp trước khi chạm 95% để tránh overage.
+              {t('templates33SubscriptionQuotaScreen.warningBody', { pct: pct(quota) })}
             </p>
           </div>
         )}
 
         {/* Tabs */}
         <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-1.5 shadow-soft-sm flex flex-wrap gap-1">
-          <TabButton active={tab === 'quota'}   onClick={() => setTab('quota')}   icon={Activity} label="Hạn mức tháng này" />
-          <TabButton active={tab === 'plan'}    onClick={() => setTab('plan')}    icon={CreditCard} label="Gói hiện tại" />
-          <TabButton active={tab === 'history'} onClick={() => setTab('history')} icon={History}    label="Lịch sử thanh toán" />
+          <TabButton active={tab === 'quota'}   onClick={() => setTab('quota')}   icon={Activity} label={t('templates33SubscriptionQuotaScreen.tabQuota')} />
+          <TabButton active={tab === 'plan'}    onClick={() => setTab('plan')}    icon={CreditCard} label={t('templates33SubscriptionQuotaScreen.tabPlan')} />
+          <TabButton active={tab === 'history'} onClick={() => setTab('history')} icon={History}    label={t('templates33SubscriptionQuotaScreen.tabHistory')} />
         </div>
 
         {loading && !sub ? (
@@ -181,9 +185,9 @@ export default function SubscriptionPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            <span className="font-medium text-[var(--text-primary)]">K-11 — Đơn vị tính:</span> mỗi khách hàng (
-            <span className="font-mono">customer_external_id</span>) chỉ đếm 1 lần / tháng / workspace dù xuất hiện trong nhiều file. Bản ghi
-            <span className="font-mono"> enterprise_monthly_billing</span> là immutable (UPSERT, không xóa).
+            <span className="font-medium text-[var(--text-primary)]">{t('templates33SubscriptionQuotaScreen.k11Label')}</span> {t('templates33SubscriptionQuotaScreen.k11Part1')} (
+            <span className="font-mono">customer_external_id</span>) {t('templates33SubscriptionQuotaScreen.k11Part2')}
+            <span className="font-mono"> enterprise_monthly_billing</span> {t('templates33SubscriptionQuotaScreen.k11Part3')}
           </p>
         </div>
       </div>
@@ -222,6 +226,7 @@ function TabButton({
 function QuotaTab({
   quota, sub,
 }: { quota: QuotaSnapshot | null; sub: CurrentSubscription | null }) {
+  const t = useT();
   if (!quota || !sub) return null;
 
   return (
@@ -229,30 +234,29 @@ function QuotaTab({
       <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm">
         <div className="flex items-start justify-between gap-3 flex-wrap mb-4">
           <div>
-            <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Số khách hàng xử lý trong tháng (K-11)</p>
+            <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates33SubscriptionQuotaScreen.monthlyCustomers')}</p>
             <p className="font-serif text-3xl text-[var(--text-primary)] mt-1">
               {quota.current_unique_customers.toLocaleString('vi-VN')}
               <span className="text-base text-[var(--text-secondary)] font-normal"> / {quota.plan_limit_unique_customers.toLocaleString('vi-VN')}</span>
             </p>
             <p className="text-xs text-[var(--text-secondary)] mt-1">
-              Chu kỳ: {quota.cycle_start} → {quota.cycle_end}
+              {t('templates33SubscriptionQuotaScreen.cycleRange', { start: quota.cycle_start, end: quota.cycle_end })}
             </p>
           </div>
           <Badge variant="current">
             <CreditCard className="w-3 h-3 mr-1 inline" />
-            Gói {PLAN_NAMES[sub.plan]}
+            {t('templates33SubscriptionQuotaScreen.planBadge', { plan: PLAN_NAMES[sub.plan] })}
           </Badge>
         </div>
 
         <QuotaBar
           current={quota.current_unique_customers}
           limit={quota.plan_limit_unique_customers}
-          unit="khách hàng"
+          unit={t('templates33SubscriptionQuotaScreen.unitCustomer')}
         />
 
         <p className="text-xs text-[var(--text-secondary)] mt-3 leading-relaxed">
-          Đơn vị tính = <span className="font-mono">COUNT(DISTINCT customer_external_id)</span> / workspace / tháng — chống split-batch gaming.
-          Vượt hạn mức trên các gói có overage (Basic / Mid / Max) sẽ tự động tính phí; gói Pilot bắt buộc nâng cấp trước khi vượt.
+          {t('templates33SubscriptionQuotaScreen.quotaUnitPrefix')} <span className="font-mono">COUNT(DISTINCT customer_external_id)</span> {t('templates33SubscriptionQuotaScreen.quotaUnitSuffix')}
         </p>
       </div>
     </div>
@@ -260,7 +264,9 @@ function QuotaTab({
 }
 
 function PlanTab({ sub }: { sub: CurrentSubscription | null }) {
+  const t = useT();
   if (!sub) return null;
+  const customerLimit = sub.plan === 'PILOT' ? '500' : sub.plan === 'BASIC' ? '1.000' : sub.plan === 'MID' ? '4.000' : '10.000+';
   return (
     <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
       <div className="px-5 py-4 border-b border-[var(--border-color)]/60 bg-[var(--primary-gold)]/4 flex items-center justify-between gap-3 flex-wrap">
@@ -270,12 +276,12 @@ function PlanTab({ sub }: { sub: CurrentSubscription | null }) {
           </div>
           <div>
             <h3 className="font-serif text-lg text-[var(--text-primary)]">{PLAN_NAMES[sub.plan]}</h3>
-            <p className="text-xs text-[var(--text-secondary)]">Bắt đầu {sub.started_at} · Gia hạn {sub.renews_at}</p>
+            <p className="text-xs text-[var(--text-secondary)]">{t('templates33SubscriptionQuotaScreen.planStartedRenews', { started: sub.started_at, renews: sub.renews_at })}</p>
           </div>
         </div>
         <div className="text-right">
           <p className="font-serif text-2xl text-[var(--text-primary)]">{formatVND(sub.monthly_vnd)}</p>
-          <p className="text-xs text-[var(--text-secondary)]">{formatVNDLong(sub.monthly_vnd)} / tháng</p>
+          <p className="text-xs text-[var(--text-secondary)]">{t('templates33SubscriptionQuotaScreen.perMonth', { amount: formatVNDLong(sub.monthly_vnd) })}</p>
         </div>
       </div>
 
@@ -286,29 +292,29 @@ function PlanTab({ sub }: { sub: CurrentSubscription | null }) {
             <div className="text-sm">
               <p className="font-medium text-[var(--text-primary)]">ENT ROI tier</p>
               <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                Phí cố định {formatVND(PRICING.ROI_BASE)} + 1.5% doanh thu cứu được (
-                {sub.roi_revenue_saved_pct != null && <>tháng này đã đóng góp {sub.roi_revenue_saved_pct.toFixed(1)}%, </>}
-                tối đa {formatVND(PRICING.ROI_CAP)}).
+                {t('templates33SubscriptionQuotaScreen.roiFeeLead', { base: formatVND(PRICING.ROI_BASE) })} (
+                {sub.roi_revenue_saved_pct != null && <>{t('templates33SubscriptionQuotaScreen.roiContribution', { pct: sub.roi_revenue_saved_pct.toFixed(1) })}</>}
+                {t('templates33SubscriptionQuotaScreen.roiCapLead', { cap: formatVND(PRICING.ROI_CAP) })}).
               </p>
             </div>
           </div>
         )}
 
-        <Feature ok title="Toàn bộ template phân tích Phase 1" />
-        <Feature ok title={`Hạn mức ${sub.plan === 'PILOT' ? '500' : sub.plan === 'BASIC' ? '1.000' : sub.plan === 'MID' ? '4.000' : '10.000+'} khách hàng / tháng`} />
-        <Feature ok title="Qwen 2.5 nội bộ — không tốn quota AI bên ngoài" />
+        <Feature ok title={t('templates33SubscriptionQuotaScreen.featureAllTemplates')} />
+        <Feature ok title={t('templates33SubscriptionQuotaScreen.featureQuotaLimit', { limit: customerLimit })} />
+        <Feature ok title={t('templates33SubscriptionQuotaScreen.featureQwenLocal')} />
         <Feature ok title="Audit log K-6 + RLS NOBYPASSRLS" />
-        <Feature ok={sub.plan !== 'PILOT'} title="Overage VND theo gói (PILOT bắt buộc nâng cấp khi đầy)" />
-        <Feature ok={sub.plan === 'MAX' || sub.plan === 'ROI'} title="Tuỳ chọn ENT ROI 8M + 1.5% doanh thu cứu được (cap 20M)" />
+        <Feature ok={sub.plan !== 'PILOT'} title={t('templates33SubscriptionQuotaScreen.featureOverage')} />
+        <Feature ok={sub.plan === 'MAX' || sub.plan === 'ROI'} title={t('templates33SubscriptionQuotaScreen.featureRoiOption')} />
       </div>
 
       <div className="px-5 py-4 border-t border-[var(--border-color)]/60 bg-[var(--bg-app)]/30 flex items-center justify-between gap-3 flex-wrap">
         <p className="text-xs text-[var(--text-secondary)]">
-          Mọi giao dịch ghi vào <span className="font-mono">enterprise_monthly_billing</span> (immutable, UPSERT).
+          {t('templates33SubscriptionQuotaScreen.billingLedgerPrefix')} <span className="font-mono">enterprise_monthly_billing</span> {t('templates33SubscriptionQuotaScreen.billingLedgerSuffix')}
         </p>
         <Button onClick={() => (window.location.href = '/p2/subscription/upgrade')}>
           <ArrowUpRight className="w-4 h-4 mr-2" />
-          So sánh & nâng cấp
+          {t('templates33SubscriptionQuotaScreen.compareUpgrade')}
         </Button>
       </div>
     </div>
@@ -316,19 +322,20 @@ function PlanTab({ sub }: { sub: CurrentSubscription | null }) {
 }
 
 function HistoryTab({ rows }: { rows: HistoryRow[] }) {
+  const t = useT();
   return (
     <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-[var(--bg-app)]/50 border-b border-[var(--border-color)]/60">
             <tr>
-              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Tháng</th>
-              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Gói</th>
-              <th className="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Khách hàng</th>
-              <th className="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Phí cơ bản</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">{t('templates33SubscriptionQuotaScreen.colMonth')}</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">{t('templates33SubscriptionQuotaScreen.colPlan')}</th>
+              <th className="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">{t('templates33SubscriptionQuotaScreen.colCustomers')}</th>
+              <th className="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">{t('templates33SubscriptionQuotaScreen.colBaseFee')}</th>
               <th className="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Overage</th>
-              <th className="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Tổng cộng</th>
-              <th className="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Hoá đơn</th>
+              <th className="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">{t('templates33SubscriptionQuotaScreen.colTotal')}</th>
+              <th className="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">{t('templates33SubscriptionQuotaScreen.colInvoice')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--border-color)]/60">
@@ -336,7 +343,7 @@ function HistoryTab({ rows }: { rows: HistoryRow[] }) {
               <tr>
                 <td colSpan={7} className="px-4 py-12 text-center text-[var(--text-secondary)] text-sm">
                   <Calendar className="w-8 h-8 mx-auto mb-2 text-[var(--text-secondary)]/40" />
-                  Chưa có lịch sử thanh toán.
+                  {t('templates33SubscriptionQuotaScreen.noHistory')}
                 </td>
               </tr>
             ) : rows.map((r) => (

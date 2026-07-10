@@ -29,6 +29,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type PipelineStatus = 'schema_review' | 'analyzing' | 'analysis_complete' | 'failed';
 
 interface PipelineRun {
@@ -46,28 +47,37 @@ interface PipelineRun {
   error?:       { title: string; detail?: string };
 }
 
-// BE pipeline_runs.status carries the full lifecycle (uploading → bronze →
-// schema → silver → analyzing → done/error), not just the 4 FE display states
-// the wizard badge knew about. Listing a run whose status wasn't a key here
-// crashed the WHOLE page: `STATUS_META[r.status].icon` threw on undefined
-// (the GET /pipelines call itself returns 200 — this was a pure render crash).
-// Cover every real status; `done`/`error` synonyms are normalised in mapBeRow.
-const STATUS_META: Record<string, any> = {
-  uploading:            { variant: 'info',    label: 'Đang tải lên',   icon: Clock },
-  bronze_complete:      { variant: 'info',    label: 'Đã nhận file',   icon: Clock },
-  unstructured_pending: { variant: 'info',    label: 'Chờ trích xuất', icon: Clock },
-  schema_review:        { variant: 'info',    label: 'Chờ duyệt cột',  icon: Eye },
-  cleaning:             { variant: 'warning', label: 'Đang làm sạch',  icon: Activity },
-  silver_complete:      { variant: 'info',    label: 'Đã làm sạch',    icon: CheckCircle2 },
-  analyzing:            { variant: 'warning', label: 'Đang phân tích', icon: Activity },
-  analysis_complete:    { variant: 'success', label: 'Hoàn tất',       icon: CheckCircle2 },
-  failed:               { variant: 'error',   label: 'Lỗi',            icon: AlertTriangle },
-  cancelled:            { variant: 'info',    label: 'Đã hủy',         icon: Clock },
-};
-
-const STEP_LABEL = ['', 'Upload', 'Cột', 'Làm sạch', 'Phân tích', 'Kết quả'];
-
 export default function PipelineManager() {
+  const t = useT();
+
+  // BE pipeline_runs.status carries the full lifecycle (uploading → bronze →
+  // schema → silver → analyzing → done/error), not just the 4 FE display states
+  // the wizard badge knew about. Listing a run whose status wasn't a key here
+  // crashed the WHOLE page: `STATUS_META[r.status].icon` threw on undefined
+  // (the GET /pipelines call itself returns 200 — this was a pure render crash).
+  // Cover every real status; `done`/`error` synonyms are normalised in mapBeRow.
+  const STATUS_META: Record<string, any> = {
+    uploading:            { variant: 'info',    label: t('templates18DataPipelineManager.statusUploading'),           icon: Clock },
+    bronze_complete:      { variant: 'info',    label: t('templates18DataPipelineManager.statusBronzeComplete'),      icon: Clock },
+    unstructured_pending: { variant: 'info',    label: t('templates18DataPipelineManager.statusUnstructuredPending'), icon: Clock },
+    schema_review:        { variant: 'info',    label: t('templates18DataPipelineManager.statusSchemaReview'),        icon: Eye },
+    cleaning:             { variant: 'warning', label: t('templates18DataPipelineManager.statusCleaning'),            icon: Activity },
+    silver_complete:      { variant: 'info',    label: t('templates18DataPipelineManager.statusSilverComplete'),      icon: CheckCircle2 },
+    analyzing:            { variant: 'warning', label: t('templates18DataPipelineManager.statusAnalyzing'),           icon: Activity },
+    analysis_complete:    { variant: 'success', label: t('templates18DataPipelineManager.statusAnalysisComplete'),    icon: CheckCircle2 },
+    failed:               { variant: 'error',   label: t('templates18DataPipelineManager.statusFailed'),              icon: AlertTriangle },
+    cancelled:            { variant: 'info',    label: t('templates18DataPipelineManager.statusCancelled'),           icon: Clock },
+  };
+
+  const STEP_LABEL = [
+    '',
+    t('templates18DataPipelineManager.stepUpload'),
+    t('templates18DataPipelineManager.stepColumn'),
+    t('templates18DataPipelineManager.stepClean'),
+    t('templates18DataPipelineManager.stepAnalyze'),
+    t('templates18DataPipelineManager.stepResult'),
+  ];
+
   const [runs,    setRuns]    = useState<PipelineRun[]>([]);
   const [cursor,  setCursor]  = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
@@ -112,7 +122,7 @@ export default function PipelineManager() {
       created_at:   r.created_at,
       updated_at:   r.updated_at ?? r.created_at,
       owner_email:  r.owner_email ?? r.uploaded_by ?? '—',
-      error: r.error_message ? { title: 'Lỗi', detail: r.error_message } : undefined,
+      error: r.error_message ? { title: t('templates18DataPipelineManager.errRunTitle'), detail: r.error_message } : undefined,
     };
   }
 
@@ -174,17 +184,17 @@ export default function PipelineManager() {
   return (
     <>
       <PageHeader
-        title="Pipeline đã chạy"
-        description="Lịch sử pipeline — bấm dòng để mở wizard ở bước hiện tại."
+        title={t('templates18DataPipelineManager.title')}
+        description={t('templates18DataPipelineManager.description')}
         actions={
           <>
             <Button variant="secondary" onClick={() => load(true)} disabled={loading}>
               <RefreshCw className={'w-4 h-4 mr-2 ' + (loading ? 'animate-spin' : '')} />
-              Làm mới
+              {t('templates18DataPipelineManager.refresh')}
             </Button>
             <Button onClick={() => (window.location.href = '/p2/pipelines/new')}>
               <Plus className="w-4 h-4 mr-2" />
-              Pipeline mới
+              {t('templates18DataPipelineManager.newPipeline')}
             </Button>
           </>
         }
@@ -199,7 +209,9 @@ export default function PipelineManager() {
             : 'bg-[var(--bg-app)] text-[var(--text-secondary)]',
         )}>
           <Radio className={cn('w-3 h-3', sseConnected && 'animate-pulse')} />
-          {sseConnected ? 'Đang nhận cập nhật trực tiếp' : 'Không có kết nối realtime — bấm Làm mới để cập nhật'}
+          {sseConnected
+            ? t('templates18DataPipelineManager.sseConnected')
+            : t('templates18DataPipelineManager.sseDisconnected')}
         </div>
 
         <ErrorBanner problem={problem} />
@@ -211,7 +223,7 @@ export default function PipelineManager() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm pipeline theo tên..."
+              placeholder={t('templates18DataPipelineManager.searchPlaceholder')}
               className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-md-custom pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)]"
             />
           </div>
@@ -220,7 +232,7 @@ export default function PipelineManager() {
             onChange={(e) => setStatusFilter(e.target.value as any)}
             className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-md-custom px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
           >
-            <option value="all">Tất cả trạng thái</option>
+            <option value="all">{t('templates18DataPipelineManager.allStatuses')}</option>
             {(Object.keys(STATUS_META) as PipelineStatus[]).map((s) => (
               <option key={s} value={s}>{STATUS_META[s].label}</option>
             ))}
@@ -233,17 +245,17 @@ export default function PipelineManager() {
               {[1,2,3,4].map((i) => <div key={i} className="h-16 rounded-md-custom bg-[var(--bg-app)]/60 animate-pulse" />)}
             </div>
           ) : filtered.length === 0 ? (
-            <p className="p-12 text-center text-[var(--text-secondary)]">Chưa có pipeline nào khớp bộ lọc.</p>
+            <p className="p-12 text-center text-[var(--text-secondary)]">{t('templates18DataPipelineManager.emptyFiltered')}</p>
           ) : (
             <table className="w-full">
               <thead className="bg-[var(--bg-app)]/50 border-b border-[var(--border-color)]">
                 <tr>
-                  <Th>Pipeline</Th>
-                  <Th>Bước</Th>
-                  <Th>Trạng thái</Th>
-                  <Th>Hàng</Th>
-                  <Th>Người tạo</Th>
-                  <Th>Cập nhật</Th>
+                  <Th>{t('templates18DataPipelineManager.thPipeline')}</Th>
+                  <Th>{t('templates18DataPipelineManager.thStep')}</Th>
+                  <Th>{t('templates18DataPipelineManager.thStatus')}</Th>
+                  <Th>{t('templates18DataPipelineManager.thRows')}</Th>
+                  <Th>{t('templates18DataPipelineManager.thOwner')}</Th>
+                  <Th>{t('templates18DataPipelineManager.thUpdated')}</Th>
                   <Th></Th>
                 </tr>
               </thead>
@@ -266,7 +278,7 @@ export default function PipelineManager() {
                           <div className="min-w-0">
                             <p className="text-sm font-medium text-[var(--text-primary)] truncate">{r.name}</p>
                             <p className="text-[11px] text-[var(--text-secondary)]">
-                              {r.template_id} · {r.rows.toLocaleString('vi-VN')} hàng
+                              {r.template_id} · {t('templates18DataPipelineManager.rowsSuffix', { count: r.rows.toLocaleString('vi-VN') })}
                             </p>
                           </div>
                         </div>
@@ -311,7 +323,7 @@ export default function PipelineManager() {
           {hasMore && filtered.length > 0 && (
             <div className="border-t border-[var(--border-color)]/60 p-4 text-center">
               <Button variant="secondary" onClick={() => load(false)} isLoading={loading}>
-                Tải thêm
+                {t('templates18DataPipelineManager.loadMore')}
               </Button>
             </div>
           )}

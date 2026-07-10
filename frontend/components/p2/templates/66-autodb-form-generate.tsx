@@ -26,19 +26,22 @@ import {
   Button, Badge, Input, Checkbox, ErrorBanner, SuccessBanner, cn,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types
 // ============================================================================
 
 type FormKind = 'create' | 'edit' | 'list' | 'detail' | 'delete';
 
-const FORM_KIND_META: Record<FormKind, { label: string; description: string; icon: any }> = {
-  create: { label: 'Create',          description: 'Form thêm bản ghi mới.',                 icon: FileText },
-  edit:   { label: 'Edit',            description: 'Form sửa 1 bản ghi.',                    icon: FileText },
-  list:   { label: 'List + filter',    description: 'Bảng list + filter + pagination.',       icon: FileText },
-  detail: { label: 'Detail',           description: 'Trang chi tiết read-only.',              icon: FileText },
-  delete: { label: 'Delete confirm',   description: 'Modal xác nhận xoá.',                    icon: FileText },
-};
+function getFormKindMeta(t: (key: string) => string): Record<FormKind, { label: string; description: string; icon: any }> {
+  return {
+    create: { label: t('templates66AutodbFormGenerate.kindCreateLabel'), description: t('templates66AutodbFormGenerate.kindCreateDesc'), icon: FileText },
+    edit:   { label: t('templates66AutodbFormGenerate.kindEditLabel'),   description: t('templates66AutodbFormGenerate.kindEditDesc'),   icon: FileText },
+    list:   { label: t('templates66AutodbFormGenerate.kindListLabel'),   description: t('templates66AutodbFormGenerate.kindListDesc'),   icon: FileText },
+    detail: { label: t('templates66AutodbFormGenerate.kindDetailLabel'), description: t('templates66AutodbFormGenerate.kindDetailDesc'), icon: FileText },
+    delete: { label: t('templates66AutodbFormGenerate.kindDeleteLabel'), description: t('templates66AutodbFormGenerate.kindDeleteDesc'), icon: FileText },
+  };
+}
 
 interface SchemaColumn {
   name:     string;
@@ -83,6 +86,8 @@ const SCHEMAS: SchemaSummary[] = [
 // ============================================================================
 
 export default function FormGeneratePage() {
+  const t = useT();
+  const FORM_KIND_META = useMemo(() => getFormKindMeta(t), [t]);
   const [schemaId, setSchemaId] = useState(SCHEMAS[0].id);
   const [formKind, setFormKind] = useState<FormKind>('create');
   const [columnFlags, setColumnFlags] = useState<Record<string, { include: boolean; required: boolean }>>(() => {
@@ -114,9 +119,9 @@ export default function FormGeneratePage() {
       const code = generateCode(schema, formKind, columnFlags);
       try {
         await navigator.clipboard.writeText(code);
-        setSuccess('Đã sinh code TSX và copy vào clipboard. Paste vào file Next.js để dùng.');
+        setSuccess(t('templates66AutodbFormGenerate.successCopied'));
       } catch {
-        setSuccess('Đã sinh code TSX (xem preview bên phải).');
+        setSuccess(t('templates66AutodbFormGenerate.successGenerated'));
       }
     } catch (e: any) {
       setProblem(e);
@@ -128,8 +133,8 @@ export default function FormGeneratePage() {
   return (
     <>
       <PageHeader
-        title="Sinh form CRUD"
-        description="Chọn schema + loại form → AI sinh form Next.js TSX với label tiếng Việt + validation."
+        title={t('templates66AutodbFormGenerate.title')}
+        description={t('templates66AutodbFormGenerate.description')}
         actions={
           <>
             <Badge variant="info">Phase 2 · F-057</Badge>
@@ -137,7 +142,7 @@ export default function FormGeneratePage() {
               <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> Auto DB</Button>
             </a>
             <Button variant="primary" size="md" onClick={onGenerate} isLoading={generating} disabled={generating}>
-              <Sparkles className="w-4 h-4 mr-2" /> Sinh code
+              <Sparkles className="w-4 h-4 mr-2" /> {t('templates66AutodbFormGenerate.generateButton')}
             </Button>
           </>
         }
@@ -154,7 +159,7 @@ export default function FormGeneratePage() {
             <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-4 shadow-soft-sm">
               <div className="flex items-center gap-2 mb-3">
                 <Database className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-                <h3 className="font-serif text-sm text-[var(--text-primary)]">Chọn schema</h3>
+                <h3 className="font-serif text-sm text-[var(--text-primary)]">{t('templates66AutodbFormGenerate.schemaPickerTitle')}</h3>
               </div>
               <div className="space-y-1.5">
                 {SCHEMAS.map((s) => (
@@ -169,7 +174,7 @@ export default function FormGeneratePage() {
                     )}
                   >
                     <p className="font-mono text-sm text-[var(--text-primary)]">{s.name}</p>
-                    <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{s.domain} · {s.columns.length} cột</p>
+                    <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{s.domain} · {s.columns.length} {t('templates66AutodbFormGenerate.schemaColCount')}</p>
                   </button>
                 ))}
               </div>
@@ -179,7 +184,7 @@ export default function FormGeneratePage() {
             <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-4 shadow-soft-sm">
               <div className="flex items-center gap-2 mb-3">
                 <FileText className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-                <h3 className="font-serif text-sm text-[var(--text-primary)]">Loại form</h3>
+                <h3 className="font-serif text-sm text-[var(--text-primary)]">{t('templates66AutodbFormGenerate.formKindTitle')}</h3>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 {(['create', 'edit', 'list', 'detail', 'delete'] as FormKind[]).map((k) => {
@@ -208,7 +213,7 @@ export default function FormGeneratePage() {
             <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-4 shadow-soft-sm">
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle2 className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-                <h3 className="font-serif text-sm text-[var(--text-primary)]">Cột muốn hiển thị</h3>
+                <h3 className="font-serif text-sm text-[var(--text-primary)]">{t('templates66AutodbFormGenerate.columnsTitle')}</h3>
               </div>
               <div className="space-y-1.5">
                 {schema.columns.map((c) => (
@@ -231,7 +236,7 @@ export default function FormGeneratePage() {
                         disabled={!columnFlags[c.name]?.include}
                         className="w-3 h-3 accent-[var(--primary-gold)]"
                       />
-                      Required
+                      {t('templates66AutodbFormGenerate.requiredLabel')}
                     </label>
                   </div>
                 ))}
@@ -249,8 +254,7 @@ export default function FormGeneratePage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Validation auto-derived: NOT NULL → required, NUMERIC → number input + decimal mask, DATE → date picker.
-            Label tiếng Việt lấy từ <span className="font-mono">config/language_dictionary.json</span>.
+            {t('templates66AutodbFormGenerate.noteValidation')} <span className="font-mono">config/language_dictionary.json</span>.
           </p>
         </div>
       </div>
@@ -265,6 +269,8 @@ export default function FormGeneratePage() {
 function FormPreview({
   schema, formKind, columnFlags,
 }: { schema: SchemaSummary; formKind: FormKind; columnFlags: Record<string, { include: boolean; required: boolean }> }) {
+  const t = useT();
+  const FORM_KIND_META = useMemo(() => getFormKindMeta(t), [t]);
   const visibleCols = schema.columns.filter((c) => columnFlags[c.name]?.include);
 
   return (
@@ -272,7 +278,7 @@ function FormPreview({
       <div className="border-b border-[var(--border-color)] px-4 py-2 flex items-center justify-between bg-[var(--bg-app)]">
         <div className="flex items-center gap-2">
           <Eye className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-          <span className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Preview · {FORM_KIND_META[formKind].label}</span>
+          <span className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">{t('templates66AutodbFormGenerate.previewLabel')} · {FORM_KIND_META[formKind].label}</span>
         </div>
         <span className="text-[11px] text-[var(--text-secondary)] font-mono">{schema.name}</span>
       </div>
@@ -288,13 +294,13 @@ function FormPreview({
                 <input
                   type={c.type === 'date' ? 'date' : c.type === 'integer' || c.type === 'numeric' ? 'number' : 'text'}
                   className="w-full h-10 px-3 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)]"
-                  placeholder={`Nhập ${c.vi_label.toLowerCase()}`}
+                  placeholder={t('templates66AutodbFormGenerate.inputPlaceholder', { label: c.vi_label.toLowerCase() })}
                   readOnly
                 />
               </div>
             ))}
             <Button variant="primary" size="md" className="w-full">
-              {formKind === 'create' ? 'Tạo mới' : 'Cập nhật'}
+              {formKind === 'create' ? t('templates66AutodbFormGenerate.submitCreate') : t('templates66AutodbFormGenerate.submitEdit')}
             </Button>
           </div>
         ) : formKind === 'list' ? (
@@ -310,7 +316,7 @@ function FormPreview({
                   <tr key={i}>
                     {visibleCols.map((c) => (
                       <td key={c.name} className="px-3 py-2 text-xs text-[var(--text-primary)]">
-                        {c.type === 'numeric' ? '1.245.300₫' : c.type === 'date' ? '2026-04-30' : `Mẫu ${i}`}
+                        {c.type === 'numeric' ? '1.245.300₫' : c.type === 'date' ? '2026-04-30' : t('templates66AutodbFormGenerate.sampleRow', { i })}
                       </td>
                     ))}
                   </tr>
@@ -324,18 +330,18 @@ function FormPreview({
               <div key={c.name} className="border border-[var(--border-color)] rounded-md-custom p-3 bg-[var(--bg-app)]/40">
                 <dt className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{c.vi_label}</dt>
                 <dd className="text-sm text-[var(--text-primary)] mt-1">
-                  {c.type === 'numeric' ? '1.245.300₫' : c.type === 'date' ? '2026-04-30' : 'Giá trị mẫu'}
+                  {c.type === 'numeric' ? '1.245.300₫' : c.type === 'date' ? '2026-04-30' : t('templates66AutodbFormGenerate.sampleValue')}
                 </dd>
               </div>
             ))}
           </dl>
         ) : (
           <div className="max-w-md mx-auto bg-[var(--state-error)]/8 border border-[var(--state-error)]/30 rounded-md-custom p-5 text-center">
-            <p className="font-serif text-base text-[var(--text-primary)]">Xác nhận xoá?</p>
-            <p className="text-xs text-[var(--text-secondary)] mt-1">Hành động này không thể hoàn tác.</p>
+            <p className="font-serif text-base text-[var(--text-primary)]">{t('templates66AutodbFormGenerate.deleteConfirmTitle')}</p>
+            <p className="text-xs text-[var(--text-secondary)] mt-1">{t('templates66AutodbFormGenerate.deleteConfirmDesc')}</p>
             <div className="flex justify-center gap-2 mt-4">
-              <Button variant="tertiary" size="sm">Huỷ</Button>
-              <Button variant="destructive" size="sm">Xác nhận xoá</Button>
+              <Button variant="tertiary" size="sm">{t('templates66AutodbFormGenerate.cancelButton')}</Button>
+              <Button variant="destructive" size="sm">{t('templates66AutodbFormGenerate.confirmDeleteButton')}</Button>
             </div>
           </div>
         )}
@@ -347,19 +353,20 @@ function FormPreview({
 function CodePreview({
   schema, formKind, columnFlags,
 }: { schema: SchemaSummary; formKind: FormKind; columnFlags: Record<string, { include: boolean; required: boolean }> }) {
+  const t = useT();
   const code = generateCode(schema, formKind, columnFlags);
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom shadow-soft-sm overflow-hidden">
       <div className="border-b border-[var(--border-color)] px-4 py-2 flex items-center justify-between bg-[var(--bg-app)]">
         <div className="flex items-center gap-2">
           <FileCode className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-          <span className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Code TSX</span>
+          <span className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">{t('templates66AutodbFormGenerate.codeTsxLabel')}</span>
         </div>
         <button
           onClick={() => navigator.clipboard?.writeText(code)}
           className="inline-flex items-center gap-1 text-[11px] text-[var(--text-secondary)] hover:text-[var(--primary-gold-dark)] transition-colors"
         >
-          <Copy className="w-3.5 h-3.5" /> Copy
+          <Copy className="w-3.5 h-3.5" /> {t('templates66AutodbFormGenerate.copyButton')}
         </button>
       </div>
       <pre className="px-4 py-3 text-[11px] font-mono text-[var(--text-primary)] whitespace-pre overflow-auto leading-relaxed max-h-[400px] bg-[var(--bg-app)]/30">

@@ -13,6 +13,7 @@ import {
   Badge, Button, Input, Label, ErrorBanner, type ProblemDetails,
 } from '@/components/platform/foundation';
 import { fmtDateTime } from '@/lib/format';
+import { useT } from '@/lib/i18n/provider';
 
 const ROLE_VARIANT: Record<MemberRole, 'current' | 'info' | 'operational' | 'default'> = {
   MANAGER:  'current',
@@ -20,21 +21,10 @@ const ROLE_VARIANT: Record<MemberRole, 'current' | 'info' | 'operational' | 'def
   ANALYST:  'operational',
   VIEWER:   'default',
 };
-const ROLE_LABEL: Record<MemberRole, string> = {
-  MANAGER:  'Quản lý',
-  OPERATOR: 'Vận hành',
-  ANALYST:  'Phân tích',
-  VIEWER:   'Xem',
-};
 const STATUS_VARIANT: Record<string, 'operational' | 'warning' | 'default'> = {
   active:   'operational',
   pending:  'warning',
   inactive: 'default',
-};
-const STATUS_LABEL: Record<string, string> = {
-  active:   'Đang hoạt động',
-  pending:  'Chờ xác nhận',
-  inactive: 'Đã tắt',
 };
 
 export default function WorkspaceMembersPage({
@@ -43,7 +33,20 @@ export default function WorkspaceMembersPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const t      = useT();
   const qc     = useQueryClient();
+
+  const ROLE_LABEL: Record<MemberRole, string> = {
+    MANAGER:  t('membersPage.roleManager'),
+    OPERATOR: t('membersPage.roleOperator'),
+    ANALYST:  t('membersPage.roleAnalyst'),
+    VIEWER:   t('membersPage.roleViewer'),
+  };
+  const STATUS_LABEL: Record<string, string> = {
+    active:   t('membersPage.statusActive'),
+    pending:  t('membersPage.statusPending'),
+    inactive: t('membersPage.statusInactive'),
+  };
 
   const query = useQuery({
     queryKey: ['workspace-members', id],
@@ -85,12 +88,12 @@ export default function WorkspaceMembersPage({
       <div className="flex items-center justify-between gap-3">
         <p className="text-sm text-[var(--text-secondary)]">
           {members.length > 0
-            ? <>Tổng cộng <strong className="text-[var(--text-primary)]">{members.length}</strong> thành viên</>
-            : 'Quản lý người dùng và quyền truy cập trong workspace.'}
+            ? <>{t('membersPage.totalCountPrefix')} <strong className="text-[var(--text-primary)]">{members.length}</strong> {t('membersPage.totalCountSuffix')}</>
+            : t('membersPage.manageHint')}
         </p>
         <Button onClick={() => setInviteOpen(true)}>
           <UserPlus className="w-4 h-4 mr-1.5" />
-          Mời thành viên
+          {t('membersPage.inviteMember')}
         </Button>
       </div>
 
@@ -108,7 +111,7 @@ export default function WorkspaceMembersPage({
       {query.isError && (
         <ErrorBanner
           problem={problem}
-          message={`Backend GET /workspaces/${id}/members chưa sẵn sàng.`}
+          message={t('membersPage.backendNotReady', { path: `/workspaces/${id}/members` })}
         />
       )}
 
@@ -118,11 +121,11 @@ export default function WorkspaceMembersPage({
             <table className="w-full text-sm">
               <thead className="bg-[var(--bg-app)]/60 text-[var(--text-secondary)]">
                 <tr>
-                  <th className="text-left font-medium px-4 py-2.5">Thành viên</th>
-                  <th className="text-left font-medium px-4 py-2.5">Vai trò</th>
-                  <th className="text-left font-medium px-4 py-2.5">Trạng thái</th>
-                  <th className="text-left font-medium px-4 py-2.5">Đăng nhập gần nhất</th>
-                  <th className="text-left font-medium px-4 py-2.5">Tham gia</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('membersPage.colMember')}</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('membersPage.role')}</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('membersPage.colStatus')}</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('membersPage.colLastLogin')}</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('membersPage.colJoined')}</th>
                   <th className="text-right font-medium px-4 py-2.5 w-16"></th>
                 </tr>
               </thead>
@@ -130,7 +133,7 @@ export default function WorkspaceMembersPage({
                 {members.length === 0 && (
                   <tr>
                     <td colSpan={6} className="px-4 py-10 text-center text-[var(--text-secondary)]">
-                      Chưa có thành viên nào trong workspace này.
+                      {t('membersPage.emptyTable')}
                     </td>
                   </tr>
                 )}
@@ -166,7 +169,7 @@ export default function WorkspaceMembersPage({
                         type="button"
                         onClick={() => setRemoveTarget(m)}
                         className="p-1.5 text-[var(--text-secondary)] hover:text-[#9B5050] hover:bg-[var(--state-error)]/8 rounded-md-custom transition-colors"
-                        aria-label="Xóa thành viên"
+                        aria-label={t('membersPage.removeMember')}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -183,16 +186,16 @@ export default function WorkspaceMembersPage({
         <Modal onClose={() => setInviteOpen(false)}>
           <header className="flex items-start justify-between gap-4 mb-4">
             <div>
-              <h3 className="font-serif text-lg text-[var(--text-primary)]">Mời thành viên</h3>
+              <h3 className="font-serif text-lg text-[var(--text-primary)]">{t('membersPage.inviteMember')}</h3>
               <p className="text-sm text-[var(--text-secondary)] mt-1">
-                Gửi email mời người dùng tham gia workspace này.
+                {t('membersPage.inviteSubtitle')}
               </p>
             </div>
             <button
               type="button"
               onClick={() => setInviteOpen(false)}
               className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-md-custom hover:bg-[var(--bg-app)]"
-              aria-label="Đóng"
+              aria-label={t('membersPage.close')}
             >
               <X className="w-4 h-4" />
             </button>
@@ -200,18 +203,18 @@ export default function WorkspaceMembersPage({
 
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="invite-email">Email</Label>
+              <Label htmlFor="invite-email">{t('membersPage.emailLabel')}</Label>
               <Input
                 id="invite-email"
                 type="email"
-                placeholder="ten@congty.com"
+                placeholder={t('membersPage.emailPlaceholder')}
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="invite-role">Vai trò</Label>
+              <Label htmlFor="invite-role">{t('membersPage.role')}</Label>
               <select
                 id="invite-role"
                 value={inviteRole}
@@ -227,19 +230,19 @@ export default function WorkspaceMembersPage({
 
             <div className="flex items-start gap-2 text-xs text-[var(--text-secondary)] bg-[var(--state-info)]/10 border border-[var(--state-info)]/30 rounded-md-custom px-3 py-2">
               <ShieldCheck className="w-4 h-4 text-[#52647D] shrink-0 mt-0.5" />
-              <span>Mỗi workspace cần ít nhất một người vai trò Quản lý (MANAGER) để vận hành.</span>
+              <span>{t('membersPage.managerRequiredNote')}</span>
             </div>
 
             {inviteError && <ErrorBanner problem={inviteError} />}
 
             <div className="flex justify-end gap-2 pt-2">
-              <Button variant="secondary" onClick={() => setInviteOpen(false)}>Hủy</Button>
+              <Button variant="secondary" onClick={() => setInviteOpen(false)}>{t('membersPage.cancel')}</Button>
               <Button
                 isLoading={inviteMut.isPending}
                 disabled={!inviteEmail}
                 onClick={() => { setInviteError(null); inviteMut.mutate(); }}
               >
-                <Mail className="w-4 h-4 mr-1.5" /> Gửi lời mời
+                <Mail className="w-4 h-4 mr-1.5" /> {t('membersPage.sendInvite')}
               </Button>
             </div>
           </div>
@@ -249,20 +252,19 @@ export default function WorkspaceMembersPage({
       {removeTarget && (
         <Modal onClose={() => setRemoveTarget(null)} small>
           <header className="mb-3">
-            <h3 className="font-serif text-lg text-[var(--text-primary)]">Xóa thành viên</h3>
+            <h3 className="font-serif text-lg text-[var(--text-primary)]">{t('membersPage.removeMember')}</h3>
             <p className="text-sm text-[var(--text-secondary)] mt-1">
-              Xóa <strong className="text-[var(--text-primary)]">{removeTarget.full_name ?? removeTarget.email}</strong>?
-              Người dùng sẽ mất quyền truy cập ngay lập tức.
+              {t('membersPage.removeConfirmPrefix')} <strong className="text-[var(--text-primary)]">{removeTarget.full_name ?? removeTarget.email}</strong>{t('membersPage.removeConfirmSuffix')}
             </p>
           </header>
           <div className="flex justify-end gap-2 pt-2">
-            <Button variant="secondary" onClick={() => setRemoveTarget(null)}>Hủy</Button>
+            <Button variant="secondary" onClick={() => setRemoveTarget(null)}>{t('membersPage.cancel')}</Button>
             <Button
               variant="destructive"
               isLoading={removeMut.isPending}
               onClick={() => removeTarget && removeMut.mutate(removeTarget.user_id)}
             >
-              <Trash2 className="w-4 h-4 mr-1.5" /> Xóa thành viên
+              <Trash2 className="w-4 h-4 mr-1.5" /> {t('membersPage.removeMember')}
             </Button>
           </div>
         </Modal>

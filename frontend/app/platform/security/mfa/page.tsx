@@ -14,10 +14,12 @@ import {
 import {
   Badge, Button, Input, Label, ErrorBanner, type ProblemDetails,
 } from '@/components/platform/foundation';
+import { useT } from '@/lib/i18n/provider';
 
 type Step = 'idle' | 'pending' | 'verified';
 
 export default function PlatformMfaPage() {
+  const t = useT();
   const [step,         setStep]         = useState<Step>('idle');
   const [enrol,        setEnrol]        = useState<MfaEnableResult | null>(null);
   const [code,         setCode]         = useState('');
@@ -83,14 +85,13 @@ export default function PlatformMfaPage() {
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="font-medium text-[var(--text-primary)]">Xác thực 2 lớp (TOTP)</h2>
+              <h2 className="font-medium text-[var(--text-primary)]">{t('mfaPage2.title')}</h2>
               {step === 'verified'
-                ? <Badge variant="operational">Đã bật</Badge>
-                : <Badge variant="default">Chưa bật</Badge>}
+                ? <Badge variant="operational">{t('mfaPage2.badgeEnabled')}</Badge>
+                : <Badge variant="default">{t('mfaPage2.badgeDisabled')}</Badge>}
             </div>
             <p className="text-sm text-[var(--text-secondary)] mt-1">
-              Mỗi lần đăng nhập sẽ yêu cầu mã 6 chữ số từ ứng dụng xác thực (Google Authenticator,
-              1Password, Authy…). Khoá bí mật được lưu mã hoá AES-256-GCM trên máy chủ.
+              {t('mfaPage2.desc')}
             </p>
           </div>
           {step === 'idle' && (
@@ -99,7 +100,7 @@ export default function PlatformMfaPage() {
               onClick={() => enableMut.mutate()}
             >
               <ShieldCheck className="w-4 h-4 mr-1.5" />
-              Bật MFA
+              {t('mfaPage2.enableButton')}
             </Button>
           )}
         </div>
@@ -110,7 +111,7 @@ export default function PlatformMfaPage() {
           <div className="flex items-start gap-2 text-xs text-[#9E814D] bg-[var(--state-warning)]/12 border border-[var(--state-warning)]/30 rounded-md-custom px-3 py-2">
             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>
-              Khoá bí mật chỉ hiển thị MỘT LẦN. Quét bằng ứng dụng xác thực hoặc lưu lại trước khi đóng trang.
+              {t('mfaPage2.secretWarning')}
             </span>
           </div>
 
@@ -118,33 +119,33 @@ export default function PlatformMfaPage() {
             <div>
               <h3 className="font-medium text-[var(--text-primary)] flex items-center gap-2">
                 <QrCode className="w-4 h-4" />
-                Bước 1: Quét QR
+                {t('mfaPage2.step1Title')}
               </h3>
               <p className="text-sm text-[var(--text-secondary)] mt-1">
-                Mở Google Authenticator → "+" → "Quét mã QR" rồi đưa camera đến mã bên dưới.
+                {t('mfaPage2.step1Desc')}
               </p>
               <div className="mt-3 inline-block rounded-md-custom border border-[var(--border-color)] bg-white p-2">
                 <canvas
                   ref={qrCanvasRef}
                   width={200}
                   height={200}
-                  aria-label="QR code chứa khoá TOTP — quét bằng Google Authenticator"
+                  aria-label={t('mfaPage2.qrAriaLabel')}
                   className="block"
                 />
               </div>
               <p className="mt-2 text-xs text-[var(--text-secondary)]">
-                Không quét được? Dùng cách nhập thủ công bên cạnh.
+                {t('mfaPage2.qrFallbackHint')}
               </p>
             </div>
 
             <div>
               <h3 className="font-medium text-[var(--text-primary)] flex items-center gap-2">
                 <Smartphone className="w-4 h-4" />
-                Hoặc nhập thủ công
+                {t('mfaPage2.manualEntryTitle')}
               </h3>
               <div className="space-y-3 mt-3">
                 <div className="space-y-1.5">
-                  <Label htmlFor="mfa-secret">Khoá bí mật (Base32)</Label>
+                  <Label htmlFor="mfa-secret">{t('mfaPage2.secretLabel')}</Label>
                   <div className="flex gap-2">
                     <Input
                       id="mfa-secret"
@@ -159,7 +160,7 @@ export default function PlatformMfaPage() {
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="mfa-url">otpauth URL</Label>
+                  <Label htmlFor="mfa-url">{t('mfaPage2.urlLabel')}</Label>
                   <div className="flex gap-2">
                     <Input
                       id="mfa-url"
@@ -174,16 +175,16 @@ export default function PlatformMfaPage() {
                   </div>
                 </div>
                 <p className="text-xs text-[var(--text-secondary)]">
-                  Tài khoản: <code className="font-mono">{enrol.issuer}: {enrol.account}</code>
+                  {t('mfaPage2.accountLabel')} <code className="font-mono">{enrol.issuer}: {enrol.account}</code>
                 </p>
               </div>
             </div>
           </div>
 
           <div className="border-t border-[var(--border-color)]/60 pt-5">
-            <h3 className="font-medium text-[var(--text-primary)]">Bước 2: Nhập mã 6 chữ số</h3>
+            <h3 className="font-medium text-[var(--text-primary)]">{t('mfaPage2.step2Title')}</h3>
             <p className="text-sm text-[var(--text-secondary)] mt-1">
-              Nhập mã hiện tại đang hiển thị trên ứng dụng. Mã đổi mỗi 30 giây.
+              {t('mfaPage2.step2Desc')}
             </p>
             <div className="mt-3 flex gap-2 max-w-xs">
               <Input
@@ -201,14 +202,14 @@ export default function PlatformMfaPage() {
                 onClick={() => { setVerifyError(null); verifyMut.mutate(); }}
               >
                 <Check className="w-4 h-4 mr-1.5" />
-                Xác thực
+                {t('mfaPage2.verifyButton')}
               </Button>
             </div>
             {verifyError && (
               <div className="mt-3">
                 <ErrorBanner
                   problem={verifyError}
-                  message="Không thể xác thực. Hãy chắc chắn đồng hồ điện thoại đúng giờ."
+                  message={t('mfaPage2.verifyErrorMsg')}
                 />
               </div>
             )}
@@ -220,9 +221,9 @@ export default function PlatformMfaPage() {
         <section className="rounded-md-custom border border-[var(--state-success)]/40 bg-[var(--state-success)]/8 shadow-soft-sm p-6 flex items-start gap-3">
           <Check className="w-5 h-5 text-[#5C856A] shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-[#5C856A]">MFA đã được bật.</p>
+            <p className="font-medium text-[#5C856A]">{t('mfaPage2.verifiedTitle')}</p>
             <p className="text-sm text-[#5C856A]/80 mt-1">
-              Lần đăng nhập tiếp theo bạn sẽ cần nhập mã 6 chữ số từ ứng dụng xác thực.
+              {t('mfaPage2.verifiedDesc')}
             </p>
           </div>
         </section>

@@ -6,7 +6,8 @@
 // the script to regenerate. Lazy `any` types added; not meant for strict tsc.
 
 import React, { useState, useEffect, useRef } from 'react';
-import { 
+import { useT } from '@/lib/i18n/provider';
+import {
   LayoutDashboard, 
   Briefcase, 
   Key, 
@@ -266,7 +267,9 @@ const Input = React.forwardRef<any, any>(({ className, label, error, helperText,
 Input.displayName = "Input";
 
 // --- SELECT (Simulated Radix Select) ---
-const Select = ({  label, placeholder = "Select an option", options = [], value, onChange, error, disabled  }: any) => {
+const Select = ({  label, placeholder, options = [], value, onChange, error, disabled  }: any) => {
+  const t = useT();
+  const resolvedPlaceholder = placeholder || t('templates28BillingExport.selectPlaceholder');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -293,7 +296,7 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
           !selectedOption ? "text-[var(--text-secondary)]/60" : "text-[var(--text-primary)]"
         )}
       >
-        {selectedOption ? selectedOption.label : placeholder}
+        {selectedOption ? selectedOption.label : resolvedPlaceholder}
         <ChevronDown className="h-4 w-4 opacity-50" />
       </button>
       {isOpen && !disabled && (
@@ -319,7 +322,9 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
 };
 
 // --- DATEPICKER (Simulated) ---
-const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any) => {
+const DatePicker = ({  label, placeholder, date, setDate  }: any) => {
+  const t = useT();
+  const resolvedPlaceholder = placeholder || t('templates28BillingExport.datePickerPlaceholder');
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
   useEffect(() => {
@@ -340,12 +345,12 @@ const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any
         )}
       >
         <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
-        {date ? date : placeholder}
+        {date ? date : resolvedPlaceholder}
       </button>
       {isOpen && (
         <div className="absolute top-full left-0 z-50 mt-1 p-3 bg-white rounded-md-custom border border-[var(--border-color)] shadow-soft-md animate-in fade-in zoom-in-95 duration-150 w-[280px]">
            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm font-semibold text-[var(--text-primary)]">October 2026</span>
+              <span className="text-sm font-semibold text-[var(--text-primary)]">{t('templates28BillingExport.calendarMonthDemo')}</span>
               <div className="flex gap-1">
                 <button className="p-1 hover:bg-[var(--bg-app)] rounded"><ChevronLeft className="w-4 h-4 text-[var(--text-secondary)]"/></button>
                 <button className="p-1 hover:bg-[var(--bg-app)] rounded"><ChevronRight className="w-4 h-4 text-[var(--text-secondary)]"/></button>
@@ -411,6 +416,7 @@ const TableHead = ({  className, ...props  }: any) => <th className={cn("h-12 px
 const TableCell = ({  className, ...props  }: any) => <td className={cn("p-4 align-middle text-[var(--text-primary)]", className)} {...props} />;
 
 const DataTable = ({  columns, data, loading, pagination = true, onRowClick  }: any) => {
+  const t = useT();
   return (
     <div className="rounded-lg-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm overflow-hidden w-full">
       <Table>
@@ -435,8 +441,8 @@ const DataTable = ({  columns, data, loading, pagination = true, onRowClick  }: 
                   <div className="w-10 h-10 rounded-full bg-[var(--bg-app)] flex items-center justify-center mb-2">
                     <Search className="w-5 h-5 text-[var(--text-secondary)]" />
                   </div>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">No results found</span>
-                  <span className="text-xs text-[var(--text-secondary)]">Try adjusting your filters</span>
+                  <span className="text-sm font-medium text-[var(--text-primary)]">{t('templates28BillingExport.noResultsFound')}</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{t('templates28BillingExport.tryAdjustingFilters')}</span>
                 </div>
               </TableCell>
             </TableRow>
@@ -455,10 +461,10 @@ const DataTable = ({  columns, data, loading, pagination = true, onRowClick  }: 
       </Table>
       {pagination && data.length > 0 && (
         <div className="border-t border-[var(--border-color)] px-4 py-3 flex items-center justify-between bg-[#FCFBF9]">
-          <span className="text-xs text-[var(--text-secondary)]">Showing 1 to {data.length} of {data.length} results</span>
+          <span className="text-xs text-[var(--text-secondary)]">{t('templates28BillingExport.showingResults', { count: data.length })}</span>
           <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled>Previous</Button>
-              <Button variant="outline" size="sm">Next</Button>
+              <Button variant="outline" size="sm" disabled>{t('templates28BillingExport.previous')}</Button>
+              <Button variant="outline" size="sm">{t('templates28BillingExport.next')}</Button>
           </div>
         </div>
       )}
@@ -555,6 +561,7 @@ const Tabs = ({  defaultValue, tabs, className  }: any) => {
 
 // --- COPY BUTTON HELPER ---
 const CopyButton = ({  text, className  }: any) => {
+  const t = useT();
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
     navigator.clipboard.writeText(text);
@@ -562,10 +569,10 @@ const CopyButton = ({  text, className  }: any) => {
     setTimeout(() => setCopied(false), 2000);
   };
   return (
-    <button 
-      onClick={handleCopy} 
+    <button
+      onClick={handleCopy}
       className={cn("p-1 hover:bg-[var(--bg-app)] rounded transition-colors text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/50", className)}
-      aria-label="Copy to clipboard"
+      aria-label={t('templates28BillingExport.copyToClipboard')}
     >
       {copied ? <Check className="w-3.5 h-3.5 text-[#5C856A]" /> : <Copy className="w-3.5 h-3.5" />}
     </button>
@@ -629,25 +636,25 @@ const Section = ({  title, description, actions, children, className = ''  }: an
 // --- CONFIG ---
 const NAVIGATION_CONFIG = [
   {
-    group: 'Main',
+    group: 'templates28BillingExport.navGroupMain',
     items: [
-      { id: 'overview', label: 'Platform Health', icon: LayoutDashboard, route: '/platform' },
-      { id: 'workspaces', label: 'Workspaces', icon: Briefcase, route: '/platform/workspaces', badge: '4' },
+      { id: 'overview', label: 'templates28BillingExport.navPlatformHealth', icon: LayoutDashboard, route: '/platform' },
+      { id: 'workspaces', label: 'templates28BillingExport.navWorkspaces', icon: Briefcase, route: '/platform/workspaces', badge: '4' },
     ]
   },
   {
-    group: 'Management',
+    group: 'templates28BillingExport.navGroupManagement',
     items: [
-      { id: 'keys', label: 'API Keys', icon: Key, route: '/platform/keys' },
-      { id: 'billing', label: 'Billing', icon: CreditCard, route: '/platform/billing' },
-      { id: 'admin', label: 'Admins', icon: Shield, route: '/platform/admins', role: 'admin' },
+      { id: 'keys', label: 'templates28BillingExport.navApiKeys', icon: Key, route: '/platform/keys' },
+      { id: 'billing', label: 'templates28BillingExport.navBilling', icon: CreditCard, route: '/platform/billing' },
+      { id: 'admin', label: 'templates28BillingExport.navAdmins', icon: Shield, route: '/platform/admins', role: 'admin' },
     ]
   },
   {
-    group: 'System',
+    group: 'templates28BillingExport.navGroupSystem',
     items: [
-      { id: 'components', label: 'Component Library', icon: Component, route: '/platform/components' },
-      { id: 'sessions', label: 'Security & Sessions', icon: Settings, route: '/p1/auth/sessions' },
+      { id: 'components', label: 'templates28BillingExport.navComponentLibrary', icon: Component, route: '/platform/components' },
+      { id: 'sessions', label: 'templates28BillingExport.navSecuritySessions', icon: Settings, route: '/p1/auth/sessions' },
     ]
   }
 ];
@@ -667,6 +674,7 @@ const EnvBadge = ({  env = 'production'  }: any) => {
 };
 
 const NotificationDropdown = () => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -676,7 +684,7 @@ const NotificationDropdown = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const notifications = [{ id: 1, title: 'Data sync completed successfully', time: '10m ago', read: false }];
+  const notifications = [{ id: 1, title: t('templates28BillingExport.notifDataSync'), time: '10m ago', read: false }];
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -687,7 +695,7 @@ const NotificationDropdown = () => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-[320px] bg-[var(--bg-card)] rounded-lg-custom shadow-soft-md border border-[var(--border-color)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 z-50">
           <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] bg-[#FCFBF9]">
-            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Notifications</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates28BillingExport.notifications')}</h3>
           </div>
           <div className="max-h-[300px] overflow-y-auto">
             {notifications.map((n) => (
@@ -707,6 +715,7 @@ const NotificationDropdown = () => {
 };
 
 const HeaderUserMenu = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -729,13 +738,13 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
           </div>
           <div className="p-1.5">
             <button onClick={() => { setActiveRoute('sessions'); setIsOpen(false); }} className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> Security & Sessions
+              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> {t('templates28BillingExport.navSecuritySessions')}
             </button>
           </div>
           <div className="h-[1px] bg-[var(--border-color)]/50 mx-1.5" />
           <div className="p-1.5">
             <button className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] transition-colors flex items-center gap-2 font-medium">
-              <LogOut className="w-4 h-4" /> Sign out
+              <LogOut className="w-4 h-4" /> {t('templates28BillingExport.signOut')}
             </button>
           </div>
         </div>
@@ -745,21 +754,23 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
 };
 
 const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: any) => {
+  const t = useT();
   let routeLabel = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label;
-  if (activeRoute === 'workspace-details') routeLabel = 'Workspaces / Overview';
-  else if (activeRoute === 'workspace-members') routeLabel = 'Workspaces / Members';
-  else if (activeRoute === 'workspace-billing') routeLabel = 'Workspaces / Billing';
-  else if (activeRoute === 'audit-logs') routeLabel = 'Workspaces / Audit Logs';
-  else if (activeRoute === 'workspace-new') routeLabel = 'Workspaces / New Workspace';
-  else if (activeRoute === 'workspace-edit') routeLabel = 'Workspaces / Settings';
-  else if (activeRoute === 'keys-new') routeLabel = 'API Keys / Create Key';
-  else if (activeRoute === 'key-details') routeLabel = 'API Keys / Details';
-  else if (activeRoute === 'admin-invite') routeLabel = 'Admins / Invite';
-  else if (activeRoute === 'admin-details') routeLabel = 'Admins / Details';
-  else if (activeRoute === 'admin-reset-password') routeLabel = 'Admins / Reset Password';
-  else if (activeRoute === 'enterprise-billing-details') routeLabel = 'Billing / Enterprise Detail';
-  else if (activeRoute === 'quota') routeLabel = 'Billing / Quota Management';
-  else if (activeRoute === 'billing-export') routeLabel = 'Billing / Export Data';
+  routeLabel = routeLabel ? t(routeLabel) : routeLabel;
+  if (activeRoute === 'workspace-details') routeLabel = t('templates28BillingExport.crumbWorkspacesOverview');
+  else if (activeRoute === 'workspace-members') routeLabel = t('templates28BillingExport.crumbWorkspacesMembers');
+  else if (activeRoute === 'workspace-billing') routeLabel = t('templates28BillingExport.crumbWorkspacesBilling');
+  else if (activeRoute === 'audit-logs') routeLabel = t('templates28BillingExport.crumbWorkspacesAuditLogs');
+  else if (activeRoute === 'workspace-new') routeLabel = t('templates28BillingExport.crumbWorkspacesNew');
+  else if (activeRoute === 'workspace-edit') routeLabel = t('templates28BillingExport.crumbWorkspacesSettings');
+  else if (activeRoute === 'keys-new') routeLabel = t('templates28BillingExport.crumbApiKeysCreate');
+  else if (activeRoute === 'key-details') routeLabel = t('templates28BillingExport.crumbApiKeysDetails');
+  else if (activeRoute === 'admin-invite') routeLabel = t('templates28BillingExport.crumbAdminsInvite');
+  else if (activeRoute === 'admin-details') routeLabel = t('templates28BillingExport.crumbAdminsDetails');
+  else if (activeRoute === 'admin-reset-password') routeLabel = t('templates28BillingExport.crumbAdminsResetPassword');
+  else if (activeRoute === 'enterprise-billing-details') routeLabel = t('templates28BillingExport.crumbBillingEnterpriseDetail');
+  else if (activeRoute === 'quota') routeLabel = t('templates28BillingExport.crumbBillingQuota');
+  else if (activeRoute === 'billing-export') routeLabel = t('templates28BillingExport.crumbBillingExport');
   else if (!routeLabel) routeLabel = activeRoute;
 
   return (
@@ -769,7 +780,7 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
           <Menu className="w-5 h-5" />
         </button>
         <div className="hidden sm:flex items-center text-sm font-medium">
-          <span className="text-[var(--text-secondary)]">Platform</span>
+          <span className="text-[var(--text-secondary)]">{t('templates28BillingExport.platformLabel')}</span>
           <ChevronRight className="w-4 h-4 mx-2 text-[var(--border-color)] shrink-0 opacity-50" />
           <span className="text-[var(--text-primary)] capitalize">{routeLabel}</span>
         </div>
@@ -780,9 +791,9 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
         <div className="hidden sm:flex items-center gap-2">
            <div className="relative group hidden lg:block">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-[var(--text-secondary)] group-focus-within:text-[var(--primary-gold)] transition-colors" />
-              <input type="text" placeholder="Search..." className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
+              <input type="text" placeholder={t('templates28BillingExport.searchPlaceholder')} className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
             </div>
-            <Button variant="outline" size="sm" onClick={() => setActiveRoute('workspace-new')} className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> Workspace</Button>
+            <Button variant="outline" size="sm" onClick={() => setActiveRoute('workspace-new')} className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> {t('templates28BillingExport.newWorkspaceButton')}</Button>
         </div>
         <NotificationDropdown />
         <HeaderUserMenu setActiveRoute={setActiveRoute} />
@@ -806,6 +817,7 @@ const SidebarTooltip = ({  children, content, isCollapsed  }: any) => {
 };
 
 const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, setIsCollapsed  }: any) => {
+  const t = useT();
   const collapsed = isCollapsed && !isMobile;
   const currentHighlight = 
     (activeRoute === 'workspace-details' || activeRoute === 'workspace-members' || activeRoute === 'workspace-billing' || activeRoute === 'audit-logs' || activeRoute === 'workspace-new' || activeRoute === 'workspace-edit') ? 'workspaces' : 
@@ -826,16 +838,16 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
         {!collapsed && (
           <div className="flex flex-col overflow-hidden animate-in fade-in duration-300">
             <span className="font-serif text-[17px] leading-none font-semibold text-[var(--text-primary)] tracking-wide">Kaori</span>
-            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">Platform</span>
+            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">{t('templates28BillingExport.platformLabel')}</span>
           </div>
         )}
       </div>
 
-      <nav aria-label="Main Navigation" className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-6">
+      <nav aria-label={t('templates28BillingExport.mainNavigationAriaLabel')} className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-6">
         {NAVIGATION_CONFIG.map((group, idx) => (
           <div key={idx} className="flex flex-col">
             {!collapsed ? (
-              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{group.group}</div>
+              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{t(group.group)}</div>
             ) : (
               <div className="w-full h-[1px] bg-[var(--border-color)]/60 my-2 rounded-full" />
             )}
@@ -844,7 +856,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
                 const isActive = currentHighlight === item.id;
                 const Icon = item.icon;
                 return (
-                  <SidebarTooltip key={item.id} content={item.label} isCollapsed={collapsed}>
+                  <SidebarTooltip key={item.id} content={t(item.label)} isCollapsed={collapsed}>
                     <button
                       onClick={() => setActiveRoute(item.id)}
                       className={cn(
@@ -855,7 +867,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
                     >
                       {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[var(--primary-gold)] rounded-r-md transition-all" />}
                       <Icon className={`shrink-0 transition-colors ${isActive ? 'text-[var(--primary-gold)] w-5 h-5' : 'w-[18px] h-[18px] group-hover:text-[var(--text-primary)]'}`} />
-                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{item.label}</span>}
+                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{t(item.label)}</span>}
                       {!collapsed && item.badge && (
                         <span className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[var(--primary-gold)] text-white text-[10px] font-bold shadow-sm ml-2">
                           {item.badge}
@@ -880,7 +892,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
             className={cn("w-full flex items-center h-8 rounded-md-custom text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors border border-transparent hover:border-[var(--border-color)]/50", collapsed ? 'justify-center' : 'px-3 gap-3')}
           >
             {collapsed ? <PanelLeftOpen className="w-[18px] h-[18px]" /> : <PanelLeftClose className="w-[18px] h-[18px]" />}
-            {!collapsed && <span className="text-xs font-medium">Collapse sidebar</span>}
+            {!collapsed && <span className="text-xs font-medium">{t('templates28BillingExport.collapseSidebar')}</span>}
           </button>
         )}
       </div>
@@ -895,6 +907,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
 
 // --- PLATFORM BILLING EXPORT PAGE ---
 const PlatformBillingExportPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [startDate, setStartDate] = useState('Oct 01, 2026');
   const [endDate, setEndDate] = useState('Oct 31, 2026');
   const [dataType, setDataType] = useState('all');
@@ -917,7 +930,7 @@ const PlatformBillingExportPage = ({  setActiveRoute  }: any) => {
     const newExport = {
       id: newId,
       date: 'Just now',
-      filters: `${dataType === 'all' ? 'All Data' : dataType} • ${workspace === 'all' ? 'All Workspaces' : workspace} • Custom Range`,
+      filters: `${dataType === 'all' ? t('templates28BillingExport.allData') : dataType} • ${workspace === 'all' ? t('templates28BillingExport.allWorkspaces') : workspace} • ${t('templates28BillingExport.customRangeLabel')}`,
       status: 'Processing',
       format: format.toUpperCase()
     };
@@ -960,89 +973,89 @@ const PlatformBillingExportPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        showBack 
+      <PageHeader
+        showBack
         onBack={() => setActiveRoute('billing')}
-        title="Export Billing Data" 
-        subtitle="Download revenue, usage, and invoice data for analytics and compliance."
+        title={t('templates28BillingExport.exportBillingDataTitle')}
+        subtitle={t('templates28BillingExport.exportBillingDataSubtitle')}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         <div className="lg:col-span-1 space-y-6">
           <Card className="p-6 shadow-soft-sm">
-            <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">Export Configuration</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">{t('templates28BillingExport.exportConfiguration')}</h3>
             <div className="space-y-5">
               <div className="grid grid-cols-2 gap-3">
-                <DatePicker label="Start Date" date={startDate} setDate={setStartDate} placeholder="From" />
-                <DatePicker label="End Date" date={endDate} setDate={setEndDate} placeholder="To" />
+                <DatePicker label={t('templates28BillingExport.startDate')} date={startDate} setDate={setStartDate} placeholder={t('templates28BillingExport.fromPlaceholder')} />
+                <DatePicker label={t('templates28BillingExport.endDate')} date={endDate} setDate={setEndDate} placeholder={t('templates28BillingExport.toPlaceholder')} />
               </div>
-              
-              <Select 
-                label="Data Type" 
-                value={dataType} 
-                onChange={setDataType} 
+
+              <Select
+                label={t('templates28BillingExport.dataTypeLabel')}
+                value={dataType}
+                onChange={setDataType}
                 options={[
-                  {label: 'All Data', value: 'all'}, 
-                  {label: 'Revenue', value: 'Revenue'}, 
-                  {label: 'Usage', value: 'Usage'},
-                  {label: 'Invoices', value: 'Invoices'}
-                ]} 
+                  {label: t('templates28BillingExport.allData'), value: 'all'},
+                  {label: t('templates28BillingExport.revenue'), value: 'Revenue'},
+                  {label: t('templates28BillingExport.usage'), value: 'Usage'},
+                  {label: t('templates28BillingExport.invoices'), value: 'Invoices'}
+                ]}
               />
 
-              <Select 
-                label="Workspace" 
-                value={workspace} 
-                onChange={setWorkspace} 
+              <Select
+                label={t('templates28BillingExport.workspaceLabel')}
+                value={workspace}
+                onChange={setWorkspace}
                 options={[
-                  {label: 'All Workspaces', value: 'all'}, 
-                  {label: 'Production AI (ws_prod_01)', value: 'ws_prod_01'}, 
+                  {label: t('templates28BillingExport.allWorkspaces'), value: 'all'},
+                  {label: 'Production AI (ws_prod_01)', value: 'ws_prod_01'},
                   {label: 'Staging Env (ws_stage_02)', value: 'ws_stage_02'}
-                ]} 
+                ]}
               />
 
-              <Select 
-                label="Plan Filter" 
-                value={planFilter} 
-                onChange={setPlanFilter} 
+              <Select
+                label={t('templates28BillingExport.planFilterLabel')}
+                value={planFilter}
+                onChange={setPlanFilter}
                 options={[
-                  {label: 'All Plans', value: 'all'}, 
-                  {label: 'Enterprise', value: 'Enterprise'}, 
-                  {label: 'Pro', value: 'Pro'},
-                  {label: 'Free', value: 'Free'}
-                ]} 
+                  {label: t('templates28BillingExport.allPlans'), value: 'all'},
+                  {label: t('templates28BillingExport.enterprisePlanLabel'), value: 'Enterprise'},
+                  {label: t('templates28BillingExport.proPlanLabel'), value: 'Pro'},
+                  {label: t('templates28BillingExport.freePlanLabel'), value: 'Free'}
+                ]}
               />
 
               <div className="h-[1px] bg-[var(--border-color)]/50 my-2" />
 
-              <Select 
-                label="Format" 
-                value={format} 
-                onChange={setFormat} 
+              <Select
+                label={t('templates28BillingExport.formatLabel')}
+                value={format}
+                onChange={setFormat}
                 options={[
-                  {label: 'CSV (.csv)', value: 'csv'}, 
-                  {label: 'Excel (.xlsx)', value: 'xlsx'}
-                ]} 
+                  {label: t('templates28BillingExport.csvFormat'), value: 'csv'},
+                  {label: t('templates28BillingExport.excelFormat'), value: 'xlsx'}
+                ]}
               />
 
               <div className="pt-4 flex flex-col gap-3">
                 <Button onClick={handleExport} isLoading={isExporting} className="w-full">
-                  Generate Export
+                  {t('templates28BillingExport.generateExport')}
                 </Button>
                 <Button variant="tertiary" onClick={handleReset} disabled={isExporting} className="w-full">
-                  Reset filters
+                  {t('templates28BillingExport.resetFilters')}
                 </Button>
               </div>
             </div>
           </Card>
-          <Alert variant="info" title="Large Datasets">
-            Exports covering more than 90 days or all workspaces may take a few minutes to process. You can safely leave this page while generation completes.
+          <Alert variant="info" title={t('templates28BillingExport.largeDatasetsTitle')}>
+            {t('templates28BillingExport.largeDatasetsBody')}
           </Alert>
         </div>
 
         <div className="lg:col-span-2">
-          <Section title="Export History">
-            <DataTable 
-              columns={["Export ID", "Date", "Configuration", "Status", ""]}
+          <Section title={t('templates28BillingExport.exportHistoryTitle')}>
+            <DataTable
+              columns={[t('templates28BillingExport.colExportId'), t('templates28BillingExport.colDate'), t('templates28BillingExport.colConfiguration'), t('templates28BillingExport.colStatus'), ""]}
               data={mappedHistory}
               loading={false}
             />
@@ -1063,6 +1076,7 @@ const MOCK_QUOTAS = [
 ];
 
 const QuotaActionsDropdown = ({  workspace, onAdjustQuota, onViewDetails  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
 
@@ -1085,14 +1099,14 @@ const QuotaActionsDropdown = ({  workspace, onAdjustQuota, onViewDetails  }: any
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 animate-in fade-in zoom-in-95 duration-100">
           <button onClick={() => { onViewDetails(); setIsOpen(false); }} className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> View workspace
+            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates28BillingExport.viewWorkspaceAction')}
           </button>
           <button onClick={() => { onAdjustQuota(workspace); setIsOpen(false); }} className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <SlidersHorizontal className="w-4 h-4 text-[var(--text-secondary)]"/> Adjust quota
+            <SlidersHorizontal className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates28BillingExport.adjustQuotaAction')}
           </button>
           <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2" />
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-warning)] hover:bg-[#FDF9F0] flex items-center gap-2 transition-colors font-medium">
-            <Ban className="w-4 h-4 opacity-80"/> Suspend
+            <Ban className="w-4 h-4 opacity-80"/> {t('templates28BillingExport.suspendAction')}
           </button>
         </div>
       )}
@@ -1101,6 +1115,7 @@ const QuotaActionsDropdown = ({  workspace, onAdjustQuota, onViewDetails  }: any
 };
 
 const PlatformQuotaManagementPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [planFilter, setPlanFilter] = useState('all');
@@ -1186,23 +1201,23 @@ const PlatformQuotaManagementPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Quota Management" 
-        subtitle="Monitor and enforce resource limits across all workspaces."
+      <PageHeader
+        title={t('templates28BillingExport.quotaManagementTitle')}
+        subtitle={t('templates28BillingExport.quotaManagementSubtitle')}
         actions={
           <>
-            <Button variant="outline" className="hidden sm:flex"><Download className="w-4 h-4 mr-2" /> Export data</Button>
-            <Button variant="outline"><Settings className="w-4 h-4 mr-2"/> Adjust default quota</Button>
+            <Button variant="outline" className="hidden sm:flex"><Download className="w-4 h-4 mr-2" /> {t('templates28BillingExport.exportDataButton')}</Button>
+            <Button variant="outline"><Settings className="w-4 h-4 mr-2"/> {t('templates28BillingExport.adjustDefaultQuota')}</Button>
           </>
         }
       />
 
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="Total API Capacity" value="150M reqs" trend="0%" />
-          <MetricCard title="Total Usage (Mo)" value="82.4M reqs" trend="+5.2%" isUp={true} />
-          <MetricCard title="Over-quota Workspaces" value="14" trend="+2" isUp={false} inverseGood={true} />
-          <MetricCard title="Warning-level Workspaces" value="32" trend="-5" isUp={true} inverseGood={true} />
+          <MetricCard title={t('templates28BillingExport.totalApiCapacity')} value="150M reqs" trend="0%" />
+          <MetricCard title={t('templates28BillingExport.totalUsageMonth')} value="82.4M reqs" trend="+5.2%" isUp={true} />
+          <MetricCard title={t('templates28BillingExport.overQuotaWorkspaces')} value="14" trend="+2" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates28BillingExport.warningLevelWorkspaces')} value="32" trend="-5" isUp={true} inverseGood={true} />
         </div>
       </Section>
 
@@ -1212,79 +1227,79 @@ const PlatformQuotaManagementPage = ({  setActiveRoute  }: any) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               className="h-10 w-full pl-9 pr-3 rounded-md-custom border border-[var(--border-color)] bg-white text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
-              placeholder="Search workspaces..."
+              placeholder={t('templates28BillingExport.searchWorkspacesPlaceholder')}
               value={search}
               onChange={(e: any) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex w-full sm:w-auto gap-3 shrink-0">
             <div className="w-full sm:w-40">
-              <Select 
-                value={statusFilter} 
-                onChange={setStatusFilter} 
+              <Select
+                value={statusFilter}
+                onChange={setStatusFilter}
                 options={[
-                  {label: 'All Statuses', value: 'all'}, 
-                  {label: 'Normal', value: 'Normal'}, 
-                  {label: 'Warning', value: 'Warning'},
-                  {label: 'Over Quota', value: 'Over Quota'}
-                ]} 
-                placeholder="Status" 
+                  {label: t('templates28BillingExport.allStatuses'), value: 'all'},
+                  {label: t('templates28BillingExport.normalStatus'), value: 'Normal'},
+                  {label: t('templates28BillingExport.warningStatus'), value: 'Warning'},
+                  {label: t('templates28BillingExport.overQuotaStatus'), value: 'Over Quota'}
+                ]}
+                placeholder={t('templates28BillingExport.statusFieldLabel')}
               />
             </div>
             <div className="w-full sm:w-32">
-              <Select 
-                value={planFilter} 
-                onChange={setPlanFilter} 
+              <Select
+                value={planFilter}
+                onChange={setPlanFilter}
                 options={[
-                  {label: 'All Plans', value: 'all'}, 
-                  {label: 'Free', value: 'Free'}, 
-                  {label: 'Pro', value: 'Pro'},
-                  {label: 'Enterprise', value: 'Enterprise'}
-                ]} 
-                placeholder="Plan" 
+                  {label: t('templates28BillingExport.allPlans'), value: 'all'},
+                  {label: t('templates28BillingExport.freePlanLabel'), value: 'Free'},
+                  {label: t('templates28BillingExport.proPlanLabel'), value: 'Pro'},
+                  {label: t('templates28BillingExport.enterprisePlanLabel'), value: 'Enterprise'}
+                ]}
+                placeholder={t('templates28BillingExport.planFieldLabel')}
               />
             </div>
           </div>
           {(search || statusFilter !== 'all' || planFilter !== 'all') && (
-            <Button variant="tertiary" onClick={() => {setSearch(''); setStatusFilter('all'); setPlanFilter('all');}} className="px-3">Clear filters</Button>
+            <Button variant="tertiary" onClick={() => {setSearch(''); setStatusFilter('all'); setPlanFilter('all');}} className="px-3">{t('templates28BillingExport.clearFiltersButton')}</Button>
           )}
         </div>
       </Section>
 
       <Section>
-        <DataTable 
-          columns={["Workspace", "Plan", "API Usage", "Storage Usage", "Status", "Last Updated", ""]}
+        <DataTable
+          columns={[t('templates28BillingExport.colWorkspace'), t('templates28BillingExport.colPlan'), t('templates28BillingExport.colApiUsage'), t('templates28BillingExport.colStorageUsage'), t('templates28BillingExport.colStatus'), t('templates28BillingExport.colLastUpdated'), ""]}
           data={mappedData}
           loading={isLoading}
         />
       </Section>
 
       {/* Adjust Quota Modal */}
-      <Modal 
-        isOpen={isAdjustOpen} 
+      <Modal
+        isOpen={isAdjustOpen}
         onClose={() => !isProcessing && setIsAdjustOpen(false)}
-        title="Adjust Quota"
-        description={selectedWs ? `Modify resource limits for ${selectedWs.name}.` : ''}
+        title={t('templates28BillingExport.adjustQuotaTitle')}
+        description={selectedWs ? t('templates28BillingExport.adjustQuotaDesc', { name: selectedWs.name }) : ''}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsAdjustOpen(false)} disabled={isProcessing}>Cancel</Button>
-            <Button onClick={handleAdjustSave} isLoading={isProcessing}>Save Changes</Button>
+            <Button variant="outline" onClick={() => setIsAdjustOpen(false)} disabled={isProcessing}>{t('templates28BillingExport.cancelButton')}</Button>
+            <Button onClick={handleAdjustSave} isLoading={isProcessing}>{t('templates28BillingExport.saveChangesButton')}</Button>
           </>
         }
       >
         <div className="space-y-5">
            <Alert variant="warning">
-             Changing quota limits directly affects billing logic and customer SLAs. Ensure the customer has agreed to overage charges if applicable.
+             {t('templates28BillingExport.quotaWarningBody')}
            </Alert>
            <div className="space-y-4">
-             <Input 
-               label="API Limit (thousands req/mo)" 
+             <Input
+               label={t('templates28BillingExport.apiLimitLabel')}
                type="number"
                value={apiLimit}
                onChange={e => setApiLimit(e.target.value)}
              />
-             <Input 
-               label="Storage Limit (GB)" 
+             <Input
+               label={t('templates28BillingExport.storageLimitLabel')}
                type="number"
                value={storageLimit}
                onChange={e => setStorageLimit(e.target.value)}
@@ -1300,6 +1315,7 @@ const PlatformQuotaManagementPage = ({  setActiveRoute  }: any) => {
 
 // --- SHARED USAGE CARD ---
 const EnterpriseUsageCard = ({  title, current, max, unit, icon: Icon  }: any) => {
+  const t = useT();
   const percent = Math.min((current / max) * 100, 100);
   const isWarning = percent >= 80;
 
@@ -1318,8 +1334,8 @@ const EnterpriseUsageCard = ({  title, current, max, unit, icon: Icon  }: any) =
          <div className={cn("h-2 rounded-full transition-all duration-500", isWarning ? "bg-[#D97C7C]" : "bg-[#5C856A]")} style={{ width: `${percent}%` }}></div>
       </div>
       <div className="flex items-center justify-between mt-2">
-        <span className="text-[11px] font-medium text-[var(--text-secondary)]">{percent.toFixed(1)}% used</span>
-        {isWarning && <span className="text-[11px] text-[#9B5050] font-medium flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> Approaching limit</span>}
+        <span className="text-[11px] font-medium text-[var(--text-secondary)]">{t('templates28BillingExport.percentUsedSuffix', { percent: percent.toFixed(1) })}</span>
+        {isWarning && <span className="text-[11px] text-[#9B5050] font-medium flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> {t('templates28BillingExport.approachingLimitText')}</span>}
       </div>
     </Card>
   );
@@ -1328,6 +1344,7 @@ const EnterpriseUsageCard = ({  title, current, max, unit, icon: Icon  }: any) =
 // --- PLATFORM ENTERPRISE BILLING DETAIL PAGE ---
 
 const PlatformEnterpriseBillingDetailPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isLoading, setIsLoading] = useState(true);
   const [isAdjustPlanModalOpen, setIsAdjustPlanModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -1375,50 +1392,50 @@ const PlatformEnterpriseBillingDetailPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        showBack 
+      <PageHeader
+        showBack
         onBack={() => setActiveRoute('billing')}
-        title="Production AI" 
+        title="Production AI"
         subtitle="ws_prod_01 • Enterprise Plan"
         actions={
           <>
             <Button variant="outline" className="hidden sm:flex" onClick={() => setActiveRoute('workspace-details')}>
-              <ExternalLink className="w-4 h-4 mr-2" /> View workspace
+              <ExternalLink className="w-4 h-4 mr-2" /> {t('templates28BillingExport.viewWorkspaceAction')}
             </Button>
-            <Button onClick={() => setIsAdjustPlanModalOpen(true)}>Adjust plan</Button>
+            <Button onClick={() => setIsAdjustPlanModalOpen(true)}>{t('templates28BillingExport.adjustPlanButton')}</Button>
             <Button variant="tertiary" size="icon"><MoreVertical className="w-4 h-4" /></Button>
           </>
         }
       />
 
       <Section>
-         <Alert variant="error" title="Action Required">
-            The most recent invoice (INV-2026-004) failed to process. Services may be degraded if payment is not received within 3 days.
+         <Alert variant="error" title={t('templates28BillingExport.actionRequiredTitle')}>
+            {t('templates28BillingExport.invoiceFailedBody')}
          </Alert>
       </Section>
 
-      <Section title="Enterprise Summary">
+      <Section title={t('templates28BillingExport.enterpriseSummaryTitle')}>
         <Card className="p-5 sm:p-6 overflow-hidden relative">
            <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-[var(--primary-gold)]/5 to-transparent pointer-events-none" />
            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 relative z-10 items-start">
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Status</p>
-                <Badge variant="operational" className="py-1">Active</Badge>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates28BillingExport.statusFieldLabel')}</p>
+                <Badge variant="operational" className="py-1">{t('templates28BillingExport.activeStatusLabel')}</Badge>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Plan</p>
-                <Badge variant="current" className="py-1">Enterprise</Badge>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates28BillingExport.planFieldLabel')}</p>
+                <Badge variant="current" className="py-1">{t('templates28BillingExport.enterprisePlanLabel')}</Badge>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Billing Cycle</p>
-                <div className="text-sm font-medium text-[var(--text-primary)]">Monthly</div>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates28BillingExport.billingCycleLabel')}</p>
+                <div className="text-sm font-medium text-[var(--text-primary)]">{t('templates28BillingExport.billingCycleMonthly')}</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Renewal Date</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates28BillingExport.renewalDateLabel')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">Nov 01, 2026</div>
              </div>
              <div className="lg:col-span-2">
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Owner / Billing Contact</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates28BillingExport.ownerBillingContactLabel')}</p>
                 <div className="flex items-center gap-2">
                    <div className="w-6 h-6 rounded-full bg-[var(--bg-app)] border border-[var(--border-color)] flex items-center justify-center text-[10px] font-bold text-[var(--primary-gold)]">A</div>
                    <div className="flex flex-col">
@@ -1431,74 +1448,74 @@ const PlatformEnterpriseBillingDetailPage = ({  setActiveRoute  }: any) => {
         </Card>
       </Section>
 
-      <Section title="Metrics Overview">
+      <Section title={t('templates28BillingExport.metricsOverviewTitle')}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="Monthly Revenue" value="$2,400" trend="0%" />
-          <MetricCard title="API Requests (Mo)" value="2.4M" trend="+12%" isUp={true} />
-          <MetricCard title="Storage Used" value="84 GB" trend="+5%" isUp={true} />
-          <MetricCard title="Active Users" value="14" trend="+2" isUp={true} />
+          <MetricCard title={t('templates28BillingExport.monthlyRevenueTitle')} value="$2,400" trend="0%" />
+          <MetricCard title={t('templates28BillingExport.apiRequestsMoTitle')} value="2.4M" trend="+12%" isUp={true} />
+          <MetricCard title={t('templates28BillingExport.storageUsedTitle')} value="84 GB" trend="+5%" isUp={true} />
+          <MetricCard title={t('templates28BillingExport.activeUsersTitle')} value="14" trend="+2" isUp={true} />
         </div>
       </Section>
 
       <Section>
         <Tabs defaultValue="invoices" tabs={[
-          { 
-            id: 'usage', 
-            label: 'Usage Details', 
+          {
+            id: 'usage',
+            label: t('templates28BillingExport.usageDetailsTab'),
             content: (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <EnterpriseUsageCard title="API Requests" icon={Zap} current={2400000} max={10000000} unit="reqs" />
-                 <EnterpriseUsageCard title="Storage Used" icon={HardDrive} current={84} max={500} unit="GB" />
+                 <EnterpriseUsageCard title={t('templates28BillingExport.apiRequestsTitle')} icon={Zap} current={2400000} max={10000000} unit="reqs" />
+                 <EnterpriseUsageCard title={t('templates28BillingExport.storageUsedTitle')} icon={HardDrive} current={84} max={500} unit="GB" />
               </div>
             )
           },
-          { 
-            id: 'invoices', 
-            label: 'Invoices', 
+          {
+            id: 'invoices',
+            label: t('templates28BillingExport.invoicesTab'),
             content: (
-              <DataTable 
-                columns={["Invoice ID", "Date", "Amount", "Status", ""]}
+              <DataTable
+                columns={[t('templates28BillingExport.colInvoiceId'), t('templates28BillingExport.colDate'), t('templates28BillingExport.colAmount'), t('templates28BillingExport.colStatus'), ""]}
                 data={invoiceData}
                 loading={isLoading}
                 pagination={false}
               />
             )
           },
-          { 
-            id: 'activity', 
-            label: 'Activity', 
+          {
+            id: 'activity',
+            label: t('templates28BillingExport.activityTab'),
             content: (
-              <DataTable 
-                columns={["Timestamp", "Event", "Actor"]}
+              <DataTable
+                columns={[t('templates28BillingExport.colTimestamp'), t('templates28BillingExport.colEvent'), t('templates28BillingExport.colActor')]}
                 data={activityData}
                 loading={isLoading}
                 pagination={false}
               />
             )
           },
-          { 
-            id: 'settings', 
-            label: 'Billing Settings', 
+          {
+            id: 'settings',
+            label: t('templates28BillingExport.billingSettingsTab'),
             content: (
               <div className="max-w-2xl space-y-6">
                 <Card className="p-6">
-                   <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">Contract Details</h3>
+                   <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">{t('templates28BillingExport.contractDetailsTitle')}</h3>
                    <div className="space-y-5">
-                     <Select 
-                       label="Current Plan" 
-                       value="Enterprise" 
+                     <Select
+                       label={t('templates28BillingExport.currentPlanLabel')}
+                       value="Enterprise"
                        disabled
-                       options={[{label: 'Enterprise', value: 'Enterprise'}]}
-                       helperText="To change plans, use the 'Adjust Plan' action above."
+                       options={[{label: t('templates28BillingExport.enterprisePlanLabel'), value: 'Enterprise'}]}
+                       helperText={t('templates28BillingExport.currentPlanHelper')}
                      />
-                     <Input 
-                       label="Billing Notes" 
-                       value="Net 30 terms. Send copy to finance@acme.com." 
+                     <Input
+                       label={t('templates28BillingExport.billingNotesLabel')}
+                       value="Net 30 terms. Send copy to finance@acme.com."
                        onChange={() => {}}
                        multiline
                      />
                      <div className="pt-4 flex justify-end">
-                       <Button>Save notes</Button>
+                       <Button>{t('templates28BillingExport.saveNotesButton')}</Button>
                      </div>
                    </div>
                 </Card>
@@ -1509,32 +1526,32 @@ const PlatformEnterpriseBillingDetailPage = ({  setActiveRoute  }: any) => {
       </Section>
 
       {/* Adjust Plan Modal */}
-      <Modal 
-        isOpen={isAdjustPlanModalOpen} 
+      <Modal
+        isOpen={isAdjustPlanModalOpen}
         onClose={() => !isProcessing && setIsAdjustPlanModalOpen(false)}
-        title="Adjust Subscription Plan"
-        description="Modify the plan and custom pricing for this enterprise workspace."
+        title={t('templates28BillingExport.adjustSubscriptionPlanTitle')}
+        description={t('templates28BillingExport.adjustSubscriptionPlanDesc')}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsAdjustPlanModalOpen(false)} disabled={isProcessing}>Cancel</Button>
-            <Button onClick={handleAdjustPlan} isLoading={isProcessing}>Update Plan</Button>
+            <Button variant="outline" onClick={() => setIsAdjustPlanModalOpen(false)} disabled={isProcessing}>{t('templates28BillingExport.cancelButton')}</Button>
+            <Button onClick={handleAdjustPlan} isLoading={isProcessing}>{t('templates28BillingExport.updatePlanButton')}</Button>
           </>
         }
       >
         <div className="space-y-4">
-          <Select 
-            label="Plan Tier" 
+          <Select
+            label={t('templates28BillingExport.planTierLabel')}
             options={[
-              {label: 'Free Tier', value: 'Free'}, 
-              {label: 'Pro', value: 'Pro'}, 
-              {label: 'Enterprise', value: 'Enterprise'}
+              {label: t('templates28BillingExport.freeTierOption'), value: 'Free'},
+              {label: t('templates28BillingExport.proPlanLabel'), value: 'Pro'},
+              {label: t('templates28BillingExport.enterprisePlanLabel'), value: 'Enterprise'}
             ]}
             value={newPlan}
             onChange={setNewPlan}
           />
           
           <div className="space-y-2 w-full">
-            <Label>Custom MRR Override ($)</Label>
+            <Label>{t('templates28BillingExport.customMrrOverrideLabel')}</Label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]">$</span>
               <Input 
@@ -1544,11 +1561,11 @@ const PlatformEnterpriseBillingDetailPage = ({  setActiveRoute  }: any) => {
                 className="pl-7"
               />
             </div>
-            <p className="text-xs text-[var(--text-secondary)]">Leave blank to use default plan pricing.</p>
+            <p className="text-xs text-[var(--text-secondary)]">{t('templates28BillingExport.blankPricingHint')}</p>
           </div>
 
           <Alert variant="warning" className="mt-2">
-            Proration will be automatically applied to the next invoice based on the change date.
+            {t('templates28BillingExport.prorationNote')}
           </Alert>
         </div>
       </Modal>
@@ -1560,6 +1577,7 @@ const PlatformEnterpriseBillingDetailPage = ({  setActiveRoute  }: any) => {
 
 // --- PLATFORM BILLING OVERVIEW PAGE ---
 const PlatformBillingOverviewPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isLoading, setIsLoading] = useState(true);
   const [dateRange, setDateRange] = useState('30d');
 
@@ -1585,65 +1603,65 @@ const PlatformBillingOverviewPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Billing Overview" 
-        subtitle="Monitor revenue, usage, and billing health across all workspaces."
+      <PageHeader
+        title={t('templates28BillingExport.billingOverviewTitle')}
+        subtitle={t('templates28BillingExport.billingOverviewSubtitle')}
         actions={
           <>
             <div className="hidden sm:block w-36">
-              <Select 
-                value={dateRange} 
-                onChange={setDateRange} 
-                options={[{label: 'Last 30 Days', value: '30d'}, {label: 'This Quarter', value: '90d'}, {label: 'This Year', value: '365d'}]} 
-                placeholder="Date Range" 
+              <Select
+                value={dateRange}
+                onChange={setDateRange}
+                options={[{label: t('templates28BillingExport.last30DaysOption'), value: '30d'}, {label: t('templates28BillingExport.thisQuarterOption'), value: '90d'}, {label: t('templates28BillingExport.thisYearOption'), value: '365d'}]}
+                placeholder={t('templates28BillingExport.dateRangeLabel')}
               />
             </div>
-            <Button variant="outline" onClick={() => setActiveRoute('billing-export')}><Download className="w-4 h-4 mr-2"/> Export data</Button>
+            <Button variant="outline" onClick={() => setActiveRoute('billing-export')}><Download className="w-4 h-4 mr-2"/> {t('templates28BillingExport.exportDataButton')}</Button>
           </>
         }
       />
 
-      <Section title="Revenue Metrics">
+      <Section title={t('templates28BillingExport.revenueMetricsTitle')}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="MRR" value="$124,500" trend="+8.4%" isUp={true} />
-          <MetricCard title="Total Revenue" value="$132,100" trend="+12.1%" isUp={true} />
-          <MetricCard title="Active Subscriptions" value="1,892" trend="+42" isUp={true} />
-          <MetricCard title="Churn Rate" value="1.2%" trend="-0.4%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates28BillingExport.mrrTitle')} value="$124,500" trend="+8.4%" isUp={true} />
+          <MetricCard title={t('templates28BillingExport.totalRevenueTitle')} value="$132,100" trend="+12.1%" isUp={true} />
+          <MetricCard title={t('templates28BillingExport.activeSubscriptionsTitle')} value="1,892" trend="+42" isUp={true} />
+          <MetricCard title={t('templates28BillingExport.churnRateTitle')} value="1.2%" trend="-0.4%" isUp={false} inverseGood={true} />
         </div>
       </Section>
 
-      <Section title="Platform Usage">
+      <Section title={t('templates28BillingExport.platformUsageTitle')}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="Total API Requests" value="45.2M" trend="+14%" isUp={true} />
-          <MetricCard title="Storage Usage" value="12.4 TB" trend="+8%" isUp={true} />
-          <MetricCard title="Active Workspaces" value="1,204" trend="+12" isUp={true} />
-          <MetricCard title="Over-quota Workspaces" value="14" trend="-2" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates28BillingExport.totalApiRequestsTitle')} value="45.2M" trend="+14%" isUp={true} />
+          <MetricCard title={t('templates28BillingExport.storageUsageTitle')} value="12.4 TB" trend="+8%" isUp={true} />
+          <MetricCard title={t('templates28BillingExport.activeWorkspacesTitle')} value="1,204" trend="+12" isUp={true} />
+          <MetricCard title={t('templates28BillingExport.overQuotaWorkspaces')} value="14" trend="-2" isUp={false} inverseGood={true} />
         </div>
       </Section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         <div className="lg:col-span-2 space-y-4">
-          <Section title="Top Workspaces">
-            <DataTable 
-              columns={["Workspace", "Plan", "Revenue", "Usage", "Status"]}
+          <Section title={t('templates28BillingExport.topWorkspacesTitle')}>
+            <DataTable
+              columns={[t('templates28BillingExport.colWorkspace'), t('templates28BillingExport.colPlan'), t('templates28BillingExport.colRevenue'), t('templates28BillingExport.colUsage'), t('templates28BillingExport.colStatus')]}
               data={tableData}
               loading={isLoading}
               pagination={false}
             />
           </Section>
         </div>
-        
+
         <div className="space-y-6 sm:space-y-8">
-           <Section title="Alerts & Risks">
+           <Section title={t('templates28BillingExport.alertsRisksTitle')}>
              <div className="bg-[var(--bg-card)] rounded-md-custom border border-[var(--border-color)] p-4 shadow-soft-sm space-y-3">
-                <Alert variant="error" title="Payment Failed">
-                  Invoice INV-2026-004 failed for <span className="font-semibold cursor-pointer hover:underline" onClick={() => setActiveRoute('enterprise-billing-details')}>Dev Cluster Alpha</span>.
+                <Alert variant="error" title={t('templates28BillingExport.paymentFailedTitle')}>
+                  {t('templates28BillingExport.paymentFailedBodyPrefix')} <span className="font-semibold cursor-pointer hover:underline" onClick={() => setActiveRoute('enterprise-billing-details')}>Dev Cluster Alpha</span>.
                 </Alert>
-                <Alert variant="warning" title="Quota Warning">
-                  <span className="font-semibold cursor-pointer hover:underline" onClick={() => setActiveRoute('enterprise-billing-details')}>Data Analytics Core</span> is at 95% of its API quota.
+                <Alert variant="warning" title={t('templates28BillingExport.quotaWarningTitle')}>
+                  <span className="font-semibold cursor-pointer hover:underline" onClick={() => setActiveRoute('enterprise-billing-details')}>Data Analytics Core</span> {t('templates28BillingExport.quotaWarningBodySuffix')}
                 </Alert>
-                <Alert variant="info" title="Suspended Account">
-                  Workspace <span className="font-semibold">Legacy Systems</span> was suspended due to policy violation.
+                <Alert variant="info" title={t('templates28BillingExport.suspendedAccountTitle')}>
+                  {t('templates28BillingExport.suspendedAccountBodyPrefix')} <span className="font-semibold">Legacy Systems</span> {t('templates28BillingExport.suspendedAccountBodySuffix')}
                 </Alert>
              </div>
            </Section>
@@ -1656,6 +1674,7 @@ const PlatformBillingOverviewPage = ({  setActiveRoute  }: any) => {
 // --- PLATFORM ADMIN RESET PASSWORD PAGE ---
 
 const PlatformAdminResetPasswordPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [step, setStep] = useState('form');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -1696,11 +1715,11 @@ const PlatformAdminResetPasswordPage = ({  setActiveRoute  }: any) => {
     <PageContainer maxWidth="narrow" className="pt-8">
       {step === 'form' && (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <PageHeader 
-            showBack 
+          <PageHeader
+            showBack
             onBack={() => setActiveRoute('admin-details')}
-            title="Reset Admin Password" 
-            subtitle="Trigger a password reset for this administrator."
+            title={t('templates28BillingExport.resetAdminPasswordTitle')}
+            subtitle={t('templates28BillingExport.resetAdminPasswordSubtitle')}
           />
 
           <div className="space-y-6 mt-8">
@@ -1722,18 +1741,18 @@ const PlatformAdminResetPasswordPage = ({  setActiveRoute  }: any) => {
 
             <Alert variant="warning" className="bg-[#FDF9F0] border-[#E6C07B]/40">
               <div className="space-y-2">
-                <h4 className="text-sm font-semibold text-[#9E814D]">Important Security Notice</h4>
+                <h4 className="text-sm font-semibold text-[#9E814D]">{t('templates28BillingExport.importantSecurityNoticeTitle')}</h4>
                 <p className="text-xs text-[#9E814D]/90 leading-relaxed">
-                  This action will send a password reset email to the admin. They will need to set a new password before accessing the platform again. Their active sessions will remain open until the password is officially changed.
+                  {t('templates28BillingExport.securityNoticeBody')}
                 </p>
-                <p className="text-[11px] text-[#9E814D]/70 font-mono mt-2">This action will be logged for audit purposes.</p>
+                <p className="text-[11px] text-[#9E814D]/70 font-mono mt-2">{t('templates28BillingExport.auditLoggedNote')}</p>
               </div>
             </Alert>
 
             <div className="pt-6 border-t border-[var(--border-color)] flex items-center justify-end gap-3">
-               <Button variant="tertiary" onClick={() => setActiveRoute('admin-details')}>Cancel</Button>
+               <Button variant="tertiary" onClick={() => setActiveRoute('admin-details')}>{t('templates28BillingExport.cancelButton')}</Button>
                <Button onClick={() => setIsConfirmModalOpen(true)} disabled={adminData.status === 'Suspended'}>
-                 <Mail className="w-4 h-4 mr-2"/> Send reset email
+                 <Mail className="w-4 h-4 mr-2"/> {t('templates28BillingExport.sendResetEmailButton')}
                </Button>
             </div>
           </div>
@@ -1742,23 +1761,23 @@ const PlatformAdminResetPasswordPage = ({  setActiveRoute  }: any) => {
 
       {step === 'success' && (
         <div className="animate-in fade-in zoom-in-[0.98] duration-500">
-           <PageHeader 
-             showBack 
+           <PageHeader
+             showBack
              onBack={() => setActiveRoute('admin-details')}
-             title="Reset email sent" 
+             title={t('templates28BillingExport.resetEmailSentTitle')}
            />
            <Card className="p-8 mt-8 shadow-soft-md flex flex-col items-center text-center">
              <div className="w-16 h-16 rounded-full bg-[#F3F9F5] border border-[#8FBFA0]/40 flex items-center justify-center mb-6">
                <CheckCircle2 className="w-8 h-8 text-[#5C856A]" />
              </div>
-             <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">Reset email dispatched</h2>
+             <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">{t('templates28BillingExport.resetEmailDispatchedHeading')}</h2>
              <p className="text-sm text-[var(--text-secondary)] mb-8 max-w-sm">
-               An email has been sent to <strong className="text-[var(--text-primary)]">{adminData.email}</strong> with instructions to set a new password.
+               {t('templates28BillingExport.emailSentToPrefix')} <strong className="text-[var(--text-primary)]">{adminData.email}</strong> {t('templates28BillingExport.resetEmailSentSuffix')}
              </p>
              <div className="flex gap-3">
-               <Button variant="outline" onClick={() => setActiveRoute('admin-details')}>Back to Admin Details</Button>
+               <Button variant="outline" onClick={() => setActiveRoute('admin-details')}>{t('templates28BillingExport.backToAdminDetailsButton')}</Button>
                <Button onClick={handleResend} disabled={countdown > 0} isLoading={isSubmitting}>
-                 {countdown > 0 ? `Resend in ${countdown}s` : 'Resend email'}
+                 {countdown > 0 ? t('templates28BillingExport.resendInSeconds', { seconds: countdown }) : t('templates28BillingExport.resendEmailButton')}
                </Button>
              </div>
            </Card>
@@ -1766,15 +1785,15 @@ const PlatformAdminResetPasswordPage = ({  setActiveRoute  }: any) => {
       )}
 
       {/* Confirmation Modal */}
-      <Modal 
-        isOpen={isConfirmModalOpen} 
+      <Modal
+        isOpen={isConfirmModalOpen}
         onClose={() => !isSubmitting && setIsConfirmModalOpen(false)}
-        title="Reset password for this admin?"
-        description="This will send a reset link to the admin’s email address."
+        title={t('templates28BillingExport.resetPasswordConfirmTitle')}
+        description={t('templates28BillingExport.resetPasswordConfirmDesc')}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsConfirmModalOpen(false)} disabled={isSubmitting}>Cancel</Button>
-            <Button onClick={handleSendReset} isLoading={isSubmitting}>Confirm Reset</Button>
+            <Button variant="outline" onClick={() => setIsConfirmModalOpen(false)} disabled={isSubmitting}>{t('templates28BillingExport.cancelButton')}</Button>
+            <Button onClick={handleSendReset} isLoading={isSubmitting}>{t('templates28BillingExport.confirmResetButton')}</Button>
           </>
         }
       />
@@ -1785,6 +1804,7 @@ const PlatformAdminResetPasswordPage = ({  setActiveRoute  }: any) => {
 
 // --- PLATFORM ADMIN DETAILS PAGE ---
 const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -1827,12 +1847,12 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
     setAdminData(prev => ({ ...prev, role: newRole }));
     setIsProcessing(false);
     setIsRoleModalOpen(false);
-    showSuccess("Role updated successfully.");
+    showSuccess(t('templates28BillingExport.roleUpdatedToast'));
   };
 
   const handleSuspendToggle = async () => {
     if (adminData.role === 'Super Admin' && adminData.status === 'Active') {
-      alert("Cannot suspend the primary Super Admin. Promote another user first.");
+      alert(t('templates28BillingExport.cannotSuspendPrimaryAlert'));
       setIsSuspendModalOpen(false);
       return;
     }
@@ -1841,12 +1861,12 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
     setAdminData(prev => ({ ...prev, status: prev.status === 'Active' ? 'Suspended' : 'Active' }));
     setIsProcessing(false);
     setIsSuspendModalOpen(false);
-    showSuccess(`Admin ${adminData.status === 'Active' ? 'suspended' : 'activated'} successfully.`);
+    showSuccess(adminData.status === 'Active' ? t('templates28BillingExport.adminSuspendedToast') : t('templates28BillingExport.adminActivatedToast'));
   };
 
   const handleRemove = async () => {
     if (adminData.role === 'Super Admin') {
-      setRemoveError("Cannot remove the primary Super Admin. Please transfer ownership or change role first.");
+      setRemoveError(t('templates28BillingExport.cannotRemovePrimaryError'));
       return;
     }
     setIsProcessing(true);
@@ -1878,17 +1898,17 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
   ]);
 
   const permissionsList = adminData.role === 'Super Admin' ? [
-    { title: 'Global Platform Settings', desc: 'Full access to read and write all platform configurations.' },
-    { title: 'Billing & Subscriptions', desc: 'Manage payment methods, plans, and view all invoices.' },
-    { title: 'User & Admin Management', desc: 'Invite, suspend, and remove platform administrators or workspace owners.' },
-    { title: 'Workspace Oversight', desc: 'Full access to view and manage all tenant workspaces and resources.' }
+    { title: t('templates28BillingExport.permTitleGlobalSettings'), desc: t('templates28BillingExport.permDescGlobalSettings') },
+    { title: t('templates28BillingExport.permTitleBilling'), desc: t('templates28BillingExport.permDescBilling') },
+    { title: t('templates28BillingExport.permTitleUserAdmin'), desc: t('templates28BillingExport.permDescUserAdmin') },
+    { title: t('templates28BillingExport.permTitleWorkspaceOversight'), desc: t('templates28BillingExport.permDescWorkspaceOversight') }
   ] : adminData.role === 'Admin' ? [
-    { title: 'Workspace Management', desc: 'Create, suspend, and manage all tenant workspaces.' },
-    { title: 'User Management', desc: 'Invite and manage users within specific workspaces.' },
-    { title: 'API Key Management', desc: 'View, rotate, and revoke platform API keys.' }
+    { title: t('templates28BillingExport.permTitleWorkspaceMgmt'), desc: t('templates28BillingExport.permDescWorkspaceMgmt') },
+    { title: t('templates28BillingExport.permTitleUserMgmt'), desc: t('templates28BillingExport.permDescUserMgmt') },
+    { title: t('templates28BillingExport.permTitleApiKeyMgmt'), desc: t('templates28BillingExport.permDescApiKeyMgmt') }
   ] : [
-    { title: 'Read-only Oversight', desc: 'View workspace configurations and health metrics.' },
-    { title: 'Audit Logs', desc: 'Access and export platform activity and security logs.' }
+    { title: t('templates28BillingExport.permTitleReadOnly'), desc: t('templates28BillingExport.permDescReadOnly') },
+    { title: t('templates28BillingExport.permTitleAuditLogs'), desc: t('templates28BillingExport.permDescAuditLogs') }
   ];
 
   return (
@@ -1910,29 +1930,29 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
         actions={
           <>
             <Button variant="outline" onClick={() => { setNewRole(adminData.role); setIsRoleModalOpen(true); }} className="hidden sm:flex">
-              <Shield className="w-4 h-4 mr-2" /> Change role
+              <Shield className="w-4 h-4 mr-2" /> {t('templates28BillingExport.changeRoleButton')}
             </Button>
             <Button variant="outline" onClick={() => setActiveRoute('admin-reset-password')} className="hidden sm:flex">
-              <Lock className="w-4 h-4 mr-2" /> Reset password
+              <Lock className="w-4 h-4 mr-2" /> {t('templates28BillingExport.resetPasswordButton')}
             </Button>
-            
+
             {/* Mobile / Dropdown Menu */}
             <div className="relative group">
               <Button variant="tertiary" size="icon"><MoreVertical className="w-4 h-4" /></Button>
               <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-100 focus-within:opacity-100 focus-within:visible">
                 <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors sm:hidden" onClick={() => { setNewRole(adminData.role); setIsRoleModalOpen(true); }}>
-                  <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> Change role
+                  <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates28BillingExport.changeRoleButton')}
                 </button>
                 <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors sm:hidden" onClick={() => setActiveRoute('admin-reset-password')}>
-                  <Lock className="w-4 h-4 text-[var(--text-secondary)]"/> Reset password
+                  <Lock className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates28BillingExport.resetPasswordButton')}
                 </button>
                 <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2 sm:hidden" />
                 <button onClick={() => setIsSuspendModalOpen(true)} className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-warning)] hover:bg-[#FDF9F0] flex items-center gap-2 transition-colors font-medium">
                   {adminData.status === 'Active' ? <Ban className="w-4 h-4 opacity-80"/> : <Unlock className="w-4 h-4 opacity-80"/>}
-                  {adminData.status === 'Active' ? 'Suspend access' : 'Restore access'}
+                  {adminData.status === 'Active' ? t('templates28BillingExport.suspendAccessLabel') : t('templates28BillingExport.restoreAccessLabel')}
                 </button>
                 <button onClick={() => setIsRemoveModalOpen(true)} className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] flex items-center gap-2 transition-colors font-medium">
-                  <Trash2 className="w-4 h-4 opacity-80"/> Remove admin
+                  <Trash2 className="w-4 h-4 opacity-80"/> {t('templates28BillingExport.removeAdminButton')}
                 </button>
               </div>
             </div>
@@ -1954,15 +1974,15 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
                </div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Status</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates28BillingExport.statusFieldLabel')}</p>
                 <Badge variant={adminData.status === 'Active' ? 'operational' : 'error'} className="py-1">{adminData.status}</Badge>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Created</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates28BillingExport.createdFieldLabel')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">{adminData.created}</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Last Active</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates28BillingExport.lastActiveFieldLabel')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">{adminData.lastActive}</div>
              </div>
            </div>
@@ -1972,43 +1992,43 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
       {/* Tabs */}
       <Section>
         <Tabs defaultValue="overview" tabs={[
-          { 
-            id: 'overview', 
-            label: 'Overview', 
+          {
+            id: 'overview',
+            label: t('templates28BillingExport.overviewTab'),
             content: (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
                 {/* Left col - Recent Activity */}
                 <div className="lg:col-span-2 space-y-4">
                   <div className="flex items-center justify-between">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Recent Activity</h3>
-                     <Button variant="tertiary" size="sm" onClick={() => {}}>View all</Button>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates28BillingExport.recentActivityTitle')}</h3>
+                     <Button variant="tertiary" size="sm" onClick={() => {}}>{t('templates28BillingExport.viewAllButton')}</Button>
                   </div>
-                  <DataTable 
+                  <DataTable
                     pagination={false}
-                    columns={["Timestamp", "Action", "Resource", "Status", "IP"]}
+                    columns={[t('templates28BillingExport.colTimestamp'), t('templates28BillingExport.colAction'), t('templates28BillingExport.colResource'), t('templates28BillingExport.colStatus'), t('templates28BillingExport.colIp')]}
                     data={activityTableData.slice(0, 3)}
                     loading={isLoading}
                     onRowClick={(row: any) => setSelectedEvent(row)}
                   />
                 </div>
-                
+
                 {/* Right col - Security Info */}
                 <div className="space-y-6 sm:space-y-8">
                    <div className="space-y-4">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Security Profile</h3>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates28BillingExport.securityProfileTitle')}</h3>
                      <div className="bg-[var(--bg-card)] rounded-md-custom border border-[var(--border-color)] p-4 shadow-soft-sm space-y-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <ShieldCheck className="w-4 h-4 text-[#5C856A]" />
-                            <span className="text-sm font-medium text-[var(--text-primary)]">MFA Enforced</span>
+                            <span className="text-sm font-medium text-[var(--text-primary)]">{t('templates28BillingExport.mfaEnforcedLabel')}</span>
                           </div>
-                          <Badge variant="operational">Enabled</Badge>
+                          <Badge variant="operational">{t('templates28BillingExport.enabledLabel')}</Badge>
                         </div>
                         <div className="h-[1px] bg-[var(--border-color)]/50" />
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Laptop className="w-4 h-4 text-[var(--text-secondary)]" />
-                            <span className="text-sm font-medium text-[var(--text-primary)]">Active Sessions</span>
+                            <span className="text-sm font-medium text-[var(--text-primary)]">{t('templates28BillingExport.activeSessionsLabel')}</span>
                           </div>
                           <span className="text-sm font-medium text-[var(--text-primary)]">2</span>
                         </div>
@@ -2018,13 +2038,13 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
               </div>
             )
           },
-          { 
-            id: 'activity', 
-            label: 'Activity', 
+          {
+            id: 'activity',
+            label: t('templates28BillingExport.activityTab'),
             content: (
               <div className="space-y-4">
-                <DataTable 
-                  columns={["Timestamp", "Action", "Resource", "Status", "IP"]}
+                <DataTable
+                  columns={[t('templates28BillingExport.colTimestamp'), t('templates28BillingExport.colAction'), t('templates28BillingExport.colResource'), t('templates28BillingExport.colStatus'), t('templates28BillingExport.colIp')]}
                   data={activityTableData}
                   loading={isLoading}
                   onRowClick={(row: any) => setSelectedEvent(row)}
@@ -2032,13 +2052,13 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
               </div>
             )
           },
-          { 
-            id: 'permissions', 
-            label: 'Permissions', 
+          {
+            id: 'permissions',
+            label: t('templates28BillingExport.permissionsTab'),
             content: (
               <div className="max-w-3xl space-y-6">
                 <Alert variant="info">
-                  Permissions are inferred from the <strong>{adminData.role}</strong> role. Granular custom permissions are currently managed via the API.
+                  {t('templates28BillingExport.permissionsInferredPrefix')} <strong>{adminData.role}</strong> {t('templates28BillingExport.permissionsInferredSuffix')}
                 </Alert>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {permissionsList.map((perm, i) => (
@@ -2055,92 +2075,92 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
       </Section>
 
       {/* Modals */}
-      <Modal 
-        isOpen={isRoleModalOpen} 
+      <Modal
+        isOpen={isRoleModalOpen}
         onClose={() => !isProcessing && setIsRoleModalOpen(false)}
-        title="Change Role"
-        description={`Update platform access level for ${adminData.name}.`}
+        title={t('templates28BillingExport.changeRoleModalTitle')}
+        description={t('templates28BillingExport.updateAccessLevelPrefix', { name: adminData.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsRoleModalOpen(false)} disabled={isProcessing}>Cancel</Button>
-            <Button onClick={handleRoleChange} isLoading={isProcessing} disabled={newRole === adminData.role}>Update Role</Button>
+            <Button variant="outline" onClick={() => setIsRoleModalOpen(false)} disabled={isProcessing}>{t('templates28BillingExport.cancelButton')}</Button>
+            <Button onClick={handleRoleChange} isLoading={isProcessing} disabled={newRole === adminData.role}>{t('templates28BillingExport.updateRoleButton')}</Button>
           </>
         }
       >
         <div className="space-y-4">
-          <Select 
-            label="Platform Role" 
+          <Select
+            label={t('templates28BillingExport.platformRoleLabel')}
             options={[
-              {label: 'Super Admin', value: 'Super Admin'}, 
-              {label: 'Admin', value: 'Admin'}, 
-              {label: 'Support', value: 'Support'}
+              {label: t('templates28BillingExport.superAdminOption'), value: 'Super Admin'},
+              {label: t('templates28BillingExport.adminOption'), value: 'Admin'},
+              {label: t('templates28BillingExport.supportOption'), value: 'Support'}
             ]}
             value={newRole}
             onChange={setNewRole}
           />
           {newRole === 'Super Admin' && newRole !== adminData.role && (
             <Alert variant="warning" className="mt-2">
-              You are granting full system privileges. Ensure this user is authorized for billing and global operations.
+              {t('templates28BillingExport.grantingFullPrivilegesWarning')}
             </Alert>
           )}
           {adminData.role === 'Super Admin' && newRole !== 'Super Admin' && (
             <Alert variant="info" className="mt-2">
-              Downgrading a Super Admin will immediately revoke their access to billing and global settings.
+              {t('templates28BillingExport.downgradingSuperAdminInfo')}
             </Alert>
           )}
         </div>
       </Modal>
 
-      <Modal 
-        isOpen={isSuspendModalOpen} 
+      <Modal
+        isOpen={isSuspendModalOpen}
         onClose={() => !isProcessing && setIsSuspendModalOpen(false)}
-        title={adminData.status === 'Active' ? "Suspend Admin Access" : "Restore Admin Access"}
-        description={adminData.status === 'Active' ? `Are you sure you want to suspend ${adminData.name}?` : `Are you sure you want to restore access for ${adminData.name}?`}
+        title={adminData.status === 'Active' ? t('templates28BillingExport.suspendAdminAccessTitle') : t('templates28BillingExport.restoreAdminAccessTitle')}
+        description={adminData.status === 'Active' ? t('templates28BillingExport.confirmSuspendDesc', { name: adminData.name }) : t('templates28BillingExport.confirmRestoreDesc', { name: adminData.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsSuspendModalOpen(false)} disabled={isProcessing}>Cancel</Button>
+            <Button variant="outline" onClick={() => setIsSuspendModalOpen(false)} disabled={isProcessing}>{t('templates28BillingExport.cancelButton')}</Button>
             {adminData.status === 'Active' ? (
-              <Button variant="destructive" onClick={handleSuspendToggle} isLoading={isProcessing}>Suspend Access</Button>
+              <Button variant="destructive" onClick={handleSuspendToggle} isLoading={isProcessing}>{t('templates28BillingExport.suspendAccessButton')}</Button>
             ) : (
-              <Button onClick={handleSuspendToggle} isLoading={isProcessing}>Restore Access</Button>
+              <Button onClick={handleSuspendToggle} isLoading={isProcessing}>{t('templates28BillingExport.restoreAccessButton')}</Button>
             )}
           </>
         }
       >
         {adminData.status === 'Active' ? (
           <Alert variant="warning" className="mb-2">
-            The user will immediately lose access to the Kaori Platform Shell. No API keys or automated integrations will be affected.
+            {t('templates28BillingExport.loseAccessWarningBody')}
           </Alert>
         ) : (
           <div className="text-sm text-[var(--text-secondary)]">
-            Restoring access will allow the user to log in and resume their role as {adminData.role}.
+            {t('templates28BillingExport.restoreAccessBodyPrefix')} {adminData.role}.
           </div>
         )}
       </Modal>
 
-      <Modal 
-        isOpen={isRemoveModalOpen} 
+      <Modal
+        isOpen={isRemoveModalOpen}
         onClose={() => { setIsRemoveModalOpen(false); setRemoveError(''); }}
-        title="Remove Admin"
-        description={`Are you sure you want to permanently remove ${adminData.name} from the platform?`}
+        title={t('templates28BillingExport.removeAdminModalTitle')}
+        description={t('templates28BillingExport.confirmRemoveAdminDesc', { name: adminData.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => { setIsRemoveModalOpen(false); setRemoveError(''); }} disabled={isProcessing}>Cancel</Button>
-            <Button variant="destructive" onClick={handleRemove} isLoading={isProcessing}>Remove Admin</Button>
+            <Button variant="outline" onClick={() => { setIsRemoveModalOpen(false); setRemoveError(''); }} disabled={isProcessing}>{t('templates28BillingExport.cancelButton')}</Button>
+            <Button variant="destructive" onClick={handleRemove} isLoading={isProcessing}>{t('templates28BillingExport.removeAdminModalTitle')}</Button>
           </>
         }
       >
         {removeError && <Alert variant="error" className="mb-4">{removeError}</Alert>}
         <Alert variant="error" className="mb-2">
-          This action is irreversible. The user's platform access will be destroyed. To restore access, a new invitation must be sent.
+          {t('templates28BillingExport.removeAdminIrreversibleBody')}
         </Alert>
       </Modal>
 
       {/* Detail Drawer (For Activity Row Click) */}
-      <Drawer 
-        isOpen={!!selectedEvent} 
-        onClose={() => setSelectedEvent(null)} 
-        title="Event Details"
+      <Drawer
+        isOpen={!!selectedEvent}
+        onClose={() => setSelectedEvent(null)}
+        title={t('templates28BillingExport.eventDetailsTitle')}
       >
         {selectedEvent && (
           <div className="space-y-6">
@@ -2150,25 +2170,25 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
             </div>
             <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
               <div>
-                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Actor</p>
+                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">{t('templates28BillingExport.actorLabel')}</p>
                 <p className="font-medium text-[var(--text-primary)]">{adminData.name}</p>
               </div>
               <div>
-                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Resource</p>
+                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">{t('templates28BillingExport.colResource')}</p>
                 <p className="font-mono text-[var(--text-primary)] text-xs">{selectedEvent[2]?.props?.children || selectedEvent[2]}</p>
               </div>
               <div>
-                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">IP Address</p>
+                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">{t('templates28BillingExport.ipAddressLabel')}</p>
                 <p className="font-mono text-[var(--text-primary)] text-xs">{selectedEvent[4]?.props?.children || selectedEvent[4]}</p>
               </div>
               <div>
-                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Status</p>
+                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">{t('templates28BillingExport.statusFieldLabel')}</p>
                 {selectedEvent[3]}
               </div>
             </div>
             <div className="h-[1px] bg-[var(--border-color)] w-full" />
             <div className="space-y-3">
-              <h4 className="text-sm font-semibold text-[var(--text-primary)]">Metadata Context</h4>
+              <h4 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates28BillingExport.metadataContextTitle')}</h4>
               <div className="bg-[#1C1C1C] rounded-md-custom p-4 overflow-x-auto shadow-inner border border-[#2A2A2A]">
                 <pre className="text-[11px] text-[#A5B4CB] font-mono leading-relaxed">
 {JSON.stringify({
@@ -2191,6 +2211,7 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
 
 // --- PLATFORM ADMINS INVITE PAGE ---
 const PlatformAdminInvitePage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [step, setStep] = useState('form');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -2204,8 +2225,8 @@ const PlatformAdminInvitePage = ({  setActiveRoute  }: any) => {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.email) newErrors.email = 'Email address is required';
-    else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = 'Please enter a valid email address';
+    if (!formData.email) newErrors.email = t('templates28BillingExport.emailRequiredError');
+    else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = t('templates28BillingExport.emailInvalidError');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -2223,65 +2244,65 @@ const PlatformAdminInvitePage = ({  setActiveRoute  }: any) => {
       
       {step === 'form' && (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <PageHeader 
-            showBack 
+          <PageHeader
+            showBack
             onBack={() => setActiveRoute('admin')}
-            title="Invite Platform Admin" 
-            subtitle="Grant administrative access to manage platform resources."
+            title={t('templates28BillingExport.invitePlatformAdminTitle')}
+            subtitle={t('templates28BillingExport.invitePlatformAdminSubtitle')}
           />
-          
+
           <Card className="p-6 sm:p-8 mt-8 shadow-soft-md">
             <div className="space-y-6">
-              
-              <Input 
-                label="Email address" 
-                placeholder="admin@company.com" 
+
+              <Input
+                label={t('templates28BillingExport.emailAddressLabel')}
+                placeholder="admin@company.com"
                 value={formData.email}
                 onChange={e => { setFormData({...formData, email: e.target.value}); setErrors({}); }}
                 error={errors.email}
                 autoFocus
               />
-              
+
               <div className="space-y-2">
-                <Select 
-                  label="Role" 
+                <Select
+                  label={t('templates28BillingExport.roleLabel')}
                   options={[
-                    {label: 'Super Admin', value: 'Super Admin'}, 
-                    {label: 'Admin', value: 'Admin'},
-                    {label: 'Support', value: 'Support'}
+                    {label: t('templates28BillingExport.superAdminOption'), value: 'Super Admin'},
+                    {label: t('templates28BillingExport.adminOption'), value: 'Admin'},
+                    {label: t('templates28BillingExport.supportOption'), value: 'Support'}
                   ]}
                   value={formData.role}
                   onChange={v => setFormData({...formData, role: v})}
                 />
-                
+
                 {/* Dynamic Role Description */}
                 <div className="mt-2 text-xs text-[var(--text-secondary)] bg-[var(--bg-app)] p-3 rounded-md-custom border border-[var(--border-color)]">
                   {formData.role === 'Super Admin' && (
                     <div className="flex flex-col gap-2">
                       <span className="text-[#9B5050] font-medium flex items-center gap-1.5">
-                        <AlertTriangle className="w-3.5 h-3.5" /> Full system access
+                        <AlertTriangle className="w-3.5 h-3.5" /> {t('templates28BillingExport.fullSystemAccessLabel')}
                       </span>
-                      <span>Super Admins have unrestricted access to all platform settings, billing, and global user management. Grant this role with caution.</span>
+                      <span>{t('templates28BillingExport.superAdminDescLong')}</span>
                     </div>
                   )}
-                  {formData.role === 'Admin' && "Can manage workspaces, API keys, and platform-level users. Cannot access billing."}
-                  {formData.role === 'Support' && "Read-only access to workspaces and logs. Useful for troubleshooting without operational risk."}
+                  {formData.role === 'Admin' && t('templates28BillingExport.adminRoleDesc')}
+                  {formData.role === 'Support' && t('templates28BillingExport.supportRoleDesc')}
                 </div>
               </div>
-              
-              <Input 
-                label="Add a message (optional)" 
-                placeholder="Include a personal note with the invitation..." 
+
+              <Input
+                label={t('templates28BillingExport.addMessageLabel')}
+                placeholder={t('templates28BillingExport.addMessagePlaceholder')}
                 value={formData.message}
                 onChange={e => setFormData({...formData, message: e.target.value})}
                 multiline
               />
 
             </div>
-            
+
             <div className="mt-8 pt-6 border-t border-[var(--border-color)] flex items-center justify-between">
-               <Button variant="tertiary" onClick={() => setActiveRoute('admin')} disabled={isSubmitting}>Cancel</Button>
-               <Button onClick={handleInvite} isLoading={isSubmitting}><Mail className="w-4 h-4 mr-2"/> Send invitation</Button>
+               <Button variant="tertiary" onClick={() => setActiveRoute('admin')} disabled={isSubmitting}>{t('templates28BillingExport.cancelButton')}</Button>
+               <Button onClick={handleInvite} isLoading={isSubmitting}><Mail className="w-4 h-4 mr-2"/> {t('templates28BillingExport.sendInvitationButton')}</Button>
             </div>
           </Card>
         </div>
@@ -2289,18 +2310,18 @@ const PlatformAdminInvitePage = ({  setActiveRoute  }: any) => {
 
       {step === 'success' && (
         <div className="animate-in fade-in zoom-in-[0.98] duration-500">
-           <PageHeader title="Invitation sent" />
+           <PageHeader title={t('templates28BillingExport.invitationSentTitle')} />
            <Card className="p-8 mt-8 shadow-soft-md flex flex-col items-center text-center">
              <div className="w-16 h-16 rounded-full bg-[#F3F9F5] border border-[#8FBFA0]/40 flex items-center justify-center mb-6">
                <CheckCircle2 className="w-8 h-8 text-[#5C856A]" />
              </div>
-             <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">Invitation successfully sent</h2>
+             <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">{t('templates28BillingExport.invitationSuccessHeading')}</h2>
              <p className="text-sm text-[var(--text-secondary)] mb-8 max-w-sm">
-               An email has been sent to <strong className="text-[var(--text-primary)]">{formData.email}</strong> with instructions to join the platform as {formData.role}.
+               {t('templates28BillingExport.emailSentToPrefix')} <strong className="text-[var(--text-primary)]">{formData.email}</strong> {t('templates28BillingExport.invitationSentSuffix', { role: formData.role })}
              </p>
              <div className="flex gap-3">
-               <Button variant="outline" onClick={() => { setFormData({email:'', role:'Admin', message:''}); setStep('form'); }}>Invite another</Button>
-               <Button onClick={() => setActiveRoute('admin')}>Back to Admins</Button>
+               <Button variant="outline" onClick={() => { setFormData({email:'', role:'Admin', message:''}); setStep('form'); }}>{t('templates28BillingExport.inviteAnotherButton')}</Button>
+               <Button onClick={() => setActiveRoute('admin')}>{t('templates28BillingExport.backToAdminsButton')}</Button>
              </div>
            </Card>
         </div>
@@ -2319,6 +2340,7 @@ const MOCK_ADMINS = [
 ];
 
 const AdminActionsDropdown = ({  admin, onRemove, onSuspend, onActivate, onResetPassword, onViewDetails  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
 
@@ -2345,43 +2367,43 @@ const AdminActionsDropdown = ({  admin, onRemove, onSuspend, onActivate, onReset
             onClick={() => { onViewDetails(); setIsOpen(false); }}
             className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors"
           >
-            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> View details
+            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates28BillingExport.viewDetailsAction')}
           </button>
 
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> Change role
+            <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates28BillingExport.changeRoleButton')}
           </button>
-          
-          <button 
+
+          <button
             onClick={() => { onResetPassword(admin); setIsOpen(false); }}
             className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors"
           >
-            <Lock className="w-4 h-4 text-[var(--text-secondary)]"/> Reset password
+            <Lock className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates28BillingExport.resetPasswordButton')}
           </button>
-          
+
           <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2" />
-          
+
           {admin.status === 'Active' || admin.status === 'Invited' ? (
-            <button 
+            <button
               onClick={() => { onSuspend(admin); setIsOpen(false); }}
               className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-warning)] hover:bg-[#FDF9F0] flex items-center gap-2 transition-colors font-medium"
             >
-              <Ban className="w-4 h-4 opacity-80"/> Suspend access
+              <Ban className="w-4 h-4 opacity-80"/> {t('templates28BillingExport.suspendAccessLabel')}
             </button>
           ) : (
-            <button 
+            <button
               onClick={() => { onActivate(admin); setIsOpen(false); }}
               className="w-full text-left px-3 py-1.5 text-sm text-[#5C856A] hover:bg-[#F3F9F5] flex items-center gap-2 transition-colors font-medium"
             >
-              <Unlock className="w-4 h-4 opacity-80"/> Restore access
+              <Unlock className="w-4 h-4 opacity-80"/> {t('templates28BillingExport.restoreAccessLabel')}
             </button>
           )}
 
-          <button 
+          <button
             onClick={() => { onRemove(admin); setIsOpen(false); }}
             className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] flex items-center gap-2 transition-colors font-medium"
           >
-            <Trash2 className="w-4 h-4 opacity-80"/> Remove admin
+            <Trash2 className="w-4 h-4 opacity-80"/> {t('templates28BillingExport.removeAdminButton')}
           </button>
         </div>
       )}
@@ -2390,6 +2412,7 @@ const AdminActionsDropdown = ({  admin, onRemove, onSuspend, onActivate, onReset
 };
 
 const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -2409,7 +2432,7 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
     if (adminToRemove?.role === 'Super Admin') {
       const superAdminCount = admins.filter(a => a.role === 'Super Admin').length;
       if (superAdminCount <= 1) {
-        setRemoveError("You cannot remove the last Super Admin. Promote another user first.");
+        setRemoveError(t('templates28BillingExport.cannotRemoveLastSuperAdminError'));
         return;
       }
     }
@@ -2422,7 +2445,7 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
     if (admin.role === 'Super Admin') {
       const superAdminCount = admins.filter(a => a.role === 'Super Admin' && a.status === 'Active').length;
       if (superAdminCount <= 1) {
-        alert("Cannot suspend the last active Super Admin."); 
+        alert(t('templates28BillingExport.cannotSuspendLastActiveError'));
         return;
       }
     }
@@ -2458,7 +2481,7 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
        <div>
          <div className="font-medium text-[var(--text-primary)] flex items-center gap-2">
            {a.name} 
-           {a.id === 'adm_1' && <span className="text-[10px] bg-[var(--bg-app)] border border-[var(--border-color)] px-1.5 py-0.5 rounded text-[var(--text-secondary)]">You</span>}
+           {a.id === 'adm_1' && <span className="text-[10px] bg-[var(--bg-app)] border border-[var(--border-color)] px-1.5 py-0.5 rounded text-[var(--text-secondary)]">{t('templates28BillingExport.youTag')}</span>}
          </div>
          <div className="text-xs text-[var(--text-secondary)] mt-0.5">{a.email}</div>
        </div>
@@ -2480,14 +2503,14 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Platform Admins" 
-        subtitle="Manage global administrators and access permissions across the platform." 
+      <PageHeader
+        title={t('templates28BillingExport.platformAdminsTitle')}
+        subtitle={t('templates28BillingExport.platformAdminsSubtitle')}
         actions={
           <Button onClick={() => setActiveRoute('admin-invite')}>
-            <UserPlus className="w-4 h-4 mr-2"/> Invite admin
+            <UserPlus className="w-4 h-4 mr-2"/> {t('templates28BillingExport.inviteAdminButton')}
           </Button>
-        } 
+        }
       />
 
       <Section>
@@ -2497,65 +2520,65 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               className="h-10 w-full pl-9 pr-3 rounded-md-custom border border-[var(--border-color)] bg-white text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
-              placeholder="Search by name or email..."
+              placeholder={t('templates28BillingExport.searchByNameEmailPlaceholder')}
               value={search}
               onChange={(e: any) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex w-full sm:w-auto gap-3 shrink-0">
             <div className="w-full sm:w-40">
-              <Select 
-                value={roleFilter} 
-                onChange={setRoleFilter} 
+              <Select
+                value={roleFilter}
+                onChange={setRoleFilter}
                 options={[
-                  {label: 'All Roles', value: 'all'}, 
-                  {label: 'Super Admin', value: 'Super Admin'}, 
-                  {label: 'Admin', value: 'Admin'},
-                  {label: 'Support', value: 'Support'}
-                ]} 
-                placeholder="Role" 
+                  {label: t('templates28BillingExport.allRolesOption'), value: 'all'},
+                  {label: t('templates28BillingExport.superAdminOption'), value: 'Super Admin'},
+                  {label: t('templates28BillingExport.adminOption'), value: 'Admin'},
+                  {label: t('templates28BillingExport.supportOption'), value: 'Support'}
+                ]}
+                placeholder={t('templates28BillingExport.roleLabel')}
               />
             </div>
             <div className="w-full sm:w-40">
-              <Select 
-                value={statusFilter} 
-                onChange={setStatusFilter} 
+              <Select
+                value={statusFilter}
+                onChange={setStatusFilter}
                 options={[
-                  {label: 'All Statuses', value: 'all'}, 
-                  {label: 'Active', value: 'Active'}, 
-                  {label: 'Invited', value: 'Invited'},
-                  {label: 'Suspended', value: 'Suspended'}
-                ]} 
-                placeholder="Status" 
+                  {label: t('templates28BillingExport.allStatuses'), value: 'all'},
+                  {label: t('templates28BillingExport.activeStatusLabel'), value: 'Active'},
+                  {label: t('templates28BillingExport.invitedStatusLabel'), value: 'Invited'},
+                  {label: t('templates28BillingExport.suspendedStatusLabel'), value: 'Suspended'}
+                ]}
+                placeholder={t('templates28BillingExport.statusFieldLabel')}
               />
             </div>
           </div>
           {(search || roleFilter !== 'all' || statusFilter !== 'all') && (
             <Button variant="tertiary" onClick={() => {setSearch(''); setRoleFilter('all'); setStatusFilter('all');}} className="px-3">
-              Clear filters
+              {t('templates28BillingExport.clearFiltersButton')}
             </Button>
           )}
         </div>
       </Section>
 
       <Section>
-        <DataTable 
-          columns={["Name / Email", "Role", "Status", "Last Active", "Created At", ""]} 
-          data={mappedData} 
-          loading={isLoading} 
+        <DataTable
+          columns={[t('templates28BillingExport.colNameEmail'), t('templates28BillingExport.colRole'), t('templates28BillingExport.colStatus'), t('templates28BillingExport.colLastActive'), t('templates28BillingExport.colCreatedAt'), ""]}
+          data={mappedData}
+          loading={isLoading}
         />
       </Section>
 
       {/* Remove Confirmation Modal */}
-      <Modal 
-        isOpen={!!adminToRemove} 
+      <Modal
+        isOpen={!!adminToRemove}
         onClose={() => { setAdminToRemove(null); setRemoveError(''); }}
-        title="Remove Platform Admin"
-        description={`Are you sure you want to remove ${adminToRemove?.name} from platform administration? They will lose all access immediately.`}
+        title={t('templates28BillingExport.removePlatformAdminTitle')}
+        description={t('templates28BillingExport.confirmRemovePlatformAdminDesc', { name: adminToRemove?.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => { setAdminToRemove(null); setRemoveError(''); }}>Cancel</Button>
-            <Button variant="destructive" onClick={handleRemove}>Remove Admin</Button>
+            <Button variant="outline" onClick={() => { setAdminToRemove(null); setRemoveError(''); }}>{t('templates28BillingExport.cancelButton')}</Button>
+            <Button variant="destructive" onClick={handleRemove}>{t('templates28BillingExport.removeAdminModalTitle')}</Button>
           </>
         }
       >
@@ -2565,7 +2588,7 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
           </Alert>
         )}
         <div className="text-sm text-[var(--text-secondary)]">
-          This action cannot be undone. To restore access later, you will need to send a new invitation.
+          {t('templates28BillingExport.actionCannotBeUndoneNote')}
         </div>
       </Modal>
 
@@ -2578,6 +2601,7 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
 // ==========================================
 
 export default function KaoriPlatformShell() {
+  const t = useT();
   const [activeRoute, setActiveRoute] = useState('billing-export'); // Set default to Billing Export for demo
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
@@ -2638,14 +2662,14 @@ export default function KaoriPlatformShell() {
              activeRoute === 'overview' ? <PlatformOverview /> : 
              activeRoute === 'sessions' ? <SessionsPage /> : (
               <PageContainer maxWidth="narrow">
-                <PageHeader title={`${NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label} module`} subtitle="This section of the platform is currently being designed." />
+                <PageHeader title={t('templates28BillingExport.moduleTitleTemplate', { label: t(NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label || '') })} subtitle={t('templates28BillingExport.sectionBeingDesignedSubtitle')} />
                 <Section>
                   <Card className="flex flex-col items-center justify-center py-20 px-4 text-center border-dashed bg-[var(--bg-card)]/50 mx-auto w-full animate-in fade-in duration-300">
                     <div className="w-12 h-12 rounded-lg-custom bg-[var(--bg-sidebar)] flex items-center justify-center border border-[var(--border-color)] mb-4">
                       {React.createElement(NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.icon || LayoutDashboard, { className: 'w-6 h-6 text-[var(--text-secondary)]' })}
                     </div>
-                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">Work in Progress</h3>
-                    <p className="text-sm text-[var(--text-secondary)] max-w-sm">Content for {activeRoute} will populate here inside the Shell Wrapper.</p>
+                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">{t('templates28BillingExport.workInProgressTitle')}</h3>
+                    <p className="text-sm text-[var(--text-secondary)] max-w-sm">{t('templates28BillingExport.contentForRouteText', { route: activeRoute })}</p>
                   </Card>
                 </Section>
               </PageContainer>

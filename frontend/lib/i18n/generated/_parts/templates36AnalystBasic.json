@@ -1,0 +1,156 @@
+{
+  "templates36AnalystBasic.title": {
+    "vi": "Phân tích cơ bản",
+    "en": "Basic analysis",
+    "ja": "基本分析",
+    "ko": "기본 분석",
+    "zh": "基础分析"
+  },
+  "templates36AnalystBasic.description": {
+    "vi": "1 pipeline · template + Qwen nội bộ. Phù hợp câu hỏi nhanh.",
+    "en": "1 pipeline · template + internal Qwen. Suited for quick questions.",
+    "ja": "1つのデータパイプライン・テンプレート + 社内Qwen。素早い質問に最適。",
+    "ko": "데이터 파이프라인 1개 · 템플릿 + 내부 Qwen. 빠른 질문에 적합.",
+    "zh": "1个数据管道 · 模板 + 内部 Qwen。适合快速提问。"
+  },
+  "templates36AnalystBasic.hub": {
+    "vi": "Hub",
+    "en": "Hub",
+    "ja": "ハブ",
+    "ko": "허브",
+    "zh": "中心"
+  },
+  "templates36AnalystBasic.basicTier": {
+    "vi": "Cơ bản",
+    "en": "Basic",
+    "ja": "基本",
+    "ko": "기본",
+    "zh": "基础"
+  },
+  "templates36AnalystBasic.scopeText": {
+    "vi": "Scope: {scope}",
+    "en": "Scope: {scope}",
+    "ja": "範囲: {scope}",
+    "ko": "범위: {scope}",
+    "zh": "范围: {scope}"
+  },
+  "templates36AnalystBasic.scopeSingle": {
+    "vi": "Single pipeline",
+    "en": "Single pipeline",
+    "ja": "単一パイプライン",
+    "ko": "단일 파이프라인",
+    "zh": "单个数据管道"
+  },
+  "templates36AnalystBasic.scopeMulti": {
+    "vi": "Multi pipeline",
+    "en": "Multi pipeline",
+    "ja": "複数パイプライン",
+    "ko": "다중 파이프라인",
+    "zh": "多个数据管道"
+  },
+  "templates36AnalystBasic.scopeCross": {
+    "vi": "Cross workspace",
+    "en": "Cross workspace",
+    "ja": "ワークスペース横断",
+    "ko": "워크스페이스 교차",
+    "zh": "跨工作区"
+  },
+  "templates36AnalystBasic.qwenInternal": {
+    "vi": "Qwen 2.5 nội bộ",
+    "en": "Qwen 2.5 internal",
+    "ja": "社内Qwen 2.5",
+    "ko": "내부 Qwen 2.5",
+    "zh": "内部 Qwen 2.5"
+  },
+  "templates36AnalystBasic.sourcePipeline": {
+    "vi": "Pipeline nguồn",
+    "en": "Source pipeline",
+    "ja": "元データパイプライン",
+    "ko": "소스 데이터 파이프라인",
+    "zh": "源数据管道"
+  },
+  "templates36AnalystBasic.noPipeline": {
+    "vi": "— Chưa có pipeline —",
+    "en": "— No pipeline yet —",
+    "ja": "— データパイプラインなし —",
+    "ko": "— 데이터 파이프라인 없음 —",
+    "zh": "— 暂无数据管道 —"
+  },
+  "templates36AnalystBasic.analysisTemplate": {
+    "vi": "Template phân tích (chọn ≥ 1)",
+    "en": "Analysis template (select ≥ 1)",
+    "ja": "分析テンプレート（1つ以上選択）",
+    "ko": "분석 템플릿 (1개 이상 선택)",
+    "zh": "分析模板（选择 ≥ 1 个）"
+  },
+  "templates36AnalystBasic.noTemplate": {
+    "vi": "— Chưa có template —",
+    "en": "— No template yet —",
+    "ja": "— テンプレートなし —",
+    "ko": "— 템플릿 없음 —",
+    "zh": "— 暂无模板 —"
+  },
+  "templates36AnalystBasic.specificQuestion": {
+    "vi": "Câu hỏi cụ thể (tuỳ chọn)",
+    "en": "Specific question (optional)",
+    "ja": "具体的な質問（任意）",
+    "ko": "구체적인 질문 (선택)",
+    "zh": "具体问题（可选）"
+  },
+  "templates36AnalystBasic.questionPlaceholder": {
+    "vi": "Ví dụ: Top 3 yếu tố ảnh hưởng doanh thu tháng 4?",
+    "en": "Example: Top 3 factors affecting April revenue?",
+    "ja": "例：4月の売上に影響する上位3つの要因は？",
+    "ko": "예: 4월 매출에 영향을 미치는 상위 3가지 요인은?",
+    "zh": "示例：影响4月营收的前3大因素是什么？"
+  },
+  "templates36AnalystBasic.runBasicAnalysis": {
+    "vi": "Chạy phân tích cơ bản",
+    "en": "Run basic analysis",
+    "ja": "基本分析を実行",
+    "ko": "기본 분석 실행",
+    "zh": "运行基础分析"
+  },
+  "templates36AnalystBasic.resultsInclude": {
+    "vi": "Kết quả sẽ gồm",
+    "en": "Results will include",
+    "ja": "結果に含まれるもの",
+    "ko": "결과에 포함되는 내용",
+    "zh": "结果将包含"
+  },
+  "templates36AnalystBasic.resultNarrative": {
+    "vi": "Narrative tóm tắt 3-5 câu",
+    "en": "3-5 sentence summary narrative",
+    "ja": "3〜5文の要約ナラティブ",
+    "ko": "3~5문장 요약 내러티브",
+    "zh": "3-5句摘要叙述"
+  },
+  "templates36AnalystBasic.resultChart": {
+    "vi": "Chart minh hoạ + bảng KPI từ các template đã chọn",
+    "en": "Illustrative chart + KPI table from the selected templates",
+    "ja": "選択したテンプレートによる図解チャート＋KPIテーブル",
+    "ko": "선택한 템플릿의 시각화 차트 + KPI 표",
+    "zh": "所选模板生成的图表 + KPI 表格"
+  },
+  "templates36AnalystBasic.resultRecommendation": {
+    "vi": "Khuyến nghị hành động (có thể chuyển thành Decision)",
+    "en": "Action recommendations (can be converted into a Decision)",
+    "ja": "アクション推奨事項（Decisionに変換可能）",
+    "ko": "실행 권장 사항 (Decision으로 전환 가능)",
+    "zh": "行动建议（可转换为决策）"
+  },
+  "templates36AnalystBasic.wizardAltPrefix": {
+    "vi": "Pipeline Wizard step-4",
+    "en": "Pipeline Wizard step-4",
+    "ja": "パイプラインウィザード ステップ4",
+    "ko": "파이프라인 마법사 4단계",
+    "zh": "数据管道向导第4步"
+  },
+  "templates36AnalystBasic.wizardAltSuffix": {
+    "vi": "chạy cùng template engine — Basic tier ở đây mở thêm khả năng dispatch nhanh không cần đi qua wizard.",
+    "en": "runs on the same template engine — the Basic tier here adds a quick dispatch path without going through the wizard.",
+    "ja": "同じテンプレートエンジンで動作します — ここのBasicティアはウィザードを経由しない高速ディスパッチも可能にします。",
+    "ko": "동일한 템플릿 엔진에서 실행됩니다 — 여기의 Basic 등급은 마법사를 거치지 않는 빠른 디스패치 경로도 제공합니다.",
+    "zh": "使用相同的模板引擎运行 — 此处的 Basic 层级还提供无需经过向导的快速调度方式。"
+  }
+}

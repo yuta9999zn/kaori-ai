@@ -6,7 +6,8 @@
 // the script to regenerate. Lazy `any` types added; not meant for strict tsc.
 
 import React, { useState, useEffect } from 'react';
-import { 
+import { useT } from '@/lib/i18n/provider';
+import {
   LayoutDashboard, 
   Briefcase, 
   Key, 
@@ -104,12 +105,12 @@ const GlobalStyles = () => (
 
 // --- NAVIGATION CONFIG ---
 const NAVIGATION = [
-  { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-  { id: 'workspaces', label: 'Workspaces', icon: Briefcase },
-  { id: 'keys', label: 'API Keys', icon: Key },
-  { id: 'billing', label: 'Billing', icon: CreditCard },
-  { id: 'admin', label: 'Admin', icon: Shield },
-  { id: 'health', label: 'Platform Health', icon: Activity },
+  { id: 'overview', labelKey: 'templates06SessionManagement.navOverview', icon: LayoutDashboard },
+  { id: 'workspaces', labelKey: 'templates06SessionManagement.navWorkspaces', icon: Briefcase },
+  { id: 'keys', labelKey: 'templates06SessionManagement.navApiKeys', icon: Key },
+  { id: 'billing', labelKey: 'templates06SessionManagement.navBilling', icon: CreditCard },
+  { id: 'admin', labelKey: 'templates06SessionManagement.navAdmin', icon: Shield },
+  { id: 'health', labelKey: 'templates06SessionManagement.navPlatformHealth', icon: Activity },
 ];
 
 // --- SHARED UI COMPONENTS ---
@@ -202,7 +203,9 @@ const MOCK_SESSIONS = [
   }
 ];
 
-const SessionCard = ({  session, onSignOut  }: any) => (
+const SessionCard = ({  session, onSignOut  }: any) => {
+  const t = useT();
+  return (
   <div className={`
     p-5 rounded-md-custom bg-[var(--bg-card)] border flex flex-col sm:flex-row items-start gap-4 transition-all duration-200 hover:shadow-soft-sm
     ${session.isCurrent ? 'border-[var(--primary-gold)]/40 bg-[#FAF7F2]/30' : 'border-[var(--border-color)]'}
@@ -223,9 +226,9 @@ const SessionCard = ({  session, onSignOut  }: any) => (
         <h3 className="text-sm font-semibold text-[var(--text-primary)]">
           {session.deviceName}
         </h3>
-        {session.isCurrent && <Badge variant="current">Current session</Badge>}
-        {session.isNew && <Badge variant="success">New device</Badge>}
-        {session.isSuspicious && <Badge variant="error">Suspicious login</Badge>}
+        {session.isCurrent && <Badge variant="current">{t('templates06SessionManagement.badgeCurrentSession')}</Badge>}
+        {session.isNew && <Badge variant="success">{t('templates06SessionManagement.badgeNewDevice')}</Badge>}
+        {session.isSuspicious && <Badge variant="error">{t('templates06SessionManagement.badgeSuspiciousLogin')}</Badge>}
       </div>
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[var(--text-secondary)]">
@@ -244,30 +247,32 @@ const SessionCard = ({  session, onSignOut  }: any) => (
 
       <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] pt-1">
         <Clock className="w-3.5 h-3.5" />
-        Last active: <span className="font-medium text-[var(--text-primary)]">{session.lastActive}</span>
+        {t('templates06SessionManagement.lastActiveLabel')} <span className="font-medium text-[var(--text-primary)]">{session.lastActive}</span>
       </div>
     </div>
 
     <div className="w-full sm:w-auto pt-2 sm:pt-0 sm:ml-auto flex justify-end">
       {session.isCurrent ? (
         <span className="text-xs font-medium text-[var(--text-secondary)] px-3 py-1.5 bg-[var(--bg-app)] rounded-md-custom border border-transparent">
-          This device
+          {t('templates06SessionManagement.thisDeviceLabel')}
         </span>
       ) : (
-        <Button 
-          variant="destructive-soft" 
-          size="sm" 
+        <Button
+          variant="destructive-soft"
+          size="sm"
           onClick={() => onSignOut(session.id)}
           className="w-full sm:w-auto"
         >
-          Sign out
+          {t('templates06SessionManagement.signOutButton')}
         </Button>
       )}
     </div>
   </div>
-);
+  );
+};
 
 const LogoutModal = ({  isOpen, onClose, onConfirm, title, description, isLoading  }: any) => {
+  const t = useT();
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -291,10 +296,10 @@ const LogoutModal = ({  isOpen, onClose, onConfirm, title, description, isLoadin
         </div>
         <div className="p-4 bg-[var(--bg-app)] border-t border-[var(--border-color)] flex flex-col-reverse sm:flex-row justify-end gap-2">
           <Button variant="outline" onClick={onClose} disabled={isLoading} autoFocus className="w-full sm:w-auto bg-white">
-            Cancel
+            {t('templates06SessionManagement.cancelButton')}
           </Button>
           <Button variant="destructive" onClick={onConfirm} isLoading={isLoading} className="w-full sm:w-auto">
-            Confirm sign out
+            {t('templates06SessionManagement.confirmSignOut')}
           </Button>
         </div>
       </div>
@@ -303,6 +308,7 @@ const LogoutModal = ({  isOpen, onClose, onConfirm, title, description, isLoadin
 };
 
 const SessionsPage = () => {
+  const t = useT();
   const [sessions, setSessions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -317,7 +323,7 @@ const SessionsPage = () => {
         await new Promise(res => setTimeout(res, 800));
         setSessions(MOCK_SESSIONS);
       } catch (err) {
-        setError("Unable to load sessions. Please try again.");
+        setError(t('templates06SessionManagement.errLoadSessions'));
       } finally {
         setIsLoading(false);
       }
@@ -350,19 +356,19 @@ const SessionsPage = () => {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-[var(--text-primary)] mb-1">
-            Active Sessions
+            {t('templates06SessionManagement.activeSessionsTitle')}
           </h1>
           <p className="text-sm text-[var(--text-secondary)]">
-            Manage devices where your account is currently signed in.
+            {t('templates06SessionManagement.activeSessionsDesc')}
           </p>
         </div>
         {otherSessions.length > 0 && !isLoading && !error && (
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => setModalTarget('all')}
             className="flex-shrink-0"
           >
-            Sign out of all other sessions
+            {t('templates06SessionManagement.signOutAllOthers')}
           </Button>
         )}
       </div>
@@ -393,7 +399,7 @@ const SessionsPage = () => {
           {currentSession && (
             <section className="space-y-3">
               <h2 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider pl-1">
-                Current Session
+                {t('templates06SessionManagement.currentSessionHeading')}
               </h2>
               <SessionCard session={currentSession} onSignOut={() => {}} />
             </section>
@@ -402,7 +408,7 @@ const SessionsPage = () => {
           {/* Other Sessions */}
           <section className="space-y-3">
             <h2 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider pl-1">
-              Other Devices
+              {t('templates06SessionManagement.otherDevicesHeading')}
             </h2>
             
             {otherSessions.length > 0 ? (
@@ -421,10 +427,10 @@ const SessionsPage = () => {
                   <Shield className="w-5 h-5 text-[var(--primary-gold)]" />
                 </div>
                 <h3 className="text-sm font-medium text-[var(--text-primary)] mb-1">
-                  No other active sessions
+                  {t('templates06SessionManagement.noOtherSessionsTitle')}
                 </h3>
                 <p className="text-xs text-[var(--text-secondary)]">
-                  Your account is currently active only on this device.
+                  {t('templates06SessionManagement.noOtherSessionsDesc')}
                 </p>
               </div>
             )}
@@ -438,11 +444,11 @@ const SessionsPage = () => {
         isLoading={isRevoking}
         onClose={() => setModalTarget(null)}
         onConfirm={handleSignOutConfirm}
-        title={modalTarget === 'all' ? "Sign out of all sessions?" : "Sign out session?"}
+        title={modalTarget === 'all' ? t('templates06SessionManagement.modalTitleAll') : t('templates06SessionManagement.modalTitleOne')}
         description={
-          modalTarget === 'all' 
-            ? "This will sign you out from all devices except this one immediately. You will need to log back in on those devices."
-            : "This device will be disconnected immediately. Any unsaved work on that device may be lost."
+          modalTarget === 'all'
+            ? t('templates06SessionManagement.modalDescAll')
+            : t('templates06SessionManagement.modalDescOne')
         }
       />
     </div>
@@ -452,6 +458,7 @@ const SessionsPage = () => {
 // --- MAIN PLATFORM SHELL COMPONENT ---
 
 export default function KaoriPlatformShell() {
+  const t = useT();
   const [activeRoute, setActiveRoute] = useState('sessions'); // Defaulted to Sessions for demonstration
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -492,8 +499,8 @@ export default function KaoriPlatformShell() {
               `}
             >
               <Icon className={`w-[18px] h-[18px] ${isActive ? 'text-[var(--primary-gold)]' : ''}`} />
-              {item.label}
-              
+              {t(item.labelKey)}
+
               {item.id === 'health' && (
                 <span className="ml-auto flex h-2 w-2 rounded-full bg-[var(--state-success)]"></span>
               )}
@@ -503,7 +510,7 @@ export default function KaoriPlatformShell() {
 
         {/* Dynamic Account Navigation appended */}
         <div className="mt-8 mb-2 px-3 text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-          Account
+          {t('templates06SessionManagement.navAccount')}
         </div>
         <button
           onClick={() => {
@@ -518,7 +525,7 @@ export default function KaoriPlatformShell() {
           `}
         >
           <Settings className={`w-[18px] h-[18px] ${activeRoute === 'sessions' ? 'text-[var(--primary-gold)]' : ''}`} />
-          Security & Sessions
+          {t('templates06SessionManagement.navSecuritySessions')}
         </button>
 
       </nav>
@@ -530,7 +537,7 @@ export default function KaoriPlatformShell() {
             A
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-[var(--text-primary)] truncate">Admin User</p>
+            <p className="text-sm font-medium text-[var(--text-primary)] truncate">{t('templates06SessionManagement.profileFallbackName')}</p>
             <p className="text-xs text-[var(--text-secondary)] truncate">admin@company.com</p>
           </div>
           <MoreVertical className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
@@ -581,10 +588,10 @@ export default function KaoriPlatformShell() {
               
               {/* Breadcrumbs */}
               <div className="hidden sm:flex items-center text-sm font-medium">
-                <span className="text-[var(--text-secondary)]">Platform</span>
+                <span className="text-[var(--text-secondary)]">{t('templates06SessionManagement.breadcrumbPlatform')}</span>
                 <ChevronRight className="w-4 h-4 mx-2 text-[var(--border-color)] shrink-0" />
                 <span className="text-[var(--text-primary)] capitalize">
-                  {activeRoute === 'sessions' ? 'Security & Sessions' : NAVIGATION.find(n => n.id === activeRoute)?.label}
+                  {activeRoute === 'sessions' ? t('templates06SessionManagement.navSecuritySessions') : (() => { const k = NAVIGATION.find(n => n.id === activeRoute)?.labelKey; return k ? t(k) : ''; })()}
                 </span>
               </div>
             </div>
@@ -593,9 +600,9 @@ export default function KaoriPlatformShell() {
               {/* Global Search */}
               <div className="relative group hidden sm:block">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)] group-focus-within:text-[var(--primary-gold)] transition-colors" />
-                <input 
-                  type="text" 
-                  placeholder="Search resources..." 
+                <input
+                  type="text"
+                  placeholder={t('templates06SessionManagement.searchPlaceholder')}
                   className="h-9 w-64 pl-9 pr-12 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
                 />
                 <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -622,29 +629,29 @@ export default function KaoriPlatformShell() {
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                   <div>
                     <h1 className="text-2xl font-semibold text-[var(--text-primary)] mb-1">
-                      {NAVIGATION.find(n => n.id === activeRoute)?.label}
+                      {t('templates06SessionManagement.navOverview')}
                     </h1>
                     <p className="text-sm text-[var(--text-secondary)]">
-                      Overview of your data intelligence platform metrics and health.
+                      {t('templates06SessionManagement.overviewDesc')}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
                     <select className="h-9 px-3 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] shadow-soft-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30">
-                      <option>Last 7 days</option>
-                      <option>Last 30 days</option>
-                      <option>This year</option>
+                      <option>{t('templates06SessionManagement.selectLast7Days')}</option>
+                      <option>{t('templates06SessionManagement.selectLast30Days')}</option>
+                      <option>{t('templates06SessionManagement.selectThisYear')}</option>
                     </select>
-                    <Button>Export Report</Button>
+                    <Button>{t('templates06SessionManagement.exportReport')}</Button>
                   </div>
                 </div>
 
                 {/* KPI Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                   {[
-                    { label: 'Total Queries', value: '2.4M', trend: '+12.5%', isUp: true },
-                    { label: 'Avg Latency', value: '42ms', trend: '-5.2%', isUp: true, inverseGood: true },
-                    { label: 'Active Workspaces', value: '14', trend: '0%', isUp: null },
-                    { label: 'Error Rate', value: '0.12%', trend: '+0.04%', isUp: false, inverseGood: true },
+                    { label: t('templates06SessionManagement.kpiTotalQueries'), value: '2.4M', trend: '+12.5%', isUp: true },
+                    { label: t('templates06SessionManagement.kpiAvgLatency'), value: '42ms', trend: '-5.2%', isUp: true, inverseGood: true },
+                    { label: t('templates06SessionManagement.kpiActiveWorkspaces'), value: '14', trend: '0%', isUp: null },
+                    { label: t('templates06SessionManagement.kpiErrorRate'), value: '0.12%', trend: '+0.04%', isUp: false, inverseGood: true },
                   ].map((stat, i) => (
                     <div key={i} className="bg-[var(--bg-card)] rounded-lg-custom p-5 border border-[var(--border-color)] shadow-soft-sm">
                       <div className="text-sm font-medium text-[var(--text-secondary)] mb-3">{stat.label}</div>
@@ -664,17 +671,17 @@ export default function KaoriPlatformShell() {
                 {/* Data Table Area */}
                 <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-md overflow-hidden">
                   <div className="px-6 py-5 border-b border-[var(--border-color)] flex justify-between items-center bg-[#FCFBF9]">
-                    <h3 className="font-medium text-[var(--text-primary)]">Recent Operations</h3>
-                    <button className="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--primary-gold)] transition-colors">View all</button>
+                    <h3 className="font-medium text-[var(--text-primary)]">{t('templates06SessionManagement.recentOperations')}</h3>
+                    <button className="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--primary-gold)] transition-colors">{t('templates06SessionManagement.viewAll')}</button>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
                       <thead className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] bg-[var(--bg-app)]">
                         <tr>
-                          <th className="px-6 py-3 font-semibold">Workspace</th>
-                          <th className="px-6 py-3 font-semibold">Operation</th>
-                          <th className="px-6 py-3 font-semibold">Status</th>
-                          <th className="px-6 py-3 font-semibold text-right">Duration</th>
+                          <th className="px-6 py-3 font-semibold">{t('templates06SessionManagement.tableColWorkspace')}</th>
+                          <th className="px-6 py-3 font-semibold">{t('templates06SessionManagement.tableColOperation')}</th>
+                          <th className="px-6 py-3 font-semibold">{t('templates06SessionManagement.tableColStatus')}</th>
+                          <th className="px-6 py-3 font-semibold text-right">{t('templates06SessionManagement.tableColDuration')}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[var(--border-color)]">
@@ -689,7 +696,7 @@ export default function KaoriPlatformShell() {
                             <td className="px-6 py-4 text-[var(--text-secondary)] font-mono text-xs">{row.op}</td>
                             <td className="px-6 py-4">
                               <Badge variant={row.status}>
-                                {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
+                                {t(`templates06SessionManagement.status${row.status.charAt(0).toUpperCase() + row.status.slice(1)}`)}
                               </Badge>
                             </td>
                             <td className="px-6 py-4 text-right text-[var(--text-secondary)] tabular-nums">{row.time}</td>
@@ -706,10 +713,10 @@ export default function KaoriPlatformShell() {
                   {React.createElement(NAVIGATION.find(n => n.id === activeRoute)?.icon || LayoutDashboard, { className: 'w-6 h-6 text-[var(--text-secondary)]' })}
                 </div>
                 <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">
-                  {NAVIGATION.find(n => n.id === activeRoute)?.label} module
+                  {t('templates06SessionManagement.moduleTitle', { label: (() => { const k = NAVIGATION.find(n => n.id === activeRoute)?.labelKey; return k ? t(k) : ''; })() })}
                 </h3>
                 <p className="text-sm text-[var(--text-secondary)] max-w-sm">
-                  This section of the platform is currently being designed. Content for {activeRoute} will populate here inside the Shell Wrapper.
+                  {t('templates06SessionManagement.moduleDesc', { route: activeRoute })}
                 </p>
               </div>
             )}

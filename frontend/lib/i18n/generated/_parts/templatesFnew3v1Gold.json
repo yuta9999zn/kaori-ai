@@ -1,0 +1,212 @@
+{
+  "templatesFnew3v1Gold.pageTitle": {
+    "vi": "Gold — features chuẩn hoá",
+    "en": "Gold — normalized features",
+    "ja": "Gold — 標準化フィーチャー",
+    "ko": "Gold — 정규화된 피처",
+    "zh": "Gold — 标准化特征"
+  },
+  "templatesFnew3v1Gold.pageDescription": {
+    "vi": "Một dòng / khách hàng · revenue_at_risk + purchase metrics · is_actioned audit (K-9).",
+    "en": "One row / customer · revenue_at_risk + purchase metrics · is_actioned audit (K-9).",
+    "ja": "1行 / 顧客 · revenue_at_risk + 購入メトリクス · is_actioned 監査（K-9）。",
+    "ko": "고객당 1행 · revenue_at_risk + 구매 지표 · is_actioned 감사(K-9).",
+    "zh": "每客户一行 · revenue_at_risk + 购买指标 · is_actioned 审计（K-9）。"
+  },
+  "templatesFnew3v1Gold.atRiskCustomers": {
+    "vi": "Khách hàng rủi ro (F-060)",
+    "en": "At-risk customers (F-060)",
+    "ja": "リスク顧客（F-060）",
+    "ko": "위험 고객(F-060)",
+    "zh": "风险客户（F-060）"
+  },
+  "templatesFnew3v1Gold.explore": {
+    "vi": "Khám phá",
+    "en": "Explore",
+    "ja": "探索",
+    "ko": "탐색",
+    "zh": "探索"
+  },
+  "templatesFnew3v1Gold.filterLabel": {
+    "vi": "Lọc:",
+    "en": "Filter:",
+    "ja": "フィルター:",
+    "ko": "필터:",
+    "zh": "筛选:"
+  },
+  "templatesFnew3v1Gold.filterAll": {
+    "vi": "Tất cả",
+    "en": "All",
+    "ja": "すべて",
+    "ko": "전체",
+    "zh": "全部"
+  },
+  "templatesFnew3v1Gold.filterPending": {
+    "vi": "Chưa xử lý",
+    "en": "Pending",
+    "ja": "未対応",
+    "ko": "미처리",
+    "zh": "待处理"
+  },
+  "templatesFnew3v1Gold.filterActioned": {
+    "vi": "Đã xử lý",
+    "en": "Actioned",
+    "ja": "対応済み",
+    "ko": "처리됨",
+    "zh": "已处理"
+  },
+  "templatesFnew3v1Gold.colCustomer": {
+    "vi": "Khách hàng",
+    "en": "Customer",
+    "ja": "顧客",
+    "ko": "고객",
+    "zh": "客户"
+  },
+  "templatesFnew3v1Gold.colRevenueAtRisk": {
+    "vi": "Doanh thu rủi ro",
+    "en": "Revenue at risk",
+    "ja": "リスク売上",
+    "ko": "위험 매출",
+    "zh": "风险营收"
+  },
+  "templatesFnew3v1Gold.colLifetime": {
+    "vi": "Vòng đời",
+    "en": "Lifetime",
+    "ja": "累計",
+    "ko": "누적",
+    "zh": "生命周期"
+  },
+  "templatesFnew3v1Gold.colOrderCount": {
+    "vi": "Số đơn",
+    "en": "Orders",
+    "ja": "注文数",
+    "ko": "주문 수",
+    "zh": "订单数"
+  },
+  "templatesFnew3v1Gold.colLastPurchase": {
+    "vi": "Mua gần nhất",
+    "en": "Last purchase",
+    "ja": "最終購入",
+    "ko": "최근 구매",
+    "zh": "最近购买"
+  },
+  "templatesFnew3v1Gold.colActioned": {
+    "vi": "Actioned",
+    "en": "Actioned",
+    "ja": "対応済み",
+    "ko": "처리 여부",
+    "zh": "处理状态"
+  },
+  "templatesFnew3v1Gold.loading": {
+    "vi": "Đang tải...",
+    "en": "Loading...",
+    "ja": "読み込み中...",
+    "ko": "로딩 중...",
+    "zh": "加载中..."
+  },
+  "templatesFnew3v1Gold.emptyGoldRows": {
+    "vi": "Không có dòng gold_features nào khớp bộ lọc — chạy aggregator hoặc ingest dữ liệu mới.",
+    "en": "No gold_features rows match this filter — run the aggregator or ingest new data.",
+    "ja": "このフィルターに一致する gold_features 行はありません — アグリゲーターを実行するか新しいデータを取り込んでください。",
+    "ko": "이 필터에 일치하는 gold_features 행이 없습니다 — 애그리게이터를 실행하거나 새 데이터를 수집하세요.",
+    "zh": "没有符合此筛选条件的 gold_features 行 — 请运行聚合器或导入新数据。"
+  },
+  "templatesFnew3v1Gold.prevPage": {
+    "vi": "Trang trước",
+    "en": "Previous page",
+    "ja": "前のページ",
+    "ko": "이전 페이지",
+    "zh": "上一页"
+  },
+  "templatesFnew3v1Gold.nextPage": {
+    "vi": "Trang sau",
+    "en": "Next page",
+    "ja": "次のページ",
+    "ko": "다음 페이지",
+    "zh": "下一页"
+  },
+  "templatesFnew3v1Gold.pageNumber": {
+    "vi": "Trang {n}",
+    "en": "Page {n}",
+    "ja": "ページ {n}",
+    "ko": "페이지 {n}",
+    "zh": "第 {n} 页"
+  },
+  "templatesFnew3v1Gold.k9Note": {
+    "vi": "K-9 — money fields dùng NUMERIC(14,4) ở DB (VNĐ chính xác đến 4 chữ số thập phân); FE chỉ render. Để mark customer đã xử lý + ghi audit Kafka, dùng trang",
+    "en": "K-9 — money fields use NUMERIC(14,4) in the DB (VND precise to 4 decimal places); the FE only renders. To mark a customer as actioned + write a Kafka audit record, use the",
+    "ja": "K-9 — 金額フィールドは DB で NUMERIC(14,4)（VND は小数点以下4桁まで正確）を使用；FE は描画のみ。顧客を対応済みにマーク + Kafka 監査記録を書き込むには、次のページを使用してください",
+    "ko": "K-9 — 금액 필드는 DB에서 NUMERIC(14,4)를 사용합니다(VND는 소수점 4자리까지 정확); FE는 렌더링만 합니다. 고객을 처리 완료로 표시하고 Kafka 감사 기록을 남기려면 다음 페이지를 사용하세요",
+    "zh": "K-9 — 金额字段在数据库中使用 NUMERIC(14,4)（越南盾精确到小数点后4位）；前端仅负责渲染。要将客户标记为已处理并写入 Kafka 审计记录，请使用"
+  },
+  "templatesFnew3v1Gold.atRiskCustomersLink": {
+    "vi": "Khách hàng rủi ro",
+    "en": "At-risk customers",
+    "ja": "リスク顧客",
+    "ko": "위험 고객",
+    "zh": "风险客户"
+  },
+  "templatesFnew3v1Gold.k9NoteSuffix": {
+    "vi": "(F-060) — trang này chỉ là browse view.",
+    "en": "(F-060) page — this page is browse-only.",
+    "ja": "（F-060）ページ — このページは閲覧専用です。",
+    "ko": "(F-060) 페이지 — 이 페이지는 조회 전용입니다.",
+    "zh": "（F-060）页面 — 本页仅供浏览。"
+  },
+  "templatesFnew3v1Gold.computedAt": {
+    "vi": "tính lúc {time}",
+    "en": "computed {time}",
+    "ja": "{time} に計算",
+    "ko": "{time} 계산됨",
+    "zh": "计算于 {time}"
+  },
+  "templatesFnew3v1Gold.statusActioned": {
+    "vi": "Đã xử lý",
+    "en": "Actioned",
+    "ja": "対応済み",
+    "ko": "처리됨",
+    "zh": "已处理"
+  },
+  "templatesFnew3v1Gold.statusPending": {
+    "vi": "Chưa xử lý",
+    "en": "Pending",
+    "ja": "未対応",
+    "ko": "미처리",
+    "zh": "待处理"
+  },
+  "templatesFnew3v1Gold.statusCustomerOk": {
+    "vi": "Khách OK",
+    "en": "Customer OK",
+    "ja": "顧客OK",
+    "ko": "고객 정상",
+    "zh": "客户正常"
+  },
+  "templatesFnew3v1Gold.relJustNow": {
+    "vi": "vừa xong",
+    "en": "just now",
+    "ja": "たった今",
+    "ko": "방금 전",
+    "zh": "刚刚"
+  },
+  "templatesFnew3v1Gold.relMinutesAgo": {
+    "vi": "{n} phút trước",
+    "en": "{n} minutes ago",
+    "ja": "{n} 分前",
+    "ko": "{n}분 전",
+    "zh": "{n} 分钟前"
+  },
+  "templatesFnew3v1Gold.relHoursAgo": {
+    "vi": "{n} giờ trước",
+    "en": "{n} hours ago",
+    "ja": "{n} 時間前",
+    "ko": "{n}시간 전",
+    "zh": "{n} 小时前"
+  },
+  "templatesFnew3v1Gold.relDaysAgo": {
+    "vi": "{n} ngày trước",
+    "en": "{n} days ago",
+    "ja": "{n} 日前",
+    "ko": "{n}일 전",
+    "zh": "{n} 天前"
+  }
+}

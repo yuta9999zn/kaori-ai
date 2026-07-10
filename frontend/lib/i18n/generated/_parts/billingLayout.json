@@ -1,0 +1,37 @@
+{
+  "billingLayout.title": {
+    "vi": "Thanh toán & Hạn mức",
+    "en": "Billing & Quota",
+    "ja": "請求と利用上限",
+    "ko": "결제 및 한도",
+    "zh": "账单与配额"
+  },
+  "billingLayout.subtitle": {
+    "vi": "Tổng hợp doanh thu, hạn mức và trạng thái sử dụng theo doanh nghiệp.",
+    "en": "Summary of revenue, quotas, and usage status by enterprise.",
+    "ja": "企業別の売上、利用上限、利用状況のサマリーです。",
+    "ko": "기업별 매출, 한도 및 사용 현황 요약입니다.",
+    "zh": "按企业汇总的营收、配额与使用状态。"
+  },
+  "billingLayout.tabOverview": {
+    "vi": "Tổng quan",
+    "en": "Overview",
+    "ja": "概要",
+    "ko": "개요",
+    "zh": "概览"
+  },
+  "billingLayout.tabQuota": {
+    "vi": "Hạn mức",
+    "en": "Quota",
+    "ja": "利用上限",
+    "ko": "한도",
+    "zh": "配额"
+  },
+  "billingLayout.tabExport": {
+    "vi": "Xuất CSV",
+    "en": "Export CSV",
+    "ja": "CSVエクスポート",
+    "ko": "CSV 내보내기",
+    "zh": "导出CSV"
+  }
+}

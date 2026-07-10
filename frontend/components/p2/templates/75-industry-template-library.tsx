@@ -24,6 +24,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 
 // ─── Types mirror BE IndustryOut ─────────────────────────────────────
 
@@ -58,6 +59,7 @@ const ICON_BY_KEY: Record<string, string> = {
 };
 
 export default function IndustryTemplateLibraryPage() {
+  const t = useT();
   const [search, setSearch]       = useState('');
   const [industries, setIndustries] = useState<IndustryOut[]>([]);
   const [loading, setLoading]     = useState(true);
@@ -88,12 +90,12 @@ export default function IndustryTemplateLibraryPage() {
   return (
     <>
       <PageHeader
-        title="Thư viện ngành"
-        description="Chọn ngành phù hợp với doanh nghiệp anh để bootstrap nhanh phòng ban + workflow mẫu."
+        title={t('templates75IndustryTemplateLibrary.title')}
+        description={t('templates75IndustryTemplateLibrary.description')}
         actions={
           <Button variant="secondary" onClick={load} disabled={loading}>
             <Loader2 className={cn('w-4 h-4 mr-2', loading && 'animate-spin')} />
-            Làm mới
+            {t('templates75IndustryTemplateLibrary.refresh')}
           </Button>
         }
       />
@@ -106,7 +108,7 @@ export default function IndustryTemplateLibraryPage() {
           <Search className="w-4 h-4 text-[var(--text-secondary)]" />
           <input
             className="flex-1 bg-transparent outline-none text-sm"
-            placeholder="Tìm theo tên ngành..."
+            placeholder={t('templates75IndustryTemplateLibrary.searchPlaceholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -122,8 +124,8 @@ export default function IndustryTemplateLibraryPage() {
           <div className="rounded-lg-custom border border-dashed border-[var(--border-color)] p-12 text-center text-[var(--text-secondary)]">
             <Building2 className="w-10 h-10 mx-auto mb-2 opacity-40" />
             {industries.length === 0
-              ? 'Chưa có ngành nào được kích hoạt. Liên hệ Kaori để bật thêm ngành cho doanh nghiệp anh.'
-              : 'Không có ngành nào khớp bộ lọc.'}
+              ? t('templates75IndustryTemplateLibrary.emptyNoIndustries')
+              : t('templates75IndustryTemplateLibrary.emptyNoMatch')}
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -151,6 +153,7 @@ export default function IndustryTemplateLibraryPage() {
 // ─── Subcomponents ───────────────────────────────────────────────────
 
 function IndustryCardView({ industry, onClick }: { industry: IndustryOut; onClick: () => void }) {
+  const t = useT();
   const icon = ICON_BY_KEY[industry.industry_key] ?? '🏢';
   return (
     <button
@@ -168,13 +171,18 @@ function IndustryCardView({ industry, onClick }: { industry: IndustryOut; onClic
         <div className="text-xs text-[var(--text-secondary)]">{industry.display_name}</div>
       </div>
       <div className="text-xs text-[var(--text-secondary)]">
-        {industry.dept_count} phòng ban · {industry.total_workflow_count} workflow · {industry.kpi_count} KPI
+        {t('templates75IndustryTemplateLibrary.cardStats', {
+          deptCount: industry.dept_count,
+          workflowCount: industry.total_workflow_count,
+          kpiCount: industry.kpi_count,
+        })}
       </div>
     </button>
   );
 }
 
 function IndustryDetailDrawer({ industryId, onClose }: { industryId: string; onClose: () => void }) {
+  const t = useT();
   const [detail, setDetail] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -205,9 +213,9 @@ function IndustryDetailDrawer({ industryId, onClose }: { industryId: string; onC
     <div className="fixed inset-y-0 right-0 z-50 w-full max-w-2xl border-l border-[var(--border-color)] bg-[var(--bg-card)] shadow-lg overflow-y-auto">
       <div className="flex items-center justify-between border-b border-[var(--border-color)] px-6 py-4">
         <h2 className="text-lg font-medium text-[var(--text-primary)]">
-          {detail?.industry?.display_name_vi ?? 'Chi tiết ngành'}
+          {detail?.industry?.display_name_vi ?? t('templates75IndustryTemplateLibrary.detailFallbackTitle')}
         </h2>
-        <Button variant="tertiary" onClick={onClose}>Đóng</Button>
+        <Button variant="tertiary" onClick={onClose}>{t('templates75IndustryTemplateLibrary.close')}</Button>
       </div>
       <div className="space-y-6 px-6 py-4">
         <ErrorBanner problem={problem} />
@@ -217,8 +225,8 @@ function IndustryDetailDrawer({ industryId, onClose }: { industryId: string; onC
           </div>
         ) : (
           <>
-            <DetailSection title={`Phòng ban (${departments.length})`}>
-              {departments.length === 0 ? <Muted>Không có phòng ban mẫu.</Muted> : (
+            <DetailSection title={t('templates75IndustryTemplateLibrary.sectionDepartments', { count: departments.length })}>
+              {departments.length === 0 ? <Muted>{t('templates75IndustryTemplateLibrary.noDepartments')}</Muted> : (
                 <ul className="space-y-1 text-sm text-[var(--text-primary)]">
                   {departments.map((d: any) => (
                     <li key={d.template_id ?? d.dept_key}>{d.display_name_vi ?? d.display_name ?? d.dept_key}</li>
@@ -226,8 +234,8 @@ function IndustryDetailDrawer({ industryId, onClose }: { industryId: string; onC
                 </ul>
               )}
             </DetailSection>
-            <DetailSection title={`Workflow mẫu (${workflows.length})`}>
-              {workflows.length === 0 ? <Muted>Không có workflow mẫu.</Muted> : (
+            <DetailSection title={t('templates75IndustryTemplateLibrary.sectionWorkflows', { count: workflows.length })}>
+              {workflows.length === 0 ? <Muted>{t('templates75IndustryTemplateLibrary.noWorkflows')}</Muted> : (
                 <ul className="space-y-1 text-sm text-[var(--text-primary)]">
                   {workflows.map((w: any) => (
                     <li key={w.link_id ?? w.workflow_template_id} className="flex items-center gap-2">
@@ -242,8 +250,8 @@ function IndustryDetailDrawer({ industryId, onClose }: { industryId: string; onC
                 </ul>
               )}
             </DetailSection>
-            <DetailSection title={`KPI (${kpis.length})`}>
-              {kpis.length === 0 ? <Muted>Không có KPI mẫu.</Muted> : (
+            <DetailSection title={t('templates75IndustryTemplateLibrary.sectionKpis', { count: kpis.length })}>
+              {kpis.length === 0 ? <Muted>{t('templates75IndustryTemplateLibrary.noKpis')}</Muted> : (
                 <ul className="space-y-1 text-sm text-[var(--text-primary)]">
                   {kpis.map((k: any, i: number) => (
                     <li key={k.kpi_key ?? i}>{k.display_name_vi ?? k.display_name ?? k.kpi_key}</li>
@@ -251,8 +259,8 @@ function IndustryDetailDrawer({ industryId, onClose }: { industryId: string; onC
                 </ul>
               )}
             </DetailSection>
-            <DetailSection title={`Data schema (${schemas.length})`}>
-              {schemas.length === 0 ? <Muted>Không có schema mẫu.</Muted> : (
+            <DetailSection title={t('templates75IndustryTemplateLibrary.sectionSchemas', { count: schemas.length })}>
+              {schemas.length === 0 ? <Muted>{t('templates75IndustryTemplateLibrary.noSchemas')}</Muted> : (
                 <ul className="space-y-1 text-sm text-[var(--text-primary)]">
                   {schemas.map((s: any, i: number) => (
                     <li key={s.schema_key ?? i}>{s.display_name_vi ?? s.display_name ?? s.schema_key}</li>
@@ -261,7 +269,7 @@ function IndustryDetailDrawer({ industryId, onClose }: { industryId: string; onC
               )}
             </DetailSection>
             <Button onClick={() => (window.location.href = `/p2/onboarding/bootstrap-preview?industry_id=${industryId}`)}>
-              Bootstrap với ngành này <ChevronRight className="w-4 h-4 ml-1" />
+              {t('templates75IndustryTemplateLibrary.bootstrapCta')} <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </>
         )}

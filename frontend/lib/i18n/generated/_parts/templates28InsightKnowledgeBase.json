@@ -1,0 +1,198 @@
+{
+  "templates28InsightKnowledgeBase.tier1": {
+    "vi": "Quy định",
+    "en": "Regulation",
+    "ja": "規制",
+    "ko": "규정",
+    "zh": "法规"
+  },
+  "templates28InsightKnowledgeBase.tier2": {
+    "vi": "Kaori curated",
+    "en": "Kaori curated",
+    "ja": "Kaori curated",
+    "ko": "Kaori curated",
+    "zh": "Kaori curated"
+  },
+  "templates28InsightKnowledgeBase.tier3": {
+    "vi": "Ngành (tham khảo)",
+    "en": "Industry (reference)",
+    "ja": "業界（参考）",
+    "ko": "업계(참고)",
+    "zh": "行业（参考）"
+  },
+  "templates28InsightKnowledgeBase.tier4": {
+    "vi": "Workspace của bạn",
+    "en": "Your workspace",
+    "ja": "あなたのワークスペース",
+    "ko": "내 워크스페이스",
+    "zh": "你的工作区"
+  },
+  "templates28InsightKnowledgeBase.errGeneric": {
+    "vi": "Có lỗi xảy ra",
+    "en": "An error occurred",
+    "ja": "エラーが発生しました",
+    "ko": "오류가 발생했습니다",
+    "zh": "发生错误"
+  },
+  "templates28InsightKnowledgeBase.matchPercent": {
+    "vi": "{percent}% khớp",
+    "en": "{percent}% match",
+    "ja": "一致率 {percent}%",
+    "ko": "일치율 {percent}%",
+    "zh": "匹配度 {percent}%"
+  },
+  "templates28InsightKnowledgeBase.scopeGlobal": {
+    "vi": "Toàn hệ thống",
+    "en": "System-wide",
+    "ja": "システム全体",
+    "ko": "전체 시스템",
+    "zh": "全系统"
+  },
+  "templates28InsightKnowledgeBase.scopeWorkspace": {
+    "vi": "Workspace",
+    "en": "Workspace",
+    "ja": "ワークスペース",
+    "ko": "워크스페이스",
+    "zh": "工作区"
+  },
+  "templates28InsightKnowledgeBase.successIngest": {
+    "vi": "Đã thêm tri thức vào workspace — có thể tìm kiếm ngay.",
+    "en": "Knowledge added to your workspace — searchable right away.",
+    "ja": "ワークスペースにナレッジを追加しました。すぐに検索できます。",
+    "ko": "워크스페이스에 지식이 추가되었습니다 — 바로 검색할 수 있습니다.",
+    "zh": "已将知识添加到工作区——现在即可搜索。"
+  },
+  "templates28InsightKnowledgeBase.title": {
+    "vi": "Knowledge Base",
+    "en": "Knowledge Base",
+    "ja": "Knowledge Base",
+    "ko": "Knowledge Base",
+    "zh": "Knowledge Base"
+  },
+  "templates28InsightKnowledgeBase.description": {
+    "vi": "Tri thức ngành (toàn hệ thống) + tri thức riêng của workspace — tìm bằng câu hỏi tự nhiên.",
+    "en": "Industry knowledge (system-wide) + your workspace's own knowledge — search with natural questions.",
+    "ja": "業界ナレッジ（システム全体）+ ワークスペース独自のナレッジ — 自然な質問で検索できます。",
+    "ko": "업계 지식(전체 시스템) + 워크스페이스 고유 지식 — 자연스러운 질문으로 검색하세요.",
+    "zh": "行业知识（全系统）+ 工作区专属知识——用自然语言提问搜索。"
+  },
+  "templates28InsightKnowledgeBase.addKnowledge": {
+    "vi": "Thêm tri thức",
+    "en": "Add knowledge",
+    "ja": "ナレッジを追加",
+    "ko": "지식 추가",
+    "zh": "添加知识"
+  },
+  "templates28InsightKnowledgeBase.searchPlaceholder": {
+    "vi": "Hỏi tự nhiên, vd: dấu hiệu khách sắp rời bỏ là gì?",
+    "en": "Ask naturally, e.g. what are the signs a customer is about to churn?",
+    "ja": "自然な言葉で質問してください（例：顧客が離脱しそうな兆候は？）",
+    "ko": "자연스럽게 질문하세요. 예: 고객이 이탈할 조짐은 무엇인가요?",
+    "zh": "用自然语言提问，例如：客户即将流失的迹象是什么？"
+  },
+  "templates28InsightKnowledgeBase.searchButton": {
+    "vi": "Tìm",
+    "en": "Search",
+    "ja": "検索",
+    "ko": "검색",
+    "zh": "搜索"
+  },
+  "templates28InsightKnowledgeBase.addFormTitle": {
+    "vi": "Thêm tri thức riêng (chỉ workspace của bạn thấy)",
+    "en": "Add private knowledge (visible only to your workspace)",
+    "ja": "非公開ナレッジを追加（あなたのワークスペースのみ表示）",
+    "ko": "비공개 지식 추가(내 워크스페이스에서만 표시)",
+    "zh": "添加私有知识（仅本工作区可见）"
+  },
+  "templates28InsightKnowledgeBase.labelTitle": {
+    "vi": "Tiêu đề",
+    "en": "Title",
+    "ja": "タイトル",
+    "ko": "제목",
+    "zh": "标题"
+  },
+  "templates28InsightKnowledgeBase.titlePlaceholder": {
+    "vi": "vd: Quy trình win-back khách VIP",
+    "en": "e.g. VIP customer win-back process",
+    "ja": "例：VIP顧客のウィンバックプロセス",
+    "ko": "예: VIP 고객 윈백 프로세스",
+    "zh": "例如：VIP 客户挽回流程"
+  },
+  "templates28InsightKnowledgeBase.labelContent": {
+    "vi": "Nội dung",
+    "en": "Content",
+    "ja": "内容",
+    "ko": "내용",
+    "zh": "内容"
+  },
+  "templates28InsightKnowledgeBase.contentPlaceholder": {
+    "vi": "Mô tả nguyên tắc / SOP / mục tiêu nội bộ…",
+    "en": "Describe internal principles / SOP / goals…",
+    "ja": "内部の原則・SOP・目標などを記述してください…",
+    "ko": "내부 원칙 / SOP / 목표 등을 설명하세요…",
+    "zh": "描述内部原则 / SOP / 目标……"
+  },
+  "templates28InsightKnowledgeBase.labelCategory": {
+    "vi": "Danh mục (tuỳ chọn)",
+    "en": "Category (optional)",
+    "ja": "カテゴリー（任意）",
+    "ko": "카테고리(선택)",
+    "zh": "分类（可选）"
+  },
+  "templates28InsightKnowledgeBase.categoryPlaceholder": {
+    "vi": "churn / retention / pricing…",
+    "en": "churn / retention / pricing…",
+    "ja": "churn / retention / pricing…",
+    "ko": "churn / retention / pricing…",
+    "zh": "churn / retention / pricing…"
+  },
+  "templates28InsightKnowledgeBase.save": {
+    "vi": "Lưu",
+    "en": "Save",
+    "ja": "保存",
+    "ko": "저장",
+    "zh": "保存"
+  },
+  "templates28InsightKnowledgeBase.searchResultsTitle": {
+    "vi": "Kết quả tìm kiếm",
+    "en": "Search results",
+    "ja": "検索結果",
+    "ko": "검색 결과",
+    "zh": "搜索结果"
+  },
+  "templates28InsightKnowledgeBase.noResults": {
+    "vi": "Không tìm thấy tri thức phù hợp. Thử câu hỏi khác, hoặc tri thức ngành chưa được nạp embedding.",
+    "en": "No matching knowledge found. Try a different question, or the industry knowledge hasn't been embedded yet.",
+    "ja": "該当するナレッジが見つかりませんでした。別の質問を試すか、業界ナレッジがまだembeddingされていない可能性があります。",
+    "ko": "일치하는 지식을 찾지 못했습니다. 다른 질문을 시도하거나, 업계 지식이 아직 embedding되지 않았을 수 있습니다.",
+    "zh": "未找到匹配的知识。请尝试其他问题，或该行业知识尚未生成 embedding。"
+  },
+  "templates28InsightKnowledgeBase.allKnowledgeTitle": {
+    "vi": "Tất cả tri thức",
+    "en": "All knowledge",
+    "ja": "すべてのナレッジ",
+    "ko": "전체 지식",
+    "zh": "全部知识"
+  },
+  "templates28InsightKnowledgeBase.loading": {
+    "vi": "Đang tải…",
+    "en": "Loading…",
+    "ja": "読み込み中…",
+    "ko": "로딩 중…",
+    "zh": "加载中…"
+  },
+  "templates28InsightKnowledgeBase.emptyState": {
+    "vi": "Chưa có tri thức nào hiển thị. Tri thức ngành sẽ xuất hiện sau khi được nạp embedding; bạn cũng có thể \"Thêm tri thức\" riêng cho workspace.",
+    "en": "No knowledge to show yet. Industry knowledge will appear once it's been embedded; you can also \"Add knowledge\" of your own for the workspace.",
+    "ja": "表示できるナレッジがまだありません。業界ナレッジはembedding後に表示されます。ワークスペース独自のナレッジは「ナレッジを追加」からも追加できます。",
+    "ko": "표시할 지식이 아직 없습니다. 업계 지식은 embedding이 완료되면 표시됩니다. 워크스페이스 고유 지식은 \"지식 추가\"로도 추가할 수 있습니다.",
+    "zh": "暂无可显示的知识。行业知识在完成 embedding 后会显示；你也可以为工作区\"添加知识\"。"
+  },
+  "templates28InsightKnowledgeBase.privacyNote": {
+    "vi": "RLS được tôn trọng — workspace của bạn chỉ thấy tri thức toàn hệ thống (curated) + tri thức riêng của workspace, không bao giờ thấy của workspace khác. Embedding sinh bằng BGE-M3 nội bộ (K-3), không gọi OpenAI/Cohere.",
+    "en": "RLS is respected — your workspace only sees system-wide (curated) knowledge + its own workspace knowledge, never another workspace's. Embeddings are generated locally with BGE-M3 (K-3), never calling OpenAI/Cohere.",
+    "ja": "RLSが尊重されます — あなたのワークスペースはシステム全体の（curated）ナレッジ + 自分のワークスペースのナレッジのみを閲覧でき、他のワークスペースのものは決して見えません。Embeddingは内部のBGE-M3で生成され（K-3）、OpenAI/Cohereは呼び出しません。",
+    "ko": "RLS가 준수됩니다 — 귀하의 워크스페이스는 전체 시스템(curated) 지식 + 자체 워크스페이스 지식만 볼 수 있으며, 다른 워크스페이스의 지식은 절대 볼 수 없습니다. Embedding은 내부 BGE-M3로 생성되며(K-3), OpenAI/Cohere를 호출하지 않습니다.",
+    "zh": "遵循 RLS——你的工作区只能看到全系统（curated）知识 + 本工作区自己的知识，绝不会看到其他工作区的知识。Embedding 由内部 BGE-M3 生成（K-3），不会调用 OpenAI/Cohere。"
+  }
+}

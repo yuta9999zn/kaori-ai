@@ -5,11 +5,7 @@ import { usePathname } from 'next/navigation';
 import { ShieldCheck } from 'lucide-react';
 
 import { cn } from '@/components/platform/foundation';
-
-const TABS = [
-  { href: '/platform/security/mfa',      label: 'Xác thực 2 lớp' },
-  { href: '/platform/security/sessions', label: 'Phiên đăng nhập' },
-];
+import { useT } from '@/lib/i18n/provider';
 
 export default function PlatformSecurityLayout({
   children,
@@ -17,6 +13,12 @@ export default function PlatformSecurityLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname() ?? '';
+  const t = useT();
+
+  const TABS = [
+    { href: '/platform/security/mfa',      label: t('securityLayout.tabMfa') },
+    { href: '/platform/security/sessions', label: t('securityLayout.tabSessions') },
+  ];
 
   return (
     <>
@@ -26,9 +28,9 @@ export default function PlatformSecurityLayout({
             <ShieldCheck className="w-6 h-6 text-[var(--primary-gold-dark)]" strokeWidth={1.5} />
           </div>
           <div>
-            <h1 className="font-serif text-2xl text-[var(--text-primary)]">Bảo mật tài khoản</h1>
+            <h1 className="font-serif text-2xl text-[var(--text-primary)]">{t('securityLayout.title')}</h1>
             <p className="text-sm text-[var(--text-secondary)] mt-1">
-              Quản lý xác thực 2 lớp (TOTP) và các phiên đăng nhập đang hoạt động.
+              {t('securityLayout.subtitle')}
             </p>
           </div>
         </div>

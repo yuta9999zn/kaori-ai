@@ -1,0 +1,289 @@
+{
+  "templates70DocumentRepository.title": {
+    "vi": "Kho tài liệu",
+    "en": "Document repository",
+    "ja": "ドキュメントリポジトリ",
+    "ko": "문서 저장소",
+    "zh": "文档库"
+  },
+  "templates70DocumentRepository.pageDescription": {
+    "vi": "Mỗi thư mục là một trang nghiệp vụ (mô tả + mẫu tài liệu + file mẫu + lịch sử phiên bản) — tài liệu tải vào tự thừa hưởng cấu trúc.",
+    "en": "Each folder is a business page (description + document template + sample file + version history) — uploaded documents automatically inherit the structure.",
+    "ja": "各フォルダは業務ページです（説明＋文書テンプレート＋サンプルファイル＋バージョン履歴）— アップロードした文書は自動的に構造を継承します。",
+    "ko": "각 폴더는 업무 페이지입니다(설명 + 문서 템플릿 + 샘플 파일 + 버전 기록) — 업로드한 문서는 구조를 자동으로 상속합니다.",
+    "zh": "每个文件夹都是一个业务页面（描述 + 文档模板 + 样例文件 + 版本历史）— 上传的文档会自动继承该结构。"
+  },
+  "templates70DocumentRepository.templatesLink": {
+    "vi": "Mẫu tài liệu",
+    "en": "Document templates",
+    "ja": "文書テンプレート",
+    "ko": "문서 템플릿",
+    "zh": "文档模板"
+  },
+  "templates70DocumentRepository.searchPlaceholder": {
+    "vi": "Tìm tài liệu theo tên…",
+    "en": "Search documents by name…",
+    "ja": "名前で文書を検索…",
+    "ko": "이름으로 문서 검색…",
+    "zh": "按名称搜索文档…"
+  },
+  "templates70DocumentRepository.dateFromTitle": {
+    "vi": "Từ ngày (theo ngày chứng từ)",
+    "en": "From date (by document date)",
+    "ja": "開始日（証憑日付基準）",
+    "ko": "시작일(증빙 날짜 기준)",
+    "zh": "起始日期（按单据日期）"
+  },
+  "templates70DocumentRepository.dateToTitle": {
+    "vi": "Đến ngày",
+    "en": "To date",
+    "ja": "終了日",
+    "ko": "종료일",
+    "zh": "结束日期"
+  },
+  "templates70DocumentRepository.periodKindTitle": {
+    "vi": "Kỳ báo cáo",
+    "en": "Reporting period",
+    "ja": "レポート期間",
+    "ko": "보고 기간",
+    "zh": "报告周期"
+  },
+  "templates70DocumentRepository.periodAll": {
+    "vi": "Mọi kỳ",
+    "en": "All periods",
+    "ja": "すべての期間",
+    "ko": "모든 기간",
+    "zh": "所有周期"
+  },
+  "templates70DocumentRepository.periodReportDay": {
+    "vi": "Báo cáo ngày",
+    "en": "Daily report",
+    "ja": "日次レポート",
+    "ko": "일일 보고서",
+    "zh": "日报"
+  },
+  "templates70DocumentRepository.periodReportWeek": {
+    "vi": "Báo cáo tuần",
+    "en": "Weekly report",
+    "ja": "週次レポート",
+    "ko": "주간 보고서",
+    "zh": "周报"
+  },
+  "templates70DocumentRepository.periodReportMonth": {
+    "vi": "Báo cáo tháng",
+    "en": "Monthly report",
+    "ja": "月次レポート",
+    "ko": "월간 보고서",
+    "zh": "月报"
+  },
+  "templates70DocumentRepository.periodReportQuarter": {
+    "vi": "Báo cáo quý",
+    "en": "Quarterly report",
+    "ja": "四半期レポート",
+    "ko": "분기 보고서",
+    "zh": "季报"
+  },
+  "templates70DocumentRepository.periodReportYear": {
+    "vi": "Báo cáo năm",
+    "en": "Annual report",
+    "ja": "年次レポート",
+    "ko": "연간 보고서",
+    "zh": "年报"
+  },
+  "templates70DocumentRepository.searchButton": {
+    "vi": "Tìm",
+    "en": "Search",
+    "ja": "検索",
+    "ko": "검색",
+    "zh": "搜索"
+  },
+  "templates70DocumentRepository.clearFilter": {
+    "vi": "Xoá lọc",
+    "en": "Clear filter",
+    "ja": "フィルターをクリア",
+    "ko": "필터 지우기",
+    "zh": "清除筛选"
+  },
+  "templates70DocumentRepository.viewTree": {
+    "vi": "Cây nghiệp vụ",
+    "en": "Business tree",
+    "ja": "業務ツリー",
+    "ko": "업무 트리",
+    "zh": "业务树"
+  },
+  "templates70DocumentRepository.viewTime": {
+    "vi": "Theo thời gian",
+    "en": "By time",
+    "ja": "時系列",
+    "ko": "시간별",
+    "zh": "按时间"
+  },
+  "templates70DocumentRepository.resultsCount": {
+    "vi": "{count} kết quả",
+    "en": "{count} results",
+    "ja": "{count} 件の結果",
+    "ko": "결과 {count}개",
+    "zh": "{count} 条结果"
+  },
+  "templates70DocumentRepository.resultsFor": {
+    "vi": " cho “{query}”",
+    "en": " for “{query}”",
+    "ja": " 「{query}」の",
+    "ko": " “{query}” 검색",
+    "zh": " 关于“{query}”"
+  },
+  "templates70DocumentRepository.periodLabelDay": {
+    "vi": "Ngày",
+    "en": "Day",
+    "ja": "日",
+    "ko": "일",
+    "zh": "日"
+  },
+  "templates70DocumentRepository.periodLabelWeek": {
+    "vi": "Tuần",
+    "en": "Week",
+    "ja": "週",
+    "ko": "주",
+    "zh": "周"
+  },
+  "templates70DocumentRepository.periodLabelMonth": {
+    "vi": "Tháng",
+    "en": "Month",
+    "ja": "月",
+    "ko": "월",
+    "zh": "月"
+  },
+  "templates70DocumentRepository.periodLabelQuarter": {
+    "vi": "Quý",
+    "en": "Quarter",
+    "ja": "四半期",
+    "ko": "분기",
+    "zh": "季度"
+  },
+  "templates70DocumentRepository.periodLabelYear": {
+    "vi": "Năm",
+    "en": "Year",
+    "ja": "年",
+    "ko": "년",
+    "zh": "年"
+  },
+  "templates70DocumentRepository.breadcrumbRoot": {
+    "vi": "Kho",
+    "en": "Repository",
+    "ja": "リポジトリ",
+    "ko": "저장소",
+    "zh": "库"
+  },
+  "templates70DocumentRepository.emptyStateTitle": {
+    "vi": "Chọn một nghiệp vụ ở cây bên trái",
+    "en": "Select a business item from the tree on the left",
+    "ja": "左側のツリーから業務項目を選択してください",
+    "ko": "왼쪽 트리에서 업무 항목을 선택하세요",
+    "zh": "请在左侧树中选择一个业务项"
+  },
+  "templates70DocumentRepository.emptyStatePre": {
+    "vi": "Mỗi thư mục là một",
+    "en": "Each folder is a",
+    "ja": "各フォルダは",
+    "ko": "각 폴더는",
+    "zh": "每个文件夹都是一个"
+  },
+  "templates70DocumentRepository.emptyStateBold": {
+    "vi": "trang nghiệp vụ",
+    "en": "business page",
+    "ja": "業務ページ",
+    "ko": "업무 페이지",
+    "zh": "业务页面"
+  },
+  "templates70DocumentRepository.emptyStatePost1": {
+    "vi": ": mô tả tài liệu, mẫu thuộc tính, file upload mẫu,",
+    "en": ": document description, attribute template, sample upload file,",
+    "ja": "：文書の説明、属性テンプレート、サンプルアップロードファイル、",
+    "ko": ": 문서 설명, 속성 템플릿, 샘플 업로드 파일,",
+    "zh": "：文档描述、属性模板、示例上传文件、"
+  },
+  "templates70DocumentRepository.emptyStatePost2": {
+    "vi": "lịch sử phiên bản — tài liệu tải vào tự thừa hưởng cấu trúc của trang.",
+    "en": "version history — uploaded documents automatically inherit the page's structure.",
+    "ja": "バージョン履歴 — アップロードした文書はページの構造を自動的に継承します。",
+    "ko": "버전 기록 — 업로드한 문서는 페이지 구조를 자동으로 상속합니다.",
+    "zh": "版本历史 — 上传的文档会自动继承该页面的结构。"
+  },
+  "templates70DocumentRepository.viewRangeTitle": {
+    "vi": "Xem tài liệu trong khoảng này",
+    "en": "View documents in this range",
+    "ja": "この期間の文書を表示",
+    "ko": "이 기간의 문서 보기",
+    "zh": "查看此范围内的文档"
+  },
+  "templates70DocumentRepository.docCountSuffix": {
+    "vi": "tài liệu",
+    "en": "documents",
+    "ja": "件の文書",
+    "ko": "개 문서",
+    "zh": "个文档"
+  },
+  "templates70DocumentRepository.noDocsTimeline": {
+    "vi": "Chưa có tài liệu nào để xếp theo thời gian.",
+    "en": "No documents yet to arrange by time.",
+    "ja": "時系列で並べる文書はまだありません。",
+    "ko": "시간순으로 정렬할 문서가 아직 없습니다.",
+    "zh": "暂无可按时间排列的文档。"
+  },
+  "templates70DocumentRepository.timelineIntroPre": {
+    "vi": "Cây thời gian ảo — nhóm theo",
+    "en": "Virtual time tree — grouped by",
+    "ja": "仮想タイムツリー — 基準：",
+    "ko": "가상 시간 트리 — 기준:",
+    "zh": "虚拟时间树 — 按"
+  },
+  "templates70DocumentRepository.timelineIntroBold": {
+    "vi": "ngày chứng từ",
+    "en": "document date",
+    "ja": "証憑日付",
+    "ko": "증빙 날짜",
+    "zh": "单据日期"
+  },
+  "templates70DocumentRepository.timelineIntroPost": {
+    "vi": " (tài liệu chưa gán ngày dùng ngày tải lên). Bấm số lượng để xem tài liệu trong kỳ",
+    "en": " (documents without an assigned date use the upload date). Click the count to view documents in the period",
+    "ja": "（日付未設定の文書はアップロード日を使用）。件数をクリックすると期間内の文書を表示します",
+    "ko": "(날짜가 지정되지 않은 문서는 업로드 날짜를 사용합니다). 개수를 클릭하면 해당 기간의 문서를 볼 수 있습니다",
+    "zh": "分组（未指定日期的文档使用上传日期）。点击数量可查看该周期内的文档"
+  },
+  "templates70DocumentRepository.timelineFilterSuffix": {
+    "vi": " (đang lọc: {period})",
+    "en": " (filtering: {period})",
+    "ja": "（フィルター中：{period}）",
+    "ko": " (필터링 중: {period})",
+    "zh": "（正在筛选：{period}）"
+  },
+  "templates70DocumentRepository.bucketDay": {
+    "vi": "Ngày {day}",
+    "en": "Day {day}",
+    "ja": "{day}日",
+    "ko": "{day}일",
+    "zh": "第{day}日"
+  },
+  "templates70DocumentRepository.bucketMonth": {
+    "vi": "Tháng {month}",
+    "en": "Month {month}",
+    "ja": "{month}月",
+    "ko": "{month}월",
+    "zh": "{month}月"
+  },
+  "templates70DocumentRepository.bucketQuarter": {
+    "vi": "Quý {quarter}",
+    "en": "Quarter {quarter}",
+    "ja": "第{quarter}四半期",
+    "ko": "{quarter}분기",
+    "zh": "第{quarter}季度"
+  },
+  "templates70DocumentRepository.bucketYear": {
+    "vi": "Năm {year}",
+    "en": "Year {year}",
+    "ja": "{year}年",
+    "ko": "{year}년",
+    "zh": "{year}年"
+  }
+}

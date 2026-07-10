@@ -13,6 +13,7 @@ import {
   Badge, Button, ErrorBanner, type ProblemDetails,
 } from '@/components/platform/foundation';
 import { fmtInt, fmtPct, fmtVND } from '@/lib/format';
+import { useT } from '@/lib/i18n/provider';
 
 const STATUS_VARIANT: Record<BillingStatus, 'operational' | 'warning' | 'error'> = {
   normal:   'operational',
@@ -20,17 +21,18 @@ const STATUS_VARIANT: Record<BillingStatus, 'operational' | 'warning' | 'error'>
   critical: 'error',
   overage:  'error',
 };
-const STATUS_LABEL: Record<BillingStatus, string> = {
-  normal:   'Bình thường',
-  warn:     'Cảnh báo',
-  critical: 'Nguy hiểm',
-  overage:  'Vượt hạn mức',
+const STATUS_LABEL_KEY: Record<BillingStatus, string> = {
+  normal:   'quotaPage.statusNormal',
+  warn:     'quotaPage.statusWarn',
+  critical: 'quotaPage.statusCritical',
+  overage:  'quotaPage.statusOverage',
 };
 
 const PLAN_OPTIONS = ['', 'PILOT', 'ENT_BASIC', 'ENT_MID', 'ENT_MAX', 'ENT_ROI'];
 const STATUS_OPTIONS: ('' | BillingStatus)[] = ['', 'normal', 'warn', 'critical', 'overage'];
 
 export default function PlatformBillingQuotaPage() {
+  const t = useT();
   const [plan,   setPlan]   = useState<string>('');
   const [status, setStatus] = useState<'' | BillingStatus>('');
   const [cursor, setCursor] = useState<string | null>(null);
@@ -55,29 +57,29 @@ export default function PlatformBillingQuotaPage() {
       <div className="flex flex-wrap items-end gap-3">
         <div className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] pb-2">
           <Filter className="w-4 h-4" />
-          Lọc theo:
+          {t('quotaPage.filterBy')}
         </div>
         <div className="space-y-1.5">
-          <label className="text-xs text-[var(--text-secondary)] block">Gói</label>
+          <label className="text-xs text-[var(--text-secondary)] block">{t('quotaPage.planLabel')}</label>
           <select
             value={plan}
             onChange={(e) => { setCursor(null); setPlan(e.target.value); }}
             className="h-10 w-44 rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
           >
             {PLAN_OPTIONS.map((p) => (
-              <option key={p || 'all'} value={p}>{p || 'Tất cả gói'}</option>
+              <option key={p || 'all'} value={p}>{p || t('quotaPage.allPlans')}</option>
             ))}
           </select>
         </div>
         <div className="space-y-1.5">
-          <label className="text-xs text-[var(--text-secondary)] block">Trạng thái</label>
+          <label className="text-xs text-[var(--text-secondary)] block">{t('quotaPage.statusLabel')}</label>
           <select
             value={status}
             onChange={(e) => { setCursor(null); setStatus(e.target.value as '' | BillingStatus); }}
             className="h-10 w-48 rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
           >
             {STATUS_OPTIONS.map((s) => (
-              <option key={s || 'all'} value={s}>{s ? STATUS_LABEL[s] : 'Tất cả trạng thái'}</option>
+              <option key={s || 'all'} value={s}>{s ? t(STATUS_LABEL_KEY[s]) : t('quotaPage.allStatuses')}</option>
             ))}
           </select>
         </div>
@@ -88,11 +90,11 @@ export default function PlatformBillingQuotaPage() {
             onClick={() => { setCursor(null); setPlan(''); setStatus(''); }}
           >
             <X className="w-3.5 h-3.5 mr-1" />
-            Xoá bộ lọc
+            {t('quotaPage.clearFilter')}
           </Button>
         )}
         <p className="text-sm text-[var(--text-secondary)] ml-auto pb-2">
-          {total > 0 ? <><strong className="text-[var(--text-primary)]">{fmtInt(total)}</strong> doanh nghiệp</> : null}
+          {total > 0 ? <><strong className="text-[var(--text-primary)]">{fmtInt(total)}</strong> {t('quotaPage.enterpriseCountSuffix')}</> : null}
         </p>
       </div>
 
@@ -110,7 +112,7 @@ export default function PlatformBillingQuotaPage() {
       {query.isError && (
         <ErrorBanner
           problem={query.error ? (query.error as unknown as ProblemDetails) : null}
-          message="Không thể tải danh sách hạn mức."
+          message={t('quotaPage.errLoadQuota')}
         />
       )}
 
@@ -120,13 +122,13 @@ export default function PlatformBillingQuotaPage() {
             <table className="w-full text-sm">
               <thead className="bg-[var(--bg-app)]/60 text-[var(--text-secondary)]">
                 <tr>
-                  <th className="text-left font-medium px-4 py-2.5">Doanh nghiệp</th>
-                  <th className="text-left font-medium px-4 py-2.5">Gói</th>
-                  <th className="text-left font-medium px-4 py-2.5">Sử dụng</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('quotaPage.colEnterprise')}</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('quotaPage.planLabel')}</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('quotaPage.colUsage')}</th>
                   <th className="text-left font-medium px-4 py-2.5">%</th>
-                  <th className="text-left font-medium px-4 py-2.5">Vượt</th>
-                  <th className="text-left font-medium px-4 py-2.5">Trạng thái</th>
-                  <th className="text-left font-medium px-4 py-2.5">Doanh thu</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('quotaPage.colOverage')}</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('quotaPage.statusLabel')}</th>
+                  <th className="text-left font-medium px-4 py-2.5">{t('quotaPage.colRevenue')}</th>
                   <th className="text-right font-medium px-4 py-2.5 w-24"></th>
                 </tr>
               </thead>
@@ -135,8 +137,8 @@ export default function PlatformBillingQuotaPage() {
                   <tr>
                     <td colSpan={8} className="px-4 py-10 text-center text-[var(--text-secondary)]">
                       {hasFilter
-                        ? 'Không có doanh nghiệp khớp bộ lọc.'
-                        : 'Chưa có doanh nghiệp nào trong kỳ thanh toán hiện tại.'}
+                        ? t('quotaPage.emptyFiltered')
+                        : t('quotaPage.emptyAll')}
                     </td>
                   </tr>
                 )}
@@ -176,7 +178,7 @@ export default function PlatformBillingQuotaPage() {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      <Badge variant={STATUS_VARIANT[r.status]}>{STATUS_LABEL[r.status]}</Badge>
+                      <Badge variant={STATUS_VARIANT[r.status]}>{t(STATUS_LABEL_KEY[r.status])}</Badge>
                     </td>
                     <td className="px-4 py-3 text-sm text-[var(--text-primary)] tabular-nums">
                       {fmtVND(r.total_amount_vnd)}
@@ -186,7 +188,7 @@ export default function PlatformBillingQuotaPage() {
                         href={`/platform/billing/enterprises/${r.enterprise_id}`}
                         className="inline-flex items-center text-[var(--primary-gold-dark)] hover:text-[var(--text-primary)] text-sm transition-colors"
                       >
-                        Chi tiết <ChevronRight className="w-3.5 h-3.5" />
+                        {t('quotaPage.detail')} <ChevronRight className="w-3.5 h-3.5" />
                       </Link>
                     </td>
                   </tr>
@@ -198,7 +200,7 @@ export default function PlatformBillingQuotaPage() {
           {next && (
             <div className="px-4 py-3 border-t border-[var(--border-color)]/60 flex justify-center bg-[var(--bg-app)]/40">
               <Button variant="secondary" size="sm" onClick={() => setCursor(next)}>
-                Tải thêm
+                {t('quotaPage.loadMore')}
               </Button>
             </div>
           )}

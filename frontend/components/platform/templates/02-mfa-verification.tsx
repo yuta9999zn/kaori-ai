@@ -7,6 +7,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Loader2, ArrowLeft, ShieldCheck } from 'lucide-react';
+import { useT } from '@/lib/i18n/provider';
 
 // --- STYLES & FONTS ---
 const GlobalStyles = () => (
@@ -94,6 +95,7 @@ Button.displayName = "Button";
 // --- MAIN PAGE COMPONENT ---
 
 export default function KaoriMFA() {
+  const t = useT();
   const [code, setCode] = useState(Array(6).fill(''));
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -131,7 +133,7 @@ export default function KaoriMFA() {
 
     // Mock validation logic (fails if code is not 000000)
     if (fullCode !== '000000') {
-      setError('Invalid or expired code');
+      setError(t('templates02MfaVerification.errInvalidCode'));
       setCode(Array(6).fill(''));
       inputRefs.current[0]?.focus();
       setIsLoading(false);
@@ -246,20 +248,19 @@ export default function KaoriMFA() {
           {/* Copy */}
           <div className="relative z-10 flex flex-col max-w-lg mb-20 animate-fade-in">
             <h1 className="font-serif text-5xl leading-[1.15] text-[#2F2F2F] font-medium mb-6">
-              Intelligence,<br/>
-              <span className="text-[#8C8173] italic">Calmly Delivered.</span>
+              {t('templates02MfaVerification.headlineLine1')}<br/>
+              <span className="text-[#8C8173] italic">{t('templates02MfaVerification.headlineLine2')}</span>
             </h1>
             <p className="text-[#8C8173] text-lg leading-relaxed">
-              Experience the next generation of multi-tenant data intelligence. 
-              Built for scale, designed for clarity, and engineered to bring peace to your workflows.
+              {t('templates02MfaVerification.heroDesc')}
             </p>
           </div>
           
           {/* Footer */}
           <div className="relative z-10 flex items-center gap-4 text-sm text-[#8C8173]">
-            <span>© 2026 Kaori Platform</span>
+            <span>{t('templates02MfaVerification.footerCopyright')}</span>
             <span className="w-1 h-1 rounded-full bg-[#D4B88A]" />
-            <a href="#" className="hover:text-[#2F2F2F] transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-[#2F2F2F] transition-colors">{t('templates02MfaVerification.privacyPolicy')}</a>
           </div>
         </div>
 
@@ -285,10 +286,10 @@ export default function KaoriMFA() {
                 <ShieldCheck className="w-6 h-6 text-[#D4B88A]" />
               </div>
               <h2 className="font-serif text-3xl font-semibold tracking-tight text-[#2F2F2F]">
-                Verify your identity
+                {t('templates02MfaVerification.title')}
               </h2>
               <p className="text-sm text-[#8C8173] leading-relaxed">
-                Enter the 6-digit code from your authenticator app or sent to <span className="font-medium text-[#2F2F2F]">a***@company.com</span>.
+                {t('templates02MfaVerification.descPrefix')} <span className="font-medium text-[#2F2F2F]">a***@company.com</span>.
               </p>
             </div>
 
@@ -319,7 +320,7 @@ export default function KaoriMFA() {
                         : 'border-[#E9E7E2] text-[#2F2F2F] focus:border-[#D4B88A] focus:ring-2 focus:ring-[#D4B88A]/40'
                       }
                     `}
-                    aria-label={`Digit ${index + 1}`}
+                    aria-label={t('templates02MfaVerification.digitAriaLabel', { n: index + 1 })}
                   />
                 ))}
               </div>
@@ -330,10 +331,10 @@ export default function KaoriMFA() {
                   <span className="text-red-600 font-medium">{error}</span>
                 ) : countdown > 0 ? (
                   <span className="text-[#8C8173]">
-                    This code refreshes in <span className="font-medium tabular-nums text-[#2F2F2F]">00:{countdown.toString().padStart(2, '0')}</span>
+                    {t('templates02MfaVerification.refreshPrefix')} <span className="font-medium tabular-nums text-[#2F2F2F]">00:{countdown.toString().padStart(2, '0')}</span>
                   </span>
                 ) : (
-                  <span className="text-[#8C8173]">Code expired. Please request a new one.</span>
+                  <span className="text-[#8C8173]">{t('templates02MfaVerification.codeExpired')}</span>
                 )}
               </div>
 
@@ -344,7 +345,7 @@ export default function KaoriMFA() {
                 isLoading={isLoading}
                 disabled={code.some(d => !d)} // Disabled if not fully filled manually
               >
-                Verify
+                {t('templates02MfaVerification.verify')}
               </Button>
 
               {/* Secondary Actions */}
@@ -355,13 +356,13 @@ export default function KaoriMFA() {
                   disabled={countdown > 0 || isLoading}
                   className="font-medium text-[#2F2F2F] hover:text-[#D4B88A] disabled:text-[#8C8173]/50 disabled:cursor-not-allowed transition-colors"
                 >
-                  Resend code
+                  {t('templates02MfaVerification.resendCode')}
                 </button>
                 <a
                   href="#backup-code"
                   className="font-medium text-[#8C8173] hover:text-[#2F2F2F] transition-colors"
                 >
-                  Use backup code
+                  {t('templates02MfaVerification.useBackupCode')}
                 </a>
               </div>
             </form>
@@ -374,7 +375,7 @@ export default function KaoriMFA() {
               className="inline-flex items-center text-sm font-medium text-[#8C8173] hover:text-[#2F2F2F] transition-colors group"
             >
               <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-              Back to login
+              {t('templates02MfaVerification.backToLogin')}
             </a>
           </div>
 

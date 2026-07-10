@@ -1,0 +1,43 @@
+{
+  "templates54StrategyTimeline.statusCompleted": { "vi": "Hoàn thành", "en": "Completed", "ja": "完了", "ko": "완료", "zh": "已完成" },
+  "templates54StrategyTimeline.statusInProgress": { "vi": "Đang chạy", "en": "In progress", "ja": "進行中", "ko": "진행 중", "zh": "进行中" },
+  "templates54StrategyTimeline.statusScheduled": { "vi": "Đã lên lịch", "en": "Scheduled", "ja": "予定", "ko": "예정", "zh": "已排期" },
+  "templates54StrategyTimeline.statusAtRisk": { "vi": "At-risk", "en": "At risk", "ja": "リスクあり", "ko": "위험", "zh": "有风险" },
+
+  "templates54StrategyTimeline.initiative1Name": { "vi": "Triển khai Auto DB pilot", "en": "Auto DB pilot rollout", "ja": "Auto DB パイロット導入", "ko": "Auto DB 파일럿 도입", "zh": "Auto DB 试点上线" },
+  "templates54StrategyTimeline.initiative1Category": { "vi": "Sản phẩm", "en": "Product", "ja": "プロダクト", "ko": "제품", "zh": "产品" },
+  "templates54StrategyTimeline.milestone11Title": { "vi": "Hoàn thành schema suggestion engine", "en": "Complete schema suggestion engine", "ja": "スキーマ提案エンジンを完成", "ko": "스키마 제안 엔진 완료", "zh": "完成 schema 建议引擎" },
+  "templates54StrategyTimeline.milestone12Title": { "vi": "Pilot khách hàng số 1", "en": "Customer pilot #1", "ja": "顧客パイロット #1", "ko": "고객 파일럿 #1", "zh": "客户试点 #1" },
+  "templates54StrategyTimeline.milestone13Title": { "vi": "Pilot khách hàng số 5 — TPHCM", "en": "Customer pilot #5 — Ho Chi Minh City", "ja": "顧客パイロット #5 — ホーチミン市", "ko": "고객 파일럿 #5 — 호치민시", "zh": "客户试点 #5 — 胡志明市" },
+  "templates54StrategyTimeline.milestone14Title": { "vi": "Báo cáo tổng kết pilot", "en": "Pilot summary report", "ja": "パイロット総括レポート", "ko": "파일럿 요약 보고서", "zh": "试点总结报告" },
+
+  "templates54StrategyTimeline.initiative2Name": { "vi": "Giảm churn APAC", "en": "Reduce APAC churn", "ja": "APAC チャーン削減", "ko": "APAC 이탈 감소", "zh": "降低 APAC 客户流失" },
+  "templates54StrategyTimeline.initiative2Category": { "vi": "Khách hàng", "en": "Customer", "ja": "顧客", "ko": "고객", "zh": "客户" },
+  "templates54StrategyTimeline.milestone21Title": { "vi": "Phân tích root cause churn", "en": "Churn root-cause analysis", "ja": "チャーンの根本原因分析", "ko": "이탈 근본 원인 분석", "zh": "客户流失根因分析" },
+  "templates54StrategyTimeline.milestone22Title": { "vi": "Triển khai retention campaign", "en": "Launch retention campaign", "ja": "リテンションキャンペーンを実施", "ko": "리텐션 캠페인 실행", "zh": "启动客户留存活动" },
+  "templates54StrategyTimeline.milestone22Notes": { "vi": "Trễ 5 ngày — chờ approval ngân sách marketing.", "en": "5 days behind — waiting on marketing budget approval.", "ja": "5日遅延 — マーケティング予算の承認待ち。", "ko": "5일 지연 — 마케팅 예산 승인 대기 중.", "zh": "延迟5天 — 等待市场预算审批。" },
+  "templates54StrategyTimeline.milestone23Title": { "vi": "Đánh giá hiệu quả campaign", "en": "Evaluate campaign effectiveness", "ja": "キャンペーン効果を評価", "ko": "캠페인 효과 평가", "zh": "评估活动效果" },
+
+  "templates54StrategyTimeline.initiative3Name": { "vi": "Mở rộng SME", "en": "SME expansion", "ja": "SME 拡大", "ko": "SME 확장", "zh": "拓展中小企业(SME)" },
+  "templates54StrategyTimeline.initiative3Category": { "vi": "Doanh thu", "en": "Revenue", "ja": "売上", "ko": "매출", "zh": "营收" },
+  "templates54StrategyTimeline.milestone31Title": { "vi": "Hoàn thiện gói SME starter", "en": "Finalise SME starter package", "ja": "SME スターターパッケージを完成", "ko": "SME 스타터 패키지 완성", "zh": "完善 SME 入门套餐" },
+  "templates54StrategyTimeline.milestone32Title": { "vi": "Chiến dịch outbound 200 leads", "en": "Outbound campaign — 200 leads", "ja": "アウトバウンドキャンペーン — 200件のリード", "ko": "아웃바운드 캠페인 — 리드 200건", "zh": "外呼活动 — 200条线索" },
+  "templates54StrategyTimeline.milestone33Title": { "vi": "Đạt 60 khách SME mới", "en": "Reach 60 new SME customers", "ja": "SME 新規顧客60社を獲得", "ko": "신규 SME 고객 60개 확보", "zh": "获取60家新 SME 客户" },
+
+  "templates54StrategyTimeline.pageTitle": { "vi": "Lộ trình", "en": "Timeline", "ja": "ロードマップ", "ko": "타임라인", "zh": "路线图" },
+  "templates54StrategyTimeline.pageDescription": { "vi": "Milestone của các initiative theo quý. Click thanh để xem chi tiết.", "en": "Milestones for each initiative by quarter. Click a bar to see details.", "ja": "四半期ごとの各イニシアチブのマイルストーン。バーをクリックすると詳細が表示されます。", "ko": "분기별 이니셔티브 마일스톤입니다. 막대를 클릭하면 세부 정보를 볼 수 있습니다.", "zh": "按季度显示各计划的里程碑。点击条形图查看详情。" },
+  "templates54StrategyTimeline.backOverview": { "vi": "Tổng quan", "en": "Overview", "ja": "概要", "ko": "개요", "zh": "概览" },
+  "templates54StrategyTimeline.addMilestone": { "vi": "Thêm milestone", "en": "Add milestone", "ja": "マイルストーンを追加", "ko": "마일스톤 추가", "zh": "添加里程碑" },
+  "templates54StrategyTimeline.zoomMonthTooltip": { "vi": "Theo tháng", "en": "By month", "ja": "月別", "ko": "월별", "zh": "按月" },
+  "templates54StrategyTimeline.zoomQuarterTooltip": { "vi": "Theo quý", "en": "By quarter", "ja": "四半期別", "ko": "분기별", "zh": "按季度" },
+  "templates54StrategyTimeline.todayTooltip": { "vi": "Hôm nay {date}", "en": "Today {date}", "ja": "本日 {date}", "ko": "오늘 {date}", "zh": "今天 {date}" },
+  "templates54StrategyTimeline.legendDescPart1": { "vi": "Đường đỏ dọc = hôm nay ({date}). Phụ thuộc giữa milestone hiển thị bằng ", "en": "Vertical red line = today ({date}). Dependencies between milestones are shown via ", "ja": "縦の赤い線 = 本日（{date}）。マイルストーン間の依存関係は ", "ko": "세로 빨간 선 = 오늘 ({date}). 마일스톤 간 종속성은 ", "zh": "竖直红线 = 今天（{date}）。里程碑之间的依赖关系通过 " },
+  "templates54StrategyTimeline.legendDescPart2": { "vi": " ở drawer chi tiết — Phase 2 sẽ vẽ arrow nối tự động.", "en": " in the detail drawer — Phase 2 will draw connecting arrows automatically.", "ja": " が詳細ドロワーに表示されます — Phase 2 では矢印が自動的に描画されます。", "ko": " 상세 드로어에 표시됩니다 — Phase 2에서는 화살표가 자동으로 연결됩니다.", "zh": " 在详情抽屉中显示 — Phase 2 将自动绘制连接箭头。" },
+
+  "templates54StrategyTimeline.drawerStatus": { "vi": "Trạng thái", "en": "Status", "ja": "ステータス", "ko": "상태", "zh": "状态" },
+  "templates54StrategyTimeline.drawerStart": { "vi": "Bắt đầu", "en": "Start", "ja": "開始", "ko": "시작", "zh": "开始" },
+  "templates54StrategyTimeline.drawerEnd": { "vi": "Kết thúc", "en": "End", "ja": "終了", "ko": "종료", "zh": "结束" },
+  "templates54StrategyTimeline.drawerOwner": { "vi": "Chủ", "en": "Owner", "ja": "担当者", "ko": "담당자", "zh": "负责人" },
+  "templates54StrategyTimeline.drawerDependsOn": { "vi": "Phụ thuộc", "en": "Dependencies", "ja": "依存関係", "ko": "종속성", "zh": "依赖项" },
+  "templates54StrategyTimeline.drawerNotes": { "vi": "Ghi chú", "en": "Notes", "ja": "メモ", "ko": "메모", "zh": "备注" }
+}

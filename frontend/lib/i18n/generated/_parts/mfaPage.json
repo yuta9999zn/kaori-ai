@@ -1,0 +1,93 @@
+{
+  "mfaPage.headline": {
+    "vi": "Một bước nữa,",
+    "en": "One more step,",
+    "ja": "あと一歩、",
+    "ko": "한 단계 더,",
+    "zh": "还差一步，"
+  },
+  "mfaPage.italicTail": {
+    "vi": "xác minh danh tính.",
+    "en": "verify your identity.",
+    "ja": "本人確認を行いましょう。",
+    "ko": "본인 확인을 해주세요.",
+    "zh": "验证您的身份。"
+  },
+  "mfaPage.subhead": {
+    "vi": "Tài khoản này đã bật MFA. Mở ứng dụng xác thực (Google Authenticator / 1Password) và nhập mã 6 chữ số đang hiển thị.",
+    "en": "MFA is enabled for this account. Open your authenticator app (Google Authenticator / 1Password) and enter the 6-digit code shown.",
+    "ja": "このアカウントはMFAが有効です。認証アプリ（Google Authenticator / 1Password）を開き、表示されている6桁のコードを入力してください。",
+    "ko": "이 계정은 MFA가 활성화되어 있습니다. 인증 앱(Google Authenticator / 1Password)을 열고 표시된 6자리 코드를 입력하세요.",
+    "zh": "此账户已启用 MFA。请打开身份验证应用（Google Authenticator / 1Password），输入显示的 6 位数字代码。"
+  },
+  "mfaPage.title": {
+    "vi": "Xác minh danh tính",
+    "en": "Verify your identity",
+    "ja": "本人確認",
+    "ko": "본인 확인",
+    "zh": "验证身份"
+  },
+  "mfaPage.enterCodeIntro": {
+    "vi": "Nhập mã 6 chữ số từ ứng dụng xác thực",
+    "en": "Enter the 6-digit code from your authenticator app",
+    "ja": "認証アプリの6桁のコードを入力してください",
+    "ko": "인증 앱의 6자리 코드를 입력하세요",
+    "zh": "请输入身份验证应用中的 6 位数字代码"
+  },
+  "mfaPage.forLabel": {
+    "vi": "cho",
+    "en": "for",
+    "ja": "対象：",
+    "ko": "대상:",
+    "zh": "针对"
+  },
+  "mfaPage.digitAriaLabel": {
+    "vi": "Chữ số thứ {n}",
+    "en": "Digit {n}",
+    "ja": "{n}桁目",
+    "ko": "{n}번째 숫자",
+    "zh": "第 {n} 位数字"
+  },
+  "mfaPage.codeRefreshesIn": {
+    "vi": "Mã làm mới sau",
+    "en": "Code refreshes in",
+    "ja": "コード更新まで",
+    "ko": "코드 갱신까지",
+    "zh": "验证码将在以下时间刷新"
+  },
+  "mfaPage.sessionExpiresIn": {
+    "vi": "phiên hết hạn sau",
+    "en": "session expires in",
+    "ja": "セッション有効期限まで",
+    "ko": "세션 만료까지",
+    "zh": "会话将在以下时间过期"
+  },
+  "mfaPage.restoringSession": {
+    "vi": "Đang khôi phục phiên...",
+    "en": "Restoring session...",
+    "ja": "セッションを復元しています...",
+    "ko": "세션 복구 중...",
+    "zh": "正在恢复会话..."
+  },
+  "mfaPage.verifyButton": {
+    "vi": "Xác minh",
+    "en": "Verify",
+    "ja": "確認する",
+    "ko": "확인",
+    "zh": "验证"
+  },
+  "mfaPage.backToLogin": {
+    "vi": "Quay lại đăng nhập",
+    "en": "Back to login",
+    "ja": "ログインに戻る",
+    "ko": "로그인으로 돌아가기",
+    "zh": "返回登录"
+  },
+  "mfaPage.errInvalidCode": {
+    "vi": "Mã xác thực không đúng. Vui lòng thử lại.",
+    "en": "Incorrect verification code. Please try again.",
+    "ja": "認証コードが正しくありません。もう一度お試しください。",
+    "ko": "인증 코드가 올바르지 않습니다. 다시 시도해 주세요.",
+    "zh": "验证码不正确，请重试。"
+  }
+}

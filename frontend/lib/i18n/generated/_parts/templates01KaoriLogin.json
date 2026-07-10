@@ -1,0 +1,128 @@
+{
+  "templates01KaoriLogin.heroTitleLine1": {
+    "vi": "Trí tuệ,",
+    "en": "Intelligence,",
+    "ja": "インテリジェンス、",
+    "ko": "인텔리전스,",
+    "zh": "智能，"
+  },
+  "templates01KaoriLogin.heroTitleLine2": {
+    "vi": "Được truyền tải an nhiên.",
+    "en": "Calmly Delivered.",
+    "ja": "静かにお届けします。",
+    "ko": "차분하게 전달됩니다.",
+    "zh": "从容交付。"
+  },
+  "templates01KaoriLogin.heroDesc": {
+    "vi": "Trải nghiệm thế hệ mới của trí tuệ dữ liệu đa tenant. Được xây dựng để mở rộng, thiết kế cho sự rõ ràng, và tạo ra để mang lại sự an nhiên cho workflow của bạn.",
+    "en": "Experience the next generation of multi-tenant data intelligence. Built for scale, designed for clarity, and engineered to bring peace to your workflows.",
+    "ja": "次世代のマルチテナントデータインテリジェンスを体験してください。スケールのために構築され、明快さのために設計され、あなたのワークフローに安らぎをもたらすように作られています。",
+    "ko": "차세대 멀티테넌트 데이터 인텔리전스를 경험하세요. 확장성을 위해 구축되고, 명료함을 위해 설계되었으며, 워크플로우에 평온함을 가져다주도록 만들어졌습니다.",
+    "zh": "体验新一代多租户数据智能。为规模而生，为清晰而设计，致力于为您的工作流带来从容。"
+  },
+  "templates01KaoriLogin.copyright": {
+    "vi": "© 2026 Nền tảng Kaori",
+    "en": "© 2026 Kaori Platform",
+    "ja": "© 2026 Kaori プラットフォーム",
+    "ko": "© 2026 Kaori 플랫폼",
+    "zh": "© 2026 Kaori 平台"
+  },
+  "templates01KaoriLogin.privacyPolicy": {
+    "vi": "Chính sách bảo mật",
+    "en": "Privacy Policy",
+    "ja": "プライバシーポリシー",
+    "ko": "개인정보 처리방침",
+    "zh": "隐私政策"
+  },
+  "templates01KaoriLogin.welcomeBack": {
+    "vi": "Chào mừng trở lại",
+    "en": "Welcome back",
+    "ja": "お帰りなさい",
+    "ko": "다시 오신 것을 환영합니다",
+    "zh": "欢迎回来"
+  },
+  "templates01KaoriLogin.signInSubtitle": {
+    "vi": "Đăng nhập vào không gian làm việc platform của bạn",
+    "en": "Sign in to your platform workspace",
+    "ja": "プラットフォームのワークスペースにサインインしてください",
+    "ko": "플랫폼 워크스페이스에 로그인하세요",
+    "zh": "登录您的平台工作区"
+  },
+  "templates01KaoriLogin.emailLabel": {
+    "vi": "Email",
+    "en": "Email",
+    "ja": "メールアドレス",
+    "ko": "이메일",
+    "zh": "邮箱"
+  },
+  "templates01KaoriLogin.passwordLabel": {
+    "vi": "Mật khẩu",
+    "en": "Password",
+    "ja": "パスワード",
+    "ko": "비밀번호",
+    "zh": "密码"
+  },
+  "templates01KaoriLogin.hidePassword": {
+    "vi": "Ẩn mật khẩu",
+    "en": "Hide password",
+    "ja": "パスワードを非表示",
+    "ko": "비밀번호 숨기기",
+    "zh": "隐藏密码"
+  },
+  "templates01KaoriLogin.showPassword": {
+    "vi": "Hiện mật khẩu",
+    "en": "Show password",
+    "ja": "パスワードを表示",
+    "ko": "비밀번호 표시",
+    "zh": "显示密码"
+  },
+  "templates01KaoriLogin.rememberMe": {
+    "vi": "Ghi nhớ đăng nhập",
+    "en": "Remember me",
+    "ja": "ログイン状態を保持する",
+    "ko": "로그인 상태 유지",
+    "zh": "记住我"
+  },
+  "templates01KaoriLogin.forgotPassword": {
+    "vi": "Quên mật khẩu?",
+    "en": "Forgot password?",
+    "ja": "パスワードをお忘れですか？",
+    "ko": "비밀번호를 잊으셨나요?",
+    "zh": "忘记密码？"
+  },
+  "templates01KaoriLogin.signInButton": {
+    "vi": "Đăng nhập",
+    "en": "Sign in",
+    "ja": "サインイン",
+    "ko": "로그인",
+    "zh": "登录"
+  },
+  "templates01KaoriLogin.orContinueWith": {
+    "vi": "hoặc tiếp tục với",
+    "en": "or continue with",
+    "ja": "または次で続ける",
+    "ko": "또는 다음으로 계속",
+    "zh": "或继续使用"
+  },
+  "templates01KaoriLogin.noAccount": {
+    "vi": "Chưa có tài khoản?",
+    "en": "Don't have an account?",
+    "ja": "アカウントをお持ちでないですか？",
+    "ko": "계정이 없으신가요?",
+    "zh": "还没有账户？"
+  },
+  "templates01KaoriLogin.requestAccess": {
+    "vi": "Yêu cầu quyền truy cập",
+    "en": "Request access",
+    "ja": "アクセスをリクエスト",
+    "ko": "액세스 요청",
+    "zh": "申请访问权限"
+  },
+  "templates01KaoriLogin.errInvalidCreds": {
+    "vi": "Email hoặc mật khẩu không đúng. Hãy thử admin@company.com / password",
+    "en": "Invalid email or password. Try admin@company.com / password",
+    "ja": "メールアドレスまたはパスワードが正しくありません。admin@company.com / password をお試しください",
+    "ko": "이메일 또는 비밀번호가 올바르지 않습니다. admin@company.com / password를 시도해 보세요",
+    "zh": "邮箱或密码不正确。请尝试 admin@company.com / password"
+  }
+}

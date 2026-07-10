@@ -1,0 +1,177 @@
+{
+  "newPage2.allWorkspaces": {
+    "vi": "Tất cả workspaces",
+    "en": "All workspaces",
+    "ja": "すべてのワークスペース",
+    "ko": "모든 워크스페이스",
+    "zh": "所有工作区"
+  },
+  "newPage2.title": {
+    "vi": "Tạo workspace mới",
+    "en": "Create new workspace",
+    "ja": "新しいワークスペースを作成",
+    "ko": "새 워크스페이스 만들기",
+    "zh": "创建新工作区"
+  },
+  "newPage2.desc": {
+    "vi": "Cấp phát môi trường tenant mới cho khách hàng doanh nghiệp.",
+    "en": "Provision a new tenant environment for an enterprise customer.",
+    "ja": "法人顧客向けに新しいテナント環境をプロビジョニングします。",
+    "ko": "기업 고객을 위한 새 테넌트 환경을 프로비저닝합니다.",
+    "zh": "为企业客户配置新的租户环境。"
+  },
+  "newPage2.stepGeneral": {
+    "vi": "Thông tin chung",
+    "en": "General information",
+    "ja": "基本情報",
+    "ko": "기본 정보",
+    "zh": "基本信息"
+  },
+  "newPage2.stepPlanIndustry": {
+    "vi": "Gói & ngành",
+    "en": "Plan & industry",
+    "ja": "プラン＆業種",
+    "ko": "요금제 및 업종",
+    "zh": "套餐与行业"
+  },
+  "newPage2.stepConfirm": {
+    "vi": "Xác nhận",
+    "en": "Confirm",
+    "ja": "確認",
+    "ko": "확인",
+    "zh": "确认"
+  },
+  "newPage2.nameLabel": {
+    "vi": "Tên workspace",
+    "en": "Workspace name",
+    "ja": "ワークスペース名",
+    "ko": "워크스페이스 이름",
+    "zh": "工作区名称"
+  },
+  "newPage2.namePlaceholder": {
+    "vi": "VD: Acme Production",
+    "en": "e.g. Acme Production",
+    "ja": "例：Acme Production",
+    "ko": "예: Acme Production",
+    "zh": "例如：Acme Production"
+  },
+  "newPage2.nameHint": {
+    "vi": "2–200 ký tự. Sẽ hiển thị cho thành viên trong workspace.",
+    "en": "2–200 characters. Will be shown to members within the workspace.",
+    "ja": "2〜200文字。ワークスペース内のメンバーに表示されます。",
+    "ko": "2~200자. 워크스페이스 내 멤버에게 표시됩니다.",
+    "zh": "2–200 个字符。将显示给工作区内的成员。"
+  },
+  "newPage2.planLabel": {
+    "vi": "Mã gói",
+    "en": "Plan code",
+    "ja": "プランコード",
+    "ko": "요금제 코드",
+    "zh": "套餐代码"
+  },
+  "newPage2.planPilot": {
+    "vi": "PILOT — 1.000.000 ₫/tháng · 500 KH duy nhất",
+    "en": "PILOT — 1,000,000 ₫/month · 500 unique customers max",
+    "ja": "PILOT — 1,000,000 ₫/月 ・ ユニーク顧客最大500件",
+    "ko": "PILOT — 1,000,000 ₫/월 · 고유 고객 최대 500명",
+    "zh": "PILOT — 1,000,000 ₫/月 · 最多 500 个唯一客户"
+  },
+  "newPage2.planEntBasic": {
+    "vi": "ENT BASIC — 2.000.000 ₫/tháng · 1.000 KH",
+    "en": "ENT BASIC — 2,000,000 ₫/month · 1,000 customers",
+    "ja": "ENT BASIC — 2,000,000 ₫/月 ・ 顧客1,000件",
+    "ko": "ENT BASIC — 2,000,000 ₫/월 · 고객 1,000명",
+    "zh": "ENT BASIC — 2,000,000 ₫/月 · 1,000 个客户"
+  },
+  "newPage2.planEntMid": {
+    "vi": "ENT MID — 5.000.000 ₫/tháng · 4.000 KH",
+    "en": "ENT MID — 5,000,000 ₫/month · 4,000 customers",
+    "ja": "ENT MID — 5,000,000 ₫/月 ・ 顧客4,000件",
+    "ko": "ENT MID — 5,000,000 ₫/월 · 고객 4,000명",
+    "zh": "ENT MID — 5,000,000 ₫/月 · 4,000 个客户"
+  },
+  "newPage2.planEntMax": {
+    "vi": "ENT MAX — 8.000.000 ₫/tháng · 10.000 KH",
+    "en": "ENT MAX — 8,000,000 ₫/month · 10,000 customers",
+    "ja": "ENT MAX — 8,000,000 ₫/月 ・ 顧客10,000件",
+    "ko": "ENT MAX — 8,000,000 ₫/월 · 고객 10,000명",
+    "zh": "ENT MAX — 8,000,000 ₫/月 · 10,000 个客户"
+  },
+  "newPage2.planBillingHint": {
+    "vi": "Tính cước theo COUNT(DISTINCT customer_external_id) mỗi tháng — K-11.",
+    "en": "Billed by COUNT(DISTINCT customer_external_id) per month — K-11.",
+    "ja": "月次の COUNT(DISTINCT customer_external_id) に基づいて課金されます — K-11。",
+    "ko": "매월 COUNT(DISTINCT customer_external_id) 기준으로 과금됩니다 — K-11.",
+    "zh": "按每月 COUNT(DISTINCT customer_external_id) 计费 — K-11。"
+  },
+  "newPage2.industryLabel": {
+    "vi": "Ngành (tùy chọn)",
+    "en": "Industry (optional)",
+    "ja": "業種（任意）",
+    "ko": "업종 (선택)",
+    "zh": "行业（可选）"
+  },
+  "newPage2.industryPlaceholder": {
+    "vi": "VD: Bán lẻ, Tài chính, Sản xuất",
+    "en": "e.g. Retail, Finance, Manufacturing",
+    "ja": "例：小売、金融、製造",
+    "ko": "예: 소매, 금융, 제조",
+    "zh": "例如：零售、金融、制造"
+  },
+  "newPage2.confirmName": {
+    "vi": "Tên",
+    "en": "Name",
+    "ja": "名前",
+    "ko": "이름",
+    "zh": "名称"
+  },
+  "newPage2.confirmPlan": {
+    "vi": "Gói",
+    "en": "Plan",
+    "ja": "プラン",
+    "ko": "요금제",
+    "zh": "套餐"
+  },
+  "newPage2.confirmIndustry": {
+    "vi": "Ngành",
+    "en": "Industry",
+    "ja": "業種",
+    "ko": "업종",
+    "zh": "行业"
+  },
+  "newPage2.confirmFooterHint": {
+    "vi": "Bạn có thể mời thành viên và cấp khoá API ngay sau khi tạo xong.",
+    "en": "You can invite members and issue API keys right after creation.",
+    "ja": "作成後すぐにメンバーを招待し、APIキーを発行できます。",
+    "ko": "생성 후 바로 멤버를 초대하고 API 키를 발급할 수 있습니다.",
+    "zh": "创建完成后即可邀请成员并签发 API 密钥。"
+  },
+  "newPage2.errNameTooShort": {
+    "vi": "Tên workspace cần ≥ 2 ký tự.",
+    "en": "Workspace name must be ≥ 2 characters.",
+    "ja": "ワークスペース名は2文字以上である必要があります。",
+    "ko": "워크스페이스 이름은 2자 이상이어야 합니다.",
+    "zh": "工作区名称需至少 2 个字符。"
+  },
+  "newPage2.btnBack": {
+    "vi": "Quay lại",
+    "en": "Back",
+    "ja": "戻る",
+    "ko": "뒤로",
+    "zh": "返回"
+  },
+  "newPage2.btnNext": {
+    "vi": "Tiếp tục",
+    "en": "Continue",
+    "ja": "続ける",
+    "ko": "계속",
+    "zh": "继续"
+  },
+  "newPage2.btnCreate": {
+    "vi": "Tạo workspace",
+    "en": "Create workspace",
+    "ja": "ワークスペースを作成",
+    "ko": "워크스페이스 만들기",
+    "zh": "创建工作区"
+  }
+}

@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Loader2, Sparkles, X, AlertTriangle } from 'lucide-react';
 import { Badge, cn, api } from '@/components/p2/foundation';
 import { InsightData } from './types';
+import { useT } from '@/lib/i18n/provider';
 
 const POLL_MS = 3000;
 const POLL_MAX = 150; // ~7.5 phút — Qwen trên máy pilot có thể cần ~5 phút; job bounded phía BE
@@ -30,6 +31,7 @@ export function InsightPanel({ scope, onClose }: {
   scope: { scope_kind: 'group' | 'folder'; scope: Record<string, unknown>; title: string };
   onClose: () => void;
 }) {
+  const t = useT();
   const [insight, setInsight] = useState<InsightData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const polls = useRef(0);
@@ -48,13 +50,13 @@ export function InsightPanel({ scope, onClose }: {
           timer = setTimeout(() => poll(id), POLL_MS);
         }
       } catch (e: any) {
-        if (!cancelled) setError(e?.title || 'Không tải được kết quả phân tích');
+        if (!cancelled) setError(e?.title || t('dmsInsightPanel.errLoadResult'));
       }
     }
 
     postInsightOnce(scope.scope_kind, scope.scope)
       .then((r) => poll(r.insight_id))
-      .catch((e: any) => setError(e?.title || 'Không tạo được phân tích'));
+      .catch((e: any) => setError(e?.title || t('dmsInsightPanel.errCreate')));
 
     return () => { cancelled = true; if (timer) clearTimeout(timer); };
   }, []); // one shot per mount — panel remounts per request
@@ -66,8 +68,8 @@ export function InsightPanel({ scope, onClose }: {
     <div className="bg-[var(--bg-card)] border border-[var(--primary-gold)]/40 rounded-lg-custom p-4 space-y-3">
       <div className="flex items-center gap-2">
         <Sparkles className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-        <h3 className="text-sm font-semibold flex-1">Phân tích: {scope.title}</h3>
-        {insight?.model === 'qwen2.5-local' && <Badge variant="default" className="text-[10px]">AI tạo — Qwen nội bộ</Badge>}
+        <h3 className="text-sm font-semibold flex-1">{t('dmsInsightPanel.headerTitle', { title: scope.title })}</h3>
+        {insight?.model === 'qwen2.5-local' && <Badge variant="default" className="text-[10px]">{t('dmsInsightPanel.aiBadge')}</Badge>}
         <button onClick={onClose} className="text-[var(--text-secondary)] hover:text-[var(--state-error)]"><X className="w-4 h-4" /></button>
       </div>
 
@@ -76,7 +78,7 @@ export function InsightPanel({ scope, onClose }: {
       {running && !error && (
         <div className="text-sm text-[var(--text-secondary)] flex items-center gap-2">
           <Loader2 className="w-4 h-4 animate-spin" />
-          Đang phân tích {insight?.status === 'running' ? '(đang chạy)' : '(đang chờ)'}…
+          {t('dmsInsightPanel.analyzing')} {insight?.status === 'running' ? t('dmsInsightPanel.statusRunning') : t('dmsInsightPanel.statusPending')}…
           {insight && polls.current >= POLL_MAX && (
             <button
               onClick={() => {
@@ -85,7 +87,7 @@ export function InsightPanel({ scope, onClose }: {
                   .then(setInsight).catch(() => {});
               }}
               className="text-[var(--primary-gold-dark)] hover:underline text-xs">
-              Kiểm tra lại
+              {t('dmsInsightPanel.recheck')}
             </button>
           )}
         </div>
@@ -93,7 +95,7 @@ export function InsightPanel({ scope, onClose }: {
 
       {insight?.status === 'failed' && (
         <p className="text-sm text-[var(--state-error)] flex items-center gap-1.5">
-          <AlertTriangle className="w-4 h-4" /> Phân tích thất bại: {insight.error || 'lỗi không rõ'}
+          <AlertTriangle className="w-4 h-4" /> {t('dmsInsightPanel.failed', { error: insight.error || t('dmsInsightPanel.errUnknown') })}
         </p>
       )}
 
@@ -102,16 +104,16 @@ export function InsightPanel({ scope, onClose }: {
           {/* stats deterministic */}
           <div className="flex flex-wrap gap-2 text-[11px]">
             <span className="px-2 py-1 rounded bg-[var(--bg-app)]/70 border border-[var(--border-color)]">
-              <b className="tabular-nums">{insight.doc_count}</b> tài liệu
+              <b className="tabular-nums">{insight.doc_count}</b> {t('dmsInsightPanel.docCountLabel')}
             </span>
             {stats.completeness && (
               <span className="px-2 py-1 rounded bg-[var(--bg-app)]/70 border border-[var(--border-color)]">
-                <b className="tabular-nums">{stats.completeness.incomplete_count}</b> thiếu thông tin
+                <b className="tabular-nums">{stats.completeness.incomplete_count}</b> {t('dmsInsightPanel.incompleteLabel')}
               </span>
             )}
             {Object.entries(stats.past_date_counts || {}).map(([k, v]) => (
               <span key={k} className="px-2 py-1 rounded bg-amber-50 border border-amber-200 text-amber-700">
-                <b className="tabular-nums">{v as number}</b> quá «{k}»
+                <b className="tabular-nums">{v as number}</b> {t('dmsInsightPanel.overdueLabel', { k })}
               </span>
             ))}
             {Object.entries(stats.status_counts || {}).flatMap(([field, counts]) =>
@@ -139,7 +141,7 @@ export function InsightPanel({ scope, onClose }: {
 
           {stats.truncated && (
             <p className="text-[11px] text-amber-700 flex items-center gap-1">
-              <AlertTriangle className="w-3 h-3" /> Lát cắt vượt giới hạn — kết quả tính trên một phần tài liệu.
+              <AlertTriangle className="w-3 h-3" /> {t('dmsInsightPanel.truncatedNotice')}
             </p>
           )}
         </div>

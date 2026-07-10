@@ -1,0 +1,177 @@
+{
+  "templates79CsNpsDashboard.title": {
+    "vi": "NPS Dashboard",
+    "en": "NPS Dashboard",
+    "ja": "NPSダッシュボード",
+    "ko": "NPS 대시보드",
+    "zh": "NPS 仪表盘"
+  },
+  "templates79CsNpsDashboard.subtitle": {
+    "vi": "Theo dõi NPS, sentiment, và auto-followup rules (promoter / passive / detractor).",
+    "en": "Track NPS, sentiment, and auto-followup rules (promoter / passive / detractor).",
+    "ja": "NPS、センチメント、自動フォローアップルール（推奨者／中立者／批判者）を追跡します。",
+    "ko": "NPS, 감성, 자동 후속 조치 규칙(추천고객/중립고객/비추천고객)을 추적합니다.",
+    "zh": "跟踪 NPS、情绪分析和自动跟进规则(推荐者/被动者/贬损者)。"
+  },
+  "templates79CsNpsDashboard.errLoad": {
+    "vi": "Không tải được NPS.",
+    "en": "Failed to load NPS.",
+    "ja": "NPSを読み込めませんでした。",
+    "ko": "NPS를 불러오지 못했습니다.",
+    "zh": "无法加载 NPS。"
+  },
+  "templates79CsNpsDashboard.emptyScorecard": {
+    "vi": "Chưa có response — cài đặt survey trigger đầu tiên.",
+    "en": "No responses yet — set up your first survey trigger.",
+    "ja": "まだ回答がありません — 最初のアンケートトリガーを設定してください。",
+    "ko": "아직 응답이 없습니다 — 첫 설문 트리거를 설정하세요.",
+    "zh": "暂无回复 — 请先设置调查触发器。"
+  },
+  "templates79CsNpsDashboard.addTriggerBtn": {
+    "vi": "+ Tạo trigger",
+    "en": "+ Create trigger",
+    "ja": "+ トリガーを作成",
+    "ko": "+ 트리거 생성",
+    "zh": "+ 创建触发器"
+  },
+  "templates79CsNpsDashboard.tileNpsTotal": {
+    "vi": "NPS tổng",
+    "en": "Overall NPS",
+    "ja": "総合NPS",
+    "ko": "전체 NPS",
+    "zh": "总体 NPS"
+  },
+  "templates79CsNpsDashboard.tilePromoters": {
+    "vi": "Promoters",
+    "en": "Promoters",
+    "ja": "推奨者",
+    "ko": "추천고객",
+    "zh": "推荐者"
+  },
+  "templates79CsNpsDashboard.tilePassives": {
+    "vi": "Passives",
+    "en": "Passives",
+    "ja": "中立者",
+    "ko": "중립고객",
+    "zh": "被动者"
+  },
+  "templates79CsNpsDashboard.tileDetractors": {
+    "vi": "Detractors",
+    "en": "Detractors",
+    "ja": "批判者",
+    "ko": "비추천고객",
+    "zh": "贬损者"
+  },
+  "templates79CsNpsDashboard.lowVolumeWarning": {
+    "vi": "NPS chưa đủ tin cậy thống kê (n={count} < 30). Tăng frequency hoặc cohort.",
+    "en": "NPS is not yet statistically reliable (n={count} < 30). Increase frequency or cohort.",
+    "ja": "NPSはまだ統計的に信頼できません（n={count} < 30）。頻度またはコホートを増やしてください。",
+    "ko": "NPS는 아직 통계적으로 신뢰할 수 없습니다(n={count} < 30). 빈도 또는 코호트를 늘리세요.",
+    "zh": "NPS 尚未达到统计可靠性(n={count} < 30)。请增加频率或群组规模。"
+  },
+  "templates79CsNpsDashboard.trendHeading": {
+    "vi": "Xu hướng NPS",
+    "en": "NPS trend",
+    "ja": "NPSトレンド",
+    "ko": "NPS 추세",
+    "zh": "NPS 趋势"
+  },
+  "templates79CsNpsDashboard.featureWip": {
+    "vi": "Tính năng đang hoàn thiện",
+    "en": "Feature coming soon",
+    "ja": "この機能は開発中です",
+    "ko": "기능 준비 중입니다",
+    "zh": "功能开发中"
+  },
+  "templates79CsNpsDashboard.responsesHeading": {
+    "vi": "Responses",
+    "en": "Responses",
+    "ja": "回答",
+    "ko": "응답",
+    "zh": "回复"
+  },
+  "templates79CsNpsDashboard.emptyResponses": {
+    "vi": "Chưa có response.",
+    "en": "No responses yet.",
+    "ja": "まだ回答がありません。",
+    "ko": "아직 응답이 없습니다.",
+    "zh": "暂无回复。"
+  },
+  "templates79CsNpsDashboard.colCustomer": {
+    "vi": "Khách",
+    "en": "Customer",
+    "ja": "顧客",
+    "ko": "고객",
+    "zh": "客户"
+  },
+  "templates79CsNpsDashboard.colScore": {
+    "vi": "Score",
+    "en": "Score",
+    "ja": "スコア",
+    "ko": "점수",
+    "zh": "评分"
+  },
+  "templates79CsNpsDashboard.colSentiment": {
+    "vi": "Sentiment",
+    "en": "Sentiment",
+    "ja": "センチメント",
+    "ko": "감성",
+    "zh": "情绪"
+  },
+  "templates79CsNpsDashboard.colComment": {
+    "vi": "Comment",
+    "en": "Comment",
+    "ja": "コメント",
+    "ko": "코멘트",
+    "zh": "评论"
+  },
+  "templates79CsNpsDashboard.colSegment": {
+    "vi": "Segment",
+    "en": "Segment",
+    "ja": "セグメント",
+    "ko": "세그먼트",
+    "zh": "细分"
+  },
+  "templates79CsNpsDashboard.colFollowup": {
+    "vi": "Followup",
+    "en": "Follow-up",
+    "ja": "フォローアップ",
+    "ko": "후속 조치",
+    "zh": "跟进"
+  },
+  "templates79CsNpsDashboard.rulesHeading": {
+    "vi": "Auto-followup rules",
+    "en": "Auto-followup rules",
+    "ja": "自動フォローアップルール",
+    "ko": "자동 후속 조치 규칙",
+    "zh": "自动跟进规则"
+  },
+  "templates79CsNpsDashboard.addRuleBtn": {
+    "vi": "+ Rule",
+    "en": "+ Rule",
+    "ja": "+ ルール",
+    "ko": "+ 규칙",
+    "zh": "+ 规则"
+  },
+  "templates79CsNpsDashboard.ifLabel": {
+    "vi": "nếu",
+    "en": "if",
+    "ja": "条件:",
+    "ko": "조건:",
+    "zh": "如果"
+  },
+  "templates79CsNpsDashboard.emptyRules": {
+    "vi": "Chưa có rule. Click \"{btn}\" để tạo.",
+    "en": "No rules yet. Click \"{btn}\" to create one.",
+    "ja": "まだルールがありません。「{btn}」をクリックして作成してください。",
+    "ko": "아직 규칙이 없습니다. \"{btn}\"을(를) 클릭하여 생성하세요.",
+    "zh": "暂无规则。点击“{btn}”创建。"
+  },
+  "templates79CsNpsDashboard.campaignsHeading": {
+    "vi": "Survey campaigns",
+    "en": "Survey campaigns",
+    "ja": "アンケートキャンペーン",
+    "ko": "설문 캠페인",
+    "zh": "调查活动"
+  }
+}

@@ -22,29 +22,37 @@ import {
   Button, Badge, ErrorBanner, cn, api, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 
-const ROLES = [
-  { key: 'executor', label: 'Người thực hiện' },
-  { key: 'reviewer', label: 'Người kiểm tra' },
-  { key: 'approver', label: 'Người phê duyệt' },
-  { key: 'dept_manager', label: 'Quản lý phòng ban' },
-  { key: 'admin', label: 'Quản trị' },
-];
-const MODES = [
-  { key: 'one', label: 'Một người duyệt' },
-  { key: 'all', label: 'Tất cả cùng duyệt' },
-  { key: 'majority', label: 'Đa số duyệt' },
-];
+function useRoles() {
+  const t = useT();
+  return [
+    { key: 'executor', label: t('templates62ApprovalsConfig.roleExecutor') },
+    { key: 'reviewer', label: t('templates62ApprovalsConfig.roleReviewer') },
+    { key: 'approver', label: t('templates62ApprovalsConfig.roleApprover') },
+    { key: 'dept_manager', label: t('templates62ApprovalsConfig.roleDeptManager') },
+    { key: 'admin', label: t('templates62ApprovalsConfig.roleAdmin') },
+  ];
+}
+function useModes() {
+  const t = useT();
+  return [
+    { key: 'one', label: t('templates62ApprovalsConfig.modeOne') },
+    { key: 'all', label: t('templates62ApprovalsConfig.modeAll') },
+    { key: 'majority', label: t('templates62ApprovalsConfig.modeMajority') },
+  ];
+}
 
 export default function ApprovalsConfig() {
+  const t = useT();
   const [tab, setTab] = useState<'inbox' | 'chains' | 'roles'>('inbox');
   return (
     <>
-      <PageHeader title="Luồng duyệt & Phân quyền"
-        description="Hộp duyệt của bạn, chuỗi phê duyệt nhiều cấp và vai trò chức năng theo phòng ban." />
+      <PageHeader title={t('templates62ApprovalsConfig.pageTitle')}
+        description={t('templates62ApprovalsConfig.pageDescription')} />
       <div className="px-6 lg:px-8 py-6 max-w-[1100px] mx-auto space-y-5">
         <div className="flex items-center gap-2">
-          {[['inbox', 'Hộp duyệt', Inbox], ['chains', 'Chuỗi duyệt', GitBranch], ['roles', 'Phân vai trò', Users]].map(([k, label, Icon]: any) => (
+          {[['inbox', t('templates62ApprovalsConfig.tabInbox'), Inbox], ['chains', t('templates62ApprovalsConfig.tabChains'), GitBranch], ['roles', t('templates62ApprovalsConfig.tabRoles'), Users]].map(([k, label, Icon]: any) => (
             <button key={k} onClick={() => setTab(k)}
               className={cn('inline-flex items-center gap-1.5 text-sm px-3.5 py-2 rounded-md-custom border transition-colors',
                 tab === k ? 'border-[var(--primary-gold)] bg-[var(--primary-gold)]/10 text-[var(--primary-gold-dark)]'
@@ -61,6 +69,7 @@ export default function ApprovalsConfig() {
 
 // ─────────────────────── inbox (approver) ───────────────────────
 function InboxTab() {
+  const t = useT();
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -76,7 +85,7 @@ function InboxTab() {
   async function decide(it: any, decision: 'approve' | 'reject') {
     let note: string | undefined;
     if (decision === 'reject') {
-      note = window.prompt('Lý do từ chối:') || '';
+      note = window.prompt(t('templates62ApprovalsConfig.rejectReasonPrompt')) || '';
       if (!note.trim()) return;
     }
     setActing(it.approval_id); setProblem(null);
@@ -91,9 +100,9 @@ function InboxTab() {
   return (
     <div className="space-y-4">
       <ErrorBanner problem={problem} />
-      <p className="text-sm text-[var(--text-secondary)]">Hồ sơ đang chờ bạn phê duyệt (theo vai trò). Duyệt hoặc từ chối — workflow tiếp tục/dừng tương ứng.</p>
+      <p className="text-sm text-[var(--text-secondary)]">{t('templates62ApprovalsConfig.inboxDescription')}</p>
       {loading ? <Spinner /> : items.length === 0 ? (
-        <Empty text="🎉 Không có hồ sơ nào chờ bạn duyệt." />
+        <Empty text={t('templates62ApprovalsConfig.inboxEmpty')} />
       ) : (
         <div className="space-y-2.5">
           {items.map((it) => (
@@ -104,21 +113,21 @@ function InboxTab() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-medium text-[var(--text-primary)]">{it.workflow_name}</span>
                     {it.step_title && <span className="text-xs text-[var(--text-secondary)]">· {it.step_title}</span>}
-                    {it.is_chained && <Badge variant="info" className="text-[10px]">Cấp {it.level_no}</Badge>}
+                    {it.is_chained && <Badge variant="info" className="text-[10px]">{t('templates62ApprovalsConfig.levelBadge', { n: it.level_no })}</Badge>}
                   </div>
                   {it.reason_prompt && <p className="text-xs text-[var(--text-secondary)] mt-1">{it.reason_prompt}</p>}
                   <p className={cn('text-[11px] mt-1.5 inline-flex items-center gap-1',
                     it.overdue ? 'text-[var(--state-error)]' : 'text-[var(--text-secondary)]')}>
                     {it.overdue ? <AlertCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                    {it.overdue ? `Quá hạn ${Math.abs(it.sla_remaining_min)} phút` : `Còn ${it.sla_remaining_min} phút`}
-                    · vai trò: {it.approver_roles.join(', ')}
+                    {it.overdue ? t('templates62ApprovalsConfig.overdueBy', { min: Math.abs(it.sla_remaining_min) }) : t('templates62ApprovalsConfig.remainingMin', { min: it.sla_remaining_min })}
+                    · {t('templates62ApprovalsConfig.rolesLabel', { roles: it.approver_roles.join(', ') })}
                   </p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <Button variant="secondary" className="!py-1 !px-2.5 !text-xs" isLoading={acting === it.approval_id}
-                    onClick={() => decide(it, 'reject')}><X className="w-3.5 h-3.5 mr-1" /> Từ chối</Button>
+                    onClick={() => decide(it, 'reject')}><X className="w-3.5 h-3.5 mr-1" /> {t('templates62ApprovalsConfig.reject')}</Button>
                   <Button className="!py-1 !px-2.5 !text-xs" isLoading={acting === it.approval_id}
-                    onClick={() => decide(it, 'approve')}><Check className="w-3.5 h-3.5 mr-1" /> Phê duyệt</Button>
+                    onClick={() => decide(it, 'approve')}><Check className="w-3.5 h-3.5 mr-1" /> {t('templates62ApprovalsConfig.approve')}</Button>
                 </div>
               </div>
             </div>
@@ -131,6 +140,7 @@ function InboxTab() {
 
 // ─────────────────────── chains ───────────────────────
 function ChainsTab() {
+  const t = useT();
   const [chains, setChains] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -156,18 +166,18 @@ function ChainsTab() {
     <div className="space-y-4">
       <ErrorBanner problem={problem} />
       <div className="flex justify-between items-center">
-        <p className="text-sm text-[var(--text-secondary)]">Chuỗi cấp duyệt — workflow tham chiếu qua <code className="text-[11px] bg-[var(--bg-app)] px-1 rounded">approval_chain_id</code> ở bước duyệt.</p>
-        <Button variant="secondary" onClick={() => setCreating(true)}><Plus className="w-4 h-4 mr-1.5" /> Chuỗi mới</Button>
+        <p className="text-sm text-[var(--text-secondary)]">{t('templates62ApprovalsConfig.chainsDescPrefix')} <code className="text-[11px] bg-[var(--bg-app)] px-1 rounded">approval_chain_id</code> {t('templates62ApprovalsConfig.chainsDescSuffix')}</p>
+        <Button variant="secondary" onClick={() => setCreating(true)}><Plus className="w-4 h-4 mr-1.5" /> {t('templates62ApprovalsConfig.newChain')}</Button>
       </div>
       {creating && (
         <div className="rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-4 flex items-end gap-2 flex-wrap">
-          <Field label="Tên chuỗi"><input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} placeholder="Duyệt chi >100M" /></Field>
-          <Field label="Mã phòng ban"><input className={inputCls} value={dept} onChange={(e) => setDept(e.target.value)} placeholder="UUID" /></Field>
-          <Button disabled={!name || !dept} onClick={create}>Tạo</Button>
-          <Button variant="secondary" onClick={() => setCreating(false)}>Huỷ</Button>
+          <Field label={t('templates62ApprovalsConfig.chainNameLabel')}><input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} placeholder={t('templates62ApprovalsConfig.chainNamePlaceholder')} /></Field>
+          <Field label={t('templates62ApprovalsConfig.deptCodeLabel')}><input className={inputCls} value={dept} onChange={(e) => setDept(e.target.value)} placeholder="UUID" /></Field>
+          <Button disabled={!name || !dept} onClick={create}>{t('templates62ApprovalsConfig.create')}</Button>
+          <Button variant="secondary" onClick={() => setCreating(false)}>{t('templates62ApprovalsConfig.cancel')}</Button>
         </div>
       )}
-      {loading ? <Spinner /> : chains.length === 0 ? <Empty text="Chưa có chuỗi duyệt nào." /> : (
+      {loading ? <Spinner /> : chains.length === 0 ? <Empty text={t('templates62ApprovalsConfig.chainsEmpty')} /> : (
         <div className="space-y-2">
           {chains.map((c) => (
             <button key={c.chain_id} onClick={() => setOpenId(c.chain_id)}
@@ -185,6 +195,8 @@ function ChainsTab() {
 }
 
 function ChainDetail({ chainId, onClose }: { chainId: string; onClose: () => void }) {
+  const t = useT();
+  const MODES = useModes();
   const [chain, setChain] = useState<any>(null);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
   const [adding, setAdding] = useState(false);
@@ -219,26 +231,26 @@ function ChainDetail({ chainId, onClose }: { chainId: string; onClose: () => voi
             {(chain?.levels ?? []).map((l: any) => (
               <div key={l.level_id} className="rounded-md-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-3">
                 <div className="flex items-center gap-2">
-                  <Badge variant="default" className="text-[10px]">Cấp {l.level_no}</Badge>
+                  <Badge variant="default" className="text-[10px]">{t('templates62ApprovalsConfig.levelBadge', { n: l.level_no })}</Badge>
                   <span className="text-sm text-[var(--text-primary)]">{(l.approver_roles || []).join(', ')}</span>
                   <Badge variant="info" className="text-[10px] ml-auto">{MODES.find((m) => m.key === l.mode)?.label ?? l.mode}</Badge>
                 </div>
-                <p className="text-[11px] text-[var(--text-secondary)] mt-1">SLA {l.sla_minutes} phút · timeout: {l.on_timeout}</p>
+                <p className="text-[11px] text-[var(--text-secondary)] mt-1">{t('templates62ApprovalsConfig.slaTimeout', { min: l.sla_minutes, timeout: l.on_timeout })}</p>
               </div>
             ))}
-            {(chain?.levels ?? []).length === 0 && <Empty text="Chưa có cấp duyệt. Thêm cấp 1." />}
+            {(chain?.levels ?? []).length === 0 && <Empty text={t('templates62ApprovalsConfig.levelsEmpty')} />}
           </div>
           {adding ? (
             <div className="rounded-md-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-3 space-y-2">
-              <Field label="Vai trò duyệt (phân tách dấu phẩy)"><input className={inputCls} value={roles} onChange={(e) => setRoles(e.target.value)} placeholder="MANAGER, CFO" /></Field>
+              <Field label={t('templates62ApprovalsConfig.approverRolesLabel')}><input className={inputCls} value={roles} onChange={(e) => setRoles(e.target.value)} placeholder="MANAGER, CFO" /></Field>
               <div className="grid grid-cols-2 gap-2">
-                <Field label="Chế độ"><select className={inputCls} value={mode} onChange={(e) => setMode(e.target.value)}>{MODES.map((m) => <option key={m.key} value={m.key}>{m.label}</option>)}</select></Field>
-                <Field label="SLA (phút)"><input className={inputCls} type="number" value={sla} onChange={(e) => setSla(e.target.value)} /></Field>
+                <Field label={t('templates62ApprovalsConfig.modeLabel')}><select className={inputCls} value={mode} onChange={(e) => setMode(e.target.value)}>{MODES.map((m) => <option key={m.key} value={m.key}>{m.label}</option>)}</select></Field>
+                <Field label={t('templates62ApprovalsConfig.slaMinutesLabel')}><input className={inputCls} type="number" value={sla} onChange={(e) => setSla(e.target.value)} /></Field>
               </div>
-              <div className="flex gap-2"><Button onClick={addLevel}>Thêm</Button><Button variant="secondary" onClick={() => setAdding(false)}>Huỷ</Button></div>
+              <div className="flex gap-2"><Button onClick={addLevel}>{t('templates62ApprovalsConfig.add')}</Button><Button variant="secondary" onClick={() => setAdding(false)}>{t('templates62ApprovalsConfig.cancel')}</Button></div>
             </div>
           ) : (
-            <Button variant="secondary" onClick={() => setAdding(true)}><Plus className="w-4 h-4 mr-1.5" /> Thêm cấp {(chain?.levels?.length ?? 0) + 1}</Button>
+            <Button variant="secondary" onClick={() => setAdding(true)}><Plus className="w-4 h-4 mr-1.5" /> {t('templates62ApprovalsConfig.addLevel', { n: (chain?.levels?.length ?? 0) + 1 })}</Button>
           )}
         </div>
       </div>
@@ -248,6 +260,8 @@ function ChainDetail({ chainId, onClose }: { chainId: string; onClose: () => voi
 
 // ─────────────────────── roles ───────────────────────
 function RolesTab() {
+  const t = useT();
+  const ROLES = useRoles();
   const [dept, setDept] = useState('');
   const [roles, setRoles] = useState<any[]>([]);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -273,16 +287,16 @@ function RolesTab() {
   return (
     <div className="space-y-4">
       <ErrorBanner problem={problem} />
-      <p className="text-sm text-[var(--text-secondary)]">Gán vai trò chức năng cho người dùng theo phòng ban — quyết định ma trận quyền (xem/duyệt/sửa/xoá…).</p>
-      <Field label="Mã phòng ban"><input className={inputCls} value={dept} onChange={(e) => setDept(e.target.value)} placeholder="Nhập UUID phòng ban để xem/gán" /></Field>
+      <p className="text-sm text-[var(--text-secondary)]">{t('templates62ApprovalsConfig.rolesDescription')}</p>
+      <Field label={t('templates62ApprovalsConfig.deptCodeLabel')}><input className={inputCls} value={dept} onChange={(e) => setDept(e.target.value)} placeholder={t('templates62ApprovalsConfig.deptCodePlaceholder')} /></Field>
       {dept && (
         <>
           <div className="rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-4 flex items-end gap-2 flex-wrap">
-            <Field label="Mã người dùng"><input className={inputCls} value={user} onChange={(e) => setUser(e.target.value)} placeholder="UUID người dùng" /></Field>
-            <Field label="Vai trò"><select className={inputCls} value={role} onChange={(e) => setRole(e.target.value)}>{ROLES.map((r) => <option key={r.key} value={r.key}>{r.label}</option>)}</select></Field>
-            <Button disabled={!user} onClick={grant}><Shield className="w-4 h-4 mr-1.5" /> Gán</Button>
+            <Field label={t('templates62ApprovalsConfig.userCodeLabel')}><input className={inputCls} value={user} onChange={(e) => setUser(e.target.value)} placeholder={t('templates62ApprovalsConfig.userCodePlaceholder')} /></Field>
+            <Field label={t('templates62ApprovalsConfig.roleLabel')}><select className={inputCls} value={role} onChange={(e) => setRole(e.target.value)}>{ROLES.map((r) => <option key={r.key} value={r.key}>{r.label}</option>)}</select></Field>
+            <Button disabled={!user} onClick={grant}><Shield className="w-4 h-4 mr-1.5" /> {t('templates62ApprovalsConfig.grant')}</Button>
           </div>
-          {roles.length === 0 ? <Empty text="Phòng ban này chưa gán vai trò nào." /> : (
+          {roles.length === 0 ? <Empty text={t('templates62ApprovalsConfig.rolesEmpty')} /> : (
             <div className="space-y-1.5">
               {roles.map((r) => (
                 <div key={r.id} className="flex items-center gap-3 rounded-md-custom bg-[var(--bg-card)] border border-[var(--border-color)] px-4 py-2.5">

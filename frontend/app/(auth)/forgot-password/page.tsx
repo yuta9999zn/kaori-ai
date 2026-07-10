@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
           {/* Wordmark */}
           <div className="text-center mb-8">
             <h1 className="text-h1 font-serif text-brand-700">Kaori</h1>
-            <p className="text-small text-ink-muted mt-1">AI Data Analytics Platform</p>
+            <p className="text-small text-ink-muted mt-1">{t("forgotPasswordPage.tagline")}</p>
           </div>
 
           {submitted ? (
@@ -40,14 +40,13 @@ export default function ForgotPasswordPage() {
                 </div>
               </div>
               <div>
-                <h2 className="text-h2 font-serif text-ink">Kiểm tra email của bạn</h2>
+                <h2 className="text-h2 font-serif text-ink">{t("forgotPasswordPage.checkEmailTitle")}</h2>
                 <p className="text-small text-ink-muted mt-2">
-                  Nếu email <strong className="text-ink">{email}</strong> tồn tại trong hệ thống,
-                  bạn sẽ nhận được link đặt lại mật khẩu trong vài phút.
+                  {t("forgotPasswordPage.checkEmailDescPre")} <strong className="text-ink">{email}</strong> {t("forgotPasswordPage.checkEmailDescPost")}
                 </p>
               </div>
               <Link href="/login" className="text-small text-brand-600 hover:text-brand-700 block mt-2">
-                ← Quay lại đăng nhập
+                ← {t("forgotPasswordPage.backToLogin")}
               </Link>
             </div>
           ) : (
@@ -55,13 +54,13 @@ export default function ForgotPasswordPage() {
               <div className="text-center mb-6">
                 <h2 className="text-h2 font-serif text-ink">{t("auth.forgot.title")}</h2>
                 <p className="text-small text-ink-muted mt-1">
-                  Nhập email để nhận link đặt lại mật khẩu
+                  {t("forgotPasswordPage.subtitle")}
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-1.5">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t("forgotPasswordPage.emailLabel")}</Label>
                   <Input
                     id="email"
                     type="email"
@@ -74,13 +73,13 @@ export default function ForgotPasswordPage() {
                 </div>
 
                 <Button type="submit" loading={loading} className="w-full mt-2">
-                  {loading ? "Đang gửi…" : "Gửi link đặt lại mật khẩu"}
+                  {loading ? t("forgotPasswordPage.sending") : t("forgotPasswordPage.submitButton")}
                 </Button>
               </form>
 
               <div className="text-center mt-5">
                 <Link href="/login" className="text-small text-brand-600 hover:text-brand-700">
-                  ← Quay lại đăng nhập
+                  ← {t("forgotPasswordPage.backToLogin")}
                 </Link>
               </div>
             </>

@@ -28,6 +28,7 @@ import {
   api, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type Effect    = 'ALLOW' | 'DENY';
 type Action    = 'read' | 'write' | 'export' | 'decide';
 
@@ -46,22 +47,29 @@ interface Policy {
   resource_conditions: Condition[];
 }
 
-const SUBJECT_ATTRS = [
-  { key: 'role',        label: 'Vai trò',     hint: 'MANAGER / OPERATOR / ANALYST / VIEWER' },
-  { key: 'department',  label: 'Phòng ban',   hint: 'sales / marketing / ops / finance' },
-  { key: 'location',    label: 'Địa điểm',     hint: 'HCM / HN / DN' },
-  { key: 'mfa_state',   label: 'MFA',          hint: 'enabled / disabled' },
-];
+function buildSubjectAttrs(t: ReturnType<typeof useT>) {
+  return [
+    { key: 'role',        label: t('templates70AuthzAbacBuilder.subjectRole'),       hint: 'MANAGER / OPERATOR / ANALYST / VIEWER' },
+    { key: 'department',  label: t('templates70AuthzAbacBuilder.subjectDepartment'), hint: 'sales / marketing / ops / finance' },
+    { key: 'location',    label: t('templates70AuthzAbacBuilder.subjectLocation'),   hint: 'HCM / HN / DN' },
+    { key: 'mfa_state',   label: t('templates70AuthzAbacBuilder.subjectMfa'),        hint: 'enabled / disabled' },
+  ];
+}
 
-const RESOURCE_ATTRS = [
-  { key: 'table',       label: 'Bảng',         hint: 'gold_revenue, silver_orders...' },
-  { key: 'sensitivity', label: 'Độ nhạy',      hint: 'public / internal / confidential / pii' },
-  { key: 'owner_team',  label: 'Team sở hữu',  hint: 'finance / sales / shared' },
-];
+function buildResourceAttrs(t: ReturnType<typeof useT>) {
+  return [
+    { key: 'table',       label: t('templates70AuthzAbacBuilder.resourceTable'),       hint: 'gold_revenue, silver_orders...' },
+    { key: 'sensitivity', label: t('templates70AuthzAbacBuilder.resourceSensitivity'), hint: 'public / internal / confidential / pii' },
+    { key: 'owner_team',  label: t('templates70AuthzAbacBuilder.resourceOwnerTeam'),   hint: 'finance / sales / shared' },
+  ];
+}
 
 const newCondition = (): Condition => ({ attribute: '', operator: 'equals', value: '' });
 
 export default function AbacBuilderPage() {
+  const t = useT();
+  const SUBJECT_ATTRS  = buildSubjectAttrs(t);
+  const RESOURCE_ATTRS = buildResourceAttrs(t);
   const [policy, setPolicy] = useState<Policy>({
     name:        '',
     description: '',
@@ -98,14 +106,14 @@ export default function AbacBuilderPage() {
   return (
     <>
       <PageHeader
-        title="ABAC Policy Builder"
-        description="Định nghĩa chính sách theo thuộc tính subject × resource × action × condition."
+        title={t('templates70AuthzAbacBuilder.title')}
+        description={t('templates70AuthzAbacBuilder.description')}
         actions={
           <>
-            <Badge variant="info">Phase 2</Badge>
+            <Badge variant="info">{t('templates70AuthzAbacBuilder.phase2Badge')}</Badge>
             <Button variant="tertiary" onClick={() => (window.location.href = '/p2/authz/rbac')}>
               <ChevronLeft className="w-4 h-4 mr-1" />
-              RBAC
+              {t('templates70AuthzAbacBuilder.backToRbac')}
             </Button>
           </>
         }
@@ -119,8 +127,9 @@ export default function AbacBuilderPage() {
           <div className="flex items-start gap-3">
             <Sparkles className="w-5 h-5 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
             <p className="text-sm text-[var(--text-primary)]">
-              Phase 2 — Hybrid PDP. Hiện tại enforcement chỉ RBAC. Policy bạn save ở đây sẽ dry-run trong simulator
-              (file 71 <a href="/p2/authz/abac/simulate" className="text-[var(--primary-gold-dark)] underline">/p2/authz/abac/simulate</a>) trước khi đi vào production.
+              {t('templates70AuthzAbacBuilder.bannerPre')}
+              <a href="/p2/authz/abac/simulate" className="text-[var(--primary-gold-dark)] underline">/p2/authz/abac/simulate</a>
+              {t('templates70AuthzAbacBuilder.bannerPost')}
             </p>
           </div>
         </div>
@@ -128,22 +137,22 @@ export default function AbacBuilderPage() {
         {/* Metadata */}
         <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm space-y-3">
           <div>
-            <label className="text-sm font-medium text-[var(--text-primary)]">Tên policy</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates70AuthzAbacBuilder.nameLabel')}</label>
             <input
               type="text"
               value={policy.name}
               onChange={(e) => setPolicy({ ...policy, name: e.target.value })}
-              placeholder="Ví dụ: Chỉ Finance HCM xem revenue confidential"
+              placeholder={t('templates70AuthzAbacBuilder.namePlaceholder')}
               className="mt-1 w-full px-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-[var(--text-primary)]">Mô tả ngắn</label>
+            <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates70AuthzAbacBuilder.descLabel')}</label>
             <input
               type="text"
               value={policy.description}
               onChange={(e) => setPolicy({ ...policy, description: e.target.value })}
-              placeholder="Khi nào áp dụng, vì sao"
+              placeholder={t('templates70AuthzAbacBuilder.descPlaceholder')}
               className="mt-1 w-full px-3 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
             />
           </div>
@@ -152,7 +161,7 @@ export default function AbacBuilderPage() {
         {/* Effect + Action */}
         <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <p className="text-sm font-medium text-[var(--text-primary)] mb-2">Hiệu ứng</p>
+            <p className="text-sm font-medium text-[var(--text-primary)] mb-2">{t('templates70AuthzAbacBuilder.effectLabel')}</p>
             <div className="flex gap-2">
               <EffectButton active={policy.effect === 'ALLOW'} onClick={() => setPolicy({ ...policy, effect: 'ALLOW' })} variant="allow">
                 <CheckCircle2 className="w-4 h-4 mr-1.5" />
@@ -165,7 +174,7 @@ export default function AbacBuilderPage() {
             </div>
           </div>
           <div>
-            <p className="text-sm font-medium text-[var(--text-primary)] mb-2">Hành động</p>
+            <p className="text-sm font-medium text-[var(--text-primary)] mb-2">{t('templates70AuthzAbacBuilder.actionLabel')}</p>
             <select
               value={policy.action}
               onChange={(e) => setPolicy({ ...policy, action: e.target.value as Action })}
@@ -181,7 +190,7 @@ export default function AbacBuilderPage() {
 
         {/* Subject conditions */}
         <ConditionPanel
-          title="Subject (người gọi)"
+          title={t('templates70AuthzAbacBuilder.subjectTitle')}
           icon={User}
           attrs={SUBJECT_ATTRS}
           conditions={policy.subject_conditions}
@@ -192,7 +201,7 @@ export default function AbacBuilderPage() {
 
         {/* Resource conditions */}
         <ConditionPanel
-          title="Resource (dữ liệu/đối tượng)"
+          title={t('templates70AuthzAbacBuilder.resourceTitle')}
           icon={Database}
           attrs={RESOURCE_ATTRS}
           conditions={policy.resource_conditions}
@@ -204,19 +213,18 @@ export default function AbacBuilderPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            <span className="font-medium text-[var(--text-primary)]">DENY luôn override ALLOW</span> trong Hybrid PDP.
-            Policy không có condition = áp dụng cho mọi subject/resource.
+            <span className="font-medium text-[var(--text-primary)]">{t('templates70AuthzAbacBuilder.denyOverrideAllow')}</span>{t('templates70AuthzAbacBuilder.denyOverrideDesc')}
           </p>
         </div>
 
         <div className="flex justify-end gap-2">
-          <Button variant="secondary" onClick={() => (window.location.href = '/p2/authz/abac/simulate')} disabled title="Phase 2">
+          <Button variant="secondary" onClick={() => (window.location.href = '/p2/authz/abac/simulate')} disabled title={t('templates70AuthzAbacBuilder.phase2Badge')}>
             <Activity className="w-4 h-4 mr-2" />
-            Mô phỏng
+            {t('templates70AuthzAbacBuilder.simulateButton')}
           </Button>
-          <Button onClick={save} isLoading={saving} disabled title="Phase 2 — Sắp ra mắt">
+          <Button onClick={save} isLoading={saving} disabled title={t('templates70AuthzAbacBuilder.savePhase2Tooltip')}>
             <Save className="w-4 h-4 mr-2" />
-            Lưu policy
+            {t('templates70AuthzAbacBuilder.saveButton')}
           </Button>
         </div>
       </div>
@@ -256,6 +264,7 @@ function ConditionPanel({
   onAdd: () => void;
   onRemove: (idx: number) => void;
 }) {
+  const t = useT();
   return (
     <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
       <div className="px-5 py-4 border-b border-[var(--border-color)]/60 flex items-center justify-between">
@@ -265,12 +274,12 @@ function ConditionPanel({
         </div>
         <Button size="sm" variant="secondary" onClick={onAdd}>
           <Plus className="w-3.5 h-3.5 mr-1" />
-          Thêm điều kiện
+          {t('templates70AuthzAbacBuilder.addCondition')}
         </Button>
       </div>
       <div className="p-3 space-y-2">
         {conditions.length === 0 ? (
-          <p className="text-xs text-[var(--text-secondary)] italic px-2 py-3">Không có điều kiện — áp dụng cho mọi {title.toLowerCase()}.</p>
+          <p className="text-xs text-[var(--text-secondary)] italic px-2 py-3">{t('templates70AuthzAbacBuilder.noConditions', { scope: title.toLowerCase() })}</p>
         ) : conditions.map((c, idx) => (
           <div key={idx} className="grid grid-cols-12 gap-2 items-center">
             <select
@@ -278,7 +287,7 @@ function ConditionPanel({
               onChange={(e) => onUpdate(idx, { attribute: e.target.value })}
               className="col-span-4 px-2 py-1.5 bg-white border border-[var(--border-color)] rounded-sm-custom text-xs focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
             >
-              <option value="">— Thuộc tính —</option>
+              <option value="">{t('templates70AuthzAbacBuilder.attributePlaceholder')}</option>
               {attrs.map((a) => <option key={a.key} value={a.key}>{a.label}</option>)}
             </select>
             <select
@@ -296,14 +305,14 @@ function ConditionPanel({
               type="text"
               value={c.value}
               onChange={(e) => onUpdate(idx, { value: e.target.value })}
-              placeholder="Giá trị"
+              placeholder={t('templates70AuthzAbacBuilder.valuePlaceholder')}
               className="col-span-4 px-2 py-1.5 bg-white border border-[var(--border-color)] rounded-sm-custom text-xs focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
             />
             <button
               type="button"
               onClick={() => onRemove(idx)}
               className="col-span-1 p-1.5 text-[var(--text-secondary)] hover:text-[var(--state-error)] rounded-sm-custom"
-              aria-label="Xoá điều kiện"
+              aria-label={t('templates70AuthzAbacBuilder.removeConditionAria')}
             >
               <X className="w-3.5 h-3.5" />
             </button>

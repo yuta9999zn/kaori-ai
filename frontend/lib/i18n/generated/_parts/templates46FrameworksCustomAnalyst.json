@@ -1,0 +1,142 @@
+{
+  "templates46FrameworksCustomAnalyst.title": {
+    "vi": "Custom Framework",
+    "en": "Custom Framework",
+    "ja": "カスタムフレームワーク",
+    "ko": "커스텀 프레임워크",
+    "zh": "自定义框架"
+  },
+  "templates46FrameworksCustomAnalyst.pageDescription": {
+    "vi": "Tự thiết kế khung phân tích cho industry / domain riêng. Chỉ MANAGER tạo được.",
+    "en": "Design your own analysis framework for a specific industry / domain. Only MANAGER can create one.",
+    "ja": "業界・ドメイン独自の分析フレームワークを設計します。作成できるのはMANAGERのみです。",
+    "ko": "특정 업종/도메인 전용 분석 프레임워크를 직접 설계합니다. MANAGER만 생성할 수 있습니다.",
+    "zh": "为特定行业/领域自定义分析框架。仅 MANAGER 可创建。"
+  },
+  "templates46FrameworksCustomAnalyst.otherFrameworks": {
+    "vi": "Khung khác",
+    "en": "Other frameworks",
+    "ja": "他のフレームワーク",
+    "ko": "다른 프레임워크",
+    "zh": "其他框架"
+  },
+  "templates46FrameworksCustomAnalyst.nameLabel": {
+    "vi": "Tên khung",
+    "en": "Framework name",
+    "ja": "フレームワーク名",
+    "ko": "프레임워크 이름",
+    "zh": "框架名称"
+  },
+  "templates46FrameworksCustomAnalyst.namePlaceholder": {
+    "vi": "Ví dụ: Bán lẻ — Phân tích chương trình khuyến mãi",
+    "en": "Example: Retail — Promotion program analysis",
+    "ja": "例：小売業 — 販促プログラム分析",
+    "ko": "예: 소매 — 프로모션 프로그램 분석",
+    "zh": "示例：零售 — 促销活动分析"
+  },
+  "templates46FrameworksCustomAnalyst.descLabel": {
+    "vi": "Mô tả ngắn",
+    "en": "Short description",
+    "ja": "簡単な説明",
+    "ko": "간단한 설명",
+    "zh": "简短描述"
+  },
+  "templates46FrameworksCustomAnalyst.descPlaceholder": {
+    "vi": "Khi nào dùng khung này, output mong đợi...",
+    "en": "When to use this framework, expected output...",
+    "ja": "このフレームワークをいつ使うか、期待するアウトプット...",
+    "ko": "이 프레임워크를 언제 사용하는지, 기대하는 출력...",
+    "zh": "何时使用此框架、期望的输出……"
+  },
+  "templates46FrameworksCustomAnalyst.sectionsCount": {
+    "vi": "Sections ({count})",
+    "en": "Sections ({count})",
+    "ja": "セクション（{count}）",
+    "ko": "섹션 ({count})",
+    "zh": "小节（{count}）"
+  },
+  "templates46FrameworksCustomAnalyst.sectionsHint": {
+    "vi": "Mỗi section là 1 LLM call qua llm_router.py.",
+    "en": "Each section is 1 LLM call via llm_router.py.",
+    "ja": "各セクションは llm_router.py を経由した1回のLLM呼び出しです。",
+    "ko": "각 섹션은 llm_router.py를 통한 1회의 LLM 호출입니다.",
+    "zh": "每个小节对应通过 llm_router.py 发起的一次 LLM 调用。"
+  },
+  "templates46FrameworksCustomAnalyst.addSection": {
+    "vi": "Thêm section",
+    "en": "Add section",
+    "ja": "セクションを追加",
+    "ko": "섹션 추가",
+    "zh": "添加小节"
+  },
+  "templates46FrameworksCustomAnalyst.sectionTitlePlaceholder": {
+    "vi": "Tiêu đề section (vd: Hiệu quả khuyến mãi)",
+    "en": "Section title (e.g. Promotion effectiveness)",
+    "ja": "セクションタイトル（例：販促効果）",
+    "ko": "섹션 제목 (예: 프로모션 효과)",
+    "zh": "小节标题（例如：促销效果）"
+  },
+  "templates46FrameworksCustomAnalyst.outputBullets": {
+    "vi": "Bullets",
+    "en": "Bullets",
+    "ja": "箇条書き",
+    "ko": "글머리 기호",
+    "zh": "要点列表"
+  },
+  "templates46FrameworksCustomAnalyst.outputNarrative": {
+    "vi": "Narrative",
+    "en": "Narrative",
+    "ja": "文章形式",
+    "ko": "서술형",
+    "zh": "叙述式"
+  },
+  "templates46FrameworksCustomAnalyst.outputKpi": {
+    "vi": "KPI",
+    "en": "KPI",
+    "ja": "KPI",
+    "ko": "KPI",
+    "zh": "KPI"
+  },
+  "templates46FrameworksCustomAnalyst.sectionPromptPlaceholder": {
+    "vi": "Prompt cho section (vd: Liệt kê 3-5 yếu tố ảnh hưởng đến uplift của chương trình)",
+    "en": "Prompt for the section (e.g. List 3-5 factors influencing the program's uplift)",
+    "ja": "セクション用プロンプト（例：プログラムのアップリフトに影響する要因を3〜5個挙げる）",
+    "ko": "섹션용 프롬프트 (예: 프로그램 상승효과에 영향을 미치는 요인 3~5개 나열)",
+    "zh": "该小节的提示语（例如：列出影响该项目提升效果的3-5个因素）"
+  },
+  "templates46FrameworksCustomAnalyst.removeSectionAria": {
+    "vi": "Xoá section",
+    "en": "Delete section",
+    "ja": "セクションを削除",
+    "ko": "섹션 삭제",
+    "zh": "删除小节"
+  },
+  "templates46FrameworksCustomAnalyst.k10Note": {
+    "vi": "K-10 vẫn áp dụng — mỗi câu hỏi chỉ chạy 1 framework. Khung custom xuất hiện trong Insight Generator picker sau khi save.",
+    "en": "K-10 still applies — each question runs only 1 framework. The custom framework appears in the Insight Generator picker after saving.",
+    "ja": "K-10は引き続き適用されます — 各質問につき実行できるフレームワークは1つです。カスタムフレームワークは保存後にInsight Generatorのピッカーに表示されます。",
+    "ko": "K-10은 계속 적용됩니다 — 각 질문은 프레임워크 1개만 실행합니다. 커스텀 프레임워크는 저장 후 Insight Generator 선택 목록에 표시됩니다.",
+    "zh": "K-10 仍然适用——每个问题只运行 1 个框架。保存后，自定义框架会出现在 Insight Generator 选择器中。"
+  },
+  "templates46FrameworksCustomAnalyst.cancel": {
+    "vi": "Huỷ",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "templates46FrameworksCustomAnalyst.saveFramework": {
+    "vi": "Lưu khung",
+    "en": "Save framework",
+    "ja": "フレームワークを保存",
+    "ko": "프레임워크 저장",
+    "zh": "保存框架"
+  },
+  "templates46FrameworksCustomAnalyst.successMsg": {
+    "vi": "Đã tạo khung \"{name}\" — sẵn sàng dùng trong Insight Generator.",
+    "en": "Framework \"{name}\" created — ready to use in the Insight Generator.",
+    "ja": "フレームワーク「{name}」を作成しました — Insight Generatorで使用できます。",
+    "ko": "\"{name}\" 프레임워크가 생성되었습니다 — Insight Generator에서 사용할 수 있습니다.",
+    "zh": "框架「{name}」已创建 — 可在 Insight Generator 中使用。"
+  }
+}

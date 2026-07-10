@@ -1,0 +1,20 @@
+{
+  "templatePage.labelSummaryStats": { "vi": "Thống kê tổng quan", "en": "Overview statistics", "ja": "概要統計", "ko": "개요 통계", "zh": "概览统计" },
+  "templatePage.labelTimeSeries": { "vi": "Chuỗi thời gian", "en": "Time series", "ja": "時系列", "ko": "시계열", "zh": "时间序列" },
+  "templatePage.labelDistribution": { "vi": "Phân phối dữ liệu", "en": "Data distribution", "ja": "データ分布", "ko": "데이터 분포", "zh": "数据分布" },
+  "templatePage.labelCorrelation": { "vi": "Tương quan", "en": "Correlation", "ja": "相関", "ko": "상관관계", "zh": "相关性" },
+  "templatePage.labelClustering": { "vi": "Phân cụm", "en": "Clustering", "ja": "クラスタリング", "ko": "클러스터링", "zh": "聚类" },
+  "templatePage.labelCohort": { "vi": "Cohort", "en": "Cohort", "ja": "コホート", "ko": "코호트", "zh": "群组" },
+  "templatePage.labelChurn": { "vi": "Churn", "en": "Churn", "ja": "解約", "ko": "이탈", "zh": "流失" },
+  "templatePage.labelAnomaly": { "vi": "Dị thường", "en": "Anomaly", "ja": "異常検知", "ko": "이상 탐지", "zh": "异常检测" },
+  "templatePage.labelRegression": { "vi": "Hồi quy", "en": "Regression", "ja": "回帰", "ko": "회귀", "zh": "回归" },
+  "templatePage.labelBankClassify": { "vi": "Giao dịch", "en": "Transaction", "ja": "取引", "ko": "거래", "zh": "交易" },
+  "templatePage.lastRun": { "vi": "Lần chạy gần nhất: {time}", "en": "Last run: {time}", "ja": "最終実行: {time}", "ko": "최근 실행: {time}", "zh": "最近运行：{time}" },
+  "templatePage.statusDone": { "vi": "Hoàn tất", "en": "Done", "ja": "完了", "ko": "완료", "zh": "已完成" },
+  "templatePage.statusError": { "vi": "Lỗi", "en": "Error", "ja": "エラー", "ko": "오류", "zh": "错误" },
+  "templatePage.statusRunning": { "vi": "Đang chạy", "en": "Running", "ja": "実行中", "ko": "실행 중", "zh": "运行中" },
+  "templatePage.runningMsg": { "vi": "Phân tích đang chạy, vui lòng chờ…", "en": "Analysis is running, please wait…", "ja": "分析を実行中です。しばらくお待ちください…", "ko": "분석이 실행 중입니다. 잠시만 기다려 주세요…", "zh": "分析正在运行，请稍候…" },
+  "templatePage.errorRunMsg": { "vi": "Phân tích gặp lỗi. Vui lòng chạy lại.", "en": "The analysis failed. Please run it again.", "ja": "分析でエラーが発生しました。再度実行してください。", "ko": "분석 중 오류가 발생했습니다. 다시 실행해 주세요.", "zh": "分析出错，请重新运行。" },
+  "templatePage.noRuns": { "vi": "Chưa có lần phân tích nào cho template này.", "en": "No analysis has been run for this template yet.", "ja": "このテンプレートではまだ分析が実行されていません。", "ko": "이 템플릿에 대한 분석 실행 기록이 없습니다.", "zh": "该模板尚未运行过分析。" },
+  "templatePage.createPipeline": { "vi": "Tạo pipeline mới", "en": "Create new pipeline", "ja": "新しいパイプラインを作成", "ko": "새 파이프라인 만들기", "zh": "创建新的数据管道" }
+}

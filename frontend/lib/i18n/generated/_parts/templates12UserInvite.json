@@ -1,0 +1,170 @@
+{
+  "templates12UserInvite.pageTitle": {
+    "vi": "Mời người dùng mới",
+    "en": "Invite new user",
+    "ja": "新しいユーザーを招待",
+    "ko": "새 사용자 초대",
+    "zh": "邀请新用户"
+  },
+  "templates12UserInvite.pageDesc": {
+    "vi": "Gửi email kích hoạt — người được mời sẽ đặt mật khẩu lần đầu khi nhấn liên kết.",
+    "en": "Send an activation email — the invitee sets their password the first time they click the link.",
+    "ja": "アクティベーションメールを送信します。招待されたユーザーはリンクをクリックした際に初めてパスワードを設定します。",
+    "ko": "활성화 이메일을 보냅니다 — 초대받은 사용자는 링크를 클릭할 때 처음으로 비밀번호를 설정합니다.",
+    "zh": "发送激活邮件——受邀者点击链接后首次设置密码。"
+  },
+  "templates12UserInvite.listBtn": {
+    "vi": "Danh sách",
+    "en": "User list",
+    "ja": "一覧",
+    "ko": "목록",
+    "zh": "列表"
+  },
+  "templates12UserInvite.errNoValidEmail": {
+    "vi": "Vui lòng nhập ít nhất một email hợp lệ.",
+    "en": "Please enter at least one valid email.",
+    "ja": "少なくとも1つの有効なメールアドレスを入力してください。",
+    "ko": "유효한 이메일을 하나 이상 입력해 주세요.",
+    "zh": "请输入至少一个有效邮箱。"
+  },
+  "templates12UserInvite.resultsTitle": {
+    "vi": "Kết quả mời",
+    "en": "Invite results",
+    "ja": "招待結果",
+    "ko": "초대 결과",
+    "zh": "邀请结果"
+  },
+  "templates12UserInvite.statusSent": {
+    "vi": "Đã gửi",
+    "en": "Sent",
+    "ja": "送信済み",
+    "ko": "전송됨",
+    "zh": "已发送"
+  },
+  "templates12UserInvite.statusDuplicate": {
+    "vi": "Đã có trong workspace",
+    "en": "Already in workspace",
+    "ja": "ワークスペースに既に存在",
+    "ko": "이미 워크스페이스에 있음",
+    "zh": "已在工作区中"
+  },
+  "templates12UserInvite.statusFailed": {
+    "vi": "Thất bại",
+    "en": "Failed",
+    "ja": "失敗",
+    "ko": "실패",
+    "zh": "失败"
+  },
+  "templates12UserInvite.emailLabel": {
+    "vi": "Email người được mời",
+    "en": "Invitee email",
+    "ja": "招待するユーザーのメール",
+    "ko": "초대받을 사용자 이메일",
+    "zh": "受邀用户邮箱"
+  },
+  "templates12UserInvite.emailHint": {
+    "vi": "Mỗi email một dòng (hoặc cách bằng dấu phẩy/chấm phẩy).",
+    "en": "One email per line (or separated by commas/semicolons).",
+    "ja": "1行に1つのメールアドレス（またはカンマ・セミコロン区切り）。",
+    "ko": "한 줄에 이메일 하나(또는 쉼표/세미콜론으로 구분).",
+    "zh": "每行一个邮箱（或用逗号/分号分隔）。"
+  },
+  "templates12UserInvite.receivedPrefix": {
+    "vi": "Đã nhận",
+    "en": "Received",
+    "ja": "受信済み",
+    "ko": "수신됨",
+    "zh": "已识别"
+  },
+  "templates12UserInvite.receivedSuffix": {
+    "vi": "email hợp lệ.",
+    "en": "valid email(s).",
+    "ja": "件の有効なメールアドレス。",
+    "ko": "개의 유효한 이메일.",
+    "zh": "个有效邮箱。"
+  },
+  "templates12UserInvite.roleLabel": {
+    "vi": "Vai trò",
+    "en": "Role",
+    "ja": "役割",
+    "ko": "역할",
+    "zh": "角色"
+  },
+  "templates12UserInvite.roleManagerDesc": {
+    "vi": "Toàn quyền — quản trị workspace, người dùng, billing.",
+    "en": "Full access — administers workspace, users, and billing.",
+    "ja": "フルアクセス — ワークスペース、ユーザー、請求を管理します。",
+    "ko": "전체 권한 — 워크스페이스, 사용자, 결제를 관리합니다.",
+    "zh": "完全权限——管理工作区、用户和账单。"
+  },
+  "templates12UserInvite.roleOperatorDesc": {
+    "vi": "Tạo + chạy pipeline, sửa data; không quản lý người dùng.",
+    "en": "Creates and runs pipelines, edits data; cannot manage users.",
+    "ja": "パイプラインの作成・実行、データ編集が可能。ユーザー管理は不可。",
+    "ko": "파이프라인 생성 및 실행, 데이터 수정 가능; 사용자 관리는 불가.",
+    "zh": "创建并运行管道、编辑数据；不能管理用户。"
+  },
+  "templates12UserInvite.roleAnalystDesc": {
+    "vi": "Sinh insight, báo cáo, dashboard.",
+    "en": "Generates insights, reports, and dashboards.",
+    "ja": "インサイト、レポート、ダッシュボードを生成します。",
+    "ko": "인사이트, 보고서, 대시보드를 생성합니다.",
+    "zh": "生成洞察、报告和仪表盘。"
+  },
+  "templates12UserInvite.roleViewerDesc": {
+    "vi": "Chỉ đọc dashboard + báo cáo.",
+    "en": "Read-only access to dashboards and reports.",
+    "ja": "ダッシュボードとレポートの閲覧のみ。",
+    "ko": "대시보드 및 보고서 읽기 전용.",
+    "zh": "仅可查看仪表盘和报告。"
+  },
+  "templates12UserInvite.managerWarning": {
+    "vi": "MANAGER có toàn quyền workspace bao gồm xoá thành viên khác và truy cập billing. Chỉ mời MANAGER khi thật sự cần.",
+    "en": "MANAGER has full workspace access including removing other members and accessing billing. Only invite a MANAGER when truly necessary.",
+    "ja": "MANAGERは他のメンバーの削除や請求へのアクセスを含むワークスペースの全権限を持ちます。本当に必要な場合のみMANAGERを招待してください。",
+    "ko": "MANAGER는 다른 구성원 삭제와 결제 접근을 포함한 워크스페이스 전체 권한을 갖습니다. 정말 필요한 경우에만 MANAGER를 초대하세요.",
+    "zh": "MANAGER 拥有工作区完全权限，包括移除其他成员和访问账单。仅在确实需要时才邀请 MANAGER。"
+  },
+  "templates12UserInvite.messageLabel": {
+    "vi": "Lời nhắn (tuỳ chọn)",
+    "en": "Message (optional)",
+    "ja": "メッセージ（任意）",
+    "ko": "메시지(선택)",
+    "zh": "留言（可选）"
+  },
+  "templates12UserInvite.messagePlaceholder": {
+    "vi": "Vài dòng giới thiệu workspace cho người được mời...",
+    "en": "A few lines introducing the workspace to the invitee...",
+    "ja": "招待するユーザーへワークスペースを紹介する一言...",
+    "ko": "초대받을 사용자에게 워크스페이스를 소개하는 몇 줄...",
+    "zh": "向受邀者简单介绍一下工作区……"
+  },
+  "templates12UserInvite.msgCharCount": {
+    "vi": "{count}/500 ký tự — đính kèm trong email kích hoạt.",
+    "en": "{count}/500 characters — included in the activation email.",
+    "ja": "{count}/500文字 — アクティベーションメールに添付されます。",
+    "ko": "{count}/500자 — 활성화 이메일에 첨부됩니다.",
+    "zh": "{count}/500 字符——将附在激活邮件中。"
+  },
+  "templates12UserInvite.cancelBtn": {
+    "vi": "Huỷ",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "templates12UserInvite.sendWithCount": {
+    "vi": "Gửi {count} lời mời",
+    "en": "Send {count} invite(s)",
+    "ja": "{count}件の招待を送信",
+    "ko": "초대 {count}건 보내기",
+    "zh": "发送 {count} 份邀请"
+  },
+  "templates12UserInvite.sendInvite": {
+    "vi": "Gửi lời mời",
+    "en": "Send invite",
+    "ja": "招待を送信",
+    "ko": "초대 보내기",
+    "zh": "发送邀请"
+  }
+}

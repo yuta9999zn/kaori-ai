@@ -12,6 +12,7 @@ import {
 } from '@/components/platform/foundation';
 import { PageHeader } from '@/components/platform/shell';
 import { fmtDateTime } from '@/lib/format';
+import { useT } from '@/lib/i18n/provider';
 
 type PlatformRole = 'SUPER_ADMIN' | 'ADMIN' | 'SUPPORT';
 
@@ -25,34 +26,35 @@ interface PlatformAdmin {
 }
 
 interface RoleMeta {
-  variant: 'error' | 'current' | 'info';
-  label:   string;
-  icon:    React.ComponentType<{ className?: string; strokeWidth?: number }>;
-  tile:    string;
+  variant:  'error' | 'current' | 'info';
+  labelKey: string;
+  icon:     React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  tile:     string;
 }
 
 const ROLE_META: Record<PlatformRole, RoleMeta> = {
   SUPER_ADMIN: {
-    variant: 'error',
-    label:   'Super Admin',
-    icon:    ShieldCheck,
-    tile:    'bg-[var(--state-error)]/15 text-[#9B5050]',
+    variant:  'error',
+    labelKey: 'adminsPage.roleSuperAdmin',
+    icon:     ShieldCheck,
+    tile:     'bg-[var(--state-error)]/15 text-[#9B5050]',
   },
   ADMIN: {
-    variant: 'current',
-    label:   'Quản trị viên',
-    icon:    UserCog,
-    tile:    'bg-[var(--primary-gold)]/15 text-[var(--primary-gold-dark)]',
+    variant:  'current',
+    labelKey: 'adminsPage.roleAdmin',
+    icon:     UserCog,
+    tile:     'bg-[var(--primary-gold)]/15 text-[var(--primary-gold-dark)]',
   },
   SUPPORT: {
-    variant: 'info',
-    label:   'Hỗ trợ kỹ thuật',
-    icon:    Headphones,
-    tile:    'bg-[var(--state-info)]/15 text-[#52647D]',
+    variant:  'info',
+    labelKey: 'adminsPage.roleSupport',
+    icon:     Headphones,
+    tile:     'bg-[var(--state-info)]/15 text-[#52647D]',
   },
 };
 
 export default function PlatformAdminsPage() {
+  const t = useT();
   const query = useQuery<{ data: PlatformAdmin[] }>({
     queryKey:  ['platform-admins'],
     queryFn:   () => api('/api/v1/platform/admins'),
@@ -65,13 +67,13 @@ export default function PlatformAdminsPage() {
   return (
     <>
       <PageHeader
-        title="Quản trị viên Platform"
-        description="Tài khoản có quyền quản trị toàn hệ thống. Super Admin bắt buộc MFA."
+        title={t('adminsPage.title')}
+        description={t('adminsPage.description')}
         actions={
           <Link href="/platform/admins/invite">
             <Button variant="primary" size="sm">
               <UserPlus className="w-4 h-4 mr-1.5" />
-              Mời quản trị viên
+              {t('adminsPage.inviteAdmin')}
             </Button>
           </Link>
         }
@@ -93,7 +95,7 @@ export default function PlatformAdminsPage() {
 
         {!query.isLoading && admins.length === 0 && !problem && (
           <div className="rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm p-10 text-center text-[var(--text-secondary)]">
-            Chưa có quản trị viên nào.
+            {t('adminsPage.emptyState')}
           </div>
         )}
 
@@ -118,8 +120,8 @@ export default function PlatformAdminsPage() {
                         <p className="font-medium text-[var(--text-primary)]">
                           {admin.full_name ?? admin.email}
                         </p>
-                        <Badge variant={meta.variant}>{meta.label}</Badge>
-                        {!admin.is_active && <Badge variant="default">Vô hiệu</Badge>}
+                        <Badge variant={meta.variant}>{t(meta.labelKey)}</Badge>
+                        {!admin.is_active && <Badge variant="default">{t('adminsPage.inactive')}</Badge>}
                       </div>
                       <p className="text-xs text-[var(--text-secondary)] mt-0.5">{admin.email}</p>
                     </div>

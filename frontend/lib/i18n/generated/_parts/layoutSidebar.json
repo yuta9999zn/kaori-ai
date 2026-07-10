@@ -1,0 +1,5 @@
+{
+  "layoutSidebar.navCustomers": { "vi": "Khách hàng", "en": "Customers", "ja": "顧客", "ko": "고객", "zh": "客户" },
+  "layoutSidebar.navVendors": { "vi": "Nhà cung cấp", "en": "Vendors", "ja": "仕入先", "ko": "공급업체", "zh": "供应商" },
+  "layoutSidebar.navContracts": { "vi": "Hợp đồng", "en": "Contracts", "ja": "契約", "ko": "계약", "zh": "合同" }
+}

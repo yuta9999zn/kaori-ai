@@ -1,0 +1,16 @@
+{
+  "chartsChartRegistry.noData": {
+    "vi": "Không có dữ liệu",
+    "en": "No data",
+    "ja": "データがありません",
+    "ko": "데이터 없음",
+    "zh": "暂无数据"
+  },
+  "chartsChartRegistry.groupLabel": {
+    "vi": "Nhóm {cluster}",
+    "en": "Group {cluster}",
+    "ja": "グループ {cluster}",
+    "ko": "그룹 {cluster}",
+    "zh": "分组 {cluster}"
+  }
+}

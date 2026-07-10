@@ -1,0 +1,415 @@
+{
+  "templates21DataPipelineStep2ConfigureColumns.pageTitle": {
+    "vi": "Xác nhận cột",
+    "en": "Confirm columns",
+    "ja": "列を確認",
+    "ko": "컬럼 확인",
+    "zh": "确认字段"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.pageDescription": {
+    "vi": "Bước 2 / 5 — AI đã đọc file và nhận diện ý nghĩa từng cột. Xác nhận nhanh để báo cáo chính xác.",
+    "en": "Step 2 / 5 — AI has read the file and identified the meaning of each column. Confirm quickly so reports stay accurate.",
+    "ja": "ステップ 2 / 5 — AIがファイルを読み取り、各列の意味を認識しました。正確なレポートのため、すぐに確認してください。",
+    "ko": "2단계 / 5단계 — AI가 파일을 읽고 각 컬럼의 의미를 인식했습니다. 정확한 보고서를 위해 빠르게 확인해 주세요.",
+    "zh": "第 2 / 5 步 — AI 已读取文件并识别了每个字段的含义。请快速确认以确保报告准确。"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.headerIntro": {
+    "vi": "AI đã nhận diện",
+    "en": "AI has identified",
+    "ja": "AIが認識しました：",
+    "ko": "AI가 인식했습니다:",
+    "zh": "AI 已识别"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.headerCount": {
+    "vi": "{total} cột",
+    "en": "{total} columns",
+    "ja": "{total} 列",
+    "ko": "{total}개 컬럼",
+    "zh": "{total} 个字段"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.headerMid": {
+    "vi": ". Xác nhận để đảm bảo phân tích đúng — khoảng",
+    "en": ". Confirm to ensure accurate analysis — about",
+    "ja": "。分析の正確性のため確認してください — 約",
+    "ko": ". 정확한 분석을 위해 확인해 주세요 — 약",
+    "zh": "。请确认以确保分析准确 — 大约"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.headerMinutes": {
+    "vi": "2 phút.",
+    "en": "2 minutes.",
+    "ja": "2分。",
+    "ko": "2분.",
+    "zh": "2分钟。"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.progressLabel": {
+    "vi": "{resolved}/{total} cột đã xác nhận",
+    "en": "{resolved}/{total} columns confirmed",
+    "ja": "{resolved}/{total} 列確認済み",
+    "ko": "{resolved}/{total}개 컬럼 확인됨",
+    "zh": "已确认 {resolved}/{total} 个字段"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.confirmAllAi": {
+    "vi": "Xác nhận tất cả đề xuất của AI",
+    "en": "Confirm all AI suggestions",
+    "ja": "AIの提案をすべて確認",
+    "ko": "AI 제안 모두 확인",
+    "zh": "确认所有 AI 建议"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.editBelowHint": {
+    "vi": "Bạn vẫn có thể sửa từng cột bên dưới.",
+    "en": "You can still edit each column below.",
+    "ja": "以下で各列を個別に編集できます。",
+    "ko": "아래에서 각 컬럼을 개별적으로 수정할 수 있습니다.",
+    "zh": "您仍可以在下方逐个修改字段。"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.conflictHeading": {
+    "vi": "Một số loại thông tin đang bị gán cho nhiều cột.",
+    "en": "Some field types are assigned to multiple columns.",
+    "ja": "一部の項目タイプが複数の列に割り当てられています。",
+    "ko": "일부 항목 유형이 여러 컬럼에 할당되어 있습니다.",
+    "zh": "部分字段类型被分配给了多个列。"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.conflictUniqueOnly": {
+    "vi": "chỉ được chọn 1 cột",
+    "en": "only one column allowed",
+    "ja": "1列のみ選択可能",
+    "ko": "1개 컬럼만 선택 가능",
+    "zh": "只能选择 1 个字段"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.conflictFixBeforeContinue": {
+    "vi": "Hãy sửa các xung đột bắt buộc trước khi tiếp tục.",
+    "en": "Please fix the required conflicts before continuing.",
+    "ja": "続行する前に、必須の競合を解決してください。",
+    "ko": "계속하기 전에 필수 충돌을 해결해 주세요.",
+    "zh": "请先解决必须处理的冲突，再继续。"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.noColumnsDetected": {
+    "vi": "Chưa có cột nào được phát hiện. Kiểm tra lại file ở Bước 1.",
+    "en": "No columns detected yet. Check the file again in Step 1.",
+    "ja": "列がまだ検出されていません。ステップ1でファイルを確認してください。",
+    "ko": "아직 감지된 컬럼이 없습니다. 1단계에서 파일을 다시 확인하세요.",
+    "zh": "尚未检测到任何字段。请返回第 1 步检查文件。"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.footerNote": {
+    "vi": "Mỗi lựa chọn được lưu lại. Nếu kết quả ở Bước 4 chưa đúng, bạn có thể quay lại đây chỉnh sửa và chạy lại — dữ liệu gốc luôn được giữ nguyên.",
+    "en": "Every choice is saved. If the result in Step 4 isn't right, you can come back here to edit and re-run — the original data is always kept intact.",
+    "ja": "選択内容はすべて保存されます。ステップ4の結果が正しくない場合は、ここに戻って編集し、再実行できます — 元のデータは常にそのまま保持されます。",
+    "ko": "모든 선택 사항이 저장됩니다. 4단계 결과가 올바르지 않으면 이곳으로 돌아와 수정하고 다시 실행할 수 있습니다 — 원본 데이터는 항상 그대로 유지됩니다.",
+    "zh": "每次选择都会被保存。如果第 4 步的结果不正确，您可以返回这里修改并重新运行 — 原始数据始终保持不变。"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.back": {
+    "vi": "Quay lại",
+    "en": "Back",
+    "ja": "戻る",
+    "ko": "뒤로",
+    "zh": "返回"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.fixConflictsFirst": {
+    "vi": "Hãy sửa xung đột bắt buộc",
+    "en": "Please fix the required conflicts",
+    "ja": "必須の競合を解決してください",
+    "ko": "필수 충돌을 해결하세요",
+    "zh": "请先解决必须处理的冲突"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.confirmAndNext": {
+    "vi": "Xác nhận + sang Bước 3",
+    "en": "Confirm + go to Step 3",
+    "ja": "確認してステップ3へ",
+    "ko": "확인하고 3단계로 이동",
+    "zh": "确认并进入第 3 步"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.skipAll": {
+    "vi": "Bỏ qua tất cả",
+    "en": "Skip all",
+    "ja": "すべてスキップ",
+    "ko": "모두 건너뛰기",
+    "zh": "全部跳过"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.emptyPlaceholder": {
+    "vi": "(trống)",
+    "en": "(empty)",
+    "ja": "（空）",
+    "ko": "(비어 있음)",
+    "zh": "（空）"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.sensitive": {
+    "vi": "Nhạy cảm",
+    "en": "Sensitive",
+    "ja": "機密",
+    "ko": "민감 정보",
+    "zh": "敏感信息"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.nullPct": {
+    "vi": "{pct}% trống",
+    "en": "{pct}% empty",
+    "ja": "{pct}% 空欄",
+    "ko": "{pct}% 비어 있음",
+    "zh": "{pct}% 空值"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.exampleLabel": {
+    "vi": "Ví dụ:",
+    "en": "Example:",
+    "ja": "例：",
+    "ko": "예:",
+    "zh": "示例："
+  },
+  "templates21DataPipelineStep2ConfigureColumns.whatIsThisLabel": {
+    "vi": "Đây là thông tin gì?",
+    "en": "What kind of information is this?",
+    "ja": "これはどのような情報ですか？",
+    "ko": "이것은 어떤 정보인가요?",
+    "zh": "这是什么信息？"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.whatIsThisHelp": {
+    "vi": "Chọn ý nghĩa kinh doanh của cột. Ví dụ 'Họ tên', 'Full name' trong file đều quy về cùng một loại để phân tích nhất quán.",
+    "en": "Choose the business meaning of this column. For example, 'Họ tên', 'Full name' in the file are both mapped to the same type for consistent analysis.",
+    "ja": "この列のビジネス上の意味を選択してください。例えば、ファイル内の「Họ tên」「Full name」はいずれも一貫した分析のため同じ種類にまとめられます。",
+    "ko": "이 컬럼의 비즈니스 의미를 선택하세요. 예를 들어 파일 안의 'Họ tên', 'Full name'은 일관된 분석을 위해 동일한 유형으로 매핑됩니다.",
+    "zh": "选择该字段的业务含义。例如文件中的「Họ tên」「Full name」都会归为同一类型，以保证分析口径一致。"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.selectFieldPlaceholder": {
+    "vi": "— Chọn loại thông tin —",
+    "en": "— Select information type —",
+    "ja": "— 情報の種類を選択 —",
+    "ko": "— 정보 유형 선택 —",
+    "zh": "— 选择信息类型 —"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.selectFieldCustom": {
+    "vi": "Khác — nhập tên khác…",
+    "en": "Other — enter a different name…",
+    "ja": "その他 — 別の名前を入力…",
+    "ko": "기타 — 다른 이름 입력…",
+    "zh": "其他 — 输入其他名称…"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.customFieldPlaceholder": {
+    "vi": "Nhập tên cho cột này…",
+    "en": "Enter a name for this column…",
+    "ja": "この列の名前を入力…",
+    "ko": "이 컬럼의 이름을 입력하세요…",
+    "zh": "输入此字段的名称…"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.restore": {
+    "vi": "Khôi phục",
+    "en": "Restore",
+    "ja": "復元",
+    "ko": "복원",
+    "zh": "恢复"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.confirmed": {
+    "vi": "Đã xác nhận",
+    "en": "Confirmed",
+    "ja": "確認済み",
+    "ko": "확인됨",
+    "zh": "已确认"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.confirm": {
+    "vi": "Xác nhận",
+    "en": "Confirm",
+    "ja": "確認",
+    "ko": "확인",
+    "zh": "确认"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.skip": {
+    "vi": "Bỏ qua",
+    "en": "Skip",
+    "ja": "スキップ",
+    "ko": "건너뛰기",
+    "zh": "跳过"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.aiNeedsPick": {
+    "vi": "Cần bạn chọn",
+    "en": "Needs your pick",
+    "ja": "選択が必要です",
+    "ko": "선택이 필요합니다",
+    "zh": "需要您选择"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.aiHighConfidence": {
+    "vi": "AI tự tin cao",
+    "en": "AI is highly confident",
+    "ja": "AIの確信度が高い",
+    "ko": "AI 신뢰도 높음",
+    "zh": "AI 高置信度"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.aiGuessedFromData": {
+    "vi": "Đoán từ dữ liệu",
+    "en": "Guessed from data",
+    "ja": "データから推測",
+    "ko": "데이터에서 추정",
+    "zh": "根据数据推测"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.aiUncertain": {
+    "vi": "AI chưa chắc — kiểm tra",
+    "en": "AI is unsure — please check",
+    "ja": "AIが未確定 — 確認してください",
+    "ko": "AI 확신 부족 — 확인 필요",
+    "zh": "AI 不确定 — 请检查"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.impactHeading": {
+    "vi": "Xác nhận xong, bạn sẽ phân tích được",
+    "en": "Once confirmed, you'll be able to analyze",
+    "ja": "確認が完了すると、次の分析が可能になります",
+    "ko": "확인이 완료되면 다음 분석이 가능합니다",
+    "zh": "确认完成后，您将可以分析"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.impactSubheading": {
+    "vi": "Cập nhật theo các cột bạn xác nhận.",
+    "en": "Updates as you confirm columns.",
+    "ja": "確認した列に応じて更新されます。",
+    "ko": "확인한 컬럼에 따라 업데이트됩니다.",
+    "zh": "会根据您确认的字段实时更新。"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.impactNeeds": {
+    "vi": "cần: {items}",
+    "en": "needs: {items}",
+    "ja": "必要: {items}",
+    "ko": "필요: {items}",
+    "zh": "需要：{items}"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.capRevenueByTime": {
+    "vi": "Doanh thu theo thời gian",
+    "en": "Revenue over time",
+    "ja": "時系列売上",
+    "ko": "기간별 매출",
+    "zh": "按时间的营收"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.capCustomerSegment": {
+    "vi": "Phân khúc khách hàng",
+    "en": "Customer segmentation",
+    "ja": "顧客セグメント",
+    "ko": "고객 세그먼트",
+    "zh": "客户细分"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.capChurnRisk": {
+    "vi": "Nguy cơ rời bỏ (Churn)",
+    "en": "Churn risk",
+    "ja": "解約リスク（Churn）",
+    "ko": "이탈 위험 (Churn)",
+    "zh": "流失风险（Churn）"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.capPaymentMethod": {
+    "vi": "Phương thức thanh toán",
+    "en": "Payment method",
+    "ja": "支払い方法",
+    "ko": "결제 방법",
+    "zh": "支付方式"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.capTopProducts": {
+    "vi": "Sản phẩm bán chạy",
+    "en": "Best-selling products",
+    "ja": "売れ筋商品",
+    "ko": "인기 상품",
+    "zh": "畅销产品"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.tierConfirmLabel": {
+    "vi": "🔴 Cần bạn xác nhận",
+    "en": "🔴 Needs your confirmation",
+    "ja": "🔴 確認が必要です",
+    "ko": "🔴 확인이 필요합니다",
+    "zh": "🔴 需要您确认"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.tierConfirmHint": {
+    "vi": "Kaori chưa nhận diện chắc chắn — chọn đúng loại thông tin",
+    "en": "Kaori isn't sure yet — pick the correct information type",
+    "ja": "Kaoriがまだ確信を持てていません — 正しい情報の種類を選択してください",
+    "ko": "Kaori가 아직 확신하지 못했습니다 — 올바른 정보 유형을 선택하세요",
+    "zh": "Kaori 尚不能确定 — 请选择正确的信息类型"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.tierReviewLabel": {
+    "vi": "🟡 Kiểm tra nhanh",
+    "en": "🟡 Quick check",
+    "ja": "🟡 簡易確認",
+    "ko": "🟡 빠른 확인",
+    "zh": "🟡 快速核对"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.tierReviewHint": {
+    "vi": "Kaori đã đoán — liếc qua, sai thì sửa, đúng thì xác nhận",
+    "en": "Kaori has made a guess — glance through, fix if wrong, confirm if right",
+    "ja": "Kaoriが推測しました — 目を通し、間違っていれば修正し、正しければ確認してください",
+    "ko": "Kaori가 추측했습니다 — 훑어보고 틀렸으면 수정, 맞으면 확인하세요",
+    "zh": "Kaori 已做出推测 — 请浏览确认，有误请修正，无误请确认"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.tierOkLabel": {
+    "vi": "🟢 Đã nhận diện tự động",
+    "en": "🟢 Auto-identified",
+    "ja": "🟢 自動認識済み",
+    "ko": "🟢 자동 인식됨",
+    "zh": "🟢 已自动识别"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.tierOkHint": {
+    "vi": "Khớp chính xác — thường không cần đụng đến",
+    "en": "Exact match — usually no need to touch",
+    "ja": "完全一致 — 通常は変更不要です",
+    "ko": "정확히 일치 — 대개 수정할 필요가 없습니다",
+    "zh": "精确匹配 — 通常无需处理"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.tierEmptyLabel": {
+    "vi": "⚪ Cột trống / không tên",
+    "en": "⚪ Empty / unnamed column",
+    "ja": "⚪ 空欄・無名の列",
+    "ko": "⚪ 빈 컬럼 / 이름 없음",
+    "zh": "⚪ 空白/无名字段"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.tierEmptyHint": {
+    "vi": "Cột rỗng trong file gốc — có thể bỏ qua an toàn",
+    "en": "Empty column in the original file — safe to skip",
+    "ja": "元ファイルの空の列です — 安全にスキップできます",
+    "ko": "원본 파일의 빈 컬럼입니다 — 안전하게 건너뛸 수 있습니다",
+    "zh": "原始文件中的空字段 — 可以放心跳过"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.typeString": {
+    "vi": "Chữ",
+    "en": "Text",
+    "ja": "文字",
+    "ko": "텍스트",
+    "zh": "文本"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.typeNumber": {
+    "vi": "Số",
+    "en": "Number",
+    "ja": "数値",
+    "ko": "숫자",
+    "zh": "数字"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.typeCurrency": {
+    "vi": "Tiền",
+    "en": "Currency",
+    "ja": "金額",
+    "ko": "금액",
+    "zh": "金额"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.typeDate": {
+    "vi": "Ngày",
+    "en": "Date",
+    "ja": "日付",
+    "ko": "날짜",
+    "zh": "日期"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.typePhone": {
+    "vi": "SĐT",
+    "en": "Phone",
+    "ja": "電話番号",
+    "ko": "전화번호",
+    "zh": "电话"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.typeEmail": {
+    "vi": "Email",
+    "en": "Email",
+    "ja": "メール",
+    "ko": "이메일",
+    "zh": "邮箱"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.typeBoolean": {
+    "vi": "Đúng/Sai",
+    "en": "True/False",
+    "ja": "真偽",
+    "ko": "참/거짓",
+    "zh": "是/否"
+  },
+  "templates21DataPipelineStep2ConfigureColumns.typeCategory": {
+    "vi": "Phân loại",
+    "en": "Category",
+    "ja": "分類",
+    "ko": "분류",
+    "zh": "分类"
+  }
+}

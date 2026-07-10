@@ -1,0 +1,51 @@
+{
+  "foundation.hidePassword": {
+    "vi": "Ẩn mật khẩu",
+    "en": "Hide password",
+    "ja": "パスワードを隠す",
+    "ko": "비밀번호 숨기기",
+    "zh": "隐藏密码"
+  },
+  "foundation.showPassword": {
+    "vi": "Hiện mật khẩu",
+    "en": "Show password",
+    "ja": "パスワードを表示",
+    "ko": "비밀번호 표시",
+    "zh": "显示密码"
+  },
+  "foundation.genericError": {
+    "vi": "Có lỗi xảy ra",
+    "en": "An error occurred",
+    "ja": "エラーが発生しました",
+    "ko": "오류가 발생했습니다",
+    "zh": "发生错误"
+  },
+  "foundation.retryAfter": {
+    "vi": "Thử lại sau {minutes} phút.",
+    "en": "Try again in {minutes} minutes.",
+    "ja": "{minutes}分後にもう一度お試しください。",
+    "ko": "{minutes}분 후에 다시 시도하세요.",
+    "zh": "请在 {minutes} 分钟后重试。"
+  },
+  "foundation.customerUnit": {
+    "vi": "khách hàng",
+    "en": "customers",
+    "ja": "顧客",
+    "ko": "고객",
+    "zh": "客户"
+  },
+  "foundation.quotaWarning": {
+    "vi": "Đã dùng {pct}% hạn mức tháng này. Cân nhắc nâng cấp gói.",
+    "en": "You've used {pct}% of this month's quota. Consider upgrading your plan.",
+    "ja": "今月の割り当ての{pct}%を使用しました。プランのアップグレードをご検討ください。",
+    "ko": "이번 달 한도의 {pct}%를 사용했습니다. 플랜 업그레이드를 고려해 보세요.",
+    "zh": "本月配额已使用 {pct}%。请考虑升级套餐。"
+  },
+  "foundation.quotaCritical": {
+    "vi": "Đã dùng {pct}% hạn mức tháng này — sắp chạm giới hạn. Nâng cấp ngay để tránh gián đoạn.",
+    "en": "You've used {pct}% of this month's quota — approaching the limit. Upgrade now to avoid disruption.",
+    "ja": "今月の割り当ての{pct}%を使用しました。上限に近づいています。中断を避けるため今すぐアップグレードしてください。",
+    "ko": "이번 달 한도의 {pct}%를 사용했습니다 — 한도에 가까워지고 있습니다. 서비스 중단을 피하려면 지금 업그레이드하세요.",
+    "zh": "本月配额已使用 {pct}%——即将达到上限。请立即升级以避免服务中断。"
+  }
+}

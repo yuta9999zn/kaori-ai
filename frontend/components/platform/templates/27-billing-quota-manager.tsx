@@ -6,7 +6,8 @@
 // the script to regenerate. Lazy `any` types added; not meant for strict tsc.
 
 import React, { useState, useEffect, useRef } from 'react';
-import { 
+import { useT } from '@/lib/i18n/provider';
+import {
   LayoutDashboard, 
   Briefcase, 
   Key, 
@@ -266,7 +267,9 @@ const Input = React.forwardRef<any, any>(({ className, label, error, helperText,
 Input.displayName = "Input";
 
 // --- SELECT (Simulated Radix Select) ---
-const Select = ({  label, placeholder = "Select an option", options = [], value, onChange, error, disabled  }: any) => {
+const Select = ({  label, placeholder, options = [], value, onChange, error, disabled  }: any) => {
+  const t = useT();
+  const resolvedPlaceholder = placeholder ?? t('templates27BillingQuotaManager.selectDefaultPlaceholder');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -293,7 +296,7 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
           !selectedOption ? "text-[var(--text-secondary)]/60" : "text-[var(--text-primary)]"
         )}
       >
-        {selectedOption ? selectedOption.label : placeholder}
+        {selectedOption ? selectedOption.label : resolvedPlaceholder}
         <ChevronDown className="h-4 w-4 opacity-50" />
       </button>
       {isOpen && !disabled && (
@@ -319,7 +322,9 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
 };
 
 // --- DATEPICKER (Simulated) ---
-const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any) => {
+const DatePicker = ({  label, placeholder, date, setDate  }: any) => {
+  const t = useT();
+  const resolvedPlaceholder = placeholder ?? t('templates27BillingQuotaManager.datePickerDefaultPlaceholder');
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
   useEffect(() => {
@@ -340,12 +345,12 @@ const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any
         )}
       >
         <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
-        {date ? date : placeholder}
+        {date ? date : resolvedPlaceholder}
       </button>
       {isOpen && (
         <div className="absolute top-full left-0 z-50 mt-1 p-3 bg-white rounded-md-custom border border-[var(--border-color)] shadow-soft-md animate-in fade-in zoom-in-95 duration-150 w-[280px]">
            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm font-semibold text-[var(--text-primary)]">October 2026</span>
+              <span className="text-sm font-semibold text-[var(--text-primary)]">{t('templates27BillingQuotaManager.datePickerMonthYear')}</span>
               <div className="flex gap-1">
                 <button className="p-1 hover:bg-[var(--bg-app)] rounded"><ChevronLeft className="w-4 h-4 text-[var(--text-secondary)]"/></button>
                 <button className="p-1 hover:bg-[var(--bg-app)] rounded"><ChevronRight className="w-4 h-4 text-[var(--text-secondary)]"/></button>
@@ -377,6 +382,7 @@ const Card = ({  className, ...props  }: any) => (
 );
 
 const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className  }: any) => {
+  const t = useT();
   const isPositive = (isUp && !inverseGood) || (!isUp && inverseGood);
   const trendColor = trend === '0%' ? 'text-[var(--text-secondary)]' : isPositive ? 'text-[#5C856A]' : 'text-[#9B5050]';
   return (
@@ -392,7 +398,7 @@ const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className
             </div>
           )}
         </div>
-        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">vs yesterday</div>
+        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">{t('templates27BillingQuotaManager.vsYesterday')}</div>
       </div>
     </Card>
   );
@@ -411,6 +417,7 @@ const TableHead = ({  className, ...props  }: any) => <th className={cn("h-12 px
 const TableCell = ({  className, ...props  }: any) => <td className={cn("p-4 align-middle text-[var(--text-primary)]", className)} {...props} />;
 
 const DataTable = ({  columns, data, loading, pagination = true, onRowClick  }: any) => {
+  const t = useT();
   return (
     <div className="rounded-lg-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm overflow-hidden w-full">
       <Table>
@@ -435,8 +442,8 @@ const DataTable = ({  columns, data, loading, pagination = true, onRowClick  }: 
                   <div className="w-10 h-10 rounded-full bg-[var(--bg-app)] flex items-center justify-center mb-2">
                     <Search className="w-5 h-5 text-[var(--text-secondary)]" />
                   </div>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">No results found</span>
-                  <span className="text-xs text-[var(--text-secondary)]">Try adjusting your filters</span>
+                  <span className="text-sm font-medium text-[var(--text-primary)]">{t('templates27BillingQuotaManager.noResultsFound')}</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{t('templates27BillingQuotaManager.tryAdjustingFilters')}</span>
                 </div>
               </TableCell>
             </TableRow>
@@ -455,10 +462,10 @@ const DataTable = ({  columns, data, loading, pagination = true, onRowClick  }: 
       </Table>
       {pagination && data.length > 0 && (
         <div className="border-t border-[var(--border-color)] px-4 py-3 flex items-center justify-between bg-[#FCFBF9]">
-          <span className="text-xs text-[var(--text-secondary)]">Showing 1 to {data.length} of {data.length} results</span>
+          <span className="text-xs text-[var(--text-secondary)]">{t('templates27BillingQuotaManager.showingResults', { count: data.length })}</span>
           <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled>Previous</Button>
-              <Button variant="outline" size="sm">Next</Button>
+              <Button variant="outline" size="sm" disabled>{t('templates27BillingQuotaManager.previous')}</Button>
+              <Button variant="outline" size="sm">{t('templates27BillingQuotaManager.next')}</Button>
           </div>
         </div>
       )}
@@ -555,6 +562,7 @@ const Tabs = ({  defaultValue, tabs, className  }: any) => {
 
 // --- COPY BUTTON HELPER ---
 const CopyButton = ({  text, className  }: any) => {
+  const t = useT();
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
     navigator.clipboard.writeText(text);
@@ -565,7 +573,7 @@ const CopyButton = ({  text, className  }: any) => {
     <button 
       onClick={handleCopy} 
       className={cn("p-1 hover:bg-[var(--bg-app)] rounded transition-colors text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/50", className)}
-      aria-label="Copy to clipboard"
+      aria-label={t('templates27BillingQuotaManager.copyToClipboard')}
     >
       {copied ? <Check className="w-3.5 h-3.5 text-[#5C856A]" /> : <Copy className="w-3.5 h-3.5" />}
     </button>
@@ -629,44 +637,51 @@ const Section = ({  title, description, actions, children, className = ''  }: an
 // --- CONFIG ---
 const NAVIGATION_CONFIG = [
   {
-    group: 'Main',
+    groupKey: 'templates27BillingQuotaManager.navGroupMain',
     items: [
-      { id: 'overview', label: 'Platform Health', icon: LayoutDashboard, route: '/platform' },
-      { id: 'workspaces', label: 'Workspaces', icon: Briefcase, route: '/platform/workspaces', badge: '4' },
+      { id: 'overview', labelKey: 'templates27BillingQuotaManager.navPlatformHealth', icon: LayoutDashboard, route: '/platform' },
+      { id: 'workspaces', labelKey: 'templates27BillingQuotaManager.navWorkspaces', icon: Briefcase, route: '/platform/workspaces', badge: '4' },
     ]
   },
   {
-    group: 'Management',
+    groupKey: 'templates27BillingQuotaManager.navGroupManagement',
     items: [
-      { id: 'keys', label: 'API Keys', icon: Key, route: '/platform/keys' },
-      { id: 'billing', label: 'Billing', icon: CreditCard, route: '/platform/billing' },
-      { id: 'admin', label: 'Admins', icon: Shield, route: '/platform/admins', role: 'admin' },
+      { id: 'keys', labelKey: 'templates27BillingQuotaManager.navApiKeys', icon: Key, route: '/platform/keys' },
+      { id: 'billing', labelKey: 'templates27BillingQuotaManager.navBilling', icon: CreditCard, route: '/platform/billing' },
+      { id: 'admin', labelKey: 'templates27BillingQuotaManager.navAdmins', icon: Shield, route: '/platform/admins', role: 'admin' },
     ]
   },
   {
-    group: 'System',
+    groupKey: 'templates27BillingQuotaManager.navGroupSystem',
     items: [
-      { id: 'components', label: 'Component Library', icon: Component, route: '/platform/components' },
-      { id: 'sessions', label: 'Security & Sessions', icon: Settings, route: '/p1/auth/sessions' },
+      { id: 'components', labelKey: 'templates27BillingQuotaManager.navComponentLibrary', icon: Component, route: '/platform/components' },
+      { id: 'sessions', labelKey: 'templates27BillingQuotaManager.navSecuritySessions', icon: Settings, route: '/p1/auth/sessions' },
     ]
   }
 ];
 
 // --- HEADER SUB-COMPONENTS ---
 const EnvBadge = ({  env = 'production'  }: any) => {
+  const t = useT();
   const config = {
     production: "bg-[var(--primary-gold)]/15 text-[#9E814D] border-[var(--primary-gold)]/30",
     staging: "bg-white text-[var(--text-secondary)] border-[var(--border-color)]",
     development: "bg-[var(--bg-app)] text-[var(--text-secondary)] border-[var(--border-color)]"
   };
+  const labels = {
+    production: t('templates27BillingQuotaManager.envProduction'),
+    staging: t('templates27BillingQuotaManager.envStaging'),
+    development: t('templates27BillingQuotaManager.envDevelopment')
+  };
   return (
     <span className={`hidden md:inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${config[env]}`}>
-      {env}
+      {labels[env] ?? env}
     </span>
   );
 };
 
 const NotificationDropdown = () => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -676,7 +691,7 @@ const NotificationDropdown = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const notifications = [{ id: 1, title: 'Data sync completed successfully', time: '10m ago', read: false }];
+  const notifications = [{ id: 1, title: t('templates27BillingQuotaManager.notifDataSyncMsg'), time: t('templates27BillingQuotaManager.notifTimeAgo10m'), read: false }];
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -687,7 +702,7 @@ const NotificationDropdown = () => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-[320px] bg-[var(--bg-card)] rounded-lg-custom shadow-soft-md border border-[var(--border-color)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 z-50">
           <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] bg-[#FCFBF9]">
-            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Notifications</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates27BillingQuotaManager.notifications')}</h3>
           </div>
           <div className="max-h-[300px] overflow-y-auto">
             {notifications.map((n) => (
@@ -707,6 +722,7 @@ const NotificationDropdown = () => {
 };
 
 const HeaderUserMenu = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
 
@@ -729,13 +745,13 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
           </div>
           <div className="p-1.5">
             <button onClick={() => { setActiveRoute('sessions'); setIsOpen(false); }} className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> Security & Sessions
+              <Shield className="w-4 h-4 text-[var(--text-secondary)]" /> {t('templates27BillingQuotaManager.navSecuritySessions')}
             </button>
           </div>
           <div className="h-[1px] bg-[var(--border-color)]/50 mx-1.5" />
           <div className="p-1.5">
             <button className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] transition-colors flex items-center gap-2 font-medium">
-              <LogOut className="w-4 h-4" /> Sign out
+              <LogOut className="w-4 h-4" /> {t('templates27BillingQuotaManager.signOut')}
             </button>
           </div>
         </div>
@@ -745,20 +761,22 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
 };
 
 const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: any) => {
-  let routeLabel = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label;
-  if (activeRoute === 'workspace-details') routeLabel = 'Workspaces / Overview';
-  else if (activeRoute === 'workspace-members') routeLabel = 'Workspaces / Members';
-  else if (activeRoute === 'workspace-billing') routeLabel = 'Workspaces / Billing';
-  else if (activeRoute === 'audit-logs') routeLabel = 'Workspaces / Audit Logs';
-  else if (activeRoute === 'workspace-new') routeLabel = 'Workspaces / New Workspace';
-  else if (activeRoute === 'workspace-edit') routeLabel = 'Workspaces / Settings';
-  else if (activeRoute === 'keys-new') routeLabel = 'API Keys / Create Key';
-  else if (activeRoute === 'key-details') routeLabel = 'API Keys / Details';
-  else if (activeRoute === 'admin-invite') routeLabel = 'Admins / Invite';
-  else if (activeRoute === 'admin-details') routeLabel = 'Admins / Details';
-  else if (activeRoute === 'admin-reset-password') routeLabel = 'Admins / Reset Password';
-  else if (activeRoute === 'enterprise-billing-details') routeLabel = 'Billing / Enterprise Detail';
-  else if (activeRoute === 'quota') routeLabel = 'Billing / Quota Management';
+  const t = useT();
+  const navItem = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute);
+  let routeLabel = navItem ? t(navItem.labelKey) : undefined;
+  if (activeRoute === 'workspace-details') routeLabel = t('templates27BillingQuotaManager.breadcrumbWsOverview');
+  else if (activeRoute === 'workspace-members') routeLabel = t('templates27BillingQuotaManager.breadcrumbWsMembers');
+  else if (activeRoute === 'workspace-billing') routeLabel = t('templates27BillingQuotaManager.breadcrumbWsBilling');
+  else if (activeRoute === 'audit-logs') routeLabel = t('templates27BillingQuotaManager.breadcrumbAuditLogs');
+  else if (activeRoute === 'workspace-new') routeLabel = t('templates27BillingQuotaManager.breadcrumbWsNew');
+  else if (activeRoute === 'workspace-edit') routeLabel = t('templates27BillingQuotaManager.breadcrumbWsEdit');
+  else if (activeRoute === 'keys-new') routeLabel = t('templates27BillingQuotaManager.breadcrumbKeysNew');
+  else if (activeRoute === 'key-details') routeLabel = t('templates27BillingQuotaManager.breadcrumbKeyDetails');
+  else if (activeRoute === 'admin-invite') routeLabel = t('templates27BillingQuotaManager.breadcrumbAdminInvite');
+  else if (activeRoute === 'admin-details') routeLabel = t('templates27BillingQuotaManager.breadcrumbAdminDetails');
+  else if (activeRoute === 'admin-reset-password') routeLabel = t('templates27BillingQuotaManager.breadcrumbAdminResetPassword');
+  else if (activeRoute === 'enterprise-billing-details') routeLabel = t('templates27BillingQuotaManager.breadcrumbEnterpriseBillingDetails');
+  else if (activeRoute === 'quota') routeLabel = t('templates27BillingQuotaManager.breadcrumbQuota');
   else if (!routeLabel) routeLabel = activeRoute;
 
   return (
@@ -768,7 +786,7 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
           <Menu className="w-5 h-5" />
         </button>
         <div className="hidden sm:flex items-center text-sm font-medium">
-          <span className="text-[var(--text-secondary)]">Platform</span>
+          <span className="text-[var(--text-secondary)]">{t('templates27BillingQuotaManager.breadcrumbPlatformPrefix')}</span>
           <ChevronRight className="w-4 h-4 mx-2 text-[var(--border-color)] shrink-0 opacity-50" />
           <span className="text-[var(--text-primary)] capitalize">{routeLabel}</span>
         </div>
@@ -779,9 +797,9 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
         <div className="hidden sm:flex items-center gap-2">
            <div className="relative group hidden lg:block">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-[var(--text-secondary)] group-focus-within:text-[var(--primary-gold)] transition-colors" />
-              <input type="text" placeholder="Search..." className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
+              <input type="text" placeholder={t('templates27BillingQuotaManager.headerSearchPlaceholder')} className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
             </div>
-            <Button variant="outline" size="sm" onClick={() => setActiveRoute('workspace-new')} className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> Workspace</Button>
+            <Button variant="outline" size="sm" onClick={() => setActiveRoute('workspace-new')} className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> {t('templates27BillingQuotaManager.headerNewWorkspaceBtn')}</Button>
         </div>
         <NotificationDropdown />
         <HeaderUserMenu setActiveRoute={setActiveRoute} />
@@ -805,6 +823,7 @@ const SidebarTooltip = ({  children, content, isCollapsed  }: any) => {
 };
 
 const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, setIsCollapsed  }: any) => {
+  const t = useT();
   const collapsed = isCollapsed && !isMobile;
   const currentHighlight = 
     (activeRoute === 'workspace-details' || activeRoute === 'workspace-members' || activeRoute === 'workspace-billing' || activeRoute === 'audit-logs' || activeRoute === 'workspace-new' || activeRoute === 'workspace-edit') ? 'workspaces' : 
@@ -825,16 +844,16 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
         {!collapsed && (
           <div className="flex flex-col overflow-hidden animate-in fade-in duration-300">
             <span className="font-serif text-[17px] leading-none font-semibold text-[var(--text-primary)] tracking-wide">Kaori</span>
-            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">Platform</span>
+            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">{t('templates27BillingQuotaManager.breadcrumbPlatformPrefix')}</span>
           </div>
         )}
       </div>
 
-      <nav aria-label="Main Navigation" className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-6">
+      <nav aria-label={t('templates27BillingQuotaManager.mainNavigationAriaLabel')} className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-6">
         {NAVIGATION_CONFIG.map((group, idx) => (
           <div key={idx} className="flex flex-col">
             {!collapsed ? (
-              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{group.group}</div>
+              <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{t(group.groupKey)}</div>
             ) : (
               <div className="w-full h-[1px] bg-[var(--border-color)]/60 my-2 rounded-full" />
             )}
@@ -842,8 +861,9 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
               {group.items.map((item) => {
                 const isActive = currentHighlight === item.id;
                 const Icon = item.icon;
+                const itemLabel = t(item.labelKey);
                 return (
-                  <SidebarTooltip key={item.id} content={item.label} isCollapsed={collapsed}>
+                  <SidebarTooltip key={item.id} content={itemLabel} isCollapsed={collapsed}>
                     <button
                       onClick={() => setActiveRoute(item.id)}
                       className={cn(
@@ -854,7 +874,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
                     >
                       {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[var(--primary-gold)] rounded-r-md transition-all" />}
                       <Icon className={`shrink-0 transition-colors ${isActive ? 'text-[var(--primary-gold)] w-5 h-5' : 'w-[18px] h-[18px] group-hover:text-[var(--text-primary)]'}`} />
-                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{item.label}</span>}
+                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{itemLabel}</span>}
                       {!collapsed && item.badge && (
                         <span className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[var(--primary-gold)] text-white text-[10px] font-bold shadow-sm ml-2">
                           {item.badge}
@@ -879,7 +899,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
             className={cn("w-full flex items-center h-8 rounded-md-custom text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors border border-transparent hover:border-[var(--border-color)]/50", collapsed ? 'justify-center' : 'px-3 gap-3')}
           >
             {collapsed ? <PanelLeftOpen className="w-[18px] h-[18px]" /> : <PanelLeftClose className="w-[18px] h-[18px]" />}
-            {!collapsed && <span className="text-xs font-medium">Collapse sidebar</span>}
+            {!collapsed && <span className="text-xs font-medium">{t('templates27BillingQuotaManager.collapseSidebar')}</span>}
           </button>
         )}
       </div>
@@ -901,6 +921,7 @@ const MOCK_QUOTAS = [
 ];
 
 const QuotaActionsDropdown = ({  workspace, onAdjustQuota, onViewDetails  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
 
@@ -923,14 +944,14 @@ const QuotaActionsDropdown = ({  workspace, onAdjustQuota, onViewDetails  }: any
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 animate-in fade-in zoom-in-95 duration-100">
           <button onClick={() => { onViewDetails(); setIsOpen(false); }} className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> View workspace
+            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates27BillingQuotaManager.viewWorkspace')}
           </button>
           <button onClick={() => { onAdjustQuota(workspace); setIsOpen(false); }} className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <SlidersHorizontal className="w-4 h-4 text-[var(--text-secondary)]"/> Adjust quota
+            <SlidersHorizontal className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates27BillingQuotaManager.adjustQuota')}
           </button>
           <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2" />
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-warning)] hover:bg-[#FDF9F0] flex items-center gap-2 transition-colors font-medium">
-            <Ban className="w-4 h-4 opacity-80"/> Suspend
+            <Ban className="w-4 h-4 opacity-80"/> {t('templates27BillingQuotaManager.suspend')}
           </button>
         </div>
       )}
@@ -939,6 +960,7 @@ const QuotaActionsDropdown = ({  workspace, onAdjustQuota, onViewDetails  }: any
 };
 
 const PlatformQuotaManagementPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [planFilter, setPlanFilter] = useState('all');
@@ -1024,23 +1046,23 @@ const PlatformQuotaManagementPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Quota Management" 
-        subtitle="Monitor and enforce resource limits across all workspaces."
+      <PageHeader
+        title={t('templates27BillingQuotaManager.quotaPageTitle')}
+        subtitle={t('templates27BillingQuotaManager.quotaPageSubtitle')}
         actions={
           <>
-            <Button variant="outline" className="hidden sm:flex"><Download className="w-4 h-4 mr-2" /> Export data</Button>
-            <Button variant="outline"><Settings className="w-4 h-4 mr-2"/> Adjust default quota</Button>
+            <Button variant="outline" className="hidden sm:flex"><Download className="w-4 h-4 mr-2" /> {t('templates27BillingQuotaManager.exportData')}</Button>
+            <Button variant="outline"><Settings className="w-4 h-4 mr-2"/> {t('templates27BillingQuotaManager.adjustDefaultQuota')}</Button>
           </>
         }
       />
 
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="Total API Capacity" value="150M reqs" trend="0%" />
-          <MetricCard title="Total Usage (Mo)" value="82.4M reqs" trend="+5.2%" isUp={true} />
-          <MetricCard title="Over-quota Workspaces" value="14" trend="+2" isUp={false} inverseGood={true} />
-          <MetricCard title="Warning-level Workspaces" value="32" trend="-5" isUp={true} inverseGood={true} />
+          <MetricCard title={t('templates27BillingQuotaManager.metricTotalApiCapacity')} value="150M reqs" trend="0%" />
+          <MetricCard title={t('templates27BillingQuotaManager.metricTotalUsageMo')} value="82.4M reqs" trend="+5.2%" isUp={true} />
+          <MetricCard title={t('templates27BillingQuotaManager.metricOverQuotaWorkspaces')} value="14" trend="+2" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates27BillingQuotaManager.metricWarningWorkspaces')} value="32" trend="-5" isUp={true} inverseGood={true} />
         </div>
       </Section>
 
@@ -1050,79 +1072,79 @@ const PlatformQuotaManagementPage = ({  setActiveRoute  }: any) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               className="h-10 w-full pl-9 pr-3 rounded-md-custom border border-[var(--border-color)] bg-white text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
-              placeholder="Search workspaces..."
+              placeholder={t('templates27BillingQuotaManager.searchWorkspacesPlaceholder')}
               value={search}
               onChange={(e: any) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex w-full sm:w-auto gap-3 shrink-0">
             <div className="w-full sm:w-40">
-              <Select 
-                value={statusFilter} 
-                onChange={setStatusFilter} 
+              <Select
+                value={statusFilter}
+                onChange={setStatusFilter}
                 options={[
-                  {label: 'All Statuses', value: 'all'}, 
-                  {label: 'Normal', value: 'Normal'}, 
-                  {label: 'Warning', value: 'Warning'},
-                  {label: 'Over Quota', value: 'Over Quota'}
-                ]} 
-                placeholder="Status" 
+                  {label: t('templates27BillingQuotaManager.filterAllStatuses'), value: 'all'},
+                  {label: t('templates27BillingQuotaManager.statusNormal'), value: 'Normal'},
+                  {label: t('templates27BillingQuotaManager.statusWarning'), value: 'Warning'},
+                  {label: t('templates27BillingQuotaManager.statusOverQuota'), value: 'Over Quota'}
+                ]}
+                placeholder={t('templates27BillingQuotaManager.filterStatusPlaceholder')}
               />
             </div>
             <div className="w-full sm:w-32">
-              <Select 
-                value={planFilter} 
-                onChange={setPlanFilter} 
+              <Select
+                value={planFilter}
+                onChange={setPlanFilter}
                 options={[
-                  {label: 'All Plans', value: 'all'}, 
-                  {label: 'Free', value: 'Free'}, 
-                  {label: 'Pro', value: 'Pro'},
-                  {label: 'Enterprise', value: 'Enterprise'}
-                ]} 
-                placeholder="Plan" 
+                  {label: t('templates27BillingQuotaManager.filterAllPlans'), value: 'all'},
+                  {label: t('templates27BillingQuotaManager.planFree'), value: 'Free'},
+                  {label: t('templates27BillingQuotaManager.planPro'), value: 'Pro'},
+                  {label: t('templates27BillingQuotaManager.planEnterprise'), value: 'Enterprise'}
+                ]}
+                placeholder={t('templates27BillingQuotaManager.filterPlanPlaceholder')}
               />
             </div>
           </div>
           {(search || statusFilter !== 'all' || planFilter !== 'all') && (
-            <Button variant="tertiary" onClick={() => {setSearch(''); setStatusFilter('all'); setPlanFilter('all');}} className="px-3">Clear filters</Button>
+            <Button variant="tertiary" onClick={() => {setSearch(''); setStatusFilter('all'); setPlanFilter('all');}} className="px-3">{t('templates27BillingQuotaManager.clearFilters')}</Button>
           )}
         </div>
       </Section>
 
       <Section>
-        <DataTable 
-          columns={["Workspace", "Plan", "API Usage", "Storage Usage", "Status", "Last Updated", ""]}
+        <DataTable
+          columns={[t('templates27BillingQuotaManager.colWorkspace'), t('templates27BillingQuotaManager.colPlan'), t('templates27BillingQuotaManager.colApiUsage'), t('templates27BillingQuotaManager.colStorageUsage'), t('templates27BillingQuotaManager.colStatus'), t('templates27BillingQuotaManager.colLastUpdated'), ""]}
           data={mappedData}
           loading={isLoading}
         />
       </Section>
 
       {/* Adjust Quota Modal */}
-      <Modal 
-        isOpen={isAdjustOpen} 
+      <Modal
+        isOpen={isAdjustOpen}
         onClose={() => !isProcessing && setIsAdjustOpen(false)}
-        title="Adjust Quota"
-        description={selectedWs ? `Modify resource limits for ${selectedWs.name}.` : ''}
+        title={t('templates27BillingQuotaManager.adjustQuotaModalTitle')}
+        description={selectedWs ? t('templates27BillingQuotaManager.adjustQuotaModalDesc', { name: selectedWs.name }) : ''}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsAdjustOpen(false)} disabled={isProcessing}>Cancel</Button>
-            <Button onClick={handleAdjustSave} isLoading={isProcessing}>Save Changes</Button>
+            <Button variant="outline" onClick={() => setIsAdjustOpen(false)} disabled={isProcessing}>{t('templates27BillingQuotaManager.cancel')}</Button>
+            <Button onClick={handleAdjustSave} isLoading={isProcessing}>{t('templates27BillingQuotaManager.saveChanges')}</Button>
           </>
         }
       >
         <div className="space-y-5">
            <Alert variant="warning">
-             Changing quota limits directly affects billing logic and customer SLAs. Ensure the customer has agreed to overage charges if applicable.
+             {t('templates27BillingQuotaManager.adjustQuotaWarning')}
            </Alert>
            <div className="space-y-4">
-             <Input 
-               label="API Limit (thousands req/mo)" 
+             <Input
+               label={t('templates27BillingQuotaManager.apiLimitLabel')}
                type="number"
                value={apiLimit}
                onChange={e => setApiLimit(e.target.value)}
              />
-             <Input 
-               label="Storage Limit (GB)" 
+             <Input
+               label={t('templates27BillingQuotaManager.storageLimitLabel')}
                type="number"
                value={storageLimit}
                onChange={e => setStorageLimit(e.target.value)}
@@ -1138,6 +1160,7 @@ const PlatformQuotaManagementPage = ({  setActiveRoute  }: any) => {
 
 // --- SHARED USAGE CARD ---
 const EnterpriseUsageCard = ({  title, current, max, unit, icon: Icon  }: any) => {
+  const t = useT();
   const percent = Math.min((current / max) * 100, 100);
   const isWarning = percent >= 80;
 
@@ -1156,8 +1179,8 @@ const EnterpriseUsageCard = ({  title, current, max, unit, icon: Icon  }: any) =
          <div className={cn("h-2 rounded-full transition-all duration-500", isWarning ? "bg-[#D97C7C]" : "bg-[#5C856A]")} style={{ width: `${percent}%` }}></div>
       </div>
       <div className="flex items-center justify-between mt-2">
-        <span className="text-[11px] font-medium text-[var(--text-secondary)]">{percent.toFixed(1)}% used</span>
-        {isWarning && <span className="text-[11px] text-[#9B5050] font-medium flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> Approaching limit</span>}
+        <span className="text-[11px] font-medium text-[var(--text-secondary)]">{t('templates27BillingQuotaManager.percentUsed', { percent: percent.toFixed(1) })}</span>
+        {isWarning && <span className="text-[11px] text-[#9B5050] font-medium flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> {t('templates27BillingQuotaManager.approachingLimit')}</span>}
       </div>
     </Card>
   );
@@ -1166,6 +1189,7 @@ const EnterpriseUsageCard = ({  title, current, max, unit, icon: Icon  }: any) =
 // --- PLATFORM ENTERPRISE BILLING DETAIL PAGE ---
 
 const PlatformEnterpriseBillingDetailPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isLoading, setIsLoading] = useState(true);
   const [isAdjustPlanModalOpen, setIsAdjustPlanModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -1213,50 +1237,50 @@ const PlatformEnterpriseBillingDetailPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        showBack 
+      <PageHeader
+        showBack
         onBack={() => setActiveRoute('billing')}
-        title="Production AI" 
+        title="Production AI"
         subtitle="ws_prod_01 • Enterprise Plan"
         actions={
           <>
             <Button variant="outline" className="hidden sm:flex" onClick={() => setActiveRoute('workspace-details')}>
-              <ExternalLink className="w-4 h-4 mr-2" /> View workspace
+              <ExternalLink className="w-4 h-4 mr-2" /> {t('templates27BillingQuotaManager.viewWorkspace')}
             </Button>
-            <Button onClick={() => setIsAdjustPlanModalOpen(true)}>Adjust plan</Button>
+            <Button onClick={() => setIsAdjustPlanModalOpen(true)}>{t('templates27BillingQuotaManager.adjustPlan')}</Button>
             <Button variant="tertiary" size="icon"><MoreVertical className="w-4 h-4" /></Button>
           </>
         }
       />
 
       <Section>
-         <Alert variant="error" title="Action Required">
-            The most recent invoice (INV-2026-004) failed to process. Services may be degraded if payment is not received within 3 days.
+         <Alert variant="error" title={t('templates27BillingQuotaManager.actionRequired')}>
+            {t('templates27BillingQuotaManager.invoiceFailedMsg')}
          </Alert>
       </Section>
 
-      <Section title="Enterprise Summary">
+      <Section title={t('templates27BillingQuotaManager.enterpriseSummary')}>
         <Card className="p-5 sm:p-6 overflow-hidden relative">
            <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-[var(--primary-gold)]/5 to-transparent pointer-events-none" />
            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 relative z-10 items-start">
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Status</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates27BillingQuotaManager.colStatus')}</p>
                 <Badge variant="operational" className="py-1">Active</Badge>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Plan</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates27BillingQuotaManager.colPlan')}</p>
                 <Badge variant="current" className="py-1">Enterprise</Badge>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Billing Cycle</p>
-                <div className="text-sm font-medium text-[var(--text-primary)]">Monthly</div>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates27BillingQuotaManager.billingCycle')}</p>
+                <div className="text-sm font-medium text-[var(--text-primary)]">{t('templates27BillingQuotaManager.monthly')}</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Renewal Date</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates27BillingQuotaManager.renewalDate')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">Nov 01, 2026</div>
              </div>
              <div className="lg:col-span-2">
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Owner / Billing Contact</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates27BillingQuotaManager.ownerBillingContact')}</p>
                 <div className="flex items-center gap-2">
                    <div className="w-6 h-6 rounded-full bg-[var(--bg-app)] border border-[var(--border-color)] flex items-center justify-center text-[10px] font-bold text-[var(--primary-gold)]">A</div>
                    <div className="flex flex-col">
@@ -1269,74 +1293,74 @@ const PlatformEnterpriseBillingDetailPage = ({  setActiveRoute  }: any) => {
         </Card>
       </Section>
 
-      <Section title="Metrics Overview">
+      <Section title={t('templates27BillingQuotaManager.metricsOverview')}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="Monthly Revenue" value="$2,400" trend="0%" />
-          <MetricCard title="API Requests (Mo)" value="2.4M" trend="+12%" isUp={true} />
-          <MetricCard title="Storage Used" value="84 GB" trend="+5%" isUp={true} />
-          <MetricCard title="Active Users" value="14" trend="+2" isUp={true} />
+          <MetricCard title={t('templates27BillingQuotaManager.metricMonthlyRevenue')} value="$2,400" trend="0%" />
+          <MetricCard title={t('templates27BillingQuotaManager.metricApiRequestsMo')} value="2.4M" trend="+12%" isUp={true} />
+          <MetricCard title={t('templates27BillingQuotaManager.metricStorageUsed')} value="84 GB" trend="+5%" isUp={true} />
+          <MetricCard title={t('templates27BillingQuotaManager.metricActiveUsers')} value="14" trend="+2" isUp={true} />
         </div>
       </Section>
 
       <Section>
         <Tabs defaultValue="invoices" tabs={[
-          { 
-            id: 'usage', 
-            label: 'Usage Details', 
+          {
+            id: 'usage',
+            label: t('templates27BillingQuotaManager.tabUsageDetails'),
             content: (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <EnterpriseUsageCard title="API Requests" icon={Zap} current={2400000} max={10000000} unit="reqs" />
-                 <EnterpriseUsageCard title="Storage Used" icon={HardDrive} current={84} max={500} unit="GB" />
+                 <EnterpriseUsageCard title={t('templates27BillingQuotaManager.apiRequests')} icon={Zap} current={2400000} max={10000000} unit="reqs" />
+                 <EnterpriseUsageCard title={t('templates27BillingQuotaManager.metricStorageUsed')} icon={HardDrive} current={84} max={500} unit="GB" />
               </div>
             )
           },
-          { 
-            id: 'invoices', 
-            label: 'Invoices', 
+          {
+            id: 'invoices',
+            label: t('templates27BillingQuotaManager.tabInvoices'),
             content: (
-              <DataTable 
-                columns={["Invoice ID", "Date", "Amount", "Status", ""]}
+              <DataTable
+                columns={[t('templates27BillingQuotaManager.colInvoiceId'), t('templates27BillingQuotaManager.colDate'), t('templates27BillingQuotaManager.colAmount'), t('templates27BillingQuotaManager.colStatus'), ""]}
                 data={invoiceData}
                 loading={isLoading}
                 pagination={false}
               />
             )
           },
-          { 
-            id: 'activity', 
-            label: 'Activity', 
+          {
+            id: 'activity',
+            label: t('templates27BillingQuotaManager.tabActivity'),
             content: (
-              <DataTable 
-                columns={["Timestamp", "Event", "Actor"]}
+              <DataTable
+                columns={[t('templates27BillingQuotaManager.colTimestamp'), t('templates27BillingQuotaManager.colEvent'), t('templates27BillingQuotaManager.colActor')]}
                 data={activityData}
                 loading={isLoading}
                 pagination={false}
               />
             )
           },
-          { 
-            id: 'settings', 
-            label: 'Billing Settings', 
+          {
+            id: 'settings',
+            label: t('templates27BillingQuotaManager.tabBillingSettings'),
             content: (
               <div className="max-w-2xl space-y-6">
                 <Card className="p-6">
-                   <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">Contract Details</h3>
+                   <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 border-b border-[var(--border-color)] pb-3">{t('templates27BillingQuotaManager.contractDetails')}</h3>
                    <div className="space-y-5">
-                     <Select 
-                       label="Current Plan" 
-                       value="Enterprise" 
+                     <Select
+                       label={t('templates27BillingQuotaManager.currentPlanLabel')}
+                       value="Enterprise"
                        disabled
-                       options={[{label: 'Enterprise', value: 'Enterprise'}]}
-                       helperText="To change plans, use the 'Adjust Plan' action above."
+                       options={[{label: t('templates27BillingQuotaManager.planEnterprise'), value: 'Enterprise'}]}
+                       helperText={t('templates27BillingQuotaManager.currentPlanHelper')}
                      />
-                     <Input 
-                       label="Billing Notes" 
-                       value="Net 30 terms. Send copy to finance@acme.com." 
+                     <Input
+                       label={t('templates27BillingQuotaManager.billingNotesLabel')}
+                       value="Net 30 terms. Send copy to finance@acme.com."
                        onChange={() => {}}
                        multiline
                      />
                      <div className="pt-4 flex justify-end">
-                       <Button>Save notes</Button>
+                       <Button>{t('templates27BillingQuotaManager.saveNotes')}</Button>
                      </div>
                    </div>
                 </Card>
@@ -1347,46 +1371,46 @@ const PlatformEnterpriseBillingDetailPage = ({  setActiveRoute  }: any) => {
       </Section>
 
       {/* Adjust Plan Modal */}
-      <Modal 
-        isOpen={isAdjustPlanModalOpen} 
+      <Modal
+        isOpen={isAdjustPlanModalOpen}
         onClose={() => !isProcessing && setIsAdjustPlanModalOpen(false)}
-        title="Adjust Subscription Plan"
-        description="Modify the plan and custom pricing for this enterprise workspace."
+        title={t('templates27BillingQuotaManager.adjustSubscriptionPlanTitle')}
+        description={t('templates27BillingQuotaManager.adjustSubscriptionPlanDesc')}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsAdjustPlanModalOpen(false)} disabled={isProcessing}>Cancel</Button>
-            <Button onClick={handleAdjustPlan} isLoading={isProcessing}>Update Plan</Button>
+            <Button variant="outline" onClick={() => setIsAdjustPlanModalOpen(false)} disabled={isProcessing}>{t('templates27BillingQuotaManager.cancel')}</Button>
+            <Button onClick={handleAdjustPlan} isLoading={isProcessing}>{t('templates27BillingQuotaManager.updatePlan')}</Button>
           </>
         }
       >
         <div className="space-y-4">
-          <Select 
-            label="Plan Tier" 
+          <Select
+            label={t('templates27BillingQuotaManager.planTierLabel')}
             options={[
-              {label: 'Free Tier', value: 'Free'}, 
-              {label: 'Pro', value: 'Pro'}, 
-              {label: 'Enterprise', value: 'Enterprise'}
+              {label: t('templates27BillingQuotaManager.planFreeTier'), value: 'Free'},
+              {label: t('templates27BillingQuotaManager.planPro'), value: 'Pro'},
+              {label: t('templates27BillingQuotaManager.planEnterprise'), value: 'Enterprise'}
             ]}
             value={newPlan}
             onChange={setNewPlan}
           />
-          
+
           <div className="space-y-2 w-full">
-            <Label>Custom MRR Override ($)</Label>
+            <Label>{t('templates27BillingQuotaManager.customMrrOverrideLabel')}</Label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]">$</span>
-              <Input 
+              <Input
                 type="number"
-                value={customPrice} 
-                onChange={e => setCustomPrice(e.target.value)} 
+                value={customPrice}
+                onChange={e => setCustomPrice(e.target.value)}
                 className="pl-7"
               />
             </div>
-            <p className="text-xs text-[var(--text-secondary)]">Leave blank to use default plan pricing.</p>
+            <p className="text-xs text-[var(--text-secondary)]">{t('templates27BillingQuotaManager.customMrrHelper')}</p>
           </div>
 
           <Alert variant="warning" className="mt-2">
-            Proration will be automatically applied to the next invoice based on the change date.
+            {t('templates27BillingQuotaManager.prorationNotice')}
           </Alert>
         </div>
       </Modal>
@@ -1398,6 +1422,7 @@ const PlatformEnterpriseBillingDetailPage = ({  setActiveRoute  }: any) => {
 
 // --- PLATFORM BILLING OVERVIEW PAGE ---
 const PlatformBillingOverviewPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isLoading, setIsLoading] = useState(true);
   const [dateRange, setDateRange] = useState('30d');
 
@@ -1423,65 +1448,65 @@ const PlatformBillingOverviewPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Billing Overview" 
-        subtitle="Monitor revenue, usage, and billing health across all workspaces."
+      <PageHeader
+        title={t('templates27BillingQuotaManager.billingOverviewTitle')}
+        subtitle={t('templates27BillingQuotaManager.billingOverviewSubtitle')}
         actions={
           <>
             <div className="hidden sm:block w-36">
-              <Select 
-                value={dateRange} 
-                onChange={setDateRange} 
-                options={[{label: 'Last 30 Days', value: '30d'}, {label: 'This Quarter', value: '90d'}, {label: 'This Year', value: '365d'}]} 
-                placeholder="Date Range" 
+              <Select
+                value={dateRange}
+                onChange={setDateRange}
+                options={[{label: t('templates27BillingQuotaManager.dateRangeLast30Days'), value: '30d'}, {label: t('templates27BillingQuotaManager.dateRangeThisQuarter'), value: '90d'}, {label: t('templates27BillingQuotaManager.dateRangeThisYear'), value: '365d'}]}
+                placeholder={t('templates27BillingQuotaManager.dateRangePlaceholder')}
               />
             </div>
-            <Button variant="outline"><Download className="w-4 h-4 mr-2"/> Export data</Button>
+            <Button variant="outline"><Download className="w-4 h-4 mr-2"/> {t('templates27BillingQuotaManager.exportData')}</Button>
           </>
         }
       />
 
-      <Section title="Revenue Metrics">
+      <Section title={t('templates27BillingQuotaManager.revenueMetrics')}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="MRR" value="$124,500" trend="+8.4%" isUp={true} />
-          <MetricCard title="Total Revenue" value="$132,100" trend="+12.1%" isUp={true} />
-          <MetricCard title="Active Subscriptions" value="1,892" trend="+42" isUp={true} />
-          <MetricCard title="Churn Rate" value="1.2%" trend="-0.4%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates27BillingQuotaManager.metricMrr')} value="$124,500" trend="+8.4%" isUp={true} />
+          <MetricCard title={t('templates27BillingQuotaManager.metricTotalRevenue')} value="$132,100" trend="+12.1%" isUp={true} />
+          <MetricCard title={t('templates27BillingQuotaManager.metricActiveSubscriptions')} value="1,892" trend="+42" isUp={true} />
+          <MetricCard title={t('templates27BillingQuotaManager.metricChurnRate')} value="1.2%" trend="-0.4%" isUp={false} inverseGood={true} />
         </div>
       </Section>
 
-      <Section title="Platform Usage">
+      <Section title={t('templates27BillingQuotaManager.platformUsage')}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="Total API Requests" value="45.2M" trend="+14%" isUp={true} />
-          <MetricCard title="Storage Usage" value="12.4 TB" trend="+8%" isUp={true} />
-          <MetricCard title="Active Workspaces" value="1,204" trend="+12" isUp={true} />
-          <MetricCard title="Over-quota Workspaces" value="14" trend="-2" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates27BillingQuotaManager.metricTotalApiRequests')} value="45.2M" trend="+14%" isUp={true} />
+          <MetricCard title={t('templates27BillingQuotaManager.metricStorageUsage')} value="12.4 TB" trend="+8%" isUp={true} />
+          <MetricCard title={t('templates27BillingQuotaManager.metricActiveWorkspaces')} value="1,204" trend="+12" isUp={true} />
+          <MetricCard title={t('templates27BillingQuotaManager.metricOverQuotaWorkspaces')} value="14" trend="-2" isUp={false} inverseGood={true} />
         </div>
       </Section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         <div className="lg:col-span-2 space-y-4">
-          <Section title="Top Workspaces">
-            <DataTable 
-              columns={["Workspace", "Plan", "Revenue", "Usage", "Status"]}
+          <Section title={t('templates27BillingQuotaManager.topWorkspaces')}>
+            <DataTable
+              columns={[t('templates27BillingQuotaManager.colWorkspace'), t('templates27BillingQuotaManager.colPlan'), t('templates27BillingQuotaManager.colRevenue'), t('templates27BillingQuotaManager.colUsage'), t('templates27BillingQuotaManager.colStatus')]}
               data={tableData}
               loading={isLoading}
               pagination={false}
             />
           </Section>
         </div>
-        
+
         <div className="space-y-6 sm:space-y-8">
-           <Section title="Alerts & Risks">
+           <Section title={t('templates27BillingQuotaManager.alertsAndRisks')}>
              <div className="bg-[var(--bg-card)] rounded-md-custom border border-[var(--border-color)] p-4 shadow-soft-sm space-y-3">
-                <Alert variant="error" title="Payment Failed">
-                  Invoice INV-2026-004 failed for <span className="font-semibold cursor-pointer hover:underline" onClick={() => setActiveRoute('enterprise-billing-details')}>Dev Cluster Alpha</span>.
+                <Alert variant="error" title={t('templates27BillingQuotaManager.alertPaymentFailedTitle')}>
+                  {t('templates27BillingQuotaManager.alertInvoiceFailedPrefix')} <span className="font-semibold cursor-pointer hover:underline" onClick={() => setActiveRoute('enterprise-billing-details')}>Dev Cluster Alpha</span>.
                 </Alert>
-                <Alert variant="warning" title="Quota Warning">
-                  <span className="font-semibold cursor-pointer hover:underline" onClick={() => setActiveRoute('enterprise-billing-details')}>Data Analytics Core</span> is at 95% of its API quota.
+                <Alert variant="warning" title={t('templates27BillingQuotaManager.alertQuotaWarningTitle')}>
+                  <span className="font-semibold cursor-pointer hover:underline" onClick={() => setActiveRoute('enterprise-billing-details')}>Data Analytics Core</span> {t('templates27BillingQuotaManager.alertQuotaWarningSuffix')}
                 </Alert>
-                <Alert variant="info" title="Suspended Account">
-                  Workspace <span className="font-semibold">Legacy Systems</span> was suspended due to policy violation.
+                <Alert variant="info" title={t('templates27BillingQuotaManager.alertSuspendedAccountTitle')}>
+                  {t('templates27BillingQuotaManager.alertSuspendedWorkspacePrefix')} <span className="font-semibold">Legacy Systems</span> {t('templates27BillingQuotaManager.alertSuspendedWorkspaceSuffix')}
                 </Alert>
              </div>
            </Section>
@@ -1494,6 +1519,7 @@ const PlatformBillingOverviewPage = ({  setActiveRoute  }: any) => {
 // --- PLATFORM ADMIN RESET PASSWORD PAGE ---
 
 const PlatformAdminResetPasswordPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [step, setStep] = useState('form');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -1534,11 +1560,11 @@ const PlatformAdminResetPasswordPage = ({  setActiveRoute  }: any) => {
     <PageContainer maxWidth="narrow" className="pt-8">
       {step === 'form' && (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <PageHeader 
-            showBack 
+          <PageHeader
+            showBack
             onBack={() => setActiveRoute('admin-details')}
-            title="Reset Admin Password" 
-            subtitle="Trigger a password reset for this administrator."
+            title={t('templates27BillingQuotaManager.resetAdminPasswordTitle')}
+            subtitle={t('templates27BillingQuotaManager.resetAdminPasswordSubtitle')}
           />
 
           <div className="space-y-6 mt-8">
@@ -1560,18 +1586,18 @@ const PlatformAdminResetPasswordPage = ({  setActiveRoute  }: any) => {
 
             <Alert variant="warning" className="bg-[#FDF9F0] border-[#E6C07B]/40">
               <div className="space-y-2">
-                <h4 className="text-sm font-semibold text-[#9E814D]">Important Security Notice</h4>
+                <h4 className="text-sm font-semibold text-[#9E814D]">{t('templates27BillingQuotaManager.importantSecurityNotice')}</h4>
                 <p className="text-xs text-[#9E814D]/90 leading-relaxed">
-                  This action will send a password reset email to the admin. They will need to set a new password before accessing the platform again. Their active sessions will remain open until the password is officially changed.
+                  {t('templates27BillingQuotaManager.resetPasswordNoticeBody')}
                 </p>
-                <p className="text-[11px] text-[#9E814D]/70 font-mono mt-2">This action will be logged for audit purposes.</p>
+                <p className="text-[11px] text-[#9E814D]/70 font-mono mt-2">{t('templates27BillingQuotaManager.resetPasswordAuditNotice')}</p>
               </div>
             </Alert>
 
             <div className="pt-6 border-t border-[var(--border-color)] flex items-center justify-end gap-3">
-               <Button variant="tertiary" onClick={() => setActiveRoute('admin-details')}>Cancel</Button>
+               <Button variant="tertiary" onClick={() => setActiveRoute('admin-details')}>{t('templates27BillingQuotaManager.cancel')}</Button>
                <Button onClick={() => setIsConfirmModalOpen(true)} disabled={adminData.status === 'Suspended'}>
-                 <Mail className="w-4 h-4 mr-2"/> Send reset email
+                 <Mail className="w-4 h-4 mr-2"/> {t('templates27BillingQuotaManager.sendResetEmail')}
                </Button>
             </div>
           </div>
@@ -1580,23 +1606,23 @@ const PlatformAdminResetPasswordPage = ({  setActiveRoute  }: any) => {
 
       {step === 'success' && (
         <div className="animate-in fade-in zoom-in-[0.98] duration-500">
-           <PageHeader 
-             showBack 
+           <PageHeader
+             showBack
              onBack={() => setActiveRoute('admin-details')}
-             title="Reset email sent" 
+             title={t('templates27BillingQuotaManager.resetEmailSentTitle')}
            />
            <Card className="p-8 mt-8 shadow-soft-md flex flex-col items-center text-center">
              <div className="w-16 h-16 rounded-full bg-[#F3F9F5] border border-[#8FBFA0]/40 flex items-center justify-center mb-6">
                <CheckCircle2 className="w-8 h-8 text-[#5C856A]" />
              </div>
-             <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">Reset email dispatched</h2>
+             <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">{t('templates27BillingQuotaManager.resetEmailDispatchedHeading')}</h2>
              <p className="text-sm text-[var(--text-secondary)] mb-8 max-w-sm">
-               An email has been sent to <strong className="text-[var(--text-primary)]">{adminData.email}</strong> with instructions to set a new password.
+               {t('templates27BillingQuotaManager.resetEmailSentBodyPrefix')} <strong className="text-[var(--text-primary)]">{adminData.email}</strong> {t('templates27BillingQuotaManager.resetEmailSentBodySuffix')}
              </p>
              <div className="flex gap-3">
-               <Button variant="outline" onClick={() => setActiveRoute('admin-details')}>Back to Admin Details</Button>
+               <Button variant="outline" onClick={() => setActiveRoute('admin-details')}>{t('templates27BillingQuotaManager.backToAdminDetails')}</Button>
                <Button onClick={handleResend} disabled={countdown > 0} isLoading={isSubmitting}>
-                 {countdown > 0 ? `Resend in ${countdown}s` : 'Resend email'}
+                 {countdown > 0 ? t('templates27BillingQuotaManager.resendInSeconds', { seconds: countdown }) : t('templates27BillingQuotaManager.resendEmail')}
                </Button>
              </div>
            </Card>
@@ -1604,15 +1630,15 @@ const PlatformAdminResetPasswordPage = ({  setActiveRoute  }: any) => {
       )}
 
       {/* Confirmation Modal */}
-      <Modal 
-        isOpen={isConfirmModalOpen} 
+      <Modal
+        isOpen={isConfirmModalOpen}
         onClose={() => !isSubmitting && setIsConfirmModalOpen(false)}
-        title="Reset password for this admin?"
-        description="This will send a reset link to the admin’s email address."
+        title={t('templates27BillingQuotaManager.confirmResetTitle')}
+        description={t('templates27BillingQuotaManager.confirmResetDesc')}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsConfirmModalOpen(false)} disabled={isSubmitting}>Cancel</Button>
-            <Button onClick={handleSendReset} isLoading={isSubmitting}>Confirm Reset</Button>
+            <Button variant="outline" onClick={() => setIsConfirmModalOpen(false)} disabled={isSubmitting}>{t('templates27BillingQuotaManager.cancel')}</Button>
+            <Button onClick={handleSendReset} isLoading={isSubmitting}>{t('templates27BillingQuotaManager.confirmReset')}</Button>
           </>
         }
       />
@@ -1623,6 +1649,7 @@ const PlatformAdminResetPasswordPage = ({  setActiveRoute  }: any) => {
 
 // --- PLATFORM ADMIN DETAILS PAGE ---
 const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -1665,12 +1692,12 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
     setAdminData(prev => ({ ...prev, role: newRole }));
     setIsProcessing(false);
     setIsRoleModalOpen(false);
-    showSuccess("Role updated successfully.");
+    showSuccess(t('templates27BillingQuotaManager.roleUpdatedSuccess'));
   };
 
   const handleSuspendToggle = async () => {
     if (adminData.role === 'Super Admin' && adminData.status === 'Active') {
-      alert("Cannot suspend the primary Super Admin. Promote another user first.");
+      alert(t('templates27BillingQuotaManager.cannotSuspendPrimarySuperAdmin'));
       setIsSuspendModalOpen(false);
       return;
     }
@@ -1679,12 +1706,12 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
     setAdminData(prev => ({ ...prev, status: prev.status === 'Active' ? 'Suspended' : 'Active' }));
     setIsProcessing(false);
     setIsSuspendModalOpen(false);
-    showSuccess(`Admin ${adminData.status === 'Active' ? 'suspended' : 'activated'} successfully.`);
+    showSuccess(adminData.status === 'Active' ? t('templates27BillingQuotaManager.adminSuspendedSuccess') : t('templates27BillingQuotaManager.adminActivatedSuccess'));
   };
 
   const handleRemove = async () => {
     if (adminData.role === 'Super Admin') {
-      setRemoveError("Cannot remove the primary Super Admin. Please transfer ownership or change role first.");
+      setRemoveError(t('templates27BillingQuotaManager.cannotRemovePrimarySuperAdmin'));
       return;
     }
     setIsProcessing(true);
@@ -1716,17 +1743,17 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
   ]);
 
   const permissionsList = adminData.role === 'Super Admin' ? [
-    { title: 'Global Platform Settings', desc: 'Full access to read and write all platform configurations.' },
-    { title: 'Billing & Subscriptions', desc: 'Manage payment methods, plans, and view all invoices.' },
-    { title: 'User & Admin Management', desc: 'Invite, suspend, and remove platform administrators or workspace owners.' },
-    { title: 'Workspace Oversight', desc: 'Full access to view and manage all tenant workspaces and resources.' }
+    { title: t('templates27BillingQuotaManager.permGlobalPlatformSettingsTitle'), desc: t('templates27BillingQuotaManager.permGlobalPlatformSettingsDesc') },
+    { title: t('templates27BillingQuotaManager.permBillingSubscriptionsTitle'), desc: t('templates27BillingQuotaManager.permBillingSubscriptionsDesc') },
+    { title: t('templates27BillingQuotaManager.permUserAdminManagementTitle'), desc: t('templates27BillingQuotaManager.permUserAdminManagementDesc') },
+    { title: t('templates27BillingQuotaManager.permWorkspaceOversightTitle'), desc: t('templates27BillingQuotaManager.permWorkspaceOversightDesc') }
   ] : adminData.role === 'Admin' ? [
-    { title: 'Workspace Management', desc: 'Create, suspend, and manage all tenant workspaces.' },
-    { title: 'User Management', desc: 'Invite and manage users within specific workspaces.' },
-    { title: 'API Key Management', desc: 'View, rotate, and revoke platform API keys.' }
+    { title: t('templates27BillingQuotaManager.permWorkspaceManagementTitle'), desc: t('templates27BillingQuotaManager.permWorkspaceManagementDesc') },
+    { title: t('templates27BillingQuotaManager.permUserManagementTitle'), desc: t('templates27BillingQuotaManager.permUserManagementDesc') },
+    { title: t('templates27BillingQuotaManager.permApiKeyManagementTitle'), desc: t('templates27BillingQuotaManager.permApiKeyManagementDesc') }
   ] : [
-    { title: 'Read-only Oversight', desc: 'View workspace configurations and health metrics.' },
-    { title: 'Audit Logs', desc: 'Access and export platform activity and security logs.' }
+    { title: t('templates27BillingQuotaManager.permReadOnlyOversightTitle'), desc: t('templates27BillingQuotaManager.permReadOnlyOversightDesc') },
+    { title: t('templates27BillingQuotaManager.permAuditLogsTitle'), desc: t('templates27BillingQuotaManager.permAuditLogsDesc') }
   ];
 
   return (
@@ -1748,34 +1775,34 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
         actions={
           <>
             <Button variant="outline" onClick={() => { setNewRole(adminData.role); setIsRoleModalOpen(true); }} className="hidden sm:flex">
-              <Shield className="w-4 h-4 mr-2" /> Change role
+              <Shield className="w-4 h-4 mr-2" /> {t('templates27BillingQuotaManager.changeRole')}
             </Button>
             <Button variant="outline" onClick={() => setActiveRoute('admin-reset-password')} className="hidden sm:flex">
-              <Lock className="w-4 h-4 mr-2" /> Reset password
+              <Lock className="w-4 h-4 mr-2" /> {t('templates27BillingQuotaManager.resetPassword')}
             </Button>
-            
+
             {/* Mobile / Dropdown Menu */}
             <div className="relative group">
               <Button variant="tertiary" size="icon"><MoreVertical className="w-4 h-4" /></Button>
               <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-100 focus-within:opacity-100 focus-within:visible">
                 <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors sm:hidden" onClick={() => { setNewRole(adminData.role); setIsRoleModalOpen(true); }}>
-                  <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> Change role
+                  <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates27BillingQuotaManager.changeRole')}
                 </button>
                 <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors sm:hidden" onClick={() => setActiveRoute('admin-reset-password')}>
-                  <Lock className="w-4 h-4 text-[var(--text-secondary)]"/> Reset password
+                  <Lock className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates27BillingQuotaManager.resetPassword')}
                 </button>
                 <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2 sm:hidden" />
                 <button onClick={() => setIsSuspendModalOpen(true)} className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-warning)] hover:bg-[#FDF9F0] flex items-center gap-2 transition-colors font-medium">
                   {adminData.status === 'Active' ? <Ban className="w-4 h-4 opacity-80"/> : <Unlock className="w-4 h-4 opacity-80"/>}
-                  {adminData.status === 'Active' ? 'Suspend access' : 'Restore access'}
+                  {adminData.status === 'Active' ? t('templates27BillingQuotaManager.suspendAccess') : t('templates27BillingQuotaManager.restoreAccess')}
                 </button>
                 <button onClick={() => setIsRemoveModalOpen(true)} className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] flex items-center gap-2 transition-colors font-medium">
-                  <Trash2 className="w-4 h-4 opacity-80"/> Remove admin
+                  <Trash2 className="w-4 h-4 opacity-80"/> {t('templates27BillingQuotaManager.removeAdmin')}
                 </button>
               </div>
             </div>
           </>
-        } 
+        }
       />
 
       {/* Summary Card */}
@@ -1792,15 +1819,15 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
                </div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Status</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates27BillingQuotaManager.colStatus')}</p>
                 <Badge variant={adminData.status === 'Active' ? 'operational' : 'error'} className="py-1">{adminData.status}</Badge>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Created</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates27BillingQuotaManager.created')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">{adminData.created}</div>
              </div>
              <div>
-                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">Last Active</p>
+                <p className="text-[11px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider mb-2">{t('templates27BillingQuotaManager.lastActive')}</p>
                 <div className="text-sm font-medium text-[var(--text-primary)]">{adminData.lastActive}</div>
              </div>
            </div>
@@ -1810,20 +1837,20 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
       {/* Tabs */}
       <Section>
         <Tabs defaultValue="overview" tabs={[
-          { 
-            id: 'overview', 
-            label: 'Overview', 
+          {
+            id: 'overview',
+            label: t('templates27BillingQuotaManager.tabOverview'),
             content: (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
                 {/* Left col - Recent Activity */}
                 <div className="lg:col-span-2 space-y-4">
                   <div className="flex items-center justify-between">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Recent Activity</h3>
-                     <Button variant="tertiary" size="sm" onClick={() => {}}>View all</Button>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates27BillingQuotaManager.recentActivity')}</h3>
+                     <Button variant="tertiary" size="sm" onClick={() => {}}>{t('templates27BillingQuotaManager.viewAll')}</Button>
                   </div>
-                  <DataTable 
+                  <DataTable
                     pagination={false}
-                    columns={["Timestamp", "Action", "Resource", "Status", "IP"]}
+                    columns={[t('templates27BillingQuotaManager.colTimestamp'), t('templates27BillingQuotaManager.colAction'), t('templates27BillingQuotaManager.colResource'), t('templates27BillingQuotaManager.colStatus'), t('templates27BillingQuotaManager.colIp')]}
                     data={activityTableData.slice(0, 3)}
                     loading={isLoading}
                     onRowClick={(row: any) => setSelectedEvent(row)}
@@ -1833,20 +1860,20 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
                 {/* Right col - Security Info */}
                 <div className="space-y-6 sm:space-y-8">
                    <div className="space-y-4">
-                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">Security Profile</h3>
+                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates27BillingQuotaManager.securityProfile')}</h3>
                      <div className="bg-[var(--bg-card)] rounded-md-custom border border-[var(--border-color)] p-4 shadow-soft-sm space-y-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <ShieldCheck className="w-4 h-4 text-[#5C856A]" />
-                            <span className="text-sm font-medium text-[var(--text-primary)]">MFA Enforced</span>
+                            <span className="text-sm font-medium text-[var(--text-primary)]">{t('templates27BillingQuotaManager.mfaEnforced')}</span>
                           </div>
-                          <Badge variant="operational">Enabled</Badge>
+                          <Badge variant="operational">{t('templates27BillingQuotaManager.enabled')}</Badge>
                         </div>
                         <div className="h-[1px] bg-[var(--border-color)]/50" />
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Laptop className="w-4 h-4 text-[var(--text-secondary)]" />
-                            <span className="text-sm font-medium text-[var(--text-primary)]">Active Sessions</span>
+                            <span className="text-sm font-medium text-[var(--text-primary)]">{t('templates27BillingQuotaManager.activeSessions')}</span>
                           </div>
                           <span className="text-sm font-medium text-[var(--text-primary)]">2</span>
                         </div>
@@ -1856,13 +1883,13 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
               </div>
             )
           },
-          { 
-            id: 'activity', 
-            label: 'Activity', 
+          {
+            id: 'activity',
+            label: t('templates27BillingQuotaManager.tabActivity'),
             content: (
               <div className="space-y-4">
-                <DataTable 
-                  columns={["Timestamp", "Action", "Resource", "Status", "IP"]}
+                <DataTable
+                  columns={[t('templates27BillingQuotaManager.colTimestamp'), t('templates27BillingQuotaManager.colAction'), t('templates27BillingQuotaManager.colResource'), t('templates27BillingQuotaManager.colStatus'), t('templates27BillingQuotaManager.colIp')]}
                   data={activityTableData}
                   loading={isLoading}
                   onRowClick={(row: any) => setSelectedEvent(row)}
@@ -1870,13 +1897,13 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
               </div>
             )
           },
-          { 
-            id: 'permissions', 
-            label: 'Permissions', 
+          {
+            id: 'permissions',
+            label: t('templates27BillingQuotaManager.tabPermissions'),
             content: (
               <div className="max-w-3xl space-y-6">
                 <Alert variant="info">
-                  Permissions are inferred from the <strong>{adminData.role}</strong> role. Granular custom permissions are currently managed via the API.
+                  {t('templates27BillingQuotaManager.permissionsInferredPrefix')} <strong>{adminData.role}</strong> {t('templates27BillingQuotaManager.permissionsInferredSuffix')}
                 </Alert>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {permissionsList.map((perm, i) => (
@@ -1893,92 +1920,92 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
       </Section>
 
       {/* Modals */}
-      <Modal 
-        isOpen={isRoleModalOpen} 
+      <Modal
+        isOpen={isRoleModalOpen}
         onClose={() => !isProcessing && setIsRoleModalOpen(false)}
-        title="Change Role"
-        description={`Update platform access level for ${adminData.name}.`}
+        title={t('templates27BillingQuotaManager.changeRoleModalTitle')}
+        description={t('templates27BillingQuotaManager.changeRoleModalDesc', { name: adminData.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsRoleModalOpen(false)} disabled={isProcessing}>Cancel</Button>
-            <Button onClick={handleRoleChange} isLoading={isProcessing} disabled={newRole === adminData.role}>Update Role</Button>
+            <Button variant="outline" onClick={() => setIsRoleModalOpen(false)} disabled={isProcessing}>{t('templates27BillingQuotaManager.cancel')}</Button>
+            <Button onClick={handleRoleChange} isLoading={isProcessing} disabled={newRole === adminData.role}>{t('templates27BillingQuotaManager.updateRole')}</Button>
           </>
         }
       >
         <div className="space-y-4">
-          <Select 
-            label="Platform Role" 
+          <Select
+            label={t('templates27BillingQuotaManager.platformRoleLabel')}
             options={[
-              {label: 'Super Admin', value: 'Super Admin'}, 
-              {label: 'Admin', value: 'Admin'}, 
-              {label: 'Support', value: 'Support'}
+              {label: t('templates27BillingQuotaManager.roleSuperAdmin'), value: 'Super Admin'},
+              {label: t('templates27BillingQuotaManager.roleAdmin'), value: 'Admin'},
+              {label: t('templates27BillingQuotaManager.roleSupport'), value: 'Support'}
             ]}
             value={newRole}
             onChange={setNewRole}
           />
           {newRole === 'Super Admin' && newRole !== adminData.role && (
             <Alert variant="warning" className="mt-2">
-              You are granting full system privileges. Ensure this user is authorized for billing and global operations.
+              {t('templates27BillingQuotaManager.grantingFullPrivilegesWarning')}
             </Alert>
           )}
           {adminData.role === 'Super Admin' && newRole !== 'Super Admin' && (
             <Alert variant="info" className="mt-2">
-              Downgrading a Super Admin will immediately revoke their access to billing and global settings.
+              {t('templates27BillingQuotaManager.downgradingSuperAdminNotice')}
             </Alert>
           )}
         </div>
       </Modal>
 
-      <Modal 
-        isOpen={isSuspendModalOpen} 
+      <Modal
+        isOpen={isSuspendModalOpen}
         onClose={() => !isProcessing && setIsSuspendModalOpen(false)}
-        title={adminData.status === 'Active' ? "Suspend Admin Access" : "Restore Admin Access"}
-        description={adminData.status === 'Active' ? `Are you sure you want to suspend ${adminData.name}?` : `Are you sure you want to restore access for ${adminData.name}?`}
+        title={adminData.status === 'Active' ? t('templates27BillingQuotaManager.suspendAdminAccessTitle') : t('templates27BillingQuotaManager.restoreAdminAccessTitle')}
+        description={adminData.status === 'Active' ? t('templates27BillingQuotaManager.confirmSuspendDesc', { name: adminData.name }) : t('templates27BillingQuotaManager.confirmRestoreDesc', { name: adminData.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsSuspendModalOpen(false)} disabled={isProcessing}>Cancel</Button>
+            <Button variant="outline" onClick={() => setIsSuspendModalOpen(false)} disabled={isProcessing}>{t('templates27BillingQuotaManager.cancel')}</Button>
             {adminData.status === 'Active' ? (
-              <Button variant="destructive" onClick={handleSuspendToggle} isLoading={isProcessing}>Suspend Access</Button>
+              <Button variant="destructive" onClick={handleSuspendToggle} isLoading={isProcessing}>{t('templates27BillingQuotaManager.suspendAccess')}</Button>
             ) : (
-              <Button onClick={handleSuspendToggle} isLoading={isProcessing}>Restore Access</Button>
+              <Button onClick={handleSuspendToggle} isLoading={isProcessing}>{t('templates27BillingQuotaManager.restoreAccess')}</Button>
             )}
           </>
         }
       >
         {adminData.status === 'Active' ? (
           <Alert variant="warning" className="mb-2">
-            The user will immediately lose access to the Kaori Platform Shell. No API keys or automated integrations will be affected.
+            {t('templates27BillingQuotaManager.suspendAccessBody')}
           </Alert>
         ) : (
           <div className="text-sm text-[var(--text-secondary)]">
-            Restoring access will allow the user to log in and resume their role as {adminData.role}.
+            {t('templates27BillingQuotaManager.restoreAccessBody', { role: adminData.role })}
           </div>
         )}
       </Modal>
 
-      <Modal 
-        isOpen={isRemoveModalOpen} 
+      <Modal
+        isOpen={isRemoveModalOpen}
         onClose={() => { setIsRemoveModalOpen(false); setRemoveError(''); }}
-        title="Remove Admin"
-        description={`Are you sure you want to permanently remove ${adminData.name} from the platform?`}
+        title={t('templates27BillingQuotaManager.removeAdminModalTitle')}
+        description={t('templates27BillingQuotaManager.removeAdminModalDesc', { name: adminData.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => { setIsRemoveModalOpen(false); setRemoveError(''); }} disabled={isProcessing}>Cancel</Button>
-            <Button variant="destructive" onClick={handleRemove} isLoading={isProcessing}>Remove Admin</Button>
+            <Button variant="outline" onClick={() => { setIsRemoveModalOpen(false); setRemoveError(''); }} disabled={isProcessing}>{t('templates27BillingQuotaManager.cancel')}</Button>
+            <Button variant="destructive" onClick={handleRemove} isLoading={isProcessing}>{t('templates27BillingQuotaManager.removeAdmin')}</Button>
           </>
         }
       >
         {removeError && <Alert variant="error" className="mb-4">{removeError}</Alert>}
         <Alert variant="error" className="mb-2">
-          This action is irreversible. The user's platform access will be destroyed. To restore access, a new invitation must be sent.
+          {t('templates27BillingQuotaManager.removeAdminIrreversibleNotice')}
         </Alert>
       </Modal>
 
       {/* Detail Drawer (For Activity Row Click) */}
-      <Drawer 
-        isOpen={!!selectedEvent} 
-        onClose={() => setSelectedEvent(null)} 
-        title="Event Details"
+      <Drawer
+        isOpen={!!selectedEvent}
+        onClose={() => setSelectedEvent(null)}
+        title={t('templates27BillingQuotaManager.eventDetailsTitle')}
       >
         {selectedEvent && (
           <div className="space-y-6">
@@ -1988,25 +2015,25 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
             </div>
             <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
               <div>
-                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Actor</p>
+                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">{t('templates27BillingQuotaManager.actor')}</p>
                 <p className="font-medium text-[var(--text-primary)]">{adminData.name}</p>
               </div>
               <div>
-                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Resource</p>
+                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">{t('templates27BillingQuotaManager.colResource')}</p>
                 <p className="font-mono text-[var(--text-primary)] text-xs">{selectedEvent[2]?.props?.children || selectedEvent[2]}</p>
               </div>
               <div>
-                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">IP Address</p>
+                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">{t('templates27BillingQuotaManager.ipAddress')}</p>
                 <p className="font-mono text-[var(--text-primary)] text-xs">{selectedEvent[4]?.props?.children || selectedEvent[4]}</p>
               </div>
               <div>
-                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Status</p>
+                <p className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">{t('templates27BillingQuotaManager.colStatus')}</p>
                 {selectedEvent[3]}
               </div>
             </div>
             <div className="h-[1px] bg-[var(--border-color)] w-full" />
             <div className="space-y-3">
-              <h4 className="text-sm font-semibold text-[var(--text-primary)]">Metadata Context</h4>
+              <h4 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates27BillingQuotaManager.metadataContext')}</h4>
               <div className="bg-[#1C1C1C] rounded-md-custom p-4 overflow-x-auto shadow-inner border border-[#2A2A2A]">
                 <pre className="text-[11px] text-[#A5B4CB] font-mono leading-relaxed">
 {JSON.stringify({
@@ -2029,6 +2056,7 @@ const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
 
 // --- PLATFORM ADMINS INVITE PAGE ---
 const PlatformAdminInvitePage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [step, setStep] = useState('form');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -2042,8 +2070,8 @@ const PlatformAdminInvitePage = ({  setActiveRoute  }: any) => {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.email) newErrors.email = 'Email address is required';
-    else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = 'Please enter a valid email address';
+    if (!formData.email) newErrors.email = t('templates27BillingQuotaManager.errEmailRequired');
+    else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = t('templates27BillingQuotaManager.errEmailInvalid');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -2061,65 +2089,65 @@ const PlatformAdminInvitePage = ({  setActiveRoute  }: any) => {
       
       {step === 'form' && (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <PageHeader 
-            showBack 
+          <PageHeader
+            showBack
             onBack={() => setActiveRoute('admin')}
-            title="Invite Platform Admin" 
-            subtitle="Grant administrative access to manage platform resources."
+            title={t('templates27BillingQuotaManager.invitePlatformAdminTitle')}
+            subtitle={t('templates27BillingQuotaManager.invitePlatformAdminSubtitle')}
           />
-          
+
           <Card className="p-6 sm:p-8 mt-8 shadow-soft-md">
             <div className="space-y-6">
-              
-              <Input 
-                label="Email address" 
-                placeholder="admin@company.com" 
+
+              <Input
+                label={t('templates27BillingQuotaManager.emailAddressLabel')}
+                placeholder="admin@company.com"
                 value={formData.email}
                 onChange={e => { setFormData({...formData, email: e.target.value}); setErrors({}); }}
                 error={errors.email}
                 autoFocus
               />
-              
+
               <div className="space-y-2">
-                <Select 
-                  label="Role" 
+                <Select
+                  label={t('templates27BillingQuotaManager.roleLabel')}
                   options={[
-                    {label: 'Super Admin', value: 'Super Admin'}, 
-                    {label: 'Admin', value: 'Admin'},
-                    {label: 'Support', value: 'Support'}
+                    {label: t('templates27BillingQuotaManager.roleSuperAdmin'), value: 'Super Admin'},
+                    {label: t('templates27BillingQuotaManager.roleAdmin'), value: 'Admin'},
+                    {label: t('templates27BillingQuotaManager.roleSupport'), value: 'Support'}
                   ]}
                   value={formData.role}
                   onChange={v => setFormData({...formData, role: v})}
                 />
-                
+
                 {/* Dynamic Role Description */}
                 <div className="mt-2 text-xs text-[var(--text-secondary)] bg-[var(--bg-app)] p-3 rounded-md-custom border border-[var(--border-color)]">
                   {formData.role === 'Super Admin' && (
                     <div className="flex flex-col gap-2">
                       <span className="text-[#9B5050] font-medium flex items-center gap-1.5">
-                        <AlertTriangle className="w-3.5 h-3.5" /> Full system access
+                        <AlertTriangle className="w-3.5 h-3.5" /> {t('templates27BillingQuotaManager.fullSystemAccess')}
                       </span>
-                      <span>Super Admins have unrestricted access to all platform settings, billing, and global user management. Grant this role with caution.</span>
+                      <span>{t('templates27BillingQuotaManager.superAdminRoleDesc')}</span>
                     </div>
                   )}
-                  {formData.role === 'Admin' && "Can manage workspaces, API keys, and platform-level users. Cannot access billing."}
-                  {formData.role === 'Support' && "Read-only access to workspaces and logs. Useful for troubleshooting without operational risk."}
+                  {formData.role === 'Admin' && t('templates27BillingQuotaManager.adminRoleDesc')}
+                  {formData.role === 'Support' && t('templates27BillingQuotaManager.supportRoleDesc')}
                 </div>
               </div>
-              
-              <Input 
-                label="Add a message (optional)" 
-                placeholder="Include a personal note with the invitation..." 
+
+              <Input
+                label={t('templates27BillingQuotaManager.addMessageOptionalLabel')}
+                placeholder={t('templates27BillingQuotaManager.addMessagePlaceholder')}
                 value={formData.message}
                 onChange={e => setFormData({...formData, message: e.target.value})}
                 multiline
               />
 
             </div>
-            
+
             <div className="mt-8 pt-6 border-t border-[var(--border-color)] flex items-center justify-between">
-               <Button variant="tertiary" onClick={() => setActiveRoute('admin')} disabled={isSubmitting}>Cancel</Button>
-               <Button onClick={handleInvite} isLoading={isSubmitting}><Mail className="w-4 h-4 mr-2"/> Send invitation</Button>
+               <Button variant="tertiary" onClick={() => setActiveRoute('admin')} disabled={isSubmitting}>{t('templates27BillingQuotaManager.cancel')}</Button>
+               <Button onClick={handleInvite} isLoading={isSubmitting}><Mail className="w-4 h-4 mr-2"/> {t('templates27BillingQuotaManager.sendInvitation')}</Button>
             </div>
           </Card>
         </div>
@@ -2127,18 +2155,18 @@ const PlatformAdminInvitePage = ({  setActiveRoute  }: any) => {
 
       {step === 'success' && (
         <div className="animate-in fade-in zoom-in-[0.98] duration-500">
-           <PageHeader title="Invitation sent" />
+           <PageHeader title={t('templates27BillingQuotaManager.invitationSentTitle')} />
            <Card className="p-8 mt-8 shadow-soft-md flex flex-col items-center text-center">
              <div className="w-16 h-16 rounded-full bg-[#F3F9F5] border border-[#8FBFA0]/40 flex items-center justify-center mb-6">
                <CheckCircle2 className="w-8 h-8 text-[#5C856A]" />
              </div>
-             <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">Invitation successfully sent</h2>
+             <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">{t('templates27BillingQuotaManager.invitationSuccessHeading')}</h2>
              <p className="text-sm text-[var(--text-secondary)] mb-8 max-w-sm">
-               An email has been sent to <strong className="text-[var(--text-primary)]">{formData.email}</strong> with instructions to join the platform as {formData.role}.
+               {t('templates27BillingQuotaManager.invitationSentBodyPrefix')} <strong className="text-[var(--text-primary)]">{formData.email}</strong> {t('templates27BillingQuotaManager.invitationSentBodySuffix', { role: formData.role })}
              </p>
              <div className="flex gap-3">
-               <Button variant="outline" onClick={() => { setFormData({email:'', role:'Admin', message:''}); setStep('form'); }}>Invite another</Button>
-               <Button onClick={() => setActiveRoute('admin')}>Back to Admins</Button>
+               <Button variant="outline" onClick={() => { setFormData({email:'', role:'Admin', message:''}); setStep('form'); }}>{t('templates27BillingQuotaManager.inviteAnother')}</Button>
+               <Button onClick={() => setActiveRoute('admin')}>{t('templates27BillingQuotaManager.backToAdmins')}</Button>
              </div>
            </Card>
         </div>
@@ -2157,6 +2185,7 @@ const MOCK_ADMINS = [
 ];
 
 const AdminActionsDropdown = ({  admin, onRemove, onSuspend, onActivate, onResetPassword, onViewDetails  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
 
@@ -2183,43 +2212,43 @@ const AdminActionsDropdown = ({  admin, onRemove, onSuspend, onActivate, onReset
             onClick={() => { onViewDetails(); setIsOpen(false); }}
             className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors"
           >
-            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> View details
+            <Eye className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates27BillingQuotaManager.viewDetails')}
           </button>
 
           <button className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors">
-            <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> Change role
+            <Shield className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates27BillingQuotaManager.changeRole')}
           </button>
-          
-          <button 
+
+          <button
             onClick={() => { onResetPassword(admin); setIsOpen(false); }}
             className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2 transition-colors"
           >
-            <Lock className="w-4 h-4 text-[var(--text-secondary)]"/> Reset password
+            <Lock className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates27BillingQuotaManager.resetPassword')}
           </button>
-          
+
           <div className="h-[1px] bg-[var(--border-color)]/50 my-1 mx-2" />
-          
+
           {admin.status === 'Active' || admin.status === 'Invited' ? (
-            <button 
+            <button
               onClick={() => { onSuspend(admin); setIsOpen(false); }}
               className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-warning)] hover:bg-[#FDF9F0] flex items-center gap-2 transition-colors font-medium"
             >
-              <Ban className="w-4 h-4 opacity-80"/> Suspend access
+              <Ban className="w-4 h-4 opacity-80"/> {t('templates27BillingQuotaManager.suspendAccess')}
             </button>
           ) : (
-            <button 
+            <button
               onClick={() => { onActivate(admin); setIsOpen(false); }}
               className="w-full text-left px-3 py-1.5 text-sm text-[#5C856A] hover:bg-[#F3F9F5] flex items-center gap-2 transition-colors font-medium"
             >
-              <Unlock className="w-4 h-4 opacity-80"/> Restore access
+              <Unlock className="w-4 h-4 opacity-80"/> {t('templates27BillingQuotaManager.restoreAccess')}
             </button>
           )}
 
-          <button 
+          <button
             onClick={() => { onRemove(admin); setIsOpen(false); }}
             className="w-full text-left px-3 py-1.5 text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] flex items-center gap-2 transition-colors font-medium"
           >
-            <Trash2 className="w-4 h-4 opacity-80"/> Remove admin
+            <Trash2 className="w-4 h-4 opacity-80"/> {t('templates27BillingQuotaManager.removeAdmin')}
           </button>
         </div>
       )}
@@ -2228,6 +2257,7 @@ const AdminActionsDropdown = ({  admin, onRemove, onSuspend, onActivate, onReset
 };
 
 const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -2247,7 +2277,7 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
     if (adminToRemove?.role === 'Super Admin') {
       const superAdminCount = admins.filter(a => a.role === 'Super Admin').length;
       if (superAdminCount <= 1) {
-        setRemoveError("You cannot remove the last Super Admin. Promote another user first.");
+        setRemoveError(t('templates27BillingQuotaManager.cannotRemoveLastSuperAdmin'));
         return;
       }
     }
@@ -2260,7 +2290,7 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
     if (admin.role === 'Super Admin') {
       const superAdminCount = admins.filter(a => a.role === 'Super Admin' && a.status === 'Active').length;
       if (superAdminCount <= 1) {
-        alert("Cannot suspend the last active Super Admin."); 
+        alert(t('templates27BillingQuotaManager.cannotSuspendLastActiveSuperAdmin'));
         return;
       }
     }
@@ -2295,8 +2325,8 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
        </div>
        <div>
          <div className="font-medium text-[var(--text-primary)] flex items-center gap-2">
-           {a.name} 
-           {a.id === 'adm_1' && <span className="text-[10px] bg-[var(--bg-app)] border border-[var(--border-color)] px-1.5 py-0.5 rounded text-[var(--text-secondary)]">You</span>}
+           {a.name}
+           {a.id === 'adm_1' && <span className="text-[10px] bg-[var(--bg-app)] border border-[var(--border-color)] px-1.5 py-0.5 rounded text-[var(--text-secondary)]">{t('templates27BillingQuotaManager.youBadge')}</span>}
          </div>
          <div className="text-xs text-[var(--text-secondary)] mt-0.5">{a.email}</div>
        </div>
@@ -2318,14 +2348,14 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Platform Admins" 
-        subtitle="Manage global administrators and access permissions across the platform." 
+      <PageHeader
+        title={t('templates27BillingQuotaManager.platformAdminsTitle')}
+        subtitle={t('templates27BillingQuotaManager.platformAdminsSubtitle')}
         actions={
           <Button onClick={() => setActiveRoute('admin-invite')}>
-            <UserPlus className="w-4 h-4 mr-2"/> Invite admin
+            <UserPlus className="w-4 h-4 mr-2"/> {t('templates27BillingQuotaManager.inviteAdmin')}
           </Button>
-        } 
+        }
       />
 
       <Section>
@@ -2335,65 +2365,65 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               className="h-10 w-full pl-9 pr-3 rounded-md-custom border border-[var(--border-color)] bg-white text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-soft-sm"
-              placeholder="Search by name or email..."
+              placeholder={t('templates27BillingQuotaManager.searchByNameOrEmailPlaceholder')}
               value={search}
               onChange={(e: any) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex w-full sm:w-auto gap-3 shrink-0">
             <div className="w-full sm:w-40">
-              <Select 
-                value={roleFilter} 
-                onChange={setRoleFilter} 
+              <Select
+                value={roleFilter}
+                onChange={setRoleFilter}
                 options={[
-                  {label: 'All Roles', value: 'all'}, 
-                  {label: 'Super Admin', value: 'Super Admin'}, 
-                  {label: 'Admin', value: 'Admin'},
-                  {label: 'Support', value: 'Support'}
-                ]} 
-                placeholder="Role" 
+                  {label: t('templates27BillingQuotaManager.filterAllRoles'), value: 'all'},
+                  {label: t('templates27BillingQuotaManager.roleSuperAdmin'), value: 'Super Admin'},
+                  {label: t('templates27BillingQuotaManager.roleAdmin'), value: 'Admin'},
+                  {label: t('templates27BillingQuotaManager.roleSupport'), value: 'Support'}
+                ]}
+                placeholder={t('templates27BillingQuotaManager.roleLabel')}
               />
             </div>
             <div className="w-full sm:w-40">
-              <Select 
-                value={statusFilter} 
-                onChange={setStatusFilter} 
+              <Select
+                value={statusFilter}
+                onChange={setStatusFilter}
                 options={[
-                  {label: 'All Statuses', value: 'all'}, 
-                  {label: 'Active', value: 'Active'}, 
-                  {label: 'Invited', value: 'Invited'},
-                  {label: 'Suspended', value: 'Suspended'}
-                ]} 
-                placeholder="Status" 
+                  {label: t('templates27BillingQuotaManager.filterAllStatuses'), value: 'all'},
+                  {label: t('templates27BillingQuotaManager.statusActive'), value: 'Active'},
+                  {label: t('templates27BillingQuotaManager.statusInvited'), value: 'Invited'},
+                  {label: t('templates27BillingQuotaManager.statusSuspended'), value: 'Suspended'}
+                ]}
+                placeholder={t('templates27BillingQuotaManager.filterStatusPlaceholder')}
               />
             </div>
           </div>
           {(search || roleFilter !== 'all' || statusFilter !== 'all') && (
             <Button variant="tertiary" onClick={() => {setSearch(''); setRoleFilter('all'); setStatusFilter('all');}} className="px-3">
-              Clear filters
+              {t('templates27BillingQuotaManager.clearFilters')}
             </Button>
           )}
         </div>
       </Section>
 
       <Section>
-        <DataTable 
-          columns={["Name / Email", "Role", "Status", "Last Active", "Created At", ""]} 
-          data={mappedData} 
-          loading={isLoading} 
+        <DataTable
+          columns={[t('templates27BillingQuotaManager.colNameEmail'), t('templates27BillingQuotaManager.colRole'), t('templates27BillingQuotaManager.colStatus'), t('templates27BillingQuotaManager.colLastActive'), t('templates27BillingQuotaManager.colCreatedAt'), ""]}
+          data={mappedData}
+          loading={isLoading}
         />
       </Section>
 
       {/* Remove Confirmation Modal */}
-      <Modal 
-        isOpen={!!adminToRemove} 
+      <Modal
+        isOpen={!!adminToRemove}
         onClose={() => { setAdminToRemove(null); setRemoveError(''); }}
-        title="Remove Platform Admin"
-        description={`Are you sure you want to remove ${adminToRemove?.name} from platform administration? They will lose all access immediately.`}
+        title={t('templates27BillingQuotaManager.removePlatformAdminTitle')}
+        description={t('templates27BillingQuotaManager.removePlatformAdminDesc', { name: adminToRemove?.name })}
         footer={
           <>
-            <Button variant="outline" onClick={() => { setAdminToRemove(null); setRemoveError(''); }}>Cancel</Button>
-            <Button variant="destructive" onClick={handleRemove}>Remove Admin</Button>
+            <Button variant="outline" onClick={() => { setAdminToRemove(null); setRemoveError(''); }}>{t('templates27BillingQuotaManager.cancel')}</Button>
+            <Button variant="destructive" onClick={handleRemove}>{t('templates27BillingQuotaManager.removeAdmin')}</Button>
           </>
         }
       >
@@ -2403,7 +2433,7 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
           </Alert>
         )}
         <div className="text-sm text-[var(--text-secondary)]">
-          This action cannot be undone. To restore access later, you will need to send a new invitation.
+          {t('templates27BillingQuotaManager.removeAdminUndoNotice')}
         </div>
       </Modal>
 
@@ -2416,6 +2446,7 @@ const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
 // ==========================================
 
 export default function KaoriPlatformShell() {
+  const t = useT();
   const [activeRoute, setActiveRoute] = useState('quota'); // Set default to Quota Management for demo
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
@@ -2475,14 +2506,14 @@ export default function KaoriPlatformShell() {
              activeRoute === 'overview' ? <PlatformOverview /> : 
              activeRoute === 'sessions' ? <SessionsPage /> : (
               <PageContainer maxWidth="narrow">
-                <PageHeader title={`${NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label} module`} subtitle="This section of the platform is currently being designed." />
+                <PageHeader title={t('templates27BillingQuotaManager.fallbackModuleTitle', { module: NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.labelKey ? t(NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)!.labelKey) : activeRoute })} subtitle={t('templates27BillingQuotaManager.fallbackModuleSubtitle')} />
                 <Section>
                   <Card className="flex flex-col items-center justify-center py-20 px-4 text-center border-dashed bg-[var(--bg-card)]/50 mx-auto w-full animate-in fade-in duration-300">
                     <div className="w-12 h-12 rounded-lg-custom bg-[var(--bg-sidebar)] flex items-center justify-center border border-[var(--border-color)] mb-4">
                       {React.createElement(NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.icon || LayoutDashboard, { className: 'w-6 h-6 text-[var(--text-secondary)]' })}
                     </div>
-                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">Work in Progress</h3>
-                    <p className="text-sm text-[var(--text-secondary)] max-w-sm">Content for {activeRoute} will populate here inside the Shell Wrapper.</p>
+                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">{t('templates27BillingQuotaManager.fallbackWorkInProgress')}</h3>
+                    <p className="text-sm text-[var(--text-secondary)] max-w-sm">{t('templates27BillingQuotaManager.fallbackContentPlaceholder', { route: activeRoute })}</p>
                   </Card>
                 </Section>
               </PageContainer>

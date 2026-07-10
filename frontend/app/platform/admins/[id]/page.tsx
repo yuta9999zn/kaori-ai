@@ -17,18 +17,19 @@ import {
   Badge, Button, Input, Label, ErrorBanner, type ProblemDetails,
 } from '@/components/platform/foundation';
 import { fmtDateTime } from '@/lib/format';
+import { useT } from '@/lib/i18n/provider';
 
 interface RoleMeta {
-  variant: 'error' | 'current' | 'info';
-  label:   string;
-  icon:    React.ComponentType<{ className?: string; strokeWidth?: number }>;
-  tile:    string;
+  variant:  'error' | 'current' | 'info';
+  labelKey: string;
+  icon:     React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  tile:     string;
 }
 
 const ROLE_META: Record<PlatformRole, RoleMeta> = {
-  SUPER_ADMIN: { variant: 'error',   label: 'Super Admin',     icon: ShieldCheck, tile: 'bg-[var(--state-error)]/15 text-[#9B5050]' },
-  ADMIN:       { variant: 'current', label: 'Quản trị viên',   icon: UserCog,     tile: 'bg-[var(--primary-gold)]/15 text-[var(--primary-gold-dark)]' },
-  SUPPORT:     { variant: 'info',    label: 'Hỗ trợ kỹ thuật', icon: Headphones,  tile: 'bg-[var(--state-info)]/15 text-[#52647D]' },
+  SUPER_ADMIN: { variant: 'error',   labelKey: 'idPage5.roleSuperAdmin', icon: ShieldCheck, tile: 'bg-[var(--state-error)]/15 text-[#9B5050]' },
+  ADMIN:       { variant: 'current', labelKey: 'idPage5.roleAdmin',      icon: UserCog,     tile: 'bg-[var(--primary-gold)]/15 text-[var(--primary-gold-dark)]' },
+  SUPPORT:     { variant: 'info',    labelKey: 'idPage5.roleSupport',    icon: Headphones,  tile: 'bg-[var(--state-info)]/15 text-[#52647D]' },
 };
 
 export default function AdminDetailPage({
@@ -39,6 +40,7 @@ export default function AdminDetailPage({
   const { id } = use(params);
   const router = useRouter();
   const qc     = useQueryClient();
+  const t      = useT();
 
   const query = useQuery({
     queryKey: ['platform-admin', id],
@@ -75,7 +77,7 @@ export default function AdminDetailPage({
       <div className="px-6 lg:px-8 py-6">
         <ErrorBanner
           problem={query.error ? (query.error as unknown as ProblemDetails) : null}
-          message="Không thể tải quản trị viên."
+          message={t('idPage5.errLoadFailed')}
         />
       </div>
     );
@@ -100,7 +102,7 @@ export default function AdminDetailPage({
           className="inline-flex items-center gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          Tất cả quản trị viên
+          {t('idPage5.allAdmins')}
         </Link>
       </div>
 
@@ -114,8 +116,8 @@ export default function AdminDetailPage({
               <h1 className="font-serif text-2xl text-[var(--text-primary)]">
                 {a.full_name ?? a.email}
               </h1>
-              <Badge variant={meta.variant}>{meta.label}</Badge>
-              {!a.is_active && <Badge variant="default">Vô hiệu</Badge>}
+              <Badge variant={meta.variant}>{t(meta.labelKey)}</Badge>
+              {!a.is_active && <Badge variant="default">{t('idPage5.disabled')}</Badge>}
               {a.mfa_enabled && <Badge variant="operational">MFA</Badge>}
             </div>
             <p className="text-sm text-[var(--text-secondary)] mt-1">{a.email}</p>
@@ -126,23 +128,23 @@ export default function AdminDetailPage({
       <div className="px-6 lg:px-8 py-6 space-y-6">
         <section className="rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm p-6">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-            <Fact label="Đăng nhập gần nhất" value={fmtDateTime(a.last_login_at)} />
-            <Fact label="Ngày tạo"            value={fmtDateTime(a.created_at)} />
-            <Fact label="MFA"                 value={a.mfa_enabled ? 'Đã bật' : 'Chưa bật'} />
+            <Fact label={t('idPage5.lastLogin')} value={fmtDateTime(a.last_login_at)} />
+            <Fact label={t('idPage5.createdAt')} value={fmtDateTime(a.created_at)} />
+            <Fact label="MFA"                 value={a.mfa_enabled ? t('idPage5.mfaOn') : t('idPage5.mfaOff')} />
           </div>
         </section>
 
         <section className="rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm p-6 space-y-3">
-          <h2 className="font-serif text-lg text-[var(--text-primary)]">Hành động</h2>
+          <h2 className="font-serif text-lg text-[var(--text-primary)]">{t('idPage5.actions')}</h2>
           <div className="flex flex-wrap gap-2">
             <Button variant="secondary" onClick={openEdit}>
               <UserCog className="w-4 h-4 mr-1.5" />
-              Đổi vai trò / tên
+              {t('idPage5.editRoleName')}
             </Button>
             <Link href={`/platform/admins/${id}/reset-password`}>
               <Button variant="secondary">
                 <KeyRound className="w-4 h-4 mr-1.5" />
-                Đặt lại mật khẩu
+                {t('idPage5.resetPassword')}
               </Button>
             </Link>
             <Button
@@ -150,7 +152,7 @@ export default function AdminDetailPage({
               onClick={() => setConfirmToggle(true)}
             >
               <Power className="w-4 h-4 mr-1.5" />
-              {a.is_active ? 'Vô hiệu hóa' : 'Kích hoạt lại'}
+              {a.is_active ? t('idPage5.disable') : t('idPage5.reactivate')}
             </Button>
           </div>
         </section>
@@ -159,12 +161,12 @@ export default function AdminDetailPage({
       {editOpen && (
         <Modal onClose={() => setEditOpen(false)}>
           <header className="flex items-start justify-between gap-4 mb-4">
-            <h3 className="font-serif text-lg text-[var(--text-primary)]">Cập nhật quản trị viên</h3>
+            <h3 className="font-serif text-lg text-[var(--text-primary)]">{t('idPage5.updateAdmin')}</h3>
             <button
               type="button"
               onClick={() => setEditOpen(false)}
               className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-md-custom hover:bg-[var(--bg-app)]"
-              aria-label="Đóng"
+              aria-label={t('idPage5.close')}
             >
               <X className="w-4 h-4" />
             </button>
@@ -172,7 +174,7 @@ export default function AdminDetailPage({
 
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="edit-full-name">Họ tên</Label>
+              <Label htmlFor="edit-full-name">{t('idPage5.fullName')}</Label>
               <Input
                 id="edit-full-name"
                 value={editFullName}
@@ -180,27 +182,27 @@ export default function AdminDetailPage({
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="edit-role">Vai trò</Label>
+              <Label htmlFor="edit-role">{t('idPage5.role')}</Label>
               <select
                 id="edit-role"
                 value={editRole}
                 onChange={(e) => setEditRole(e.target.value as PlatformRole)}
                 className="h-10 w-full rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
               >
-                <option value="SUPPORT">Hỗ trợ kỹ thuật</option>
-                <option value="ADMIN">Quản trị viên</option>
-                <option value="SUPER_ADMIN">Super Admin</option>
+                <option value="SUPPORT">{t('idPage5.roleSupport')}</option>
+                <option value="ADMIN">{t('idPage5.roleAdmin')}</option>
+                <option value="SUPER_ADMIN">{t('idPage5.roleSuperAdmin')}</option>
               </select>
             </div>
             {editError && <ErrorBanner problem={editError} />}
             <div className="flex justify-end gap-2 pt-2">
-              <Button variant="secondary" onClick={() => setEditOpen(false)}>Hủy</Button>
+              <Button variant="secondary" onClick={() => setEditOpen(false)}>{t('idPage5.cancel')}</Button>
               <Button
                 isLoading={updateMut.isPending}
                 onClick={() => updateMut.mutate({ full_name: editFullName, role: editRole })}
               >
                 <Save className="w-4 h-4 mr-1.5" />
-                Lưu
+                {t('idPage5.save')}
               </Button>
             </div>
           </div>
@@ -211,22 +213,22 @@ export default function AdminDetailPage({
         <Modal onClose={() => setConfirmToggle(false)} small>
           <header className="mb-3">
             <h3 className="font-serif text-lg text-[var(--text-primary)]">
-              {a.is_active ? 'Xác nhận vô hiệu hóa' : 'Xác nhận kích hoạt lại'}
+              {a.is_active ? t('idPage5.confirmDisable') : t('idPage5.confirmReactivate')}
             </h3>
             <p className="text-sm text-[var(--text-secondary)] mt-1">
               {a.is_active
-                ? `${a.full_name ?? a.email} sẽ không thể đăng nhập cho đến khi được kích hoạt lại.`
-                : `${a.full_name ?? a.email} sẽ được phép đăng nhập trở lại.`}
+                ? t('idPage5.confirmDisableDetail', { name: a.full_name ?? a.email })
+                : t('idPage5.confirmReactivateDetail', { name: a.full_name ?? a.email })}
             </p>
           </header>
           <div className="flex justify-end gap-2 pt-2">
-            <Button variant="secondary" onClick={() => setConfirmToggle(false)}>Hủy</Button>
+            <Button variant="secondary" onClick={() => setConfirmToggle(false)}>{t('idPage5.cancel')}</Button>
             <Button
               variant={a.is_active ? 'destructive' : 'primary'}
               isLoading={updateMut.isPending}
               onClick={() => updateMut.mutate({ is_active: !a.is_active })}
             >
-              {a.is_active ? 'Vô hiệu hóa' : 'Kích hoạt lại'}
+              {a.is_active ? t('idPage5.disable') : t('idPage5.reactivate')}
             </Button>
           </div>
         </Modal>

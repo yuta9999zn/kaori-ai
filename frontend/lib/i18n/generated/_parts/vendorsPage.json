@@ -1,0 +1,184 @@
+{
+  "vendorsPage.title": {
+    "vi": "Nhà cung cấp",
+    "en": "Vendors",
+    "ja": "サプライヤー",
+    "ko": "공급업체",
+    "zh": "供应商"
+  },
+  "vendorsPage.subtitle": {
+    "vi": "Danh sách vendor + dịch vụ, chứng nhận, độ tin cậy. Mig 062 — pilot Vingroup demo.",
+    "en": "Vendor list + services, certifications, reliability. Mig 062 — Vingroup pilot demo.",
+    "ja": "ベンダー一覧 + サービス、認証、信頼性。Mig 062 — Vingroup パイロットデモ。",
+    "ko": "공급업체 목록 + 서비스, 인증, 신뢰도. Mig 062 — Vingroup 파일럿 데모.",
+    "zh": "供应商列表 + 服务、认证、可靠性。Mig 062 — Vingroup 试点演示。"
+  },
+  "vendorsPage.colCode": {
+    "vi": "Mã NCC",
+    "en": "Vendor code",
+    "ja": "サプライヤーコード",
+    "ko": "공급업체 코드",
+    "zh": "供应商代码"
+  },
+  "vendorsPage.colVendorName": {
+    "vi": "Nhà cung cấp",
+    "en": "Vendor",
+    "ja": "サプライヤー",
+    "ko": "공급업체",
+    "zh": "供应商"
+  },
+  "vendorsPage.colType": {
+    "vi": "Loại",
+    "en": "Type",
+    "ja": "種別",
+    "ko": "유형",
+    "zh": "类型"
+  },
+  "vendorsPage.colServices": {
+    "vi": "Dịch vụ",
+    "en": "Services",
+    "ja": "サービス",
+    "ko": "서비스",
+    "zh": "服务"
+  },
+  "vendorsPage.colCountry": {
+    "vi": "Quốc gia",
+    "en": "Country",
+    "ja": "国",
+    "ko": "국가",
+    "zh": "国家"
+  },
+  "vendorsPage.colCredit": {
+    "vi": "Tín dụng",
+    "en": "Credit rating",
+    "ja": "信用格付け",
+    "ko": "신용 등급",
+    "zh": "信用评级"
+  },
+  "vendorsPage.colTier": {
+    "vi": "Tier",
+    "en": "Tier",
+    "ja": "ティア",
+    "ko": "등급",
+    "zh": "等级"
+  },
+  "vendorsPage.colManagedBy": {
+    "vi": "Phụ trách",
+    "en": "Managed by",
+    "ja": "担当者",
+    "ko": "담당자",
+    "zh": "负责人"
+  },
+  "vendorsPage.typeSupplier": {
+    "vi": "Cung ứng",
+    "en": "Supplier",
+    "ja": "サプライヤー",
+    "ko": "공급업체",
+    "zh": "供应商"
+  },
+  "vendorsPage.typePlatform": {
+    "vi": "Nền tảng",
+    "en": "Platform",
+    "ja": "プラットフォーム",
+    "ko": "플랫폼",
+    "zh": "平台"
+  },
+  "vendorsPage.typeConsultant": {
+    "vi": "Tư vấn",
+    "en": "Consultant",
+    "ja": "コンサルタント",
+    "ko": "컨설턴트",
+    "zh": "顾问"
+  },
+  "vendorsPage.typeAgency": {
+    "vi": "Agency",
+    "en": "Agency",
+    "ja": "代理店",
+    "ko": "에이전시",
+    "zh": "代理机构"
+  },
+  "vendorsPage.typeContractor": {
+    "vi": "Nhà thầu",
+    "en": "Contractor",
+    "ja": "請負業者",
+    "ko": "계약업체",
+    "zh": "承包商"
+  },
+  "vendorsPage.filterStatus": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "vendorsPage.filterType": {
+    "vi": "Loại NCC",
+    "en": "Vendor type",
+    "ja": "サプライヤー種別",
+    "ko": "공급업체 유형",
+    "zh": "供应商类型"
+  },
+  "vendorsPage.filterTier": {
+    "vi": "Tier",
+    "en": "Tier",
+    "ja": "ティア",
+    "ko": "등급",
+    "zh": "等级"
+  },
+  "vendorsPage.optAll": {
+    "vi": "Tất cả",
+    "en": "All",
+    "ja": "すべて",
+    "ko": "전체",
+    "zh": "全部"
+  },
+  "vendorsPage.optActive": {
+    "vi": "Đang hoạt động",
+    "en": "Active",
+    "ja": "稼働中",
+    "ko": "활성",
+    "zh": "活跃"
+  },
+  "vendorsPage.optInactive": {
+    "vi": "Tạm ngưng",
+    "en": "Inactive",
+    "ja": "休止中",
+    "ko": "비활성",
+    "zh": "暂停"
+  },
+  "vendorsPage.optArchived": {
+    "vi": "Đã lưu trữ",
+    "en": "Archived",
+    "ja": "アーカイブ済み",
+    "ko": "보관됨",
+    "zh": "已归档"
+  },
+  "vendorsPage.errLoad": {
+    "vi": "Lỗi khi tải vendor.",
+    "en": "Error loading vendors.",
+    "ja": "サプライヤーの読み込みエラー。",
+    "ko": "공급업체를 불러오는 중 오류가 발생했습니다.",
+    "zh": "加载供应商时出错。"
+  },
+  "vendorsPage.emptyTitle": {
+    "vi": "Chưa có nhà cung cấp",
+    "en": "No vendors yet",
+    "ja": "サプライヤーがまだありません",
+    "ko": "공급업체가 없습니다",
+    "zh": "暂无供应商"
+  },
+  "vendorsPage.emptyDesc": {
+    "vi": "Đổi bộ lọc hoặc thêm vendor mới.",
+    "en": "Change the filters or add a new vendor.",
+    "ja": "フィルターを変更するか、新しいサプライヤーを追加してください。",
+    "ko": "필터를 변경하거나 새 공급업체를 추가하세요.",
+    "zh": "更改筛选条件或添加新供应商。"
+  },
+  "vendorsPage.emptyFiltered": {
+    "vi": "Không có vendor nào khớp bộ lọc.",
+    "en": "No vendors match the filters.",
+    "ja": "フィルターに一致するサプライヤーがありません。",
+    "ko": "필터와 일치하는 공급업체가 없습니다.",
+    "zh": "没有符合筛选条件的供应商。"
+  }
+}

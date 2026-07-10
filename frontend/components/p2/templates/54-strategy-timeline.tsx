@@ -21,6 +21,7 @@ import {
 
 import { Button, Badge, cn } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types & helpers
 // ============================================================================
@@ -30,6 +31,8 @@ type MilestoneStatus = 'completed' | 'in_progress' | 'scheduled' | 'at_risk';
 interface Milestone {
   id:           string;
   title:        string;
+  titleKey:     string;
+  notesKey?:    string;
   start_date:   string; // ISO
   end_date:     string; // ISO
   status:       MilestoneStatus;
@@ -41,15 +44,17 @@ interface Milestone {
 interface Initiative {
   id:          string;
   name:        string;
+  nameKey:     string;
+  categoryKey: string;
   category:    string;
   milestones:  Milestone[];
 }
 
-const STATUS_META: Record<MilestoneStatus, { label: string; icon: any; bg: string; border: string; text: string }> = {
-  completed:   { label: 'Hoàn thành',  icon: CheckCircle2, bg: 'bg-[var(--state-success)]/15', border: 'border-[var(--state-success)]/40', text: 'text-[#5C856A]' },
-  in_progress: { label: 'Đang chạy',    icon: Loader2,      bg: 'bg-[var(--primary-gold)]/15',  border: 'border-[var(--primary-gold)]/40',  text: 'text-[var(--primary-gold-dark)]' },
-  scheduled:   { label: 'Đã lên lịch',  icon: Clock,        bg: 'bg-[var(--state-info)]/15',    border: 'border-[var(--state-info)]/40',    text: 'text-[#52647D]' },
-  at_risk:     { label: 'At-risk',      icon: AlertTriangle, bg: 'bg-[var(--state-error)]/15',   border: 'border-[var(--state-error)]/40',   text: 'text-[#9B5050]' },
+const STATUS_META: Record<MilestoneStatus, { labelKey: string; icon: any; bg: string; border: string; text: string }> = {
+  completed:   { labelKey: 'templates54StrategyTimeline.statusCompleted',  icon: CheckCircle2, bg: 'bg-[var(--state-success)]/15', border: 'border-[var(--state-success)]/40', text: 'text-[#5C856A]' },
+  in_progress: { labelKey: 'templates54StrategyTimeline.statusInProgress', icon: Loader2,      bg: 'bg-[var(--primary-gold)]/15',  border: 'border-[var(--primary-gold)]/40',  text: 'text-[var(--primary-gold-dark)]' },
+  scheduled:   { labelKey: 'templates54StrategyTimeline.statusScheduled',  icon: Clock,        bg: 'bg-[var(--state-info)]/15',    border: 'border-[var(--state-info)]/40',    text: 'text-[#52647D]' },
+  at_risk:     { labelKey: 'templates54StrategyTimeline.statusAtRisk',     icon: AlertTriangle, bg: 'bg-[var(--state-error)]/15',   border: 'border-[var(--state-error)]/40',   text: 'text-[#9B5050]' },
 };
 
 // View period: Q2/2026 = April 1 → June 30 (90 days)
@@ -65,28 +70,31 @@ function dayOffset(iso: string): number {
 
 const INITIATIVES: Initiative[] = [
   {
-    id: 'init_1', name: 'Triển khai Auto DB pilot', category: 'Sản phẩm',
+    id: 'init_1', name: 'Triển khai Auto DB pilot', nameKey: 'templates54StrategyTimeline.initiative1Name',
+    category: 'Sản phẩm', categoryKey: 'templates54StrategyTimeline.initiative1Category',
     milestones: [
-      { id: 'm_11', title: 'Hoàn thành schema suggestion engine', start_date: '2026-04-01', end_date: '2026-04-15', status: 'completed',   owner: 'huy@acme.vn' },
-      { id: 'm_12', title: 'Pilot khách hàng số 1',                start_date: '2026-04-16', end_date: '2026-04-30', status: 'completed',   owner: 'lan@acme.vn', depends_on: ['m_11'] },
-      { id: 'm_13', title: 'Pilot khách hàng số 5 — TPHCM',        start_date: '2026-05-01', end_date: '2026-05-15', status: 'in_progress', owner: 'lan@acme.vn', depends_on: ['m_12'] },
-      { id: 'm_14', title: 'Báo cáo tổng kết pilot',                start_date: '2026-06-15', end_date: '2026-06-25', status: 'scheduled',   owner: 'minh@acme.vn' },
+      { id: 'm_11', title: 'Hoàn thành schema suggestion engine', titleKey: 'templates54StrategyTimeline.milestone11Title', start_date: '2026-04-01', end_date: '2026-04-15', status: 'completed',   owner: 'huy@acme.vn' },
+      { id: 'm_12', title: 'Pilot khách hàng số 1',                titleKey: 'templates54StrategyTimeline.milestone12Title', start_date: '2026-04-16', end_date: '2026-04-30', status: 'completed',   owner: 'lan@acme.vn', depends_on: ['m_11'] },
+      { id: 'm_13', title: 'Pilot khách hàng số 5 — TPHCM',        titleKey: 'templates54StrategyTimeline.milestone13Title', start_date: '2026-05-01', end_date: '2026-05-15', status: 'in_progress', owner: 'lan@acme.vn', depends_on: ['m_12'] },
+      { id: 'm_14', title: 'Báo cáo tổng kết pilot',                titleKey: 'templates54StrategyTimeline.milestone14Title', start_date: '2026-06-15', end_date: '2026-06-25', status: 'scheduled',   owner: 'minh@acme.vn' },
     ],
   },
   {
-    id: 'init_2', name: 'Giảm churn APAC', category: 'Khách hàng',
+    id: 'init_2', name: 'Giảm churn APAC', nameKey: 'templates54StrategyTimeline.initiative2Name',
+    category: 'Khách hàng', categoryKey: 'templates54StrategyTimeline.initiative2Category',
     milestones: [
-      { id: 'm_21', title: 'Phân tích root cause churn',            start_date: '2026-04-05', end_date: '2026-04-20', status: 'completed', owner: 'lan@acme.vn' },
-      { id: 'm_22', title: 'Triển khai retention campaign',         start_date: '2026-04-25', end_date: '2026-05-25', status: 'at_risk',   owner: 'minh@acme.vn', depends_on: ['m_21'], notes: 'Trễ 5 ngày — chờ approval ngân sách marketing.' },
-      { id: 'm_23', title: 'Đánh giá hiệu quả campaign',            start_date: '2026-06-01', end_date: '2026-06-20', status: 'scheduled', owner: 'lan@acme.vn', depends_on: ['m_22'] },
+      { id: 'm_21', title: 'Phân tích root cause churn',            titleKey: 'templates54StrategyTimeline.milestone21Title', start_date: '2026-04-05', end_date: '2026-04-20', status: 'completed', owner: 'lan@acme.vn' },
+      { id: 'm_22', title: 'Triển khai retention campaign',         titleKey: 'templates54StrategyTimeline.milestone22Title', notesKey: 'templates54StrategyTimeline.milestone22Notes', start_date: '2026-04-25', end_date: '2026-05-25', status: 'at_risk',   owner: 'minh@acme.vn', depends_on: ['m_21'], notes: 'Trễ 5 ngày — chờ approval ngân sách marketing.' },
+      { id: 'm_23', title: 'Đánh giá hiệu quả campaign',            titleKey: 'templates54StrategyTimeline.milestone23Title', start_date: '2026-06-01', end_date: '2026-06-20', status: 'scheduled', owner: 'lan@acme.vn', depends_on: ['m_22'] },
     ],
   },
   {
-    id: 'init_3', name: 'Mở rộng SME', category: 'Doanh thu',
+    id: 'init_3', name: 'Mở rộng SME', nameKey: 'templates54StrategyTimeline.initiative3Name',
+    category: 'Doanh thu', categoryKey: 'templates54StrategyTimeline.initiative3Category',
     milestones: [
-      { id: 'm_31', title: 'Hoàn thiện gói SME starter',            start_date: '2026-04-01', end_date: '2026-04-30', status: 'completed',   owner: 'huy@acme.vn' },
-      { id: 'm_32', title: 'Chiến dịch outbound 200 leads',         start_date: '2026-05-05', end_date: '2026-06-05', status: 'in_progress', owner: 'minh@acme.vn' },
-      { id: 'm_33', title: 'Đạt 60 khách SME mới',                  start_date: '2026-06-01', end_date: '2026-06-30', status: 'scheduled',   owner: 'minh@acme.vn', depends_on: ['m_32'] },
+      { id: 'm_31', title: 'Hoàn thiện gói SME starter',            titleKey: 'templates54StrategyTimeline.milestone31Title', start_date: '2026-04-01', end_date: '2026-04-30', status: 'completed',   owner: 'huy@acme.vn' },
+      { id: 'm_32', title: 'Chiến dịch outbound 200 leads',         titleKey: 'templates54StrategyTimeline.milestone32Title', start_date: '2026-05-05', end_date: '2026-06-05', status: 'in_progress', owner: 'minh@acme.vn' },
+      { id: 'm_33', title: 'Đạt 60 khách SME mới',                  titleKey: 'templates54StrategyTimeline.milestone33Title', start_date: '2026-06-01', end_date: '2026-06-30', status: 'scheduled',   owner: 'minh@acme.vn', depends_on: ['m_32'] },
     ],
   },
 ];
@@ -96,6 +104,7 @@ const INITIATIVES: Initiative[] = [
 // ============================================================================
 
 export default function StrategyTimelinePage() {
+  const t = useT();
   const [zoom, setZoom] = useState<'month' | 'quarter'>('quarter');
   const [selected, setSelected] = useState<Milestone | null>(null);
 
@@ -117,14 +126,14 @@ export default function StrategyTimelinePage() {
   return (
     <>
       <PageHeader
-        title="Lộ trình"
-        description="Milestone của các initiative theo quý. Click thanh để xem chi tiết."
+        title={t('templates54StrategyTimeline.pageTitle')}
+        description={t('templates54StrategyTimeline.pageDescription')}
         actions={
           <>
             <Badge variant="info">Phase 2 · F-054</Badge>
-            <a href="/p2/strategy"><Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> Tổng quan</Button></a>
+            <a href="/p2/strategy"><Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> {t('templates54StrategyTimeline.backOverview')}</Button></a>
             <Button variant="primary" size="md">
-              <Plus className="w-4 h-4 mr-2" /> Thêm milestone
+              <Plus className="w-4 h-4 mr-2" /> {t('templates54StrategyTimeline.addMilestone')}
             </Button>
           </>
         }
@@ -142,7 +151,7 @@ export default function StrategyTimelinePage() {
               onClick={() => setZoom('month')}
               className={cn('p-1.5 rounded-sm-custom border transition-colors',
                 zoom === 'month' ? 'border-[var(--primary-gold)] bg-[var(--primary-gold)]/10 text-[var(--text-primary)]' : 'border-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-app)]')}
-              title="Theo tháng"
+              title={t('templates54StrategyTimeline.zoomMonthTooltip')}
             >
               <ZoomIn className="w-4 h-4" />
             </button>
@@ -150,7 +159,7 @@ export default function StrategyTimelinePage() {
               onClick={() => setZoom('quarter')}
               className={cn('p-1.5 rounded-sm-custom border transition-colors',
                 zoom === 'quarter' ? 'border-[var(--primary-gold)] bg-[var(--primary-gold)]/10 text-[var(--text-primary)]' : 'border-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-app)]')}
-              title="Theo quý"
+              title={t('templates54StrategyTimeline.zoomQuarterTooltip')}
             >
               <ZoomOut className="w-4 h-4" />
             </button>
@@ -160,7 +169,7 @@ export default function StrategyTimelinePage() {
                 return (
                   <span key={s} className="inline-flex items-center gap-1">
                     <span className={cn('w-2.5 h-2.5 rounded-sm-custom border', m.bg, m.border)} />
-                    {m.label}
+                    {t(m.labelKey)}
                   </span>
                 );
               })}
@@ -198,15 +207,15 @@ export default function StrategyTimelinePage() {
             {INITIATIVES.map((init) => (
               <div key={init.id} className="grid grid-cols-[260px_1fr]">
                 <div className="px-4 py-4 border-r border-[var(--border-color)]/60 flex flex-col gap-1 justify-center">
-                  <p className="text-sm font-medium text-[var(--text-primary)] line-clamp-2">{init.name}</p>
-                  <p className="text-[11px] text-[var(--text-secondary)]">{init.category} · {init.milestones.length} milestone</p>
+                  <p className="text-sm font-medium text-[var(--text-primary)] line-clamp-2">{t(init.nameKey)}</p>
+                  <p className="text-[11px] text-[var(--text-secondary)]">{t(init.categoryKey)} · {init.milestones.length} milestone</p>
                 </div>
                 <div className="relative py-4 min-h-[68px]">
                   {/* Today line */}
                   <div
                     className="absolute top-0 bottom-0 w-px bg-[var(--state-error)]/50 z-10"
                     style={{ left: `${(dayOffset(TODAY.toISOString()) / PERIOD_DAYS) * 100}%` }}
-                    title={`Hôm nay ${TODAY.toLocaleDateString('vi-VN')}`}
+                    title={t('templates54StrategyTimeline.todayTooltip', { date: TODAY.toLocaleDateString('vi-VN') })}
                   />
                   {init.milestones.map((m, i) => (
                     <MilestoneBar
@@ -225,8 +234,8 @@ export default function StrategyTimelinePage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Đường đỏ dọc = hôm nay ({TODAY.toLocaleDateString('vi-VN')}). Phụ thuộc giữa milestone hiển thị bằng <code>depends_on</code>
-            ở drawer chi tiết — Phase 2 sẽ vẽ arrow nối tự động.
+            {t('templates54StrategyTimeline.legendDescPart1', { date: TODAY.toLocaleDateString('vi-VN') })}<code>depends_on</code>
+            {t('templates54StrategyTimeline.legendDescPart2')}
           </p>
         </div>
       </div>
@@ -244,6 +253,7 @@ export default function StrategyTimelinePage() {
 function MilestoneBar({
   milestone: m, row, onClick,
 }: { milestone: Milestone; row: number; onClick: () => void }) {
+  const t = useT();
   const startOffset = dayOffset(m.start_date);
   const endOffset   = dayOffset(m.end_date);
   const widthPct    = Math.max(2, ((endOffset - startOffset) / PERIOD_DAYS) * 100);
@@ -265,7 +275,7 @@ function MilestoneBar({
       }}
     >
       <Icon className={cn('w-3 h-3 shrink-0', m.status === 'in_progress' && 'animate-spin')} />
-      <span className="truncate">{m.title}</span>
+      <span className="truncate">{t(m.titleKey)}</span>
     </button>
   );
 }
@@ -273,6 +283,7 @@ function MilestoneBar({
 function DetailDrawer({
   milestone: m, onClose,
 }: { milestone: Milestone; onClose: () => void }) {
+  const t = useT();
   const meta = STATUS_META[m.status];
   const Icon = meta.icon;
   return (
@@ -282,7 +293,7 @@ function DetailDrawer({
         <div className="p-5 border-b border-[var(--border-color)] flex items-start justify-between gap-3">
           <div>
             <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">Milestone</p>
-            <h3 className="font-serif text-lg text-[var(--text-primary)] leading-snug">{m.title}</h3>
+            <h3 className="font-serif text-lg text-[var(--text-primary)] leading-snug">{t(m.titleKey)}</h3>
           </div>
           <button onClick={onClose} className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
             <X className="w-5 h-5" />
@@ -290,40 +301,40 @@ function DetailDrawer({
         </div>
         <div className="p-5 space-y-4">
           <div>
-            <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-2">Trạng thái</p>
+            <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-2">{t('templates54StrategyTimeline.drawerStatus')}</p>
             <Badge variant={
               m.status === 'completed' ? 'success' : m.status === 'at_risk' ? 'error' :
               m.status === 'in_progress' ? 'current' : 'info'
             }>
-              <Icon className="w-3 h-3 mr-1" /> {meta.label}
+              <Icon className="w-3 h-3 mr-1" /> {t(meta.labelKey)}
             </Badge>
           </div>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div>
-              <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Bắt đầu</p>
+              <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates54StrategyTimeline.drawerStart')}</p>
               <p className="text-[var(--text-primary)] mt-0.5">{new Date(m.start_date).toLocaleDateString('vi-VN')}</p>
             </div>
             <div>
-              <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Kết thúc</p>
+              <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{t('templates54StrategyTimeline.drawerEnd')}</p>
               <p className="text-[var(--text-primary)] mt-0.5">{new Date(m.end_date).toLocaleDateString('vi-VN')}</p>
             </div>
           </div>
           <div>
-            <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">Chủ</p>
+            <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">{t('templates54StrategyTimeline.drawerOwner')}</p>
             <p className="text-sm text-[var(--text-primary)]">{m.owner}</p>
           </div>
           {m.depends_on && m.depends_on.length > 0 && (
             <div>
-              <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-2">Phụ thuộc</p>
+              <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-2">{t('templates54StrategyTimeline.drawerDependsOn')}</p>
               <div className="flex flex-wrap gap-1.5">
                 {m.depends_on.map((id) => <Badge key={id} variant="default">{id}</Badge>)}
               </div>
             </div>
           )}
-          {m.notes && (
+          {m.notesKey && (
             <div>
-              <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">Ghi chú</p>
-              <p className="text-sm text-[var(--text-primary)] leading-relaxed">{m.notes}</p>
+              <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">{t('templates54StrategyTimeline.drawerNotes')}</p>
+              <p className="text-sm text-[var(--text-primary)] leading-relaxed">{t(m.notesKey)}</p>
             </div>
           )}
         </div>

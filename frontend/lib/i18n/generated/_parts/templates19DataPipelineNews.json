@@ -1,0 +1,205 @@
+{
+  "templates19DataPipelineNews.pageTitle": {
+    "vi": "Tạo pipeline mới",
+    "en": "Create new pipeline",
+    "ja": "新しいパイプラインを作成",
+    "ko": "새 파이프라인 만들기",
+    "zh": "创建新数据管道"
+  },
+  "templates19DataPipelineNews.pageDesc": {
+    "vi": "Chọn nguồn dữ liệu và đặt tên. Wizard 5 bước sẽ hướng dẫn phần còn lại.",
+    "en": "Choose a data source and name it. The 5-step wizard will guide you through the rest.",
+    "ja": "データソースを選び、名前を付けてください。5ステップのウィザードが残りの手順を案内します。",
+    "ko": "데이터 소스를 선택하고 이름을 지정하세요. 5단계 마법사가 나머지를 안내합니다.",
+    "zh": "选择数据源并命名。5 步向导将引导您完成其余步骤。"
+  },
+  "templates19DataPipelineNews.sourceUploadTitle": {
+    "vi": "Tải file mới (CSV / Excel / ZIP)",
+    "en": "Upload a new file (CSV / Excel / ZIP)",
+    "ja": "新しいファイルをアップロード（CSV / Excel / ZIP）",
+    "ko": "새 파일 업로드 (CSV / Excel / ZIP)",
+    "zh": "上传新文件（CSV / Excel / ZIP）"
+  },
+  "templates19DataPipelineNews.sourceUploadDesc": {
+    "vi": "Phù hợp khi bạn có dữ liệu mới. SHA-256 sẽ chống upload trùng (K-8).",
+    "en": "Best when you have new data. SHA-256 prevents duplicate uploads (K-8).",
+    "ja": "新しいデータがある場合に最適です。SHA-256により重複アップロードを防止します（K-8）。",
+    "ko": "새로운 데이터가 있을 때 적합합니다. SHA-256으로 중복 업로드를 방지합니다 (K-8).",
+    "zh": "适合您有新数据的情况。SHA-256 可防止重复上传（K-8）。"
+  },
+  "templates19DataPipelineNews.sourceSilverTitle": {
+    "vi": "Dùng dataset Silver có sẵn",
+    "en": "Use an existing Silver dataset",
+    "ja": "既存のSilverデータセットを使用",
+    "ko": "기존 Silver 데이터셋 사용",
+    "zh": "使用现有的 Silver 数据集"
+  },
+  "templates19DataPipelineNews.sourceSilverDesc": {
+    "vi": "Bỏ qua ingest — chạy phân tích trên dataset đã sạch & che PII.",
+    "en": "Skip ingest — run analysis on a dataset that's already cleaned & PII-masked.",
+    "ja": "取り込みをスキップし、すでにクレンジング＆PIIマスキング済みのデータセットで分析を実行します。",
+    "ko": "수집을 건너뛰고 이미 정제 및 PII 마스킹된 데이터셋에서 분석을 실행합니다.",
+    "zh": "跳过采集——直接对已清洗并脱敏 PII 的数据集进行分析。"
+  },
+  "templates19DataPipelineNews.sourceTemplateTitle": {
+    "vi": "Bắt đầu từ template phân tích",
+    "en": "Start from an analysis template",
+    "ja": "分析テンプレートから開始",
+    "ko": "분석 템플릿으로 시작",
+    "zh": "从分析模板开始"
+  },
+  "templates19DataPipelineNews.sourceTemplateDesc": {
+    "vi": "Mẫu nghiệp vụ phổ biến (RFM churn, anomaly, time series) có sẵn.",
+    "en": "Common business templates (RFM churn, anomaly, time series) ready to use.",
+    "ja": "よく使われる業務テンプレート（RFM churn、異常検知、時系列）を用意しています。",
+    "ko": "일반적인 비즈니스 템플릿(RFM 이탈, 이상 탐지, 시계열)을 제공합니다.",
+    "zh": "提供常见业务模板（RFM 流失分析、异常检测、时间序列）。"
+  },
+  "templates19DataPipelineNews.step1Title": {
+    "vi": "Upload",
+    "en": "Upload",
+    "ja": "アップロード",
+    "ko": "업로드",
+    "zh": "上传"
+  },
+  "templates19DataPipelineNews.step1Desc": {
+    "vi": "Tải file gốc. Kaori tính SHA-256 + đẩy về Bronze.",
+    "en": "Upload the source file. Kaori computes SHA-256 + pushes it to Bronze.",
+    "ja": "元のファイルをアップロードします。KaoriがSHA-256を計算し、Bronzeに送信します。",
+    "ko": "원본 파일을 업로드합니다. Kaori가 SHA-256을 계산하고 Bronze로 전송합니다.",
+    "zh": "上传原始文件。Kaori 会计算 SHA-256 并推送到 Bronze。"
+  },
+  "templates19DataPipelineNews.step2Title": {
+    "vi": "Cột",
+    "en": "Column",
+    "ja": "項目",
+    "ko": "컬럼",
+    "zh": "字段"
+  },
+  "templates19DataPipelineNews.step2Desc": {
+    "vi": "Map cột — exact / fuzzy / AI suggest với confidence.",
+    "en": "Map columns — exact / fuzzy / AI suggest with confidence.",
+    "ja": "項目をマッピングします — 完全一致 / あいまい一致 / AI提案（信頼度付き）。",
+    "ko": "컬럼을 매핑합니다 — 정확 매칭 / 유사 매칭 / 신뢰도가 표시된 AI 제안.",
+    "zh": "字段映射——精确匹配 / 模糊匹配 / 带置信度的 AI 建议。"
+  },
+  "templates19DataPipelineNews.step3Title": {
+    "vi": "Làm sạch",
+    "en": "Clean",
+    "ja": "クレンジング",
+    "ko": "정제",
+    "zh": "清洗"
+  },
+  "templates19DataPipelineNews.step3Desc": {
+    "vi": "Áp dụng quy tắc (null, dedup, kiểu dữ liệu, AI detect).",
+    "en": "Apply rules (null handling, dedup, data types, AI detect).",
+    "ja": "ルールを適用します（null処理、重複排除、データ型、AI検知）。",
+    "ko": "규칙을 적용합니다 (null 처리, 중복 제거, 데이터 타입, AI 감지).",
+    "zh": "应用规则（空值处理、去重、数据类型、AI 检测）。"
+  },
+  "templates19DataPipelineNews.step4Title": {
+    "vi": "Phân tích",
+    "en": "Analysis",
+    "ja": "分析",
+    "ko": "분석",
+    "zh": "分析"
+  },
+  "templates19DataPipelineNews.step4Desc": {
+    "vi": "Chọn template + bật/tắt consent_external (K-4).",
+    "en": "Choose a template + toggle consent_external (K-4).",
+    "ja": "テンプレートを選択し、consent_externalのオン/オフを切り替えます（K-4）。",
+    "ko": "템플릿을 선택하고 consent_external을 켜거나 끕니다 (K-4).",
+    "zh": "选择模板并切换 consent_external（K-4）。"
+  },
+  "templates19DataPipelineNews.step5Title": {
+    "vi": "Kết quả",
+    "en": "Result",
+    "ja": "結果",
+    "ko": "결과",
+    "zh": "结果"
+  },
+  "templates19DataPipelineNews.step5Desc": {
+    "vi": "Dashboard ChartBlock + insight + decision audit log.",
+    "en": "ChartBlock dashboard + insight + decision audit log.",
+    "ja": "ChartBlockダッシュボード＋インサイト＋決定監査ログ。",
+    "ko": "ChartBlock 대시보드 + 인사이트 + 결정 감사 로그.",
+    "zh": "ChartBlock 仪表盘 + 洞察 + 决策审计日志。"
+  },
+  "templates19DataPipelineNews.sourceSectionTitle": {
+    "vi": "Nguồn dữ liệu",
+    "en": "Data source",
+    "ja": "データソース",
+    "ko": "데이터 소스",
+    "zh": "数据源"
+  },
+  "templates19DataPipelineNews.recommendedBadge": {
+    "vi": "Khuyến nghị",
+    "en": "Recommended",
+    "ja": "おすすめ",
+    "ko": "추천",
+    "zh": "推荐"
+  },
+  "templates19DataPipelineNews.pipelineNameLabel": {
+    "vi": "Tên pipeline",
+    "en": "Pipeline name",
+    "ja": "パイプライン名",
+    "ko": "파이프라인 이름",
+    "zh": "数据管道名称"
+  },
+  "templates19DataPipelineNews.pipelineNamePlaceholder": {
+    "vi": "Ví dụ: Phân tích doanh thu Q3 NA",
+    "en": "e.g. Q3 North America revenue analysis",
+    "ja": "例：Q3北米売上分析",
+    "ko": "예: Q3 북미 매출 분석",
+    "zh": "例如：Q3 北美营收分析"
+  },
+  "templates19DataPipelineNews.pipelineNameHint": {
+    "vi": "Tuỳ chọn — có thể đổi sau khi tạo.",
+    "en": "Optional — can be changed after creation.",
+    "ja": "任意項目です — 作成後に変更できます。",
+    "ko": "선택 사항입니다 — 생성 후 변경할 수 있습니다.",
+    "zh": "可选——创建后可以修改。"
+  },
+  "templates19DataPipelineNews.stepsSectionTitle": {
+    "vi": "5 bước trong wizard",
+    "en": "5 steps in the wizard",
+    "ja": "ウィザードの5ステップ",
+    "ko": "마법사의 5단계",
+    "zh": "向导中的 5 个步骤"
+  },
+  "templates19DataPipelineNews.stepsDuration": {
+    "vi": "5–15 phút tuỳ kích thước file",
+    "en": "5–15 minutes depending on file size",
+    "ja": "ファイルサイズにより5〜15分",
+    "ko": "파일 크기에 따라 5~15분",
+    "zh": "视文件大小需要 5–15 分钟"
+  },
+  "templates19DataPipelineNews.llmRouterPre": {
+    "vi": "Mọi LLM call đi qua ",
+    "en": "Every LLM call goes through ",
+    "ja": "すべてのLLM呼び出しは",
+    "ko": "모든 LLM 호출은 ",
+    "zh": "所有 LLM 调用都会经过 "
+  },
+  "templates19DataPipelineNews.llmRouterPost": {
+    "vi": " (K-3) — Qwen 2.5 local là mặc định. External AI (Claude / GPT-4o) chỉ bật khi bạn chọn ở Bước 4 (K-4) — PII đã được che (K-5).",
+    "en": " (K-3) — Qwen 2.5 local is the default. External AI (Claude / GPT-4o) only turns on when you choose it at Step 4 (K-4) — PII is already masked (K-5).",
+    "ja": "を経由します（K-3）— Qwen 2.5 localがデフォルトです。外部AI（Claude / GPT-4o）はステップ4で選択した場合のみ有効になります（K-4）— PIIはすでにマスキング済みです（K-5）。",
+    "ko": "를 거칩니다 (K-3) — Qwen 2.5 local이 기본값입니다. 외부 AI(Claude / GPT-4o)는 4단계에서 선택한 경우에만 활성화됩니다 (K-4) — PII는 이미 마스킹되어 있습니다 (K-5).",
+    "zh": "（K-3）— 默认使用 Qwen 2.5 本地模型。外部 AI（Claude / GPT-4o）仅在您于第 4 步选择时启用（K-4）— PII 已被脱敏（K-5）。"
+  },
+  "templates19DataPipelineNews.cancelBtn": {
+    "vi": "Huỷ",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "templates19DataPipelineNews.startBtn": {
+    "vi": "Bắt đầu",
+    "en": "Start",
+    "ja": "開始",
+    "ko": "시작",
+    "zh": "开始"
+  }
+}

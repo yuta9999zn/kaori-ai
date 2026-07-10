@@ -1,0 +1,198 @@
+{
+  "pipelineAnalysisconfig.title": {
+    "vi": "Chọn phân tích",
+    "en": "Choose analysis",
+    "ja": "分析を選択",
+    "ko": "분석 선택",
+    "zh": "选择分析"
+  },
+  "pipelineAnalysisconfig.subtitle": {
+    "vi": "Chọn một hoặc nhiều loại phân tích. Tất cả chạy đồng thời trên dữ liệu đã làm sạch.",
+    "en": "Choose one or more analysis types. All run simultaneously on the cleaned data.",
+    "ja": "1つまたは複数の分析タイプを選択してください。すべてクレンジング済みデータに対して同時に実行されます。",
+    "ko": "하나 이상의 분석 유형을 선택하세요. 모두 정제된 데이터에서 동시에 실행됩니다.",
+    "zh": "选择一种或多种分析类型。所有分析都会同时在清洗后的数据上运行。"
+  },
+  "pipelineAnalysisconfig.tplSummaryStatsLabel": {
+    "vi": "Thống kê tổng quan",
+    "en": "Overview statistics",
+    "ja": "概要統計",
+    "ko": "개요 통계",
+    "zh": "概览统计"
+  },
+  "pipelineAnalysisconfig.tplSummaryStatsDesc": {
+    "vi": "Mean, median, std, quartiles cho tất cả cột số",
+    "en": "Mean, median, std, quartiles for all numeric columns",
+    "ja": "すべての数値項目の平均・中央値・標準偏差・四分位数",
+    "ko": "모든 숫자 컬럼의 평균, 중앙값, 표준편차, 사분위수",
+    "zh": "所有数值字段的均值、中位数、标准差、四分位数"
+  },
+  "pipelineAnalysisconfig.tplTimeSeriesLabel": {
+    "vi": "Chuỗi thời gian",
+    "en": "Time series",
+    "ja": "時系列",
+    "ko": "시계열",
+    "zh": "时间序列"
+  },
+  "pipelineAnalysisconfig.tplTimeSeriesDesc": {
+    "vi": "Xu hướng, mùa vụ, dự báo — cần cột ngày + số",
+    "en": "Trend, seasonality, forecasting — requires a date column + numeric column",
+    "ja": "トレンド・季節性・予測 — 日付項目と数値項目が必要",
+    "ko": "추세, 계절성, 예측 — 날짜 컬럼 + 숫자 컬럼 필요",
+    "zh": "趋势、季节性、预测——需要日期字段和数值字段"
+  },
+  "pipelineAnalysisconfig.tplDistributionLabel": {
+    "vi": "Phân phối",
+    "en": "Distribution",
+    "ja": "分布",
+    "ko": "분포",
+    "zh": "分布"
+  },
+  "pipelineAnalysisconfig.tplDistributionDesc": {
+    "vi": "Histogram, outlier, skewness",
+    "en": "Histogram, outliers, skewness",
+    "ja": "ヒストグラム・外れ値・歪度",
+    "ko": "히스토그램, 이상치, 왜도",
+    "zh": "直方图、离群值、偏度"
+  },
+  "pipelineAnalysisconfig.tplCorrelationLabel": {
+    "vi": "Tương quan",
+    "en": "Correlation",
+    "ja": "相関",
+    "ko": "상관관계",
+    "zh": "相关性"
+  },
+  "pipelineAnalysisconfig.tplCorrelationDesc": {
+    "vi": "Ma trận tương quan — cần ≥2 cột số",
+    "en": "Correlation matrix — requires ≥2 numeric columns",
+    "ja": "相関行列 — 数値項目が2つ以上必要",
+    "ko": "상관관계 행렬 — 숫자 컬럼 2개 이상 필요",
+    "zh": "相关性矩阵——需要 ≥2 个数值字段"
+  },
+  "pipelineAnalysisconfig.tplClusteringLabel": {
+    "vi": "Phân nhóm",
+    "en": "Clustering",
+    "ja": "クラスタリング",
+    "ko": "군집화",
+    "zh": "聚类"
+  },
+  "pipelineAnalysisconfig.tplClusteringDesc": {
+    "vi": "K-means segmentation — cần ≥3 cột số",
+    "en": "K-means segmentation — requires ≥3 numeric columns",
+    "ja": "K-meansセグメンテーション — 数値項目が3つ以上必要",
+    "ko": "K-means 세그먼테이션 — 숫자 컬럼 3개 이상 필요",
+    "zh": "K-means 分群——需要 ≥3 个数值字段"
+  },
+  "pipelineAnalysisconfig.tplCohortLabel": {
+    "vi": "Cohort retention",
+    "en": "Cohort retention",
+    "ja": "コホート維持率",
+    "ko": "코호트 유지율",
+    "zh": "同期群留存"
+  },
+  "pipelineAnalysisconfig.tplCohortDesc": {
+    "vi": "Bảng giữ chân khách hàng theo tháng",
+    "en": "Monthly customer retention table",
+    "ja": "月次の顧客維持率テーブル",
+    "ko": "월별 고객 유지율 테이블",
+    "zh": "按月客户留存表"
+  },
+  "pipelineAnalysisconfig.tplChurnLabel": {
+    "vi": "Nguy cơ rời bỏ",
+    "en": "Churn risk",
+    "ja": "解約リスク",
+    "ko": "이탈 위험",
+    "zh": "流失风险"
+  },
+  "pipelineAnalysisconfig.tplChurnDesc": {
+    "vi": "RFM + dự đoán churn — cần customer_id + date",
+    "en": "RFM + churn prediction — requires customer_id + date",
+    "ja": "RFM + 解約予測 — customer_id と日付が必要",
+    "ko": "RFM + 이탈 예측 — customer_id + 날짜 필요",
+    "zh": "RFM + 流失预测——需要 customer_id 和日期"
+  },
+  "pipelineAnalysisconfig.tplAnomalyLabel": {
+    "vi": "Phát hiện bất thường",
+    "en": "Anomaly detection",
+    "ja": "異常検知",
+    "ko": "이상 탐지",
+    "zh": "异常检测"
+  },
+  "pipelineAnalysisconfig.tplAnomalyDesc": {
+    "vi": "Outlier + time anomaly detection",
+    "en": "Outlier + time anomaly detection",
+    "ja": "外れ値・時系列異常検知",
+    "ko": "이상치 + 시계열 이상 탐지",
+    "zh": "离群值 + 时间异常检测"
+  },
+  "pipelineAnalysisconfig.tplRegressionLabel": {
+    "vi": "Hồi quy dự đoán",
+    "en": "Predictive regression",
+    "ja": "予測回帰",
+    "ko": "예측 회귀",
+    "zh": "预测回归"
+  },
+  "pipelineAnalysisconfig.tplRegressionDesc": {
+    "vi": "Dự đoán biến target từ các features",
+    "en": "Predicts the target variable from the features",
+    "ja": "特徴量からターゲット変数を予測",
+    "ko": "특성(feature)으로부터 타겟 변수 예측",
+    "zh": "根据特征预测目标变量"
+  },
+  "pipelineAnalysisconfig.tplBankClassifyLabel": {
+    "vi": "Phân loại giao dịch",
+    "en": "Transaction classification",
+    "ja": "取引分類",
+    "ko": "거래 분류",
+    "zh": "交易分类"
+  },
+  "pipelineAnalysisconfig.tplBankClassifyDesc": {
+    "vi": "Phân loại sao kê ngân hàng theo danh mục",
+    "en": "Classifies bank statements by category",
+    "ja": "銀行明細をカテゴリ別に分類",
+    "ko": "은행 거래 내역을 카테고리별로 분류",
+    "zh": "按类别对银行流水进行分类"
+  },
+  "pipelineAnalysisconfig.consentTitle": {
+    "vi": "Cho phép AI bên ngoài (Claude / GPT-4o)",
+    "en": "Allow external AI (Claude / GPT-4o)",
+    "ja": "外部AI（Claude / GPT-4o）を許可",
+    "ko": "외부 AI(Claude / GPT-4o) 허용",
+    "zh": "允许外部 AI（Claude / GPT-4o）"
+  },
+  "pipelineAnalysisconfig.consentDesc": {
+    "vi": "Dữ liệu sẽ được ẩn danh (xoá email, SĐT) trước khi gửi. Mặc định: Qwen2.5 nội bộ.",
+    "en": "Data will be anonymized (email, phone number removed) before sending. Default: internal Qwen2.5.",
+    "ja": "送信前にデータは匿名化されます（メール・電話番号を削除）。デフォルト：社内Qwen2.5。",
+    "ko": "전송 전 데이터는 익명화됩니다(이메일, 전화번호 삭제). 기본값: 내부 Qwen2.5.",
+    "zh": "发送前数据将被匿名化处理（删除邮箱、电话号码）。默认：内部 Qwen2.5。"
+  },
+  "pipelineAnalysisconfig.errStart": {
+    "vi": "Lỗi khi bắt đầu phân tích. Vui lòng thử lại.",
+    "en": "Error starting analysis. Please try again.",
+    "ja": "分析の開始に失敗しました。もう一度お試しください。",
+    "ko": "분석 시작 중 오류가 발생했습니다. 다시 시도해 주세요.",
+    "zh": "启动分析时出错，请重试。"
+  },
+  "pipelineAnalysisconfig.selectedCount": {
+    "vi": "Đã chọn {count} loại phân tích",
+    "en": "{count} analysis type(s) selected",
+    "ja": "{count}件の分析タイプを選択しました",
+    "ko": "{count}개 분석 유형 선택됨",
+    "zh": "已选择 {count} 种分析类型"
+  },
+  "pipelineAnalysisconfig.starting": {
+    "vi": "Đang bắt đầu…",
+    "en": "Starting…",
+    "ja": "開始しています…",
+    "ko": "시작하는 중…",
+    "zh": "正在开始…"
+  },
+  "pipelineAnalysisconfig.startCta": {
+    "vi": "Bắt đầu phân tích →",
+    "en": "Start analysis →",
+    "ja": "分析を開始 →",
+    "ko": "분석 시작 →",
+    "zh": "开始分析 →"
+  }
+}

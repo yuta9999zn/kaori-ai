@@ -1,0 +1,310 @@
+{
+  "templates35AnalystHub.pageTitle": {
+    "vi": "Phân tích",
+    "en": "Analysis",
+    "ja": "分析",
+    "ko": "분석",
+    "zh": "分析"
+  },
+  "templates35AnalystHub.pageDescription": {
+    "vi": "3 tier × 3 scope. Chọn tier theo độ phức tạp câu hỏi, scope theo phạm vi dữ liệu.",
+    "en": "3 tiers × 3 scopes. Pick a tier by question complexity, a scope by data coverage.",
+    "ja": "3ティア×3スコープ。質問の複雑さでティアを、データ範囲でスコープを選択します。",
+    "ko": "3개 티어 × 3개 범위. 질문 복잡도에 따라 티어를, 데이터 범위에 따라 스코프를 선택하세요.",
+    "zh": "3 个层级 × 3 个范围。按问题复杂度选层级，按数据覆盖范围选范围。"
+  },
+  "templates35AnalystHub.scopePickerLabel": {
+    "vi": "Phạm vi dữ liệu",
+    "en": "Data scope",
+    "ja": "データ範囲",
+    "ko": "데이터 범위",
+    "zh": "数据范围"
+  },
+  "templates35AnalystHub.scopeSingleTitle": {
+    "vi": "Single pipeline",
+    "en": "Single pipeline",
+    "ja": "シングルパイプライン",
+    "ko": "단일 파이프라인",
+    "zh": "单个管道"
+  },
+  "templates35AnalystHub.scopeSingleDesc": {
+    "vi": "Hỏi trên 1 pipeline đã chạy",
+    "en": "Ask on a single completed pipeline run",
+    "ja": "実行済みの1つのパイプラインに対して質問",
+    "ko": "완료된 파이프라인 1개에 대해 질문",
+    "zh": "针对已运行的 1 个数据管道提问"
+  },
+  "templates35AnalystHub.scopeMultiTitle": {
+    "vi": "Multi pipeline",
+    "en": "Multi pipeline",
+    "ja": "マルチパイプライン",
+    "ko": "다중 파이프라인",
+    "zh": "多个管道"
+  },
+  "templates35AnalystHub.scopeMultiDesc": {
+    "vi": "Tổng hợp 2-5 pipeline cùng workspace",
+    "en": "Aggregate 2-5 pipelines in the same workspace",
+    "ja": "同じワークスペース内の2〜5パイプラインを集計",
+    "ko": "동일 워크스페이스 내 2~5개 파이프라인 집계",
+    "zh": "汇总同一工作区内的 2-5 个数据管道"
+  },
+  "templates35AnalystHub.scopeCrossTitle": {
+    "vi": "Cross workspace",
+    "en": "Cross workspace",
+    "ja": "クロスワークスペース",
+    "ko": "워크스페이스 교차",
+    "zh": "跨工作区"
+  },
+  "templates35AnalystHub.scopeCrossDesc": {
+    "vi": "Bao trùm các workspace bạn có quyền",
+    "en": "Covers every workspace you have access to",
+    "ja": "アクセス権のあるすべてのワークスペースを対象",
+    "ko": "권한이 있는 모든 워크스페이스를 포함",
+    "zh": "涵盖你有权限的所有工作区"
+  },
+  "templates35AnalystHub.crossWarning": {
+    "vi": "Cross-workspace tôn trọng RLS — bạn chỉ thấy workspace mà bạn có vai trò ≥ ANALYST. Kaori sẽ list rõ workspace nào được include trước khi chạy.",
+    "en": "Cross-workspace respects RLS — you only see workspaces where your role is ≥ ANALYST. Kaori will list exactly which workspaces are included before running.",
+    "ja": "クロスワークスペースはRLSを尊重します — ロールがANALYST以上のワークスペースのみ表示されます。実行前にKaoriが対象ワークスペースを明示します。",
+    "ko": "워크스페이스 교차는 RLS를 준수합니다 — 역할이 ANALYST 이상인 워크스페이스만 표시됩니다. 실행 전 Kaori가 포함될 워크스페이스를 명확히 안내합니다.",
+    "zh": "跨工作区遵循 RLS —— 你只能看到角色 ≥ ANALYST 的工作区。运行前 Kaori 会明确列出将包含哪些工作区。"
+  },
+  "templates35AnalystHub.tierBasicTitle": {
+    "vi": "Cơ bản",
+    "en": "Basic",
+    "ja": "ベーシック",
+    "ko": "기본",
+    "zh": "基础"
+  },
+  "templates35AnalystHub.tierBasicTagline": {
+    "vi": "1 câu hỏi · 1 pipeline · 1 template",
+    "en": "1 question · 1 pipeline · 1 template",
+    "ja": "質問1つ・パイプライン1つ・テンプレート1つ",
+    "ko": "질문 1개 · 파이프라인 1개 · 템플릿 1개",
+    "zh": "1 个问题 · 1 个管道 · 1 个模板"
+  },
+  "templates35AnalystHub.tierBasicDuration": {
+    "vi": "< 1 phút",
+    "en": "< 1 minute",
+    "ja": "1分未満",
+    "ko": "1분 미만",
+    "zh": "少于 1 分钟"
+  },
+  "templates35AnalystHub.tierBasicBullet1": {
+    "vi": "Chạy đúng 1 template phân tích trên 1 pipeline đã có",
+    "en": "Runs exactly 1 analysis template on 1 existing pipeline",
+    "ja": "既存の1パイプラインに対し分析テンプレートを1つだけ実行",
+    "ko": "기존 파이프라인 1개에 분석 템플릿 1개만 실행",
+    "zh": "在已有的 1 个数据管道上运行 1 个分析模板"
+  },
+  "templates35AnalystHub.tierBasicBullet2": {
+    "vi": "Kết quả: narrative + chart + 3 khuyến nghị",
+    "en": "Result: narrative + chart + 3 recommendations",
+    "ja": "結果:ナラティブ+チャート+推奨事項3件",
+    "ko": "결과: 내러티브 + 차트 + 추천 3건",
+    "zh": "结果：叙述文本 + 图表 + 3 条建议"
+  },
+  "templates35AnalystHub.tierBasicBullet3": {
+    "vi": "Qwen 2.5 nội bộ — 0₫ chi phí AI bên ngoài",
+    "en": "Internal Qwen 2.5 — 0₫ external AI cost",
+    "ja": "内部Qwen 2.5 — 外部AIコスト0₫",
+    "ko": "내부 Qwen 2.5 — 외부 AI 비용 0₫",
+    "zh": "内部 Qwen 2.5 —— 外部 AI 费用为 0₫"
+  },
+  "templates35AnalystHub.tierIntermediateTitle": {
+    "vi": "Trung cấp",
+    "en": "Intermediate",
+    "ja": "中級",
+    "ko": "중급",
+    "zh": "中级"
+  },
+  "templates35AnalystHub.tierIntermediateTagline": {
+    "vi": "Khung phân tích + nhiều bảng cùng workspace",
+    "en": "Analysis framework + multiple tables in the same workspace",
+    "ja": "分析フレームワーク+同一ワークスペース内の複数テーブル",
+    "ko": "분석 프레임워크 + 동일 워크스페이스 내 여러 테이블",
+    "zh": "分析框架 + 同一工作区内的多张数据表"
+  },
+  "templates35AnalystHub.tierIntermediateDuration": {
+    "vi": "1 — 3 phút",
+    "en": "1 — 3 minutes",
+    "ja": "1〜3分",
+    "ko": "1~3분",
+    "zh": "1 — 3 分钟"
+  },
+  "templates35AnalystHub.tierIntermediateBullet1": {
+    "vi": "JOIN nhiều bảng Silver/Gold trong cùng workspace",
+    "en": "JOIN multiple Silver/Gold tables within the same workspace",
+    "ja": "同一ワークスペース内の複数のSilver/Goldテーブルを結合",
+    "ko": "동일 워크스페이스 내 여러 Silver/Gold 테이블 JOIN",
+    "zh": "在同一工作区内联接多张 Silver/Gold 表"
+  },
+  "templates35AnalystHub.tierIntermediateBullet2": {
+    "vi": "Áp dụng 1 framework (SWOT / 6W / 2H / Fishbone)",
+    "en": "Applies 1 framework (SWOT / 6W / 2H / Fishbone)",
+    "ja": "フレームワークを1つ適用(SWOT / 6W / 2H / Fishbone)",
+    "ko": "프레임워크 1개 적용 (SWOT / 6W / 2H / Fishbone)",
+    "zh": "应用 1 个分析框架（SWOT / 6W / 2H / 鱼骨图）"
+  },
+  "templates35AnalystHub.tierIntermediateBullet3": {
+    "vi": "Trả về 5-10 ChartBlock + audit log K-6",
+    "en": "Returns 5-10 ChartBlocks + K-6 audit log",
+    "ja": "ChartBlockを5〜10件返却+K-6監査ログ",
+    "ko": "ChartBlock 5~10개 반환 + K-6 감사 로그",
+    "zh": "返回 5-10 个 ChartBlock + K-6 审计日志"
+  },
+  "templates35AnalystHub.tierAdvancedTitle": {
+    "vi": "Nâng cao",
+    "en": "Advanced",
+    "ja": "アドバンス",
+    "ko": "고급",
+    "zh": "高级"
+  },
+  "templates35AnalystHub.tierAdvancedTagline": {
+    "vi": "Cross-cohort + AI bên ngoài (consent)",
+    "en": "Cross-cohort + external AI (consent-based)",
+    "ja": "クロスコホート+外部AI(同意ベース)",
+    "ko": "교차 코호트 + 외부 AI (동의 기반)",
+    "zh": "跨群组 + 外部 AI（需授权）"
+  },
+  "templates35AnalystHub.tierAdvancedDuration": {
+    "vi": "3 — 8 phút",
+    "en": "3 — 8 minutes",
+    "ja": "3〜8分",
+    "ko": "3~8분",
+    "zh": "3 — 8 分钟"
+  },
+  "templates35AnalystHub.tierAdvancedBullet1": {
+    "vi": "Cohort cross-workspace (chỉ workspace bạn có quyền)",
+    "en": "Cross-workspace cohort (only workspaces you have access to)",
+    "ja": "クロスワークスペースのコホート(アクセス権のあるワークスペースのみ)",
+    "ko": "워크스페이스 교차 코호트 (권한이 있는 워크스페이스만)",
+    "zh": "跨工作区群组分析（仅限你有权限的工作区）"
+  },
+  "templates35AnalystHub.tierAdvancedBullet2": {
+    "vi": "Gọi Claude Sonnet / GPT-4o sau khi PII-mask (K-5)",
+    "en": "Calls Claude Sonnet / GPT-4o after PII masking (K-5)",
+    "ja": "PIIマスキング(K-5)後にClaude Sonnet / GPT-4oを呼び出し",
+    "ko": "PII 마스킹(K-5) 후 Claude Sonnet / GPT-4o 호출",
+    "zh": "在 PII 脱敏（K-5）后调用 Claude Sonnet / GPT-4o"
+  },
+  "templates35AnalystHub.tierAdvancedBullet3": {
+    "vi": "Trừ vào quota external AI tháng — yêu cầu MANAGER duyệt",
+    "en": "Deducted from the monthly external AI quota — requires MANAGER approval",
+    "ja": "月間外部AIクォータから消費 — MANAGERの承認が必要",
+    "ko": "월간 외부 AI 쿼터에서 차감 — MANAGER 승인 필요",
+    "zh": "从每月外部 AI 配额中扣除 —— 需要 MANAGER 审批"
+  },
+  "templates35AnalystHub.recentRunsTitle": {
+    "vi": "Lần chạy gần đây",
+    "en": "Recent runs",
+    "ja": "最近の実行",
+    "ko": "최근 실행",
+    "zh": "最近运行"
+  },
+  "templates35AnalystHub.emptyRecent": {
+    "vi": "Chưa có lần phân tích nào — chọn tier ở trên để bắt đầu.",
+    "en": "No analysis runs yet — pick a tier above to get started.",
+    "ja": "まだ分析実行はありません — 上のティアを選んで開始してください。",
+    "ko": "아직 분석 실행 기록이 없습니다 — 위에서 티어를 선택해 시작하세요.",
+    "zh": "还没有分析记录 —— 请在上方选择一个层级开始。"
+  },
+  "templates35AnalystHub.noQuestion": {
+    "vi": "(không có câu hỏi)",
+    "en": "(no question)",
+    "ja": "(質問なし)",
+    "ko": "(질문 없음)",
+    "zh": "（无问题）"
+  },
+  "templates35AnalystHub.durationLabel": {
+    "vi": "Thời gian chạy ước tính:",
+    "en": "Estimated run time:",
+    "ja": "推定実行時間:",
+    "ko": "예상 실행 시간:",
+    "zh": "预计运行时间："
+  },
+  "templates35AnalystHub.badgeExternalAi": {
+    "vi": "Có thể gọi AI ngoài",
+    "en": "May call external AI",
+    "ja": "外部AIを呼び出す可能性あり",
+    "ko": "외부 AI를 호출할 수 있음",
+    "zh": "可能调用外部 AI"
+  },
+  "templates35AnalystHub.badgeInternalQwen": {
+    "vi": "Qwen nội bộ",
+    "en": "Internal Qwen",
+    "ja": "内部Qwen",
+    "ko": "내부 Qwen",
+    "zh": "内部 Qwen"
+  },
+  "templates35AnalystHub.openTier": {
+    "vi": "Mở tier {tierTitle}",
+    "en": "Open {tierTitle} tier",
+    "ja": "{tierTitle}ティアを開く",
+    "ko": "{tierTitle} 티어 열기",
+    "zh": "打开{tierTitle}层级"
+  },
+  "templates35AnalystHub.footerPre": {
+    "vi": "Mọi tier đi qua",
+    "en": "Every tier goes through",
+    "ja": "すべてのティアは",
+    "ko": "모든 티어는",
+    "zh": "所有层级都会经过"
+  },
+  "templates35AnalystHub.footerMid1": {
+    "vi": "(K-3). Tier",
+    "en": "(K-3). The",
+    "ja": "(K-3)を経由します。",
+    "ko": "(K-3)를 거칩니다.",
+    "zh": "（K-3）。"
+  },
+  "templates35AnalystHub.footerTierName": {
+    "vi": "Nâng cao",
+    "en": "Advanced",
+    "ja": "アドバンス",
+    "ko": "고급",
+    "zh": "高级"
+  },
+  "templates35AnalystHub.footerMid2": {
+    "vi": "mặc định bật",
+    "en": "tier defaults to enabling",
+    "ja": "ティアはデフォルトで",
+    "ko": "티어는 기본적으로",
+    "zh": "层级默认启用"
+  },
+  "templates35AnalystHub.footerMid3": {
+    "vi": "— cần MANAGER duyệt trong workspace có chế độ",
+    "en": "— requires MANAGER approval in workspaces set to",
+    "ja": "を有効化します — 以下のモードのワークスペースではMANAGERの承認が必要です:",
+    "ko": "를 활성화합니다 — 다음 모드의 워크스페이스에서는 MANAGER 승인이 필요합니다:",
+    "zh": "—— 在设置为以下模式的工作区中需要 MANAGER 审批："
+  },
+  "templates35AnalystHub.relJustNow": {
+    "vi": "vừa xong",
+    "en": "just now",
+    "ja": "たった今",
+    "ko": "방금",
+    "zh": "刚刚"
+  },
+  "templates35AnalystHub.relMinutes": {
+    "vi": "{n} phút",
+    "en": "{n} min",
+    "ja": "{n}分前",
+    "ko": "{n}분 전",
+    "zh": "{n} 分钟前"
+  },
+  "templates35AnalystHub.relHours": {
+    "vi": "{n} giờ",
+    "en": "{n} hr",
+    "ja": "{n}時間前",
+    "ko": "{n}시간 전",
+    "zh": "{n} 小时前"
+  },
+  "templates35AnalystHub.relDays": {
+    "vi": "{n} ngày",
+    "en": "{n} d",
+    "ja": "{n}日前",
+    "ko": "{n}일 전",
+    "zh": "{n} 天前"
+  }
+}

@@ -1,3 +1,4 @@
+'use client';
 // @ts-nocheck
 // ============================================================================
 // Pipeline wizard helpers — shared across step-1..step-5 (file 20-24)
@@ -9,23 +10,28 @@
 import React from 'react';
 import { Check } from 'lucide-react';
 import { Badge, cn } from './foundation';
+import { useT } from '@/lib/i18n/provider';
 
+// NOTE: `title` here is an i18n KEY (not display text) — consumers render it
+// via `t(s.title)`. WizardStepper below does this internally.
 export const WIZARD_STEPS = [
-  { n: 1, title: 'Upload',     path: 'step-1-upload'  },
-  { n: 2, title: 'Cột',         path: 'step-2-columns' },
-  { n: 3, title: 'Làm sạch',    path: 'step-3-clean'   },
-  { n: 4, title: 'Phân tích',   path: 'step-4-analyze' },
-  { n: 5, title: 'Kết quả',     path: 'step-5-results' },
+  { n: 1, title: 'foundationWizard.stepUpload',  path: 'step-1-upload'  },
+  { n: 2, title: 'foundationWizard.stepColumn',  path: 'step-2-columns' },
+  { n: 3, title: 'foundationWizard.stepClean',   path: 'step-3-clean'   },
+  { n: 4, title: 'foundationWizard.stepAnalyze', path: 'step-4-analyze' },
+  { n: 5, title: 'foundationWizard.stepResults', path: 'step-5-results' },
 ];
 
 /** Pipeline status enum — DB CHECK constraint (Sprint 7 PR C). */
 export type PipelineStatus = 'schema_review' | 'analyzing' | 'analysis_complete' | 'failed';
 
+// NOTE: `label` here is an i18n KEY (not display text) — consumers must
+// render it via `t(PIPELINE_STATUS_BADGE[status].label)`.
 export const PIPELINE_STATUS_BADGE: Record<PipelineStatus, { variant: any; label: string }> = {
-  schema_review:     { variant: 'info',    label: 'Chờ duyệt cột' },
-  analyzing:         { variant: 'warning', label: 'Đang phân tích' },
-  analysis_complete: { variant: 'success', label: 'Hoàn tất' },
-  failed:            { variant: 'error',   label: 'Lỗi' },
+  schema_review:     { variant: 'info',    label: 'foundationWizard.statusSchemaReview' },
+  analyzing:         { variant: 'warning', label: 'foundationWizard.statusAnalyzing' },
+  analysis_complete: { variant: 'success', label: 'foundationWizard.statusComplete' },
+  failed:            { variant: 'error',   label: 'foundationWizard.statusFailed' },
 };
 
 /**
@@ -35,6 +41,7 @@ export const PIPELINE_STATUS_BADGE: Record<PipelineStatus, { variant: any; label
 export function WizardStepper({
   current, pipelineId,
 }: { current: number; pipelineId: string }) {
+  const t = useT();
   return (
     <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-4 shadow-soft-sm">
       <div className="flex items-center justify-between gap-2">
@@ -62,7 +69,7 @@ export function WizardStepper({
                   'text-sm font-medium hidden md:block',
                   done || cur ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]',
                 )}>
-                  {s.title}
+                  {t(s.title)}
                 </span>
               </div>
               {idx < WIZARD_STEPS.length - 1 && (

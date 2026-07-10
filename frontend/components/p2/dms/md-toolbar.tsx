@@ -10,6 +10,7 @@ import {
   Link2, Hash,
 } from 'lucide-react';
 import { cn } from '@/components/p2/foundation';
+import { useT } from '@/lib/i18n/provider';
 
 type Action =
   | { wrap: [string, string]; placeholder: string }
@@ -45,23 +46,28 @@ function applyAction(el: HTMLTextAreaElement, a: Action, onChange: (v: string) =
   requestAnimationFrame(() => { el.focus(); el.setSelectionRange(cursor, cursor); });
 }
 
-const ACTIONS: { icon: React.ComponentType<any>; title: string; action: Action }[] = [
-  { icon: Heading2, title: 'Tiêu đề phụ', action: { linePrefix: '## ', placeholder: 'Tiêu đề' } },
-  { icon: Bold, title: 'Đậm', action: { wrap: ['**', '**'], placeholder: 'chữ đậm' } },
-  { icon: Italic, title: 'Nghiêng', action: { wrap: ['*', '*'], placeholder: 'chữ nghiêng' } },
-  { icon: CaseUpper, title: 'VIẾT HOA vùng chọn', action: { transform: (s) => (s || 'VIẾT HOA').toLocaleUpperCase('vi-VN') } },
-  { icon: Highlighter, title: 'Đánh dấu quan trọng', action: { wrap: ['==', '=='], placeholder: 'nội dung quan trọng' } },
-  { icon: List, title: 'Gạch đầu dòng', action: { linePrefix: '- ', placeholder: 'nội dung' } },
-  { icon: ListChecks, title: 'Checklist', action: { linePrefix: '- [ ] ', placeholder: 'việc cần làm' } },
-  { icon: Link2, title: 'Chèn link', action: { wrap: ['[', '](https://)'], placeholder: 'tên link' } },
-  { icon: Hash, title: 'Hashtag', action: { wrap: [' #', ''], placeholder: 'tag' } },
-];
+function buildActions(t: (key: string, params?: Record<string, string | number>) => string):
+  { icon: React.ComponentType<any>; title: string; action: Action }[] {
+  return [
+    { icon: Heading2, title: t('dmsMdToolbar.h2Title'), action: { linePrefix: '## ', placeholder: t('dmsMdToolbar.h2Placeholder') } },
+    { icon: Bold, title: t('dmsMdToolbar.boldTitle'), action: { wrap: ['**', '**'], placeholder: t('dmsMdToolbar.boldPlaceholder') } },
+    { icon: Italic, title: t('dmsMdToolbar.italicTitle'), action: { wrap: ['*', '*'], placeholder: t('dmsMdToolbar.italicPlaceholder') } },
+    { icon: CaseUpper, title: t('dmsMdToolbar.upperTitle'), action: { transform: (s) => (s || t('dmsMdToolbar.upperPlaceholder')).toLocaleUpperCase('vi-VN') } },
+    { icon: Highlighter, title: t('dmsMdToolbar.highlightTitle'), action: { wrap: ['==', '=='], placeholder: t('dmsMdToolbar.highlightPlaceholder') } },
+    { icon: List, title: t('dmsMdToolbar.bulletTitle'), action: { linePrefix: '- ', placeholder: t('dmsMdToolbar.bulletPlaceholder') } },
+    { icon: ListChecks, title: t('dmsMdToolbar.checklistTitle'), action: { linePrefix: '- [ ] ', placeholder: t('dmsMdToolbar.checklistPlaceholder') } },
+    { icon: Link2, title: t('dmsMdToolbar.linkTitle'), action: { wrap: ['[', '](https://)'], placeholder: t('dmsMdToolbar.linkPlaceholder') } },
+    { icon: Hash, title: t('dmsMdToolbar.hashtagTitle'), action: { wrap: [' #', ''], placeholder: t('dmsMdToolbar.hashtagPlaceholder') } },
+  ];
+}
 
 export function MdToolbar({ target, onChange, className }: {
   target: React.RefObject<HTMLTextAreaElement | null>;
   onChange: (v: string) => void;
   className?: string;
 }) {
+  const t = useT();
+  const ACTIONS = buildActions(t);
   return (
     <div className={cn('flex items-center gap-0.5 flex-wrap rounded-t border border-b-0 border-[var(--border-color)] bg-[var(--bg-app)]/70 px-1.5 py-1', className)}>
       {ACTIONS.map(({ icon: Icon, title, action }) => (

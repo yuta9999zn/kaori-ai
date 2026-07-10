@@ -1,0 +1,86 @@
+{
+  "dmsTree.promptFolderName": {
+    "vi": "Tên thư mục / nghiệp vụ mới (vd \"Mua hàng\", \"Hợp đồng 2026\"):",
+    "en": "New folder / business name (e.g. \"Purchasing\", \"Contract 2026\"):",
+    "ja": "新しいフォルダ／業務名(例:「購買」「契約 2026」):",
+    "ko": "새 폴더 / 업무명 (예: \"구매\", \"계약 2026\"):",
+    "zh": "新建文件夹/业务名称(例如\"采购\"、\"合同 2026\"):"
+  },
+  "dmsTree.confirmDelete": {
+    "vi": "Xoá \"{name}\" và toàn bộ bên trong? (xoá mềm)",
+    "en": "Delete \"{name}\" and everything inside it? (soft delete)",
+    "ja": "「{name}」とその中身をすべて削除しますか?(論理削除)",
+    "ko": "\"{name}\" 및 그 안의 모든 항목을 삭제하시겠습니까? (소프트 삭제)",
+    "zh": "删除\"{name}\"及其内部所有内容?(软删除)"
+  },
+  "dmsTree.ariaBusinessPage": {
+    "vi": "Trang nghiệp vụ",
+    "en": "Business page",
+    "ja": "業務ページ",
+    "ko": "업무 페이지",
+    "zh": "业务页面"
+  },
+  "dmsTree.ariaFolder": {
+    "vi": "Thư mục",
+    "en": "Folder",
+    "ja": "フォルダ",
+    "ko": "폴더",
+    "zh": "文件夹"
+  },
+  "dmsTree.titleCreateSubfolder": {
+    "vi": "Tạo thư mục con",
+    "en": "Create subfolder",
+    "ja": "サブフォルダを作成",
+    "ko": "하위 폴더 만들기",
+    "zh": "创建子文件夹"
+  },
+  "dmsTree.titleDelete": {
+    "vi": "Xoá",
+    "en": "Delete",
+    "ja": "削除",
+    "ko": "삭제",
+    "zh": "删除"
+  },
+  "dmsTree.placeholderFilter": {
+    "vi": "Lọc theo tên…",
+    "en": "Filter by name…",
+    "ja": "名前で絞り込む…",
+    "ko": "이름으로 필터링…",
+    "zh": "按名称筛选…"
+  },
+  "dmsTree.btnCreateFolder": {
+    "vi": "Tạo thư mục",
+    "en": "Create folder",
+    "ja": "フォルダを作成",
+    "ko": "폴더 만들기",
+    "zh": "创建文件夹"
+  },
+  "dmsTree.legendFolder": {
+    "vi": "thư mục",
+    "en": "folder",
+    "ja": "フォルダ",
+    "ko": "폴더",
+    "zh": "文件夹"
+  },
+  "dmsTree.legendPage": {
+    "vi": "trang nghiệp vụ",
+    "en": "business page",
+    "ja": "業務ページ",
+    "ko": "업무 페이지",
+    "zh": "业务页面"
+  },
+  "dmsTree.legendFileUpload": {
+    "vi": "file tải lên",
+    "en": "uploaded file",
+    "ja": "アップロードされたファイル",
+    "ko": "업로드된 파일",
+    "zh": "上传的文件"
+  },
+  "dmsTree.legendDocKaori": {
+    "vi": "tài liệu Kaori",
+    "en": "Kaori document",
+    "ja": "Kaori ドキュメント",
+    "ko": "Kaori 문서",
+    "zh": "Kaori 文档"
+  }
+}

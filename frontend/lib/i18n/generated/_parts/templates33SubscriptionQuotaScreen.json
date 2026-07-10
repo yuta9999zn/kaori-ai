@@ -1,0 +1,289 @@
+{
+  "templates33SubscriptionQuotaScreen.pageTitle": {
+    "vi": "Gói cước & Hạn mức",
+    "en": "Plan & Quota",
+    "ja": "プラン＆利用枠",
+    "ko": "요금제 및 한도",
+    "zh": "套餐与配额"
+  },
+  "templates33SubscriptionQuotaScreen.pageDescription": {
+    "vi": "Theo dõi mức sử dụng tháng + so sánh kế hoạch + lịch sử thanh toán.",
+    "en": "Track monthly usage, compare plans, and view billing history.",
+    "ja": "月間利用状況の追跡、プランの比較、請求履歴の確認ができます。",
+    "ko": "월간 사용량 추적 + 요금제 비교 + 결제 내역을 확인하세요.",
+    "zh": "跟踪月度用量 + 比较套餐 + 查看账单历史。"
+  },
+  "templates33SubscriptionQuotaScreen.refresh": {
+    "vi": "Làm mới",
+    "en": "Refresh",
+    "ja": "更新",
+    "ko": "새로고침",
+    "zh": "刷新"
+  },
+  "templates33SubscriptionQuotaScreen.upgradePlan": {
+    "vi": "Nâng cấp gói",
+    "en": "Upgrade plan",
+    "ja": "プランをアップグレード",
+    "ko": "요금제 업그레이드",
+    "zh": "升级套餐"
+  },
+  "templates33SubscriptionQuotaScreen.criticalTitle": {
+    "vi": "Sắp chạm giới hạn ({pct}%)",
+    "en": "Approaching limit ({pct}%)",
+    "ja": "上限に近づいています（{pct}%）",
+    "ko": "한도에 근접했습니다 ({pct}%)",
+    "zh": "即将达到上限（{pct}%）"
+  },
+  "templates33SubscriptionQuotaScreen.criticalBody": {
+    "vi": "Đã dùng {current} / {limit} khách hàng tháng này. Vượt hạn mức sẽ bị tính phí overage hoặc gián đoạn — nâng cấp ngay để tránh.",
+    "en": "Used {current} / {limit} customers this month. Exceeding the quota will incur overage charges or disruption — upgrade now to avoid this.",
+    "ja": "今月は{current} / {limit}件の顧客を利用しました。上限を超えると超過料金が発生するかサービスが中断される可能性があります。今すぐアップグレードしてください。",
+    "ko": "이번 달 {current} / {limit}명의 고객을 사용했습니다. 한도를 초과하면 초과 요금이 부과되거나 서비스가 중단될 수 있습니다 — 지금 업그레이드하여 방지하세요.",
+    "zh": "本月已使用 {current} / {limit} 位客户。超出配额将产生超额费用或服务中断——请立即升级以避免。"
+  },
+  "templates33SubscriptionQuotaScreen.upgradeNow": {
+    "vi": "Nâng cấp ngay",
+    "en": "Upgrade now",
+    "ja": "今すぐアップグレード",
+    "ko": "지금 업그레이드",
+    "zh": "立即升级"
+  },
+  "templates33SubscriptionQuotaScreen.warningBody": {
+    "vi": "Đã dùng {pct}% hạn mức tháng này. Cân nhắc nâng cấp trước khi chạm 95% để tránh overage.",
+    "en": "You've used {pct}% of this month's quota. Consider upgrading before reaching 95% to avoid overage.",
+    "ja": "今月の利用枠の{pct}%を使用しました。超過料金を避けるため、95%に達する前にアップグレードをご検討ください。",
+    "ko": "이번 달 한도의 {pct}%를 사용했습니다. 초과 요금을 방지하려면 95%에 도달하기 전에 업그레이드를 고려하세요.",
+    "zh": "本月已使用 {pct}% 的配额。建议在达到 95% 之前升级，以避免超额费用。"
+  },
+  "templates33SubscriptionQuotaScreen.tabQuota": {
+    "vi": "Hạn mức tháng này",
+    "en": "This month's quota",
+    "ja": "今月の利用枠",
+    "ko": "이번 달 한도",
+    "zh": "本月配额"
+  },
+  "templates33SubscriptionQuotaScreen.tabPlan": {
+    "vi": "Gói hiện tại",
+    "en": "Current plan",
+    "ja": "現在のプラン",
+    "ko": "현재 요금제",
+    "zh": "当前套餐"
+  },
+  "templates33SubscriptionQuotaScreen.tabHistory": {
+    "vi": "Lịch sử thanh toán",
+    "en": "Billing history",
+    "ja": "請求履歴",
+    "ko": "결제 내역",
+    "zh": "账单历史"
+  },
+  "templates33SubscriptionQuotaScreen.k11Label": {
+    "vi": "K-11 — Đơn vị tính:",
+    "en": "K-11 — Billing unit:",
+    "ja": "K-11 — 課金単位：",
+    "ko": "K-11 — 계산 단위:",
+    "zh": "K-11 — 计费单位："
+  },
+  "templates33SubscriptionQuotaScreen.k11Part1": {
+    "vi": "mỗi khách hàng",
+    "en": "each customer",
+    "ja": "各顧客",
+    "ko": "각 고객",
+    "zh": "每位客户"
+  },
+  "templates33SubscriptionQuotaScreen.k11Part2": {
+    "vi": "chỉ đếm 1 lần / tháng / workspace dù xuất hiện trong nhiều file. Bản ghi",
+    "en": "is counted only once per month per workspace even if it appears in multiple files. The record",
+    "ja": "複数のファイルに登場しても、月ごと・ワークスペースごとに1回のみカウントされます。レコード",
+    "ko": "여러 파일에 나타나더라도 워크스페이스당 월 1회만 계산됩니다. 레코드",
+    "zh": "即使出现在多个文件中，每个工作区每月也只计数一次。记录"
+  },
+  "templates33SubscriptionQuotaScreen.k11Part3": {
+    "vi": "là immutable (UPSERT, không xóa).",
+    "en": "is immutable (UPSERT, never deleted).",
+    "ja": "は不変です（UPSERT、削除なし）。",
+    "ko": "는 불변입니다 (UPSERT, 삭제 없음).",
+    "zh": "是不可变的（UPSERT，不删除）。"
+  },
+  "templates33SubscriptionQuotaScreen.monthlyCustomers": {
+    "vi": "Số khách hàng xử lý trong tháng (K-11)",
+    "en": "Customers processed this month (K-11)",
+    "ja": "今月処理した顧客数（K-11）",
+    "ko": "이번 달 처리된 고객 수 (K-11)",
+    "zh": "本月处理的客户数（K-11）"
+  },
+  "templates33SubscriptionQuotaScreen.cycleRange": {
+    "vi": "Chu kỳ: {start} → {end}",
+    "en": "Cycle: {start} → {end}",
+    "ja": "サイクル：{start} → {end}",
+    "ko": "주기: {start} → {end}",
+    "zh": "周期：{start} → {end}"
+  },
+  "templates33SubscriptionQuotaScreen.planBadge": {
+    "vi": "Gói {plan}",
+    "en": "{plan} plan",
+    "ja": "{plan}プラン",
+    "ko": "{plan} 요금제",
+    "zh": "{plan} 套餐"
+  },
+  "templates33SubscriptionQuotaScreen.unitCustomer": {
+    "vi": "khách hàng",
+    "en": "customers",
+    "ja": "顧客",
+    "ko": "고객",
+    "zh": "客户"
+  },
+  "templates33SubscriptionQuotaScreen.quotaUnitPrefix": {
+    "vi": "Đơn vị tính =",
+    "en": "Billing unit =",
+    "ja": "課金単位 =",
+    "ko": "계산 단위 =",
+    "zh": "计费单位 ="
+  },
+  "templates33SubscriptionQuotaScreen.quotaUnitSuffix": {
+    "vi": "/ workspace / tháng — chống split-batch gaming. Vượt hạn mức trên các gói có overage (Basic / Mid / Max) sẽ tự động tính phí; gói Pilot bắt buộc nâng cấp trước khi vượt.",
+    "en": "/ workspace / month — prevents split-batch gaming. Exceeding the quota on plans with overage (Basic / Mid / Max) is automatically charged; the Pilot plan requires an upgrade before exceeding it.",
+    "ja": "/ ワークスペース / 月 — 分割バッチによる不正操作を防止します。超過料金対応のプラン（Basic / Mid / Max）で上限を超えると自動的に課金されます。Pilotプランは上限を超える前にアップグレードが必要です。",
+    "ko": "/ 워크스페이스 / 월 — 분할 배치 악용 방지. 초과 요금이 있는 요금제(Basic / Mid / Max)에서 한도를 초과하면 자동으로 요금이 부과됩니다. Pilot 요금제는 초과 전에 업그레이드가 필요합니다.",
+    "zh": "/ 工作区 / 月 — 防止拆分批次作弊。在有超额计费的套餐（Basic / Mid / Max）上超出配额将自动计费；Pilot 套餐必须在超出前升级。"
+  },
+  "templates33SubscriptionQuotaScreen.planStartedRenews": {
+    "vi": "Bắt đầu {started} · Gia hạn {renews}",
+    "en": "Started {started} · Renews {renews}",
+    "ja": "開始日 {started} ・ 更新日 {renews}",
+    "ko": "시작일 {started} · 갱신일 {renews}",
+    "zh": "开始于 {started} · 续订于 {renews}"
+  },
+  "templates33SubscriptionQuotaScreen.perMonth": {
+    "vi": "{amount} / tháng",
+    "en": "{amount} / month",
+    "ja": "{amount} / 月",
+    "ko": "{amount} / 월",
+    "zh": "{amount} / 月"
+  },
+  "templates33SubscriptionQuotaScreen.roiFeeLead": {
+    "vi": "Phí cố định {base} + 1.5% doanh thu cứu được",
+    "en": "Fixed fee {base} + 1.5% of revenue saved",
+    "ja": "固定料金 {base} + 救済された売上の1.5%",
+    "ko": "고정 요금 {base} + 절감된 매출의 1.5%",
+    "zh": "固定费用 {base} + 挽回营收的 1.5%"
+  },
+  "templates33SubscriptionQuotaScreen.roiContribution": {
+    "vi": "tháng này đã đóng góp {pct}%, ",
+    "en": "contributed {pct}% this month, ",
+    "ja": "今月は{pct}%を寄与、",
+    "ko": "이번 달 {pct}% 기여, ",
+    "zh": "本月贡献了 {pct}%，"
+  },
+  "templates33SubscriptionQuotaScreen.roiCapLead": {
+    "vi": "tối đa {cap}",
+    "en": "capped at {cap}",
+    "ja": "上限 {cap}",
+    "ko": "최대 {cap}",
+    "zh": "上限 {cap}"
+  },
+  "templates33SubscriptionQuotaScreen.featureAllTemplates": {
+    "vi": "Toàn bộ template phân tích Phase 1",
+    "en": "All Phase 1 analysis templates",
+    "ja": "フェーズ1の全分析テンプレート",
+    "ko": "모든 Phase 1 분석 템플릿",
+    "zh": "全部 Phase 1 分析模板"
+  },
+  "templates33SubscriptionQuotaScreen.featureQuotaLimit": {
+    "vi": "Hạn mức {limit} khách hàng / tháng",
+    "en": "Quota of {limit} customers / month",
+    "ja": "利用枠 月間{limit}顧客",
+    "ko": "한도 월 {limit}명 고객",
+    "zh": "配额 {limit} 客户 / 月"
+  },
+  "templates33SubscriptionQuotaScreen.featureQwenLocal": {
+    "vi": "Qwen 2.5 nội bộ — không tốn quota AI bên ngoài",
+    "en": "Local Qwen 2.5 — no external AI quota consumed",
+    "ja": "内部Qwen 2.5 — 外部AIのクオータを消費しません",
+    "ko": "내부 Qwen 2.5 — 외부 AI 할당량을 소모하지 않음",
+    "zh": "本地 Qwen 2.5 — 不消耗外部 AI 配额"
+  },
+  "templates33SubscriptionQuotaScreen.featureOverage": {
+    "vi": "Overage VND theo gói (PILOT bắt buộc nâng cấp khi đầy)",
+    "en": "VND overage per plan (PILOT requires an upgrade once full)",
+    "ja": "プランごとのVND超過料金（PILOTは満了時にアップグレード必須）",
+    "ko": "요금제별 VND 초과 요금 (PILOT은 가득 차면 업그레이드 필수)",
+    "zh": "按套餐计算的越南盾超额费用（PILOT 满额时必须升级）"
+  },
+  "templates33SubscriptionQuotaScreen.featureRoiOption": {
+    "vi": "Tuỳ chọn ENT ROI 8M + 1.5% doanh thu cứu được (cap 20M)",
+    "en": "Optional ENT ROI 8M + 1.5% of revenue saved (capped at 20M)",
+    "ja": "ENT ROIオプション 8M + 救済された売上の1.5%（上限20M）",
+    "ko": "ENT ROI 옵션 8M + 절감된 매출의 1.5% (최대 20M)",
+    "zh": "可选 ENT ROI 8M + 挽回营收的 1.5%（上限 20M）"
+  },
+  "templates33SubscriptionQuotaScreen.billingLedgerPrefix": {
+    "vi": "Mọi giao dịch ghi vào",
+    "en": "Every transaction is recorded in",
+    "ja": "すべての取引は",
+    "ko": "모든 거래는",
+    "zh": "所有交易记录在"
+  },
+  "templates33SubscriptionQuotaScreen.billingLedgerSuffix": {
+    "vi": "(immutable, UPSERT).",
+    "en": "(immutable, UPSERT).",
+    "ja": "に記録されます（不変、UPSERT）。",
+    "ko": "에 기록됩니다 (불변, UPSERT).",
+    "zh": "（不可变，UPSERT）。"
+  },
+  "templates33SubscriptionQuotaScreen.compareUpgrade": {
+    "vi": "So sánh & nâng cấp",
+    "en": "Compare & upgrade",
+    "ja": "比較＆アップグレード",
+    "ko": "비교 및 업그레이드",
+    "zh": "比较并升级"
+  },
+  "templates33SubscriptionQuotaScreen.colMonth": {
+    "vi": "Tháng",
+    "en": "Month",
+    "ja": "月",
+    "ko": "월",
+    "zh": "月份"
+  },
+  "templates33SubscriptionQuotaScreen.colPlan": {
+    "vi": "Gói",
+    "en": "Plan",
+    "ja": "プラン",
+    "ko": "요금제",
+    "zh": "套餐"
+  },
+  "templates33SubscriptionQuotaScreen.colCustomers": {
+    "vi": "Khách hàng",
+    "en": "Customers",
+    "ja": "顧客",
+    "ko": "고객",
+    "zh": "客户"
+  },
+  "templates33SubscriptionQuotaScreen.colBaseFee": {
+    "vi": "Phí cơ bản",
+    "en": "Base fee",
+    "ja": "基本料金",
+    "ko": "기본 요금",
+    "zh": "基础费用"
+  },
+  "templates33SubscriptionQuotaScreen.colTotal": {
+    "vi": "Tổng cộng",
+    "en": "Total",
+    "ja": "合計",
+    "ko": "합계",
+    "zh": "总计"
+  },
+  "templates33SubscriptionQuotaScreen.colInvoice": {
+    "vi": "Hoá đơn",
+    "en": "Invoice",
+    "ja": "請求書",
+    "ko": "청구서",
+    "zh": "发票"
+  },
+  "templates33SubscriptionQuotaScreen.noHistory": {
+    "vi": "Chưa có lịch sử thanh toán.",
+    "en": "No billing history yet.",
+    "ja": "請求履歴はまだありません。",
+    "ko": "아직 결제 내역이 없습니다.",
+    "zh": "暂无账单历史。"
+  }
+}

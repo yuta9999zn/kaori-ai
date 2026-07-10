@@ -1,0 +1,65 @@
+{
+  "analyticsPage.emptyTitle": {
+    "vi": "Chưa có phân tích nào",
+    "en": "No analysis yet",
+    "ja": "分析はまだありません",
+    "ko": "아직 분석이 없습니다",
+    "zh": "还没有分析"
+  },
+  "analyticsPage.emptyDescription": {
+    "vi": "Tải dữ liệu lên và chọn template phân tích để bắt đầu.",
+    "en": "Upload data and choose an analysis template to get started.",
+    "ja": "データをアップロードし、分析テンプレートを選択して開始してください。",
+    "ko": "데이터를 업로드하고 분석 템플릿을 선택하여 시작하세요.",
+    "zh": "上传数据并选择分析模板即可开始。"
+  },
+  "analyticsPage.emptyActionLabel": {
+    "vi": "Tạo pipeline mới",
+    "en": "Create new pipeline",
+    "ja": "新しいパイプラインを作成",
+    "ko": "새 파이프라인 만들기",
+    "zh": "创建新数据管道"
+  },
+  "analyticsPage.runningEllipsis": {
+    "vi": "Đang chạy…",
+    "en": "Running…",
+    "ja": "実行中…",
+    "ko": "실행 중…",
+    "zh": "运行中…"
+  },
+  "analyticsPage.noRunsYet": {
+    "vi": "Chưa có lần chạy nào",
+    "en": "No runs yet",
+    "ja": "実行履歴はまだありません",
+    "ko": "아직 실행 기록이 없습니다",
+    "zh": "还没有运行记录"
+  },
+  "analyticsPage.statusDone": {
+    "vi": "Hoàn tất",
+    "en": "Completed",
+    "ja": "完了",
+    "ko": "완료",
+    "zh": "已完成"
+  },
+  "analyticsPage.statusRunning": {
+    "vi": "Đang chạy",
+    "en": "Running",
+    "ja": "実行中",
+    "ko": "실행 중",
+    "zh": "运行中"
+  },
+  "analyticsPage.statusError": {
+    "vi": "Lỗi",
+    "en": "Error",
+    "ja": "エラー",
+    "ko": "오류",
+    "zh": "错误"
+  },
+  "analyticsPage.statusNotRun": {
+    "vi": "Chưa chạy",
+    "en": "Not run",
+    "ja": "未実行",
+    "ko": "실행되지 않음",
+    "zh": "尚未运行"
+  }
+}

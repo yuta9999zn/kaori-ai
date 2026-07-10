@@ -1,0 +1,205 @@
+{
+  "workspacesPage.title": {
+    "vi": "Workspaces",
+    "en": "Workspaces",
+    "ja": "ワークスペース",
+    "ko": "워크스페이스",
+    "zh": "工作区"
+  },
+  "workspacesPage.descBase": {
+    "vi": "Quản lý workspace của các enterprise đang dùng nền tảng.",
+    "en": "Manage workspaces for enterprises using the platform.",
+    "ja": "プラットフォームを利用している企業のワークスペースを管理します。",
+    "ko": "플랫폼을 사용하는 기업의 워크스페이스를 관리합니다.",
+    "zh": "管理正在使用本平台的企业工作区。"
+  },
+  "workspacesPage.descTotal": {
+    "vi": "Tổng {total} workspace.",
+    "en": "Total {total} workspaces.",
+    "ja": "合計 {total} 件のワークスペース。",
+    "ko": "총 {total}개의 워크스페이스.",
+    "zh": "共 {total} 个工作区。"
+  },
+  "workspacesPage.createNew": {
+    "vi": "Tạo workspace mới",
+    "en": "Create new workspace",
+    "ja": "新しいワークスペースを作成",
+    "ko": "새 워크스페이스 만들기",
+    "zh": "创建新工作区"
+  },
+  "workspacesPage.searchPlaceholder": {
+    "vi": "Tìm theo tên hoặc workspace ID",
+    "en": "Search by name or workspace ID",
+    "ja": "名前またはワークスペースIDで検索",
+    "ko": "이름 또는 워크스페이스 ID로 검색",
+    "zh": "按名称或工作区 ID 搜索"
+  },
+  "workspacesPage.searchAriaLabel": {
+    "vi": "Tìm workspace",
+    "en": "Search workspace",
+    "ja": "ワークスペースを検索",
+    "ko": "워크스페이스 검색",
+    "zh": "搜索工作区"
+  },
+  "workspacesPage.filterStatusAriaLabel": {
+    "vi": "Lọc theo trạng thái",
+    "en": "Filter by status",
+    "ja": "ステータスで絞り込み",
+    "ko": "상태별 필터링",
+    "zh": "按状态筛选"
+  },
+  "workspacesPage.filterPlanAriaLabel": {
+    "vi": "Lọc theo gói cước",
+    "en": "Filter by plan",
+    "ja": "プランで絞り込み",
+    "ko": "요금제별 필터링",
+    "zh": "按套餐筛选"
+  },
+  "workspacesPage.statusAll": {
+    "vi": "Mọi trạng thái",
+    "en": "All statuses",
+    "ja": "すべてのステータス",
+    "ko": "모든 상태",
+    "zh": "所有状态"
+  },
+  "workspacesPage.statusActive": {
+    "vi": "Đang hoạt động",
+    "en": "Active",
+    "ja": "稼働中",
+    "ko": "운영 중",
+    "zh": "运行中"
+  },
+  "workspacesPage.statusSuspended": {
+    "vi": "Tạm ngưng",
+    "en": "Suspended",
+    "ja": "一時停止",
+    "ko": "일시 중지",
+    "zh": "暂停"
+  },
+  "workspacesPage.statusInactive": {
+    "vi": "Ngừng hoạt động",
+    "en": "Inactive",
+    "ja": "停止",
+    "ko": "비활성",
+    "zh": "已停用"
+  },
+  "workspacesPage.planAll": {
+    "vi": "Mọi gói cước",
+    "en": "All plans",
+    "ja": "すべてのプラン",
+    "ko": "모든 요금제",
+    "zh": "所有套餐"
+  },
+  "workspacesPage.colWorkspace": {
+    "vi": "Workspace",
+    "en": "Workspace",
+    "ja": "ワークスペース",
+    "ko": "워크스페이스",
+    "zh": "工作区"
+  },
+  "workspacesPage.colIndustry": {
+    "vi": "Ngành",
+    "en": "Industry",
+    "ja": "業種",
+    "ko": "업종",
+    "zh": "行业"
+  },
+  "workspacesPage.colPlan": {
+    "vi": "Gói cước",
+    "en": "Plan",
+    "ja": "プラン",
+    "ko": "요금제",
+    "zh": "套餐"
+  },
+  "workspacesPage.colStatus": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "workspacesPage.colCreatedAt": {
+    "vi": "Tạo lúc",
+    "en": "Created at",
+    "ja": "作成日時",
+    "ko": "생성 시각",
+    "zh": "创建时间"
+  },
+  "workspacesPage.colActions": {
+    "vi": "Hành động",
+    "en": "Actions",
+    "ja": "操作",
+    "ko": "작업",
+    "zh": "操作"
+  },
+  "workspacesPage.loading": {
+    "vi": "Đang tải workspace…",
+    "en": "Loading workspaces…",
+    "ja": "ワークスペースを読み込み中…",
+    "ko": "워크스페이스 로딩 중…",
+    "zh": "正在加载工作区…"
+  },
+  "workspacesPage.emptyNone": {
+    "vi": "Chưa có workspace nào.",
+    "en": "No workspaces yet.",
+    "ja": "ワークスペースはまだありません。",
+    "ko": "아직 워크스페이스가 없습니다.",
+    "zh": "暂无工作区。"
+  },
+  "workspacesPage.emptyFiltered": {
+    "vi": "Không có workspace nào khớp bộ lọc hiện tại.",
+    "en": "No workspaces match the current filters.",
+    "ja": "現在のフィルターに一致するワークスペースはありません。",
+    "ko": "현재 필터와 일치하는 워크스페이스가 없습니다.",
+    "zh": "没有符合当前筛选条件的工作区。"
+  },
+  "workspacesPage.viewDetail": {
+    "vi": "Xem chi tiết",
+    "en": "View details",
+    "ja": "詳細を見る",
+    "ko": "상세 보기",
+    "zh": "查看详情"
+  },
+  "workspacesPage.edit": {
+    "vi": "Chỉnh sửa",
+    "en": "Edit",
+    "ja": "編集",
+    "ko": "수정",
+    "zh": "编辑"
+  },
+  "workspacesPage.suspendWorkspaceTooltip": {
+    "vi": "Tạm ngưng workspace",
+    "en": "Suspend workspace",
+    "ja": "ワークスペースを一時停止",
+    "ko": "워크스페이스 일시 중지",
+    "zh": "暂停工作区"
+  },
+  "workspacesPage.pageLabel": {
+    "vi": "Trang",
+    "en": "Page",
+    "ja": "ページ",
+    "ko": "페이지",
+    "zh": "页"
+  },
+  "workspacesPage.showingLabel": {
+    "vi": "Hiển thị",
+    "en": "Showing",
+    "ja": "表示中",
+    "ko": "표시 중",
+    "zh": "显示"
+  },
+  "workspacesPage.prevPage": {
+    "vi": "Trước",
+    "en": "Previous",
+    "ja": "前へ",
+    "ko": "이전",
+    "zh": "上一页"
+  },
+  "workspacesPage.nextPage": {
+    "vi": "Sau",
+    "en": "Next",
+    "ja": "次へ",
+    "ko": "다음",
+    "zh": "下一页"
+  }
+}

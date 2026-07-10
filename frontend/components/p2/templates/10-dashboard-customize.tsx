@@ -19,6 +19,7 @@ import {
 
 import { Button, Badge, ErrorBanner, api, cn, type ProblemDetails } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 interface Widget {
   id:      string;
   type:    'kpi' | 'chart' | 'pipeline_runs' | 'alerts' | 'insights' | 'quota' | 'users' | 'billing';
@@ -27,27 +28,30 @@ interface Widget {
   visible: boolean;
 }
 
-const TYPE_META: Record<Widget['type'], { icon: any; label: string; defaultSize: Widget['size'] }> = {
-  kpi:           { icon: BarChart2,   label: 'Thẻ KPI',          defaultSize: 'sm' },
-  chart:         { icon: LineChart,   label: 'Biểu đồ',          defaultSize: 'md' },
-  pipeline_runs: { icon: Activity,    label: 'Pipeline gần đây', defaultSize: 'lg' },
-  alerts:        { icon: Bell,        label: 'Cảnh báo',         defaultSize: 'md' },
-  insights:      { icon: Sparkles,    label: 'Insight ưu tiên',  defaultSize: 'md' },
-  quota:         { icon: Layers,      label: 'Hạn mức gói',      defaultSize: 'md' },
-  users:         { icon: Users,       label: 'Người dùng',       defaultSize: 'sm' },
-  billing:       { icon: CreditCard,  label: 'Hoá đơn gần đây',  defaultSize: 'md' },
+const TYPE_META: Record<Widget['type'], { icon: any; labelKey: string; defaultSize: Widget['size'] }> = {
+  kpi:           { icon: BarChart2,   labelKey: 'templates10DashboardCustomize.typeKpi',          defaultSize: 'sm' },
+  chart:         { icon: LineChart,   labelKey: 'templates10DashboardCustomize.typeChart',        defaultSize: 'md' },
+  pipeline_runs: { icon: Activity,    labelKey: 'templates10DashboardCustomize.typePipelineRuns',  defaultSize: 'lg' },
+  alerts:        { icon: Bell,        labelKey: 'templates10DashboardCustomize.typeAlerts',        defaultSize: 'md' },
+  insights:      { icon: Sparkles,    labelKey: 'templates10DashboardCustomize.typeInsights',      defaultSize: 'md' },
+  quota:         { icon: Layers,      labelKey: 'templates10DashboardCustomize.typeQuota',         defaultSize: 'md' },
+  users:         { icon: Users,       labelKey: 'templates10DashboardCustomize.typeUsers',         defaultSize: 'sm' },
+  billing:       { icon: CreditCard,  labelKey: 'templates10DashboardCustomize.typeBilling',       defaultSize: 'md' },
 };
 
-const DEFAULT_LAYOUT: Widget[] = [
-  { id: 'w-1', type: 'quota',         title: 'Hạn mức tháng này',  size: 'md', visible: true },
-  { id: 'w-2', type: 'kpi',           title: 'Thẻ KPI tổng quan',  size: 'sm', visible: true },
-  { id: 'w-3', type: 'pipeline_runs', title: 'Pipeline gần đây',    size: 'lg', visible: true },
-  { id: 'w-4', type: 'alerts',        title: 'Cảnh báo',            size: 'md', visible: true },
-  { id: 'w-5', type: 'insights',      title: 'Insight ưu tiên',     size: 'md', visible: true },
-];
+function getDefaultLayout(t: (key: string) => string): Widget[] {
+  return [
+    { id: 'w-1', type: 'quota',         title: t('templates10DashboardCustomize.defaultTitleQuota'),        size: 'md', visible: true },
+    { id: 'w-2', type: 'kpi',           title: t('templates10DashboardCustomize.defaultTitleKpi'),          size: 'sm', visible: true },
+    { id: 'w-3', type: 'pipeline_runs', title: t('templates10DashboardCustomize.typePipelineRuns'),         size: 'lg', visible: true },
+    { id: 'w-4', type: 'alerts',        title: t('templates10DashboardCustomize.typeAlerts'),                size: 'md', visible: true },
+    { id: 'w-5', type: 'insights',      title: t('templates10DashboardCustomize.typeInsights'),              size: 'md', visible: true },
+  ];
+}
 
 export default function DashboardCustomize() {
-  const [widgets, setWidgets]   = useState<Widget[]>(DEFAULT_LAYOUT);
+  const t = useT();
+  const [widgets, setWidgets]   = useState<Widget[]>(() => getDefaultLayout(t));
   const [dragId,  setDragId]    = useState<string | null>(null);
   const [problem, setProblem]   = useState<ProblemDetails | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -88,7 +92,7 @@ export default function DashboardCustomize() {
     const meta = TYPE_META[type];
     setWidgets((prev) => [
       ...prev,
-      { id: `w-${Date.now()}`, type, title: meta.label, size: meta.defaultSize, visible: true },
+      { id: `w-${Date.now()}`, type, title: t(meta.labelKey), size: meta.defaultSize, visible: true },
     ]);
   }
 
@@ -109,23 +113,23 @@ export default function DashboardCustomize() {
   }
 
   function reset() {
-    setWidgets(DEFAULT_LAYOUT);
+    setWidgets(getDefaultLayout(t));
   }
 
   return (
     <>
       <PageHeader
-        title="Tuỳ chỉnh dashboard"
-        description="Kéo thả để sắp lại thứ tự, đổi kích thước, ẩn/hiện widget."
+        title={t('templates10DashboardCustomize.pageTitle')}
+        description={t('templates10DashboardCustomize.pageDescription')}
         actions={
           <>
             <Button variant="secondary" onClick={reset}>
               <RotateCcw className="w-4 h-4 mr-2" />
-              Mặc định
+              {t('templates10DashboardCustomize.btnDefault')}
             </Button>
             <Button onClick={save} isLoading={isSaving}>
               <Save className="w-4 h-4 mr-2" />
-              Lưu thay đổi
+              {t('templates10DashboardCustomize.btnSave')}
             </Button>
           </>
         }
@@ -134,7 +138,7 @@ export default function DashboardCustomize() {
       <div className="px-6 lg:px-8 py-6 max-w-[1400px] mx-auto space-y-6">
         {savedAt && (
           <div className="rounded-md-custom bg-[var(--state-success)]/10 border border-[var(--state-success)]/30 p-3 text-sm text-[#5C856A]">
-            Đã lưu lúc {savedAt}.
+            {t('templates10DashboardCustomize.savedAt', { time: savedAt })}
           </div>
         )}
         <ErrorBanner problem={problem} />
@@ -142,10 +146,10 @@ export default function DashboardCustomize() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Layout list */}
           <div className="lg:col-span-3 space-y-3">
-            <h2 className="font-serif text-base text-[var(--text-primary)]">Thứ tự hiện tại</h2>
+            <h2 className="font-serif text-base text-[var(--text-primary)]">{t('templates10DashboardCustomize.currentOrder')}</h2>
             {widgets.length === 0 ? (
               <div className="rounded-lg-custom border border-dashed border-[var(--border-color)] p-10 text-center text-[var(--text-secondary)] bg-[var(--bg-card)]">
-                Chưa có widget nào. Thêm từ panel bên phải.
+                {t('templates10DashboardCustomize.emptyState')}
               </div>
             ) : widgets.map((w, idx) => (
               <WidgetRow
@@ -172,7 +176,7 @@ export default function DashboardCustomize() {
           {/* Add widget panel */}
           <div className="lg:col-span-1">
             <div className="sticky top-20 rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-5 shadow-soft-sm">
-              <h3 className="font-serif text-base text-[var(--text-primary)] mb-3">Thêm widget</h3>
+              <h3 className="font-serif text-base text-[var(--text-primary)] mb-3">{t('templates10DashboardCustomize.addWidget')}</h3>
               <div className="space-y-2">
                 {Object.entries(TYPE_META).map(([type, meta]) => {
                   const Icon = meta.icon;
@@ -183,7 +187,7 @@ export default function DashboardCustomize() {
                       className="w-full flex items-center gap-3 p-2.5 rounded-md-custom border border-[var(--border-color)] hover:border-[var(--primary-gold)]/40 hover:bg-[var(--primary-gold)]/5 transition-colors text-left"
                     >
                       <Icon className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
-                      <span className="text-sm text-[var(--text-primary)]">{meta.label}</span>
+                      <span className="text-sm text-[var(--text-primary)]">{t(meta.labelKey)}</span>
                       <Plus className="w-3.5 h-3.5 text-[var(--text-secondary)] ml-auto" />
                     </button>
                   );
@@ -202,6 +206,7 @@ function WidgetRow({
   onDragStart, onDragEnd, onDragOver,
   onToggleVisibility, onSizeChange, onRemove,
 }: any) {
+  const t = useT();
   const Icon = TYPE_META[widget.type].icon;
   const sizes: Array<Widget['size']> = ['sm', 'md', 'lg'];
   return (
@@ -218,7 +223,7 @@ function WidgetRow({
         !widget.visible && 'opacity-50',
       )}
     >
-      <button className="cursor-grab text-[var(--text-secondary)] hover:text-[var(--text-primary)]" aria-label="Kéo để sắp xếp">
+      <button className="cursor-grab text-[var(--text-secondary)] hover:text-[var(--text-primary)]" aria-label={t('templates10DashboardCustomize.dragToReorder')}>
         <GripHorizontal className="w-5 h-5" />
       </button>
 
@@ -228,7 +233,7 @@ function WidgetRow({
 
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-[var(--text-primary)]">{widget.title}</p>
-        <p className="text-xs text-[var(--text-secondary)] mt-0.5">Vị trí #{index + 1} · loại {widget.type}</p>
+        <p className="text-xs text-[var(--text-secondary)] mt-0.5">{t('templates10DashboardCustomize.positionType', { position: index + 1, type: widget.type })}</p>
       </div>
 
       <div className="flex items-center gap-1 rounded-md-custom border border-[var(--border-color)] p-0.5">
@@ -252,7 +257,7 @@ function WidgetRow({
         variant="tertiary"
         size="sm"
         onClick={onToggleVisibility}
-        title={widget.visible ? 'Ẩn widget' : 'Hiện widget'}
+        title={widget.visible ? t('templates10DashboardCustomize.hideWidget') : t('templates10DashboardCustomize.showWidget')}
       >
         {widget.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
       </Button>
@@ -261,7 +266,7 @@ function WidgetRow({
         variant="tertiary"
         size="sm"
         onClick={onRemove}
-        title="Xoá khỏi dashboard"
+        title={t('templates10DashboardCustomize.removeFromDashboard')}
         className="text-[var(--state-error)] hover:text-[#9B5050]"
       >
         <Trash2 className="w-4 h-4" />

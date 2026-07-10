@@ -41,20 +41,24 @@ interface InsightFeedItem {
   analysis_run_id?: string;
 }
 
-const FRAMEWORK_LABELS: Record<FrameworkType, string> = {
-  five_why:    "5 Whys",
-  fishbone:    "Fishbone (Ishikawa)",
-  swot:        "SWOT",
-  five_w1h:    "5W1H",
-  mom_compare: "So sánh tháng",
-};
+function getFrameworkLabels(t: ReturnType<typeof useT>): Record<FrameworkType, string> {
+  return {
+    five_why:    t("insightsPage.fwFiveWhy"),
+    fishbone:    t("insightsPage.fwFishbone"),
+    swot:        t("insightsPage.fwSwot"),
+    five_w1h:    t("insightsPage.fw5w1h"),
+    mom_compare: t("insightsPage.fwMomCompare"),
+  };
+}
 
-const CATEGORY_META: Record<InsightCategory, { icon: any; tone: BadgeTone; label: string }> = {
-  trend:       { icon: TrendingUp,   tone: "info",    label: "Xu hướng" },
-  anomaly:     { icon: AlertCircle,  tone: "warning", label: "Bất thường" },
-  opportunity: { icon: TrendingUp,   tone: "success", label: "Cơ hội" },
-  risk:        { icon: TrendingDown, tone: "danger",  label: "Rủi ro" },
-};
+function getCategoryMeta(t: ReturnType<typeof useT>): Record<InsightCategory, { icon: any; tone: BadgeTone; label: string }> {
+  return {
+    trend:       { icon: TrendingUp,   tone: "info",    label: t("insightsPage.catTrend") },
+    anomaly:     { icon: AlertCircle,  tone: "warning", label: t("insightsPage.catAnomaly") },
+    opportunity: { icon: TrendingUp,   tone: "success", label: t("insightsPage.catOpportunity") },
+    risk:        { icon: TrendingDown, tone: "danger",  label: t("insightsPage.catRisk") },
+  };
+}
 
 // ── Page ───────────────────────────────────────────────────────────────────────
 
@@ -133,7 +137,7 @@ export default function InsightsPage() {
 
       {/* Insight feed */}
       <div className="space-y-4">
-        <h2 className="text-h2 font-serif text-ink">Insights gần đây</h2>
+        <h2 className="text-h2 font-serif text-ink">{t("insightsPage.recentTitle")}</h2>
         {feedLoading ? (
           <div className="space-y-3">
             {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-24" />)}
@@ -142,7 +146,7 @@ export default function InsightsPage() {
           <Card>
             <CardContent className="py-8 text-center text-small text-ink-muted">
               <Lightbulb className="w-7 h-7 text-brand-300 mx-auto mb-2" strokeWidth={1.5} />
-              Chưa có insights. Chạy phân tích để tạo insight.
+              {t("insightsPage.emptyFeed")}
             </CardContent>
           </Card>
         ) : (
@@ -160,18 +164,20 @@ export default function InsightsPage() {
 // ── Framework result renderer ──────────────────────────────────────────────────
 
 function FrameworkResult({ result }: { result: StrategyResult }) {
-  const fwLabel = FRAMEWORK_LABELS[result.framework] ?? result.framework;
+  const t = useT();
+  const frameworkLabels = getFrameworkLabels(t);
+  const fwLabel = frameworkLabels[result.framework] ?? result.framework;
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <h2 className="text-h2 font-serif text-ink">Kết quả phân tích</h2>
+        <h2 className="text-h2 font-serif text-ink">{t("insightsPage.resultTitle")}</h2>
         <Badge tone="brand">{fwLabel}</Badge>
       </div>
 
       {/* 5 Whys */}
       {result.framework === "five_why" && result.chain && (
         <Card>
-          <CardHeader><CardTitle>Chuỗi nguyên nhân</CardTitle></CardHeader>
+          <CardHeader><CardTitle>{t("insightsPage.causeChainTitle")}</CardTitle></CardHeader>
           <CardContent className="pb-6">
             <ol className="space-y-3">
               {result.chain.map((step, i) => (
@@ -192,7 +198,12 @@ function FrameworkResult({ result }: { result: StrategyResult }) {
         <div className="grid grid-cols-2 gap-4">
           {(["S", "W", "O", "T"] as const).map((q) => {
             const tone: BadgeTone = q === "S" || q === "O" ? "success" : "danger";
-            const label = { S: "Strengths", W: "Weaknesses", O: "Opportunities", T: "Threats" }[q];
+            const label = {
+              S: t("insightsPage.swotStrengths"),
+              W: t("insightsPage.swotWeaknesses"),
+              O: t("insightsPage.swotOpportunities"),
+              T: t("insightsPage.swotThreats"),
+            }[q];
             return (
               <Card key={q}>
                 <CardHeader className="pb-2">
@@ -240,7 +251,7 @@ function FrameworkResult({ result }: { result: StrategyResult }) {
       {/* MoM Compare */}
       {result.framework === "mom_compare" && result.metrics && (
         <Card>
-          <CardHeader><CardTitle>So sánh kỳ</CardTitle></CardHeader>
+          <CardHeader><CardTitle>{t("insightsPage.periodCompareTitle")}</CardTitle></CardHeader>
           <CardContent className="pb-6 space-y-2">
             {result.metrics.map((m, i) => (
               <div key={i} className="flex items-center justify-between py-2 border-b border-subtle last:border-0">
@@ -262,7 +273,7 @@ function FrameworkResult({ result }: { result: StrategyResult }) {
       {/* Narrative */}
       {result.narrative && (
         <Card>
-          <CardHeader><CardTitle>Nhận xét</CardTitle></CardHeader>
+          <CardHeader><CardTitle>{t("insightsPage.narrativeTitle")}</CardTitle></CardHeader>
           <CardContent className="pb-6">
             <p className="text-body text-ink leading-relaxed whitespace-pre-wrap">
               {result.narrative}
@@ -274,7 +285,7 @@ function FrameworkResult({ result }: { result: StrategyResult }) {
       {/* Recommendations */}
       {result.recommendations?.length > 0 && (
         <Card>
-          <CardHeader><CardTitle>Đề xuất</CardTitle></CardHeader>
+          <CardHeader><CardTitle>{t("insightsPage.recommendationsTitle")}</CardTitle></CardHeader>
           <CardContent className="pb-6">
             <ul className="space-y-2">
               {result.recommendations.map((rec, i) => (
@@ -296,7 +307,9 @@ function FrameworkResult({ result }: { result: StrategyResult }) {
 // ── Insight card ───────────────────────────────────────────────────────────────
 
 function InsightCard({ item }: { item: InsightFeedItem }) {
-  const meta = CATEGORY_META[item.category] ?? CATEGORY_META.trend;
+  const t = useT();
+  const categoryMeta = getCategoryMeta(t);
+  const meta = categoryMeta[item.category] ?? categoryMeta.trend;
   const Icon = meta.icon;
   const pct = item.grounding_score != null ? Math.round(item.grounding_score * 100) : null;
   const flagged = item.flagged_claims ?? [];
@@ -318,13 +331,15 @@ function InsightCard({ item }: { item: InsightFeedItem }) {
             <Badge tone={meta.tone}>{meta.label}</Badge>
             {/* CR-0018 — grounding self-verify: how well the claimed numbers match the data */}
             {pct != null && (
-              <Badge tone={flagged.length ? "warning" : "success"}>Khớp dữ liệu {pct}%</Badge>
+              <Badge tone={flagged.length ? "warning" : "success"}>
+                {t("insightsPage.groundingMatch", { pct })}
+              </Badge>
             )}
           </div>
           {item.body && <p className="text-small text-ink-muted">{item.body}</p>}
           {flagged.length > 0 && (
             <p className="text-small text-warning-700">
-              ⚠ Số chưa khớp dữ liệu đo được: {flagged.join(", ")}
+              {t("insightsPage.flaggedClaims", { list: flagged.join(", ") })}
             </p>
           )}
           {item.disclaimer && <p className="text-tiny text-[#C0B8A8]">{item.disclaimer}</p>}

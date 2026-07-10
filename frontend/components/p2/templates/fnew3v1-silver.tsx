@@ -31,6 +31,7 @@ import {
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
 import LineageModal from '@/components/p2/templates/fnew3v1-lineage-modal';
+import { useT } from '@/lib/i18n/provider';
 
 // ============================================================================
 // Types
@@ -87,6 +88,7 @@ interface SampleResponse {
 // ============================================================================
 
 export default function SilverDrillDownPage() {
+  const t = useT();
   const [datasets, setDatasets]       = useState<SilverDataset[]>([]);
   const [loading, setLoading]         = useState(true);
   const [problem, setProblem]         = useState<ProblemDetails | null>(null);
@@ -132,13 +134,13 @@ export default function SilverDrillDownPage() {
   return (
     <>
       <PageHeader
-        title="Silver — dữ liệu sạch"
-        description="Đã làm sạch + che PII (K-5) · áp dụng cleaning rules · điểm chất lượng /dòng."
+        title={t('templatesFnew3v1Silver.title')}
+        description={t('templatesFnew3v1Silver.description')}
         actions={
           <>
             <Badge variant="info">F-NEW3 v1</Badge>
             <a href="/p2/data">
-              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> Khám phá</Button>
+              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> {t('templatesFnew3v1Silver.btnExplore')}</Button>
             </a>
           </>
         }
@@ -152,25 +154,24 @@ export default function SilverDrillDownPage() {
             <table className="w-full text-sm text-left">
               <thead className="bg-[var(--bg-app)] border-b border-[var(--border-color)] text-[11px] font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                 <tr>
-                  <th className="px-5 py-3">File nguồn · sheet</th>
-                  <th className="px-5 py-3 text-right">Hàng đã sạch</th>
-                  <th className="px-5 py-3">Chất lượng TB</th>
-                  <th className="px-5 py-3">Rules áp dụng nhiều nhất</th>
-                  <th className="px-5 py-3">Xử lý lần cuối</th>
-                  <th className="px-5 py-3 text-right">Xem mẫu</th>
+                  <th className="px-5 py-3">{t('templatesFnew3v1Silver.thFileSheet')}</th>
+                  <th className="px-5 py-3 text-right">{t('templatesFnew3v1Silver.thRowsCleaned')}</th>
+                  <th className="px-5 py-3">{t('templatesFnew3v1Silver.thQualityAvg')}</th>
+                  <th className="px-5 py-3">{t('templatesFnew3v1Silver.thRulesApplied')}</th>
+                  <th className="px-5 py-3">{t('templatesFnew3v1Silver.thLastProcessed')}</th>
+                  <th className="px-5 py-3 text-right">{t('templatesFnew3v1Silver.thViewSample')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-color)]/60">
                 {loading && datasets.length === 0 ? (
                   <tr><td colSpan={6} className="px-5 py-12 text-center text-[var(--text-secondary)]">
-                    <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> Đang tải...
+                    <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> {t('templatesFnew3v1Silver.loadingList')}
                   </td></tr>
                 ) : datasets.length === 0 ? (
                   <tr><td colSpan={6} className="px-5 py-12 text-center">
                     <Database className="w-10 h-10 mx-auto text-[var(--text-secondary)]/40 mb-3" />
                     <p className="text-sm text-[var(--text-secondary)]">
-                      Chưa có dataset Silver nào — chạy bước Cleaning trên một pipeline để
-                      tạo dataset đầu tiên.
+                      {t('templatesFnew3v1Silver.emptyTitle')}
                     </p>
                   </td></tr>
                 ) : (
@@ -193,16 +194,16 @@ export default function SilverDrillDownPage() {
                 variant="tertiary" size="sm" onClick={pagePrev}
                 disabled={cursorStack.length === 0 || loading}
               >
-                <ChevronLeft className="w-3.5 h-3.5 mr-1" /> Trang trước
+                <ChevronLeft className="w-3.5 h-3.5 mr-1" /> {t('templatesFnew3v1Silver.pagePrev')}
               </Button>
               <span className="text-xs text-[var(--text-secondary)]">
-                Trang {cursorStack.length + 1}
+                {t('templatesFnew3v1Silver.pageLabel', { page: cursorStack.length + 1 })}
               </span>
               <Button
                 variant="tertiary" size="sm" onClick={pageNext}
                 disabled={!nextCursor || loading}
               >
-                Trang sau <ChevronRight className="w-3.5 h-3.5 ml-1" />
+                {t('templatesFnew3v1Silver.pageNext')} <ChevronRight className="w-3.5 h-3.5 ml-1" />
               </Button>
             </div>
           )}
@@ -211,9 +212,8 @@ export default function SilverDrillDownPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <Layers className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            K-5 — Silver đã che PII trước khi lưu (email/phone/ID hiện dạng{' '}
-            <span className="font-mono">&lt;EMAIL_1&gt;</span>); FE chỉ render những gì cleaning step đã ghi.
-            Mẫu sample tối đa 50 dòng/dataset.
+            {t('templatesFnew3v1Silver.footnotePart1')}{' '}
+            <span className="font-mono">&lt;EMAIL_1&gt;</span>{t('templatesFnew3v1Silver.footnotePart2')}
           </p>
         </div>
       </div>
@@ -236,7 +236,8 @@ export default function SilverDrillDownPage() {
 function SilverDatasetRow({
   dataset: d, onView, onLineage,
 }: { dataset: SilverDataset; onView: () => void; onLineage: () => void }) {
-  const ingested = formatRelative(d.last_processed_at);
+  const t = useT();
+  const ingested = formatRelative(d.last_processed_at, t);
   const qualityVariant: 'success' | 'warning' | 'error' =
     d.quality_avg_pct >= 90 ? 'success'
     : d.quality_avg_pct >= 75 ? 'warning'
@@ -282,18 +283,18 @@ function SilverDatasetRow({
             </Badge>
           ))}
           {d.applied_rules_top.length === 0 && (
-            <span className="text-[11px] text-[var(--text-secondary)] italic">— chưa có rule</span>
+            <span className="text-[11px] text-[var(--text-secondary)] italic">{t('templatesFnew3v1Silver.noRule')}</span>
           )}
         </div>
       </td>
       <td className="px-5 py-4 text-xs text-[var(--text-secondary)]">{ingested}</td>
       <td className="px-5 py-4 text-right">
         <div className="inline-flex items-center gap-1">
-          <Button variant="tertiary" size="sm" onClick={onLineage} title="Truy theo file qua các lớp">
+          <Button variant="tertiary" size="sm" onClick={onLineage} title={t('templatesFnew3v1Silver.lineageTooltip')}>
             <Link2 className="w-3.5 h-3.5" />
           </Button>
           <Button variant="tertiary" size="sm" onClick={onView}>
-            <Eye className="w-3.5 h-3.5 mr-1.5" /> Xem
+            <Eye className="w-3.5 h-3.5 mr-1.5" /> {t('templatesFnew3v1Silver.viewBtn')}
           </Button>
         </div>
       </td>
@@ -302,6 +303,7 @@ function SilverDatasetRow({
 }
 
 function SilverSampleModal({ dataset, onClose }: { dataset: SilverDataset; onClose: () => void }) {
+  const t = useT();
   const [data, setData]       = useState<SampleResponse['data'] | null>(null);
   const [loading, setLoading] = useState(true);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -355,7 +357,7 @@ function SilverSampleModal({ dataset, onClose }: { dataset: SilverDataset; onClo
               {dataset.source_filename}
             </h3>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-              {dataset.row_count.toLocaleString('vi-VN')} hàng đã sạch · chất lượng TB {dataset.quality_avg_pct.toFixed(1)}%
+              {t('templatesFnew3v1Silver.modalSubtitle', { count: dataset.row_count.toLocaleString('vi-VN'), pct: dataset.quality_avg_pct.toFixed(1) })}
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -363,9 +365,9 @@ function SilverSampleModal({ dataset, onClose }: { dataset: SilverDataset; onClo
               variant="tertiary" size="sm" onClick={downloadCsv}
               disabled={!data || data.rows.length === 0}
             >
-              <Download className="w-3.5 h-3.5 mr-1" /> CSV mẫu
+              <Download className="w-3.5 h-3.5 mr-1" /> {t('templatesFnew3v1Silver.csvSample')}
             </Button>
-            <button onClick={onClose} aria-label="Đóng" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+            <button onClick={onClose} aria-label={t('templatesFnew3v1Silver.closeAria')} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
               <XIcon className="w-5 h-5" />
             </button>
           </div>
@@ -376,7 +378,7 @@ function SilverSampleModal({ dataset, onClose }: { dataset: SilverDataset; onClo
 
           {loading ? (
             <div className="text-center py-12 text-[var(--text-secondary)]">
-              <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> Đang tải mẫu dữ liệu...
+              <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> {t('templatesFnew3v1Silver.loadingSample')}
             </div>
           ) : data && data.rows.length > 0 ? (
             <>
@@ -390,8 +392,8 @@ function SilverSampleModal({ dataset, onClose }: { dataset: SilverDataset; onClo
                           {c}
                         </th>
                       ))}
-                      <th className="px-3 py-2 font-medium text-[var(--text-secondary)] border-b border-[var(--border-color)]">rules</th>
-                      <th className="px-3 py-2 font-medium text-[var(--text-secondary)] border-b border-[var(--border-color)] text-right">quality</th>
+                      <th className="px-3 py-2 font-medium text-[var(--text-secondary)] border-b border-[var(--border-color)]">{t('templatesFnew3v1Silver.thRules')}</th>
+                      <th className="px-3 py-2 font-medium text-[var(--text-secondary)] border-b border-[var(--border-color)] text-right">{t('templatesFnew3v1Silver.thQuality')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[var(--border-color)]/40">
@@ -421,14 +423,13 @@ function SilverSampleModal({ dataset, onClose }: { dataset: SilverDataset; onClo
                 </table>
               </div>
               <p className="text-[11px] text-[var(--text-secondary)] mt-3">
-                Hiển thị {data.rows.length}/{data.file.row_count.toLocaleString('vi-VN')} dòng (giới hạn {data.limit}).
-                <Sparkles className="w-3 h-3 inline ml-1 text-[var(--primary-gold-dark)]" /> PII đã che ở
-                bước cleaning trước khi lưu.
+                {t('templatesFnew3v1Silver.sampleFooter', { shown: data.rows.length, total: data.file.row_count.toLocaleString('vi-VN'), limit: data.limit })}
+                <Sparkles className="w-3 h-3 inline ml-1 text-[var(--primary-gold-dark)]" /> {t('templatesFnew3v1Silver.sampleFooterPart2')}
               </p>
             </>
           ) : (
             <div className="text-center py-12 text-[var(--text-secondary)]">
-              Dataset không có dòng nào.
+              {t('templatesFnew3v1Silver.noRows')}
             </div>
           )}
         </div>
@@ -441,14 +442,14 @@ function SilverSampleModal({ dataset, onClose }: { dataset: SilverDataset; onClo
 // Helpers
 // ============================================================================
 
-function formatRelative(iso: string | null): string {
+function formatRelative(iso: string | null, t: ReturnType<typeof useT>): string {
   if (!iso) return '—';
   const diff = Date.now() - +new Date(iso);
   if (Number.isNaN(diff))     return iso;
-  if (diff < 60_000)          return 'vừa xong';
-  if (diff < 3_600_000)       return `${Math.round(diff / 60_000)} phút trước`;
-  if (diff < 86_400_000)      return `${Math.round(diff / 3_600_000)} giờ trước`;
-  if (diff < 7 * 86_400_000)  return `${Math.round(diff / 86_400_000)} ngày trước`;
+  if (diff < 60_000)          return t('templatesFnew3v1Silver.relJustNow');
+  if (diff < 3_600_000)       return t('templatesFnew3v1Silver.relMinutesAgo', { count: Math.round(diff / 60_000) });
+  if (diff < 86_400_000)      return t('templatesFnew3v1Silver.relHoursAgo', { count: Math.round(diff / 3_600_000) });
+  if (diff < 7 * 86_400_000)  return t('templatesFnew3v1Silver.relDaysAgo', { count: Math.round(diff / 86_400_000) });
   return new Date(iso).toLocaleDateString('vi-VN');
 }
 

@@ -32,6 +32,7 @@ import {
   Button, Input, Label, ErrorBanner, type ProblemDetails,
 } from '@/components/platform/foundation';
 import { AuthBrandPanel, MobileLogo } from '../../(auth)/_components/BrandPanel';
+import { useT } from '@/lib/i18n/provider';
 
 interface PlatformLoginData {
   mfa_required?:                 boolean;
@@ -46,6 +47,7 @@ interface PlatformLoginData {
 }
 
 export default function PlatformLoginPage() {
+  const t        = useT();
   const router   = useRouter();
   const setAuth  = useAuth((s) => s.setAuth);
   const [email,    setEmail]    = useState('');
@@ -76,7 +78,7 @@ export default function PlatformLoginPage() {
       }
 
       if (!d.access_token || !d.refresh_token || !d.role) {
-        setError({ title: 'Phản hồi không hợp lệ từ máy chủ. Vui lòng thử lại.' });
+        setError({ title: t('loginPage2.errInvalidResponse') });
         return;
       }
 
@@ -93,13 +95,13 @@ export default function PlatformLoginPage() {
         const secs = (res.data?.lockout_remaining_seconds as number | undefined) ?? 900;
         setLockout(secs);
         setError({
-          title: `Tài khoản bị khóa. Thử lại sau ${Math.ceil(secs / 60)} phút.`,
+          title: t('loginPage2.errLockedOut', { mins: String(Math.ceil(secs / 60)) }),
           lockout_remaining_seconds: secs,
         });
       } else if (res?.status === 401) {
-        setError({ title: 'Email hoặc mật khẩu không đúng.' });
+        setError({ title: t('loginPage2.errBadCreds') });
       } else {
-        setError({ title: 'Không thể đăng nhập. Vui lòng thử lại.' });
+        setError({ title: t('loginPage2.errLoginFailed') });
       }
     } finally {
       setLoading(false);
@@ -109,9 +111,9 @@ export default function PlatformLoginPage() {
   return (
     <div className="min-h-screen w-full flex bg-canvas overflow-hidden selection:bg-[var(--primary-gold)]/30">
       <AuthBrandPanel
-        headline="Khu vực vận hành,"
-        italicTail="dành cho đội Kaori."
-        subhead="Trang đăng nhập cho quản trị viên nền tảng. Cần MFA và phiên kiểm soát chặt; khách hàng doanh nghiệp vui lòng dùng cổng /login."
+        headline={t('loginPage2.headline')}
+        italicTail={t('loginPage2.italicTail')}
+        subhead={t('loginPage2.subhead')}
       />
 
       <div className="relative flex w-full lg:w-1/2 flex-col items-center justify-center p-6 sm:p-12">
@@ -120,13 +122,13 @@ export default function PlatformLoginPage() {
         <div className="w-full max-w-[420px] rounded-md-custom bg-white p-8 shadow-soft-md border border-[var(--border-color)]/60 animate-fade-in">
           <div className="flex flex-col space-y-2 mb-8">
             <span className="inline-flex w-fit items-center gap-1 rounded-full bg-[var(--primary-gold)]/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--primary-gold-dark)]">
-              <Shield className="h-3 w-3" /> Platform admin
+              <Shield className="h-3 w-3" /> {t('loginPage2.badgePlatformAdmin')}
             </span>
             <h2 className="font-serif text-3xl font-semibold tracking-tight text-[var(--text-primary)]">
-              Đăng nhập quản trị
+              {t('loginPage2.title')}
             </h2>
             <p className="text-sm text-[var(--text-secondary)]">
-              Tài khoản nhân sự Kaori (SUPER_ADMIN / ADMIN / SUPPORT).
+              {t('loginPage2.subtitle')}
             </p>
           </div>
 
@@ -134,7 +136,7 @@ export default function PlatformLoginPage() {
             {error && <ErrorBanner problem={error} />}
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email công vụ</Label>
+              <Label htmlFor="email">{t('loginPage2.labelEmail')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -148,7 +150,7 @@ export default function PlatformLoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Mật khẩu</Label>
+              <Label htmlFor="password">{t('loginPage2.labelPassword')}</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -165,35 +167,35 @@ export default function PlatformLoginPage() {
                   type="button"
                   onClick={() => setShowPwd((v) => !v)}
                   disabled={loading}
-                  aria-label={showPwd ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                  aria-label={showPwd ? t('loginPage2.ariaHidePwd') : t('loginPage2.ariaShowPwd')}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors p-1"
                 >
                   {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
               {lockout != null && (
-                <p className="text-xs text-[#9B5050]">Còn {lockout}s trước khi thử lại.</p>
+                <p className="text-xs text-[#9B5050]">{t('loginPage2.lockoutRemaining', { secs: String(lockout) })}</p>
               )}
             </div>
 
             <Button type="submit" isLoading={loading} className="w-full mt-2">
-              Đăng nhập vào Platform
+              {t('loginPage2.submitBtn')}
             </Button>
           </form>
 
           <p className="mt-6 text-center text-xs text-[var(--text-secondary)]">
-            Sau khi đăng nhập, anh/chị có thể bật MFA tại{' '}
-            <span className="font-medium text-[var(--text-primary)]">Bảo mật → MFA</span>.
+            {t('loginPage2.mfaHintPre')}{' '}
+            <span className="font-medium text-[var(--text-primary)]">{t('loginPage2.mfaHintLabel')}</span>.
           </p>
         </div>
 
         <p className="mt-8 text-center text-sm text-[var(--text-secondary)] animate-fade-in">
-          Không phải nhân sự Kaori?{' '}
+          {t('loginPage2.notStaffPre')}{' '}
           <Link
             href="/login"
             className="font-medium text-[var(--text-primary)] hover:text-[var(--primary-gold-dark)] transition-colors underline-offset-4 hover:underline"
           >
-            Cổng đăng nhập doanh nghiệp
+            {t('loginPage2.enterpriseLoginLink')}
           </Link>
         </p>
       </div>

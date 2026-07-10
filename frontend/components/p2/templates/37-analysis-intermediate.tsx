@@ -20,6 +20,7 @@ import {
 
 import { Button, Badge, ErrorBanner, cn, api, type ProblemDetails } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type Framework = 'swot' | '6w' | '2h' | 'fishbone';
 
 interface Source { id: string; label: string; layer: 'silver' | 'gold'; row_count?: number; }
@@ -34,6 +35,7 @@ const FRAMEWORKS: Array<{ code: Framework; label: string }> = [
 type CreateResp = { run_id: string; tier: string; status: string };
 
 export default function AnalystIntermediatePage() {
+  const t = useT();
   const [available, setAvailable] = useState<Source[]>([]);
   const [picked,    setPicked]    = useState<Source[]>([]);
   const [framework, setFramework] = useState<Framework>('swot');
@@ -82,14 +84,14 @@ export default function AnalystIntermediatePage() {
   return (
     <>
       <PageHeader
-        title="Phân tích trung cấp"
-        description="2-5 nguồn Silver/Gold + 1 khung phân tích."
+        title={t('templates37AnalysisIntermediate.title')}
+        description={t('templates37AnalysisIntermediate.description')}
         actions={
           <>
             <Badge variant="info">F-033 · Intermediate</Badge>
             <Button variant="tertiary" onClick={() => (window.location.href = '/p2/analysis')}>
               <ChevronLeft className="w-4 h-4 mr-1" />
-              Hub
+              {t('templates37AnalysisIntermediate.hubButton')}
             </Button>
           </>
         }
@@ -104,23 +106,23 @@ export default function AnalystIntermediatePage() {
               <Network className="w-5 h-5 text-[var(--primary-gold-dark)]" />
             </div>
             <div>
-              <h3 className="font-serif text-base text-[var(--text-primary)]">Trung cấp</h3>
-              <p className="text-xs text-[var(--text-secondary)]">Multi-source · 1 framework · Qwen nội bộ</p>
+              <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates37AnalysisIntermediate.cardTitle')}</h3>
+              <p className="text-xs text-[var(--text-secondary)]">{t('templates37AnalysisIntermediate.cardSubtitle')}</p>
             </div>
           </div>
-          <Badge variant="success"><Lock className="w-3 h-3 mr-1 inline" />Qwen nội bộ</Badge>
+          <Badge variant="success"><Lock className="w-3 h-3 mr-1 inline" />{t('templates37AnalysisIntermediate.qwenBadge')}</Badge>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {/* Available sources */}
           <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--border-color)]/60">
-              <h4 className="font-serif text-sm text-[var(--text-primary)]">Nguồn có sẵn (Silver / Gold)</h4>
-              <p className="text-xs text-[var(--text-secondary)] mt-0.5">Tối đa 5 nguồn / lần phân tích</p>
+              <h4 className="font-serif text-sm text-[var(--text-primary)]">{t('templates37AnalysisIntermediate.availableSourcesTitle')}</h4>
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5">{t('templates37AnalysisIntermediate.availableSourcesHint')}</p>
             </div>
             <div className="p-3 space-y-1.5 max-h-[400px] overflow-y-auto">
               {available.length === 0 ? (
-                <p className="text-sm text-[var(--text-secondary)] text-center py-8">— Chưa có nguồn —</p>
+                <p className="text-sm text-[var(--text-secondary)] text-center py-8">{t('templates37AnalysisIntermediate.noSources')}</p>
               ) : available.map((s) => {
                 const isPicked = !!picked.find((p) => p.id === s.id);
                 return (
@@ -144,7 +146,7 @@ export default function AnalystIntermediatePage() {
                       <Badge variant={s.layer === 'gold' ? 'current' : 'default'}>{s.layer.toUpperCase()}</Badge>
                     </div>
                     {typeof s.row_count === 'number' && s.row_count > 0 && (
-                      <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 ml-5">{s.row_count.toLocaleString('vi-VN')} hàng</p>
+                      <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 ml-5">{t('templates37AnalysisIntermediate.rowsCount', { count: s.row_count.toLocaleString('vi-VN') })}</p>
                     )}
                   </button>
                 );
@@ -155,16 +157,16 @@ export default function AnalystIntermediatePage() {
           {/* Picked sources + config */}
           <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--border-color)]/60 flex items-center justify-between">
-              <h4 className="font-serif text-sm text-[var(--text-primary)]">Đã chọn ({picked.length}/5)</h4>
+              <h4 className="font-serif text-sm text-[var(--text-primary)]">{t('templates37AnalysisIntermediate.pickedTitle', { count: picked.length })}</h4>
               {picked.length > 0 && (
                 <Button size="sm" variant="tertiary" onClick={() => setPicked([])}>
-                  Xoá hết
+                  {t('templates37AnalysisIntermediate.clearAll')}
                 </Button>
               )}
             </div>
             <div className="p-3 space-y-1.5 min-h-[120px]">
               {picked.length === 0 ? (
-                <p className="text-sm text-[var(--text-secondary)] text-center py-6">Chọn ít nhất 2 nguồn để chạy phân tích</p>
+                <p className="text-sm text-[var(--text-secondary)] text-center py-6">{t('templates37AnalysisIntermediate.pickAtLeast2')}</p>
               ) : picked.map((s) => (
                 <div key={`${s.layer}-${s.id}`} className="flex items-center justify-between p-2 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)]/40">
                   <div className="flex items-center gap-2">
@@ -172,7 +174,7 @@ export default function AnalystIntermediatePage() {
                     <span className="text-sm text-[var(--text-primary)]">{s.label}</span>
                     <Badge variant={s.layer === 'gold' ? 'current' : 'default'}>{s.layer.toUpperCase()}</Badge>
                   </div>
-                  <button onClick={() => unpick(s.id)} className="text-[var(--text-secondary)] hover:text-[var(--state-error)]" aria-label="Xoá">
+                  <button onClick={() => unpick(s.id)} className="text-[var(--text-secondary)] hover:text-[var(--state-error)]" aria-label={t('templates37AnalysisIntermediate.removeAria')}>
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -181,7 +183,7 @@ export default function AnalystIntermediatePage() {
 
             <div className="px-4 py-3 border-t border-[var(--border-color)]/60 space-y-3">
               <div>
-                <label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Khung (chọn 1 — K-10)</label>
+                <label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">{t('templates37AnalysisIntermediate.frameworkLabel')}</label>
                 <div className="mt-1.5 grid grid-cols-4 gap-1.5">
                   {FRAMEWORKS.map((f) => (
                     <button
@@ -202,19 +204,19 @@ export default function AnalystIntermediatePage() {
               </div>
 
               <div>
-                <label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Câu hỏi</label>
+                <label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">{t('templates37AnalysisIntermediate.questionLabel')}</label>
                 <textarea
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
                   rows={2}
-                  placeholder="Ví dụ: Mối liên hệ giữa marketing spend và conversion của 3 segment lớn nhất?"
+                  placeholder={t('templates37AnalysisIntermediate.questionPlaceholder')}
                   className="mt-1 w-full px-3 py-2 text-sm bg-white border border-[var(--border-color)] rounded-md-custom focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
                 />
               </div>
 
               <Button onClick={handleRun} disabled={!canRun} isLoading={creating} className="w-full">
                 <Sparkles className="w-4 h-4 mr-2" />
-                Chạy phân tích trung cấp
+                {t('templates37AnalysisIntermediate.runButton')}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
@@ -224,7 +226,7 @@ export default function AnalystIntermediatePage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            <span className="font-medium text-[var(--text-primary)]">K-10:</span> mỗi câu hỏi chỉ chạy được 1 khung. Để chạy nhiều khung trên cùng câu hỏi, dispatch lại từ <a href="/p2/frameworks" className="text-[var(--primary-gold-dark)] underline">trang Frameworks</a>.
+            <span className="font-medium text-[var(--text-primary)]">{t('templates37AnalysisIntermediate.k10Label')}</span> {t('templates37AnalysisIntermediate.k10NoteBefore')} <a href="/p2/frameworks" className="text-[var(--primary-gold-dark)] underline">{t('templates37AnalysisIntermediate.frameworksLink')}</a>.
           </p>
         </div>
       </div>

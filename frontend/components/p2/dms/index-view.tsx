@@ -6,7 +6,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Loader2, FileText, Sparkles } from 'lucide-react';
 import { Button, ErrorBanner, cn, api, type ProblemDetails } from '@/components/p2/foundation';
-import { useLocale } from '@/lib/i18n/provider';
+import { useLocale, useT } from '@/lib/i18n/provider';
 import { FieldDef, IndexRow, TemplateDef, pickLabel, statusLabel } from './types';
 import { StatusLozenge, CompletenessBadge } from './metadata-form';
 
@@ -27,6 +27,7 @@ export function IndexView({ template, folderId, onAnalyzeGroup, onOpenDoc }: {
   onOpenDoc: (docId: string, folderId: string) => void;
 }) {
   const { locale } = useLocale();
+  const t = useT();
   const [rows, setRows] = useState<IndexRow[] | null>(null);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -58,7 +59,7 @@ export function IndexView({ template, folderId, onAnalyzeGroup, onOpenDoc }: {
   if (rows === null)
     return <div className="py-8 text-center"><Loader2 className="w-5 h-5 animate-spin inline text-[var(--text-secondary)]" /></div>;
   if (rows.length === 0)
-    return <p className="py-6 text-center text-sm text-[var(--text-secondary)]">Chưa có tài liệu nào theo mẫu này trong thư mục.</p>;
+    return <p className="py-6 text-center text-sm text-[var(--text-secondary)]">{t('dmsIndexView.emptyState')}</p>;
 
   const toggle = (id: string) => setSelected((s) => {
     const n = new Set(s);
@@ -70,9 +71,9 @@ export function IndexView({ template, folderId, onAnalyzeGroup, onOpenDoc }: {
     <div className="space-y-2">
       {selected.size > 0 && (
         <div className="flex items-center gap-2">
-          <span className="text-xs text-[var(--text-secondary)]">{selected.size} tài liệu đã chọn</span>
+          <span className="text-xs text-[var(--text-secondary)]">{t('dmsIndexView.selectedCount', { count: selected.size })}</span>
           <Button variant="secondary" onClick={() => onAnalyzeGroup([...selected])}>
-            <Sparkles className="w-3.5 h-3.5 mr-1.5" /> Phân tích nhóm đã chọn
+            <Sparkles className="w-3.5 h-3.5 mr-1.5" /> {t('dmsIndexView.analyzeGroup')}
           </Button>
         </div>
       )}
@@ -85,11 +86,11 @@ export function IndexView({ template, folderId, onAnalyzeGroup, onOpenDoc }: {
                   checked={selected.size === rows.length}
                   onChange={() => setSelected(selected.size === rows.length ? new Set() : new Set(rows.map((r) => r.doc_id)))} />
               </th>
-              <th className="px-3 py-2 text-xs font-semibold">Tài liệu</th>
+              <th className="px-3 py-2 text-xs font-semibold">{t('dmsIndexView.colDocument')}</th>
               {schema.map((f) => (
                 <th key={f.key} className="px-3 py-2 text-xs font-semibold whitespace-nowrap">{pickLabel(f, locale)}</th>
               ))}
-              <th className="px-3 py-2 text-xs font-semibold whitespace-nowrap">Thông tin</th>
+              <th className="px-3 py-2 text-xs font-semibold whitespace-nowrap">{t('dmsIndexView.colInfo')}</th>
             </tr>
           </thead>
           <tbody>

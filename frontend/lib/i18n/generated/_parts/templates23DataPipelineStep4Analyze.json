@@ -1,0 +1,268 @@
+{
+  "templates23DataPipelineStep4Analyze.title": {
+    "vi": "Phân tích",
+    "en": "Analysis",
+    "ja": "分析",
+    "ko": "분석",
+    "zh": "分析"
+  },
+  "templates23DataPipelineStep4Analyze.description": {
+    "vi": "Bước 4 / 5 — chọn template phân tích và quyết định nguồn AI.",
+    "en": "Step 4 / 5 — choose analysis templates and decide the AI source.",
+    "ja": "ステップ 4 / 5 — 分析テンプレートを選び、AIソースを決定します。",
+    "ko": "4 / 5단계 — 분석 템플릿을 선택하고 AI 소스를 결정합니다.",
+    "zh": "第 4 / 5 步 — 选择分析模板并决定 AI 来源。"
+  },
+  "templates23DataPipelineStep4Analyze.aiSourceLabel": {
+    "vi": "Nguồn AI:",
+    "en": "AI source:",
+    "ja": "AIソース:",
+    "ko": "AI 소스:",
+    "zh": "AI 来源："
+  },
+  "templates23DataPipelineStep4Analyze.aiSourceExternal": {
+    "vi": "Bên ngoài (Claude / GPT-4o)",
+    "en": "External (Claude / GPT-4o)",
+    "ja": "外部（Claude / GPT-4o）",
+    "ko": "외부(Claude / GPT-4o)",
+    "zh": "外部（Claude / GPT-4o）"
+  },
+  "templates23DataPipelineStep4Analyze.aiSourceInternal": {
+    "vi": "Qwen 14B nội bộ",
+    "en": "Qwen 14B (internal)",
+    "ja": "Qwen 14B（内部）",
+    "ko": "Qwen 14B(내부)",
+    "zh": "Qwen 14B（内部）"
+  },
+  "templates23DataPipelineStep4Analyze.enableExternalAi": {
+    "vi": "Bật AI bên ngoài",
+    "en": "Enable external AI",
+    "ja": "外部AIを有効にする",
+    "ko": "외부 AI 켜기",
+    "zh": "启用外部 AI"
+  },
+  "templates23DataPipelineStep4Analyze.disableExternalAi": {
+    "vi": "Tắt AI bên ngoài",
+    "en": "Disable external AI",
+    "ja": "外部AIを無効にする",
+    "ko": "외부 AI 끄기",
+    "zh": "关闭外部 AI"
+  },
+  "templates23DataPipelineStep4Analyze.consentBannerExternalLabel": {
+    "vi": "Đang gửi dữ liệu ra ngoài:",
+    "en": "Sending data externally:",
+    "ja": "データを外部に送信中：",
+    "ko": "데이터를 외부로 전송 중:",
+    "zh": "正在向外部发送数据："
+  },
+  "templates23DataPipelineStep4Analyze.consentBannerExternalBody": {
+    "vi": "PII đã được che (K-5) trước khi rời khỏi server Kaori. Mọi quyết định gửi external sẽ ghi vào",
+    "en": "PII is masked (K-5) before leaving the Kaori server. Every external send decision is recorded in the",
+    "ja": "個人情報はKaoriサーバーを離れる前にマスキングされます（K-5）。外部送信の判断はすべて",
+    "ko": "PII는 Kaori 서버를 벗어나기 전에 마스킹됩니다(K-5). 외부 전송 결정은 모두",
+    "zh": "PII 在离开 Kaori 服务器前已被脱敏（K-5）。每一次外部发送决定都会记录到"
+  },
+  "templates23DataPipelineStep4Analyze.decisionAuditLogLinkText": {
+    "vi": "decision audit log",
+    "en": "decision audit log",
+    "ja": "decision audit log",
+    "ko": "decision audit log",
+    "zh": "decision audit log"
+  },
+  "templates23DataPipelineStep4Analyze.consentBannerFlagPrefix": {
+    "vi": "với cờ",
+    "en": "with the flag",
+    "ja": "に記録され、フラグは",
+    "ko": "에 기록되며 플래그는",
+    "zh": "中，标志为"
+  },
+  "templates23DataPipelineStep4Analyze.consentBannerPrivateLabel": {
+    "vi": "Riêng tư mặc định:",
+    "en": "Private by default:",
+    "ja": "デフォルトでプライベート：",
+    "ko": "기본값은 비공개:",
+    "zh": "默认私密："
+  },
+  "templates23DataPipelineStep4Analyze.consentBannerPrivateBody": {
+    "vi": "100% phân tích chạy bằng Qwen 14B trên server Kaori. Dữ liệu không rời khỏi workspace của bạn. Chất lượng đủ tốt cho hầu hết template thống kê / ML cơ bản.",
+    "en": "100% of analysis runs on Qwen 14B on the Kaori server. Data never leaves your workspace. Quality is good enough for most statistical / basic ML templates.",
+    "ja": "分析は100%、Kaoriサーバー上のQwen 14Bで実行されます。データはワークスペースの外に出ません。ほとんどの統計・基本的な機械学習テンプレートに十分な品質です。",
+    "ko": "분석의 100%가 Kaori 서버의 Qwen 14B로 실행됩니다. 데이터는 워크스페이스를 벗어나지 않습니다. 대부분의 통계 / 기본 머신러닝 템플릿에 충분한 품질입니다.",
+    "zh": "100% 的分析都在 Kaori 服务器上使用 Qwen 14B 运行。数据不会离开您的工作区。对于大多数统计/基础机器学习模板来说，质量已经足够好。"
+  },
+  "templates23DataPipelineStep4Analyze.blockedSelectionsWarning": {
+    "vi": "{count} template đang chọn yêu cầu AI bên ngoài (Claude/GPT). Bật consent ở trên hoặc bỏ chọn.",
+    "en": "{count} selected templates require external AI (Claude/GPT). Enable consent above or deselect them.",
+    "ja": "選択中の{count}件のテンプレートは外部AI（Claude/GPT）が必要です。上の同意をオンにするか、選択を解除してください。",
+    "ko": "선택한 템플릿 {count}개는 외부 AI(Claude/GPT)가 필요합니다. 위에서 동의를 켜거나 선택을 해제하세요.",
+    "zh": "已选择的 {count} 个模板需要外部 AI（Claude/GPT）。请在上方启用同意，或取消选择。"
+  },
+  "templates23DataPipelineStep4Analyze.templatesSectionTitle": {
+    "vi": "Template phân tích",
+    "en": "Analysis templates",
+    "ja": "分析テンプレート",
+    "ko": "분석 템플릿",
+    "zh": "分析模板"
+  },
+  "templates23DataPipelineStep4Analyze.selectedCountSuffix": {
+    "vi": "({count} đang chọn)",
+    "en": "({count} selected)",
+    "ja": "（{count}件選択中）",
+    "ko": "({count}개 선택됨)",
+    "zh": "（已选 {count} 个）"
+  },
+  "templates23DataPipelineStep4Analyze.footerLlmRouterPart1": {
+    "vi": "Mọi LLM call đi qua",
+    "en": "Every LLM call goes through",
+    "ja": "すべてのLLM呼び出しは",
+    "ko": "모든 LLM 호출은",
+    "zh": "所有 LLM 调用都经过"
+  },
+  "templates23DataPipelineStep4Analyze.footerLlmRouterPart2": {
+    "vi": "(K-3) — không bao giờ gọi trực tiếp SDK. Khi bật consent, PII vẫn được redact (K-5:",
+    "en": "(K-3) — never called directly via SDK. When consent is on, PII is still redacted (K-5:",
+    "ja": "を経由します（K-3）— SDKを直接呼び出すことはありません。同意をオンにしても、個人情報はマスキングされます（K-5：",
+    "ko": "를 거칩니다(K-3) — SDK를 직접 호출하지 않습니다. 동의를 켜도 PII는 계속 마스킹됩니다(K-5:",
+    "zh": "（K-3）— 绝不直接调用 SDK。启用同意后，PII 仍会被脱敏（K-5："
+  },
+  "templates23DataPipelineStep4Analyze.footerLlmRouterPart3": {
+    "vi": ") trước khi gửi. Mỗi run tạo entry trong decision_audit_log (K-6).",
+    "en": ") before sending. Every run creates an entry in decision_audit_log (K-6).",
+    "ja": "）送信前に処理されます。実行ごとにdecision_audit_logへエントリが作成されます（K-6）。",
+    "ko": ") 전송 전에 처리됩니다. 실행마다 decision_audit_log에 항목이 생성됩니다(K-6).",
+    "zh": "）后再发送。每次运行都会在 decision_audit_log 中创建一条记录（K-6）。"
+  },
+  "templates23DataPipelineStep4Analyze.backButton": {
+    "vi": "Quay lại",
+    "en": "Back",
+    "ja": "戻る",
+    "ko": "뒤로",
+    "zh": "返回"
+  },
+  "templates23DataPipelineStep4Analyze.startAnalysisButton": {
+    "vi": "Bắt đầu phân tích {count} template",
+    "en": "Start analysis of {count} templates",
+    "ja": "{count}件のテンプレートで分析を開始",
+    "ko": "템플릿 {count}개로 분석 시작",
+    "zh": "开始分析 {count} 个模板"
+  },
+  "templates23DataPipelineStep4Analyze.categoryStatistical": {
+    "vi": "Thống kê",
+    "en": "Statistical",
+    "ja": "統計",
+    "ko": "통계",
+    "zh": "统计"
+  },
+  "templates23DataPipelineStep4Analyze.categoryMl": {
+    "vi": "Machine Learning",
+    "en": "Machine Learning",
+    "ja": "機械学習",
+    "ko": "머신러닝",
+    "zh": "机器学习"
+  },
+  "templates23DataPipelineStep4Analyze.categoryForecasting": {
+    "vi": "Dự báo",
+    "en": "Forecasting",
+    "ja": "予測",
+    "ko": "예측",
+    "zh": "预测"
+  },
+  "templates23DataPipelineStep4Analyze.categoryAnomaly": {
+    "vi": "Phát hiện bất thường",
+    "en": "Anomaly detection",
+    "ja": "異常検知",
+    "ko": "이상 탐지",
+    "zh": "异常检测"
+  },
+  "templates23DataPipelineStep4Analyze.recommendedBadge": {
+    "vi": "Khuyến nghị",
+    "en": "Recommended",
+    "ja": "おすすめ",
+    "ko": "추천",
+    "zh": "推荐"
+  },
+  "templates23DataPipelineStep4Analyze.needsExternalAiBadge": {
+    "vi": "Cần AI bên ngoài",
+    "en": "Requires external AI",
+    "ja": "外部AIが必要",
+    "ko": "외부 AI 필요",
+    "zh": "需要外部 AI"
+  },
+  "templates23DataPipelineStep4Analyze.estimatedMinutes": {
+    "vi": "≈ {minutes} phút",
+    "en": "≈ {minutes} min",
+    "ja": "約{minutes}分",
+    "ko": "약 {minutes}분",
+    "zh": "约 {minutes} 分钟"
+  },
+  "templates23DataPipelineStep4Analyze.minRowsRequired": {
+    "vi": "Cần ≥ {rows} dòng",
+    "en": "Requires ≥ {rows} rows",
+    "ja": "{rows}行以上が必要",
+    "ko": "{rows}행 이상 필요",
+    "zh": "需要 ≥ {rows} 行"
+  },
+  "templates23DataPipelineStep4Analyze.notEligibleHint": {
+    "vi": "Dữ liệu hiện tại có thể chưa đủ điều kiện cho phân tích này",
+    "en": "The current data may not yet be eligible for this analysis",
+    "ja": "現在のデータはこの分析の条件を満たしていない可能性があります",
+    "ko": "현재 데이터가 이 분석 조건을 충족하지 못할 수 있습니다",
+    "zh": "当前数据可能尚不满足此分析的条件"
+  },
+  "templates23DataPipelineStep4Analyze.blockedHint": {
+    "vi": "Bật consent AI bên ngoài để chọn template này",
+    "en": "Enable external AI consent to select this template",
+    "ja": "このテンプレートを選択するには外部AIの同意をオンにしてください",
+    "ko": "이 템플릿을 선택하려면 외부 AI 동의를 켜세요",
+    "zh": "启用外部 AI 同意后才能选择此模板"
+  },
+  "templates23DataPipelineStep4Analyze.consentModalIntro": {
+    "vi": "Khi bật, một số template sẽ gửi dữ liệu (đã che PII) sang Claude Sonnet hoặc GPT-4o để phân tích phức tạp hơn. Vui lòng đọc kỹ:",
+    "en": "When enabled, some templates will send data (with PII masked) to Claude Sonnet or GPT-4o for more complex analysis. Please read carefully:",
+    "ja": "有効にすると、一部のテンプレートは（個人情報をマスキングした）データをClaude SonnetまたはGPT-4oに送信し、より複雑な分析を行います。よくお読みください：",
+    "ko": "활성화하면 일부 템플릿이 (PII를 마스킹한) 데이터를 Claude Sonnet 또는 GPT-4o로 보내 더 복잡한 분석을 수행합니다. 아래 내용을 꼼꼼히 읽어주세요:",
+    "zh": "启用后，部分模板会将数据（已脱敏 PII）发送给 Claude Sonnet 或 GPT-4o 以进行更复杂的分析。请仔细阅读："
+  },
+  "templates23DataPipelineStep4Analyze.consentModalItem1": {
+    "vi": "Email / SĐT / Tên / Địa chỉ / CCCD đã được redact thành <EMAIL_1>, <PHONE_1>... (K-5).",
+    "en": "Email / phone / name / address / national ID are redacted into <EMAIL_1>, <PHONE_1>... (K-5).",
+    "ja": "メール / 電話番号 / 氏名 / 住所 / 身分証番号は<EMAIL_1>、<PHONE_1>...のようにマスキングされます（K-5）。",
+    "ko": "이메일 / 전화번호 / 이름 / 주소 / 신분증 번호는 <EMAIL_1>, <PHONE_1>... 형태로 마스킹됩니다(K-5).",
+    "zh": "邮箱/电话/姓名/地址/身份证号会被脱敏为 <EMAIL_1>、<PHONE_1>...（K-5）。"
+  },
+  "templates23DataPipelineStep4Analyze.consentModalItem2": {
+    "vi": "Output từ AI bên ngoài được Guardrails kiểm tra trước khi unmask + hiển thị.",
+    "en": "Output from external AI is checked by Guardrails before being unmasked and displayed.",
+    "ja": "外部AIからの出力は、マスキング解除・表示の前にGuardrailsによって検証されます。",
+    "ko": "외부 AI의 출력은 마스킹 해제 및 표시 전에 Guardrails로 검사됩니다.",
+    "zh": "外部 AI 的输出会先经过 Guardrails 检查，再取消脱敏并显示。"
+  },
+  "templates23DataPipelineStep4Analyze.consentModalItem3": {
+    "vi": "Mỗi quyết định ghi vào decision_audit_log (K-6) với consent flag — bạn xem được tại /p2/decisions.",
+    "en": "Every decision is recorded in decision_audit_log (K-6) with the consent flag — viewable at /p2/decisions.",
+    "ja": "各判断はconsentフラグ付きでdecision_audit_log（K-6）に記録され、/p2/decisionsで確認できます。",
+    "ko": "각 결정은 동의 플래그와 함께 decision_audit_log(K-6)에 기록되며, /p2/decisions에서 확인할 수 있습니다.",
+    "zh": "每次决策都会带着同意标志记录到 decision_audit_log（K-6），可在 /p2/decisions 查看。"
+  },
+  "templates23DataPipelineStep4Analyze.consentModalItem4": {
+    "vi": "External call tốn hạn mức gói cước riêng (xem Subscription).",
+    "en": "External calls consume a separate plan quota (see Subscription).",
+    "ja": "外部呼び出しは別のプラン枠を消費します（Subscriptionを参照）。",
+    "ko": "외부 호출은 별도의 요금제 한도를 소모합니다(구독 참조).",
+    "zh": "外部调用会消耗单独的套餐额度（详见 Subscription）。"
+  },
+  "templates23DataPipelineStep4Analyze.consentModalAckLabel": {
+    "vi": "Tôi hiểu rằng dữ liệu (đã che PII) sẽ rời khỏi server Kaori và được Claude / OpenAI xử lý.",
+    "en": "I understand that data (with PII masked) will leave the Kaori server and be processed by Claude / OpenAI.",
+    "ja": "（個人情報をマスキングした）データがKaoriサーバーを離れ、Claude / OpenAIによって処理されることを理解しています。",
+    "ko": "(PII가 마스킹된) 데이터가 Kaori 서버를 벗어나 Claude / OpenAI에서 처리된다는 것을 이해합니다.",
+    "zh": "我理解（已脱敏 PII 的）数据将离开 Kaori 服务器，并由 Claude / OpenAI 处理。"
+  },
+  "templates23DataPipelineStep4Analyze.cancelButton": {
+    "vi": "Huỷ",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  }
+}

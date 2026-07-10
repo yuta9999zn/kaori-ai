@@ -1,0 +1,261 @@
+{
+  "dmsAuthoredDoc.emptySection": {
+    "vi": "(mục trống)",
+    "en": "(empty section)",
+    "ja": "（空の項目）",
+    "ko": "(빈 항목)",
+    "zh": "（空白部分）"
+  },
+  "dmsAuthoredDoc.placeholderDisplayName": {
+    "vi": "Tên hiển thị",
+    "en": "Display name",
+    "ja": "表示名",
+    "ko": "표시 이름",
+    "zh": "显示名称"
+  },
+  "dmsAuthoredDoc.placeholderSectionTitle": {
+    "vi": "Tiêu đề mục…",
+    "en": "Section title…",
+    "ja": "項目タイトル…",
+    "ko": "항목 제목…",
+    "zh": "部分标题…"
+  },
+  "dmsAuthoredDoc.deleteSectionTooltip": {
+    "vi": "Xoá mục",
+    "en": "Delete section",
+    "ja": "項目を削除",
+    "ko": "항목 삭제",
+    "zh": "删除部分"
+  },
+  "dmsAuthoredDoc.bodyMdPlaceholder": {
+    "vi": "Đoạn văn bản — dùng thanh công cụ phía trên hoặc gõ Markdown: ## tiêu đề · **đậm** · ==đánh dấu== · [tên](https://link) · #hashtag",
+    "en": "Text paragraph — use the toolbar above or type Markdown: ## heading · **bold** · ==highlight== · [name](https://link) · #hashtag",
+    "ja": "本文 — 上のツールバーを使うか、Markdown を入力: ## 見出し · **太字** · ==ハイライト== · [名前](https://link) · #ハッシュタグ",
+    "ko": "본문 단락 — 위 도구 모음을 사용하거나 Markdown 입력: ## 제목 · **굵게** · ==강조== · [이름](https://link) · #해시태그",
+    "zh": "正文段落 — 使用上方工具栏或输入 Markdown：## 标题 · **加粗** · ==高亮== · [名称](https://link) · #标签"
+  },
+  "dmsAuthoredDoc.attachLink": {
+    "vi": "Đính link",
+    "en": "Attach link",
+    "ja": "リンクを添付",
+    "ko": "링크 첨부",
+    "zh": "附加链接"
+  },
+  "dmsAuthoredDoc.columnWidthTooltip": {
+    "vi": "Độ rộng cột",
+    "en": "Column width",
+    "ja": "列幅",
+    "ko": "열 너비",
+    "zh": "列宽"
+  },
+  "dmsAuthoredDoc.addRow": {
+    "vi": "Thêm dòng",
+    "en": "Add row",
+    "ja": "行を追加",
+    "ko": "행 추가",
+    "zh": "添加行"
+  },
+  "dmsAuthoredDoc.addSectionLabel": {
+    "vi": "Thêm mục:",
+    "en": "Add section:",
+    "ja": "項目を追加:",
+    "ko": "항목 추가:",
+    "zh": "添加部分："
+  },
+  "dmsAuthoredDoc.textSection": {
+    "vi": "Văn bản",
+    "en": "Text",
+    "ja": "テキスト",
+    "ko": "텍스트",
+    "zh": "文本"
+  },
+  "dmsAuthoredDoc.tableSection": {
+    "vi": "Bảng",
+    "en": "Table",
+    "ja": "表",
+    "ko": "표",
+    "zh": "表格"
+  },
+  "dmsAuthoredDoc.tableTitlePlaceholder": {
+    "vi": "Tiêu đề bảng (vd Danh sách lỗi)",
+    "en": "Table title (e.g. Error list)",
+    "ja": "表のタイトル（例: エラー一覧）",
+    "ko": "표 제목 (예: 오류 목록)",
+    "zh": "表格标题（如：错误列表）"
+  },
+  "dmsAuthoredDoc.pickColumnsLabel": {
+    "vi": "Chọn cột:",
+    "en": "Pick columns:",
+    "ja": "列を選択:",
+    "ko": "열 선택:",
+    "zh": "选择字段："
+  },
+  "dmsAuthoredDoc.defaultNewSectionHeading": {
+    "vi": "Mục mới",
+    "en": "New section",
+    "ja": "新しい項目",
+    "ko": "새 항목",
+    "zh": "新部分"
+  },
+  "dmsAuthoredDoc.defaultNewTableHeading": {
+    "vi": "Bảng mới",
+    "en": "New table",
+    "ja": "新しい表",
+    "ko": "새 표",
+    "zh": "新表格"
+  },
+  "dmsAuthoredDoc.createTableBtn": {
+    "vi": "Tạo bảng ({count} cột)",
+    "en": "Create table ({count} columns)",
+    "ja": "表を作成（{count} 列）",
+    "ko": "표 생성 ({count}개 열)",
+    "zh": "创建表格（{count} 个字段）"
+  },
+  "dmsAuthoredDoc.back": {
+    "vi": "Quay lại",
+    "en": "Back",
+    "ja": "戻る",
+    "ko": "뒤로",
+    "zh": "返回"
+  },
+  "dmsAuthoredDoc.templatePrefix": {
+    "vi": "Mẫu: {name} · ",
+    "en": "Template: {name} · ",
+    "ja": "テンプレート: {name} · ",
+    "ko": "템플릿: {name} · ",
+    "zh": "模板：{name} · "
+  },
+  "dmsAuthoredDoc.oldVersionSuffix": {
+    "vi": " (bản cũ)",
+    "en": " (old version)",
+    "ja": "（旧版）",
+    "ko": " (이전 버전)",
+    "zh": "（旧版本）"
+  },
+  "dmsAuthoredDoc.aiGenerating": {
+    "vi": "AI đang soạn…",
+    "en": "AI is drafting…",
+    "ja": "AI が作成中…",
+    "ko": "AI 작성 중…",
+    "zh": "AI 正在撰写…"
+  },
+  "dmsAuthoredDoc.aiRegenerate": {
+    "vi": "AI soạn lại",
+    "en": "AI regenerate",
+    "ja": "AI で再作成",
+    "ko": "AI 재작성",
+    "zh": "AI 重新生成"
+  },
+  "dmsAuthoredDoc.editContent": {
+    "vi": "Sửa nội dung",
+    "en": "Edit content",
+    "ja": "内容を編集",
+    "ko": "내용 수정",
+    "zh": "编辑内容"
+  },
+  "dmsAuthoredDoc.changeNotePlaceholder": {
+    "vi": "Ghi chú thay đổi…",
+    "en": "Change note…",
+    "ja": "変更メモ…",
+    "ko": "변경 메모…",
+    "zh": "变更备注…"
+  },
+  "dmsAuthoredDoc.cancel": {
+    "vi": "Huỷ",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "dmsAuthoredDoc.saveVersion": {
+    "vi": "Lưu (v{version})",
+    "en": "Save (v{version})",
+    "ja": "保存（v{version}）",
+    "ko": "저장 (v{version})",
+    "zh": "保存（v{version}）"
+  },
+  "dmsAuthoredDoc.aiDraftingStatus": {
+    "vi": "Qwen đang soạn nháp từng mục theo bộ khung của mẫu — trang tự cập nhật khi xong.",
+    "en": "Qwen is drafting each section per the template outline — the page updates automatically when done.",
+    "ja": "Qwen がテンプレートの構成に沿って各項目の下書きを作成中 — 完了すると自動的にページが更新されます。",
+    "ko": "Qwen이 템플릿 개요에 따라 각 항목의 초안을 작성 중입니다 — 완료되면 페이지가 자동으로 업데이트됩니다.",
+    "zh": "Qwen 正按照模板大纲逐条起草各部分 — 完成后页面会自动更新。"
+  },
+  "dmsAuthoredDoc.regenDesc": {
+    "vi": "Mô tả tài liệu + yêu cầu — AI soạn lại TOÀN BỘ nội dung theo bộ khung (ghi đè bản nháp hiện tại; muốn giữ thì Lưu trước).",
+    "en": "Describe the document + requirements — AI will regenerate the ENTIRE content per the outline (overwrites the current draft; save first if you want to keep it).",
+    "ja": "文書の説明＋要件を入力 — AI が構成に沿って内容をすべて再作成します（現在の下書きは上書き。残したい場合は先に保存してください）。",
+    "ko": "문서 설명 + 요구사항 입력 — AI가 개요에 따라 전체 내용을 다시 작성합니다 (현재 초안이 덮어씌워집니다. 유지하려면 먼저 저장하세요).",
+    "zh": "描述文档＋要求 — AI 将按大纲重新生成全部内容（会覆盖当前草稿；如需保留请先保存）。"
+  },
+  "dmsAuthoredDoc.regenerate": {
+    "vi": "Soạn lại",
+    "en": "Regenerate",
+    "ja": "再作成",
+    "ko": "다시 작성",
+    "zh": "重新生成"
+  },
+  "dmsAuthoredDoc.noContentYet": {
+    "vi": "Chưa có nội dung — bấm Sửa nội dung để soạn theo bộ khung.",
+    "en": "No content yet — click Edit content to draft per the outline.",
+    "ja": "まだ内容がありません — 「内容を編集」をクリックして構成に沿って作成してください。",
+    "ko": "아직 내용이 없습니다 — 개요에 따라 작성하려면 내용 수정을 클릭하세요.",
+    "zh": "尚无内容 — 点击编辑内容以按大纲撰写。"
+  },
+  "dmsAuthoredDoc.historyHeading": {
+    "vi": "Lịch sử chỉnh sửa (History Changes)",
+    "en": "Edit history (History Changes)",
+    "ja": "編集履歴（History Changes）",
+    "ko": "편집 기록 (History Changes)",
+    "zh": "编辑历史（History Changes）"
+  },
+  "dmsAuthoredDoc.historyHint": {
+    "vi": "— tự sinh từ phiên bản, không gõ tay",
+    "en": "— auto-generated from versions, not typed by hand",
+    "ja": "— バージョンから自動生成、手入力ではありません",
+    "ko": "— 버전에서 자동 생성됨, 직접 입력 아님",
+    "zh": "— 由版本自动生成，非手动输入"
+  },
+  "dmsAuthoredDoc.colVersion": {
+    "vi": "Phiên bản",
+    "en": "Version",
+    "ja": "バージョン",
+    "ko": "버전",
+    "zh": "版本"
+  },
+  "dmsAuthoredDoc.colTime": {
+    "vi": "Thời gian",
+    "en": "Time",
+    "ja": "日時",
+    "ko": "시간",
+    "zh": "时间"
+  },
+  "dmsAuthoredDoc.colContent": {
+    "vi": "Nội dung cập nhật",
+    "en": "Update content",
+    "ja": "更新内容",
+    "ko": "업데이트 내용",
+    "zh": "更新内容"
+  },
+  "dmsAuthoredDoc.current": {
+    "vi": "hiện tại",
+    "en": "current",
+    "ja": "現在",
+    "ko": "현재",
+    "zh": "当前"
+  },
+  "dmsAuthoredDoc.defaultChangeReason": {
+    "vi": "Tạo mới",
+    "en": "Created",
+    "ja": "新規作成",
+    "ko": "새로 생성",
+    "zh": "新建"
+  },
+  "dmsAuthoredDoc.viewThisVersion": {
+    "vi": "— xem bản này",
+    "en": "— view this version",
+    "ja": "— この版を見る",
+    "ko": "— 이 버전 보기",
+    "zh": "— 查看此版本"
+  }
+}

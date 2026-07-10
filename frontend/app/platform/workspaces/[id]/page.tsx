@@ -10,12 +10,14 @@ import {
 import { workspaceApi } from '@/lib/api/platform';
 import { ErrorBanner, type ProblemDetails } from '@/components/platform/foundation';
 import { fmtDateTime } from '@/lib/format';
+import { useT } from '@/lib/i18n/provider';
 
 export default function WorkspaceOverviewPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const t = useT();
   const { id } = use(params);
 
   const query = useQuery({
@@ -39,17 +41,17 @@ export default function WorkspaceOverviewPage({
     return (
       <ErrorBanner
         problem={problem}
-        message={`Không thể tải workspace ${id}. Endpoint GET /api/v1/platform/workspaces/{id} có thể chưa được triển khai.`}
+        message={t('idPage7.loadError', { workspaceId: id })}
       />
     );
   }
 
   const ws = query.data.data;
   const facts = [
-    { label: 'Mã gói',   value: ws.plan_code,                              icon: Tag },
-    { label: 'Ngành',    value: ws.industry?.trim() ? ws.industry : '—',  icon: Briefcase },
-    { label: 'Tạo lúc',  value: fmtDateTime(ws.created_at),                icon: Calendar },
-    { label: 'Cập nhật', value: fmtDateTime(ws.updated_at),                icon: RefreshCw },
+    { label: t('idPage7.factPlanCode'),   value: ws.plan_code,                              icon: Tag },
+    { label: t('idPage7.factIndustry'),    value: ws.industry?.trim() ? ws.industry : '—',  icon: Briefcase },
+    { label: t('idPage7.factCreatedAt'),  value: fmtDateTime(ws.created_at),                icon: Calendar },
+    { label: t('idPage7.factUpdatedAt'), value: fmtDateTime(ws.updated_at),                icon: RefreshCw },
   ];
 
   return (
@@ -70,28 +72,28 @@ export default function WorkspaceOverviewPage({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <section className="lg:col-span-2 rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm p-5">
-          <h2 className="font-serif text-lg text-[var(--text-primary)] mb-3">Hoạt động gần đây</h2>
+          <h2 className="font-serif text-lg text-[var(--text-primary)] mb-3">{t('idPage7.recentActivityTitle')}</h2>
           <p className="text-sm text-[var(--text-secondary)]">
-            Nhật ký hoạt động sẽ hiển thị tại đây khi backend audit log
-            (<code className="font-mono">/workspaces/{id}/audit</code>) sẵn sàng.
+            {t('idPage7.auditLogHintPre')}
+            (<code className="font-mono">/workspaces/{id}/audit</code>) {t('idPage7.auditLogHintPost')}
           </p>
           <div className="mt-4">
             <Link
               href={`/platform/workspaces/${id}/audit`}
               className="inline-flex items-center h-8 px-3 text-xs rounded-sm-custom border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors"
             >
-              Xem nhật ký kiểm toán
+              {t('idPage7.viewAuditLog')}
             </Link>
           </div>
         </section>
 
         <section className="rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm p-5">
-          <h2 className="font-serif text-lg text-[var(--text-primary)] mb-3">Tác vụ nhanh</h2>
+          <h2 className="font-serif text-lg text-[var(--text-primary)] mb-3">{t('idPage7.quickActionsTitle')}</h2>
           <div className="flex flex-col gap-2">
-            <QuickAction href={`/platform/workspaces/${id}/members`} icon={Users}    label="Quản lý thành viên" />
-            <QuickAction href={`/platform/workspaces/${id}/billing`} icon={Receipt}  label="Xem thanh toán" />
-            <QuickAction href={`/platform/workspaces/${id}/audit`}   icon={FileClock} label="Nhật ký kiểm toán" />
-            <QuickAction href={`/platform/workspaces/${id}/edit`}    icon={Pencil}    label="Chỉnh sửa workspace" />
+            <QuickAction href={`/platform/workspaces/${id}/members`} icon={Users}    label={t('idPage7.qaManageMembers')} />
+            <QuickAction href={`/platform/workspaces/${id}/billing`} icon={Receipt}  label={t('idPage7.qaViewBilling')} />
+            <QuickAction href={`/platform/workspaces/${id}/audit`}   icon={FileClock} label={t('idPage7.qaAuditLog')} />
+            <QuickAction href={`/platform/workspaces/${id}/edit`}    icon={Pencil}    label={t('idPage7.qaEditWorkspace')} />
           </div>
         </section>
       </div>

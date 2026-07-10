@@ -1,0 +1,93 @@
+{
+  "pipelineFileuploader.title": {
+    "vi": "Tải lên dữ liệu",
+    "en": "Upload data",
+    "ja": "データをアップロード",
+    "ko": "데이터 업로드",
+    "zh": "上传数据"
+  },
+  "pipelineFileuploader.subtitle": {
+    "vi": "Hỗ trợ: Excel (.xlsx, .xls), CSV, TSV, ODS, ZIP, SQL — tối đa 100 MB/file",
+    "en": "Supports: Excel (.xlsx, .xls), CSV, TSV, ODS, ZIP, SQL — up to 100 MB/file",
+    "ja": "対応形式: Excel (.xlsx, .xls)、CSV、TSV、ODS、ZIP、SQL — 1ファイルあたり最大100 MB",
+    "ko": "지원 형식: Excel (.xlsx, .xls), CSV, TSV, ODS, ZIP, SQL — 파일당 최대 100 MB",
+    "zh": "支持格式:Excel (.xlsx, .xls)、CSV、TSV、ODS、ZIP、SQL — 每个文件最大 100 MB"
+  },
+  "pipelineFileuploader.dropActive": {
+    "vi": "Thả file vào đây…",
+    "en": "Drop file here…",
+    "ja": "ここにファイルをドロップ…",
+    "ko": "여기에 파일을 놓으세요…",
+    "zh": "将文件拖放到此处…"
+  },
+  "pipelineFileuploader.dropIdle": {
+    "vi": "Kéo thả file hoặc nhấp để chọn",
+    "en": "Drag and drop a file, or click to select",
+    "ja": "ファイルをドラッグ&ドロップ、またはクリックして選択",
+    "ko": "파일을 드래그 앤 드롭하거나 클릭하여 선택하세요",
+    "zh": "拖放文件,或点击选择"
+  },
+  "pipelineFileuploader.dropHint": {
+    "vi": "Excel, CSV, TSV, ODS, ZIP, SQL · tối đa 100 MB",
+    "en": "Excel, CSV, TSV, ODS, ZIP, SQL · up to 100 MB",
+    "ja": "Excel、CSV、TSV、ODS、ZIP、SQL · 最大100 MB",
+    "ko": "Excel, CSV, TSV, ODS, ZIP, SQL · 최대 100 MB",
+    "zh": "Excel、CSV、TSV、ODS、ZIP、SQL · 最大 100 MB"
+  },
+  "pipelineFileuploader.statusUploading": {
+    "vi": "Đang tải…",
+    "en": "Uploading…",
+    "ja": "アップロード中…",
+    "ko": "업로드 중…",
+    "zh": "上传中…"
+  },
+  "pipelineFileuploader.statusProcessing": {
+    "vi": "Đang xử lý…",
+    "en": "Processing…",
+    "ja": "処理中…",
+    "ko": "처리 중…",
+    "zh": "处理中…"
+  },
+  "pipelineFileuploader.statusDone": {
+    "vi": "Hoàn tất",
+    "en": "Done",
+    "ja": "完了",
+    "ko": "완료",
+    "zh": "完成"
+  },
+  "pipelineFileuploader.statusError": {
+    "vi": "Lỗi",
+    "en": "Error",
+    "ja": "エラー",
+    "ko": "오류",
+    "zh": "错误"
+  },
+  "pipelineFileuploader.statusIdle": {
+    "vi": "Chờ",
+    "en": "Waiting",
+    "ja": "待機中",
+    "ko": "대기 중",
+    "zh": "等待中"
+  },
+  "pipelineFileuploader.errPipelineFailed": {
+    "vi": "Pipeline thất bại",
+    "en": "Pipeline failed",
+    "ja": "パイプラインが失敗しました",
+    "ko": "파이프라인 실패",
+    "zh": "管道失败"
+  },
+  "pipelineFileuploader.errUploadTimeout": {
+    "vi": "Tải lên hết thời gian chờ",
+    "en": "Upload timed out",
+    "ja": "アップロードがタイムアウトしました",
+    "ko": "업로드 시간이 초과되었습니다",
+    "zh": "上传超时"
+  },
+  "pipelineFileuploader.errUploadFailed": {
+    "vi": "Tải lên thất bại",
+    "en": "Upload failed",
+    "ja": "アップロードに失敗しました",
+    "ko": "업로드 실패",
+    "zh": "上传失败"
+  }
+}

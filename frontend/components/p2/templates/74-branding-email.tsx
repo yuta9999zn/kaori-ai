@@ -34,6 +34,7 @@ import {
   api, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 type TemplateKey =
   | 'invite'
   | 'password_reset'
@@ -42,75 +43,76 @@ type TemplateKey =
   | 'decision_summary_weekly';
 
 interface Template {
-  key:        TemplateKey;
-  label:      string;
-  description: string;
-  phase:      1 | 2;
-  variables:  string[];
-  subject:    string;
-  body_md:    string;
+  key:           TemplateKey;
+  labelKey:      string;
+  descriptionKey: string;
+  phase:         1 | 2;
+  variables:     string[];
+  subjectKey:    string;
+  bodyKey:       string;
 }
 
 const TEMPLATES: Template[] = [
   {
-    key:         'invite',
-    label:       'Mời thành viên',
-    description: 'Gửi khi MANAGER invite member mới qua RBAC page (F-015).',
-    phase:       1,
-    variables:   ['{{recipient_name}}', '{{workspace_name}}', '{{inviter_name}}', '{{role}}', '{{magic_link}}'],
-    subject:     '{{inviter_name}} mời bạn vào workspace {{workspace_name}}',
-    body_md:     'Chào {{recipient_name}},\n\n{{inviter_name}} vừa mời bạn vào workspace **{{workspace_name}}** với vai trò **{{role}}**.\n\nClick để xác nhận: {{magic_link}}',
+    key:            'invite',
+    labelKey:       'templates74BrandingEmail.tmplInviteLabel',
+    descriptionKey: 'templates74BrandingEmail.tmplInviteDescription',
+    phase:          1,
+    variables:      ['{{recipient_name}}', '{{workspace_name}}', '{{inviter_name}}', '{{role}}', '{{magic_link}}'],
+    subjectKey:     'templates74BrandingEmail.tmplInviteSubject',
+    bodyKey:        'templates74BrandingEmail.tmplInviteBody',
   },
   {
-    key:         'password_reset',
-    label:       'Đặt lại mật khẩu',
-    description: 'Gửi khi user yêu cầu reset password ở /p2/auth/forgot.',
-    phase:       1,
-    variables:   ['{{recipient_name}}', '{{magic_link}}', '{{expires_in_minutes}}'],
-    subject:     'Đặt lại mật khẩu Kaori',
-    body_md:     'Chào {{recipient_name}},\n\nClick để đặt lại mật khẩu (link hết hạn sau {{expires_in_minutes}} phút):\n\n{{magic_link}}',
+    key:            'password_reset',
+    labelKey:       'templates74BrandingEmail.tmplPasswordResetLabel',
+    descriptionKey: 'templates74BrandingEmail.tmplPasswordResetDescription',
+    phase:          1,
+    variables:      ['{{recipient_name}}', '{{magic_link}}', '{{expires_in_minutes}}'],
+    subjectKey:     'templates74BrandingEmail.tmplPasswordResetSubject',
+    bodyKey:        'templates74BrandingEmail.tmplPasswordResetBody',
   },
   {
-    key:         'quota_warning',
-    label:       'Cảnh báo 80% hạn mức',
-    description: 'Gửi khi enterprise dùng 80% quota khách hàng tháng (F-037).',
-    phase:       2,
-    variables:   ['{{workspace_name}}', '{{used}}', '{{limit}}', '{{cycle_end}}', '{{upgrade_link}}'],
-    subject:     'Workspace {{workspace_name}} đã dùng 80% hạn mức tháng',
-    body_md:     'Workspace **{{workspace_name}}** đã xử lý {{used}} / {{limit}} khách hàng tháng này.\n\nChu kỳ kết thúc: {{cycle_end}}.\n\nCân nhắc nâng cấp gói: {{upgrade_link}}',
+    key:            'quota_warning',
+    labelKey:       'templates74BrandingEmail.tmplQuotaWarningLabel',
+    descriptionKey: 'templates74BrandingEmail.tmplQuotaWarningDescription',
+    phase:          2,
+    variables:      ['{{workspace_name}}', '{{used}}', '{{limit}}', '{{cycle_end}}', '{{upgrade_link}}'],
+    subjectKey:     'templates74BrandingEmail.tmplQuotaWarningSubject',
+    bodyKey:        'templates74BrandingEmail.tmplQuotaWarningBody',
   },
   {
-    key:         'quota_critical',
-    label:       'Cảnh báo 95% hạn mức',
-    description: 'Gửi khi enterprise sắp chạm hạn mức (F-037).',
-    phase:       2,
-    variables:   ['{{workspace_name}}', '{{used}}', '{{limit}}', '{{cycle_end}}', '{{upgrade_link}}'],
-    subject:     '⚠ Workspace {{workspace_name}} sắp chạm hạn mức',
-    body_md:     'Workspace **{{workspace_name}}** đã dùng 95% hạn mức ({{used}} / {{limit}} khách hàng).\n\nNâng cấp ngay để tránh gián đoạn: {{upgrade_link}}',
+    key:            'quota_critical',
+    labelKey:       'templates74BrandingEmail.tmplQuotaCriticalLabel',
+    descriptionKey: 'templates74BrandingEmail.tmplQuotaCriticalDescription',
+    phase:          2,
+    variables:      ['{{workspace_name}}', '{{used}}', '{{limit}}', '{{cycle_end}}', '{{upgrade_link}}'],
+    subjectKey:     'templates74BrandingEmail.tmplQuotaCriticalSubject',
+    bodyKey:        'templates74BrandingEmail.tmplQuotaCriticalBody',
   },
   {
-    key:         'decision_summary_weekly',
-    label:       'Tóm tắt quyết định tuần',
-    description: 'Báo cáo weekly các quyết định AI đã ra trong tuần.',
-    phase:       2,
-    variables:   ['{{workspace_name}}', '{{decision_count}}', '{{actioned_count}}', '{{revenue_at_risk_vnd}}', '{{dashboard_link}}'],
-    subject:     'Tóm tắt quyết định tuần · {{workspace_name}}',
-    body_md:     'Workspace **{{workspace_name}}** tuần này:\n\n- {{decision_count}} quyết định mới\n- {{actioned_count}} đã hành động\n- Doanh thu rủi ro đã xử lý: {{revenue_at_risk_vnd}}\n\nXem dashboard: {{dashboard_link}}',
+    key:            'decision_summary_weekly',
+    labelKey:       'templates74BrandingEmail.tmplDecisionSummaryLabel',
+    descriptionKey: 'templates74BrandingEmail.tmplDecisionSummaryDescription',
+    phase:          2,
+    variables:      ['{{workspace_name}}', '{{decision_count}}', '{{actioned_count}}', '{{revenue_at_risk_vnd}}', '{{dashboard_link}}'],
+    subjectKey:     'templates74BrandingEmail.tmplDecisionSummarySubject',
+    bodyKey:        'templates74BrandingEmail.tmplDecisionSummaryBody',
   },
 ];
 
 export default function BrandingEmailPage() {
+  const t = useT();
   const [selected, setSelected] = useState<TemplateKey>('invite');
   const [drafts,   setDrafts]   = useState<Record<TemplateKey, { subject: string; body_md: string }>>(() => {
     const initial: any = {};
-    TEMPLATES.forEach((t) => { initial[t.key] = { subject: t.subject, body_md: t.body_md }; });
+    TEMPLATES.forEach((tp) => { initial[tp.key] = { subject: t(tp.subjectKey), body_md: t(tp.bodyKey) }; });
     return initial;
   });
   const [sending,  setSending]  = useState(false);
   const [problem,  setProblem]  = useState<ProblemDetails | null>(null);
   const [success,  setSuccess]  = useState<string | null>(null);
 
-  const tmpl  = TEMPLATES.find((t) => t.key === selected)!;
+  const tmpl  = TEMPLATES.find((tp) => tp.key === selected)!;
   const draft = drafts[selected];
 
   function update(patch: Partial<{ subject: string; body_md: string }>) {
@@ -125,7 +127,7 @@ export default function BrandingEmailPage() {
         method: 'POST',
         body:   JSON.stringify({ template: selected, subject: draft.subject, body_md: draft.body_md }),
       });
-      setSuccess('Đã gửi email test tới địa chỉ của bạn.');
+      setSuccess(t('templates74BrandingEmail.testSendSuccess'));
     } catch (err: any) {
       setProblem(err);
     } finally {
@@ -136,14 +138,14 @@ export default function BrandingEmailPage() {
   return (
     <>
       <PageHeader
-        title="Mẫu email"
-        description="5 template được notification-service dùng. Phase 1 đã wire 2 template; Phase 2 mở editor."
+        title={t('templates74BrandingEmail.title')}
+        description={t('templates74BrandingEmail.pageDescription')}
         actions={
           <>
-            <Badge variant="info">Phase 2 · F-037 finalise</Badge>
+            <Badge variant="info">{t('templates74BrandingEmail.phaseBadge')}</Badge>
             <Button variant="tertiary" onClick={() => (window.location.href = '/p2/branding')}>
               <ChevronLeft className="w-4 h-4 mr-1" />
-              Branding
+              {t('templates74BrandingEmail.backToBranding')}
             </Button>
           </>
         }
@@ -157,16 +159,16 @@ export default function BrandingEmailPage() {
           {/* Template list */}
           <div className="lg:col-span-1 bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--border-color)]/60">
-              <h3 className="font-serif text-sm text-[var(--text-primary)]">5 template</h3>
+              <h3 className="font-serif text-sm text-[var(--text-primary)]">{t('templates74BrandingEmail.templateListTitle')}</h3>
             </div>
             <div className="p-2 space-y-1">
-              {TEMPLATES.map((t) => {
-                const active = t.key === selected;
+              {TEMPLATES.map((tp) => {
+                const active = tp.key === selected;
                 return (
                   <button
-                    key={t.key}
+                    key={tp.key}
                     type="button"
-                    onClick={() => setSelected(t.key)}
+                    onClick={() => setSelected(tp.key)}
                     className={cn(
                       'w-full text-left p-2.5 rounded-md-custom transition-colors',
                       active
@@ -175,10 +177,10 @@ export default function BrandingEmailPage() {
                     )}
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <p className={cn('text-sm font-medium', active ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]')}>{t.label}</p>
-                      <Badge variant={t.phase === 1 ? 'success' : 'info'}>P{t.phase}</Badge>
+                      <p className={cn('text-sm font-medium', active ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]')}>{t(tp.labelKey)}</p>
+                      <Badge variant={tp.phase === 1 ? 'success' : 'info'}>P{tp.phase}</Badge>
                     </div>
-                    <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-snug">{t.description}</p>
+                    <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-snug">{t(tp.descriptionKey)}</p>
                   </button>
                 );
               })}
@@ -190,27 +192,27 @@ export default function BrandingEmailPage() {
             <div className="px-5 py-3 border-b border-[var(--border-color)]/60 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-                <h3 className="font-serif text-base text-[var(--text-primary)]">{tmpl.label}</h3>
-                {tmpl.phase === 1 && <Badge variant="success">Phase 1 đã wire</Badge>}
+                <h3 className="font-serif text-base text-[var(--text-primary)]">{t(tmpl.labelKey)}</h3>
+                {tmpl.phase === 1 && <Badge variant="success">{t('templates74BrandingEmail.phase1WiredBadge')}</Badge>}
               </div>
-              <Button size="sm" onClick={testSend} isLoading={sending} disabled={tmpl.phase === 2} title={tmpl.phase === 2 ? 'Phase 2 — Sắp ra mắt' : ''}>
+              <Button size="sm" onClick={testSend} isLoading={sending} disabled={tmpl.phase === 2} title={tmpl.phase === 2 ? t('templates74BrandingEmail.comingSoonTooltip') : ''}>
                 <Send className="w-3.5 h-3.5 mr-1.5" />
-                Gửi test
+                {t('templates74BrandingEmail.sendTestButton')}
               </Button>
             </div>
             <div className="p-5 space-y-3 flex-1">
               <div>
-                <label className="text-sm font-medium text-[var(--text-primary)]">Subject</label>
+                <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates74BrandingEmail.subjectLabel')}</label>
                 <Input
                   value={draft.subject}
                   onChange={(e) => update({ subject: e.target.value })}
                   maxLength={100}
-                  helperText={`${draft.subject.length} / 100 ký tự`}
+                  helperText={t('templates74BrandingEmail.subjectCharCount', { count: draft.subject.length })}
                   disabled={tmpl.phase === 2}
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-[var(--text-primary)]">Body (Markdown)</label>
+                <label className="text-sm font-medium text-[var(--text-primary)]">{t('templates74BrandingEmail.bodyLabel')}</label>
                 <textarea
                   value={draft.body_md}
                   onChange={(e) => update({ body_md: e.target.value })}
@@ -219,7 +221,7 @@ export default function BrandingEmailPage() {
                   className="mt-1 w-full px-3 py-2 font-mono text-xs bg-white border border-[var(--border-color)] rounded-md-custom focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 disabled:opacity-60 disabled:cursor-not-allowed"
                 />
                 <p className="text-[11px] text-[var(--text-secondary)] mt-1">
-                  Markdown sẽ render thành HTML email + plain-text fallback.
+                  {t('templates74BrandingEmail.markdownHint')}
                 </p>
               </div>
             </div>
@@ -231,7 +233,7 @@ export default function BrandingEmailPage() {
               <div className="px-4 py-3 border-b border-[var(--border-color)]/60">
                 <h3 className="font-serif text-sm text-[var(--text-primary)] inline-flex items-center gap-2">
                   <FileText className="w-3.5 h-3.5 text-[var(--primary-gold-dark)]" />
-                  Biến khả dụng
+                  {t('templates74BrandingEmail.variablesTitle')}
                 </h3>
               </div>
               <div className="p-3 space-y-1.5">
@@ -241,7 +243,7 @@ export default function BrandingEmailPage() {
                     type="button"
                     onClick={() => navigator.clipboard.writeText(v)}
                     className="w-full text-left px-2 py-1.5 rounded-sm-custom font-mono text-[11px] text-[var(--primary-gold-dark)] bg-[var(--primary-gold)]/8 border border-[var(--primary-gold)]/30 hover:bg-[var(--primary-gold)]/15"
-                    title="Copy"
+                    title={t('templates74BrandingEmail.copyTooltip')}
                   >
                     {v}
                   </button>
@@ -252,12 +254,12 @@ export default function BrandingEmailPage() {
             <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-soft-sm overflow-hidden">
               <div className="px-4 py-3 border-b border-[var(--border-color)]/60 flex items-center gap-2">
                 <Eye className="w-3.5 h-3.5 text-[var(--primary-gold-dark)]" />
-                <h3 className="font-serif text-sm text-[var(--text-primary)]">Preview</h3>
+                <h3 className="font-serif text-sm text-[var(--text-primary)]">{t('templates74BrandingEmail.previewTitle')}</h3>
               </div>
               <div className="p-4 text-xs">
-                <p className="font-medium text-[var(--text-primary)]">Subject: {draft.subject || '(trống)'}</p>
+                <p className="font-medium text-[var(--text-primary)]">{t('templates74BrandingEmail.subjectLabel')}: {draft.subject || t('templates74BrandingEmail.emptyPlaceholder')}</p>
                 <div className="mt-3 pt-3 border-t border-[var(--border-color)]/60 whitespace-pre-line text-[var(--text-primary)] leading-relaxed">
-                  {draft.body_md || '(body trống)'}
+                  {draft.body_md || t('templates74BrandingEmail.emptyBodyPlaceholder')}
                 </div>
               </div>
             </div>
@@ -268,16 +270,15 @@ export default function BrandingEmailPage() {
         <div className="bg-[var(--state-success)]/8 border border-[var(--state-success)]/30 rounded-md-custom p-3 flex items-start gap-2">
           <CheckCircle2 className="w-4 h-4 text-[var(--state-success)] shrink-0 mt-0.5" />
           <p className="text-xs text-[#5C856A]">
-            <span className="font-medium">Phase 1 đã wire:</span> template <span className="font-mono">invite</span> + <span className="font-mono">password_reset</span> đang dùng HTML hardcoded ở
-            <span className="font-mono"> notification-service/templates/</span> (PR #85). Editor bên trên Phase 2 thay thế — vẫn dùng cùng SMTP sender.
+            <span className="font-medium">{t('templates74BrandingEmail.phase1WireLabel')}</span> {t('templates74BrandingEmail.phase1WireTemplate')} <span className="font-mono">invite</span> + <span className="font-mono">password_reset</span> {t('templates74BrandingEmail.phase1WireUsing')}
+            <span className="font-mono"> notification-service/templates/</span> {t('templates74BrandingEmail.phase1WireSuffix')}
           </p>
         </div>
 
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Email sender name lấy từ <a href="/p2/branding" className="text-[var(--primary-gold-dark)] underline">/p2/branding</a>.
-            Quota templates (warning/critical) sẽ finalise tone copy trong F-037 (Phase 2).
+            {t('templates74BrandingEmail.senderNamePrefix')} <a href="/p2/branding" className="text-[var(--primary-gold-dark)] underline">/p2/branding</a>{t('templates74BrandingEmail.senderNameSuffix')}
           </p>
         </div>
       </div>

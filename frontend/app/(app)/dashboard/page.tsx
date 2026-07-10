@@ -44,22 +44,23 @@ const POLLING_STATES: DashboardState[] = ["first_upload", "pending_review", "ana
 // FE used to invent its own spellings (`schema_pending`, `analysis_running`,
 // `analysis_done`) which never matched what /pipelines emitted; status filtering
 // + DLQ replay on those keys silently dropped runs.
-const STATUS_LABELS: Record<string, string> = {
-  uploading:         "Đang tải lên…",
-  processing:        "Đang xử lý file…",
-  bronze_complete:   "Đọc dữ liệu xong",
-  schema_review:     "Chờ xác nhận cột",
-  cleaning_pending:  "Chờ làm sạch dữ liệu",
-  silver_complete:   "Dữ liệu sẵn sàng",
-  analyzing:         "Đang phân tích…",
-  analysis_complete: "Phân tích hoàn tất",
+const STATUS_LABEL_KEYS: Record<string, string> = {
+  uploading:         "dashboardPage.statusUploading",
+  processing:        "dashboardPage.statusProcessing",
+  bronze_complete:   "dashboardPage.statusBronzeComplete",
+  schema_review:     "dashboardPage.statusSchemaReview",
+  cleaning_pending:  "dashboardPage.statusCleaningPending",
+  silver_complete:   "dashboardPage.statusSilverComplete",
+  analyzing:         "dashboardPage.statusAnalyzing",
+  analysis_complete: "dashboardPage.statusAnalysisComplete",
 };
 
-const TEMPLATE_LABELS: Record<string, string> = {
-  summary_stats: "Thống kê",   time_series: "Chuỗi TG",  distribution: "Phân phối",
-  correlation:   "Tương quan", clustering:  "Phân cụm",  cohort:       "Cohort",
-  churn:         "Churn",      anomaly:     "Dị thường",  regression:   "Hồi quy",
-  bank_classify: "Giao dịch",
+const TEMPLATE_LABEL_KEYS: Record<string, string> = {
+  summary_stats: "dashboardPage.templateSummaryStats", time_series: "dashboardPage.templateTimeSeries",
+  distribution:  "dashboardPage.templateDistribution",  correlation: "dashboardPage.templateCorrelation",
+  clustering:    "dashboardPage.templateClustering",    cohort:      "dashboardPage.templateCohort",
+  churn:         "dashboardPage.templateChurn",         anomaly:     "dashboardPage.templateAnomaly",
+  regression:    "dashboardPage.templateRegression",    bank_classify: "dashboardPage.templateBankClassify",
 };
 
 // ── Component ──────────────────────────────────────────────────────────────────
@@ -169,11 +170,11 @@ export default function DashboardPage() {
           <CardContent className="pt-5 space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-small font-medium text-ink">{t('dashboard.quota.title')}</span>
-              <span className="text-small text-ink-muted">{quotaPct}% đã dùng</span>
+              <span className="text-small text-ink-muted">{t('dashboardPage.quotaUsedPct', { pct: quotaPct })}</span>
             </div>
             <Progress value={quotaPct} tone={quotaPct > 80 ? "warning" : "brand"} />
             <div className="flex items-center justify-between text-tiny text-[#B0A698]">
-              <span>{fmtInt(quota.used)} / {fmtInt(quota.total)} bộ dữ liệu</span>
+              <span>{t('dashboardPage.quotaUsedTotal', { used: fmtInt(quota.used), total: fmtInt(quota.total) })}</span>
               <Link href="/subscription" className="text-brand-600 hover:text-brand-700">
                 {t('dashboard.quota.upgrade')}
               </Link>
@@ -191,28 +192,30 @@ function NoDataState({ t }: { t: (k: string) => string }) {
   return (
     <EmptyState
       icon={Upload}
-      title="Chưa có dữ liệu"
-      description="Bắt đầu bằng cách tải lên file Excel, CSV, ODS hoặc ZIP. Hệ thống tự động nhận diện, làm sạch và phân tích."
+      title={t("dashboardPage.noDataTitle")}
+      description={t("dashboardPage.noDataDescription")}
       action={{ href: "/pipeline/new", label: t("dashboard.cta.upload") }}
     />
   );
 }
 
 function ProcessingState({ status }: { status?: string }) {
+  const t = useT();
   return (
     <Card>
       <CardContent className="pt-8 pb-8 text-center">
         <Loader2 className="w-10 h-10 text-brand-400 animate-spin mx-auto mb-4" />
         <p className="text-body-strong text-ink">
-          {STATUS_LABELS[status ?? ""] ?? "Đang xử lý…"}
+          {t(STATUS_LABEL_KEYS[status ?? ""] ?? "dashboardPage.statusUnknown")}
         </p>
-        <p className="text-small text-ink-muted mt-1">Trang tự động cập nhật mỗi 3 giây</p>
+        <p className="text-small text-ink-muted mt-1">{t('dashboardPage.autoRefreshHint')}</p>
       </CardContent>
     </Card>
   );
 }
 
 function PendingReviewState({ runId, status }: { runId?: string | null; status?: string }) {
+  const t = useT();
   const isSchema = status === "schema_review";
   const href = runId
     ? `/pipeline?run_id=${runId}&step=${isSchema ? "schema" : "clean"}`
@@ -226,18 +229,18 @@ function PendingReviewState({ runId, status }: { runId?: string | null; status?:
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <p className="text-body-strong text-warning-800">
-              {isSchema ? "Cần xác nhận cột dữ liệu" : "Cần xác nhận làm sạch dữ liệu"}
+              {isSchema ? t('dashboardPage.reviewTitleSchema') : t('dashboardPage.reviewTitleClean')}
             </p>
-            <Badge tone="warning">Chờ xử lý</Badge>
+            <Badge tone="warning">{t('dashboardPage.badgePending')}</Badge>
           </div>
           <p className="text-small text-warning-700">
             {isSchema
-              ? "Hệ thống đã nhận diện cột. Vui lòng kiểm tra và xác nhận trước khi tiếp tục."
-              : "Hệ thống đề xuất các quy tắc làm sạch. Vui lòng chọn và xác nhận."}
+              ? t('dashboardPage.reviewDescSchema')
+              : t('dashboardPage.reviewDescClean')}
           </p>
           <Button asChild size="sm" className="mt-4">
             <Link href={href}>
-              {isSchema ? "Xem lại cột" : "Xem lại làm sạch"}
+              {isSchema ? t('dashboardPage.reviewCtaSchema') : t('dashboardPage.reviewCtaClean')}
               <ArrowRight className="w-4 h-4 ml-1.5" />
             </Link>
           </Button>
@@ -248,6 +251,7 @@ function PendingReviewState({ runId, status }: { runId?: string | null; status?:
 }
 
 function AnalysisReadyState({ runId }: { runId?: string | null }) {
+  const t = useT();
   const href = runId ? `/pipeline?run_id=${runId}&step=analyze` : "/pipeline/new";
   return (
     <Card className="border-success-200 bg-success-50/30">
@@ -257,15 +261,15 @@ function AnalysisReadyState({ runId }: { runId?: string | null }) {
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <p className="text-body-strong text-success-800">Dữ liệu Silver đã sẵn sàng</p>
-            <Badge tone="success">Sẵn sàng</Badge>
+            <p className="text-body-strong text-success-800">{t('dashboardPage.silverReadyTitle')}</p>
+            <Badge tone="success">{t('dashboardPage.badgeReady')}</Badge>
           </div>
           <p className="text-small text-success-700">
-            Chọn 1 hoặc nhiều template phân tích. Các template chạy đồng thời.
+            {t('dashboardPage.silverReadyDesc')}
           </p>
           <Button asChild size="sm" className="mt-4">
             <Link href={href}>
-              Chọn phân tích <ArrowRight className="w-4 h-4 ml-1.5" />
+              {t('dashboardPage.ctaSelectAnalysis')} <ArrowRight className="w-4 h-4 ml-1.5" />
             </Link>
           </Button>
         </div>
@@ -282,22 +286,23 @@ function ResultsReadyState({
   kpis: KpiItem[];
   onViewResults: () => void;
 }) {
+  const t = useT();
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h2 className="text-h2 font-serif text-ink">Kết quả phân tích</h2>
-          <p className="text-small text-ink-muted mt-0.5">{templatesRun.length} phân tích hoàn tất</p>
+          <h2 className="text-h2 font-serif text-ink">{t('dashboardPage.resultsTitle')}</h2>
+          <p className="text-small text-ink-muted mt-0.5">{t('dashboardPage.resultsCompletedCount', { count: templatesRun.length })}</p>
         </div>
         <Button onClick={onViewResults}>
-          Xem chi tiết <ArrowRight className="w-4 h-4 ml-1.5" />
+          {t('dashboardPage.ctaViewDetails')} <ArrowRight className="w-4 h-4 ml-1.5" />
         </Button>
       </div>
 
       {/* Template chips */}
       <div className="flex flex-wrap gap-2">
-        {templatesRun.map((t) => (
-          <Badge key={t} tone="brand">{TEMPLATE_LABELS[t] ?? t}</Badge>
+        {templatesRun.map((tpl) => (
+          <Badge key={tpl} tone="brand">{t(TEMPLATE_LABEL_KEYS[tpl] ?? tpl)}</Badge>
         ))}
       </div>
 
@@ -310,7 +315,7 @@ function ResultsReadyState({
               <Card key={i}>
                 <CardContent className="pt-5">
                   <p className="text-label text-[#B0A698] mb-3">
-                    {TEMPLATE_LABELS[kpi.template] ?? kpi.template} · {kpi.title}
+                    {t(TEMPLATE_LABEL_KEYS[kpi.template] ?? kpi.template)} · {kpi.title}
                   </p>
                   <div className="space-y-2">
                     {entries.map(([k, v]) => (
@@ -332,7 +337,7 @@ function ResultsReadyState({
           <CardContent className="py-8 text-center">
             <BarChart2 className="w-8 h-8 text-brand-300 mx-auto mb-3" strokeWidth={1.5} />
             <p className="text-small text-ink-muted">
-              Nhấn "Xem chi tiết" để xem biểu đồ và phân tích đầy đủ.
+              {t('dashboardPage.resultsEmptyHint')}
             </p>
           </CardContent>
         </Card>

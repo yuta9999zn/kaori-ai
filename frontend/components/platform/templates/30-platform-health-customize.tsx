@@ -6,19 +6,20 @@
 // the script to regenerate. Lazy `any` types added; not meant for strict tsc.
 
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  LayoutDashboard, Briefcase, Key, CreditCard, Shield, Activity, 
-  Search, Bell, Menu, X, ChevronRight, ChevronLeft, MoreVertical, 
-  ArrowUpRight, ArrowDownRight, Settings, Laptop, Smartphone, MapPin, 
-  Globe, Clock, LogOut, AlertCircle, Loader2, Plus, ChevronsUpDown, 
-  User, Check, Calendar as CalendarIcon, ChevronDown, Info, 
-  CheckCircle2, Component, ShieldAlert, RefreshCw, PanelLeftOpen, 
-  PanelLeftClose, Eye, Edit2, Users, Ban, Trash2, ArrowLeft, 
-  Server, Zap, UserPlus, Mail, Send, Download, Receipt, 
-  HardDrive, FileText, FileJson, Save, AlertTriangle, Copy, 
-  RefreshCcw, BarChart3, Lock, Unlock, ShieldCheck, AlertOctagon, 
+import {
+  LayoutDashboard, Briefcase, Key, CreditCard, Shield, Activity,
+  Search, Bell, Menu, X, ChevronRight, ChevronLeft, MoreVertical,
+  ArrowUpRight, ArrowDownRight, Settings, Laptop, Smartphone, MapPin,
+  Globe, Clock, LogOut, AlertCircle, Loader2, Plus, ChevronsUpDown,
+  User, Check, Calendar as CalendarIcon, ChevronDown, Info,
+  CheckCircle2, Component, ShieldAlert, RefreshCw, PanelLeftOpen,
+  PanelLeftClose, Eye, Edit2, Users, Ban, Trash2, ArrowLeft,
+  Server, Zap, UserPlus, Mail, Send, Download, Receipt,
+  HardDrive, FileText, FileJson, Save, AlertTriangle, Copy,
+  RefreshCcw, BarChart3, Lock, Unlock, ShieldCheck, AlertOctagon,
   ExternalLink, SlidersHorizontal, LayoutTemplate, GripVertical, ListFilter
 } from 'lucide-react';
+import { useT } from '@/lib/i18n/provider';
 
 const cn = (...classes) => classes.filter(Boolean).join(' ');
 
@@ -68,7 +69,7 @@ const GlobalStyles = () => (
     @keyframes fadeInSlide { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
     .animate-step { animation: fadeInSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     .sidebar-transition { transition: width 0.3s cubic-bezier(0.2, 0, 0, 1), padding 0.3s ease, opacity 0.2s ease; }
-    
+
     .drag-over { border: 2px dashed var(--primary-gold) !important; background: var(--primary-gold) !important; opacity: 0.2; }
   `}</style>
 );
@@ -144,7 +145,8 @@ const Input = React.forwardRef<any, any>(({ className, label, error, helperText,
 });
 Input.displayName = "Input";
 
-const Select = ({  label, placeholder = "Select an option", options = [], value, onChange, error, disabled  }: any) => {
+const Select = ({  label, placeholder, options = [], value, onChange, error, disabled  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
   useEffect(() => {
@@ -158,7 +160,7 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
     <div className="space-y-2 w-full relative" ref={dropdownRef}>
       {label && <Label className={disabled ? "opacity-50" : ""}>{label}</Label>}
       <button type="button" disabled={disabled} onClick={() => setIsOpen(!isOpen)} className={cn("flex h-10 w-full items-center justify-between rounded-md-custom border bg-white px-3 py-2 text-sm shadow-soft-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 disabled:opacity-50 disabled:bg-[var(--bg-app)] disabled:cursor-not-allowed", error ? "border-[var(--state-error)]" : "border-[var(--border-color)] hover:border-[var(--primary-gold)]/50", !selectedOption ? "text-[var(--text-secondary)]/60" : "text-[var(--text-primary)]")}>
-        {selectedOption ? selectedOption.label : placeholder}
+        {selectedOption ? selectedOption.label : (placeholder || t('templates30PlatformHealthCustomize.selectDefaultPlaceholder'))}
         <ChevronDown className="h-4 w-4 opacity-50" />
       </button>
       {isOpen && !disabled && (
@@ -176,7 +178,8 @@ const Select = ({  label, placeholder = "Select an option", options = [], value,
   );
 };
 
-const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any) => {
+const DatePicker = ({  label, placeholder, date, setDate  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
   useEffect(() => {
@@ -189,7 +192,7 @@ const DatePicker = ({  label, placeholder = "Pick a date", date, setDate  }: any
       {label && <Label>{label}</Label>}
       <button type="button" onClick={() => setIsOpen(!isOpen)} className={cn("flex h-10 w-full items-center justify-start text-left rounded-md-custom border border-[var(--border-color)] bg-white px-3 py-2 text-sm shadow-soft-sm transition-all duration-200 hover:border-[var(--primary-gold)]/50 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30", !date ? "text-[var(--text-secondary)]/60" : "text-[var(--text-primary)]")}>
         <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
-        {date ? date : placeholder}
+        {date ? date : (placeholder || t('templates30PlatformHealthCustomize.datePickerDefaultPlaceholder'))}
       </button>
       {isOpen && (
         <div className="absolute top-full left-0 z-50 mt-1 p-3 bg-white rounded-md-custom border border-[var(--border-color)] shadow-soft-md animate-in fade-in zoom-in-95 duration-150 w-[280px]">
@@ -219,6 +222,7 @@ const Card = ({  className, ...props  }: any) => (
 );
 
 const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className  }: any) => {
+  const t = useT();
   const isPositive = (isUp && !inverseGood) || (!isUp && inverseGood);
   const trendColor = trend === '0%' ? 'text-[var(--text-secondary)]' : isPositive ? 'text-[#5C856A]' : 'text-[#9B5050]';
   return (
@@ -234,7 +238,7 @@ const MetricCard = ({  title, value, trend, isUp, inverseGood = false, className
             </div>
           )}
         </div>
-        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">vs yesterday</div>
+        <div className="text-xs text-[var(--text-secondary)] mt-1 opacity-75">{t('templates30PlatformHealthCustomize.vsYesterday')}</div>
       </div>
     </Card>
   );
@@ -248,6 +252,7 @@ const TableHead = ({  className, ...props  }: any) => <th className={cn("h-12 px
 const TableCell = ({  className, ...props  }: any) => <td className={cn("p-4 align-middle text-[var(--text-primary)]", className)} {...props} />;
 
 const DataTable = ({  columns, data, loading, pagination = true, onRowClick  }: any) => {
+  const t = useT();
   return (
     <div className="rounded-lg-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm overflow-hidden w-full">
       <Table>
@@ -262,8 +267,8 @@ const DataTable = ({  columns, data, loading, pagination = true, onRowClick  }: 
               <TableCell colSpan={columns.length} className="h-32 text-center">
                 <div className="flex flex-col items-center justify-center space-y-1">
                   <div className="w-10 h-10 rounded-full bg-[var(--bg-app)] flex items-center justify-center mb-2"><Search className="w-5 h-5 text-[var(--text-secondary)]" /></div>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">No results found</span>
-                  <span className="text-xs text-[var(--text-secondary)]">Try adjusting your filters</span>
+                  <span className="text-sm font-medium text-[var(--text-primary)]">{t('templates30PlatformHealthCustomize.noResultsFound')}</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{t('templates30PlatformHealthCustomize.tryAdjustingFilters')}</span>
                 </div>
               </TableCell>
             </TableRow>
@@ -278,8 +283,8 @@ const DataTable = ({  columns, data, loading, pagination = true, onRowClick  }: 
       </Table>
       {pagination && data.length > 0 && (
         <div className="border-t border-[var(--border-color)] px-4 py-3 flex items-center justify-between bg-[#FCFBF9]">
-          <span className="text-xs text-[var(--text-secondary)]">Showing 1 to {data.length} of {data.length} results</span>
-          <div className="flex gap-2"><Button variant="outline" size="sm" disabled>Previous</Button><Button variant="outline" size="sm">Next</Button></div>
+          <span className="text-xs text-[var(--text-secondary)]">{t('templates30PlatformHealthCustomize.showingResults', { count: data.length })}</span>
+          <div className="flex gap-2"><Button variant="outline" size="sm" disabled>{t('templates30PlatformHealthCustomize.previous')}</Button><Button variant="outline" size="sm">{t('templates30PlatformHealthCustomize.next')}</Button></div>
         </div>
       )}
     </div>
@@ -357,6 +362,7 @@ const Tabs = ({  defaultValue, tabs, className  }: any) => {
 };
 
 const CopyButton = ({  text, className  }: any) => {
+  const t = useT();
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
     navigator.clipboard.writeText(text);
@@ -364,7 +370,7 @@ const CopyButton = ({  text, className  }: any) => {
     setTimeout(() => setCopied(false), 2000);
   };
   return (
-    <button onClick={handleCopy} className={cn("p-1 hover:bg-[var(--bg-app)] rounded transition-colors text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/50", className)} aria-label="Copy to clipboard">
+    <button onClick={handleCopy} className={cn("p-1 hover:bg-[var(--bg-app)] rounded transition-colors text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/50", className)} aria-label={t('templates30PlatformHealthCustomize.copyToClipboard')}>
       {copied ? <Check className="w-3.5 h-3.5 text-[#5C856A]" /> : <Copy className="w-3.5 h-3.5" />}
     </button>
   );
@@ -406,9 +412,9 @@ const Section = ({  title, description, actions, children, className = ''  }: an
 );
 
 const NAVIGATION_CONFIG = [
-  { group: 'Main', items: [{ id: 'overview', label: 'Platform Health', icon: LayoutDashboard, route: '/platform' }, { id: 'workspaces', label: 'Workspaces', icon: Briefcase, route: '/platform/workspaces', badge: '4' }] },
-  { group: 'Management', items: [{ id: 'keys', label: 'API Keys', icon: Key, route: '/platform/keys' }, { id: 'billing', label: 'Billing', icon: CreditCard, route: '/platform/billing' }, { id: 'admin', label: 'Admins', icon: Shield, route: '/platform/admins', role: 'admin' }] },
-  { group: 'System', items: [{ id: 'components', label: 'Component Library', icon: Component, route: '/platform/components' }, { id: 'sessions', label: 'Security & Sessions', icon: Settings, route: '/p1/auth/sessions' }] }
+  { groupKey: 'templates30PlatformHealthCustomize.navGroupMain', items: [{ id: 'overview', labelKey: 'templates30PlatformHealthCustomize.navPlatformHealth', icon: LayoutDashboard, route: '/platform' }, { id: 'workspaces', labelKey: 'templates30PlatformHealthCustomize.navWorkspaces', icon: Briefcase, route: '/platform/workspaces', badge: '4' }] },
+  { groupKey: 'templates30PlatformHealthCustomize.navGroupManagement', items: [{ id: 'keys', labelKey: 'templates30PlatformHealthCustomize.navApiKeys', icon: Key, route: '/platform/keys' }, { id: 'billing', labelKey: 'templates30PlatformHealthCustomize.navBilling', icon: CreditCard, route: '/platform/billing' }, { id: 'admin', labelKey: 'templates30PlatformHealthCustomize.navAdmins', icon: Shield, route: '/platform/admins', role: 'admin' }] },
+  { groupKey: 'templates30PlatformHealthCustomize.navGroupSystem', items: [{ id: 'components', labelKey: 'templates30PlatformHealthCustomize.navComponentLibrary', icon: Component, route: '/platform/components' }, { id: 'sessions', labelKey: 'templates30PlatformHealthCustomize.navSecuritySessions', icon: Settings, route: '/p1/auth/sessions' }] }
 ];
 
 const EnvBadge = ({  env = 'production'  }: any) => {
@@ -417,6 +423,7 @@ const EnvBadge = ({  env = 'production'  }: any) => {
 };
 
 const NotificationDropdown = () => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
   useEffect(() => {
@@ -424,7 +431,7 @@ const NotificationDropdown = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-  const notifications = [{ id: 1, title: 'Data sync completed successfully', time: '10m ago', read: false }];
+  const notifications = [{ id: 1, title: t('templates30PlatformHealthCustomize.notifDataSyncCompleted'), time: '10m ago', read: false }];
   return (
     <div className="relative" ref={dropdownRef}>
       <button onClick={() => setIsOpen(!isOpen)} className={`relative p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-full transition-colors border ${isOpen ? 'bg-[var(--bg-app)] border-[var(--border-color)]' : 'border-transparent hover:bg-[var(--bg-app)] hover:border-[var(--border-color)]'}`}>
@@ -432,7 +439,7 @@ const NotificationDropdown = () => {
       </button>
       {isOpen && (
         <div className="absolute right-0 mt-2 w-[320px] bg-[var(--bg-card)] rounded-lg-custom shadow-soft-md border border-[var(--border-color)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 z-50">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] bg-[#FCFBF9]"><h3 className="text-sm font-semibold text-[var(--text-primary)]">Notifications</h3></div>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] bg-[#FCFBF9]"><h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates30PlatformHealthCustomize.notifications')}</h3></div>
           <div className="max-h-[300px] overflow-y-auto">
             {notifications.map((n) => (
               <div key={n.id} className="px-4 py-3 border-b border-[var(--border-color)]/50 last:border-0 hover:bg-[var(--bg-app)]/50 transition-colors cursor-pointer flex gap-3 bg-[#FAF7F2]/30">
@@ -448,6 +455,7 @@ const NotificationDropdown = () => {
 };
 
 const HeaderUserMenu = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
   useEffect(() => {
@@ -461,9 +469,9 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-[240px] bg-[var(--bg-card)] rounded-lg-custom shadow-soft-md border border-[var(--border-color)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 z-50">
           <div className="px-4 py-3 border-b border-[var(--border-color)] bg-[#FCFBF9]"><p className="text-sm font-semibold text-[var(--text-primary)] truncate">Admin User</p><p className="text-xs text-[var(--text-secondary)] truncate">admin@kaori.io</p></div>
-          <div className="p-1.5"><button onClick={() => { setActiveRoute('sessions'); setIsOpen(false); }} className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors flex items-center gap-2"><Shield className="w-4 h-4 text-[var(--text-secondary)]" /> Security & Sessions</button></div>
+          <div className="p-1.5"><button onClick={() => { setActiveRoute('sessions'); setIsOpen(false); }} className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors flex items-center gap-2"><Shield className="w-4 h-4 text-[var(--text-secondary)]" /> {t('templates30PlatformHealthCustomize.navSecuritySessions')}</button></div>
           <div className="h-[1px] bg-[var(--border-color)]/50 mx-1.5" />
-          <div className="p-1.5"><button className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] transition-colors flex items-center gap-2 font-medium"><LogOut className="w-4 h-4" /> Sign out</button></div>
+          <div className="p-1.5"><button className="w-full text-left px-2 py-1.5 rounded-md-custom text-sm text-[var(--state-error)] hover:bg-[#FDF8F8] transition-colors flex items-center gap-2 font-medium"><LogOut className="w-4 h-4" /> {t('templates30PlatformHealthCustomize.signOut')}</button></div>
         </div>
       )}
     </div>
@@ -471,29 +479,31 @@ const HeaderUserMenu = ({  setActiveRoute  }: any) => {
 };
 
 const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: any) => {
-  let routeLabel = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.label;
-  if (activeRoute === 'workspace-details') routeLabel = 'Workspaces / Overview';
-  else if (activeRoute === 'workspace-members') routeLabel = 'Workspaces / Members';
-  else if (activeRoute === 'workspace-billing') routeLabel = 'Workspaces / Billing';
-  else if (activeRoute === 'audit-logs') routeLabel = 'Workspaces / Audit Logs';
-  else if (activeRoute === 'workspace-new') routeLabel = 'Workspaces / New Workspace';
-  else if (activeRoute === 'workspace-edit') routeLabel = 'Workspaces / Settings';
-  else if (activeRoute === 'keys-new') routeLabel = 'API Keys / Create Key';
-  else if (activeRoute === 'key-details') routeLabel = 'API Keys / Details';
-  else if (activeRoute === 'admin-invite') routeLabel = 'Admins / Invite';
-  else if (activeRoute === 'admin-details') routeLabel = 'Admins / Details';
-  else if (activeRoute === 'admin-reset-password') routeLabel = 'Admins / Reset Password';
-  else if (activeRoute === 'enterprise-billing-details') routeLabel = 'Billing / Enterprise Detail';
-  else if (activeRoute === 'quota') routeLabel = 'Billing / Quota Management';
-  else if (activeRoute === 'billing-export') routeLabel = 'Billing / Export Data';
-  else if (activeRoute === 'health-customize') routeLabel = 'Platform / Customize Dashboard';
+  const t = useT();
+  let routeLabel = NAVIGATION_CONFIG.flatMap(g => g.items).find(n => n.id === activeRoute)?.labelKey;
+  routeLabel = routeLabel ? t(routeLabel) : undefined;
+  if (activeRoute === 'workspace-details') routeLabel = t('templates30PlatformHealthCustomize.routeWorkspacesOverview');
+  else if (activeRoute === 'workspace-members') routeLabel = t('templates30PlatformHealthCustomize.routeWorkspacesMembers');
+  else if (activeRoute === 'workspace-billing') routeLabel = t('templates30PlatformHealthCustomize.routeWorkspacesBilling');
+  else if (activeRoute === 'audit-logs') routeLabel = t('templates30PlatformHealthCustomize.routeWorkspacesAuditLogs');
+  else if (activeRoute === 'workspace-new') routeLabel = t('templates30PlatformHealthCustomize.routeWorkspacesNew');
+  else if (activeRoute === 'workspace-edit') routeLabel = t('templates30PlatformHealthCustomize.routeWorkspacesSettings');
+  else if (activeRoute === 'keys-new') routeLabel = t('templates30PlatformHealthCustomize.routeApiKeysCreate');
+  else if (activeRoute === 'key-details') routeLabel = t('templates30PlatformHealthCustomize.routeApiKeysDetails');
+  else if (activeRoute === 'admin-invite') routeLabel = t('templates30PlatformHealthCustomize.routeAdminsInvite');
+  else if (activeRoute === 'admin-details') routeLabel = t('templates30PlatformHealthCustomize.routeAdminsDetails');
+  else if (activeRoute === 'admin-reset-password') routeLabel = t('templates30PlatformHealthCustomize.routeAdminsResetPassword');
+  else if (activeRoute === 'enterprise-billing-details') routeLabel = t('templates30PlatformHealthCustomize.routeBillingEnterpriseDetail');
+  else if (activeRoute === 'quota') routeLabel = t('templates30PlatformHealthCustomize.routeBillingQuota');
+  else if (activeRoute === 'billing-export') routeLabel = t('templates30PlatformHealthCustomize.routeBillingExport');
+  else if (activeRoute === 'health-customize') routeLabel = t('templates30PlatformHealthCustomize.routePlatformCustomize');
   else if (!routeLabel) routeLabel = activeRoute;
 
   return (
     <header className="h-16 shrink-0 border-b border-[var(--border-color)] bg-[var(--bg-app)]/90 backdrop-blur-md sticky top-0 z-40 flex items-center justify-between px-6 transition-all duration-300">
       <div className="flex items-center gap-4">
         <button className="md:hidden p-2 -ml-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white rounded-md-custom transition-colors border border-transparent hover:border-[var(--border-color)]" onClick={() => setIsMobileMenuOpen(true)}><Menu className="w-5 h-5" /></button>
-        <div className="hidden sm:flex items-center text-sm font-medium"><span className="text-[var(--text-secondary)]">Platform</span><ChevronRight className="w-4 h-4 mx-2 text-[var(--border-color)] shrink-0 opacity-50" /><span className="text-[var(--text-primary)] capitalize">{routeLabel}</span></div>
+        <div className="hidden sm:flex items-center text-sm font-medium"><span className="text-[var(--text-secondary)]">{t('templates30PlatformHealthCustomize.breadcrumbPlatform')}</span><ChevronRight className="w-4 h-4 mx-2 text-[var(--border-color)] shrink-0 opacity-50" /><span className="text-[var(--text-primary)] capitalize">{routeLabel}</span></div>
       </div>
       <div className="flex items-center gap-3 sm:gap-4">
         <EnvBadge env="production" />
@@ -501,9 +511,9 @@ const GlobalHeader = ({  activeRoute, setActiveRoute, setIsMobileMenuOpen  }: an
         <div className="hidden sm:flex items-center gap-2">
            <div className="relative group hidden lg:block">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-[var(--text-secondary)] group-focus-within:text-[var(--primary-gold)] transition-colors" />
-              <input type="text" placeholder="Search..." className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
+              <input type="text" placeholder={t('templates30PlatformHealthCustomize.searchPlaceholder')} className="h-8 w-48 pl-8 pr-10 rounded-md-custom bg-white border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all shadow-sm" />
             </div>
-            <Button variant="outline" size="sm" onClick={() => setActiveRoute('workspace-new')} className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> Workspace</Button>
+            <Button variant="outline" size="sm" onClick={() => setActiveRoute('workspace-new')} className="hidden md:flex"><Plus className="w-3.5 h-3.5 mr-1.5" /> {t('templates30PlatformHealthCustomize.quickCreateWorkspace')}</Button>
         </div>
         <NotificationDropdown />
         <HeaderUserMenu setActiveRoute={setActiveRoute} />
@@ -526,11 +536,12 @@ const SidebarTooltip = ({  children, content, isCollapsed  }: any) => {
 };
 
 const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, setIsCollapsed  }: any) => {
+  const t = useT();
   const collapsed = isCollapsed && !isMobile;
-  const currentHighlight = 
-    (activeRoute === 'workspace-details' || activeRoute === 'workspace-members' || activeRoute === 'workspace-billing' || activeRoute === 'audit-logs' || activeRoute === 'workspace-new' || activeRoute === 'workspace-edit') ? 'workspaces' : 
-    (activeRoute === 'keys-new' || activeRoute === 'key-details') ? 'keys' : 
-    (activeRoute === 'admin-invite' || activeRoute === 'admin-details' || activeRoute === 'admin-reset-password') ? 'admin' : 
+  const currentHighlight =
+    (activeRoute === 'workspace-details' || activeRoute === 'workspace-members' || activeRoute === 'workspace-billing' || activeRoute === 'audit-logs' || activeRoute === 'workspace-new' || activeRoute === 'workspace-edit') ? 'workspaces' :
+    (activeRoute === 'keys-new' || activeRoute === 'key-details') ? 'keys' :
+    (activeRoute === 'admin-invite' || activeRoute === 'admin-details' || activeRoute === 'admin-reset-password') ? 'admin' :
     (activeRoute === 'enterprise-billing-details' || activeRoute === 'quota' || activeRoute === 'billing-export') ? 'billing' :
     (activeRoute === 'health-customize') ? 'overview' :
     activeRoute;
@@ -546,7 +557,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
         {!collapsed && (
           <div className="flex flex-col overflow-hidden animate-in fade-in duration-300">
             <span className="font-serif text-[17px] leading-none font-semibold text-[var(--text-primary)] tracking-wide">Kaori</span>
-            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">Platform</span>
+            <span className="text-[10px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mt-0.5">{t('templates30PlatformHealthCustomize.sidebarTagline')}</span>
           </div>
         )}
       </div>
@@ -554,17 +565,17 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
       <nav aria-label="Main Navigation" className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-6">
         {NAVIGATION_CONFIG.map((group, idx) => (
           <div key={idx} className="flex flex-col">
-            {!collapsed ? <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{group.group}</div> : <div className="w-full h-[1px] bg-[var(--border-color)]/60 my-2 rounded-full" />}
+            {!collapsed ? <div className="px-3 mb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] opacity-70">{t(group.groupKey)}</div> : <div className="w-full h-[1px] bg-[var(--border-color)]/60 my-2 rounded-full" />}
             <div className="space-y-1">
               {group.items.map((item) => {
                 const isActive = currentHighlight === item.id;
                 const Icon = item.icon;
                 return (
-                  <SidebarTooltip key={item.id} content={item.label} isCollapsed={collapsed}>
+                  <SidebarTooltip key={item.id} content={t(item.labelKey)} isCollapsed={collapsed}>
                     <button onClick={() => setActiveRoute(item.id)} className={cn("relative flex items-center h-10 rounded-md-custom transition-all duration-200 group w-full", isActive ? "bg-[var(--primary-gold)]/10 text-[var(--text-primary)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-app)] hover:text-[var(--text-primary)]", collapsed ? "justify-center px-0" : "px-3 gap-3")}>
                       {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[var(--primary-gold)] rounded-r-md transition-all" />}
                       <Icon className={`shrink-0 transition-colors ${isActive ? 'text-[var(--primary-gold)] w-5 h-5' : 'w-[18px] h-[18px] group-hover:text-[var(--text-primary)]'}`} />
-                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{item.label}</span>}
+                      {!collapsed && <span className="text-sm font-medium truncate flex-1 text-left">{t(item.labelKey)}</span>}
                       {!collapsed && item.badge && <span className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[var(--primary-gold)] text-white text-[10px] font-bold shadow-sm ml-2">{item.badge}</span>}
                       {collapsed && item.badge && <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[var(--primary-gold)] border border-[var(--bg-sidebar)]" />}
                     </button>
@@ -580,7 +591,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
         {!isMobile && (
           <button onClick={() => setIsCollapsed(!isCollapsed)} className={cn("w-full flex items-center h-8 rounded-md-custom text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] transition-colors border border-transparent hover:border-[var(--border-color)]/50", collapsed ? 'justify-center' : 'px-3 gap-3')}>
             {collapsed ? <PanelLeftOpen className="w-[18px] h-[18px]" /> : <PanelLeftClose className="w-[18px] h-[18px]" />}
-            {!collapsed && <span className="text-xs font-medium">Collapse sidebar</span>}
+            {!collapsed && <span className="text-xs font-medium">{t('templates30PlatformHealthCustomize.collapseSidebar')}</span>}
           </button>
         )}
       </div>
@@ -593,6 +604,7 @@ const GlobalSidebar = ({  isMobile, activeRoute, setActiveRoute, isCollapsed, se
 // ==========================================
 
 const EnterpriseUsageCard = ({  title, current, max, unit, icon: Icon  }: any) => {
+  const t = useT();
   const percent = Math.min((current / max) * 100, 100);
   const isWarning = percent >= 80;
   return (
@@ -603,8 +615,8 @@ const EnterpriseUsageCard = ({  title, current, max, unit, icon: Icon  }: any) =
       </div>
       <div className="w-full bg-[var(--bg-app)] rounded-full h-2 border border-[var(--border-color)] overflow-hidden"><div className={cn("h-2 rounded-full transition-all duration-500", isWarning ? "bg-[#D97C7C]" : "bg-[#5C856A]")} style={{ width: `${percent}%` }}></div></div>
       <div className="flex items-center justify-between mt-2">
-        <span className="text-[11px] font-medium text-[var(--text-secondary)]">{percent.toFixed(1)}% used</span>
-        {isWarning && <span className="text-[11px] text-[#9B5050] font-medium flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> Approaching limit</span>}
+        <span className="text-[11px] font-medium text-[var(--text-secondary)]">{t('templates30PlatformHealthCustomize.usagePercentUsed', { percent: percent.toFixed(1) })}</span>
+        {isWarning && <span className="text-[11px] text-[#9B5050] font-medium flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> {t('templates30PlatformHealthCustomize.approachingLimit')}</span>}
       </div>
     </Card>
   );
@@ -612,17 +624,18 @@ const EnterpriseUsageCard = ({  title, current, max, unit, icon: Icon  }: any) =
 
 // --- CUSTOMIZE DASHBOARD PAGE ---
 const PlatformCustomizeDashboard = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isSaving, setIsSaving] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [draggedId, setDraggedId] = useState(null);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
 
   const defaultWidgets = [
-    { id: 'global-status', title: 'Global Status', desc: 'Current operational status banner.', visible: true },
-    { id: 'key-metrics', title: 'Key Metrics', desc: 'Topline performance numbers.', visible: true },
-    { id: 'services-health', title: 'Services Health', desc: 'Table of core services.', visible: true },
-    { id: 'active-alerts', title: 'Active Alerts', desc: 'Current system warnings.', visible: true },
-    { id: 'live-activity', title: 'Live Activity', desc: 'Recent deployment & system events.', visible: true }
+    { id: 'global-status', title: t('templates30PlatformHealthCustomize.widgetGlobalStatusTitle'), desc: t('templates30PlatformHealthCustomize.widgetGlobalStatusDesc'), visible: true },
+    { id: 'key-metrics', title: t('templates30PlatformHealthCustomize.widgetKeyMetricsTitle'), desc: t('templates30PlatformHealthCustomize.widgetKeyMetricsDesc'), visible: true },
+    { id: 'services-health', title: t('templates30PlatformHealthCustomize.widgetServicesHealthTitle'), desc: t('templates30PlatformHealthCustomize.widgetServicesHealthDesc'), visible: true },
+    { id: 'active-alerts', title: t('templates30PlatformHealthCustomize.widgetActiveAlertsTitle'), desc: t('templates30PlatformHealthCustomize.widgetActiveAlertsDesc'), visible: true },
+    { id: 'live-activity', title: t('templates30PlatformHealthCustomize.widgetLiveActivityTitle'), desc: t('templates30PlatformHealthCustomize.widgetLiveActivityDesc'), visible: true }
   ];
 
   const [widgets, setWidgets] = useState(defaultWidgets);
@@ -664,7 +677,7 @@ const PlatformCustomizeDashboard = ({  setActiveRoute  }: any) => {
     const targetIndex = newWidgets.findIndex(w => w.id === targetId);
     const [movedWidget] = newWidgets.splice(sourceIndex, 1);
     newWidgets.splice(targetIndex, 0, movedWidget);
-    
+
     setWidgets(newWidgets);
   };
 
@@ -694,32 +707,32 @@ const PlatformCustomizeDashboard = ({  setActiveRoute  }: any) => {
       {showToast && (
         <div className="absolute top-0 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="bg-[#F3F9F5] border border-[#8FBFA0] text-[#427A5B] px-4 py-2 rounded-full shadow-soft-md flex items-center gap-2 text-sm font-medium">
-            <CheckCircle2 className="w-4 h-4" /> Layout settings saved
+            <CheckCircle2 className="w-4 h-4" /> {t('templates30PlatformHealthCustomize.toastLayoutSaved')}
           </div>
         </div>
       )}
 
-      <PageHeader 
-        showBack 
+      <PageHeader
+        showBack
         onBack={() => setActiveRoute('overview')}
-        title="Customize Dashboard" 
-        subtitle="Adjust layout, widgets, and visibility for the Platform Health dashboard."
+        title={t('templates30PlatformHealthCustomize.customizeDashboardTitle')}
+        subtitle={t('templates30PlatformHealthCustomize.customizeDashboardSubtitle')}
         actions={
           <>
-            <Button variant="tertiary" onClick={() => setIsResetModalOpen(true)} className="hidden sm:flex" disabled={isSaving}>Reset to default</Button>
-            <Button onClick={handleSave} isLoading={isSaving}>Save changes</Button>
+            <Button variant="tertiary" onClick={() => setIsResetModalOpen(true)} className="hidden sm:flex" disabled={isSaving}>{t('templates30PlatformHealthCustomize.resetToDefault')}</Button>
+            <Button onClick={handleSave} isLoading={isSaving}>{t('templates30PlatformHealthCustomize.saveChanges')}</Button>
           </>
         }
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-        
+
         {/* WIDGET CONTROLS */}
         <div className="lg:col-span-1 space-y-6 lg:order-2">
           <Card className="p-6 shadow-soft-sm">
             <div className="flex items-center gap-2 mb-4 border-b border-[var(--border-color)] pb-3">
               <ListFilter className="w-4 h-4 text-[var(--text-secondary)]" />
-              <h3 className="text-sm font-semibold text-[var(--text-primary)]">Available Widgets</h3>
+              <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t('templates30PlatformHealthCustomize.availableWidgets')}</h3>
             </div>
             <div className="space-y-4">
               {widgets.map(widget => (
@@ -737,12 +750,12 @@ const PlatformCustomizeDashboard = ({  setActiveRoute  }: any) => {
 
         {/* LAYOUT PREVIEW */}
         <div className="lg:col-span-2 lg:order-1">
-          <Section title="Live Preview" description="Drag blocks to reorder your dashboard layout.">
+          <Section title={t('templates30PlatformHealthCustomize.livePreviewTitle')} description={t('templates30PlatformHealthCustomize.livePreviewDesc')}>
             <div className="bg-[var(--bg-app)] border-2 border-dashed border-[var(--border-color)] rounded-xl p-4 sm:p-6 min-h-[400px] flex flex-col gap-3">
               {visibleWidgets.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-48 text-[var(--text-secondary)] opacity-50">
                   <LayoutTemplate className="w-8 h-8 mb-2" />
-                  <p className="text-sm">No widgets visible</p>
+                  <p className="text-sm">{t('templates30PlatformHealthCustomize.noWidgetsVisible')}</p>
                 </div>
               ) : (
                 visibleWidgets.map((widget: any, index: number) => (
@@ -763,11 +776,11 @@ const PlatformCustomizeDashboard = ({  setActiveRoute  }: any) => {
                     <div className="flex-1 flex flex-col">
                       <span className="text-sm font-semibold text-[var(--text-primary)]">{widget.title}</span>
                       <span className="text-xs text-[var(--text-secondary)] mt-1 opacity-70">
-                        {widget.id === 'global-status' && '[ Full Width Banner ]'}
-                        {widget.id === 'key-metrics' && '[ 4-Column Grid ]'}
-                        {widget.id === 'services-health' && '[ Data Table ]'}
-                        {widget.id === 'active-alerts' && '[ Highlight List ]'}
-                        {widget.id === 'live-activity' && '[ Timeline Stream ]'}
+                        {widget.id === 'global-status' && t('templates30PlatformHealthCustomize.previewFullWidthBanner')}
+                        {widget.id === 'key-metrics' && t('templates30PlatformHealthCustomize.previewFourColumnGrid')}
+                        {widget.id === 'services-health' && t('templates30PlatformHealthCustomize.previewDataTable')}
+                        {widget.id === 'active-alerts' && t('templates30PlatformHealthCustomize.previewHighlightList')}
+                        {widget.id === 'live-activity' && t('templates30PlatformHealthCustomize.previewTimelineStream')}
                       </span>
                     </div>
                   </div>
@@ -779,15 +792,15 @@ const PlatformCustomizeDashboard = ({  setActiveRoute  }: any) => {
 
       </div>
 
-      <Modal 
-        isOpen={isResetModalOpen} 
+      <Modal
+        isOpen={isResetModalOpen}
         onClose={() => !isSaving && setIsResetModalOpen(false)}
-        title="Reset Dashboard"
-        description="Are you sure you want to reset to the default platform layout? All customizations will be lost."
+        title={t('templates30PlatformHealthCustomize.resetDashboardTitle')}
+        description={t('templates30PlatformHealthCustomize.resetDashboardDesc')}
         footer={
           <>
-            <Button variant="outline" onClick={() => setIsResetModalOpen(false)} disabled={isSaving}>Cancel</Button>
-            <Button variant="destructive" onClick={handleReset} isLoading={isSaving}>Confirm Reset</Button>
+            <Button variant="outline" onClick={() => setIsResetModalOpen(false)} disabled={isSaving}>{t('templates30PlatformHealthCustomize.cancel')}</Button>
+            <Button variant="destructive" onClick={handleReset} isLoading={isSaving}>{t('templates30PlatformHealthCustomize.confirmReset')}</Button>
           </>
         }
       />
@@ -798,35 +811,36 @@ const PlatformCustomizeDashboard = ({  setActiveRoute  }: any) => {
 
 // --- COMPONENTS PAGE ---
 const ComponentsPage = () => {
+  const t = useT();
   const [date, setDate] = useState("");
   const [selectVal, setSelectVal] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   return (
     <PageContainer maxWidth="default">
-      <PageHeader title="Component Library" subtitle="Foundational UI system for Kaori Platform." actions={<Button>Deploy System</Button>} />
+      <PageHeader title={t('templates30PlatformHealthCustomize.navComponentLibrary')} subtitle={t('templates30PlatformHealthCustomize.componentLibrarySubtitle')} actions={<Button>{t('templates30PlatformHealthCustomize.deploySystem')}</Button>} />
       <Tabs defaultValue="form" tabs={[
-        { id: 'form', label: 'Forms & Inputs', content: (
+        { id: 'form', label: t('templates30PlatformHealthCustomize.tabFormsInputs'), content: (
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <Section title="Buttons" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)]">
-               <div className="flex flex-wrap gap-4 mb-4"><Button variant="primary">Primary</Button><Button variant="secondary">Secondary</Button><Button variant="tertiary">Ghost</Button></div>
-               <div className="flex flex-wrap gap-4 items-center"><Button variant="primary" isLoading>Loading</Button><Button variant="destructive">Destructive</Button><Button variant="primary" size="icon"><Plus className="w-4 h-4"/></Button></div>
+             <Section title={t('templates30PlatformHealthCustomize.sectionButtons')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)]">
+               <div className="flex flex-wrap gap-4 mb-4"><Button variant="primary">{t('templates30PlatformHealthCustomize.btnPrimary')}</Button><Button variant="secondary">{t('templates30PlatformHealthCustomize.btnSecondary')}</Button><Button variant="tertiary">{t('templates30PlatformHealthCustomize.btnGhost')}</Button></div>
+               <div className="flex flex-wrap gap-4 items-center"><Button variant="primary" isLoading>{t('templates30PlatformHealthCustomize.btnLoading')}</Button><Button variant="destructive">{t('templates30PlatformHealthCustomize.btnDestructive')}</Button><Button variant="primary" size="icon"><Plus className="w-4 h-4"/></Button></div>
              </Section>
-             <Section title="Inputs & Selects" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] space-y-4">
-                <Input label="Email Address" placeholder="admin@kaori.io" helperText="We will never share your email." />
-                <Select label="Environment" placeholder="Select environment..." options={[{label: 'Production', value: 'prod'}]} value={selectVal} onChange={setSelectVal} />
-                <DatePicker label="Billing Cycle Start" date={date} setDate={setDate} />
+             <Section title={t('templates30PlatformHealthCustomize.sectionInputsSelects')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] space-y-4">
+                <Input label={t('templates30PlatformHealthCustomize.labelEmailAddress')} placeholder="admin@kaori.io" helperText={t('templates30PlatformHealthCustomize.helperNeverShareEmail')} />
+                <Select label={t('templates30PlatformHealthCustomize.labelEnvironment')} placeholder={t('templates30PlatformHealthCustomize.placeholderSelectEnvironment')} options={[{label: t('templates30PlatformHealthCustomize.optionProduction'), value: 'prod'}]} value={selectVal} onChange={setSelectVal} />
+                <DatePicker label={t('templates30PlatformHealthCustomize.labelBillingCycleStart')} date={date} setDate={setDate} />
              </Section>
            </div>
         )},
-        { id: 'data', label: 'Data Display', content: (<Alert variant="info" title="Data Components">Use Data Tables & Metric Cards for display.</Alert>)},
-        { id: 'feedback', label: 'Feedback & Overlays', content: (
+        { id: 'data', label: t('templates30PlatformHealthCustomize.tabDataDisplay'), content: (<Alert variant="info" title={t('templates30PlatformHealthCustomize.alertDataComponentsTitle')}>{t('templates30PlatformHealthCustomize.alertDataComponentsBody')}</Alert>)},
+        { id: 'feedback', label: t('templates30PlatformHealthCustomize.tabFeedbackOverlays'), content: (
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <Section title="Modals & Drawers" className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] flex flex-col gap-4 items-start">
-               <Button variant="secondary" onClick={() => setIsModalOpen(true)}>Open Modal</Button>
-               <Button variant="secondary" onClick={() => setIsDrawerOpen(true)}>Open Drawer</Button>
-               <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Delete Workspace" footer={<><Button variant="outline" onClick={()=>setIsModalOpen(false)}>Cancel</Button><Button variant="destructive">Confirm</Button></>}><Input label="Type to confirm" /></Modal>
-               <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title="Edit Profile" footer={<Button className="w-full">Save Changes</Button>}><Input label="Full Name" placeholder="Admin User" /></Drawer>
+             <Section title={t('templates30PlatformHealthCustomize.sectionModalsDrawers')} className="bg-[var(--bg-card)] p-6 rounded-lg-custom border border-[var(--border-color)] flex flex-col gap-4 items-start">
+               <Button variant="secondary" onClick={() => setIsModalOpen(true)}>{t('templates30PlatformHealthCustomize.openModal')}</Button>
+               <Button variant="secondary" onClick={() => setIsDrawerOpen(true)}>{t('templates30PlatformHealthCustomize.openDrawer')}</Button>
+               <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={t('templates30PlatformHealthCustomize.modalDeleteWorkspaceTitle')} footer={<><Button variant="outline" onClick={()=>setIsModalOpen(false)}>{t('templates30PlatformHealthCustomize.cancel')}</Button><Button variant="destructive">{t('templates30PlatformHealthCustomize.confirm')}</Button></>}><Input label={t('templates30PlatformHealthCustomize.labelTypeToConfirm')} /></Modal>
+               <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title={t('templates30PlatformHealthCustomize.drawerEditProfileTitle')} footer={<Button className="w-full">{t('templates30PlatformHealthCustomize.saveChanges')}</Button>}><Input label={t('templates30PlatformHealthCustomize.labelFullName')} placeholder="Admin User" /></Drawer>
              </Section>
            </div>
         )}
@@ -837,6 +851,7 @@ const ComponentsPage = () => {
 
 // --- ENHANCED HEALTH DASHBOARD ---
 const PlatformOverview = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [isAutoRefresh, setIsAutoRefresh] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date().toLocaleTimeString());
@@ -855,32 +870,32 @@ const PlatformOverview = ({  setActiveRoute  }: any) => {
   }, [isAutoRefresh]);
 
   const SERVICES_DATA = [
-    ["API Gateway", <Badge key="1" variant="operational">Operational</Badge>, "42ms", "0.01%", "32 days ago"],
-    ["Auth Service", <Badge key="2" variant="operational">Operational</Badge>, "18ms", "0.00%", "45 days ago"],
-    ["Insights Engine", <Badge key="4" variant="warning">Degraded</Badge>, "850ms", "1.20%", "Currently"],
+    ["API Gateway", <Badge key="1" variant="operational">{t('templates30PlatformHealthCustomize.statusOperational')}</Badge>, "42ms", "0.01%", "32 days ago"],
+    ["Auth Service", <Badge key="2" variant="operational">{t('templates30PlatformHealthCustomize.statusOperational')}</Badge>, "18ms", "0.00%", "45 days ago"],
+    ["Insights Engine", <Badge key="4" variant="warning">{t('templates30PlatformHealthCustomize.statusDegraded')}</Badge>, "850ms", "1.20%", t('templates30PlatformHealthCustomize.incidentCurrently')],
   ];
 
   const ACTIVITY_STREAM = [
-    { id: 1, type: 'alert', message: 'High latency detected in Insights Engine', time: '2 mins ago', icon: ShieldAlert, color: 'text-[var(--state-error)]', bg: 'bg-[var(--state-error)]/10', border: 'border-[var(--state-error)]/20' },
-    { id: 2, type: 'deploy', message: 'Production deployment #1402 successful', time: '1 hour ago', icon: Server, color: 'text-[var(--state-success)]', bg: 'bg-[var(--state-success)]/10', border: 'border-[var(--state-success)]/20' },
+    { id: 1, type: 'alert', message: t('templates30PlatformHealthCustomize.activityHighLatency'), time: '2 mins ago', icon: ShieldAlert, color: 'text-[var(--state-error)]', bg: 'bg-[var(--state-error)]/10', border: 'border-[var(--state-error)]/20' },
+    { id: 2, type: 'deploy', message: t('templates30PlatformHealthCustomize.activityDeploySuccess', { id: 1402 }), time: '1 hour ago', icon: Server, color: 'text-[var(--state-success)]', bg: 'bg-[var(--state-success)]/10', border: 'border-[var(--state-success)]/20' },
   ];
 
   return (
     <PageContainer maxWidth="default">
-      <PageHeader 
-        title="Platform Health" subtitle="Real-time monitoring of system performance and reliability." 
+      <PageHeader
+        title={t('templates30PlatformHealthCustomize.navPlatformHealth')} subtitle={t('templates30PlatformHealthCustomize.platformHealthSubtitle')}
         actions={
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 mr-2">
-              <span className="text-xs text-[var(--text-secondary)] font-medium">Auto-refresh</span>
+              <span className="text-xs text-[var(--text-secondary)] font-medium">{t('templates30PlatformHealthCustomize.autoRefresh')}</span>
               <Switch checked={isAutoRefresh} onChange={setIsAutoRefresh} />
             </div>
-            <Button variant="outline" onClick={handleRefresh} isLoading={isRefreshing} className="hidden sm:flex h-9 px-3"><RefreshCw className="w-4 h-4 mr-2" /> Refresh</Button>
+            <Button variant="outline" onClick={handleRefresh} isLoading={isRefreshing} className="hidden sm:flex h-9 px-3"><RefreshCw className="w-4 h-4 mr-2" /> {t('templates30PlatformHealthCustomize.refresh')}</Button>
             <Button variant="tertiary" size="sm" className="h-9 px-3" onClick={() => setActiveRoute('health-customize')}>
-              <LayoutTemplate className="w-4 h-4 mr-2" /> Customize
+              <LayoutTemplate className="w-4 h-4 mr-2" /> {t('templates30PlatformHealthCustomize.customize')}
             </Button>
           </div>
-        } 
+        }
       />
       <Section>
         <Card className="p-6 overflow-hidden relative border-[#8FBFA0]/40 bg-[#F3F9F5]">
@@ -888,31 +903,31 @@ const PlatformOverview = ({  setActiveRoute  }: any) => {
            <div className="flex items-center gap-4 relative z-10">
              <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm border border-[#8FBFA0]/30 shrink-0"><CheckCircle2 className="w-6 h-6 text-[#5C856A]" /></div>
              <div>
-               <h2 className="text-lg font-semibold text-[#2F2F2F]">All systems operational</h2>
-               <p className="text-sm text-[#5C856A] mt-0.5 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#5C856A] animate-pulse" /> Updated {lastUpdated}</p>
+               <h2 className="text-lg font-semibold text-[#2F2F2F]">{t('templates30PlatformHealthCustomize.allSystemsOperational')}</h2>
+               <p className="text-sm text-[#5C856A] mt-0.5 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#5C856A] animate-pulse" /> {t('templates30PlatformHealthCustomize.updatedAt', { time: lastUpdated })}</p>
              </div>
            </div>
         </Card>
       </Section>
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="API Latency (p95)" value="42ms" trend="-2ms" isUp={false} inverseGood={true} />
-          <MetricCard title="Error Rate" value="0.01%" trend="-0.01%" isUp={false} inverseGood={true} />
-          <MetricCard title="Throughput" value="12.4k" trend="+5%" isUp={true} />
-          <MetricCard title="Active Users" value="4,892" trend="+12" isUp={true} />
+          <MetricCard title={t('templates30PlatformHealthCustomize.metricApiLatency')} value="42ms" trend="-2ms" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates30PlatformHealthCustomize.metricErrorRate')} value="0.01%" trend="-0.01%" isUp={false} inverseGood={true} />
+          <MetricCard title={t('templates30PlatformHealthCustomize.metricThroughput')} value="12.4k" trend="+5%" isUp={true} />
+          <MetricCard title={t('templates30PlatformHealthCustomize.metricActiveUsers')} value="4,892" trend="+12" isUp={true} />
         </div>
       </Section>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         <div className="lg:col-span-2 space-y-4">
-          <Section title="Services Health"><DataTable columns={["Service", "Status", "Latency", "Error Rate", "Last Incident"]} data={SERVICES_DATA} loading={false} pagination={false}/></Section>
+          <Section title={t('templates30PlatformHealthCustomize.widgetServicesHealthTitle')}><DataTable columns={[t('templates30PlatformHealthCustomize.colService'), t('templates30PlatformHealthCustomize.colStatus'), t('templates30PlatformHealthCustomize.colLatency'), t('templates30PlatformHealthCustomize.metricErrorRate'), t('templates30PlatformHealthCustomize.colLastIncident')]} data={SERVICES_DATA} loading={false} pagination={false}/></Section>
         </div>
         <div className="space-y-6 sm:space-y-8">
-           <Section title="Active Alerts">
+           <Section title={t('templates30PlatformHealthCustomize.widgetActiveAlertsTitle')}>
                <div className="bg-[var(--bg-card)] rounded-md-custom border border-[var(--border-color)] p-4 shadow-soft-sm space-y-3">
-                  <Alert variant="warning" title="Degraded Performance">Insights Engine is currently experiencing higher than normal latency (850ms). Team is investigating.</Alert>
+                  <Alert variant="warning" title={t('templates30PlatformHealthCustomize.alertDegradedPerformanceTitle')}>{t('templates30PlatformHealthCustomize.alertDegradedPerformanceBody')}</Alert>
                </div>
            </Section>
-           <Section title="Live Activity">
+           <Section title={t('templates30PlatformHealthCustomize.widgetLiveActivityTitle')}>
              <div className="bg-[var(--bg-card)] rounded-md-custom border border-[var(--border-color)] p-4 shadow-soft-sm space-y-4">
                   {ACTIVITY_STREAM.map((item, idx) => (
                     <div key={item.id} className="flex gap-3 relative">
@@ -936,6 +951,7 @@ const MOCK_WORKSPACES = [
 ];
 
 const RowActionsDropdown = ({  workspaceId, onViewDetails, onEdit  }: any) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<any>(null);
   useEffect(() => { const handleClickOutside = (e) => { if (ref.current && !ref.current.contains(e.target)) setIsOpen(false); }; document.addEventListener('mousedown', handleClickOutside); return () => document.removeEventListener('mousedown', handleClickOutside); }, []);
@@ -944,8 +960,8 @@ const RowActionsDropdown = ({  workspaceId, onViewDetails, onEdit  }: any) => {
       <button onClick={() => setIsOpen(!isOpen)} className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] rounded-md-custom transition-colors"><MoreVertical className="w-4 h-4"/></button>
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border-color)] shadow-soft-md rounded-lg-custom z-50 py-1.5 animate-in fade-in zoom-in-95 duration-100">
-          <button onClick={() => { onViewDetails(); setIsOpen(false); }} className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2"><Eye className="w-4 h-4 text-[var(--text-secondary)]"/> View details</button>
-          <button onClick={() => { onEdit(); setIsOpen(false); }} className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2"><Edit2 className="w-4 h-4 text-[var(--text-secondary)]"/> Edit workspace</button>
+          <button onClick={() => { onViewDetails(); setIsOpen(false); }} className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2"><Eye className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates30PlatformHealthCustomize.actionViewDetails')}</button>
+          <button onClick={() => { onEdit(); setIsOpen(false); }} className="w-full text-left px-3 py-1.5 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-app)] flex items-center gap-2"><Edit2 className="w-4 h-4 text-[var(--text-secondary)]"/> {t('templates30PlatformHealthCustomize.actionEditWorkspace')}</button>
         </div>
       )}
     </div>
@@ -953,6 +969,7 @@ const RowActionsDropdown = ({  workspaceId, onViewDetails, onEdit  }: any) => {
 };
 
 const WorkspacesPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
   const [isLoading, setIsLoading] = useState(false);
@@ -968,15 +985,16 @@ const WorkspacesPage = ({  setActiveRoute  }: any) => {
   ]);
   return (
     <PageContainer maxWidth="default">
-      <PageHeader title="Workspaces" actions={<Button onClick={() => setActiveRoute('workspace-new')}><Plus className="w-4 h-4 mr-2"/> Create workspace</Button>} />
-      <Section><DataTable columns={["Workspace", "Owner", "Plan", "Members", "Usage", "Status", "Created", ""]} data={mappedData} loading={isLoading} /></Section>
+      <PageHeader title={t('templates30PlatformHealthCustomize.navWorkspaces')} actions={<Button onClick={() => setActiveRoute('workspace-new')}><Plus className="w-4 h-4 mr-2"/> {t('templates30PlatformHealthCustomize.createWorkspace')}</Button>} />
+      <Section><DataTable columns={[t('templates30PlatformHealthCustomize.colWorkspace'), t('templates30PlatformHealthCustomize.colOwner'), t('templates30PlatformHealthCustomize.colPlan'), t('templates30PlatformHealthCustomize.colMembers'), t('templates30PlatformHealthCustomize.colUsage'), t('templates30PlatformHealthCustomize.colStatus'), t('templates30PlatformHealthCustomize.colCreated'), ""]} data={mappedData} loading={isLoading} /></Section>
     </PageContainer>
   );
 };
 
 // --- WORKSPACE NEW PAGE ---
 const Stepper = ({  currentStep  }: any) => {
-  const steps = [{ num: 1, label: 'Workspace Info' }, { num: 2, label: 'Plan Selection' }, { num: 3, label: 'Review & Create' }];
+  const t = useT();
+  const steps = [{ num: 1, label: t('templates30PlatformHealthCustomize.stepWorkspaceInfo') }, { num: 2, label: t('templates30PlatformHealthCustomize.stepPlanSelection') }, { num: 3, label: t('templates30PlatformHealthCustomize.stepReviewCreate') }];
   return (
     <div className="flex items-center w-full mb-10 max-w-md mx-auto">
       {steps.map((step, idx) => {
@@ -998,19 +1016,20 @@ const Stepper = ({  currentStep  }: any) => {
 };
 
 const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   const [step, setStep] = useState(1);
   const handleCreate = async () => { setActiveRoute('workspace-details'); };
   return (
     <PageContainer maxWidth="narrow" className="pt-8">
-      <div className="mb-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-500"><h1 className="text-3xl font-serif font-semibold text-[var(--text-primary)] mb-2">Create a Workspace</h1></div>
+      <div className="mb-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-500"><h1 className="text-3xl font-serif font-semibold text-[var(--text-primary)] mb-2">{t('templates30PlatformHealthCustomize.createWorkspaceHeading')}</h1></div>
       <Stepper currentStep={step} />
       <Card className="p-6 sm:p-8 mt-12 shadow-soft-md animate-in fade-in zoom-in-[0.98] duration-300">
-        {step === 1 && <div className="space-y-6"><Input label="Workspace Name" /><Select label="Data Region" options={[{label: 'US East', value: 'us'}]} value="us" onChange={()=>{}}/></div>}
-        {step === 2 && <div className="space-y-6"><Select label="Plan Tier" options={[{label: 'Pro', value: 'pro'}]} value="pro" onChange={()=>{}}/></div>}
-        {step === 3 && <Alert variant="info" title="Ready to provision">Creating a workspace will instantly provision isolated infrastructure.</Alert>}
+        {step === 1 && <div className="space-y-6"><Input label={t('templates30PlatformHealthCustomize.labelWorkspaceName')} /><Select label={t('templates30PlatformHealthCustomize.labelDataRegion')} options={[{label: 'US East', value: 'us'}]} value="us" onChange={()=>{}}/></div>}
+        {step === 2 && <div className="space-y-6"><Select label={t('templates30PlatformHealthCustomize.labelPlanTier')} options={[{label: 'Pro', value: 'pro'}]} value="pro" onChange={()=>{}}/></div>}
+        {step === 3 && <Alert variant="info" title={t('templates30PlatformHealthCustomize.alertReadyToProvisionTitle')}>{t('templates30PlatformHealthCustomize.alertReadyToProvisionBody')}</Alert>}
         <div className="mt-8 pt-6 border-t border-[var(--border-color)] flex items-center justify-between">
-          <Button variant="tertiary" onClick={() => step === 1 ? setActiveRoute('workspaces') : setStep(s => s - 1)}>Back</Button>
-          {step < 3 ? <Button onClick={() => setStep(s => s + 1)}>Continue</Button> : <Button onClick={handleCreate}>Create Workspace</Button>}
+          <Button variant="tertiary" onClick={() => step === 1 ? setActiveRoute('workspaces') : setStep(s => s - 1)}>{t('templates30PlatformHealthCustomize.back')}</Button>
+          {step < 3 ? <Button onClick={() => setStep(s => s + 1)}>{t('templates30PlatformHealthCustomize.continueBtn')}</Button> : <Button onClick={handleCreate}>{t('templates30PlatformHealthCustomize.createWorkspace')}</Button>}
         </div>
       </Card>
     </PageContainer>
@@ -1018,13 +1037,14 @@ const WorkspaceNewPage = ({  setActiveRoute  }: any) => {
 };
 
 const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader showBack onBack={() => setActiveRoute('workspaces')} title="Production AI" subtitle="Enterprise Plan" actions={<Button variant="outline" onClick={() => setActiveRoute('workspace-edit')}>Edit details</Button>} />
+      <PageHeader showBack onBack={() => setActiveRoute('workspaces')} title="Production AI" subtitle="Enterprise Plan" actions={<Button variant="outline" onClick={() => setActiveRoute('workspace-edit')}>{t('templates30PlatformHealthCustomize.editDetails')}</Button>} />
       <Section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <MetricCard title="API Requests (Today)" value="124.5K" trend="+5.2%" isUp={true} />
-          <MetricCard title="Active Users" value="14" trend="0%" />
+          <MetricCard title={t('templates30PlatformHealthCustomize.metricApiRequestsToday')} value="124.5K" trend="+5.2%" isUp={true} />
+          <MetricCard title={t('templates30PlatformHealthCustomize.metricActiveUsers')} value="14" trend="0%" />
         </div>
       </Section>
     </PageContainer>
@@ -1032,148 +1052,164 @@ const WorkspaceOverviewPage = ({  setActiveRoute  }: any) => {
 };
 
 const WorkspaceSettingsPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="narrow">
-      <PageHeader showBack onBack={() => setActiveRoute('workspace-details')} title="Workspace Settings" actions={<Button>Save changes</Button>} />
-      <Section><Card className="p-6"><Input label="Workspace Name" value="Production AI" /></Card></Section>
+      <PageHeader showBack onBack={() => setActiveRoute('workspace-details')} title={t('templates30PlatformHealthCustomize.workspaceSettingsTitle')} actions={<Button>{t('templates30PlatformHealthCustomize.saveChanges')}</Button>} />
+      <Section><Card className="p-6"><Input label={t('templates30PlatformHealthCustomize.labelWorkspaceName')} value="Production AI" /></Card></Section>
     </PageContainer>
   );
 };
 
 const WorkspaceMembersPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader showBack onBack={() => setActiveRoute('workspace-details')} title="Members" actions={<Button><UserPlus className="w-4 h-4 mr-2"/> Invite member</Button>} />
-      <Section><DataTable columns={["Name", "Role", "Status"]} data={[["Admin User", <Badge key="1">Owner</Badge>, "Active"]]} loading={false} /></Section>
+      <PageHeader showBack onBack={() => setActiveRoute('workspace-details')} title={t('templates30PlatformHealthCustomize.membersTitle')} actions={<Button><UserPlus className="w-4 h-4 mr-2"/> {t('templates30PlatformHealthCustomize.inviteMember')}</Button>} />
+      <Section><DataTable columns={[t('templates30PlatformHealthCustomize.colName'), t('templates30PlatformHealthCustomize.colRole'), t('templates30PlatformHealthCustomize.colStatus')]} data={[["Admin User", <Badge key="1">{t('templates30PlatformHealthCustomize.roleOwner')}</Badge>, t('templates30PlatformHealthCustomize.statusActive')]]} loading={false} /></Section>
     </PageContainer>
   );
 };
 
 const WorkspaceBillingPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader showBack onBack={() => setActiveRoute('workspace-details')} title="Billing & Usage" />
-      <Section title="Current Usage"><div className="grid grid-cols-1 md:grid-cols-2 gap-6"><EnterpriseUsageCard title="API Requests" icon={Zap} current={42150} max={50000} unit="reqs" /></div></Section>
+      <PageHeader showBack onBack={() => setActiveRoute('workspace-details')} title={t('templates30PlatformHealthCustomize.billingUsageTitle')} />
+      <Section title={t('templates30PlatformHealthCustomize.currentUsageTitle')}><div className="grid grid-cols-1 md:grid-cols-2 gap-6"><EnterpriseUsageCard title={t('templates30PlatformHealthCustomize.apiRequestsTitle')} icon={Zap} current={42150} max={50000} unit="reqs" /></div></Section>
     </PageContainer>
   );
 };
 
 const WorkspaceAuditLogPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader showBack onBack={() => setActiveRoute('workspace-details')} title="Audit Log" />
-      <Section><DataTable columns={["Timestamp", "Actor", "Action"]} data={[["Oct 25", "Admin User", "Created API Key"]]} loading={false} /></Section>
+      <PageHeader showBack onBack={() => setActiveRoute('workspace-details')} title={t('templates30PlatformHealthCustomize.auditLogTitle')} />
+      <Section><DataTable columns={[t('templates30PlatformHealthCustomize.colTimestamp'), t('templates30PlatformHealthCustomize.colActor'), t('templates30PlatformHealthCustomize.colAction')]} data={[["Oct 25", "Admin User", t('templates30PlatformHealthCustomize.actionCreatedApiKey')]]} loading={false} /></Section>
     </PageContainer>
   );
 };
 
 const ApiKeysPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader title="API Keys" actions={<Button onClick={() => setActiveRoute('keys-new')}><Plus className="w-4 h-4 mr-2" /> Create key</Button>} />
-      <Section><DataTable columns={["Key Name", "Secret Key", "Status"]} data={[["Production Backend", "sk_live_••••abcd", "Active"]]} loading={false} onRowClick={() => setActiveRoute('key-details')} /></Section>
+      <PageHeader title={t('templates30PlatformHealthCustomize.navApiKeys')} actions={<Button onClick={() => setActiveRoute('keys-new')}><Plus className="w-4 h-4 mr-2" /> {t('templates30PlatformHealthCustomize.createKey')}</Button>} />
+      <Section><DataTable columns={[t('templates30PlatformHealthCustomize.colKeyName'), t('templates30PlatformHealthCustomize.colSecretKey'), t('templates30PlatformHealthCustomize.colStatus')]} data={[["Production Backend", "sk_live_••••abcd", t('templates30PlatformHealthCustomize.statusActive')]]} loading={false} onRowClick={() => setActiveRoute('key-details')} /></Section>
     </PageContainer>
   );
 };
 
 const ApiKeyNewPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="narrow" className="pt-8">
-      <PageHeader showBack onBack={() => setActiveRoute('keys')} title="Create API Key" />
-      <Card className="p-6"><Input label="Key Name" /><Button className="mt-4" onClick={() => setActiveRoute('keys')}>Create</Button></Card>
+      <PageHeader showBack onBack={() => setActiveRoute('keys')} title={t('templates30PlatformHealthCustomize.createApiKeyTitle')} />
+      <Card className="p-6"><Input label={t('templates30PlatformHealthCustomize.labelKeyName')} /><Button className="mt-4" onClick={() => setActiveRoute('keys')}>{t('templates30PlatformHealthCustomize.create')}</Button></Card>
     </PageContainer>
   );
 };
 
 const ApiKeyDetailPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader showBack onBack={() => setActiveRoute('keys')} title="Production Backend" subtitle="sk_live_••••abcd" actions={<Button variant="destructive-soft">Revoke</Button>} />
-      <Section><MetricCard title="Requests (24h)" value="18,492" trend="+1.2%" isUp={true} /></Section>
+      <PageHeader showBack onBack={() => setActiveRoute('keys')} title="Production Backend" subtitle="sk_live_••••abcd" actions={<Button variant="destructive-soft">{t('templates30PlatformHealthCustomize.revoke')}</Button>} />
+      <Section><MetricCard title={t('templates30PlatformHealthCustomize.metricRequests24h')} value="18,492" trend="+1.2%" isUp={true} /></Section>
     </PageContainer>
   );
 };
 
 const PlatformAdminsPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader title="Platform Admins" actions={<Button onClick={() => setActiveRoute('admin-invite')}><UserPlus className="w-4 h-4 mr-2"/> Invite admin</Button>} />
-      <Section><DataTable columns={["Name / Email", "Role", "Status"]} data={[["Admin User", "Super Admin", "Active"]]} loading={false} onRowClick={() => setActiveRoute('admin-details')} /></Section>
+      <PageHeader title={t('templates30PlatformHealthCustomize.platformAdminsTitle')} actions={<Button onClick={() => setActiveRoute('admin-invite')}><UserPlus className="w-4 h-4 mr-2"/> {t('templates30PlatformHealthCustomize.inviteAdmin')}</Button>} />
+      <Section><DataTable columns={[t('templates30PlatformHealthCustomize.colNameEmail'), t('templates30PlatformHealthCustomize.colRole'), t('templates30PlatformHealthCustomize.colStatus')]} data={[["Admin User", t('templates30PlatformHealthCustomize.roleSuperAdmin'), t('templates30PlatformHealthCustomize.statusActive')]]} loading={false} onRowClick={() => setActiveRoute('admin-details')} /></Section>
     </PageContainer>
   );
 };
 
 const PlatformAdminInvitePage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="narrow" className="pt-8">
-      <PageHeader showBack onBack={() => setActiveRoute('admin')} title="Invite Platform Admin" />
-      <Card className="p-6"><Input label="Email address" /><Button className="mt-4" onClick={() => setActiveRoute('admin')}>Send Invite</Button></Card>
+      <PageHeader showBack onBack={() => setActiveRoute('admin')} title={t('templates30PlatformHealthCustomize.invitePlatformAdminTitle')} />
+      <Card className="p-6"><Input label={t('templates30PlatformHealthCustomize.labelEmailAddress')} /><Button className="mt-4" onClick={() => setActiveRoute('admin')}>{t('templates30PlatformHealthCustomize.sendInvite')}</Button></Card>
     </PageContainer>
   );
 };
 
 const PlatformAdminDetailPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader showBack onBack={() => setActiveRoute('admin')} title="Admin User" subtitle="admin@kaori.io" actions={<Button variant="outline" onClick={() => setActiveRoute('admin-reset-password')}>Reset Password</Button>} />
-      <Section><MetricCard title="Last Active" value="Now" trend="" /></Section>
+      <PageHeader showBack onBack={() => setActiveRoute('admin')} title="Admin User" subtitle="admin@kaori.io" actions={<Button variant="outline" onClick={() => setActiveRoute('admin-reset-password')}>{t('templates30PlatformHealthCustomize.resetPassword')}</Button>} />
+      <Section><MetricCard title={t('templates30PlatformHealthCustomize.metricLastActive')} value={t('templates30PlatformHealthCustomize.valueNow')} trend="" /></Section>
     </PageContainer>
   );
 };
 
 const PlatformAdminResetPasswordPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="narrow" className="pt-8">
-      <PageHeader showBack onBack={() => setActiveRoute('admin-details')} title="Reset Admin Password" />
-      <Card className="p-6"><Alert variant="warning" title="Warning">This will invalidate current sessions.</Alert><Button className="mt-4" onClick={() => setActiveRoute('admin-details')}>Confirm Reset</Button></Card>
+      <PageHeader showBack onBack={() => setActiveRoute('admin-details')} title={t('templates30PlatformHealthCustomize.resetAdminPasswordTitle')} />
+      <Card className="p-6"><Alert variant="warning" title={t('templates30PlatformHealthCustomize.warningTitle')}>{t('templates30PlatformHealthCustomize.warningInvalidateSessions')}</Alert><Button className="mt-4" onClick={() => setActiveRoute('admin-details')}>{t('templates30PlatformHealthCustomize.confirmReset')}</Button></Card>
     </PageContainer>
   );
 };
 
 const PlatformBillingOverviewPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader title="Billing Overview" actions={<Button variant="outline" onClick={() => setActiveRoute('billing-export')}><Download className="w-4 h-4 mr-2"/> Export data</Button>} />
-      <Section><div className="grid grid-cols-2 gap-4"><MetricCard title="MRR" value="$124,500" trend="+8.4%" isUp={true} /><MetricCard title="Active Subs" value="1,892" trend="+42" isUp={true} /></div></Section>
+      <PageHeader title={t('templates30PlatformHealthCustomize.billingOverviewTitle')} actions={<Button variant="outline" onClick={() => setActiveRoute('billing-export')}><Download className="w-4 h-4 mr-2"/> {t('templates30PlatformHealthCustomize.exportData')}</Button>} />
+      <Section><div className="grid grid-cols-2 gap-4"><MetricCard title={t('templates30PlatformHealthCustomize.metricMRR')} value="$124,500" trend="+8.4%" isUp={true} /><MetricCard title={t('templates30PlatformHealthCustomize.metricActiveSubs')} value="1,892" trend="+42" isUp={true} /></div></Section>
     </PageContainer>
   );
 };
 
 const PlatformEnterpriseBillingDetailPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
       <PageHeader showBack onBack={() => setActiveRoute('billing')} title="Production AI Billing" />
-      <Section><MetricCard title="Monthly Revenue" value="$2,400" trend="0%" /></Section>
+      <Section><MetricCard title={t('templates30PlatformHealthCustomize.metricMonthlyRevenue')} value="$2,400" trend="0%" /></Section>
     </PageContainer>
   );
 };
 
 const PlatformQuotaManagementPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader title="Quota Management" />
-      <Section><DataTable columns={["Workspace", "API Usage", "Status"]} data={[["Production AI", "2.4M / 10M", "Normal"]]} loading={false} /></Section>
+      <PageHeader title={t('templates30PlatformHealthCustomize.quotaManagementTitle')} />
+      <Section><DataTable columns={[t('templates30PlatformHealthCustomize.colWorkspace'), t('templates30PlatformHealthCustomize.colApiUsage'), t('templates30PlatformHealthCustomize.colStatus')]} data={[["Production AI", "2.4M / 10M", t('templates30PlatformHealthCustomize.statusNormal')]]} loading={false} /></Section>
     </PageContainer>
   );
 };
 
 const PlatformBillingExportPage = ({  setActiveRoute  }: any) => {
+  const t = useT();
   return (
     <PageContainer maxWidth="default">
-      <PageHeader showBack onBack={() => setActiveRoute('billing')} title="Export Billing Data" />
-      <Section><Card className="p-6"><Button onClick={() => {}}>Generate Export</Button></Card></Section>
+      <PageHeader showBack onBack={() => setActiveRoute('billing')} title={t('templates30PlatformHealthCustomize.exportBillingDataTitle')} />
+      <Section><Card className="p-6"><Button onClick={() => {}}>{t('templates30PlatformHealthCustomize.generateExport')}</Button></Card></Section>
     </PageContainer>
   );
 };
 
 const SessionsPage = () => {
+  const t = useT();
   return (
     <PageContainer maxWidth="narrow">
-      <PageHeader title="Active Sessions" subtitle="Manage devices where your account is currently signed in." actions={<Button variant="outline">Sign out all</Button>} />
-      <Section title="Security & Sessions">
+      <PageHeader title={t('templates30PlatformHealthCustomize.activeSessionsTitle')} subtitle={t('templates30PlatformHealthCustomize.activeSessionsSubtitle')} actions={<Button variant="outline">{t('templates30PlatformHealthCustomize.signOutAll')}</Button>} />
+      <Section title={t('templates30PlatformHealthCustomize.navSecuritySessions')}>
         <Card className="p-8 text-center flex flex-col items-center">
           <Shield className="w-8 h-8 text-[var(--text-secondary)] mb-3" />
-          <h3 className="text-sm font-medium text-[var(--text-primary)]">Security & Sessions</h3>
+          <h3 className="text-sm font-medium text-[var(--text-primary)]">{t('templates30PlatformHealthCustomize.navSecuritySessions')}</h3>
         </Card>
       </Section>
     </PageContainer>
@@ -1181,6 +1217,7 @@ const SessionsPage = () => {
 };
 
 export default function KaoriPlatformShell() {
+  const t = useT();
   const [activeRoute, setActiveRoute] = useState('health-customize');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -1215,10 +1252,10 @@ export default function KaoriPlatformShell() {
              activeRoute === 'quota' ? <PlatformQuotaManagementPage setActiveRoute={setActiveRoute} /> :
              activeRoute === 'billing-export' ? <PlatformBillingExportPage setActiveRoute={setActiveRoute} /> :
              activeRoute === 'health-customize' ? <PlatformCustomizeDashboard setActiveRoute={setActiveRoute} /> :
-             activeRoute === 'overview' ? <PlatformOverview setActiveRoute={setActiveRoute} /> : 
+             activeRoute === 'overview' ? <PlatformOverview setActiveRoute={setActiveRoute} /> :
              activeRoute === 'sessions' ? <SessionsPage /> : (
               <PageContainer maxWidth="narrow">
-                <PageHeader title="Coming Soon" subtitle="This section is currently being designed." />
+                <PageHeader title={t('templates30PlatformHealthCustomize.comingSoonTitle')} subtitle={t('templates30PlatformHealthCustomize.comingSoonSubtitle')} />
               </PageContainer>
             )}
           </main>

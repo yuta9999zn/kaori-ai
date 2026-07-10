@@ -1,0 +1,100 @@
+{
+  "settingsPage.subtitle": {
+    "vi": "Cấu hình workspace và tùy chọn AI.",
+    "en": "Configure your workspace and AI preferences.",
+    "ja": "ワークスペースとAI設定を構成します。",
+    "ko": "워크스페이스 및 AI 환경설정을 구성합니다.",
+    "zh": "配置工作区和 AI 偏好设置。"
+  },
+  "settingsPage.languageTitle": {
+    "vi": "Ngôn ngữ giao diện",
+    "en": "Interface language",
+    "ja": "表示言語",
+    "ko": "인터페이스 언어",
+    "zh": "界面语言"
+  },
+  "settingsPage.languageDesc": {
+    "vi": "Ngôn ngữ hiển thị cho tài khoản của bạn. Thay đổi sẽ được lưu tự động.",
+    "en": "The display language for your account. Changes are saved automatically.",
+    "ja": "アカウントの表示言語です。変更は自動的に保存されます。",
+    "ko": "계정에 표시되는 언어입니다. 변경 사항은 자동으로 저장됩니다.",
+    "zh": "您账户的显示语言。更改会自动保存。"
+  },
+  "settingsPage.aiSettingsTitle": {
+    "vi": "Cài đặt AI",
+    "en": "AI Settings",
+    "ja": "AI設定",
+    "ko": "AI 설정",
+    "zh": "AI 设置"
+  },
+  "settingsPage.externalAiLabel": {
+    "vi": "AI ngoài (Claude / GPT-4o)",
+    "en": "External AI (Claude / GPT-4o)",
+    "ja": "外部AI（Claude / GPT-4o）",
+    "ko": "외부 AI(Claude / GPT-4o)",
+    "zh": "外部 AI（Claude / GPT-4o）"
+  },
+  "settingsPage.externalAiDesc": {
+    "vi": "Cho phép gửi dữ liệu (đã ẩn PII) đến AI bên ngoài để phân tích sâu hơn. Mặc định Kaori dùng Qwen2.5 chạy nội bộ — riêng tư và miễn phí.",
+    "en": "Allow sending data (with PII redacted) to external AI for deeper analysis. By default Kaori uses Qwen2.5 running locally — private and free.",
+    "ja": "データ（PIIをマスキング済み）を外部AIに送信し、より深い分析を可能にします。Kaoriはデフォルトでローカル実行のQwen2.5を使用します — プライベートかつ無料です。",
+    "ko": "데이터(PII 마스킹 처리됨)를 외부 AI로 전송하여 더 심층적인 분석을 허용합니다. Kaori는 기본적으로 로컬에서 실행되는 Qwen2.5를 사용합니다 — 비공개이며 무료입니다.",
+    "zh": "允许将数据（已隐去 PII）发送给外部 AI 以进行更深入的分析。Kaori 默认使用本地运行的 Qwen2.5 — 私密且免费。"
+  },
+  "settingsPage.noteLabel": {
+    "vi": "Lưu ý:",
+    "en": "Note:",
+    "ja": "注意：",
+    "ko": "참고:",
+    "zh": "注意："
+  },
+  "settingsPage.externalAiWarning": {
+    "vi": "Dữ liệu của bạn sẽ được ẩn PII trước khi gửi, nhưng vẫn rời khỏi hạ tầng nội bộ. Đảm bảo tuân thủ chính sách dữ liệu của tổ chức bạn.",
+    "en": "Your data will have PII redacted before being sent, but it still leaves internal infrastructure. Make sure this complies with your organization's data policy.",
+    "ja": "データは送信前にPIIがマスキングされますが、社内インフラの外部に送られることに変わりはありません。組織のデータポリシーに準拠していることを確認してください。",
+    "ko": "귀하의 데이터는 전송 전에 PII가 마스킹되지만, 여전히 내부 인프라를 벗어납니다. 조직의 데이터 정책을 준수하는지 확인하세요.",
+    "zh": "您的数据在发送前会隐去 PII，但仍会离开内部基础设施。请确保这符合贵组织的数据政策。"
+  },
+  "settingsPage.savedSuccess": {
+    "vi": "Đã lưu thành công.",
+    "en": "Saved successfully.",
+    "ja": "正常に保存されました。",
+    "ko": "성공적으로 저장되었습니다.",
+    "zh": "已成功保存。"
+  },
+  "settingsPage.saveChanges": {
+    "vi": "Lưu thay đổi",
+    "en": "Save changes",
+    "ja": "変更を保存",
+    "ko": "변경사항 저장",
+    "zh": "保存更改"
+  },
+  "settingsPage.notificationsTitle": {
+    "vi": "Thông báo",
+    "en": "Notifications",
+    "ja": "通知",
+    "ko": "알림",
+    "zh": "通知"
+  },
+  "settingsPage.emailAlertsLabel": {
+    "vi": "Cảnh báo qua email",
+    "en": "Email alerts",
+    "ja": "メールアラート",
+    "ko": "이메일 알림",
+    "zh": "邮件提醒"
+  },
+  "settingsPage.emailAlertsDesc": {
+    "vi": "Gửi email khi sử dụng đạt ngưỡng 80% / 95% quota tháng, khi pipeline hoàn tất hoặc thất bại, và khi có hoạt động bảo mật quan trọng.",
+    "en": "Send an email when usage reaches the 80% / 95% monthly quota threshold, when a pipeline completes or fails, and when important security activity occurs.",
+    "ja": "月間クォータの80％／95％のしきい値に達したとき、パイプラインが完了または失敗したとき、重要なセキュリティ活動が発生したときにメールを送信します。",
+    "ko": "월간 할당량의 80% / 95% 임계값에 도달했을 때, 파이프라인이 완료되거나 실패했을 때, 중요한 보안 활동이 발생했을 때 이메일을 보냅니다.",
+    "zh": "在使用量达到月度配额的 80% / 95% 阈值、管道完成或失败、以及发生重要安全活动时发送邮件。"
+  },
+  "settingsPage.emailAlertsToggleAriaLabel": {
+    "vi": "Bật/tắt cảnh báo email",
+    "en": "Toggle email alerts",
+    "ja": "メールアラートの切り替え",
+    "ko": "이메일 알림 전환",
+    "zh": "切换邮件提醒"
+  }
+}

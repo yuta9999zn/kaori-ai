@@ -11,7 +11,7 @@ import {
   AlertTriangle, ArrowLeft, Link2, Table2, Type,
 } from 'lucide-react';
 import { Button, Badge, ErrorBanner, cn, api, type ProblemDetails } from '@/components/p2/foundation';
-import { useLocale } from '@/lib/i18n/provider';
+import { useLocale, useT } from '@/lib/i18n/provider';
 import { Markdown } from './md';
 import { MdToolbar } from './md-toolbar';
 import { NotesPanel } from './notes-panel';
@@ -53,6 +53,7 @@ function CellView({ col, value }: { col: FieldDef; value: unknown }) {
 function SectionView({ sec, odef, locale, index }: {
   sec: SectionContent; odef: SectionDef | undefined; locale: string; index: number;
 }) {
+  const t = useT();
   const heading = (odef && pickLabel(odef, locale, 'heading'))
     || pickLabel(sec as any, locale, 'heading') || sec.key;
   const columns = odef?.columns || sec.columns || [];
@@ -107,7 +108,7 @@ function SectionView({ sec, odef, locale, index }: {
         </ul>
       )}
       {!sec.body_md && (!sec.rows || !sec.rows.length) && (!sec.links || !sec.links.length) && (
-        <p className="text-xs italic text-[var(--text-secondary)] mb-2">(mục trống)</p>
+        <p className="text-xs italic text-[var(--text-secondary)] mb-2">{t('dmsAuthoredDoc.emptySection')}</p>
       )}
     </section>
   );
@@ -117,12 +118,13 @@ function SectionView({ sec, odef, locale, index }: {
 function CellInput({ col, value, onChange }: {
   col: FieldDef; value: unknown; onChange: (v: unknown) => void;
 }) {
+  const t = useT();
   const cls = 'w-full px-1.5 py-1 bg-white border border-[var(--border-color)]/70 rounded text-xs focus:outline-none focus:ring-1 focus:ring-[var(--primary-gold)]/40';
   if (col.kind === 'link') {
     const lv = isLink(value) ? value : { text: '', url: '' };
     return (
       <div className="space-y-1 min-w-[150px]">
-        <input className={cls} placeholder="Tên hiển thị" value={lv.text}
+        <input className={cls} placeholder={t('dmsAuthoredDoc.placeholderDisplayName')} value={lv.text}
           onChange={(e) => onChange({ ...lv, text: e.target.value })} />
         <input className={cls} placeholder="https://…" value={lv.url}
           onChange={(e) => onChange({ ...lv, url: e.target.value })} />
@@ -159,6 +161,7 @@ function SectionEdit({ sec, odef, locale, onChange, onRemove }: {
   onChange: (s: SectionContent) => void;
   onRemove?: () => void;
 }) {
+  const t = useT();
   const columns = odef?.columns || sec.columns || [];
   const heading = (odef && pickLabel(odef, locale, 'heading')) || sec.heading_vi || sec.key;
   const taRef = useRef<HTMLTextAreaElement>(null);
@@ -167,7 +170,7 @@ function SectionEdit({ sec, odef, locale, onChange, onRemove }: {
     <section className="border border-[var(--border-color)]/70 rounded-md-custom p-3 space-y-2">
       <div className="flex items-center gap-2">
         {isCustom ? (
-          <input value={sec.heading_vi || ''} placeholder="Tiêu đề mục…"
+          <input value={sec.heading_vi || ''} placeholder={t('dmsAuthoredDoc.placeholderSectionTitle')}
             onChange={(e) => onChange({ ...sec, heading_vi: e.target.value })}
             className="text-sm font-semibold flex-1 px-2 py-1 bg-white border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30" />
         ) : (
@@ -176,7 +179,7 @@ function SectionEdit({ sec, odef, locale, onChange, onRemove }: {
           </p>
         )}
         {isCustom && onRemove && (
-          <button onClick={onRemove} title="Xoá mục"
+          <button onClick={onRemove} title={t('dmsAuthoredDoc.deleteSectionTooltip')}
             className="text-[var(--text-secondary)] hover:text-[var(--state-error)] shrink-0">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
@@ -185,7 +188,7 @@ function SectionEdit({ sec, odef, locale, onChange, onRemove }: {
       <div>
         <MdToolbar target={taRef} onChange={(v) => onChange({ ...sec, body_md: v })} />
         <textarea ref={taRef} rows={3} value={sec.body_md || ''}
-          placeholder={'Đoạn văn bản — dùng thanh công cụ phía trên hoặc gõ Markdown: ## tiêu đề · **đậm** · ==đánh dấu== · [tên](https://link) · #hashtag'}
+          placeholder={t('dmsAuthoredDoc.bodyMdPlaceholder')}
           onChange={(e) => onChange({ ...sec, body_md: e.target.value })}
           className="w-full px-2 py-1.5 bg-white border border-[var(--border-color)] rounded-b rounded-t-none text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30" />
       </div>
@@ -194,7 +197,7 @@ function SectionEdit({ sec, odef, locale, onChange, onRemove }: {
       {(sec.links || []).map((l, i) => (
         <div key={i} className="flex items-center gap-1.5">
           <Link2 className="w-3.5 h-3.5 text-[var(--text-secondary)] shrink-0" />
-          <input value={l.text} placeholder="Tên hiển thị"
+          <input value={l.text} placeholder={t('dmsAuthoredDoc.placeholderDisplayName')}
             onChange={(e) => onChange({ ...sec, links: (sec.links || []).map((x, j) => j === i ? { ...x, text: e.target.value } : x) })}
             className="px-2 py-1 bg-white border border-[var(--border-color)] rounded text-xs w-48" />
           <input value={l.url} placeholder="https://…"
@@ -206,7 +209,7 @@ function SectionEdit({ sec, odef, locale, onChange, onRemove }: {
       ))}
       <button onClick={() => onChange({ ...sec, links: [...(sec.links || []), { text: '', url: '' }] })}
         className="inline-flex items-center gap-1 text-xs text-[var(--primary-gold-dark)] hover:underline">
-        <Link2 className="w-3 h-3" /> Đính link
+        <Link2 className="w-3 h-3" /> {t('dmsAuthoredDoc.attachLink')}
       </button>
       {columns.length > 0 && (
         <div className="overflow-x-auto">
@@ -218,7 +221,7 @@ function SectionEdit({ sec, odef, locale, onChange, onRemove }: {
                     {pickLabel(c, locale)}
                     {isCustom && (
                       // độ rộng cột: 4 mức chọn sẵn — không px tự do để khỏi vỡ layout
-                      <select value={c.width ?? ''} title="Độ rộng cột"
+                      <select value={c.width ?? ''} title={t('dmsAuthoredDoc.columnWidthTooltip')}
                         onChange={(e) => {
                           const w = e.target.value === '' ? undefined : Number(e.target.value);
                           onChange({
@@ -262,7 +265,7 @@ function SectionEdit({ sec, odef, locale, onChange, onRemove }: {
           </table>
           <button onClick={() => onChange({ ...sec, rows: [...(sec.rows || []), {}] })}
             className="mt-1 inline-flex items-center gap-1 text-xs text-[var(--primary-gold-dark)] hover:underline">
-            <Plus className="w-3 h-3" /> Thêm dòng
+            <Plus className="w-3 h-3" /> {t('dmsAuthoredDoc.addRow')}
           </button>
         </div>
       )}
@@ -280,6 +283,7 @@ function AddSectionBar({ existingKeys, onAdd }: {
   existingKeys: string[];
   onAdd: (sec: SectionContent) => void;
 }) {
+  const t = useT();
   const [tableOpen, setTableOpen] = useState(false);
   const [heading, setHeading] = useState('');
   const [picked, setPicked] = useState<string[]>([]);
@@ -293,24 +297,24 @@ function AddSectionBar({ existingKeys, onAdd }: {
   return (
     <div className="border border-dashed border-[var(--border-color)] rounded-md-custom p-3 space-y-2">
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-xs text-[var(--text-secondary)]">Thêm mục:</span>
+        <span className="text-xs text-[var(--text-secondary)]">{t('dmsAuthoredDoc.addSectionLabel')}</span>
         <Button variant="secondary" onClick={() => onAdd({
-          key: uniqueKey('muc_van_ban'), heading_vi: 'Mục mới', body_md: '',
+          key: uniqueKey('muc_van_ban'), heading_vi: t('dmsAuthoredDoc.defaultNewSectionHeading'), body_md: '',
         })}>
-          <Type className="w-3.5 h-3.5 mr-1.5" /> Văn bản
+          <Type className="w-3.5 h-3.5 mr-1.5" /> {t('dmsAuthoredDoc.textSection')}
         </Button>
         <Button variant="secondary" onClick={() => setTableOpen(!tableOpen)}>
-          <Table2 className="w-3.5 h-3.5 mr-1.5" /> Bảng
+          <Table2 className="w-3.5 h-3.5 mr-1.5" /> {t('dmsAuthoredDoc.tableSection')}
         </Button>
       </div>
       {tableOpen && (
         <div className="space-y-2">
           <input value={heading} onChange={(e) => setHeading(e.target.value)}
-            placeholder="Tiêu đề bảng (vd Danh sách lỗi)"
+            placeholder={t('dmsAuthoredDoc.tableTitlePlaceholder')}
             className="px-2 py-1.5 bg-white border border-[var(--border-color)] rounded text-sm w-64" />
           {/* cột chọn từ BỘ CHUẨN — bấm để bật/tắt, giữ thứ tự bấm */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-[11px] text-[var(--text-secondary)]">Chọn cột:</span>
+            <span className="text-[11px] text-[var(--text-secondary)]">{t('dmsAuthoredDoc.pickColumnsLabel')}</span>
             {COLUMN_PRESETS.map((p) => {
               const on = picked.includes(p.key);
               return (
@@ -331,11 +335,11 @@ function AddSectionBar({ existingKeys, onAdd }: {
                 .map((p) => ({ ...p }));
               onAdd({
                 key: uniqueKey(slugKey(heading || 'bang')),
-                heading_vi: heading || 'Bảng mới', columns, rows: [{}],
+                heading_vi: heading || t('dmsAuthoredDoc.defaultNewTableHeading'), columns, rows: [{}],
               });
               setTableOpen(false); setHeading(''); setPicked([]);
             }}>
-              <Plus className="w-3.5 h-3.5 mr-1" /> Tạo bảng ({picked.length} cột)
+              <Plus className="w-3.5 h-3.5 mr-1" /> {t('dmsAuthoredDoc.createTableBtn', { count: picked.length })}
             </Button>
           </div>
         </div>
@@ -351,6 +355,7 @@ export function AuthoredDocPage({ docId, onBack, onSaved }: {
   onBack: () => void;
   onSaved?: (newDocId: string) => void;
 }) {
+  const t = useT();
   const { locale } = useLocale();
   const [doc, setDoc] = useState<AuthoredDoc | null>(null);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -381,7 +386,7 @@ export function AuthoredDocPage({ docId, onBack, onSaved }: {
 
   useEffect(() => { pollRef.current = 0; load(docId); }, [docId, load]);
 
-  if (problem && !doc) return <div><Button variant="secondary" onClick={onBack}><ArrowLeft className="w-3.5 h-3.5 mr-1" /> Quay lại</Button><div className="mt-2"><ErrorBanner problem={problem} /></div></div>;
+  if (problem && !doc) return <div><Button variant="secondary" onClick={onBack}><ArrowLeft className="w-3.5 h-3.5 mr-1" /> {t('dmsAuthoredDoc.back')}</Button><div className="mt-2"><ErrorBanner problem={problem} /></div></div>;
   if (!doc) return <div className="py-10 text-center"><Loader2 className="w-5 h-5 animate-spin inline text-[var(--text-secondary)]" /></div>;
 
   const outlineByKey: Record<string, SectionDef> = {};
@@ -432,33 +437,33 @@ export function AuthoredDocPage({ docId, onBack, onSaved }: {
         <div className="flex-1 min-w-0">
           <h1 className="text-lg font-bold truncate">{doc.name_vi}</h1>
           <p className="text-[11px] text-[var(--text-secondary)]">
-            {doc.template_name ? `Mẫu: ${doc.template_name} · ` : ''}
-            v{doc.version}{doc.is_current ? '' : ' (bản cũ)'} · {fmtTime(doc.uploaded_at)}
+            {doc.template_name ? t('dmsAuthoredDoc.templatePrefix', { name: doc.template_name }) : ''}
+            v{doc.version}{doc.is_current ? '' : t('dmsAuthoredDoc.oldVersionSuffix')} · {fmtTime(doc.uploaded_at)}
             {doc.change_reason ? ` · ${doc.change_reason}` : ''}
           </p>
         </div>
         {doc.status === 'generating' ? (
           <Badge variant="default" className="text-[10px] inline-flex items-center gap-1">
-            <Sparkles className="w-3 h-3" /> AI đang soạn…
+            <Sparkles className="w-3 h-3" /> {t('dmsAuthoredDoc.aiGenerating')}
           </Badge>
         ) : mode === 'view' ? (
           <div className="flex items-center gap-2">
             {doc.is_current && (
               <Button variant="secondary" onClick={() => setShowRegen(!showRegen)}>
-                <Sparkles className="w-3.5 h-3.5 mr-1.5" /> AI soạn lại
+                <Sparkles className="w-3.5 h-3.5 mr-1.5" /> {t('dmsAuthoredDoc.aiRegenerate')}
               </Button>
             )}
-            <Button onClick={startEdit}><Pencil className="w-3.5 h-3.5 mr-1.5" /> Sửa nội dung</Button>
+            <Button onClick={startEdit}><Pencil className="w-3.5 h-3.5 mr-1.5" /> {t('dmsAuthoredDoc.editContent')}</Button>
           </div>
         ) : (
           <div className="flex items-center gap-2">
             <input value={changeNote} onChange={(e) => setChangeNote(e.target.value)}
-              placeholder="Ghi chú thay đổi…"
+              placeholder={t('dmsAuthoredDoc.changeNotePlaceholder')}
               className="px-2 py-1.5 text-xs bg-white border border-[var(--border-color)] rounded w-48" />
-            <Button variant="secondary" onClick={() => setMode('view')}><X className="w-3.5 h-3.5 mr-1" /> Huỷ</Button>
+            <Button variant="secondary" onClick={() => setMode('view')}><X className="w-3.5 h-3.5 mr-1" /> {t('dmsAuthoredDoc.cancel')}</Button>
             <Button onClick={save} disabled={saving}>
               {saving ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Save className="w-4 h-4 mr-1.5" />}
-              Lưu (v{doc.version + 1})
+              {t('dmsAuthoredDoc.saveVersion', { version: doc.version + 1 })}
             </Button>
           </div>
         )}
@@ -467,14 +472,14 @@ export function AuthoredDocPage({ docId, onBack, onSaved }: {
       {doc.status === 'generating' && (
         <p className="text-sm text-[var(--text-secondary)] flex items-center gap-2">
           <Loader2 className="w-4 h-4 animate-spin" />
-          Qwen đang soạn nháp từng mục theo bộ khung của mẫu — trang tự cập nhật khi xong.
+          {t('dmsAuthoredDoc.aiDraftingStatus')}
         </p>
       )}
 
       {showRegen && doc.status !== 'generating' && (
         <div className="bg-[var(--bg-card)] border border-[var(--primary-gold)]/40 rounded-lg-custom p-3 space-y-2">
           <p className="text-xs text-[var(--text-secondary)]">
-            Mô tả tài liệu + yêu cầu — AI soạn lại TOÀN BỘ nội dung theo bộ khung (ghi đè bản nháp hiện tại; muốn giữ thì Lưu trước).
+            {t('dmsAuthoredDoc.regenDesc')}
           </p>
           <textarea value={regenPrompt} onChange={(e) => setRegenPrompt(e.target.value)} rows={3}
             className="w-full px-2 py-1.5 bg-white border border-[var(--border-color)] rounded text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30" />
@@ -490,7 +495,7 @@ export function AuthoredDocPage({ docId, onBack, onSaved }: {
                 load(doc.doc_id);
               } catch (e: any) { setProblem(e); }
             }}>
-              <Sparkles className="w-3.5 h-3.5 mr-1.5" /> Soạn lại
+              <Sparkles className="w-3.5 h-3.5 mr-1.5" /> {t('dmsAuthoredDoc.regenerate')}
             </Button>
           </div>
         </div>
@@ -518,7 +523,7 @@ export function AuthoredDocPage({ docId, onBack, onSaved }: {
       {mode === 'view' ? (
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom px-4 py-3 space-y-4">
           {ordered.length === 0 && doc.status !== 'generating' && (
-            <p className="text-sm text-[var(--text-secondary)] italic">Chưa có nội dung — bấm Sửa nội dung để soạn theo bộ khung.</p>
+            <p className="text-sm text-[var(--text-secondary)] italic">{t('dmsAuthoredDoc.noContentYet')}</p>
           )}
           {ordered.map((sec, i) => (
             <SectionView key={sec.key} sec={sec} odef={outlineByKey[sec.key]} locale={locale} index={i} />
@@ -544,29 +549,29 @@ export function AuthoredDocPage({ docId, onBack, onSaved }: {
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom px-4 py-3">
           <h2 className="text-sm font-semibold mb-2 flex items-center gap-1.5">
             <History className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-            Lịch sử chỉnh sửa (History Changes) <span className="text-[10px] font-normal text-[var(--text-secondary)]">— tự sinh từ phiên bản, không gõ tay</span>
+            {t('dmsAuthoredDoc.historyHeading')} <span className="text-[10px] font-normal text-[var(--text-secondary)]">{t('dmsAuthoredDoc.historyHint')}</span>
           </h2>
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-xs text-[var(--text-secondary)]">
-                <th className="py-1 pr-3">Phiên bản</th>
-                <th className="py-1 pr-3">Thời gian</th>
-                <th className="py-1">Nội dung cập nhật</th>
+                <th className="py-1 pr-3">{t('dmsAuthoredDoc.colVersion')}</th>
+                <th className="py-1 pr-3">{t('dmsAuthoredDoc.colTime')}</th>
+                <th className="py-1">{t('dmsAuthoredDoc.colContent')}</th>
               </tr>
             </thead>
             <tbody>
               {history.map((h) => (
                 <tr key={h.doc_id} className="border-t border-[var(--border-color)]/50">
                   <td className="py-1.5 pr-3 font-mono text-xs">
-                    v{h.version}{h.is_current && <Badge variant="success" className="ml-1.5 text-[9px]">hiện tại</Badge>}
+                    v{h.version}{h.is_current && <Badge variant="success" className="ml-1.5 text-[9px]">{t('dmsAuthoredDoc.current')}</Badge>}
                   </td>
                   <td className="py-1.5 pr-3 text-xs text-[var(--text-secondary)]">{fmtTime(h.uploaded_at)}</td>
                   <td className="py-1.5 text-xs">
                     {h.is_current || h.doc_id === doc.doc_id ? (
-                      <span>{h.change_reason || 'Tạo mới'}</span>
+                      <span>{h.change_reason || t('dmsAuthoredDoc.defaultChangeReason')}</span>
                     ) : (
                       <button onClick={() => load(h.doc_id)} className="text-[var(--primary-gold-dark)] hover:underline">
-                        {h.change_reason || 'Tạo mới'} — xem bản này
+                        {h.change_reason || t('dmsAuthoredDoc.defaultChangeReason')} {t('dmsAuthoredDoc.viewThisVersion')}
                       </button>
                     )}
                   </td>

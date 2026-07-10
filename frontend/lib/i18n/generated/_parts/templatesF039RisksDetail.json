@@ -1,0 +1,123 @@
+{
+  "templatesF039RisksDetail.sevLow": { "vi": "Thấp", "en": "Low", "ja": "低", "ko": "낮음", "zh": "低" },
+  "templatesF039RisksDetail.sevMedium": { "vi": "Trung", "en": "Medium", "ja": "中", "ko": "중간", "zh": "中" },
+  "templatesF039RisksDetail.sevHigh": { "vi": "Cao", "en": "High", "ja": "高", "ko": "높음", "zh": "高" },
+  "templatesF039RisksDetail.sevCritical": { "vi": "Nghiêm trọng", "en": "Critical", "ja": "重大", "ko": "심각", "zh": "严重" },
+
+  "templatesF039RisksDetail.statusOpen": { "vi": "Mở", "en": "Open", "ja": "オープン", "ko": "열림", "zh": "开放" },
+  "templatesF039RisksDetail.statusMitigating": { "vi": "Đang xử lý", "en": "Mitigating", "ja": "対応中", "ko": "처리 중", "zh": "处理中" },
+  "templatesF039RisksDetail.statusClosed": { "vi": "Đã đóng", "en": "Closed", "ja": "クローズ", "ko": "종료", "zh": "已关闭" },
+
+  "templatesF039RisksDetail.catOperational": { "vi": "Vận hành", "en": "Operational", "ja": "運用", "ko": "운영", "zh": "运营" },
+  "templatesF039RisksDetail.catFinancial": { "vi": "Tài chính", "en": "Financial", "ja": "財務", "ko": "재무", "zh": "财务" },
+  "templatesF039RisksDetail.catRegulatory": { "vi": "Pháp lý", "en": "Regulatory", "ja": "規制", "ko": "규제", "zh": "监管" },
+  "templatesF039RisksDetail.catReputational": { "vi": "Thương hiệu", "en": "Reputational", "ja": "評判", "ko": "평판", "zh": "声誉" },
+  "templatesF039RisksDetail.catStrategic": { "vi": "Chiến lược", "en": "Strategic", "ja": "戦略", "ko": "전략", "zh": "战略" },
+  "templatesF039RisksDetail.catTechnical": { "vi": "Kỹ thuật", "en": "Technical", "ja": "技術", "ko": "기술", "zh": "技术" },
+
+  "templatesF039RisksDetail.savedSuccess": { "vi": "Đã lưu thay đổi.", "en": "Changes saved.", "ja": "変更を保存しました。", "ko": "변경 사항이 저장되었습니다.", "zh": "已保存更改。" },
+
+  "templatesF039RisksDetail.confirmDelete": {
+    "vi": "Xoá rủi ro \"{title}\"? Bản ghi sẽ bị soft-delete (vẫn còn trong audit), không hiển thị trong danh sách nữa.",
+    "en": "Delete risk \"{title}\"? The record will be soft-deleted (still kept in the audit trail) and will no longer appear in the list.",
+    "ja": "リスク「{title}」を削除しますか？レコードはソフトデリートされます（監査ログには残ります）が、一覧には表示されなくなります。",
+    "ko": "위험 \"{title}\"을(를) 삭제하시겠습니까? 레코드는 소프트 삭제되며(감사 기록에는 남음) 목록에는 더 이상 표시되지 않습니다.",
+    "zh": "删除风险 \"{title}\"？记录将被软删除（仍保留在审计记录中），不再显示在列表中。"
+  },
+
+  "templatesF039RisksDetail.loadingTitle": { "vi": "Đang tải...", "en": "Loading...", "ja": "読み込み中...", "ko": "불러오는 중...", "zh": "加载中..." },
+  "templatesF039RisksDetail.loadingDetail": { "vi": "Đang tải chi tiết rủi ro...", "en": "Loading risk detail...", "ja": "リスク詳細を読み込み中...", "ko": "위험 상세 정보를 불러오는 중...", "zh": "正在加载风险详情..." },
+
+  "templatesF039RisksDetail.headerDesc": {
+    "vi": "Risk ID: {riskId} · {category} · Cập nhật {updatedAt}",
+    "en": "Risk ID: {riskId} · {category} · Updated {updatedAt}",
+    "ja": "リスクID：{riskId} ・ {category} ・ 更新日時 {updatedAt}",
+    "ko": "위험 ID: {riskId} · {category} · 업데이트 {updatedAt}",
+    "zh": "风险编号：{riskId} · {category} · 更新于 {updatedAt}"
+  },
+
+  "templatesF039RisksDetail.backList": { "vi": "Danh sách", "en": "Back to list", "ja": "一覧に戻る", "ko": "목록으로", "zh": "返回列表" },
+
+  "templatesF039RisksDetail.fieldTitle": { "vi": "Tên rủi ro", "en": "Risk name", "ja": "リスク名", "ko": "위험 이름", "zh": "风险名称" },
+  "templatesF039RisksDetail.fieldDescription": { "vi": "Mô tả", "en": "Description", "ja": "説明", "ko": "설명", "zh": "描述" },
+  "templatesF039RisksDetail.descriptionPlaceholder": {
+    "vi": "Mô tả hoàn cảnh, nguy cơ, tác động dự kiến...",
+    "en": "Describe the situation, the threat, and the expected impact...",
+    "ja": "状況、リスク要因、想定される影響を記入してください...",
+    "ko": "상황, 위험 요인, 예상 영향을 설명하세요...",
+    "zh": "描述情况、风险因素及预期影响……"
+  },
+  "templatesF039RisksDetail.fieldCategory": { "vi": "Danh mục", "en": "Category", "ja": "カテゴリー", "ko": "카테고리", "zh": "分类" },
+  "templatesF039RisksDetail.fieldStatus": { "vi": "Trạng thái", "en": "Status", "ja": "ステータス", "ko": "상태", "zh": "状态" },
+  "templatesF039RisksDetail.fieldDueDate": { "vi": "Hạn xử lý", "en": "Due date", "ja": "対応期限", "ko": "처리 기한", "zh": "处理期限" },
+  "templatesF039RisksDetail.fieldLikelihood": { "vi": "Khả năng (likelihood)", "en": "Likelihood", "ja": "可能性（likelihood）", "ko": "발생 가능성(likelihood)", "zh": "可能性（likelihood）" },
+  "templatesF039RisksDetail.fieldImpact": { "vi": "Tác động (impact)", "en": "Impact", "ja": "影響度（impact）", "ko": "영향도(impact)", "zh": "影响程度（impact）" },
+
+  "templatesF039RisksDetail.autoScoreLabel": { "vi": "Score tự tính", "en": "Auto-calculated score", "ja": "自動算出スコア", "ko": "자동 계산 점수", "zh": "自动计算得分" },
+  "templatesF039RisksDetail.autoScoreHint": { "vi": "DB trigger sẽ ghi lại khi lưu.", "en": "The DB trigger will record this on save.", "ja": "保存時にDBトリガーが記録します。", "ko": "저장 시 DB 트리거가 기록합니다.", "zh": "保存时将由数据库触发器记录。" },
+  "templatesF039RisksDetail.scoreBadge": {
+    "vi": "Score {score} · {severity}",
+    "en": "Score {score} · {severity}",
+    "ja": "スコア {score} ・ {severity}",
+    "ko": "점수 {score} · {severity}",
+    "zh": "得分 {score} · {severity}"
+  },
+
+  "templatesF039RisksDetail.fieldMitigationPlan": { "vi": "Kế hoạch xử lý", "en": "Mitigation plan", "ja": "対応計画", "ko": "완화 계획", "zh": "应对计划" },
+  "templatesF039RisksDetail.mitigationPlanPlaceholder": {
+    "vi": "Bước cụ thể để giảm rủi ro, người chịu trách nhiệm, dependencies...",
+    "en": "Concrete steps to reduce the risk, the owner, dependencies...",
+    "ja": "リスクを軽減する具体的な手順、担当者、依存関係など...",
+    "ko": "위험을 줄이기 위한 구체적인 단계, 담당자, 의존 관계 등...",
+    "zh": "降低风险的具体步骤、负责人、依赖关系……"
+  },
+
+  "templatesF039RisksDetail.progressLabel": {
+    "vi": "Tiến độ xử lý ({progress}%)",
+    "en": "Mitigation progress ({progress}%)",
+    "ja": "対応進捗（{progress}%）",
+    "ko": "처리 진행률({progress}%)",
+    "zh": "处理进度（{progress}%）"
+  },
+
+  "templatesF039RisksDetail.fieldOwner": { "vi": "Owner (UUID enterprise_users)", "en": "Owner (UUID enterprise_users)", "ja": "オーナー（UUID enterprise_users）", "ko": "담당자(UUID enterprise_users)", "zh": "负责人（UUID enterprise_users）" },
+
+  "templatesF039RisksDetail.deleting": { "vi": "Đang xoá...", "en": "Deleting...", "ja": "削除中...", "ko": "삭제 중...", "zh": "删除中..." },
+  "templatesF039RisksDetail.deleteSoft": { "vi": "Xoá (soft)", "en": "Delete (soft)", "ja": "削除（ソフト）", "ko": "삭제(소프트)", "zh": "删除（软删除）" },
+  "templatesF039RisksDetail.saveChanges": { "vi": "Lưu thay đổi", "en": "Save changes", "ja": "変更を保存", "ko": "변경 사항 저장", "zh": "保存更改" },
+
+  "templatesF039RisksDetail.footnoteScorePre": {
+    "vi": "Score + severity tự suy ra từ likelihood × impact bởi DB trigger. Mỗi update bump",
+    "en": "Score + severity are automatically derived from likelihood × impact by a DB trigger. Every update bumps",
+    "ja": "スコアとseverityはDBトリガーによりlikelihood × impactから自動的に算出されます。更新のたびに",
+    "ko": "점수 및 심각도는 DB 트리거에 의해 likelihood × impact로부터 자동 계산됩니다. 업데이트할 때마다",
+    "zh": "得分和严重程度由数据库触发器根据 likelihood × impact 自动计算。每次更新都会更新"
+  },
+  "templatesF039RisksDetail.footnoteScoreMid": {
+    "vi": "; soft-delete chỉ set",
+    "en": "; a soft-delete only sets",
+    "ja": "。ソフトデリートでは",
+    "ko": "; 소프트 삭제 시에는",
+    "zh": "；软删除仅设置"
+  },
+  "templatesF039RisksDetail.footnoteScorePost": {
+    "vi": "(audit trail bảo toàn).",
+    "en": "(the audit trail is preserved).",
+    "ja": "（監査証跡は保持されます）。",
+    "ko": "(감사 기록은 보존됩니다).",
+    "zh": "（审计记录予以保留）。"
+  },
+  "templatesF039RisksDetail.footnoteRoadmap": {
+    "vi": "Phase 2 v1 sẽ thêm: evidence attachments, lịch sử review (likelihood/impact change), tự động đề xuất từ pipeline anomaly.",
+    "en": "Phase 2 v1 will add: evidence attachments, review history (likelihood/impact changes), and automatic suggestions from pipeline anomalies.",
+    "ja": "Phase 2 v1では、証拠添付ファイル、レビュー履歴（likelihood/impactの変更）、パイプライン異常からの自動提案が追加される予定です。",
+    "ko": "Phase 2 v1에서는 증거 첨부파일, 리뷰 이력(likelihood/impact 변경), 파이프라인 이상 징후 기반 자동 제안이 추가될 예정입니다.",
+    "zh": "Phase 2 v1 将新增：证据附件、审阅历史（likelihood/impact 变更）、以及来自 pipeline 异常的自动建议。"
+  },
+
+  "templatesF039RisksDetail.scaleVeryLow": { "vi": "Rất thấp", "en": "Very low", "ja": "非常に低い", "ko": "매우 낮음", "zh": "极低" },
+  "templatesF039RisksDetail.scaleLow": { "vi": "Thấp", "en": "Low", "ja": "低い", "ko": "낮음", "zh": "低" },
+  "templatesF039RisksDetail.scaleMedium": { "vi": "Trung", "en": "Medium", "ja": "中", "ko": "중간", "zh": "中" },
+  "templatesF039RisksDetail.scaleHigh": { "vi": "Cao", "en": "High", "ja": "高い", "ko": "높음", "zh": "高" },
+  "templatesF039RisksDetail.scaleVeryHigh": { "vi": "Rất cao", "en": "Very high", "ja": "非常に高い", "ko": "매우 높음", "zh": "极高" }
+}

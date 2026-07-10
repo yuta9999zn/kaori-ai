@@ -22,6 +22,7 @@ import {
 
 import { Button, Badge, ErrorBanner, api, cn, type ProblemDetails } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types & filters
 // ============================================================================
@@ -78,17 +79,17 @@ function adaptBackendReport(item: BackendReportItem): ReportRow {
   };
 }
 
-const TYPE_FILTERS: { value: 'all' | ReportType; label: string }[] = [
-  { value: 'all',      label: 'Tất cả' },
-  { value: 'auto',     label: 'Tự động' },
-  { value: 'custom',   label: 'Tuỳ chỉnh' },
-  { value: 'template', label: 'Từ mẫu' },
+const TYPE_FILTERS: { value: 'all' | ReportType; labelKey: string }[] = [
+  { value: 'all',      labelKey: 'templates47ReportsHub.typeFilterAll' },
+  { value: 'auto',     labelKey: 'templates47ReportsHub.typeAuto' },
+  { value: 'custom',   labelKey: 'templates47ReportsHub.typeCustom' },
+  { value: 'template', labelKey: 'templates47ReportsHub.typeTemplate' },
 ];
 
-const TYPE_LABEL: Record<ReportType, string> = {
-  auto:     'Tự động',
-  custom:   'Tuỳ chỉnh',
-  template: 'Từ mẫu',
+const TYPE_LABEL_KEY: Record<ReportType, string> = {
+  auto:     'templates47ReportsHub.typeAuto',
+  custom:   'templates47ReportsHub.typeCustom',
+  template: 'templates47ReportsHub.typeTemplate',
 };
 
 const FORMAT_LABEL: Record<ReportFormat, string> = {
@@ -97,11 +98,11 @@ const FORMAT_LABEL: Record<ReportFormat, string> = {
   csv:  'CSV',
 };
 
-const STATUS_META: Record<ReportStatus, { label: string; variant: 'default' | 'success' | 'warning' | 'error' | 'info' }> = {
-  draft:     { label: 'Bản nháp',    variant: 'default' },
-  scheduled: { label: 'Đã lên lịch', variant: 'info' },
-  published: { label: 'Đã phát hành', variant: 'success' },
-  failed:    { label: 'Thất bại',    variant: 'error' },
+const STATUS_META: Record<ReportStatus, { labelKey: string; variant: 'default' | 'success' | 'warning' | 'error' | 'info' }> = {
+  draft:     { labelKey: 'templates47ReportsHub.statusDraft',     variant: 'default' },
+  scheduled: { labelKey: 'templates47ReportsHub.statusScheduled', variant: 'info' },
+  published: { labelKey: 'templates47ReportsHub.statusPublished', variant: 'success' },
+  failed:    { labelKey: 'templates47ReportsHub.statusFailed',    variant: 'error' },
 };
 
 // ============================================================================
@@ -121,6 +122,7 @@ const MOCK_REPORTS: ReportRow[] = [
 // ============================================================================
 
 export default function ReportsHubPage() {
+  const t = useT();
   const [reports, setReports] = useState<ReportRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -162,31 +164,31 @@ export default function ReportsHubPage() {
     const scheduled = reports.filter((r) => r.status === 'scheduled').length;
     const published = reports.filter((r) => r.status === 'published').length;
     return [
-      { label: 'Tổng báo cáo',       value: reports.length, icon: FileStack,    tone: 'text-[var(--text-primary)]' },
-      { label: 'Bản nháp',           value: draft,          icon: Clock,        tone: 'text-[var(--state-warning)]' },
-      { label: 'Đã lên lịch',        value: scheduled,      icon: CalendarCheck, tone: 'text-[var(--primary-gold-dark)]' },
-      { label: 'Đã phát hành',       value: published,      icon: Share2,       tone: 'text-[var(--state-success)]' },
+      { label: t('templates47ReportsHub.statTotal'),       value: reports.length, icon: FileStack,    tone: 'text-[var(--text-primary)]' },
+      { label: t('templates47ReportsHub.statusDraft'),     value: draft,          icon: Clock,        tone: 'text-[var(--state-warning)]' },
+      { label: t('templates47ReportsHub.statusScheduled'), value: scheduled,      icon: CalendarCheck, tone: 'text-[var(--primary-gold-dark)]' },
+      { label: t('templates47ReportsHub.statusPublished'), value: published,      icon: Share2,       tone: 'text-[var(--state-success)]' },
     ];
-  }, [reports]);
+  }, [reports, t]);
 
   return (
     <>
       <PageHeader
-        title="Báo cáo"
-        description="Tạo, lên lịch và chia sẻ báo cáo BI đa-section. Phase 2 (F-038)."
+        title={t('templates47ReportsHub.pageTitle')}
+        description={t('templates47ReportsHub.pageDescription')}
         actions={
           <>
             <Badge variant="info">Phase 2 · F-038</Badge>
             <a href="/p2/reports/auto">
               <Button variant="secondary" size="md">
                 <Sparkles className="w-4 h-4 mr-2 text-[var(--primary-gold-dark)]" />
-                Tự động
+                {t('templates47ReportsHub.typeAuto')}
               </Button>
             </a>
             <a href="/p2/reports/builder">
               <Button variant="primary" size="md">
                 <Plus className="w-4 h-4 mr-2" />
-                Tạo báo cáo
+                {t('templates47ReportsHub.btnCreate')}
               </Button>
             </a>
           </>
@@ -198,8 +200,8 @@ export default function ReportsHubPage() {
           <ErrorBanner
             problem={{
               ...problem,
-              title:  'Đang dùng dữ liệu mẫu',
-              detail: `${problem.title}${problem.detail ? ' — ' + problem.detail : ''}. Bảng dưới hiển thị fixture demo — kiểm tra ai-orchestrator (8093) hoặc gateway routing.`,
+              title:  t('templates47ReportsHub.errFallbackTitle'),
+              detail: `${problem.title}${problem.detail ? ' — ' + problem.detail : ''}. ${t('templates47ReportsHub.errFallbackDetail')}`,
             }}
           />
         )}
@@ -231,34 +233,34 @@ export default function ReportsHubPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm theo tên báo cáo hoặc người tạo..."
+              placeholder={t('templates47ReportsHub.searchPlaceholder')}
               className="w-full pl-9 pr-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] transition-all"
             />
           </div>
           <div className="flex items-center gap-1.5 overflow-x-auto">
-            {TYPE_FILTERS.map((t) => (
+            {TYPE_FILTERS.map((tf) => (
               <button
-                key={t.value}
-                onClick={() => setTypeFilter(t.value)}
+                key={tf.value}
+                onClick={() => setTypeFilter(tf.value)}
                 className={cn(
                   'px-3 py-1.5 text-xs font-medium rounded-sm-custom transition-colors whitespace-nowrap',
-                  typeFilter === t.value
+                  typeFilter === tf.value
                     ? 'bg-[var(--primary-gold)]/15 text-[var(--text-primary)] border border-[var(--primary-gold)]/40'
                     : 'text-[var(--text-secondary)] hover:bg-[var(--bg-app)] border border-transparent',
                 )}
               >
-                {t.label}
+                {t(tf.labelKey)}
               </button>
             ))}
           </div>
           <div className="flex items-center gap-1 border-l border-[var(--border-color)] pl-3 ml-1">
-            <a href="/p2/reports/distribution" title="Lịch phát hành" className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] rounded-sm-custom transition-colors">
+            <a href="/p2/reports/distribution" title={t('templates47ReportsHub.tooltipDistribution')} className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] rounded-sm-custom transition-colors">
               <Calendar className="w-4 h-4" />
             </a>
-            <a href="/p2/reports/templates" title="Mẫu báo cáo" className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] rounded-sm-custom transition-colors">
+            <a href="/p2/reports/templates" title={t('templates47ReportsHub.tooltipTemplates')} className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] rounded-sm-custom transition-colors">
               <BookOpen className="w-4 h-4" />
             </a>
-            <button title="Bộ lọc nâng cao" className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] rounded-sm-custom transition-colors">
+            <button title={t('templates47ReportsHub.tooltipAdvancedFilter')} className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-app)] rounded-sm-custom transition-colors">
               <ListFilter className="w-4 h-4" />
             </button>
           </div>
@@ -270,26 +272,26 @@ export default function ReportsHubPage() {
             <table className="w-full text-sm text-left">
               <thead className="bg-[var(--bg-app)] border-b border-[var(--border-color)] text-[11px] font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                 <tr>
-                  <th className="px-5 py-3">Tên báo cáo</th>
-                  <th className="px-5 py-3">Loại</th>
-                  <th className="px-5 py-3">Định dạng</th>
-                  <th className="px-5 py-3">Người tạo</th>
-                  <th className="px-5 py-3">Cập nhật</th>
-                  <th className="px-5 py-3">Trạng thái</th>
-                  <th className="px-5 py-3 text-right">Thao tác</th>
+                  <th className="px-5 py-3">{t('templates47ReportsHub.colTitle')}</th>
+                  <th className="px-5 py-3">{t('templates47ReportsHub.colType')}</th>
+                  <th className="px-5 py-3">{t('templates47ReportsHub.colFormat')}</th>
+                  <th className="px-5 py-3">{t('templates47ReportsHub.colOwner')}</th>
+                  <th className="px-5 py-3">{t('templates47ReportsHub.colUpdated')}</th>
+                  <th className="px-5 py-3">{t('templates47ReportsHub.colStatus')}</th>
+                  <th className="px-5 py-3 text-right">{t('templates47ReportsHub.colActions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-color)]/60">
                 {loading ? (
                   <tr><td colSpan={7} className="px-5 py-16 text-center text-[var(--text-secondary)]">
-                    <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> Đang tải...
+                    <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> {t('templates47ReportsHub.loading')}
                   </td></tr>
                 ) : filtered.length === 0 ? (
                   <tr><td colSpan={7} className="px-5 py-16 text-center">
                     <FileStack className="w-10 h-10 mx-auto text-[var(--text-secondary)]/40 mb-3" />
-                    <p className="text-sm text-[var(--text-secondary)]">Chưa có báo cáo nào khớp bộ lọc.</p>
+                    <p className="text-sm text-[var(--text-secondary)]">{t('templates47ReportsHub.emptyState')}</p>
                     <a href="/p2/reports/builder" className="inline-flex items-center mt-3 text-xs font-medium text-[var(--primary-gold-dark)] hover:underline">
-                      Tạo báo cáo đầu tiên <ArrowRight className="w-3 h-3 ml-1" />
+                      {t('templates47ReportsHub.emptyCreateFirst')} <ArrowRight className="w-3 h-3 ml-1" />
                     </a>
                   </td></tr>
                 ) : (
@@ -304,8 +306,8 @@ export default function ReportsHubPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <Sparkles className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Báo cáo "Tự động" gọi <span className="font-mono">llm_router.py</span> để tóm tắt insight (K-3). Mặc định Qwen 2.5 nội bộ; chỉ chuyển AI ngoài
-            khi workspace bật <code>consent_external=true</code> (K-4) và không có PII (K-5).
+            {t('templates47ReportsHub.footerText1')} <span className="font-mono">llm_router.py</span> {t('templates47ReportsHub.footerText2')}
+            <code>consent_external=true</code> {t('templates47ReportsHub.footerText3')}
           </p>
         </div>
       </div>
@@ -318,6 +320,7 @@ export default function ReportsHubPage() {
 // ============================================================================
 
 function AiSuggestionBanner() {
+  const t = useT();
   return (
     <div className="bg-gradient-to-br from-[var(--primary-gold)]/10 to-[var(--bg-card)] border border-[var(--primary-gold)]/30 rounded-lg-custom p-5 shadow-soft-sm">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -326,16 +329,16 @@ function AiSuggestionBanner() {
             <Sparkles className="w-5 h-5 text-[var(--primary-gold-dark)]" />
           </div>
           <div>
-            <h3 className="font-serif text-base text-[var(--text-primary)]">Gợi ý từ Kaori</h3>
+            <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates47ReportsHub.aiSuggestionTitle')}</h3>
             <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed max-w-2xl">
-              Dữ liệu tháng 4 cho thấy tỷ lệ churn vùng APAC tăng <span className="font-medium text-[var(--text-primary)]">12%</span>. Nên tạo báo cáo
-              <span className="font-medium text-[var(--text-primary)]"> "ROI theo vùng — APAC"</span> để soi điểm rò rỉ chi phí.
+              {t('templates47ReportsHub.aiSuggestionText1')} <span className="font-medium text-[var(--text-primary)]">12%</span>{t('templates47ReportsHub.aiSuggestionText2')}
+              <span className="font-medium text-[var(--text-primary)]"> {t('templates47ReportsHub.aiSuggestionReportName')}</span> {t('templates47ReportsHub.aiSuggestionText3')}
             </p>
           </div>
         </div>
         <a href="/p2/reports/builder?suggestion=apac-roi">
           <Button variant="primary" size="sm">
-            Tạo ngay
+            {t('templates47ReportsHub.btnCreateNow')}
             <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
           </Button>
         </a>
@@ -345,6 +348,7 @@ function AiSuggestionBanner() {
 }
 
 function ReportRowItem({ report: r }: { report: ReportRow }) {
+  const t = useT();
   const meta = STATUS_META[r.status];
   const ownerInitials = r.owner_email.slice(0, 2).toUpperCase();
 
@@ -359,12 +363,12 @@ function ReportRowItem({ report: r }: { report: ReportRow }) {
             <a href={`/p2/reports/${r.id}`} className="text-sm font-medium text-[var(--text-primary)] group-hover:text-[var(--primary-gold-dark)] transition-colors">
               {r.title}
             </a>
-            <span className="text-[11px] text-[var(--text-secondary)] mt-0.5">ID: {r.id}</span>
+            <span className="text-[11px] text-[var(--text-secondary)] mt-0.5">{t('templates47ReportsHub.idLabel', { id: r.id })}</span>
           </div>
         </div>
       </td>
       <td className="px-5 py-4">
-        <Badge variant={r.type === 'auto' ? 'info' : r.type === 'custom' ? 'warning' : 'default'}>{TYPE_LABEL[r.type]}</Badge>
+        <Badge variant={r.type === 'auto' ? 'info' : r.type === 'custom' ? 'warning' : 'default'}>{t(TYPE_LABEL_KEY[r.type])}</Badge>
       </td>
       <td className="px-5 py-4">
         <span className="inline-flex items-center gap-1 text-xs text-[var(--text-secondary)]">
@@ -380,7 +384,7 @@ function ReportRowItem({ report: r }: { report: ReportRow }) {
         </div>
       </td>
       <td className="px-5 py-4 text-xs text-[var(--text-secondary)]">{formatRelative(r.updated_at)}</td>
-      <td className="px-5 py-4"><Badge variant={meta.variant}>{meta.label}</Badge></td>
+      <td className="px-5 py-4"><Badge variant={meta.variant}>{t(meta.labelKey)}</Badge></td>
       <td className="px-5 py-4 text-right">
         <div className="inline-flex items-center gap-1">
           {/* F-038 distribution (PR #118) — only ready reports can be
@@ -390,25 +394,25 @@ function ReportRowItem({ report: r }: { report: ReportRow }) {
           {r.status === 'published' ? (
             <a
               href={`/p2/reports/distribution?report=${r.id}`}
-              title="Phát hành / gửi cho người khác"
+              title={t('templates47ReportsHub.tooltipPublish')}
               className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--primary-gold-dark)] hover:bg-[var(--bg-app)] rounded-sm-custom transition-colors"
             >
               <Send className="w-4 h-4" />
             </a>
           ) : (
             <button
-              title="Chỉ phát hành được khi báo cáo ở trạng thái 'Đã phát hành'"
+              title={t('templates47ReportsHub.tooltipPublishDisabled', { status: t('templates47ReportsHub.statusPublished') })}
               disabled
               className="p-1.5 text-[var(--text-secondary)]/40 rounded-sm-custom cursor-not-allowed"
             >
               <Send className="w-4 h-4" />
             </button>
           )}
-          <button title="Xoá" className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--state-error)] hover:bg-[var(--bg-app)] rounded-sm-custom transition-colors">
+          <button title={t('templates47ReportsHub.tooltipDelete')} className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--state-error)] hover:bg-[var(--bg-app)] rounded-sm-custom transition-colors">
             <Trash2 className="w-4 h-4" />
           </button>
           <a href={`/p2/reports/${r.id}`} className="ml-1 px-3 py-1.5 text-xs font-medium text-[var(--text-primary)] border border-[var(--border-color)] hover:bg-[var(--bg-app)] rounded-sm-custom transition-colors">
-            Xem
+            {t('templates47ReportsHub.viewLink')}
           </a>
         </div>
       </td>

@@ -1,0 +1,135 @@
+{
+  "exportPage.title": {
+    "vi": "Xuất báo cáo CSV",
+    "en": "Export CSV report",
+    "ja": "CSVレポートをエクスポート",
+    "ko": "CSV 보고서 내보내기",
+    "zh": "导出 CSV 报告"
+  },
+  "exportPage.description": {
+    "vi": "Tải bảng tính chứa tất cả doanh nghiệp, hạn mức, sử dụng và doanh thu trong kỳ chọn. File mã hoá UTF-8 với BOM, mở trực tiếp trong Excel mà không lỗi tiếng Việt.",
+    "en": "Download a spreadsheet with all enterprises, quotas, usage, and revenue for the selected period. The file is UTF-8 with BOM encoded, opening directly in Excel without Vietnamese-text errors.",
+    "ja": "選択した期間のすべての企業、上限、利用状況、売上を含む表をダウンロードします。ファイルはBOM付きUTF-8でエンコードされ、Excelで直接開いてもベトナム語の文字化けは発生しません。",
+    "ko": "선택한 기간의 모든 기업, 한도, 사용량, 매출이 포함된 스프레드시트를 다운로드합니다. 파일은 BOM 포함 UTF-8로 인코딩되어 Excel에서 바로 열어도 베트남어 깨짐이 없습니다.",
+    "zh": "下载包含所选期间所有企业、配额、使用情况和营收的表格。文件采用带 BOM 的 UTF-8 编码，在 Excel 中直接打开不会出现越南语乱码。"
+  },
+  "exportPage.labelMonth": {
+    "vi": "Kỳ thanh toán",
+    "en": "Billing period",
+    "ja": "請求期間",
+    "ko": "청구 기간",
+    "zh": "计费周期"
+  },
+  "exportPage.hintMonthEmpty": {
+    "vi": "Để trống = kỳ hiện tại",
+    "en": "Leave empty = current period",
+    "ja": "空欄=現在の期間",
+    "ko": "비워두면 현재 기간",
+    "zh": "留空=当前周期"
+  },
+  "exportPage.labelPlan": {
+    "vi": "Gói (tuỳ chọn)",
+    "en": "Plan (optional)",
+    "ja": "プラン（任意）",
+    "ko": "요금제 (선택)",
+    "zh": "套餐（可选）"
+  },
+  "exportPage.allPlans": {
+    "vi": "Tất cả gói",
+    "en": "All plans",
+    "ja": "すべてのプラン",
+    "ko": "모든 요금제",
+    "zh": "所有套餐"
+  },
+  "exportPage.labelStatus": {
+    "vi": "Trạng thái (tuỳ chọn)",
+    "en": "Status (optional)",
+    "ja": "ステータス（任意）",
+    "ko": "상태 (선택)",
+    "zh": "状态（可选）"
+  },
+  "exportPage.allStatuses": {
+    "vi": "Tất cả trạng thái",
+    "en": "All statuses",
+    "ja": "すべてのステータス",
+    "ko": "모든 상태",
+    "zh": "所有状态"
+  },
+  "exportPage.statusNormal": {
+    "vi": "Bình thường",
+    "en": "Normal",
+    "ja": "正常",
+    "ko": "정상",
+    "zh": "正常"
+  },
+  "exportPage.statusWarn": {
+    "vi": "Cảnh báo",
+    "en": "Warning",
+    "ja": "警告",
+    "ko": "경고",
+    "zh": "警告"
+  },
+  "exportPage.statusCritical": {
+    "vi": "Nguy hiểm",
+    "en": "Critical",
+    "ja": "危険",
+    "ko": "위험",
+    "zh": "危险"
+  },
+  "exportPage.statusOverage": {
+    "vi": "Vượt hạn mức",
+    "en": "Over quota",
+    "ja": "超過",
+    "ko": "한도 초과",
+    "zh": "超出配额"
+  },
+  "exportPage.errFormatPrefix": {
+    "vi": "Định dạng kỳ phải là",
+    "en": "Period format must be",
+    "ja": "期間の形式は",
+    "ko": "기간 형식은",
+    "zh": "周期格式必须为"
+  },
+  "exportPage.errFormatExample": {
+    "vi": ", ví dụ",
+    "en": ", e.g.",
+    "ja": "、例：",
+    "ko": ", 예:",
+    "zh": "，例如"
+  },
+  "exportPage.downloadedPrefix": {
+    "vi": "Đã tải",
+    "en": "Downloaded",
+    "ja": "ダウンロード完了",
+    "ko": "다운로드 완료",
+    "zh": "已下载"
+  },
+  "exportPage.downloadCsv": {
+    "vi": "Tải xuống CSV",
+    "en": "Download CSV",
+    "ja": "CSVをダウンロード",
+    "ko": "CSV 다운로드",
+    "zh": "下载 CSV"
+  },
+  "exportPage.columnsInFile": {
+    "vi": "Cột trong file",
+    "en": "Columns in file",
+    "ja": "ファイル内の項目",
+    "ko": "파일 내 컬럼",
+    "zh": "文件中的字段"
+  },
+  "exportPage.maxRowsPrefix": {
+    "vi": "Tối đa 5,000 dòng mỗi lần xuất. Nếu vượt, header",
+    "en": "Up to 5,000 rows per export. If exceeded, the header",
+    "ja": "1回のエクスポートで最大5,000行。超過した場合、ヘッダー",
+    "ko": "내보내기당 최대 5,000행. 초과 시 헤더",
+    "zh": "每次导出最多 5,000 行。超出时，请求头"
+  },
+  "exportPage.maxRowsMid": {
+    "vi": "sẽ trả về",
+    "en": "will return",
+    "ja": "が返す値は",
+    "ko": "가 반환하는 값은",
+    "zh": "将返回"
+  }
+}

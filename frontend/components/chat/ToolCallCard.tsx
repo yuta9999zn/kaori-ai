@@ -9,6 +9,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronRight, Wrench, Check, X, Loader2 } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { useT } from "@/lib/i18n/provider";
 import type { ToolCallRecord } from "./useChatStream";
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export function ToolCallCard({ call }: Props) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const pending = call.ok === undefined;
   const ok      = call.ok === true;
@@ -58,7 +60,7 @@ export function ToolCallCard({ call }: Props) {
           {Object.keys(call.args).length > 0 && (
             <div>
               <div className="text-[10px] uppercase tracking-wider text-[var(--color-ink-muted)] mb-0.5">
-                Tham số
+                {t('chatToolcallcard.paramsLabel')}
               </div>
               <pre className="font-mono text-[11px] text-[var(--color-ink)] whitespace-pre-wrap break-words">
                 {JSON.stringify(call.args, null, 2)}
@@ -68,7 +70,7 @@ export function ToolCallCard({ call }: Props) {
           {call.preview && (
             <div>
               <div className="text-[10px] uppercase tracking-wider text-[var(--color-ink-muted)] mb-0.5">
-                Kết quả
+                {t('chatToolcallcard.resultLabel')}
               </div>
               <pre className="font-mono text-[11px] text-[var(--color-ink)] whitespace-pre-wrap break-words">
                 {call.preview}

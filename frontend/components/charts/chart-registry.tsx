@@ -17,6 +17,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { ReactNode } from "react";
+import { useT } from "@/lib/i18n/provider";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -272,6 +273,7 @@ function RPie({ data, inner }: { data: Record<string, unknown>[]; inner?: boolea
 }
 
 function RScatter({ data }: { data: Record<string, unknown>[] }) {
+  const t = useT();
   if (!data.length) return <Empty />;
   const clusters = data[0]["cluster"] !== undefined
     ? [...new Set(data.map((r) => String(r["cluster"])))]
@@ -289,7 +291,7 @@ function RScatter({ data }: { data: Record<string, unknown>[] }) {
           {clusters.map((cl, i) => (
             <Scatter
               key={cl}
-              name={`Nhóm ${cl}`}
+              name={t('chartsChartRegistry.groupLabel', { cluster: cl })}
               data={data.filter((r) => String(r["cluster"]) === cl)}
               fill={CHART_COLORS[i % CHART_COLORS.length]}
             />
@@ -558,9 +560,10 @@ function RGauge({ data }: { data: Record<string, unknown>[] }) {
 }
 
 function Empty() {
+  const t = useT();
   return (
     <div className="flex items-center justify-center h-32 text-gray-400 text-sm">
-      Không có dữ liệu
+      {t('chartsChartRegistry.noData')}
     </div>
   );
 }

@@ -1,0 +1,380 @@
+{
+  "templates68AuthzRbac.roleDescManager": {
+    "vi": "Toàn quyền — quản trị member, gói cước, tích hợp. Mỗi workspace cần ≥ 1 MANAGER.",
+    "en": "Full admin — manage members, plan, integrations. Every workspace needs ≥ 1 MANAGER.",
+    "ja": "フルアクセス — メンバー、プラン、連携の管理。各ワークスペースに MANAGER が1名以上必要です。",
+    "ko": "전체 관리 권한 — 멤버, 요금제, 연동 관리. 워크스페이스마다 MANAGER가 1명 이상 필요합니다.",
+    "zh": "完全管理权限 — 管理成员、套餐、集成。每个工作区至少需要 1 名 MANAGER。"
+  },
+  "templates68AuthzRbac.roleDescOperator": {
+    "vi": "Chạy pipeline, edit cảnh báo, quản lý workflow.",
+    "en": "Run pipelines, edit alerts, manage workflows.",
+    "ja": "パイプラインの実行、アラートの編集、ワークフローの管理。",
+    "ko": "파이프라인 실행, 알림 편집, 워크플로우 관리.",
+    "zh": "运行数据管道、编辑告警、管理工作流。"
+  },
+  "templates68AuthzRbac.roleDescAnalyst": {
+    "vi": "Đọc/ghi insight + decision. Chỉ-đọc cài đặt + billing.",
+    "en": "Read/write insights + decisions. Read-only on settings + billing.",
+    "ja": "インサイト・決定の読み書き。設定・請求は閲覧専用。",
+    "ko": "인사이트 + 결정 읽기/쓰기. 설정 + 청구는 읽기 전용.",
+    "zh": "可读写洞察和决策。设置和账单仅可查看。"
+  },
+  "templates68AuthzRbac.roleDescViewer": {
+    "vi": "Chỉ-đọc mọi thứ — phù hợp stakeholder ngoài team data.",
+    "en": "Read-only on everything — suited for stakeholders outside the data team.",
+    "ja": "すべて閲覧専用 — データチーム外の関係者に最適。",
+    "ko": "모든 항목 읽기 전용 — 데이터 팀 외부 이해관계자에게 적합.",
+    "zh": "所有内容仅可查看 — 适合数据团队之外的利益相关者。"
+  },
+  "templates68AuthzRbac.stateActive": {
+    "vi": "Hoạt động",
+    "en": "Active",
+    "ja": "有効",
+    "ko": "활성",
+    "zh": "已启用"
+  },
+  "templates68AuthzRbac.stateInvited": {
+    "vi": "Chờ xác nhận",
+    "en": "Pending confirmation",
+    "ja": "確認待ち",
+    "ko": "확인 대기 중",
+    "zh": "待确认"
+  },
+  "templates68AuthzRbac.stateSuspended": {
+    "vi": "Tạm khoá",
+    "en": "Suspended",
+    "ja": "一時停止",
+    "ko": "일시 정지",
+    "zh": "已暂停"
+  },
+  "templates68AuthzRbac.errCannotDemoteTitle": {
+    "vi": "Không thể hạ vai trò",
+    "en": "Cannot demote role",
+    "ja": "役割を降格できません",
+    "ko": "역할을 강등할 수 없습니다",
+    "zh": "无法降级角色"
+  },
+  "templates68AuthzRbac.errCannotDemoteDetail": {
+    "vi": "Workspace cần ít nhất 1 MANAGER hoạt động. Chỉ định MANAGER mới trước khi hạ vai trò người này.",
+    "en": "The workspace needs at least 1 active MANAGER. Assign a new MANAGER before demoting this person.",
+    "ja": "ワークスペースには少なくとも1名の有効な MANAGER が必要です。この人を降格する前に、新しい MANAGER を指定してください。",
+    "ko": "워크스페이스에는 활성 상태의 MANAGER가 최소 1명 필요합니다. 이 사용자를 강등하기 전에 새 MANAGER를 지정하세요.",
+    "zh": "工作区至少需要 1 名有效的 MANAGER。请在降级此人之前先指定新的 MANAGER。"
+  },
+  "templates68AuthzRbac.successRoleChanged": {
+    "vi": "Đã đổi vai trò {email} → {role}",
+    "en": "Changed {email}'s role → {role}",
+    "ja": "{email} の役割を {role} に変更しました",
+    "ko": "{email}의 역할을 {role}(으)로 변경했습니다",
+    "zh": "已将 {email} 的角色更改为 {role}"
+  },
+  "templates68AuthzRbac.errCannotSuspendLastManagerTitle": {
+    "vi": "Không thể khoá MANAGER cuối cùng",
+    "en": "Cannot suspend the last MANAGER",
+    "ja": "最後の MANAGER を停止できません",
+    "ko": "마지막 MANAGER를 정지할 수 없습니다",
+    "zh": "无法暂停最后一名 MANAGER"
+  },
+  "templates68AuthzRbac.errCannotSuspendLastManagerDetail": {
+    "vi": "Hãy chỉ định MANAGER khác trước khi khoá người này.",
+    "en": "Assign another MANAGER before suspending this person.",
+    "ja": "この人を停止する前に、別の MANAGER を指定してください。",
+    "ko": "이 사용자를 정지하기 전에 다른 MANAGER를 지정하세요.",
+    "zh": "请在暂停此人之前先指定其他 MANAGER。"
+  },
+  "templates68AuthzRbac.confirmSuspend": {
+    "vi": "Tạm khoá {email}? Họ sẽ không đăng nhập được cho đến khi mở lại.",
+    "en": "Suspend {email}? They won't be able to sign in until reactivated.",
+    "ja": "{email} を一時停止しますか？再度有効化するまでサインインできなくなります。",
+    "ko": "{email}을(를) 일시 정지하시겠습니까? 다시 활성화할 때까지 로그인할 수 없습니다.",
+    "zh": "确定要暂停 {email} 吗？在重新启用之前他们将无法登录。"
+  },
+  "templates68AuthzRbac.successSuspended": {
+    "vi": "Đã tạm khoá {email}",
+    "en": "Suspended {email}",
+    "ja": "{email} を一時停止しました",
+    "ko": "{email}을(를) 일시 정지했습니다",
+    "zh": "已暂停 {email}"
+  },
+  "templates68AuthzRbac.successReactivated": {
+    "vi": "Đã mở lại {email}",
+    "en": "Reactivated {email}",
+    "ja": "{email} を再有効化しました",
+    "ko": "{email}을(를) 다시 활성화했습니다",
+    "zh": "已重新启用 {email}"
+  },
+  "templates68AuthzRbac.errCannotSelfRemoveTitle": {
+    "vi": "Không thể tự xoá",
+    "en": "Cannot remove yourself",
+    "ja": "自分自身を削除できません",
+    "ko": "자신을 삭제할 수 없습니다",
+    "zh": "无法删除自己"
+  },
+  "templates68AuthzRbac.errCannotSelfRemoveDetail": {
+    "vi": "Bạn không thể tự xoá khỏi workspace.",
+    "en": "You cannot remove yourself from the workspace.",
+    "ja": "自分自身をワークスペースから削除することはできません。",
+    "ko": "본인을 워크스페이스에서 삭제할 수 없습니다.",
+    "zh": "您无法将自己从工作区中删除。"
+  },
+  "templates68AuthzRbac.errCannotRemoveLastManagerTitle": {
+    "vi": "Không thể xoá MANAGER cuối cùng",
+    "en": "Cannot remove the last MANAGER",
+    "ja": "最後の MANAGER を削除できません",
+    "ko": "마지막 MANAGER를 삭제할 수 없습니다",
+    "zh": "无法删除最后一名 MANAGER"
+  },
+  "templates68AuthzRbac.errCannotRemoveLastManagerDetail": {
+    "vi": "Hãy chỉ định MANAGER khác trước khi xoá người này.",
+    "en": "Assign another MANAGER before removing this person.",
+    "ja": "この人を削除する前に、別の MANAGER を指定してください。",
+    "ko": "이 사용자를 삭제하기 전에 다른 MANAGER를 지정하세요.",
+    "zh": "请在删除此人之前先指定其他 MANAGER。"
+  },
+  "templates68AuthzRbac.confirmRemove": {
+    "vi": "Xoá {email} khỏi workspace? Hành động này không thể hoàn tác.",
+    "en": "Remove {email} from the workspace? This action cannot be undone.",
+    "ja": "{email} をワークスペースから削除しますか？この操作は元に戻せません。",
+    "ko": "{email}을(를) 워크스페이스에서 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+    "zh": "确定要将 {email} 从工作区中删除吗？此操作无法撤销。"
+  },
+  "templates68AuthzRbac.successRemoved": {
+    "vi": "Đã xoá {email} khỏi workspace",
+    "en": "Removed {email} from the workspace",
+    "ja": "{email} をワークスペースから削除しました",
+    "ko": "{email}을(를) 워크스페이스에서 삭제했습니다",
+    "zh": "已将 {email} 从工作区中删除"
+  },
+  "templates68AuthzRbac.pageTitle": {
+    "vi": "RBAC · Vai trò & thành viên",
+    "en": "RBAC · Roles & Members",
+    "ja": "RBAC・役割とメンバー",
+    "ko": "RBAC · 역할 및 멤버",
+    "zh": "RBAC · 角色与成员"
+  },
+  "templates68AuthzRbac.pageDescription": {
+    "vi": "Quản lý 4 vai trò chuẩn cho workspace. Chỉ MANAGER chỉnh sửa được.",
+    "en": "Manage the 4 standard roles for the workspace. Only MANAGER can edit.",
+    "ja": "ワークスペースの4つの標準ロールを管理します。編集できるのは MANAGER のみです。",
+    "ko": "워크스페이스의 4가지 표준 역할을 관리합니다. MANAGER만 편집할 수 있습니다.",
+    "zh": "管理工作区的 4 种标准角色。仅 MANAGER 可以编辑。"
+  },
+  "templates68AuthzRbac.btnRefresh": {
+    "vi": "Làm mới",
+    "en": "Refresh",
+    "ja": "更新",
+    "ko": "새로고침",
+    "zh": "刷新"
+  },
+  "templates68AuthzRbac.btnInviteMember": {
+    "vi": "Mời thành viên",
+    "en": "Invite member",
+    "ja": "メンバーを招待",
+    "ko": "멤버 초대",
+    "zh": "邀请成员"
+  },
+  "templates68AuthzRbac.warnMin1ManagerLabel": {
+    "vi": "Cảnh báo min-1-MANAGER:",
+    "en": "min-1-MANAGER warning:",
+    "ja": "min-1-MANAGER 警告：",
+    "ko": "min-1-MANAGER 경고:",
+    "zh": "min-1-MANAGER 警告："
+  },
+  "templates68AuthzRbac.warnMin1ManagerText": {
+    "vi": "workspace chỉ còn 1 MANAGER hoạt động. Hệ thống sẽ chặn mọi thao tác hạ/khoá/xoá người này (HTTP 409).",
+    "en": "the workspace has only 1 active MANAGER left. The system will block any demote/suspend/remove action on this person (HTTP 409).",
+    "ja": "ワークスペースには有効な MANAGER が1名しか残っていません。この人物に対する降格・停止・削除操作はすべてブロックされます（HTTP 409）。",
+    "ko": "워크스페이스에 활성 MANAGER가 1명만 남아 있습니다. 이 사용자에 대한 강등/정지/삭제 작업은 모두 차단됩니다 (HTTP 409).",
+    "zh": "工作区仅剩 1 名有效 MANAGER。系统将阻止对此人的任何降级/暂停/删除操作（HTTP 409）。"
+  },
+  "templates68AuthzRbac.notManagerPrefix": {
+    "vi": "Bạn đang ở vai trò",
+    "en": "You are currently",
+    "ja": "現在のロールは",
+    "ko": "현재 역할은",
+    "zh": "您当前的角色是"
+  },
+  "templates68AuthzRbac.notManagerSuffix": {
+    "vi": ". Chỉ MANAGER mới có thể mời, đổi vai trò, hoặc xoá thành viên.",
+    "en": ". Only MANAGER can invite, change roles, or remove members.",
+    "ja": "。招待、役割変更、メンバー削除ができるのは MANAGER のみです。",
+    "ko": ". MANAGER만 멤버를 초대하거나 역할을 변경하거나 삭제할 수 있습니다.",
+    "zh": "。只有 MANAGER 才能邀请、更改角色或删除成员。"
+  },
+  "templates68AuthzRbac.searchPlaceholder": {
+    "vi": "Tìm theo email hoặc tên...",
+    "en": "Search by email or name...",
+    "ja": "メールまたは名前で検索...",
+    "ko": "이메일 또는 이름으로 검색...",
+    "zh": "按邮箱或姓名搜索..."
+  },
+  "templates68AuthzRbac.optionAllRoles": {
+    "vi": "Mọi vai trò",
+    "en": "All roles",
+    "ja": "すべてのロール",
+    "ko": "모든 역할",
+    "zh": "所有角色"
+  },
+  "templates68AuthzRbac.colMember": {
+    "vi": "Thành viên",
+    "en": "Member",
+    "ja": "メンバー",
+    "ko": "멤버",
+    "zh": "成员"
+  },
+  "templates68AuthzRbac.colRole": {
+    "vi": "Vai trò",
+    "en": "Role",
+    "ja": "ロール",
+    "ko": "역할",
+    "zh": "角色"
+  },
+  "templates68AuthzRbac.colState": {
+    "vi": "Trạng thái",
+    "en": "State",
+    "ja": "状態",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "templates68AuthzRbac.colLastActive": {
+    "vi": "Hoạt động gần nhất",
+    "en": "Last active",
+    "ja": "最終アクティブ",
+    "ko": "최근 활동",
+    "zh": "最近活跃"
+  },
+  "templates68AuthzRbac.emptyNoMembers": {
+    "vi": "Không có thành viên phù hợp.",
+    "en": "No matching members.",
+    "ja": "該当するメンバーがいません。",
+    "ko": "일치하는 멤버가 없습니다.",
+    "zh": "没有匹配的成员。"
+  },
+  "templates68AuthzRbac.k12Prefix": {
+    "vi": "Mọi thao tác lấy",
+    "en": "Every operation reads",
+    "ja": "すべての操作は",
+    "ko": "모든 작업은",
+    "zh": "所有操作使用"
+  },
+  "templates68AuthzRbac.k12Suffix": {
+    "vi": "từ path param, không bao giờ từ query string.",
+    "en": "from the path param, never from the query string.",
+    "ja": "をパスパラメータから取得し、クエリ文字列からは取得しません。",
+    "ko": "를 path param에서 가져오며, 쿼리 문자열에서는 절대 가져오지 않습니다.",
+    "zh": "，均来自路径参数，绝不来自查询字符串。"
+  },
+  "templates68AuthzRbac.k13Text": {
+    "vi": "Idempotency-Key tự thêm vào mọi POST/PATCH/DELETE (TTL 24h Redis).",
+    "en": "Idempotency-Key is automatically added to every POST/PATCH/DELETE (TTL 24h Redis).",
+    "ja": "Idempotency-Key はすべての POST/PATCH/DELETE に自動的に付加されます（Redis TTL 24時間）。",
+    "ko": "Idempotency-Key는 모든 POST/PATCH/DELETE에 자동으로 추가됩니다 (Redis TTL 24시간).",
+    "zh": "Idempotency-Key 会自动添加到每个 POST/PATCH/DELETE 请求中（Redis TTL 24 小时）。"
+  },
+  "templates68AuthzRbac.k14Prefix": {
+    "vi": "Lỗi server trả về",
+    "en": "Server errors return",
+    "ja": "サーバーエラーは",
+    "ko": "서버 오류는",
+    "zh": "服务器错误返回"
+  },
+  "templates68AuthzRbac.k14Suffix": {
+    "vi": ", hiển thị qua ErrorBanner.",
+    "en": ", shown via ErrorBanner.",
+    "ja": "の形式で返され、ErrorBanner に表示されます。",
+    "ko": " 형식으로 반환되며 ErrorBanner를 통해 표시됩니다.",
+    "zh": "，通过 ErrorBanner 显示。"
+  },
+  "templates68AuthzRbac.labelYou": {
+    "vi": "bạn",
+    "en": "you",
+    "ja": "あなた",
+    "ko": "본인",
+    "zh": "你"
+  },
+  "templates68AuthzRbac.tooltipCannotDemoteLastManager": {
+    "vi": "Không thể hạ MANAGER cuối cùng",
+    "en": "Cannot demote the last MANAGER",
+    "ja": "最後の MANAGER を降格できません",
+    "ko": "마지막 MANAGER를 강등할 수 없습니다",
+    "zh": "无法降级最后一名 MANAGER"
+  },
+  "templates68AuthzRbac.ariaMoreActions": {
+    "vi": "Thao tác khác",
+    "en": "More actions",
+    "ja": "その他の操作",
+    "ko": "추가 작업",
+    "zh": "更多操作"
+  },
+  "templates68AuthzRbac.actionSuspend": {
+    "vi": "Tạm khoá",
+    "en": "Suspend",
+    "ja": "一時停止",
+    "ko": "일시 정지",
+    "zh": "暂停"
+  },
+  "templates68AuthzRbac.actionReactivate": {
+    "vi": "Mở khoá lại",
+    "en": "Reactivate",
+    "ja": "再有効化",
+    "ko": "다시 활성화",
+    "zh": "重新启用"
+  },
+  "templates68AuthzRbac.actionRemoveFromWorkspace": {
+    "vi": "Xoá khỏi workspace",
+    "en": "Remove from workspace",
+    "ja": "ワークスペースから削除",
+    "ko": "워크스페이스에서 삭제",
+    "zh": "从工作区中删除"
+  },
+  "templates68AuthzRbac.successInviteSent": {
+    "vi": "Đã gửi lời mời tới {email} với vai trò {role}",
+    "en": "Sent an invite to {email} with role {role}",
+    "ja": "{email} に {role} ロールで招待を送信しました",
+    "ko": "{email}에게 {role} 역할로 초대를 보냈습니다",
+    "zh": "已向 {email} 发送邀请，角色为 {role}"
+  },
+  "templates68AuthzRbac.modalInviteHint": {
+    "vi": "Lời mời gửi qua email (notification-service · F-NEW1). Người được mời cần xác nhận trước khi vào workspace.",
+    "en": "The invite is sent by email (notification-service · F-NEW1). The invitee must confirm before joining the workspace.",
+    "ja": "招待はメールで送信されます（notification-service・F-NEW1）。招待された人はワークスペースに参加する前に確認が必要です。",
+    "ko": "초대는 이메일로 전송됩니다 (notification-service · F-NEW1). 초대받은 사람은 워크스페이스에 참여하기 전에 확인해야 합니다.",
+    "zh": "邀请通过邮件发送（notification-service · F-NEW1）。被邀请者需要先确认才能加入工作区。"
+  },
+  "templates68AuthzRbac.labelEmail": {
+    "vi": "Email",
+    "en": "Email",
+    "ja": "メールアドレス",
+    "ko": "이메일",
+    "zh": "邮箱"
+  },
+  "templates68AuthzRbac.placeholderEmailExample": {
+    "vi": "ten@cong-ty.com",
+    "en": "name@company.com",
+    "ja": "name@company.co.jp",
+    "ko": "name@company.co.kr",
+    "zh": "name@company.com"
+  },
+  "templates68AuthzRbac.labelRoleField": {
+    "vi": "Vai trò",
+    "en": "Role",
+    "ja": "ロール",
+    "ko": "역할",
+    "zh": "角色"
+  },
+  "templates68AuthzRbac.btnCancel": {
+    "vi": "Huỷ",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "templates68AuthzRbac.btnSendInvite": {
+    "vi": "Gửi lời mời",
+    "en": "Send invite",
+    "ja": "招待を送信",
+    "ko": "초대 보내기",
+    "zh": "发送邀请"
+  }
+}

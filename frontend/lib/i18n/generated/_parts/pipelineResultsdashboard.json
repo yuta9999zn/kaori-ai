@@ -1,0 +1,170 @@
+{
+  "pipelineResultsdashboard.templateSummaryStats": {
+    "vi": "Thống kê tổng quan",
+    "en": "Summary statistics",
+    "ja": "概要統計",
+    "ko": "요약 통계",
+    "zh": "汇总统计"
+  },
+  "pipelineResultsdashboard.templateTimeSeries": {
+    "vi": "Chuỗi thời gian",
+    "en": "Time series",
+    "ja": "時系列",
+    "ko": "시계열",
+    "zh": "时间序列"
+  },
+  "pipelineResultsdashboard.templateDistribution": {
+    "vi": "Phân phối",
+    "en": "Distribution",
+    "ja": "分布",
+    "ko": "분포",
+    "zh": "分布"
+  },
+  "pipelineResultsdashboard.templateCorrelation": {
+    "vi": "Tương quan",
+    "en": "Correlation",
+    "ja": "相関",
+    "ko": "상관관계",
+    "zh": "相关性"
+  },
+  "pipelineResultsdashboard.templateClustering": {
+    "vi": "Phân nhóm",
+    "en": "Clustering",
+    "ja": "クラスタリング",
+    "ko": "클러스터링",
+    "zh": "聚类"
+  },
+  "pipelineResultsdashboard.templateCohort": {
+    "vi": "Cohort",
+    "en": "Cohort",
+    "ja": "コホート",
+    "ko": "코호트",
+    "zh": "同期群"
+  },
+  "pipelineResultsdashboard.templateChurn": {
+    "vi": "Nguy cơ rời bỏ",
+    "en": "Churn risk",
+    "ja": "解約リスク",
+    "ko": "이탈 위험",
+    "zh": "流失风险"
+  },
+  "pipelineResultsdashboard.templateAnomaly": {
+    "vi": "Bất thường",
+    "en": "Anomaly",
+    "ja": "異常検知",
+    "ko": "이상 탐지",
+    "zh": "异常检测"
+  },
+  "pipelineResultsdashboard.templateRegression": {
+    "vi": "Hồi quy",
+    "en": "Regression",
+    "ja": "回帰分析",
+    "ko": "회귀분석",
+    "zh": "回归分析"
+  },
+  "pipelineResultsdashboard.templateBankClassify": {
+    "vi": "Phân loại giao dịch",
+    "en": "Transaction classification",
+    "ja": "取引分類",
+    "ko": "거래 분류",
+    "zh": "交易分类"
+  },
+  "pipelineResultsdashboard.title": {
+    "vi": "Kết quả phân tích",
+    "en": "Analysis results",
+    "ja": "分析結果",
+    "ko": "분석 결과",
+    "zh": "分析结果"
+  },
+  "pipelineResultsdashboard.statusPolling": {
+    "vi": "Đang phân tích... ({done}/{total} hoàn tất)",
+    "en": "Analyzing... ({done}/{total} complete)",
+    "ja": "分析中...（{done}/{total} 完了）",
+    "ko": "분석 중... ({done}/{total} 완료)",
+    "zh": "分析中……（已完成 {done}/{total}）"
+  },
+  "pipelineResultsdashboard.statusDone": {
+    "vi": "{done}/{total} phân tích hoàn tất",
+    "en": "{done}/{total} analyses complete",
+    "ja": "{done}/{total} 件の分析が完了",
+    "ko": "{done}/{total} 분석 완료",
+    "zh": "已完成 {done}/{total} 项分析"
+  },
+  "pipelineResultsdashboard.updating": {
+    "vi": "Đang cập nhật...",
+    "en": "Updating...",
+    "ja": "更新中...",
+    "ko": "업데이트 중...",
+    "zh": "更新中……"
+  },
+  "pipelineResultsdashboard.tabOverview": {
+    "vi": "Tổng quan",
+    "en": "Overview",
+    "ja": "概要",
+    "ko": "개요",
+    "zh": "概览"
+  },
+  "pipelineResultsdashboard.narrativeOverview": {
+    "vi": "Tổng quan",
+    "en": "Overview",
+    "ja": "概要",
+    "ko": "개요",
+    "zh": "概览"
+  },
+  "pipelineResultsdashboard.chartCount": {
+    "vi": "{count} biểu đồ",
+    "en": "{count} charts",
+    "ja": "{count} 件のチャート",
+    "ko": "차트 {count}개",
+    "zh": "{count} 个图表"
+  },
+  "pipelineResultsdashboard.analyzingTemplate": {
+    "vi": "Đang phân tích {template}...",
+    "en": "Analyzing {template}...",
+    "ja": "{template} を分析中...",
+    "ko": "{template} 분석 중...",
+    "zh": "正在分析 {template}……"
+  },
+  "pipelineResultsdashboard.analysisFailed": {
+    "vi": "Phân tích thất bại",
+    "en": "Analysis failed",
+    "ja": "分析に失敗しました",
+    "ko": "분석 실패",
+    "zh": "分析失败"
+  },
+  "pipelineResultsdashboard.aiComment": {
+    "vi": "AI nhận xét",
+    "en": "AI commentary",
+    "ja": "AIのコメント",
+    "ko": "AI 코멘트",
+    "zh": "AI 点评"
+  },
+  "pipelineResultsdashboard.badgeDone": {
+    "vi": "Hoàn tất",
+    "en": "Complete",
+    "ja": "完了",
+    "ko": "완료",
+    "zh": "已完成"
+  },
+  "pipelineResultsdashboard.badgeError": {
+    "vi": "Lỗi",
+    "en": "Error",
+    "ja": "エラー",
+    "ko": "오류",
+    "zh": "错误"
+  },
+  "pipelineResultsdashboard.badgeRunning": {
+    "vi": "Đang chạy",
+    "en": "Running",
+    "ja": "実行中",
+    "ko": "실행 중",
+    "zh": "运行中"
+  },
+  "pipelineResultsdashboard.badgeQueued": {
+    "vi": "Chờ",
+    "en": "Queued",
+    "ja": "待機中",
+    "ko": "대기 중",
+    "zh": "排队中"
+  }
+}

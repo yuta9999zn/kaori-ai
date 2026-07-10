@@ -73,9 +73,9 @@ export default function AnalyticsPage() {
       ) : !hasAnyRun ? (
         <EmptyState
           icon={BarChart2}
-          title="Chưa có phân tích nào"
-          description="Tải dữ liệu lên và chọn template phân tích để bắt đầu."
-          action={{ href: "/pipeline/new", label: "Tạo pipeline mới" }}
+          title={t("analyticsPage.emptyTitle")}
+          description={t("analyticsPage.emptyDescription")}
+          action={{ href: "/pipeline/new", label: t("analyticsPage.emptyActionLabel") }}
         />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -108,7 +108,8 @@ function TemplateCard({
   label: string;
   run?: AnalysisRun;
 }) {
-  const { tone, badgeLabel, StatusIcon } = runMeta(run?.status);
+  const t = useT();
+  const { tone, badgeLabel, StatusIcon } = runMeta(run?.status, t);
   const canNavigate = !!run;
 
   const inner = (
@@ -124,10 +125,10 @@ function TemplateCard({
           </div>
           {run ? (
             <p className="text-tiny text-[#B0A698] mt-1">
-              {run.status === "running" ? "Đang chạy…" : fmtDateTime(run.created_at)}
+              {run.status === "running" ? t("analyticsPage.runningEllipsis") : fmtDateTime(run.created_at)}
             </p>
           ) : (
-            <p className="text-tiny text-[#C0B8A8] mt-1">Chưa có lần chạy nào</p>
+            <p className="text-tiny text-[#C0B8A8] mt-1">{t("analyticsPage.noRunsYet")}</p>
           )}
         </div>
         {canNavigate && (
@@ -142,11 +143,14 @@ function TemplateCard({
     : inner;
 }
 
-function runMeta(status?: RunStatus): { tone: BadgeTone; badgeLabel: string; StatusIcon: any } {
+function runMeta(
+  status: RunStatus | undefined,
+  t: (key: string, params?: Record<string, string | number>) => string,
+): { tone: BadgeTone; badgeLabel: string; StatusIcon: any } {
   switch (status) {
-    case "done":    return { tone: "success", badgeLabel: "Hoàn tất",    StatusIcon: CheckCircle2 };
-    case "running": return { tone: "info",    badgeLabel: "Đang chạy",   StatusIcon: Clock };
-    case "error":   return { tone: "danger",  badgeLabel: "Lỗi",         StatusIcon: AlertCircle };
-    default:        return { tone: "neutral", badgeLabel: "Chưa chạy",   StatusIcon: Clock };
+    case "done":    return { tone: "success", badgeLabel: t("analyticsPage.statusDone"),    StatusIcon: CheckCircle2 };
+    case "running": return { tone: "info",    badgeLabel: t("analyticsPage.statusRunning"), StatusIcon: Clock };
+    case "error":   return { tone: "danger",  badgeLabel: t("analyticsPage.statusError"),   StatusIcon: AlertCircle };
+    default:        return { tone: "neutral", badgeLabel: t("analyticsPage.statusNotRun"),  StatusIcon: Clock };
   }
 }

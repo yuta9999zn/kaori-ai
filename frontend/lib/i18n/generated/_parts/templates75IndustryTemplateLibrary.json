@@ -1,0 +1,128 @@
+{
+  "templates75IndustryTemplateLibrary.title": {
+    "vi": "Thư viện ngành",
+    "en": "Industry library",
+    "ja": "業種ライブラリ",
+    "ko": "산업 라이브러리",
+    "zh": "行业库"
+  },
+  "templates75IndustryTemplateLibrary.description": {
+    "vi": "Chọn ngành phù hợp với doanh nghiệp anh để bootstrap nhanh phòng ban + workflow mẫu.",
+    "en": "Choose the industry that fits your business to quickly bootstrap sample departments + workflows.",
+    "ja": "貴社に合う業種を選ぶと、部門とワークフローのサンプルを素早くブートストラップできます。",
+    "ko": "귀사에 맞는 산업을 선택하면 샘플 부서 + 워크플로우를 빠르게 부트스트랩할 수 있습니다.",
+    "zh": "选择适合贵公司的行业，快速引导出示例部门 + 工作流。"
+  },
+  "templates75IndustryTemplateLibrary.refresh": {
+    "vi": "Làm mới",
+    "en": "Refresh",
+    "ja": "更新",
+    "ko": "새로고침",
+    "zh": "刷新"
+  },
+  "templates75IndustryTemplateLibrary.searchPlaceholder": {
+    "vi": "Tìm theo tên ngành...",
+    "en": "Search by industry name...",
+    "ja": "業種名で検索...",
+    "ko": "산업 이름으로 검색...",
+    "zh": "按行业名称搜索..."
+  },
+  "templates75IndustryTemplateLibrary.emptyNoIndustries": {
+    "vi": "Chưa có ngành nào được kích hoạt. Liên hệ Kaori để bật thêm ngành cho doanh nghiệp anh.",
+    "en": "No industries are activated yet. Contact Kaori to enable more industries for your business.",
+    "ja": "有効化された業種はまだありません。貴社向けに業種を追加するにはKaoriまでご連絡ください。",
+    "ko": "아직 활성화된 산업이 없습니다. 귀사를 위해 산업을 추가하려면 Kaori에 문의하세요.",
+    "zh": "尚未启用任何行业。请联系 Kaori 为贵公司启用更多行业。"
+  },
+  "templates75IndustryTemplateLibrary.emptyNoMatch": {
+    "vi": "Không có ngành nào khớp bộ lọc.",
+    "en": "No industry matches the filter.",
+    "ja": "フィルターに一致する業種がありません。",
+    "ko": "필터와 일치하는 산업이 없습니다.",
+    "zh": "没有符合筛选条件的行业。"
+  },
+  "templates75IndustryTemplateLibrary.cardStats": {
+    "vi": "{deptCount} phòng ban · {workflowCount} workflow · {kpiCount} KPI",
+    "en": "{deptCount} departments · {workflowCount} workflows · {kpiCount} KPIs",
+    "ja": "{deptCount} 部門 · {workflowCount} ワークフロー · {kpiCount} KPI",
+    "ko": "{deptCount}개 부서 · {workflowCount}개 워크플로우 · {kpiCount}개 KPI",
+    "zh": "{deptCount} 个部门 · {workflowCount} 个工作流 · {kpiCount} 个 KPI"
+  },
+  "templates75IndustryTemplateLibrary.detailFallbackTitle": {
+    "vi": "Chi tiết ngành",
+    "en": "Industry detail",
+    "ja": "業種の詳細",
+    "ko": "산업 상세",
+    "zh": "行业详情"
+  },
+  "templates75IndustryTemplateLibrary.close": {
+    "vi": "Đóng",
+    "en": "Close",
+    "ja": "閉じる",
+    "ko": "닫기",
+    "zh": "关闭"
+  },
+  "templates75IndustryTemplateLibrary.sectionDepartments": {
+    "vi": "Phòng ban ({count})",
+    "en": "Departments ({count})",
+    "ja": "部門 ({count})",
+    "ko": "부서 ({count})",
+    "zh": "部门 ({count})"
+  },
+  "templates75IndustryTemplateLibrary.noDepartments": {
+    "vi": "Không có phòng ban mẫu.",
+    "en": "No sample departments.",
+    "ja": "サンプル部門はありません。",
+    "ko": "샘플 부서가 없습니다.",
+    "zh": "没有示例部门。"
+  },
+  "templates75IndustryTemplateLibrary.sectionWorkflows": {
+    "vi": "Workflow mẫu ({count})",
+    "en": "Sample workflows ({count})",
+    "ja": "サンプルワークフロー ({count})",
+    "ko": "샘플 워크플로우 ({count})",
+    "zh": "示例工作流 ({count})"
+  },
+  "templates75IndustryTemplateLibrary.noWorkflows": {
+    "vi": "Không có workflow mẫu.",
+    "en": "No sample workflows.",
+    "ja": "サンプルワークフローはありません。",
+    "ko": "샘플 워크플로우가 없습니다.",
+    "zh": "没有示例工作流。"
+  },
+  "templates75IndustryTemplateLibrary.sectionKpis": {
+    "vi": "KPI ({count})",
+    "en": "KPIs ({count})",
+    "ja": "KPI ({count})",
+    "ko": "KPI ({count})",
+    "zh": "KPI ({count})"
+  },
+  "templates75IndustryTemplateLibrary.noKpis": {
+    "vi": "Không có KPI mẫu.",
+    "en": "No sample KPIs.",
+    "ja": "サンプルKPIはありません。",
+    "ko": "샘플 KPI가 없습니다.",
+    "zh": "没有示例 KPI。"
+  },
+  "templates75IndustryTemplateLibrary.sectionSchemas": {
+    "vi": "Data schema ({count})",
+    "en": "Data schemas ({count})",
+    "ja": "データスキーマ ({count})",
+    "ko": "데이터 스키마 ({count})",
+    "zh": "数据模式 ({count})"
+  },
+  "templates75IndustryTemplateLibrary.noSchemas": {
+    "vi": "Không có schema mẫu.",
+    "en": "No sample schemas.",
+    "ja": "サンプルスキーマはありません。",
+    "ko": "샘플 스키마가 없습니다.",
+    "zh": "没有示例模式。"
+  },
+  "templates75IndustryTemplateLibrary.bootstrapCta": {
+    "vi": "Bootstrap với ngành này",
+    "en": "Bootstrap with this industry",
+    "ja": "この業種でブートストラップ",
+    "ko": "이 산업으로 부트스트랩",
+    "zh": "使用此行业引导"
+  }
+}

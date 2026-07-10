@@ -34,6 +34,7 @@ import {
   Button, Badge, Checkbox, ErrorBanner, api, cn, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types — mirror BE Pydantic models in services/ai-orchestrator/routers/frameworks.py
 // ============================================================================
@@ -69,21 +70,21 @@ interface CatalogueResponse { items: CatalogueItem[] }
 
 const META: Record<FrameworkCode, {
   title:        string;
-  subtitle:     string;
+  subtitleKey:  string;
   icon:         any;
   shortLabel:   string;  // breadcrumb / list-row label
 }> = {
-  swot:     { title: 'SWOT',     subtitle: 'Strengths · Weaknesses · Opportunities · Threats',     icon: Grid3x3,  shortLabel: 'SWOT' },
-  '6w':     { title: '6W',       subtitle: 'Who · What · When · Where · Why · How',                 icon: HelpCircle, shortLabel: '6W' },
-  '2h':     { title: '2H',       subtitle: 'How (cách thực hiện) · How much (định lượng quy mô)',   icon: Wrench,   shortLabel: '2H' },
-  fishbone: { title: 'Fishbone (Ishikawa)', subtitle: 'Truy nguyên gốc rễ — nhóm nguyên nhân theo 4M', icon: Fish,     shortLabel: 'Fishbone' },
+  swot:     { title: 'SWOT',     subtitleKey: 'templatesF034FrameworksWired.subtitleSwot',     icon: Grid3x3,  shortLabel: 'SWOT' },
+  '6w':     { title: '6W',       subtitleKey: 'templatesF034FrameworksWired.subtitle6w',        icon: HelpCircle, shortLabel: '6W' },
+  '2h':     { title: '2H',       subtitleKey: 'templatesF034FrameworksWired.subtitle2h',        icon: Wrench,   shortLabel: '2H' },
+  fishbone: { title: 'Fishbone (Ishikawa)', subtitleKey: 'templatesF034FrameworksWired.subtitleFishbone', icon: Fish,     shortLabel: 'Fishbone' },
 };
 
 // MoM/YoY + Custom are placeholder cards on the hub — link to legacy mock
 // templates so the URL still works. BE-side they're v1 follow-ups.
 const PLACEHOLDER_CARDS = [
-  { code: 'mom-yoy', title: 'MoM/YoY',  subtitle: 'So sánh tháng-trên-tháng + năm-trên-năm', icon: TrendingUp, href: '/p2/frameworks/mom-yoy-analysis' },
-  { code: 'custom',  title: 'Tuỳ chỉnh', subtitle: 'Tự định nghĩa khung cho domain riêng',     icon: Star,        href: '/p2/frameworks/custom-analyst' },
+  { code: 'mom-yoy', titleKey: 'templatesF034FrameworksWired.placeholderMomYoyTitle',    subtitleKey: 'templatesF034FrameworksWired.placeholderMomYoySubtitle', icon: TrendingUp, href: '/p2/frameworks/mom-yoy-analysis' },
+  { code: 'custom',  titleKey: 'templatesF034FrameworksWired.placeholderCustomTitle',    subtitleKey: 'templatesF034FrameworksWired.placeholderCustomSubtitle', icon: Star,        href: '/p2/frameworks/custom-analyst' },
 ] as const;
 
 // ============================================================================
@@ -91,6 +92,7 @@ const PLACEHOLDER_CARDS = [
 // ============================================================================
 
 export function FrameworksHub() {
+  const t = useT();
   const [catalogue, setCatalogue] = useState<CatalogueItem[]>([]);
   const [recent, setRecent]       = useState<RunListItem[]>([]);
   const [loading, setLoading]     = useState(true);
@@ -119,8 +121,8 @@ export function FrameworksHub() {
   return (
     <>
       <PageHeader
-        title="Khung phân tích"
-        description="4 framework nền tảng + 2 placeholder. Một câu hỏi = một khung (K-10)."
+        title={t('templatesF034FrameworksWired.hubTitle')}
+        description={t('templatesF034FrameworksWired.hubDescription')}
       />
 
       <div className="px-6 lg:px-8 py-6 max-w-[1200px] mx-auto space-y-6">
@@ -128,7 +130,7 @@ export function FrameworksHub() {
           <ErrorBanner
             problem={{
               ...problem,
-              title:  'Không tải được catalogue',
+              title:  t('templatesF034FrameworksWired.errCatalogueTitle'),
               detail: `${problem.title}${problem.detail ? ' — ' + problem.detail : ''}.`,
             }}
           />
@@ -139,10 +141,9 @@ export function FrameworksHub() {
           <div className="flex items-start gap-3">
             <ShieldCheck className="w-5 h-5 text-[var(--state-warning)] shrink-0 mt-0.5" />
             <div>
-              <p className="font-serif text-sm text-[var(--text-primary)]">K-10 — Một câu hỏi = một khung</p>
+              <p className="font-serif text-sm text-[var(--text-primary)]">{t('templatesF034FrameworksWired.k10Title')}</p>
               <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">
-                Kaori không cho phép chạy SWOT + Fishbone song song trên cùng một câu hỏi. Để so sánh nhiều khung,
-                hãy tạo nhiều run riêng biệt và đối chiếu từ phần Lịch sử bên dưới.
+                {t('templatesF034FrameworksWired.k10Body')}
               </p>
             </div>
           </div>
@@ -150,7 +151,7 @@ export function FrameworksHub() {
 
         {/* Gallery — wired frameworks */}
         <div>
-          <h2 className="font-serif text-lg text-[var(--text-primary)] mb-3">Khung sẵn sàng</h2>
+          <h2 className="font-serif text-lg text-[var(--text-primary)] mb-3">{t('templatesF034FrameworksWired.sectionReady')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {catalogue.map((c) => {
               const m = META[c.code];
@@ -170,7 +171,7 @@ export function FrameworksHub() {
                   </div>
                   <p className="text-sm text-[var(--text-secondary)] line-clamp-2 mb-3">{c.description}</p>
                   <span className="text-xs text-[var(--primary-gold-dark)] inline-flex items-center font-medium">
-                    Mở khung <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-0.5 transition-transform" />
+                    {t('templatesF034FrameworksWired.openFramework')} <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-0.5 transition-transform" />
                   </span>
                 </a>
               );
@@ -181,7 +182,7 @@ export function FrameworksHub() {
         {/* Placeholder cards — BE deferred to v1 */}
         <div>
           <h2 className="font-serif text-lg text-[var(--text-primary)] mb-3">
-            Sắp ra mắt
+            {t('templatesF034FrameworksWired.sectionUpcoming')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {PLACEHOLDER_CARDS.map((p) => {
@@ -197,11 +198,11 @@ export function FrameworksHub() {
                       <Icon className="w-5 h-5" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-serif text-base text-[var(--text-primary)]">{p.title}</h3>
+                      <h3 className="font-serif text-base text-[var(--text-primary)]">{t(p.titleKey)}</h3>
                     </div>
                     <Badge variant="default">v1</Badge>
                   </div>
-                  <p className="text-sm text-[var(--text-secondary)] line-clamp-2">{p.subtitle}</p>
+                  <p className="text-sm text-[var(--text-secondary)] line-clamp-2">{t(p.subtitleKey)}</p>
                 </a>
               );
             })}
@@ -210,27 +211,27 @@ export function FrameworksHub() {
 
         {/* Recent runs */}
         <div>
-          <h2 className="font-serif text-lg text-[var(--text-primary)] mb-3">Lịch sử gần đây</h2>
+          <h2 className="font-serif text-lg text-[var(--text-primary)] mb-3">{t('templatesF034FrameworksWired.sectionHistory')}</h2>
           <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom shadow-soft-sm overflow-hidden">
             {loading ? (
               <div className="px-5 py-12 text-center text-[var(--text-secondary)]">
-                <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> Đang tải...
+                <Loader2 className="w-5 h-5 animate-spin inline mr-2" /> {t('templatesF034FrameworksWired.loadingEllipsis')}
               </div>
             ) : recent.length === 0 ? (
               <div className="px-5 py-12 text-center">
                 <Clock className="w-10 h-10 mx-auto text-[var(--text-secondary)]/30 mb-3" />
                 <p className="text-sm text-[var(--text-secondary)]">
-                  Chưa có run nào — hãy mở một khung phía trên để bắt đầu.
+                  {t('templatesF034FrameworksWired.emptyHistory')}
                 </p>
               </div>
             ) : (
               <table className="w-full text-sm text-left">
                 <thead className="bg-[var(--bg-app)] border-b border-[var(--border-color)] text-[11px] font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   <tr>
-                    <th className="px-5 py-3">Khung</th>
-                    <th className="px-5 py-3">Câu hỏi / Kết quả</th>
-                    <th className="px-5 py-3">Trạng thái</th>
-                    <th className="px-5 py-3 text-right">Thời điểm</th>
+                    <th className="px-5 py-3">{t('templatesF034FrameworksWired.colFramework')}</th>
+                    <th className="px-5 py-3">{t('templatesF034FrameworksWired.colQuestionResult')}</th>
+                    <th className="px-5 py-3">{t('templatesF034FrameworksWired.colStatus')}</th>
+                    <th className="px-5 py-3 text-right">{t('templatesF034FrameworksWired.colTime')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--border-color)]/60">
@@ -259,7 +260,7 @@ export function FrameworksHub() {
                           <StatusBadge status={r.status} />
                         </td>
                         <td className="px-5 py-4 text-xs text-[var(--text-secondary)] text-right">
-                          {formatRelative(r.completed_at ?? r.created_at)}
+                          {formatRelative(r.completed_at ?? r.created_at, t)}
                         </td>
                       </tr>
                     );
@@ -285,6 +286,7 @@ interface FrameworkPageProps {
 }
 
 export function FrameworkRunPage({ code, routeSegment }: FrameworkPageProps) {
+  const t = useT();
   const m = META[code];
 
   // Generate-and-poll state
@@ -390,10 +392,10 @@ export function FrameworkRunPage({ code, routeSegment }: FrameworkPageProps) {
     <>
       <PageHeader
         title={m.title}
-        description={m.subtitle}
+        description={t(m.subtitleKey)}
         actions={
           <Button variant="tertiary" onClick={() => (window.location.href = '/p2/frameworks')}>
-            <ChevronLeft className="w-4 h-4 mr-1" /> Khung khác
+            <ChevronLeft className="w-4 h-4 mr-1" /> {t('templatesF034FrameworksWired.backToFrameworks')}
           </Button>
         }
       />
@@ -403,7 +405,7 @@ export function FrameworkRunPage({ code, routeSegment }: FrameworkPageProps) {
           <ErrorBanner
             problem={{
               ...problem,
-              title:  problem.title ?? 'Không hoàn thành được run',
+              title:  problem.title ?? t('templatesF034FrameworksWired.errRunIncomplete'),
               detail: problem.detail ?? '',
             }}
           />
@@ -416,9 +418,9 @@ export function FrameworkRunPage({ code, routeSegment }: FrameworkPageProps) {
               <Icon className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-serif text-base text-[var(--text-primary)]">Câu hỏi của bạn</h2>
+              <h2 className="font-serif text-base text-[var(--text-primary)]">{t('templatesF034FrameworksWired.yourQuestion')}</h2>
               <p className="text-xs text-[var(--text-secondary)]">
-                LLM sẽ điền cấu trúc {m.shortLabel} dựa trên dữ liệu tham chiếu (nếu có).
+                {t('templatesF034FrameworksWired.llmFillHint', { framework: m.shortLabel })}
               </p>
             </div>
           </div>
@@ -426,7 +428,7 @@ export function FrameworkRunPage({ code, routeSegment }: FrameworkPageProps) {
           <textarea
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
-            placeholder={questionPlaceholder(code)}
+            placeholder={questionPlaceholder(code, t)}
             rows={3}
             maxLength={2000}
             className="w-full px-3 py-2.5 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm placeholder:text-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 focus:border-[var(--primary-gold)] resize-none transition-all"
@@ -435,7 +437,7 @@ export function FrameworkRunPage({ code, routeSegment }: FrameworkPageProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <label className="block">
               <span className="text-[11px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mb-1.5 block">
-                Nguồn dữ liệu (tuỳ chọn)
+                {t('templatesF034FrameworksWired.sourceRefLabel')}
               </span>
               <div className="relative">
                 <Database className="w-4 h-4 text-[var(--text-secondary)] absolute left-3 top-1/2 -translate-y-1/2" />
@@ -444,7 +446,7 @@ export function FrameworkRunPage({ code, routeSegment }: FrameworkPageProps) {
                   value={sourceRef}
                   onChange={(e) => setSourceRef(e.target.value)}
                   maxLength={200}
-                  placeholder="vd. gold:retail_2026q1"
+                  placeholder={t('templatesF034FrameworksWired.sourceRefPlaceholder')}
                   className="w-full pl-9 pr-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm placeholder:text-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 transition-all"
                 />
               </div>
@@ -452,7 +454,7 @@ export function FrameworkRunPage({ code, routeSegment }: FrameworkPageProps) {
 
             <label className="block">
               <span className="text-[11px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mb-1.5 block">
-                AI (mặc định Qwen nội bộ)
+                {t('templatesF034FrameworksWired.aiLabel')}
               </span>
               <div className="flex items-center gap-2 h-9">
                 <Checkbox
@@ -461,7 +463,7 @@ export function FrameworkRunPage({ code, routeSegment }: FrameworkPageProps) {
                 />
                 <span className="text-xs text-[var(--text-primary)] inline-flex items-center gap-1">
                   {consentExternal ? <Globe className="w-3.5 h-3.5 text-[var(--state-warning)]" /> : <Lock className="w-3.5 h-3.5 text-[var(--state-success)]" />}
-                  {consentExternal ? 'Cho phép AI ngoài (K-4)' : 'Chỉ Qwen nội bộ'}
+                  {consentExternal ? t('templatesF034FrameworksWired.aiExternalAllowed') : t('templatesF034FrameworksWired.aiInternalOnly')}
                 </span>
               </div>
             </label>
@@ -469,12 +471,12 @@ export function FrameworkRunPage({ code, routeSegment }: FrameworkPageProps) {
 
           <div className="flex items-center justify-between">
             <p className="text-[11px] text-[var(--text-secondary)]">
-              {question.length}/2000 ký tự — tối thiểu 3.
+              {t('templatesF034FrameworksWired.charCount', { len: question.length })}
             </p>
             <div className="inline-flex items-center gap-2">
               {runId && (
                 <Button variant="tertiary" onClick={reset}>
-                  <RefreshCw className="w-3.5 h-3.5 mr-1" /> Run mới
+                  <RefreshCw className="w-3.5 h-3.5 mr-1" /> {t('templatesF034FrameworksWired.newRun')}
                 </Button>
               )}
               <Button
@@ -483,8 +485,8 @@ export function FrameworkRunPage({ code, routeSegment }: FrameworkPageProps) {
                 disabled={submitting || question.trim().length < 3}
               >
                 {submitting
-                  ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> Đang gửi...</>
-                  : <><Sparkles className="w-4 h-4 mr-1.5" /> Phân tích</>}
+                  ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> {t('templatesF034FrameworksWired.submitting')}</>
+                  : <><Sparkles className="w-4 h-4 mr-1.5" /> {t('templatesF034FrameworksWired.analyzeButton')}</>}
               </Button>
             </div>
           </div>
@@ -502,12 +504,12 @@ export function FrameworkRunPage({ code, routeSegment }: FrameworkPageProps) {
   );
 }
 
-function questionPlaceholder(code: FrameworkCode): string {
+function questionPlaceholder(code: FrameworkCode, t: ReturnType<typeof useT>): string {
   switch (code) {
-    case 'swot':     return 'vd. Đối thủ X giảm giá 8% — chiến lược giữ thị phần Q2 thế nào?';
-    case '6w':       return 'vd. Vì sao churn vùng APAC tăng 12% trong Q1?';
-    case '2h':       return 'vd. Triển khai loyalty mới — bao nhiêu khách bị ảnh hưởng và chi phí?';
-    case 'fishbone': return 'vd. Doanh thu kênh A giảm 20% — gốc rễ ở đâu?';
+    case 'swot':     return t('templatesF034FrameworksWired.placeholderSwot');
+    case '6w':       return t('templatesF034FrameworksWired.placeholder6w');
+    case '2h':       return t('templatesF034FrameworksWired.placeholder2h');
+    case 'fishbone': return t('templatesF034FrameworksWired.placeholderFishbone');
   }
 }
 
@@ -516,11 +518,12 @@ function questionPlaceholder(code: FrameworkCode): string {
 // ============================================================================
 
 function RunStatusPanel({ run, framework }: { run: RunDetail | null; framework: FrameworkCode }) {
+  const t = useT();
   if (!run) {
     return (
       <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-8 text-center shadow-soft-sm">
         <Loader2 className="w-6 h-6 mx-auto text-[var(--primary-gold-dark)] animate-spin mb-3" />
-        <p className="text-sm text-[var(--text-secondary)]">Đang khởi tạo run...</p>
+        <p className="text-sm text-[var(--text-secondary)]">{t('templatesF034FrameworksWired.initializingRun')}</p>
       </div>
     );
   }
@@ -530,10 +533,10 @@ function RunStatusPanel({ run, framework }: { run: RunDetail | null; framework: 
       <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-8 text-center shadow-soft-sm">
         <Loader2 className="w-6 h-6 mx-auto text-[var(--primary-gold-dark)] animate-spin mb-3" />
         <p className="text-sm text-[var(--text-primary)] font-medium">
-          {run.status === 'queued' ? 'Đã xếp hàng — đang chờ worker' : 'Đang phân tích bằng LLM'}
+          {run.status === 'queued' ? t('templatesF034FrameworksWired.statusQueued') : t('templatesF034FrameworksWired.statusRunningLLM')}
         </p>
         <p className="text-xs text-[var(--text-secondary)] mt-1">
-          Thường mất 5-15 giây với Qwen nội bộ. Trang sẽ tự cập nhật.
+          {t('templatesF034FrameworksWired.etaHint')}
         </p>
       </div>
     );
@@ -545,12 +548,12 @@ function RunStatusPanel({ run, framework }: { run: RunDetail | null; framework: 
         <div className="flex items-start gap-3">
           <AlertTriangle className="w-5 h-5 text-[var(--state-error)] shrink-0 mt-0.5" />
           <div className="min-w-0">
-            <p className="text-sm font-medium text-[var(--text-primary)]">Run thất bại</p>
+            <p className="text-sm font-medium text-[var(--text-primary)]">{t('templatesF034FrameworksWired.runFailed')}</p>
             <p className="text-xs text-[var(--text-secondary)] mt-1 break-words">
-              {run.last_error || 'Không có chi tiết lỗi.'}
+              {run.last_error || t('templatesF034FrameworksWired.noErrorDetail')}
             </p>
             <p className="text-[11px] text-[var(--text-secondary)] mt-2">
-              Hãy chỉnh lại câu hỏi hoặc bật "AI ngoài" rồi thử lại — Qwen 7B đôi khi sinh JSON sai schema.
+              {t('templatesF034FrameworksWired.failedHint')}
             </p>
           </div>
         </div>
@@ -562,7 +565,7 @@ function RunStatusPanel({ run, framework }: { run: RunDetail | null; framework: 
   if (!run.content_json) {
     return (
       <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm">
-        <p className="text-sm text-[var(--text-secondary)]">Run hoàn thành nhưng không có nội dung — vui lòng tạo run mới.</p>
+        <p className="text-sm text-[var(--text-secondary)]">{t('templatesF034FrameworksWired.emptyResult')}</p>
       </div>
     );
   }
@@ -591,6 +594,7 @@ function RunStatusPanel({ run, framework }: { run: RunDetail | null; framework: 
 // ============================================================================
 
 function SwotResult({ content }: { content: any }) {
+  const t = useT();
   const quadrants: Array<{ key: string; label: string; tone: string; data: any }> = [
     { key: 'strengths',     label: 'Strengths',     tone: 'text-[var(--state-success)] border-[var(--state-success)]/30 bg-[var(--state-success)]/5', data: content?.strengths },
     { key: 'weaknesses',    label: 'Weaknesses',    tone: 'text-[var(--state-warning)] border-[var(--state-warning)]/30 bg-[var(--state-warning)]/5', data: content?.weaknesses },
@@ -612,7 +616,7 @@ function SwotResult({ content }: { content: any }) {
                 <span>{it.text}</span>
               </li>
             )) : (
-              <li className="text-xs text-[var(--text-secondary)] italic">Không có ý.</li>
+              <li className="text-xs text-[var(--text-secondary)] italic">{t('templatesF034FrameworksWired.noItems')}</li>
             )}
           </ul>
         </div>
@@ -626,19 +630,20 @@ function SwotResult({ content }: { content: any }) {
 // ============================================================================
 
 function SixWResult({ content }: { content: any }) {
-  const fields: Array<{ key: string; label: string }> = [
-    { key: 'who',   label: 'Who · Ai' },
-    { key: 'what',  label: 'What · Cái gì' },
-    { key: 'when',  label: 'When · Khi nào' },
-    { key: 'where', label: 'Where · Ở đâu' },
-    { key: 'why',   label: 'Why · Vì sao' },
-    { key: 'how',   label: 'How · Như thế nào' },
+  const t = useT();
+  const fields: Array<{ key: string; labelKey: string }> = [
+    { key: 'who',   labelKey: 'templatesF034FrameworksWired.sixwWho' },
+    { key: 'what',  labelKey: 'templatesF034FrameworksWired.sixwWhat' },
+    { key: 'when',  labelKey: 'templatesF034FrameworksWired.sixwWhen' },
+    { key: 'where', labelKey: 'templatesF034FrameworksWired.sixwWhere' },
+    { key: 'why',   labelKey: 'templatesF034FrameworksWired.sixwWhy' },
+    { key: 'how',   labelKey: 'templatesF034FrameworksWired.sixwHow' },
   ];
   return (
     <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] divide-y divide-[var(--border-color)]/60 shadow-soft-sm">
       {fields.map((f) => (
         <div key={f.key} className="px-5 py-4">
-          <p className="text-[11px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mb-1">{f.label}</p>
+          <p className="text-[11px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mb-1">{t(f.labelKey)}</p>
           <p className="text-sm text-[var(--text-primary)] leading-relaxed">{content?.[f.key] ?? '—'}</p>
         </div>
       ))}
@@ -651,37 +656,38 @@ function SixWResult({ content }: { content: any }) {
 // ============================================================================
 
 function TwoHResult({ content }: { content: any }) {
+  const t = useT();
   const how = content?.how ?? {};
   const hm  = content?.how_much ?? {};
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm">
         <h3 className="font-serif text-sm font-medium text-[var(--text-primary)] mb-3 inline-flex items-center gap-2">
-          <Wrench className="w-4 h-4 text-[var(--primary-gold-dark)]" /> How — Cách thực hiện
+          <Wrench className="w-4 h-4 text-[var(--primary-gold-dark)]" /> {t('templatesF034FrameworksWired.twohHowTitle')}
         </h3>
         <p className="text-sm text-[var(--text-primary)] mb-3">{how.approach ?? '—'}</p>
         <ol className="list-decimal list-inside space-y-1.5 text-sm text-[var(--text-primary)]">
           {Array.isArray(how.steps) && how.steps.length > 0 ? how.steps.map((s: string, i: number) => (
             <li key={i}>{s}</li>
           )) : (
-            <li className="text-xs text-[var(--text-secondary)] italic list-none">Không có bước.</li>
+            <li className="text-xs text-[var(--text-secondary)] italic list-none">{t('templatesF034FrameworksWired.noSteps')}</li>
           )}
         </ol>
       </div>
 
       <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm">
         <h3 className="font-serif text-sm font-medium text-[var(--text-primary)] mb-3 inline-flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-[var(--primary-gold-dark)]" /> How much — Định lượng
+          <TrendingUp className="w-4 h-4 text-[var(--primary-gold-dark)]" /> {t('templatesF034FrameworksWired.twohHowMuchTitle')}
         </h3>
         <p className="font-serif text-2xl text-[var(--text-primary)] mb-1">
           {hm.estimate ?? '—'} <span className="text-base text-[var(--text-secondary)]">{hm.unit ?? ''}</span>
         </p>
         <p className="text-xs text-[var(--text-secondary)] mb-3">
-          Confidence: {typeof hm.confidence === 'number' ? `${Math.round(hm.confidence * 100)}%` : '—'}
+          {t('templatesF034FrameworksWired.confidenceLabel', { value: typeof hm.confidence === 'number' ? `${Math.round(hm.confidence * 100)}%` : '—' })}
         </p>
         {Array.isArray(hm.assumptions) && hm.assumptions.length > 0 && (
           <>
-            <p className="text-[11px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mb-1.5">Giả định</p>
+            <p className="text-[11px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mb-1.5">{t('templatesF034FrameworksWired.assumptions')}</p>
             <ul className="list-disc list-inside space-y-0.5 text-xs text-[var(--text-secondary)]">
               {hm.assumptions.map((a: string, i: number) => <li key={i}>{a}</li>)}
             </ul>
@@ -697,11 +703,12 @@ function TwoHResult({ content }: { content: any }) {
 // ============================================================================
 
 function FishboneResult({ content }: { content: any }) {
+  const t = useT();
   const categories: any[] = Array.isArray(content?.categories) ? content.categories : [];
   return (
     <div className="space-y-4">
       <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm">
-        <p className="text-[11px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mb-1">Vấn đề</p>
+        <p className="text-[11px] uppercase tracking-wider font-medium text-[var(--text-secondary)] mb-1">{t('templatesF034FrameworksWired.problemLabel')}</p>
         <p className="text-sm text-[var(--text-primary)] font-medium">{content?.problem ?? '—'}</p>
       </div>
 
@@ -724,7 +731,7 @@ function FishboneResult({ content }: { content: any }) {
       </div>
 
       <div className="bg-[var(--state-error)]/5 border border-[var(--state-error)]/30 rounded-lg-custom p-5 shadow-soft-sm">
-        <p className="text-[11px] uppercase tracking-wider font-medium text-[var(--state-error)] mb-1">Giả thuyết gốc rễ</p>
+        <p className="text-[11px] uppercase tracking-wider font-medium text-[var(--state-error)] mb-1">{t('templatesF034FrameworksWired.rootCauseLabel')}</p>
         <p className="text-sm text-[var(--text-primary)]">{content?.root_cause_hypothesis ?? '—'}</p>
       </div>
     </div>
@@ -732,8 +739,9 @@ function FishboneResult({ content }: { content: any }) {
 }
 
 function DepthBadge({ depth }: { depth: number | undefined }) {
+  const t = useT();
   const d = Number(depth) || 1;
-  const label = d === 1 ? 'triệu chứng' : d === 2 ? 'trực tiếp' : 'gốc rễ';
+  const label = d === 1 ? t('templatesF034FrameworksWired.depthSymptom') : d === 2 ? t('templatesF034FrameworksWired.depthDirect') : t('templatesF034FrameworksWired.depthRoot');
   const tone = d === 1
     ? 'bg-[var(--state-warning)]/10 text-[var(--state-warning)]'
     : d === 2
@@ -751,17 +759,18 @@ function DepthBadge({ depth }: { depth: number | undefined }) {
 // ============================================================================
 
 function StatusBadge({ status }: { status: RunStatus }) {
-  if (status === 'ready')   return <Badge variant="success">Hoàn thành</Badge>;
-  if (status === 'failed')  return <Badge variant="error">Thất bại</Badge>;
-  if (status === 'running') return <Badge variant="info">Đang chạy</Badge>;
-  return <Badge variant="default">Đang chờ</Badge>;
+  const t = useT();
+  if (status === 'ready')   return <Badge variant="success">{t('templatesF034FrameworksWired.statusReadyBadge')}</Badge>;
+  if (status === 'failed')  return <Badge variant="error">{t('templatesF034FrameworksWired.statusFailedBadge')}</Badge>;
+  if (status === 'running') return <Badge variant="info">{t('templatesF034FrameworksWired.statusRunningBadge')}</Badge>;
+  return <Badge variant="default">{t('templatesF034FrameworksWired.statusQueuedBadge')}</Badge>;
 }
 
-function formatRelative(iso: string): string {
+function formatRelative(iso: string, t: ReturnType<typeof useT>): string {
   const diff = Date.now() - +new Date(iso);
-  if (diff < 60_000)        return 'vừa xong';
-  if (diff < 3_600_000)     return `${Math.round(diff / 60_000)} phút trước`;
-  if (diff < 86_400_000)    return `${Math.round(diff / 3_600_000)} giờ trước`;
-  if (diff < 7 * 86_400_000) return `${Math.round(diff / 86_400_000)} ngày trước`;
+  if (diff < 60_000)        return t('templatesF034FrameworksWired.relativeJustNow');
+  if (diff < 3_600_000)     return t('templatesF034FrameworksWired.relativeMinutesAgo', { n: Math.round(diff / 60_000) });
+  if (diff < 86_400_000)    return t('templatesF034FrameworksWired.relativeHoursAgo', { n: Math.round(diff / 3_600_000) });
+  if (diff < 7 * 86_400_000) return t('templatesF034FrameworksWired.relativeDaysAgo', { n: Math.round(diff / 86_400_000) });
   return new Date(iso).toLocaleDateString('vi-VN');
 }

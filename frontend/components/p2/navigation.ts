@@ -94,7 +94,7 @@ export const NAV_TREE: NavGroup[] = [
     icon:  BarChart2,
     section: 'Dữ liệu & Pipeline',
     children: [
-      { title: 'Chart Picker',  path: '/p2/charts/picker',    phase: 1 },
+      { title: 'Chọn biểu đồ',  path: '/p2/charts/picker',    phase: 1 },
       { title: 'Theo loại',      path: '/p2/charts/categories', phase: 2 },
     ],
   },
@@ -105,12 +105,13 @@ export const NAV_TREE: NavGroup[] = [
     icon:  Workflow,
     section: 'Quy trình',
     children: [
-      { title: 'Phòng ban',          path: '/p2/departments', phase: 1 },
-      { title: 'Cơ cấu tổ chức',     path: '/p2/org-tree',    phase: 2 },
+      // Daily-use first (the actual process work), one-time org setup last.
       { title: 'Tất cả workflow',    path: '/p2/workflows',   phase: 2 },
       { title: 'Hợp đồng',           path: '/p2/contracts',   phase: 2 },
-      { title: 'Duyệt & Phân quyền', path: '/p2/approvals',   phase: 2 },
       { title: 'Kho tài liệu',       path: '/p2/documents',   phase: 2 },
+      { title: 'Duyệt & Phân quyền', path: '/p2/approvals',   phase: 2 },
+      { title: 'Phòng ban',          path: '/p2/departments', phase: 1 },
+      { title: 'Cơ cấu tổ chức',     path: '/p2/org-tree',    phase: 2 },
     ],
   },
   {
@@ -169,7 +170,7 @@ export const NAV_TREE: NavGroup[] = [
       { title: 'Tổng quan',  path: '/p2/strategy',                  phase: 2 },
       { title: 'OKR',         path: '/p2/strategy/okr',              phase: 2 },
       { title: 'Lộ trình',    path: '/p2/strategy/timeline',         phase: 2 },
-      { title: 'Họp review',  path: '/p2/strategy/review-meetings',  phase: 2 },
+      { title: 'Họp đánh giá', path: '/p2/strategy/review-meetings', phase: 2 },
     ],
   },
   {
@@ -212,8 +213,8 @@ export const NAV_TREE: NavGroup[] = [
     icon:  Users,
     section: 'Khách hàng & Báo cáo',
     children: [
-      { title: 'Danh sách',  path: '/p2/users',         phase: 1 },
-      { title: 'Mời người',   path: '/p2/users/invite',  phase: 1 },
+      { title: 'Danh sách',      path: '/p2/users',         phase: 1 },
+      { title: 'Mời người dùng', path: '/p2/users/invite',  phase: 1 },
     ],
   },
   {
@@ -223,7 +224,7 @@ export const NAV_TREE: NavGroup[] = [
     children: [
       { title: 'Tổng quan',           path: '/p2/reports',          phase: 2 },
       { title: 'Tự động',              path: '/p2/reports/auto',     phase: 2 },
-      { title: 'Builder',              path: '/p2/reports/builder',  phase: 2 },
+      { title: 'Trình dựng',           path: '/p2/reports/builder',  phase: 2 },
       { title: 'Mẫu',                  path: '/p2/reports/templates',phase: 2 },
     ],
   },

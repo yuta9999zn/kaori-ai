@@ -22,6 +22,7 @@ import {
 
 import { Button, Badge, cn } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types
 // ============================================================================
@@ -111,6 +112,7 @@ const DIM_LABELS = {
 // ============================================================================
 
 export default function QualityTrendPage() {
+  const t = useT();
   const [selectedId, setSelectedId] = useState<string>(DATASETS[0].id);
   const selected = useMemo(() => DATASETS.find((d) => d.id === selectedId)!, [selectedId]);
 
@@ -125,13 +127,13 @@ export default function QualityTrendPage() {
   return (
     <>
       <PageHeader
-        title="Chất lượng dữ liệu"
-        description="Score tổng hợp 4 chiều (null/type/uniqueness/freshness) cho mỗi dataset Gold."
+        title={t('templates67AutodbQualityTrend.title')}
+        description={t('templates67AutodbQualityTrend.description')}
         actions={
           <>
-            <Badge variant="info">Phase 2 · F-057</Badge>
+            <Badge variant="info">{t('templates67AutodbQualityTrend.badgePhase')}</Badge>
             <a href="/p2/auto-db">
-              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> Auto DB</Button>
+              <Button variant="tertiary" size="md"><ArrowLeft className="w-4 h-4 mr-2" /> {t('templates67AutodbQualityTrend.backToAutoDb')}</Button>
             </a>
           </>
         }
@@ -140,10 +142,10 @@ export default function QualityTrendPage() {
       <div className="px-6 lg:px-8 py-6 max-w-[1400px] mx-auto space-y-6">
         {/* KPI tiles */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatTile label="Score trung bình"    value={stats.overall}   icon={CheckCircle2} tone="text-[var(--state-success)]" suffix="%" />
-          <StatTile label="Null compliance avg" value={stats.null_rate} icon={Sparkles}     tone="text-[var(--primary-gold-dark)]" suffix="%" />
-          <StatTile label="Type compliance avg" value={stats.type}      icon={Database}     tone="text-[var(--state-info)]" suffix="%" />
-          <StatTile label="Freshness avg"       value={stats.fresh}     icon={Clock}        tone="text-[var(--state-warning)]" suffix="%" />
+          <StatTile label={t('templates67AutodbQualityTrend.statAvgScore')}    value={stats.overall}   icon={CheckCircle2} tone="text-[var(--state-success)]" suffix="%" />
+          <StatTile label={t('templates67AutodbQualityTrend.statNullAvg')} value={stats.null_rate} icon={Sparkles}     tone="text-[var(--primary-gold-dark)]" suffix="%" />
+          <StatTile label={t('templates67AutodbQualityTrend.statTypeAvg')} value={stats.type}      icon={Database}     tone="text-[var(--state-info)]" suffix="%" />
+          <StatTile label={t('templates67AutodbQualityTrend.statFreshAvg')}       value={stats.fresh}     icon={Clock}        tone="text-[var(--state-warning)]" suffix="%" />
         </div>
 
         {/* Trend chart for selected */}
@@ -154,21 +156,21 @@ export default function QualityTrendPage() {
           <div className="px-5 py-4 border-b border-[var(--border-color)] flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Database className="w-4 h-4 text-[var(--primary-gold-dark)]" />
-              <h3 className="font-serif text-base text-[var(--text-primary)]">Score theo dataset</h3>
+              <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templates67AutodbQualityTrend.tableTitle')}</h3>
             </div>
-            <span className="text-[11px] text-[var(--text-secondary)]">Click để xem breakdown từng cột</span>
+            <span className="text-[11px] text-[var(--text-secondary)]">{t('templates67AutodbQualityTrend.tableHint')}</span>
           </div>
           <div className="overflow-auto">
             <table className="w-full text-sm text-left">
               <thead className="bg-[var(--bg-app)] border-b border-[var(--border-color)] text-[11px] font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                 <tr>
-                  <th className="px-5 py-3">Dataset</th>
-                  <th className="px-5 py-3">Tổng</th>
-                  <th className="px-5 py-3">Null rate</th>
-                  <th className="px-5 py-3">Type</th>
-                  <th className="px-5 py-3">Uniqueness</th>
-                  <th className="px-5 py-3">Freshness</th>
-                  <th className="px-5 py-3">Lần check</th>
+                  <th className="px-5 py-3">{t('templates67AutodbQualityTrend.headerDataset')}</th>
+                  <th className="px-5 py-3">{t('templates67AutodbQualityTrend.headerTotal')}</th>
+                  <th className="px-5 py-3">{t('templates67AutodbQualityTrend.headerNullRate')}</th>
+                  <th className="px-5 py-3">{t('templates67AutodbQualityTrend.headerType')}</th>
+                  <th className="px-5 py-3">{t('templates67AutodbQualityTrend.headerUniqueness')}</th>
+                  <th className="px-5 py-3">{t('templates67AutodbQualityTrend.headerFreshness')}</th>
+                  <th className="px-5 py-3">{t('templates67AutodbQualityTrend.headerLastCheck')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-color)]/60">
@@ -191,8 +193,7 @@ export default function QualityTrendPage() {
         <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <ShieldCheck className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
           <p>
-            Score tổng = weighted avg (null × 0.3 + type × 0.3 + uniqueness × 0.2 + freshness × 0.2).
-            Score &lt; 70 sẽ tự sinh Alert (file 62) source=data, severity=warning.
+            {t('templates67AutodbQualityTrend.footerNote')}
           </p>
         </div>
       </div>
@@ -219,6 +220,7 @@ function StatTile({
 }
 
 function TrendChart({ dataset }: { dataset: DatasetQuality }) {
+  const t = useT();
   const max = 100;
   const min = Math.min(...dataset.trend) - 5;
   const range = max - min;
@@ -233,11 +235,11 @@ function TrendChart({ dataset }: { dataset: DatasetQuality }) {
         <div className="flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-[var(--primary-gold-dark)]" />
           <h3 className="font-serif text-base text-[var(--text-primary)]">
-            Trend 30 ngày · <span className="font-mono text-sm">{dataset.name}</span>
+            {t('templates67AutodbQualityTrend.trendTitle')} · <span className="font-mono text-sm">{dataset.name}</span>
           </h3>
         </div>
         <Badge variant={dataset.overall >= 90 ? 'success' : dataset.overall >= 80 ? 'info' : dataset.overall >= 70 ? 'warning' : 'error'}>
-          Score {dataset.overall}%
+          {t('templates67AutodbQualityTrend.scoreBadge', { value: dataset.overall })}
         </Badge>
       </div>
       <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-40">
@@ -270,8 +272,8 @@ function TrendChart({ dataset }: { dataset: DatasetQuality }) {
         />
       </svg>
       <div className="flex items-center justify-between mt-3 text-[11px] text-[var(--text-secondary)]">
-        <span>30 ngày trước</span>
-        <span>Hôm nay</span>
+        <span>{t('templates67AutodbQualityTrend.trendStart')}</span>
+        <span>{t('templates67AutodbQualityTrend.trendToday')}</span>
       </div>
     </div>
   );
@@ -280,6 +282,7 @@ function TrendChart({ dataset }: { dataset: DatasetQuality }) {
 function DatasetRow({
   dataset: d, active, onClick,
 }: { dataset: DatasetQuality; active: boolean; onClick: () => void }) {
+  const t = useT();
   return (
     <tr
       onClick={onClick}
@@ -291,7 +294,7 @@ function DatasetRow({
       <td className="px-5 py-3">
         <div>
           <p className="font-mono text-sm text-[var(--text-primary)]">{d.name}</p>
-          <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{d.domain} · {d.rows.toLocaleString('vi-VN')} dòng</p>
+          <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{d.domain} · {d.rows.toLocaleString('vi-VN')} {t('templates67AutodbQualityTrend.rowsSuffix')}</p>
         </div>
       </td>
       <td className="px-5 py-3"><ScorePill score={d.overall} /></td>
@@ -330,34 +333,35 @@ function ScorePill({ score }: { score: number }) {
 }
 
 function ColumnBreakdown({ dataset: d }: { dataset: DatasetQuality }) {
+  const t = useT();
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom shadow-soft-sm overflow-hidden">
       <div className="px-5 py-4 border-b border-[var(--border-color)] flex items-center justify-between">
         <div className="flex items-center gap-2">
           <AlertCircle className="w-4 h-4 text-[var(--primary-gold-dark)]" />
           <h3 className="font-serif text-base text-[var(--text-primary)]">
-            Breakdown theo cột · <span className="font-mono text-sm">{d.name}</span>
+            {t('templates67AutodbQualityTrend.breakdownTitle')} · <span className="font-mono text-sm">{d.name}</span>
           </h3>
         </div>
-        <Badge variant="default">{d.column_scores.length} cột</Badge>
+        <Badge variant="default">{t('templates67AutodbQualityTrend.columnCountBadge', { count: d.column_scores.length })}</Badge>
       </div>
       <div className="overflow-auto">
         <table className="w-full text-sm text-left">
           <thead className="bg-[var(--bg-app)] border-b border-[var(--border-color)] text-[11px] font-medium uppercase tracking-wider text-[var(--text-secondary)]">
             <tr>
-              <th className="px-5 py-3">Cột</th>
-              <th className="px-5 py-3">Null rate</th>
-              <th className="px-5 py-3">Type compliance</th>
-              <th className="px-5 py-3">Uniqueness</th>
-              <th className="px-5 py-3">Đánh giá</th>
+              <th className="px-5 py-3">{t('templates67AutodbQualityTrend.headerColumn')}</th>
+              <th className="px-5 py-3">{t('templates67AutodbQualityTrend.headerNullRate')}</th>
+              <th className="px-5 py-3">{t('templates67AutodbQualityTrend.headerTypeCompliance')}</th>
+              <th className="px-5 py-3">{t('templates67AutodbQualityTrend.headerUniqueness')}</th>
+              <th className="px-5 py-3">{t('templates67AutodbQualityTrend.headerEvaluation')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--border-color)]/60">
             {d.column_scores.map((c) => {
               const issues: string[] = [];
-              if (c.null_rate > 30) issues.push('Null rate cao');
-              if (c.type_compliance < 90) issues.push('Type không nhất quán');
-              if (c.uniqueness > 95 && c.name !== 'id') issues.push('Có thể là cột PK chưa khai báo');
+              if (c.null_rate > 30) issues.push(t('templates67AutodbQualityTrend.issueNullHigh'));
+              if (c.type_compliance < 90) issues.push(t('templates67AutodbQualityTrend.issueTypeInconsistent'));
+              if (c.uniqueness > 95 && c.name !== 'id') issues.push(t('templates67AutodbQualityTrend.issuePkUndeclared'));
               return (
                 <tr key={c.name} className="hover:bg-[var(--bg-app)]/40 transition-colors">
                   <td className="px-5 py-3 font-mono text-sm text-[var(--text-primary)]">{c.name}</td>
@@ -366,7 +370,7 @@ function ColumnBreakdown({ dataset: d }: { dataset: DatasetQuality }) {
                   <td className="px-5 py-3"><ScoreBar value={c.uniqueness} /></td>
                   <td className="px-5 py-3">
                     {issues.length === 0 ? (
-                      <Badge variant="success"><CheckCircle2 className="w-3 h-3 mr-1" /> OK</Badge>
+                      <Badge variant="success"><CheckCircle2 className="w-3 h-3 mr-1" /> {t('templates67AutodbQualityTrend.okBadge')}</Badge>
                     ) : (
                       <div className="flex flex-wrap gap-1">
                         {issues.map((i) => <Badge key={i} variant="warning">{i}</Badge>)}

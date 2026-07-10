@@ -11,21 +11,23 @@ import {
   Badge, Button, Input, Label, ErrorBanner, cn, type ProblemDetails,
 } from '@/components/platform/foundation';
 import { PageHeader } from '@/components/platform/shell';
+import { useT } from '@/lib/i18n/provider';
 
 const STEPS = [
-  { id: 1, title: 'Thông tin chung', icon: Building2 },
-  { id: 2, title: 'Gói & ngành',      icon: Tag },
-  { id: 3, title: 'Xác nhận',         icon: ClipboardCheck },
+  { id: 1, titleKey: 'newPage2.stepGeneral',       icon: Building2 },
+  { id: 2, titleKey: 'newPage2.stepPlanIndustry',  icon: Tag },
+  { id: 3, titleKey: 'newPage2.stepConfirm',       icon: ClipboardCheck },
 ] as const;
 
 const PLAN_OPTIONS = [
-  { value: 'PILOT',     label: 'PILOT — 1.000.000 ₫/tháng · 500 KH duy nhất' },
-  { value: 'ENT_BASIC', label: 'ENT BASIC — 2.000.000 ₫/tháng · 1.000 KH' },
-  { value: 'ENT_MID',   label: 'ENT MID — 5.000.000 ₫/tháng · 4.000 KH' },
-  { value: 'ENT_MAX',   label: 'ENT MAX — 8.000.000 ₫/tháng · 10.000 KH' },
+  { value: 'PILOT',     labelKey: 'newPage2.planPilot' },
+  { value: 'ENT_BASIC', labelKey: 'newPage2.planEntBasic' },
+  { value: 'ENT_MID',   labelKey: 'newPage2.planEntMid' },
+  { value: 'ENT_MAX',   labelKey: 'newPage2.planEntMax' },
 ];
 
 export default function NewWorkspacePage() {
+  const t = useT();
   const router = useRouter();
   const qc     = useQueryClient();
 
@@ -53,7 +55,7 @@ export default function NewWorkspacePage() {
     setError(null);
     setApiError(null);
     if (step === 1 && name.trim().length < 2) {
-      setError('Tên workspace cần ≥ 2 ký tự.');
+      setError(t('newPage2.errNameTooShort'));
       return;
     }
     if (step < 3) setStep((step + 1) as 1 | 2 | 3);
@@ -72,13 +74,13 @@ export default function NewWorkspacePage() {
           className="inline-flex items-center gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          Tất cả workspaces
+          {t('newPage2.allWorkspaces')}
         </Link>
       </div>
 
       <PageHeader
-        title="Tạo workspace mới"
-        description="Cấp phát môi trường tenant mới cho khách hàng doanh nghiệp."
+        title={t('newPage2.title')}
+        description={t('newPage2.desc')}
       />
 
       <div className="px-6 lg:px-8 py-6 max-w-3xl space-y-6">
@@ -98,7 +100,7 @@ export default function NewWorkspacePage() {
                   )}
                 >
                   <Icon className="w-3.5 h-3.5" strokeWidth={2} />
-                  <span>{s.id}. {s.title}</span>
+                  <span>{s.id}. {t(s.titleKey)}</span>
                 </div>
                 {i < STEPS.length - 1 && (
                   <div className={cn('flex-1 h-px', done ? 'bg-[var(--state-success)]/40' : 'bg-[var(--border-color)]')} />
@@ -111,28 +113,28 @@ export default function NewWorkspacePage() {
         <section className="rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] shadow-soft-sm p-6 space-y-5">
           {step === 1 && (
             <>
-              <h2 className="font-serif text-lg text-[var(--text-primary)]">Thông tin chung</h2>
+              <h2 className="font-serif text-lg text-[var(--text-primary)]">{t('newPage2.stepGeneral')}</h2>
               <div className="space-y-1.5">
-                <Label htmlFor="name">Tên workspace</Label>
+                <Label htmlFor="name">{t('newPage2.nameLabel')}</Label>
                 <Input
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="VD: Acme Production"
+                  placeholder={t('newPage2.namePlaceholder')}
                   minLength={2}
                   maxLength={200}
                   autoFocus
                 />
-                <p className="text-xs text-[var(--text-secondary)]">2–200 ký tự. Sẽ hiển thị cho thành viên trong workspace.</p>
+                <p className="text-xs text-[var(--text-secondary)]">{t('newPage2.nameHint')}</p>
               </div>
             </>
           )}
 
           {step === 2 && (
             <>
-              <h2 className="font-serif text-lg text-[var(--text-primary)]">Gói & ngành</h2>
+              <h2 className="font-serif text-lg text-[var(--text-primary)]">{t('newPage2.stepPlanIndustry')}</h2>
               <div className="space-y-1.5">
-                <Label htmlFor="plan">Mã gói</Label>
+                <Label htmlFor="plan">{t('newPage2.planLabel')}</Label>
                 <select
                   id="plan"
                   value={planCode}
@@ -140,21 +142,21 @@ export default function NewWorkspacePage() {
                   className="h-10 w-full rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30"
                 >
                   {PLAN_OPTIONS.map((p) => (
-                    <option key={p.value} value={p.value}>{p.label}</option>
+                    <option key={p.value} value={p.value}>{t(p.labelKey)}</option>
                   ))}
                 </select>
                 <p className="text-xs text-[var(--text-secondary)]">
-                  Tính cước theo COUNT(DISTINCT customer_external_id) mỗi tháng — K-11.
+                  {t('newPage2.planBillingHint')}
                 </p>
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="industry">Ngành (tùy chọn)</Label>
+                <Label htmlFor="industry">{t('newPage2.industryLabel')}</Label>
                 <Input
                   id="industry"
                   value={industry}
                   onChange={(e) => setIndustry(e.target.value)}
-                  placeholder="VD: Bán lẻ, Tài chính, Sản xuất"
+                  placeholder={t('newPage2.industryPlaceholder')}
                   maxLength={100}
                 />
               </div>
@@ -163,14 +165,14 @@ export default function NewWorkspacePage() {
 
           {step === 3 && (
             <>
-              <h2 className="font-serif text-lg text-[var(--text-primary)]">Xác nhận</h2>
+              <h2 className="font-serif text-lg text-[var(--text-primary)]">{t('newPage2.stepConfirm')}</h2>
               <div className="space-y-3 rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-app)]/30 p-4">
-                <ConfirmRow label="Tên"   value={name} />
-                <ConfirmRow label="Gói"   value={<Badge variant="current">{planCode}</Badge>} />
-                <ConfirmRow label="Ngành" value={industry || '—'} />
+                <ConfirmRow label={t('newPage2.confirmName')}     value={name} />
+                <ConfirmRow label={t('newPage2.confirmPlan')}     value={<Badge variant="current">{planCode}</Badge>} />
+                <ConfirmRow label={t('newPage2.confirmIndustry')} value={industry || '—'} />
               </div>
               <p className="text-xs text-[var(--text-secondary)]">
-                Bạn có thể mời thành viên và cấp khoá API ngay sau khi tạo xong.
+                {t('newPage2.confirmFooterHint')}
               </p>
             </>
           )}
@@ -185,11 +187,11 @@ export default function NewWorkspacePage() {
           <div className="flex justify-between pt-2">
             <Button variant="secondary" onClick={prev} disabled={step === 1}>
               <ArrowLeft className="w-4 h-4 mr-1.5" />
-              Quay lại
+              {t('newPage2.btnBack')}
             </Button>
             {step < 3 ? (
               <Button onClick={next}>
-                Tiếp tục
+                {t('newPage2.btnNext')}
                 <ArrowRight className="w-4 h-4 ml-1.5" />
               </Button>
             ) : (
@@ -198,7 +200,7 @@ export default function NewWorkspacePage() {
                 onClick={() => { setError(null); setApiError(null); createMut.mutate(); }}
               >
                 <Check className="w-4 h-4 mr-1.5" />
-                Tạo workspace
+                {t('newPage2.btnCreate')}
               </Button>
             )}
           </div>

@@ -1,0 +1,58 @@
+{
+  "dmsMetadataForm.completenessEmpty": {
+    "vi": "chưa nhập thông tin",
+    "en": "no information entered",
+    "ja": "情報未入力",
+    "ko": "정보 미입력",
+    "zh": "尚未填写信息"
+  },
+  "dmsMetadataForm.completenessFull": {
+    "vi": "đủ thông tin",
+    "en": "complete",
+    "ja": "情報完備",
+    "ko": "정보 완료",
+    "zh": "信息完整"
+  },
+  "dmsMetadataForm.completenessSuffix": {
+    "vi": "thông tin",
+    "en": "complete",
+    "ja": "入力済み",
+    "ko": "완료",
+    "zh": "已填写"
+  },
+  "dmsMetadataForm.selectUserPlaceholder": {
+    "vi": "— chọn người —",
+    "en": "— select person —",
+    "ja": "— 担当者を選択 —",
+    "ko": "— 담당자 선택 —",
+    "zh": "— 选择人员 —"
+  },
+  "dmsMetadataForm.selectPlaceholder": {
+    "vi": "— chọn —",
+    "en": "— select —",
+    "ja": "— 選択 —",
+    "ko": "— 선택 —",
+    "zh": "— 选择 —"
+  },
+  "dmsMetadataForm.saveFailed": {
+    "vi": "Lưu thất bại",
+    "en": "Save failed",
+    "ja": "保存に失敗しました",
+    "ko": "저장 실패",
+    "zh": "保存失败"
+  },
+  "dmsMetadataForm.noTemplateHint": {
+    "vi": "Thư mục này chưa gắn mẫu tài liệu — gắn mẫu ở trang thư mục để khai thuộc tính.",
+    "en": "This folder has no document template attached — attach a template on the folder page to fill in properties.",
+    "ja": "このフォルダにはまだ文書テンプレートが割り当てられていません — フォルダページでテンプレートを割り当てるとプロパティを入力できます。",
+    "ko": "이 폴더에는 아직 문서 템플릿이 연결되지 않았습니다 — 폴더 페이지에서 템플릿을 연결하면 속성을 입력할 수 있습니다.",
+    "zh": "此文件夹尚未关联文档模板 — 请在文件夹页面关联模板以填写属性。"
+  },
+  "dmsMetadataForm.saveButton": {
+    "vi": "Lưu thuộc tính",
+    "en": "Save properties",
+    "ja": "プロパティを保存",
+    "ko": "속성 저장",
+    "zh": "保存属性"
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "templates55StrategyReviewMeeting.title": {
+    "vi": "Họp review",
+    "en": "Review meetings",
+    "ja": "レビュー会議",
+    "ko": "리뷰 회의",
+    "zh": "评审会议"
+  },
+  "templates55StrategyReviewMeeting.description": {
+    "vi": "Lịch họp QBR · OKR weekly · Risk monthly với insight pack chuẩn bị sẵn từ Kaori AI.",
+    "en": "QBR · OKR weekly · Risk monthly meeting schedule with an insight pack prepared in advance by Kaori AI.",
+    "ja": "QBR・OKRウィークリー・リスク月次会議のスケジュール — Kaori AIが事前にインサイトパックを準備。",
+    "ko": "QBR · OKR 위클리 · 리스크 월간 회의 일정 — Kaori AI가 미리 준비한 인사이트 팩 포함.",
+    "zh": "QBR · OKR 周会 · 风险月度会议日程,由 Kaori AI 提前生成洞察包。"
+  },
+  "templates55StrategyReviewMeeting.btnOverview": {
+    "vi": "Tổng quan",
+    "en": "Overview",
+    "ja": "概要",
+    "ko": "개요",
+    "zh": "概览"
+  },
+  "templates55StrategyReviewMeeting.btnCreateMeeting": {
+    "vi": "Tạo cuộc họp",
+    "en": "Create meeting",
+    "ja": "会議を作成",
+    "ko": "회의 생성",
+    "zh": "创建会议"
+  },
+  "templates55StrategyReviewMeeting.sectionUpcoming": {
+    "vi": "Sắp tới",
+    "en": "Upcoming",
+    "ja": "今後の予定",
+    "ko": "예정",
+    "zh": "即将举行"
+  },
+  "templates55StrategyReviewMeeting.noUpcoming": {
+    "vi": "Không có cuộc họp sắp tới.",
+    "en": "No upcoming meetings.",
+    "ja": "予定されている会議はありません。",
+    "ko": "예정된 회의가 없습니다.",
+    "zh": "暂无即将举行的会议。"
+  },
+  "templates55StrategyReviewMeeting.sectionPast": {
+    "vi": "Đã qua",
+    "en": "Past",
+    "ja": "過去",
+    "ko": "지난 회의",
+    "zh": "已结束"
+  },
+  "templates55StrategyReviewMeeting.noPastHistory": {
+    "vi": "Chưa có lịch sử họp.",
+    "en": "No meeting history yet.",
+    "ja": "会議履歴はまだありません。",
+    "ko": "아직 회의 이력이 없습니다.",
+    "zh": "暂无会议历史。"
+  },
+  "templates55StrategyReviewMeeting.selectMeetingHint": {
+    "vi": "Chọn 1 cuộc họp để xem agenda + insight pack.",
+    "en": "Select a meeting to view its agenda and insight pack.",
+    "ja": "会議を選択してアジェンダとインサイトパックを表示します。",
+    "ko": "회의를 선택하면 안건과 인사이트 팩을 확인할 수 있습니다.",
+    "zh": "选择一个会议以查看议程和洞察包。"
+  },
+  "templates55StrategyReviewMeeting.kindQbr": {
+    "vi": "QBR",
+    "en": "QBR",
+    "ja": "QBR",
+    "ko": "QBR",
+    "zh": "QBR"
+  },
+  "templates55StrategyReviewMeeting.kindOkrWeekly": {
+    "vi": "OKR Weekly",
+    "en": "OKR Weekly",
+    "ja": "OKRウィークリー",
+    "ko": "OKR 위클리",
+    "zh": "OKR 周会"
+  },
+  "templates55StrategyReviewMeeting.kindRiskMonthly": {
+    "vi": "Risk Monthly",
+    "en": "Risk Monthly",
+    "ja": "リスク月次会議",
+    "ko": "리스크 월간",
+    "zh": "风险月度会议"
+  },
+  "templates55StrategyReviewMeeting.kindCustom": {
+    "vi": "Tuỳ chỉnh",
+    "en": "Custom",
+    "ja": "カスタム",
+    "ko": "사용자 지정",
+    "zh": "自定义"
+  },
+  "templates55StrategyReviewMeeting.notesFilledBadge": {
+    "vi": "Đã ghi chú",
+    "en": "Notes filled",
+    "ja": "議事録記入済み",
+    "ko": "메모 작성 완료",
+    "zh": "已填写记录"
+  },
+  "templates55StrategyReviewMeeting.minutesUnit": {
+    "vi": "phút",
+    "en": "min",
+    "ja": "分",
+    "ko": "분",
+    "zh": "分钟"
+  },
+  "templates55StrategyReviewMeeting.agendaLabel": {
+    "vi": "Agenda",
+    "en": "Agenda",
+    "ja": "アジェンダ",
+    "ko": "안건",
+    "zh": "议程"
+  },
+  "templates55StrategyReviewMeeting.attendeesLabel": {
+    "vi": "Tham dự",
+    "en": "Attendees",
+    "ja": "参加者",
+    "ko": "참석자",
+    "zh": "参与者"
+  },
+  "templates55StrategyReviewMeeting.insightPackNotGenerated": {
+    "vi": "Insight pack chưa được tạo",
+    "en": "Insight pack not generated yet",
+    "ja": "インサイトパックはまだ生成されていません",
+    "ko": "인사이트 팩이 아직 생성되지 않았습니다",
+    "zh": "洞察包尚未生成"
+  },
+  "templates55StrategyReviewMeeting.insightPackAutoGenHint": {
+    "vi": "Kaori AI sẽ tự sinh trước cuộc họp 1h. Hoặc tạo ngay:",
+    "en": "Kaori AI will auto-generate it 1 hour before the meeting. Or generate it now:",
+    "ja": "Kaori AIが会議の1時間前に自動生成します。今すぐ生成することもできます:",
+    "ko": "Kaori AI가 회의 1시간 전에 자동으로 생성합니다. 지금 바로 생성할 수도 있습니다:",
+    "zh": "Kaori AI 将在会议前 1 小时自动生成。或立即生成:"
+  },
+  "templates55StrategyReviewMeeting.btnGenerateInsightNow": {
+    "vi": "Sinh insight ngay (K-3)",
+    "en": "Generate insight now (K-3)",
+    "ja": "今すぐインサイトを生成 (K-3)",
+    "ko": "지금 인사이트 생성 (K-3)",
+    "zh": "立即生成洞察 (K-3)"
+  },
+  "templates55StrategyReviewMeeting.llmRouterNote1": {
+    "vi": "Insight pack đi qua",
+    "en": "The insight pack goes through",
+    "ja": "インサイトパックは",
+    "ko": "인사이트 팩은",
+    "zh": "洞察包经由"
+  },
+  "templates55StrategyReviewMeeting.llmRouterNote2": {
+    "vi": "(K-3). Mặc định Qwen 2.5 nội bộ — chỉ dùng AI ngoài khi workspace bật consent_external và đã PII-mask (K-4 + K-5).",
+    "en": "(K-3). Defaults to internal Qwen 2.5 — external AI is used only when the workspace enables consent_external and PII has been masked (K-4 + K-5).",
+    "ja": "を経由します (K-3)。デフォルトは内部Qwen 2.5 — ワークスペースでconsent_externalが有効かつPIIマスク済みの場合のみ外部AIを使用 (K-4 + K-5)。",
+    "ko": "를 거칩니다 (K-3). 기본값은 내부 Qwen 2.5 — 워크스페이스에서 consent_external이 활성화되고 PII 마스킹이 완료된 경우에만 외부 AI를 사용합니다 (K-4 + K-5).",
+    "zh": "(K-3)。默认使用内部 Qwen 2.5 — 仅当工作区启用 consent_external 且已完成 PII 脱敏时才使用外部 AI (K-4 + K-5)。"
+  },
+  "templates55StrategyReviewMeeting.insightPackTitle": {
+    "vi": "Insight pack",
+    "en": "Insight pack",
+    "ja": "インサイトパック",
+    "ko": "인사이트 팩",
+    "zh": "洞察包"
+  },
+  "templates55StrategyReviewMeeting.generatedAtLabel": {
+    "vi": "Sinh lúc",
+    "en": "Generated at",
+    "ja": "生成日時",
+    "ko": "생성 시각",
+    "zh": "生成时间"
+  },
+  "templates55StrategyReviewMeeting.okrMovementsLabel": {
+    "vi": "Biến động OKR",
+    "en": "OKR movements",
+    "ja": "OKRの変動",
+    "ko": "OKR 변동",
+    "zh": "OKR 变动"
+  },
+  "templates55StrategyReviewMeeting.topInsightsLabel": {
+    "vi": "Insight chính",
+    "en": "Top insights",
+    "ja": "主なインサイト",
+    "ko": "주요 인사이트",
+    "zh": "主要洞察"
+  },
+  "templates55StrategyReviewMeeting.upcomingMilestonesLabel": {
+    "vi": "Milestone đến hạn",
+    "en": "Upcoming milestones",
+    "ja": "期限が近いマイルストーン",
+    "ko": "임박한 마일스톤",
+    "zh": "即将到期的里程碑"
+  }
+}

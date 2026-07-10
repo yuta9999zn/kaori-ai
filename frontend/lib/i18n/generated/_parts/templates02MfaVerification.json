@@ -1,0 +1,107 @@
+{
+  "templates02MfaVerification.privacyPolicy": {
+    "vi": "Chính sách bảo mật",
+    "en": "Privacy Policy",
+    "ja": "プライバシーポリシー",
+    "ko": "개인정보 처리방침",
+    "zh": "隐私政策"
+  },
+  "templates02MfaVerification.footerCopyright": {
+    "vi": "© 2026 Kaori Platform",
+    "en": "© 2026 Kaori Platform",
+    "ja": "© 2026 Kaori Platform",
+    "ko": "© 2026 Kaori Platform",
+    "zh": "© 2026 Kaori Platform"
+  },
+  "templates02MfaVerification.headlineLine1": {
+    "vi": "Trí tuệ,",
+    "en": "Intelligence,",
+    "ja": "インテリジェンス、",
+    "ko": "인텔리전스,",
+    "zh": "智能,"
+  },
+  "templates02MfaVerification.headlineLine2": {
+    "vi": "được kiến tạo an nhiên.",
+    "en": "Calmly Delivered.",
+    "ja": "静かに、確かに。",
+    "ko": "차분하게 전달됩니다.",
+    "zh": "从容交付。"
+  },
+  "templates02MfaVerification.heroDesc": {
+    "vi": "Trải nghiệm thế hệ tiếp theo của trí tuệ dữ liệu đa tenant. Được xây dựng để mở rộng, thiết kế để rõ ràng, và tạo ra để mang lại sự an nhiên cho các workflow của bạn.",
+    "en": "Experience the next generation of multi-tenant data intelligence. Built for scale, designed for clarity, and engineered to bring peace to your workflows.",
+    "ja": "次世代のマルチテナント・データインテリジェンスを体験してください。スケールのために構築され、明快さのために設計され、あなたのワークフローに安らぎをもたらすようエンジニアリングされています。",
+    "ko": "차세대 멀티테넌트 데이터 인텔리전스를 경험하세요. 확장성을 위해 구축되고, 명료함을 위해 설계되었으며, 워크플로우에 평온함을 더하도록 엔지니어링되었습니다.",
+    "zh": "体验新一代多租户数据智能。为规模而生,为清晰而设计,为您的工作流带来从容而打造。"
+  },
+  "templates02MfaVerification.title": {
+    "vi": "Xác minh danh tính của bạn",
+    "en": "Verify your identity",
+    "ja": "本人確認",
+    "ko": "본인 확인",
+    "zh": "验证您的身份"
+  },
+  "templates02MfaVerification.descPrefix": {
+    "vi": "Nhập mã 6 chữ số từ ứng dụng xác thực hoặc đã được gửi tới",
+    "en": "Enter the 6-digit code from your authenticator app or sent to",
+    "ja": "認証アプリに表示された、または送信された6桁のコードを入力してください",
+    "ko": "인증 앱에서 확인하거나 아래 주소로 전송된 6자리 코드를 입력하세요",
+    "zh": "请输入身份验证器应用中或发送至以下地址的 6 位数验证码"
+  },
+  "templates02MfaVerification.digitAriaLabel": {
+    "vi": "Chữ số {n}",
+    "en": "Digit {n}",
+    "ja": "{n}桁目",
+    "ko": "{n}번째 자리",
+    "zh": "第 {n} 位数字"
+  },
+  "templates02MfaVerification.errInvalidCode": {
+    "vi": "Mã không hợp lệ hoặc đã hết hạn",
+    "en": "Invalid or expired code",
+    "ja": "コードが無効か期限切れです",
+    "ko": "코드가 유효하지 않거나 만료되었습니다",
+    "zh": "验证码无效或已过期"
+  },
+  "templates02MfaVerification.codeExpired": {
+    "vi": "Mã đã hết hạn. Vui lòng yêu cầu mã mới.",
+    "en": "Code expired. Please request a new one.",
+    "ja": "コードの有効期限が切れました。新しいコードをリクエストしてください。",
+    "ko": "코드가 만료되었습니다. 새 코드를 요청해 주세요.",
+    "zh": "验证码已过期,请重新获取。"
+  },
+  "templates02MfaVerification.refreshPrefix": {
+    "vi": "Mã này sẽ làm mới sau",
+    "en": "This code refreshes in",
+    "ja": "このコードは以下の時間で更新されます:",
+    "ko": "이 코드는 다음 시간 후 갱신됩니다:",
+    "zh": "此验证码将在以下时间后刷新:"
+  },
+  "templates02MfaVerification.verify": {
+    "vi": "Xác minh",
+    "en": "Verify",
+    "ja": "確認する",
+    "ko": "확인",
+    "zh": "验证"
+  },
+  "templates02MfaVerification.resendCode": {
+    "vi": "Gửi lại mã",
+    "en": "Resend code",
+    "ja": "コードを再送信",
+    "ko": "코드 재전송",
+    "zh": "重新发送验证码"
+  },
+  "templates02MfaVerification.useBackupCode": {
+    "vi": "Dùng mã dự phòng",
+    "en": "Use backup code",
+    "ja": "バックアップコードを使用",
+    "ko": "백업 코드 사용",
+    "zh": "使用备用验证码"
+  },
+  "templates02MfaVerification.backToLogin": {
+    "vi": "Quay lại đăng nhập",
+    "en": "Back to login",
+    "ja": "ログインに戻る",
+    "ko": "로그인으로 돌아가기",
+    "zh": "返回登录"
+  }
+}

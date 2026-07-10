@@ -25,6 +25,7 @@ import { Badge, type BadgeTone } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
+import { useT } from "@/lib/i18n/provider";
 
 type CustomerType     = "individual" | "SMB" | "enterprise" | "strategic";
 type RelationshipTier = "platinum" | "gold" | "silver" | "bronze";
@@ -46,11 +47,11 @@ interface Customer {
   created_at:         string;
 }
 
-const TYPE_LABEL: Record<CustomerType, string> = {
-  individual: "Cá nhân",
-  SMB:        "SMB",
-  enterprise: "Enterprise",
-  strategic:  "Chiến lược",
+const TYPE_LABEL_KEY: Record<CustomerType, string> = {
+  individual: "customersPage.typeIndividual",
+  SMB:        "customersPage.typeSmb",
+  enterprise: "customersPage.typeEnterprise",
+  strategic:  "customersPage.typeStrategic",
 };
 
 const TIER_TONE: Record<RelationshipTier, BadgeTone> = {
@@ -60,11 +61,11 @@ const TIER_TONE: Record<RelationshipTier, BadgeTone> = {
   bronze:   "neutral",
 };
 
-const TIER_LABEL: Record<RelationshipTier, string> = {
-  platinum: "Platinum",
-  gold:     "Gold",
-  silver:   "Silver",
-  bronze:   "Bronze",
+const TIER_LABEL_KEY: Record<RelationshipTier, string> = {
+  platinum: "customersPage.tierPlatinum",
+  gold:     "customersPage.tierGold",
+  silver:   "customersPage.tierSilver",
+  bronze:   "customersPage.tierBronze",
 };
 
 function fmtVnd(s: string | null): string {
@@ -77,6 +78,7 @@ function fmtVnd(s: string | null): string {
 }
 
 export default function CustomersPage() {
+  const t = useT();
   const [statusFilter, setStatusFilter] = useState<string>("active");
   const [typeFilter,   setTypeFilter]   = useState<string>("");
   const [tierFilter,   setTierFilter]   = useState<string>("");
@@ -96,7 +98,7 @@ export default function CustomersPage() {
   const COLUMNS: Column<Customer>[] = useMemo(() => [
     {
       key: "code",
-      header: "Mã KH",
+      header: t("customersPage.colCode"),
       render: (r) => (
         <Link href={`/customers/${r.customer_id}`} className="text-tiny font-mono text-brand-600 hover:underline">
           {r.code}
@@ -105,7 +107,7 @@ export default function CustomersPage() {
     },
     {
       key: "customer_name",
-      header: "Khách hàng",
+      header: t("customersPage.colCustomer"),
       render: (r) => (
         <div className="min-w-0">
           <Link href={`/customers/${r.customer_id}`} className="text-body-strong text-ink hover:text-brand-500 truncate block">
@@ -119,39 +121,39 @@ export default function CustomersPage() {
     },
     {
       key: "customer_type",
-      header: "Loại",
-      render: (r) => <Badge tone="neutral">{TYPE_LABEL[r.customer_type] ?? r.customer_type}</Badge>,
+      header: t("customersPage.colType"),
+      render: (r) => <Badge tone="neutral">{t(TYPE_LABEL_KEY[r.customer_type])}</Badge>,
     },
     {
       key: "industry",
-      header: "Ngành",
+      header: t("customersPage.colIndustry"),
       render: (r) => <span className="text-tiny text-ink-muted">{r.industry ?? "—"}</span>,
     },
     {
       key: "annual_revenue_vnd",
-      header: "Doanh thu/năm",
+      header: t("customersPage.colRevenue"),
       render: (r) => <span className="text-tiny tabular-nums">{fmtVnd(r.annual_revenue_vnd)}</span>,
     },
     {
       key: "credit_rating",
-      header: "Tín dụng",
+      header: t("customersPage.colCredit"),
       render: (r) => r.credit_rating
         ? <Badge tone={r.credit_rating.startsWith("A") ? "success" : r.credit_rating.startsWith("B") ? "warning" : "neutral"}>{r.credit_rating}</Badge>
         : <span className="text-tiny text-[#B0A698]">—</span>,
     },
     {
       key: "relationship_tier",
-      header: "Tier",
+      header: t("customersPage.colTier"),
       render: (r) => r.relationship_tier
-        ? <Badge tone={TIER_TONE[r.relationship_tier]}>{TIER_LABEL[r.relationship_tier]}</Badge>
+        ? <Badge tone={TIER_TONE[r.relationship_tier]}>{t(TIER_LABEL_KEY[r.relationship_tier])}</Badge>
         : <span className="text-tiny text-[#B0A698]">—</span>,
     },
     {
       key: "assigned_account_manager",
-      header: "AM",
+      header: t("customersPage.colAm"),
       render: (r) => <span className="text-tiny text-ink-muted">{r.assigned_account_manager ?? "—"}</span>,
     },
-  ], []);
+  ], [t]);
 
   return (
     <div className="space-y-6">
@@ -159,10 +161,10 @@ export default function CustomersPage() {
         <div>
           <h1 className="text-h1 font-serif text-ink flex items-center gap-3">
             <Briefcase className="w-6 h-6 text-brand-500" />
-            Khách hàng
+            {t("customersPage.pageTitle")}
           </h1>
           <p className="text-small text-ink-muted mt-1">
-            Danh sách khách hàng + thông tin doanh thu, tín dụng, danh hiệu. Mig 062 — pilot Vingroup demo.
+            {t("customersPage.pageDesc")}
           </p>
         </div>
       </div>
@@ -170,29 +172,29 @@ export default function CustomersPage() {
       <Card>
         <CardContent className="pt-4 pb-4">
           <div className="flex items-center gap-4 flex-wrap">
-            <FilterSelect label="Trạng thái" value={statusFilter} onChange={setStatusFilter}
+            <FilterSelect label={t("customersPage.filterStatus")} value={statusFilter} onChange={setStatusFilter}
               options={[
-                { value: "", label: "Tất cả" },
-                { value: "active", label: "Đang hoạt động" },
-                { value: "inactive", label: "Tạm ngưng" },
-                { value: "archived", label: "Đã lưu trữ" },
-                { value: "blacklisted", label: "Blacklist" },
+                { value: "", label: t("customersPage.optAll") },
+                { value: "active", label: t("customersPage.statusActive") },
+                { value: "inactive", label: t("customersPage.statusInactive") },
+                { value: "archived", label: t("customersPage.statusArchived") },
+                { value: "blacklisted", label: t("customersPage.statusBlacklisted") },
               ]} />
-            <FilterSelect label="Loại KH" value={typeFilter} onChange={setTypeFilter}
+            <FilterSelect label={t("customersPage.filterType")} value={typeFilter} onChange={setTypeFilter}
               options={[
-                { value: "", label: "Tất cả" },
-                { value: "strategic", label: "Chiến lược" },
-                { value: "enterprise", label: "Enterprise" },
-                { value: "SMB", label: "SMB" },
-                { value: "individual", label: "Cá nhân" },
+                { value: "", label: t("customersPage.optAll") },
+                { value: "strategic", label: t("customersPage.typeStrategic") },
+                { value: "enterprise", label: t("customersPage.typeEnterprise") },
+                { value: "SMB", label: t("customersPage.typeSmb") },
+                { value: "individual", label: t("customersPage.typeIndividual") },
               ]} />
-            <FilterSelect label="Tier" value={tierFilter} onChange={setTierFilter}
+            <FilterSelect label={t("customersPage.filterTier")} value={tierFilter} onChange={setTierFilter}
               options={[
-                { value: "", label: "Tất cả" },
-                { value: "platinum", label: "Platinum" },
-                { value: "gold", label: "Gold" },
-                { value: "silver", label: "Silver" },
-                { value: "bronze", label: "Bronze" },
+                { value: "", label: t("customersPage.optAll") },
+                { value: "platinum", label: t("customersPage.tierPlatinum") },
+                { value: "gold", label: t("customersPage.tierGold") },
+                { value: "silver", label: t("customersPage.tierSilver") },
+                { value: "bronze", label: t("customersPage.tierBronze") },
               ]} />
           </div>
         </CardContent>
@@ -207,7 +209,7 @@ export default function CustomersPage() {
       {isError && (
         <Card className="border-danger-200 bg-danger-50/30">
           <CardContent className="pt-6 text-small text-danger-700 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4" /> Lỗi khi tải khách hàng. Reload trang để thử lại.
+            <AlertCircle className="w-4 h-4" /> {t("customersPage.errLoadFailed")}
           </CardContent>
         </Card>
       )}
@@ -215,8 +217,8 @@ export default function CustomersPage() {
       {!isLoading && !isError && (data ?? []).length === 0 && (
         <EmptyState
           icon={Award}
-          title="Chưa có khách hàng nào"
-          description="Đổi bộ lọc hoặc thêm khách hàng mới."
+          title={t("customersPage.emptyTitle")}
+          description={t("customersPage.emptyDesc")}
         />
       )}
 
@@ -224,7 +226,7 @@ export default function CustomersPage() {
         <DataTable<Customer>
           columns={COLUMNS}
           rows={data ?? []}
-          emptyMessage="Không có khách hàng nào khớp bộ lọc."
+          emptyMessage={t("customersPage.emptyTableMsg")}
         />
       )}
     </div>

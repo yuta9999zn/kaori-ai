@@ -36,6 +36,7 @@ import {
 import { PageHeader } from '@/components/p2/shell';
 import { SkeletonOrgTree } from '@/components/p2/skeleton';
 import { SUCCESS } from '@/lib/i18n/messages';
+import { useT } from '@/lib/i18n/provider';
 
 // ─── Types mirror BE shapes ──────────────────────────────────────────
 
@@ -79,14 +80,14 @@ interface OrgDetail {
   }>;
 }
 
-const DEPT_LABEL: Record<string, string> = {
-  marketing:        'Marketing',
-  sales:            'Sales',
-  customer_service: 'CSKH',
-  warehouse:        'Kho vận',
-  hr:               'Nhân sự',
-  finance:          'Tài chính',
-  custom:           'Tùy chỉnh',
+const DEPT_LABEL_KEYS: Record<string, string> = {
+  marketing:        'templatesFnewCorporateTree.deptMarketing',
+  sales:            'templatesFnewCorporateTree.deptSales',
+  customer_service: 'templatesFnewCorporateTree.deptCustomerService',
+  warehouse:        'templatesFnewCorporateTree.deptWarehouse',
+  hr:               'templatesFnewCorporateTree.deptHr',
+  finance:          'templatesFnewCorporateTree.deptFinance',
+  custom:           'templatesFnewCorporateTree.deptCustom',
 };
 
 const NODE_ICON: Record<NodeType, React.ComponentType<any>> = {
@@ -95,15 +96,16 @@ const NODE_ICON: Record<NodeType, React.ComponentType<any>> = {
   enterprise: Store,
 };
 
-const NODE_LABEL: Record<NodeType, string> = {
-  group:      'Tập đoàn',
-  division:   'Mảng kinh doanh',
-  enterprise: 'Công ty',
+const NODE_LABEL_KEYS: Record<NodeType, string> = {
+  group:      'templatesFnewCorporateTree.nodeGroup',
+  division:   'templatesFnewCorporateTree.nodeDivision',
+  enterprise: 'templatesFnewCorporateTree.nodeEnterprise',
 };
 
 // ─── Page ──────────────────────────────────────────────────────────
 
 export default function CorporateTreePage() {
+  const t = useT();
   const [tree, setTree] = useState<NestedTreeResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -115,11 +117,11 @@ export default function CorporateTreePage() {
   const loadTree = useCallback(async () => {
     setLoading(true);
     try {
-      const t = await api<NestedTreeResponse>('/api/v1/corporate-tree/nested');
-      setTree(t);
+      const treeData = await api<NestedTreeResponse>('/api/v1/corporate-tree/nested');
+      setTree(treeData);
       // Auto-expand root + first level so demo has something to look at.
       const ids = new Set<string>();
-      for (const r of t.roots) {
+      for (const r of treeData.roots) {
         ids.add(r.node_id);
         for (const c of r.children) ids.add(c.node_id);
       }
@@ -169,10 +171,10 @@ export default function CorporateTreePage() {
   return (
     <>
       <PageHeader
-        title="Cơ cấu tổ chức"
-        description="Cây phả hệ tập đoàn → mảng → công ty con → chi nhánh → phòng ban. Click phòng ban để tạo workflow."
+        title={t('templatesFnewCorporateTree.pageTitle')}
+        description={t('templatesFnewCorporateTree.pageDescription')}
         actions={
-          <Badge variant="info">Đa cấp tổ chức</Badge>
+          <Badge variant="info">{t('templatesFnewCorporateTree.badgeMultiLevel')}</Badge>
         }
       />
 
@@ -221,11 +223,12 @@ function TreeColumn({
   onToggle: (id: string) => void;
   onSelect: (n: TreeNode) => void;
 }) {
+  const t = useT();
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom shadow-soft-sm overflow-hidden">
       <div className="border-b border-[var(--border-color)] px-4 py-2 bg-[var(--bg-app)]">
         <span className="text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
-          <Building2 className="w-4 h-4 inline mr-1.5" /> Cây phả hệ
+          <Building2 className="w-4 h-4 inline mr-1.5" /> {t('templatesFnewCorporateTree.treeHeader')}
         </span>
       </div>
       <div className="p-4">
@@ -252,6 +255,7 @@ function TreeRow({
   expanded: Set<string>; selectedId: string | null;
   onToggle: (id: string) => void; onSelect: (n: TreeNode) => void;
 }) {
+  const t = useT();
   const Icon = NODE_ICON[node.node_type];
   const isOpen = expanded.has(node.node_id);
   const hasChildren = node.children.length > 0;
@@ -291,7 +295,7 @@ function TreeRow({
           </span>
         </div>
         <span className="text-[10px] text-[var(--text-secondary)] shrink-0 hidden sm:inline">
-          {NODE_LABEL[node.node_type]}
+          {t(NODE_LABEL_KEYS[node.node_type])}
         </span>
         {hasChildren && (
           <span className="text-[10px] text-[var(--text-secondary)] shrink-0">
@@ -328,12 +332,13 @@ function InspectorColumn({
   divisions: TreeNode[];
   onReparent: (enterpriseId: string, divisionId: string) => void;
 }) {
+  const t = useT();
   if (!node) {
     return (
       <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom p-5 shadow-soft-sm">
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <Briefcase className="w-10 h-10 text-[var(--text-secondary)]/30 mb-2" />
-          <p className="text-sm text-[var(--text-secondary)]">Chọn 1 nút trong cây để xem chi tiết.</p>
+          <p className="text-sm text-[var(--text-secondary)]">{t('templatesFnewCorporateTree.selectNodeHint')}</p>
         </div>
       </div>
     );
@@ -346,18 +351,18 @@ function InspectorColumn({
           {React.createElement(NODE_ICON[node.node_type], { className: 'w-5 h-5 text-[var(--primary-gold-dark)]' })}
           <div>
             <h3 className="font-serif text-base text-[var(--text-primary)]">{node.display_name}</h3>
-            <p className="text-[11px] text-[var(--text-secondary)]">{NODE_LABEL[node.node_type]}</p>
+            <p className="text-[11px] text-[var(--text-secondary)]">{t(NODE_LABEL_KEYS[node.node_type])}</p>
           </div>
         </div>
         <div className="text-sm text-[var(--text-secondary)]">
           {node.children.length > 0 ? (
-            <p>{node.children.length} {node.node_type === 'group' ? 'mảng kinh doanh' : 'công ty con'}</p>
+            <p>{node.children.length} {node.node_type === 'group' ? t('templatesFnewCorporateTree.wordDivisions') : t('templatesFnewCorporateTree.wordSubsidiaries')}</p>
           ) : (
-            <p>Chưa có {node.node_type === 'group' ? 'mảng' : 'công ty con'} nào.</p>
+            <p>{node.node_type === 'group' ? t('templatesFnewCorporateTree.noDivisionsYet') : t('templatesFnewCorporateTree.noSubsidiariesYet')}</p>
           )}
         </div>
         <p className="text-[11px] text-[var(--text-secondary)] italic">
-          Chọn 1 công ty (lá) để xem chi nhánh + phòng ban + tạo workflow.
+          {t('templatesFnewCorporateTree.selectLeafHint')}
         </p>
       </div>
     );
@@ -373,6 +378,7 @@ function EnterpriseInspector({
   divisions: TreeNode[];
   onReparent: (enterpriseId: string, divisionId: string) => void;
 }) {
+  const t = useT();
   const [detail, setDetail] = useState<OrgDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
@@ -402,17 +408,17 @@ function EnterpriseInspector({
         <Store className="w-5 h-5 text-emerald-700" />
         <div className="flex-1 min-w-0">
           <h3 className="font-serif text-base text-[var(--text-primary)]">{node.display_name}</h3>
-          <p className="text-[11px] text-[var(--text-secondary)]">Công ty con</p>
+          <p className="text-[11px] text-[var(--text-secondary)]">{t('templatesFnewCorporateTree.subsidiaryLabel')}</p>
         </div>
         <Button size="sm" variant="tertiary" onClick={() => setMoveOpen((o) => !o)}>
-          <ArrowRightLeft className="w-3.5 h-3.5 mr-1" /> Di chuyển
+          <ArrowRightLeft className="w-3.5 h-3.5 mr-1" /> {t('templatesFnewCorporateTree.moveButton')}
         </Button>
       </div>
 
       {moveOpen && (
         <div className="bg-[var(--bg-app)]/40 border border-[var(--border-color)] rounded-md-custom p-3 space-y-2">
           <p className="text-[11px] text-[var(--text-secondary)]">
-            Chọn mảng kinh doanh mới — calls PUT /enterprises/{node.node_id.slice(0, 8)}…/parent.
+            {t('templatesFnewCorporateTree.moveHint', { id: node.node_id.slice(0, 8) })}
           </p>
           <div className="grid grid-cols-2 gap-1.5">
             {divisions.map((d) => (
@@ -428,7 +434,7 @@ function EnterpriseInspector({
                 )}
               >
                 {d.display_name}
-                {d.node_id === currentDivisionId && <span className="ml-1 text-[10px]">(hiện tại)</span>}
+                {d.node_id === currentDivisionId && <span className="ml-1 text-[10px]">{t('templatesFnewCorporateTree.currentTag')}</span>}
               </button>
             ))}
           </div>
@@ -439,23 +445,23 @@ function EnterpriseInspector({
 
       {loading ? (
         <div className="flex items-center justify-center py-8 text-[var(--text-secondary)]">
-          <Loader2 className="w-4 h-4 animate-spin mr-2" /> Đang tải chi tiết…
+          <Loader2 className="w-4 h-4 animate-spin mr-2" /> {t('templatesFnewCorporateTree.loadingDetail')}
         </div>
       ) : !detail ? null : (
         <>
           <section>
             <h4 className="text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)] mb-2">
-              <Building2 className="w-3.5 h-3.5 inline mr-1" /> Chi nhánh ({detail.branches.length})
+              <Building2 className="w-3.5 h-3.5 inline mr-1" /> {t('templatesFnewCorporateTree.branchesHeader')} ({detail.branches.length})
             </h4>
             <div className="space-y-1">
               {detail.branches.length === 0 ? (
-                <p className="text-[11px] italic text-[var(--text-secondary)]">Chưa có chi nhánh.</p>
+                <p className="text-[11px] italic text-[var(--text-secondary)]">{t('templatesFnewCorporateTree.noBranches')}</p>
               ) : detail.branches.map((b) => (
                 <div key={b.branch_id} className="flex items-center justify-between gap-2 px-2 py-1.5 rounded hover:bg-[var(--bg-app)]/50 text-sm">
                   <span className="font-medium text-[var(--text-primary)]">{b.name}</span>
                   <div className="flex items-center gap-1.5 text-[10px] text-[var(--text-secondary)]">
                     {b.code && <span className="font-mono">{b.code}</span>}
-                    {b.is_default && <Badge variant="default">Mặc định</Badge>}
+                    {b.is_default && <Badge variant="default">{t('templatesFnewCorporateTree.defaultBadge')}</Badge>}
                   </div>
                 </div>
               ))}
@@ -464,11 +470,11 @@ function EnterpriseInspector({
 
           <section>
             <h4 className="text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)] mb-2">
-              <Users className="w-3.5 h-3.5 inline mr-1" /> Phòng ban ({detail.departments.length})
+              <Users className="w-3.5 h-3.5 inline mr-1" /> {t('templatesFnewCorporateTree.departmentsHeader')} ({detail.departments.length})
             </h4>
             <div className="space-y-1.5">
               {detail.departments.length === 0 ? (
-                <p className="text-[11px] italic text-[var(--text-secondary)]">Chưa có phòng ban.</p>
+                <p className="text-[11px] italic text-[var(--text-secondary)]">{t('templatesFnewCorporateTree.noDepartments')}</p>
               ) : detail.departments.map((d) => (
                 <div
                   key={d.department_id}
@@ -476,17 +482,17 @@ function EnterpriseInspector({
                 >
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-[var(--text-primary)] truncate">{d.name}</p>
-                    <p className="text-[10px] text-[var(--text-secondary)]">{DEPT_LABEL[d.dept_type] || d.dept_type}</p>
+                    <p className="text-[10px] text-[var(--text-secondary)]">{DEPT_LABEL_KEYS[d.dept_type] ? t(DEPT_LABEL_KEYS[d.dept_type]) : d.dept_type}</p>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
                     <a href={`/p2/departments/${d.department_id}/workflows`}>
                       <Button size="sm" variant="tertiary">
-                        <WorkflowIcon className="w-3 h-3 mr-1" /> Xem workflow
+                        <WorkflowIcon className="w-3 h-3 mr-1" /> {t('templatesFnewCorporateTree.viewWorkflow')}
                       </Button>
                     </a>
                     <a href={`/p2/workflows/new?department_id=${d.department_id}&enterprise_id=${detail.enterprise.enterprise_id}`}>
                       <Button size="sm" variant="secondary">
-                        <Plus className="w-3 h-3 mr-1" /> Tạo mới
+                        <Plus className="w-3 h-3 mr-1" /> {t('templatesFnewCorporateTree.createNew')}
                       </Button>
                     </a>
                   </div>
@@ -503,17 +509,18 @@ function EnterpriseInspector({
 // ─── EmptyState ────────────────────────────────────────────────────
 
 function EmptyState() {
+  const t = useT();
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg-custom py-16 text-center px-6">
       <Building2 className="w-12 h-12 mx-auto text-[var(--text-secondary)]/40 mb-3" />
-      <h3 className="font-serif text-lg text-[var(--text-primary)] mb-2">Chưa có cơ cấu tổ chức</h3>
+      <h3 className="font-serif text-lg text-[var(--text-primary)] mb-2">{t('templatesFnewCorporateTree.emptyTitle')}</h3>
       <p className="text-sm text-[var(--text-secondary)] max-w-md mx-auto mb-4">
-        Workspace của anh chưa khai báo tập đoàn. Apply migration 056 để có demo Vingroup, hoặc tạo
-        tập đoàn mới qua API <code className="text-xs font-mono bg-[var(--bg-app)] px-1 py-0.5 rounded">POST /api/v1/corporate-groups</code>.
+        {t('templatesFnewCorporateTree.emptyBody')}{' '}
+        <code className="text-xs font-mono bg-[var(--bg-app)] px-1 py-0.5 rounded">POST /api/v1/corporate-groups</code>.
       </p>
       <div className="text-[11px] text-[var(--text-secondary)] flex items-center justify-center gap-1.5">
         <AlertCircle className="w-3.5 h-3.5" />
-        FE inline creation đang đợi Tuần 9 polish.
+        {t('templatesFnewCorporateTree.emptyFooter')}
       </div>
     </div>
   );

@@ -1,0 +1,198 @@
+{
+  "subscriptionPage.title": {
+    "vi": "Gói dịch vụ & Hạn mức",
+    "en": "Plan & Quota",
+    "ja": "プランと利用枠",
+    "ko": "플랜 및 할당량",
+    "zh": "套餐与配额"
+  },
+  "subscriptionPage.subtitle": {
+    "vi": "Theo dõi hạn mức tháng và yêu cầu nâng cấp gói khi cần.",
+    "en": "Track this month's quota and request a plan upgrade when needed.",
+    "ja": "今月の利用枠を確認し、必要に応じてプランのアップグレードを申請します。",
+    "ko": "이번 달 할당량을 확인하고 필요할 때 플랜 업그레이드를 요청하세요.",
+    "zh": "查看本月配额，需要时申请套餐升级。"
+  },
+  "subscriptionPage.alert95Title": {
+    "vi": "Đã đạt 95% hạn mức tháng",
+    "en": "Reached 95% of this month's quota",
+    "ja": "今月の利用枠の95%に達しました",
+    "ko": "이번 달 할당량의 95%에 도달했습니다",
+    "zh": "已达到本月配额的95%"
+  },
+  "subscriptionPage.alert95Desc": {
+    "vi": "Yêu cầu nâng cấp ngay để tránh ngừng dịch vụ. Liên hệ hỗ trợ nếu cần xử lý gấp.",
+    "en": "Request an upgrade now to avoid service interruption. Contact support if you need urgent handling.",
+    "ja": "サービス停止を避けるため、今すぐアップグレードを申請してください。緊急の場合はサポートにご連絡ください。",
+    "ko": "서비스 중단을 방지하려면 지금 업그레이드를 요청하세요. 긴급 처리가 필요하면 지원팀에 문의하세요.",
+    "zh": "请立即申请升级以避免服务中断。如需紧急处理，请联系支持团队。"
+  },
+  "subscriptionPage.alert80Title": {
+    "vi": "Đã đạt 80% hạn mức tháng",
+    "en": "Reached 80% of this month's quota",
+    "ja": "今月の利用枠の80%に達しました",
+    "ko": "이번 달 할당량의 80%에 도달했습니다",
+    "zh": "已达到本月配额的80%"
+  },
+  "subscriptionPage.alert80Desc": {
+    "vi": "Tốc độ sử dụng hiện tại có thể vượt hạn mức trước cuối tháng. Cân nhắc nâng cấp gói.",
+    "en": "At the current usage rate, you may exceed the quota before month end. Consider upgrading your plan.",
+    "ja": "現在の使用ペースでは、月末前に利用枠を超える可能性があります。プランのアップグレードをご検討ください。",
+    "ko": "현재 사용 속도라면 월말 전에 할당량을 초과할 수 있습니다. 플랜 업그레이드를 고려하세요.",
+    "zh": "按当前使用速度，可能在月底前超出配额，请考虑升级套餐。"
+  },
+  "subscriptionPage.tabQuota": {
+    "vi": "Hạn mức",
+    "en": "Quota",
+    "ja": "利用枠",
+    "ko": "할당량",
+    "zh": "配额"
+  },
+  "subscriptionPage.tabPlan": {
+    "vi": "Gói",
+    "en": "Plan",
+    "ja": "プラン",
+    "ko": "플랜",
+    "zh": "套餐"
+  },
+  "subscriptionPage.tabUpgrade": {
+    "vi": "Nâng cấp",
+    "en": "Upgrade",
+    "ja": "アップグレード",
+    "ko": "업그레이드",
+    "zh": "升级"
+  },
+  "subscriptionPage.usageTitle": {
+    "vi": "Sử dụng tháng này",
+    "en": "This month's usage",
+    "ja": "今月の使用状況",
+    "ko": "이번 달 사용량",
+    "zh": "本月使用量"
+  },
+  "subscriptionPage.quotaOf": {
+    "vi": "/ {quota} khách hàng",
+    "en": "/ {quota} customers",
+    "ja": "/ {quota} 顧客",
+    "ko": "/ {quota} 고객",
+    "zh": "/ {quota} 客户"
+  },
+  "subscriptionPage.cycleRemaining": {
+    "vi": "Còn {days} ngày trong chu kỳ {billingMonth} ({daysInMonth} ngày).",
+    "en": "{days} days left in the {billingMonth} cycle ({daysInMonth} days).",
+    "ja": "サイクル{billingMonth}はあと{days}日（全{daysInMonth}日）。",
+    "ko": "{billingMonth} 주기에 {days}일 남음 (총 {daysInMonth}일).",
+    "zh": "{billingMonth} 周期还剩 {days} 天（共 {daysInMonth} 天）。"
+  },
+  "subscriptionPage.forecastTitle": {
+    "vi": "Dự báo cuối kỳ",
+    "en": "End-of-cycle forecast",
+    "ja": "期末予測",
+    "ko": "주기 종료 예측",
+    "zh": "周期末预测"
+  },
+  "subscriptionPage.forecastUnit": {
+    "vi": "khách hàng (ước tính)",
+    "en": "customers (estimated)",
+    "ja": "顧客（推定）",
+    "ko": "고객 (예상)",
+    "zh": "客户（预计）"
+  },
+  "subscriptionPage.forecastDesc": {
+    "vi": "Dự báo tuyến tính dựa trên tốc độ {usageCount} khách trong {days} ngày đầu kỳ.",
+    "en": "Linear forecast based on a rate of {usageCount} customers over the first {days} days of the cycle.",
+    "ja": "周期の最初の{days}日間で{usageCount}顧客のペースに基づく線形予測。",
+    "ko": "주기 첫 {days}일 동안 {usageCount}명의 속도를 기반으로 한 선형 예측입니다.",
+    "zh": "基于周期前 {days} 天 {usageCount} 客户速度的线性预测。"
+  },
+  "subscriptionPage.lastUpdated": {
+    "vi": "Cập nhật lần cuối: {date}",
+    "en": "Last updated: {date}",
+    "ja": "最終更新：{date}",
+    "ko": "마지막 업데이트: {date}",
+    "zh": "最后更新：{date}"
+  },
+  "subscriptionPage.overageTitle": {
+    "vi": "Đã vượt {overage} khách hàng",
+    "en": "Exceeded quota by {overage} customers",
+    "ja": "{overage} 顧客分を超過しています",
+    "ko": "{overage}명 고객만큼 초과했습니다",
+    "zh": "已超出配额 {overage} 位客户"
+  },
+  "subscriptionPage.overageDesc": {
+    "vi": "Phí vượt sẽ được tính theo định mức gói ({plan}).",
+    "en": "Overage fees will be calculated according to the plan rate ({plan}).",
+    "ja": "超過料金はプラン（{plan}）の料率で計算されます。",
+    "ko": "초과 요금은 플랜({plan}) 요율에 따라 계산됩니다.",
+    "zh": "超额费用将按套餐（{plan}）标准计算。"
+  },
+  "subscriptionPage.planTitle": {
+    "vi": "Gói hiện tại",
+    "en": "Current plan",
+    "ja": "現在のプラン",
+    "ko": "현재 플랜",
+    "zh": "当前套餐"
+  },
+  "subscriptionPage.planCode": {
+    "vi": "Mã: {code}",
+    "en": "Code: {code}",
+    "ja": "コード：{code}",
+    "ko": "코드: {code}",
+    "zh": "代码：{code}"
+  },
+  "subscriptionPage.planQuota": {
+    "vi": "Hạn mức cơ bản: {quota} khách hàng/tháng.",
+    "en": "Base quota: {quota} customers/month.",
+    "ja": "基本利用枠：{quota} 顧客/月。",
+    "ko": "기본 할당량: {quota} 고객/월.",
+    "zh": "基础配额：{quota} 客户/月。"
+  },
+  "subscriptionPage.pendingTitle": {
+    "vi": "Đang chờ xử lý nâng cấp lên {plan}",
+    "en": "Upgrade to {plan} is pending",
+    "ja": "{plan}へのアップグレードを処理中です",
+    "ko": "{plan}(으)로의 업그레이드 처리 대기 중",
+    "zh": "正在处理升级至 {plan} 的请求"
+  },
+  "subscriptionPage.pendingDesc": {
+    "vi": "Yêu cầu gửi lúc {date}. Đội ngũ Kaori sẽ liên hệ xác nhận trong 1 ngày làm việc.",
+    "en": "Request submitted at {date}. The Kaori team will contact you to confirm within 1 business day.",
+    "ja": "{date}にリクエストを送信しました。Kaoriチームが1営業日以内に確認のご連絡をします。",
+    "ko": "{date}에 요청을 보냈습니다. Kaori 팀이 영업일 기준 1일 이내에 확인 연락을 드립니다.",
+    "zh": "请求已于 {date} 提交。Kaori 团队将在1个工作日内联系确认。"
+  },
+  "subscriptionPage.requestTitle": {
+    "vi": "Yêu cầu nâng cấp gói",
+    "en": "Request a plan upgrade",
+    "ja": "プランのアップグレードを申請",
+    "ko": "플랜 업그레이드 요청",
+    "zh": "申请套餐升级"
+  },
+  "subscriptionPage.optionDetail": {
+    "vi": "{quota} khách hàng • {price}",
+    "en": "{quota} customers • {price}",
+    "ja": "{quota} 顧客 • {price}",
+    "ko": "{quota} 고객 • {price}",
+    "zh": "{quota} 客户 • {price}"
+  },
+  "subscriptionPage.errSubmitFailed": {
+    "vi": "Không thể gửi yêu cầu.",
+    "en": "Could not send the request.",
+    "ja": "リクエストを送信できませんでした。",
+    "ko": "요청을 보낼 수 없습니다.",
+    "zh": "无法发送请求。"
+  },
+  "subscriptionPage.submitButton": {
+    "vi": "Gửi yêu cầu nâng cấp",
+    "en": "Send upgrade request",
+    "ja": "アップグレードを申請",
+    "ko": "업그레이드 요청 보내기",
+    "zh": "发送升级请求"
+  },
+  "subscriptionPage.pilotNote": {
+    "vi": "Yêu cầu sẽ được Kaori xử lý thủ công trong giai đoạn pilot.",
+    "en": "During the pilot phase, requests are processed manually by Kaori.",
+    "ja": "パイロット期間中、リクエストはKaoriが手動で処理します。",
+    "ko": "파일럿 단계에서는 Kaori가 요청을 수동으로 처리합니다.",
+    "zh": "在试点阶段，请求将由 Kaori 人工处理。"
+  }
+}

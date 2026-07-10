@@ -1,0 +1,142 @@
+{
+  "loginPage2.headline": {
+    "vi": "Khu vực vận hành,",
+    "en": "Operations area,",
+    "ja": "運用エリア、",
+    "ko": "운영 구역,",
+    "zh": "运营区域，"
+  },
+  "loginPage2.italicTail": {
+    "vi": "dành cho đội Kaori.",
+    "en": "for the Kaori team.",
+    "ja": "Kaoriチーム専用。",
+    "ko": "Kaori 팀 전용.",
+    "zh": "为 Kaori 团队打造。"
+  },
+  "loginPage2.subhead": {
+    "vi": "Trang đăng nhập cho quản trị viên nền tảng. Cần MFA và phiên kiểm soát chặt; khách hàng doanh nghiệp vui lòng dùng cổng /login.",
+    "en": "Login page for platform administrators. MFA and tightly controlled sessions are required; enterprise customers please use the /login portal.",
+    "ja": "プラットフォーム管理者用ログインページです。MFAと厳格なセッション管理が必要です。企業のお客様は /login ポータルをご利用ください。",
+    "ko": "플랫폼 관리자용 로그인 페이지입니다. MFA와 엄격한 세션 제어가 필요합니다. 기업 고객은 /login 포털을 이용해 주세요.",
+    "zh": "平台管理员登录页面。需要 MFA 及严格的会话控制；企业客户请使用 /login 门户。"
+  },
+  "loginPage2.badgePlatformAdmin": {
+    "vi": "Platform admin",
+    "en": "Platform admin",
+    "ja": "Platform admin",
+    "ko": "Platform admin",
+    "zh": "Platform admin"
+  },
+  "loginPage2.title": {
+    "vi": "Đăng nhập quản trị",
+    "en": "Admin login",
+    "ja": "管理者ログイン",
+    "ko": "관리자 로그인",
+    "zh": "管理员登录"
+  },
+  "loginPage2.subtitle": {
+    "vi": "Tài khoản nhân sự Kaori (SUPER_ADMIN / ADMIN / SUPPORT).",
+    "en": "For Kaori staff accounts (SUPER_ADMIN / ADMIN / SUPPORT).",
+    "ja": "Kaoriスタッフアカウント用（SUPER_ADMIN / ADMIN / SUPPORT）。",
+    "ko": "Kaori 직원 계정용 (SUPER_ADMIN / ADMIN / SUPPORT).",
+    "zh": "适用于 Kaori 员工账号（SUPER_ADMIN / ADMIN / SUPPORT）。"
+  },
+  "loginPage2.labelEmail": {
+    "vi": "Email công vụ",
+    "en": "Work email",
+    "ja": "業務用メールアドレス",
+    "ko": "업무용 이메일",
+    "zh": "工作邮箱"
+  },
+  "loginPage2.labelPassword": {
+    "vi": "Mật khẩu",
+    "en": "Password",
+    "ja": "パスワード",
+    "ko": "비밀번호",
+    "zh": "密码"
+  },
+  "loginPage2.ariaHidePwd": {
+    "vi": "Ẩn mật khẩu",
+    "en": "Hide password",
+    "ja": "パスワードを隠す",
+    "ko": "비밀번호 숨기기",
+    "zh": "隐藏密码"
+  },
+  "loginPage2.ariaShowPwd": {
+    "vi": "Hiện mật khẩu",
+    "en": "Show password",
+    "ja": "パスワードを表示",
+    "ko": "비밀번호 표시",
+    "zh": "显示密码"
+  },
+  "loginPage2.lockoutRemaining": {
+    "vi": "Còn {secs}s trước khi thử lại.",
+    "en": "{secs}s remaining before you can try again.",
+    "ja": "再試行まで残り{secs}秒です。",
+    "ko": "다시 시도하기까지 {secs}초 남았습니다.",
+    "zh": "还需 {secs} 秒后才能重试。"
+  },
+  "loginPage2.submitBtn": {
+    "vi": "Đăng nhập vào Platform",
+    "en": "Log in to Platform",
+    "ja": "Platformにログイン",
+    "ko": "Platform에 로그인",
+    "zh": "登录 Platform"
+  },
+  "loginPage2.mfaHintPre": {
+    "vi": "Sau khi đăng nhập, anh/chị có thể bật MFA tại",
+    "en": "After logging in, you can enable MFA at",
+    "ja": "ログイン後、以下からMFAを有効化できます：",
+    "ko": "로그인 후 아래에서 MFA를 활성화할 수 있습니다:",
+    "zh": "登录后，您可以在以下位置启用 MFA："
+  },
+  "loginPage2.mfaHintLabel": {
+    "vi": "Bảo mật → MFA",
+    "en": "Security → MFA",
+    "ja": "セキュリティ → MFA",
+    "ko": "보안 → MFA",
+    "zh": "安全 → MFA"
+  },
+  "loginPage2.notStaffPre": {
+    "vi": "Không phải nhân sự Kaori?",
+    "en": "Not a Kaori staff member?",
+    "ja": "Kaoriスタッフではありませんか？",
+    "ko": "Kaori 직원이 아니신가요?",
+    "zh": "不是 Kaori 员工？"
+  },
+  "loginPage2.enterpriseLoginLink": {
+    "vi": "Cổng đăng nhập doanh nghiệp",
+    "en": "Enterprise login portal",
+    "ja": "企業向けログインポータル",
+    "ko": "기업 로그인 포털",
+    "zh": "企业登录门户"
+  },
+  "loginPage2.errInvalidResponse": {
+    "vi": "Phản hồi không hợp lệ từ máy chủ. Vui lòng thử lại.",
+    "en": "Invalid response from the server. Please try again.",
+    "ja": "サーバーからの応答が無効です。もう一度お試しください。",
+    "ko": "서버 응답이 올바르지 않습니다. 다시 시도해 주세요.",
+    "zh": "服务器返回的响应无效，请重试。"
+  },
+  "loginPage2.errLockedOut": {
+    "vi": "Tài khoản bị khóa. Thử lại sau {mins} phút.",
+    "en": "Account locked. Try again in {mins} minutes.",
+    "ja": "アカウントがロックされています。{mins}分後に再度お試しください。",
+    "ko": "계정이 잠겼습니다. {mins}분 후 다시 시도해 주세요.",
+    "zh": "账号已锁定，请在 {mins} 分钟后重试。"
+  },
+  "loginPage2.errBadCreds": {
+    "vi": "Email hoặc mật khẩu không đúng.",
+    "en": "Incorrect email or password.",
+    "ja": "メールアドレスまたはパスワードが正しくありません。",
+    "ko": "이메일 또는 비밀번호가 올바르지 않습니다.",
+    "zh": "邮箱或密码不正确。"
+  },
+  "loginPage2.errLoginFailed": {
+    "vi": "Không thể đăng nhập. Vui lòng thử lại.",
+    "en": "Unable to log in. Please try again.",
+    "ja": "ログインできませんでした。もう一度お試しください。",
+    "ko": "로그인할 수 없습니다. 다시 시도해 주세요.",
+    "zh": "无法登录，请重试。"
+  }
+}

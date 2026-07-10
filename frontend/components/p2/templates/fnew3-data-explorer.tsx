@@ -32,6 +32,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { useT } from '@/lib/i18n/provider';
 // ============================================================================
 // Types — mirror BE data_explorer.py response
 // ============================================================================
@@ -82,6 +83,7 @@ interface ExplorerSnapshot {
 // ============================================================================
 
 export default function DataExplorerPage() {
+  const t = useT();
   const [snap, setSnap]       = useState<ExplorerSnapshot | null>(null);
   const [problem, setProblem] = useState<ProblemDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -107,17 +109,17 @@ export default function DataExplorerPage() {
   return (
     <>
       <PageHeader
-        title="Khám phá dữ liệu"
-        description="Tổng quan 3 lớp Medallion — Bronze (thô) → Silver (sạch) → Gold (chuẩn hoá phân tích)."
+        title={t('templatesFnew3DataExplorer.title')}
+        description={t('templatesFnew3DataExplorer.description')}
         actions={
           <>
             <Badge variant="info">F-NEW3</Badge>
             <Button variant="secondary" size="md" onClick={load} disabled={loading}>
               <RefreshCw className={cn('w-4 h-4 mr-2', loading && 'animate-spin')} />
-              Làm mới
+              {t('templatesFnew3DataExplorer.refresh')}
             </Button>
             <a href="/p2/pipelines/new">
-              <Button variant="primary" size="md"><Plus className="w-4 h-4 mr-2" /> Tải dữ liệu</Button>
+              <Button variant="primary" size="md"><Plus className="w-4 h-4 mr-2" /> {t('templatesFnew3DataExplorer.uploadData')}</Button>
             </a>
           </>
         }
@@ -131,22 +133,22 @@ export default function DataExplorerPage() {
             so the user is never stranded on a bare error code. */}
         {problem && !snap && !loading && (
           <div className="rounded-lg-custom border border-[var(--border-color)] bg-[var(--bg-card)] p-6 text-center space-y-3">
-            <p className="text-[var(--text-primary)] font-medium">Tạm thời chưa tải được phần tổng quan</p>
+            <p className="text-[var(--text-primary)] font-medium">{t('templatesFnew3DataExplorer.overviewFailedTitle')}</p>
             <p className="text-sm text-[var(--text-secondary)] max-w-lg mx-auto">
-              Số liệu tổng quan chưa phản hồi. Bạn vẫn mở được trực tiếp từng lớp dữ liệu bên dưới, hoặc bấm thử lại.
+              {t('templatesFnew3DataExplorer.overviewFailedDesc')}
             </p>
             <div className="flex items-center justify-center pt-1">
               <Button variant="primary" size="md" onClick={load} disabled={loading}>
                 <RefreshCw className={'w-4 h-4 mr-2 ' + (loading ? 'animate-spin' : '')} />
-                Thử lại
+                {t('templatesFnew3DataExplorer.retry')}
               </Button>
             </div>
             <div className="flex items-center justify-center gap-3 pt-1 text-sm">
-              <a href="/p2/data/bronze" className="text-[var(--primary-gold-dark)] hover:underline">Dữ liệu thô</a>
+              <a href="/p2/data/bronze" className="text-[var(--primary-gold-dark)] hover:underline">{t('templatesFnew3DataExplorer.rawData')}</a>
               <span className="text-[var(--text-secondary)]/40">·</span>
-              <a href="/p2/data/silver" className="text-[var(--primary-gold-dark)] hover:underline">Đã làm sạch</a>
+              <a href="/p2/data/silver" className="text-[var(--primary-gold-dark)] hover:underline">{t('templatesFnew3DataExplorer.cleaned')}</a>
               <span className="text-[var(--text-secondary)]/40">·</span>
-              <a href="/p2/data/gold" className="text-[var(--primary-gold-dark)] hover:underline">Sẵn để phân tích</a>
+              <a href="/p2/data/gold" className="text-[var(--primary-gold-dark)] hover:underline">{t('templatesFnew3DataExplorer.readyForAnalysis')}</a>
             </div>
           </div>
         )}
@@ -166,75 +168,75 @@ export default function DataExplorerPage() {
               <LayerCard
                 tone="bronze"
                 title="Bronze"
-                subtitle="Dữ liệu thô — giữ nguyên bản gốc"
+                subtitle={t('templatesFnew3DataExplorer.bronzeSubtitle')}
                 icon={HardDrive}
                 href="/p2/data/bronze"
                 stats={[
-                  { label: 'File',         value: snap.bronze.file_count.toLocaleString('vi-VN') },
-                  { label: 'Hàng',          value: snap.bronze.row_count_total.toLocaleString('vi-VN') },
-                  { label: 'Dung lượng',    value: snap.bronze.size_gb.toFixed(1) + ' GB' },
+                  { label: t('templatesFnew3DataExplorer.statFile'),     value: snap.bronze.file_count.toLocaleString('vi-VN') },
+                  { label: t('templatesFnew3DataExplorer.statRow'),      value: snap.bronze.row_count_total.toLocaleString('vi-VN') },
+                  { label: t('templatesFnew3DataExplorer.statSize'),     value: snap.bronze.size_gb.toFixed(1) + ' GB' },
                 ]}
                 alert={snap.bronze.failed_24h > 0
-                  ? { tone: 'error', text: `${snap.bronze.failed_24h} lần ingest fail trong 24h` }
+                  ? { tone: 'error', text: t('templatesFnew3DataExplorer.bronzeFailedAlert', { count: String(snap.bronze.failed_24h) }) }
                   : null}
                 meta={snap.bronze.last_ingested_at
-                  ? `Ingest gần nhất: ${formatRelative(snap.bronze.last_ingested_at)}`
-                  : 'Chưa có dữ liệu'}
+                  ? t('templatesFnew3DataExplorer.bronzeLastIngest', { time: formatRelative(snap.bronze.last_ingested_at, t) })
+                  : t('templatesFnew3DataExplorer.noDataYet')}
               />
 
               <LayerCard
                 tone="silver"
                 title="Silver"
-                subtitle="Đã làm sạch + che thông tin nhạy cảm"
+                subtitle={t('templatesFnew3DataExplorer.silverSubtitle')}
                 icon={Layers}
                 href="/p2/data/silver"
                 stats={[
-                  { label: 'Dataset',        value: snap.silver.dataset_count.toLocaleString('vi-VN') },
-                  { label: 'Hàng',           value: snap.silver.row_count_total.toLocaleString('vi-VN') },
-                  { label: 'Chất lượng TB',  value: snap.silver.quality_avg_pct.toFixed(1) + '%' },
+                  { label: t('templatesFnew3DataExplorer.statDataset'),    value: snap.silver.dataset_count.toLocaleString('vi-VN') },
+                  { label: t('templatesFnew3DataExplorer.statRow'),        value: snap.silver.row_count_total.toLocaleString('vi-VN') },
+                  { label: t('templatesFnew3DataExplorer.statAvgQuality'), value: snap.silver.quality_avg_pct.toFixed(1) + '%' },
                 ]}
                 alert={snap.silver.quality_avg_pct > 0 && snap.silver.quality_avg_pct < 90
-                  ? { tone: 'warning', text: 'Chất lượng dữ liệu trung bình dưới 90%' }
+                  ? { tone: 'warning', text: t('templatesFnew3DataExplorer.silverQualityAlert') }
                   : null}
                 meta={snap.silver.last_processed_at
-                  ? `Xử lý gần nhất: ${formatRelative(snap.silver.last_processed_at)}`
-                  : 'Chưa xử lý'}
+                  ? t('templatesFnew3DataExplorer.silverLastProcessed', { time: formatRelative(snap.silver.last_processed_at, t) })
+                  : t('templatesFnew3DataExplorer.notProcessedYet')}
               />
 
               <LayerCard
                 tone="gold"
                 title="Gold"
-                subtitle="Chuẩn hoá sẵn để phân tích"
+                subtitle={t('templatesFnew3DataExplorer.goldSubtitle')}
                 icon={Sparkles}
                 href="/p2/data/gold"
                 stats={[
-                  { label: 'Feature',  value: snap.gold.feature_count.toLocaleString('vi-VN') },
-                  { label: 'Hàng',     value: snap.gold.row_count_total.toLocaleString('vi-VN') },
-                  { label: 'Lỗi thời', value: snap.gold.stale_count.toLocaleString('vi-VN') },
+                  { label: t('templatesFnew3DataExplorer.statFeature'), value: snap.gold.feature_count.toLocaleString('vi-VN') },
+                  { label: t('templatesFnew3DataExplorer.statRow'),     value: snap.gold.row_count_total.toLocaleString('vi-VN') },
+                  { label: t('templatesFnew3DataExplorer.statStale'),   value: snap.gold.stale_count.toLocaleString('vi-VN') },
                 ]}
                 alert={snap.gold.stale_count > 0
-                  ? { tone: 'warning', text: `${snap.gold.stale_count} feature lỗi thời > 90 ngày` }
+                  ? { tone: 'warning', text: t('templatesFnew3DataExplorer.goldStaleAlert', { count: String(snap.gold.stale_count) }) }
                   : null}
                 meta={snap.gold.last_aggregated_at
-                  ? `Tổng hợp gần nhất: ${formatRelative(snap.gold.last_aggregated_at)}`
-                  : 'Chưa tổng hợp'}
+                  ? t('templatesFnew3DataExplorer.goldLastAggregated', { time: formatRelative(snap.gold.last_aggregated_at, t) })
+                  : t('templatesFnew3DataExplorer.notAggregatedYet')}
               />
             </div>
 
             {/* Recent activity strip */}
             <div className="rounded-lg-custom bg-[var(--bg-card)] border border-[var(--border-color)] p-6 shadow-soft-sm">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-serif text-base text-[var(--text-primary)]">Hoạt động gần đây</h3>
+                <h3 className="font-serif text-base text-[var(--text-primary)]">{t('templatesFnew3DataExplorer.recentActivity')}</h3>
                 <a
                   href="/p2/pipelines"
                   className="text-xs text-[var(--primary-gold-dark)] hover:underline flex items-center gap-1"
                 >
-                  Xem pipeline đầy đủ <ArrowRight className="w-3.5 h-3.5" />
+                  {t('templatesFnew3DataExplorer.viewFullPipeline')} <ArrowRight className="w-3.5 h-3.5" />
                 </a>
               </div>
               {snap.recent.length === 0 ? (
                 <p className="text-sm text-[var(--text-secondary)] text-center py-6">
-                  Chưa có hoạt động.
+                  {t('templatesFnew3DataExplorer.noActivityYet')}
                 </p>
               ) : (
                 <ul className="space-y-2">
@@ -247,7 +249,7 @@ export default function DataExplorerPage() {
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-[var(--text-primary)] truncate">{r.name}</p>
                         <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                          {r.action} · {r.at ? formatRelative(r.at) : '—'}
+                          {r.action} · {r.at ? formatRelative(r.at, t) : '—'}
                         </p>
                       </div>
                       {r.status === 'ok'      && <CheckCircle2 className="w-4 h-4 text-[var(--state-success)]" />}
@@ -261,18 +263,19 @@ export default function DataExplorerPage() {
 
             {/* K-rule reminders */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-              <KRuleCard num="K-2" text="Bronze append-only — không sửa, không xoá. Mọi thay đổi qua pipeline mới." />
-              <KRuleCard num="K-5" text="Silver che PII trước mọi truy vấn — email/phone/ID hiện dạng <EMAIL_1>." />
-              <KRuleCard num="K-9" text="Gold dùng NUMERIC(14,4) cho tiền, NUMERIC(5,4) cho tỷ lệ — không FLOAT." />
+              <KRuleCard num="K-2" text={t('templatesFnew3DataExplorer.kRule2')} />
+              <KRuleCard num="K-5" text={t('templatesFnew3DataExplorer.kRule5')} />
+              <KRuleCard num="K-9" text={t('templatesFnew3DataExplorer.kRule9')} />
             </div>
 
             {/* Phase 2 v1 hint */}
             <div className="flex items-start gap-2 p-3 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
               <Sparkles className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0 mt-0.5" />
               <p>
-                Drill-down xem từng dòng raw + lineage là Phase 2 v1 follow-up.
-                Hôm nay xem chi tiết qua{' '}
-                <a href="/p2/pipelines" className="text-[var(--primary-gold-dark)] hover:underline">trang pipeline</a>.
+                {t('templatesFnew3DataExplorer.drillDownHint')}{' '}
+                {t('templatesFnew3DataExplorer.viewDetailsPrefix')}{' '}
+                <a href="/p2/pipelines" className="text-[var(--primary-gold-dark)] hover:underline">{t('templatesFnew3DataExplorer.pipelinePage')}</a>
+                {t('templatesFnew3DataExplorer.viewDetailsSuffix')}
               </p>
             </div>
           </>
@@ -374,12 +377,12 @@ function KRuleCard({ num, text }: { num: string; text: string }) {
 // Helpers
 // ============================================================================
 
-function formatRelative(iso: string): string {
+function formatRelative(iso: string, t: (key: string, params?: Record<string, string | number>) => string): string {
   const diff = Date.now() - +new Date(iso);
   if (Number.isNaN(diff))     return iso;
-  if (diff < 60_000)          return 'vừa xong';
-  if (diff < 3_600_000)       return `${Math.round(diff / 60_000)} phút trước`;
-  if (diff < 86_400_000)      return `${Math.round(diff / 3_600_000)} giờ trước`;
-  if (diff < 7 * 86_400_000)  return `${Math.round(diff / 86_400_000)} ngày trước`;
+  if (diff < 60_000)          return t('templatesFnew3DataExplorer.justNow');
+  if (diff < 3_600_000)       return t('templatesFnew3DataExplorer.minutesAgo', { n: String(Math.round(diff / 60_000)) });
+  if (diff < 86_400_000)      return t('templatesFnew3DataExplorer.hoursAgo', { n: String(Math.round(diff / 3_600_000)) });
+  if (diff < 7 * 86_400_000)  return t('templatesFnew3DataExplorer.daysAgo', { n: String(Math.round(diff / 86_400_000)) });
   return new Date(iso).toLocaleDateString('vi-VN');
 }

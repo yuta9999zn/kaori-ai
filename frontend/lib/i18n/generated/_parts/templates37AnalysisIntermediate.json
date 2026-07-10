@@ -1,0 +1,149 @@
+{
+  "templates37AnalysisIntermediate.title": {
+    "vi": "Phân tích trung cấp",
+    "en": "Intermediate analysis",
+    "ja": "中級分析",
+    "ko": "중급 분석",
+    "zh": "中级分析"
+  },
+  "templates37AnalysisIntermediate.description": {
+    "vi": "2-5 nguồn Silver/Gold + 1 khung phân tích.",
+    "en": "2-5 Silver/Gold sources + 1 analysis framework.",
+    "ja": "Silver/Gold ソース2〜5件 + 分析フレームワーク1件。",
+    "ko": "Silver/Gold 소스 2~5개 + 분석 프레임워크 1개.",
+    "zh": "2-5 个 Silver/Gold 数据源 + 1 个分析框架。"
+  },
+  "templates37AnalysisIntermediate.hubButton": {
+    "vi": "Hub",
+    "en": "Hub",
+    "ja": "ハブ",
+    "ko": "허브",
+    "zh": "中心"
+  },
+  "templates37AnalysisIntermediate.cardTitle": {
+    "vi": "Trung cấp",
+    "en": "Intermediate",
+    "ja": "中級",
+    "ko": "중급",
+    "zh": "中级"
+  },
+  "templates37AnalysisIntermediate.cardSubtitle": {
+    "vi": "Multi-source · 1 framework · Qwen nội bộ",
+    "en": "Multi-source · 1 framework · Internal Qwen",
+    "ja": "マルチソース · フレームワーク1件 · 内部 Qwen",
+    "ko": "멀티소스 · 프레임워크 1개 · 내부 Qwen",
+    "zh": "多数据源 · 1 个框架 · 内部 Qwen"
+  },
+  "templates37AnalysisIntermediate.qwenBadge": {
+    "vi": "Qwen nội bộ",
+    "en": "Internal Qwen",
+    "ja": "内部 Qwen",
+    "ko": "내부 Qwen",
+    "zh": "内部 Qwen"
+  },
+  "templates37AnalysisIntermediate.availableSourcesTitle": {
+    "vi": "Nguồn có sẵn (Silver / Gold)",
+    "en": "Available sources (Silver / Gold)",
+    "ja": "利用可能なソース (Silver / Gold)",
+    "ko": "사용 가능한 소스 (Silver / Gold)",
+    "zh": "可用数据源 (Silver / Gold)"
+  },
+  "templates37AnalysisIntermediate.availableSourcesHint": {
+    "vi": "Tối đa 5 nguồn / lần phân tích",
+    "en": "Up to 5 sources per analysis run",
+    "ja": "1回の分析につき最大5ソースまで",
+    "ko": "분석 1회당 최대 5개 소스",
+    "zh": "每次分析最多 5 个数据源"
+  },
+  "templates37AnalysisIntermediate.noSources": {
+    "vi": "— Chưa có nguồn —",
+    "en": "— No sources yet —",
+    "ja": "— ソースがありません —",
+    "ko": "— 소스가 없습니다 —",
+    "zh": "— 暂无数据源 —"
+  },
+  "templates37AnalysisIntermediate.rowsCount": {
+    "vi": "{count} hàng",
+    "en": "{count} rows",
+    "ja": "{count} 行",
+    "ko": "{count}행",
+    "zh": "{count} 行"
+  },
+  "templates37AnalysisIntermediate.pickedTitle": {
+    "vi": "Đã chọn ({count}/5)",
+    "en": "Selected ({count}/5)",
+    "ja": "選択済み ({count}/5)",
+    "ko": "선택됨 ({count}/5)",
+    "zh": "已选 ({count}/5)"
+  },
+  "templates37AnalysisIntermediate.clearAll": {
+    "vi": "Xoá hết",
+    "en": "Clear all",
+    "ja": "すべて削除",
+    "ko": "모두 지우기",
+    "zh": "全部清除"
+  },
+  "templates37AnalysisIntermediate.pickAtLeast2": {
+    "vi": "Chọn ít nhất 2 nguồn để chạy phân tích",
+    "en": "Select at least 2 sources to run the analysis",
+    "ja": "分析を実行するにはソースを2件以上選択してください",
+    "ko": "분석을 실행하려면 소스를 2개 이상 선택하세요",
+    "zh": "请至少选择 2 个数据源以运行分析"
+  },
+  "templates37AnalysisIntermediate.removeAria": {
+    "vi": "Xoá",
+    "en": "Remove",
+    "ja": "削除",
+    "ko": "삭제",
+    "zh": "删除"
+  },
+  "templates37AnalysisIntermediate.frameworkLabel": {
+    "vi": "Khung (chọn 1 — K-10)",
+    "en": "Framework (choose 1 — K-10)",
+    "ja": "フレームワーク (1件選択 — K-10)",
+    "ko": "프레임워크 (1개 선택 — K-10)",
+    "zh": "框架 (选择 1 个 — K-10)"
+  },
+  "templates37AnalysisIntermediate.questionLabel": {
+    "vi": "Câu hỏi",
+    "en": "Question",
+    "ja": "質問",
+    "ko": "질문",
+    "zh": "问题"
+  },
+  "templates37AnalysisIntermediate.questionPlaceholder": {
+    "vi": "Ví dụ: Mối liên hệ giữa marketing spend và conversion của 3 segment lớn nhất?",
+    "en": "e.g. What's the relationship between marketing spend and conversion for the top 3 segments?",
+    "ja": "例：マーケティング費用と上位3セグメントのコンバージョンの関係は？",
+    "ko": "예: 마케팅 지출과 상위 3개 세그먼트 전환율의 관계는?",
+    "zh": "例如:营销支出与前 3 大细分市场转化率之间的关系是什么？"
+  },
+  "templates37AnalysisIntermediate.runButton": {
+    "vi": "Chạy phân tích trung cấp",
+    "en": "Run intermediate analysis",
+    "ja": "中級分析を実行",
+    "ko": "중급 분석 실행",
+    "zh": "运行中级分析"
+  },
+  "templates37AnalysisIntermediate.k10Label": {
+    "vi": "K-10:",
+    "en": "K-10:",
+    "ja": "K-10:",
+    "ko": "K-10:",
+    "zh": "K-10:"
+  },
+  "templates37AnalysisIntermediate.k10NoteBefore": {
+    "vi": "mỗi câu hỏi chỉ chạy được 1 khung. Để chạy nhiều khung trên cùng câu hỏi, dispatch lại từ",
+    "en": "each question runs against only 1 framework. To run multiple frameworks on the same question, dispatch again from",
+    "ja": "1つの質問には1つのフレームワークのみ実行できます。同じ質問で複数のフレームワークを実行するには、以下から再度ディスパッチしてください：",
+    "ko": "질문 하나당 프레임워크 1개만 실행할 수 있습니다. 동일한 질문에 여러 프레임워크를 실행하려면 아래에서 다시 디스패치하세요:",
+    "zh": "每个问题只能运行 1 个框架。如需在同一问题上运行多个框架，请从以下位置重新分派:"
+  },
+  "templates37AnalysisIntermediate.frameworksLink": {
+    "vi": "trang Frameworks",
+    "en": "the Frameworks page",
+    "ja": "Frameworks ページ",
+    "ko": "Frameworks 페이지",
+    "zh": "Frameworks 页面"
+  }
+}
