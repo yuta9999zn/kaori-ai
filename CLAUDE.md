@@ -70,7 +70,7 @@ Chi tiết feature từng sprint: `docs/BACKLOG_V4.md`.
 
 | Component | State | Notes |
 |---|---|---|
-| PostgreSQL 15 + pgvector | ✅ chạy | RLS multi-tenancy cutover (ADR-0013); 136 mig files (max 139) tại 2026-07-05 (134-137 EU AI Act; 138 doc_date; 139 ADR-0042 doc templates) |
+| PostgreSQL 15 + pgvector | ✅ chạy | RLS multi-tenancy cutover (ADR-0013); 139 mig files (max 142) tại 2026-07-11 (134-137 EU AI Act; 138 doc_date; 139 ADR-0042 doc templates; 140 authored docs; 141 doc notes; 142 llm routing narrative tasks — data-only) |
 | Redis 7 | ✅ chạy | cache + idempotency 24h + rate limit; Redis Streams (ADR-0017) |
 | Kafka Confluent 7.5 | ✅ chạy | topic v3 legacy; Phase 2 mở rộng |
 | Ollama / Qwen 2.5 14B | ✅ chạy | **default LLM cho mọi tenant** + BGE-M3 embedding + Qwen2-VL OCR (ADR-0015) |

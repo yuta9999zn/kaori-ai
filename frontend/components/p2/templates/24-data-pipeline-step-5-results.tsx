@@ -164,7 +164,9 @@ export default function PipelineStep5Results() {
       setRun({
         id:               raw.id ?? runId,
         status,
-        consent_external: false,
+        // BE trả cờ thật của run (analytics.py) — hardcode false ở đây từng
+        // làm badge luôn 'Qwen nội bộ' dù user đã chọn AI ngoài ở Bước 4.
+        consent_external: Boolean(raw.consent_external),
         template_ids:     raw.templates ?? [],
         overview:         ov ?? {},
         templates,
