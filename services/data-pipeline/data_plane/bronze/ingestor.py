@@ -381,14 +381,17 @@ async def ingest_file(
             # resolve its doc_class from the requirement (RLS-scoped, must
             # belong to this node). Trust the DB for the class, never the
             # client (K-1/K-12). Stays None for ad-hoc (loose) attachments.
+            req_doc_template = None  # mig 144 — mẫu tài liệu slot tham chiếu
             if requirement_id is not None:
                 _rq = await conn.fetchrow(
-                    """SELECT doc_class FROM workflow_step_document_requirements
+                    """SELECT doc_class, doc_template_id
+                       FROM workflow_step_document_requirements
                        WHERE requirement_id = $1 AND node_id = $2""",
                     uuid.UUID(requirement_id), workflow_step_row["node_id"],
                 )
                 if _rq is not None:
                     req_doc_class = _rq["doc_class"]
+                    req_doc_template = _rq["doc_template_id"]
                 else:
                     # Fail-soft: still ingest, just don't link the requirement.
                     requirement_id = None
@@ -398,15 +401,29 @@ async def ingest_file(
                     )
 
             # ADR-0039/0042 bridge — file nộp ở bước workflow tự filing vào
-            # Kho ('Hồ sơ quy trình/<tên quy trình>') trừ khi caller đã chỉ
-            # định X-Folder-ID hoặc user chọn 'Chỉ tải lên' (X-Repo-Filing:
-            # skip). Fail-soft: lỗi ở đây không được chặn upload.
+            # Kho, trừ khi caller đã chỉ định X-Folder-ID hoặc user chọn
+            # 'Chỉ tải lên' (X-Repo-Filing: skip). Thứ tự chọn folder:
+            #   1. slot gắn MẪU (mig 144) → folder đang gắn đúng mẫu đó;
+            #   2. folder TRÙNG TÊN workflow (user tự tổ chức);
+            #   3. tự tạo 'Hồ sơ quy trình/<tên quy trình>'.
+            # Fail-soft: lỗi ở đây không được chặn upload.
             if folder_id is None and (repo_filing or "auto") != "skip":
                 try:
-                    folder_id = await _ensure_workflow_repo_folder(
-                        conn, enterprise_id=enterprise_id,
-                        workflow_name=workflow_step_row["wf_name"] or "Quy trình",
-                        department_id=workflow_step_row["department_id"])
+                    if req_doc_template is not None:
+                        trow = await conn.fetchrow(
+                            """SELECT folder_id FROM document_folder
+                               WHERE enterprise_id = $1
+                                 AND default_template_id = $2
+                                 AND deleted_at IS NULL
+                               ORDER BY length(path) LIMIT 1""",
+                            uuid.UUID(enterprise_id), req_doc_template)
+                        if trow is not None:
+                            folder_id = str(trow["folder_id"])
+                    if folder_id is None:
+                        folder_id = await _ensure_workflow_repo_folder(
+                            conn, enterprise_id=enterprise_id,
+                            workflow_name=workflow_step_row["wf_name"] or "Quy trình",
+                            department_id=workflow_step_row["department_id"])
                 except Exception as exc:  # noqa: BLE001 — filing là phụ
                     log.warning("ingest.autofile_folder_failed", error=str(exc))
 

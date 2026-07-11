@@ -6614,6 +6614,8 @@ export interface components {
              * @description input | output | reference
              */
             doc_class: string;
+            /** Doc Template Id */
+            doc_template_id?: string | null;
             /**
              * Is Required
              * @default true

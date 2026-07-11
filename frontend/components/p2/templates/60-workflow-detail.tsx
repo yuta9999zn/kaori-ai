@@ -3054,6 +3054,9 @@ function RequirementConfigModal({ workflowId, nodeId, title, onClose, onMutated 
   const [cls, setCls] = React.useState('input');
   const [name, setName] = React.useState('');
   const [required, setRequired] = React.useState(true);
+  // Mig 144 — mẫu tài liệu (Kho) mà slot tham chiếu
+  const [docTemplates, setDocTemplates] = React.useState<{ value: string; label: string }[]>([]);
+  const [tplChoice, setTplChoice] = React.useState('');
   const CLASS_OPT = [
     ['input', t('templates60WorkflowDetail.optClassInput')],
     ['output', t('templates60WorkflowDetail.optClassOutput')],
@@ -3066,13 +3069,24 @@ function RequirementConfigModal({ workflowId, nodeId, title, onClose, onMutated 
     catch { /* empty */ } finally { setLoading(false); }
   }
   React.useEffect(() => { load(); }, [nodeId]);
+  React.useEffect(() => {
+    api<any>('/api/v1/document-templates')
+      .then((r) => setDocTemplates((r.items ?? []).map((tp: any) => ({
+        value: tp.template_id,
+        label: `${tp.icon ? `${tp.icon} ` : ''}${tp.name_vi}`,
+      }))))
+      .catch(() => {});
+  }, []);
 
   async function add() {
     if (!name) return;
     await api(`/api/v1/workflows/${workflowId}/nodes/${nodeId}/doc-requirements`, {
-      method: 'POST', body: JSON.stringify({ doc_class: cls, name_vi: name, is_required: required }),
+      method: 'POST', body: JSON.stringify({
+        doc_class: cls, name_vi: name, is_required: required,
+        doc_template_id: tplChoice || null,
+      }),
     });
-    setName(''); load(); onMutated?.();
+    setName(''); setTplChoice(''); load(); onMutated?.();
   }
   async function del(id: string) { await api(`/api/v1/doc-requirements/${id}`, { method: 'DELETE' }); load(); onMutated?.(); }
 
@@ -3090,6 +3104,12 @@ function RequirementConfigModal({ workflowId, nodeId, title, onClose, onMutated 
               <div key={r.requirement_id} className="flex items-center gap-2 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] px-3 py-2">
                 <span className="text-xs">{CLASS_OPT.find((o) => o[0] === r.doc_class)?.[1]?.split(' ')[0]}</span>
                 <span className="text-sm text-[var(--text-primary)] flex-1 truncate">{r.name_vi}{r.is_required && <span className="text-[var(--state-error)]"> *</span>}</span>
+                {r.doc_template_name && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[var(--primary-gold)]/10 border border-[var(--primary-gold)]/30 text-[var(--primary-gold-dark)] shrink-0 truncate max-w-[150px]"
+                    title="Mẫu tài liệu slot này tham chiếu — file lưu Kho sẽ ưu tiên folder gắn mẫu">
+                    {r.doc_template_icon ? `${r.doc_template_icon} ` : '📄 '}{r.doc_template_name}
+                  </span>
+                )}
                 <button onClick={() => del(r.requirement_id)} className="text-[var(--text-secondary)] hover:text-[var(--state-error)]"><Trash2 className="w-3.5 h-3.5" /></button>
               </div>
             ))}
@@ -3107,6 +3127,15 @@ function RequirementConfigModal({ workflowId, nodeId, title, onClose, onMutated 
           </div>
           <label className="flex items-center gap-1 text-xs text-[var(--text-secondary)] h-9"><input type="checkbox" checked={required} onChange={(e) => setRequired(e.target.checked)} /> {t('templates60WorkflowDetail.requiredLabelCap')}</label>
           <Button onClick={add} disabled={!name}><Plus className="w-4 h-4" /></Button>
+        </div>
+        {/* Mig 144 — tham chiếu mẫu tài liệu của Kho (tùy chọn) */}
+        <div>
+          <label className="text-[11px] text-[var(--text-secondary)] block mb-1">
+            Mẫu tài liệu tham chiếu (tùy chọn) — file lưu Kho sẽ ưu tiên folder gắn mẫu này
+          </label>
+          <SearchableSelect value={tplChoice} onChange={setTplChoice}
+            placeholder="— Không gắn mẫu —"
+            options={[{ value: '', label: '— Không gắn mẫu —' }, ...docTemplates]} />
         </div>
       </div>
     </div>
@@ -3265,6 +3294,12 @@ function DocSlotRow({ slot, workflowId, nodeId, onMutated }: {
         <span className="text-sm text-[var(--text-primary)] flex-1 min-w-0 truncate">
           {slot.name_vi}
           {slot.is_required && slot.status === 'cho_nop' && <span className="text-[var(--state-error)] ml-1">*</span>}
+          {slot.doc_template_name && (
+            <span className="ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full bg-[var(--primary-gold)]/10 border border-[var(--primary-gold)]/30 text-[var(--primary-gold-dark)] align-middle"
+              title="Slot tham chiếu mẫu tài liệu này — nộp file chọn Lưu vào Kho sẽ tự xếp vào folder đang gắn mẫu">
+              {slot.doc_template_icon ? `${slot.doc_template_icon} ` : '📄 '}{slot.doc_template_name}
+            </span>
+          )}
         </span>
         {slot.version_count > 1 && (
           <span className="text-[10px] text-[var(--text-secondary)] font-mono">v{slot.version_count}</span>

@@ -454,6 +454,37 @@ class TestWorkflowAutoFiling:
         assert conn.folder_inserts == []
 
     @pytest.mark.asyncio
+    async def test_requirement_template_routes_to_template_folder(self, monkeypatch):
+        """Slot gắn MẪU tài liệu (mig 144) → filing ƯU TIÊN folder đang gắn
+        đúng mẫu đó (default_template_id), không rơi về folder trùng tên."""
+        tpl_id = uuid.uuid4()
+        tpl_folder = uuid.uuid4()
+
+        class TplConn(WorkflowFakeConn):
+            async def fetchrow(self, sql, *args):
+                if "FROM workflow_step_document_requirements" in sql:
+                    return {"doc_class": "input", "doc_template_id": tpl_id}
+                if "default_template_id = $2" in sql:
+                    assert args[1] == tpl_id
+                    return {"folder_id": tpl_folder}
+                return await super().fetchrow(sql, *args)
+
+        conn = TplConn()
+        _patch_conn(monkeypatch, conn)
+        _patch_org(monkeypatch)
+        seen = _patch_land(monkeypatch)
+
+        await ing.ingest_file(
+            run_id=str(uuid.uuid4()), enterprise_id=ENT, uploaded_by=USR,
+            db_pool=None, kafka_producer=FakeKafka(),
+            workflow_step_id=NODE, requirement_id=str(uuid.uuid4()),
+            content=CSV, filename="de_nghi.csv")
+        await asyncio.sleep(0)
+
+        assert seen.get("folder_id") == str(tpl_folder)
+        assert conn.folder_inserts == [], "đã có folder gắn mẫu — không tạo folder mới"
+
+    @pytest.mark.asyncio
     async def test_existing_folder_named_after_workflow_is_reused(self, monkeypatch):
         """Kho đã có folder TRÙNG TÊN workflow (user tạo tay theo nghiệp vụ,
         ở bất kỳ đâu trong cây) → lưu thẳng vào đó, KHÔNG tạo folder mới."""

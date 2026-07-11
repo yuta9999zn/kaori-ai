@@ -4322,6 +4322,18 @@
             "title": "Doc Class",
             "type": "string"
           },
+          "doc_template_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Doc Template Id"
+          },
           "is_required": {
             "default": true,
             "title": "Is Required",

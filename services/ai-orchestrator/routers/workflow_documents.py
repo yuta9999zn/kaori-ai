@@ -52,6 +52,8 @@ class DocRequirementIn(BaseModel):
     allowed_formats: Optional[list[str]] = None
     template_file_id: Optional[UUID] = None
     sort_order: int = 0
+    # Mig 144 — mẫu tài liệu (Kho) mà slot tham chiếu
+    doc_template_id: Optional[UUID] = None
 
 
 class DocClassifyIn(BaseModel):
@@ -117,6 +119,11 @@ def build_document_tree(nodes: list[dict], requirements: list[dict],
                 "status": (current or {}).get("status", ds.CHO_NOP),
                 "document": current,
                 "version_count": len(fulfilling),
+                # Mig 144 — mẫu tài liệu slot tham chiếu (hiển thị tại bước)
+                "doc_template_id": (str(r["doc_template_id"])
+                                    if r.get("doc_template_id") else None),
+                "doc_template_name": r.get("doc_template_name"),
+                "doc_template_icon": r.get("doc_template_icon"),
             })
         # Loose (ad-hoc) docs — surface under their own class, no requirement.
         for d in docs_loose_by_node.get(nid, []):
@@ -159,14 +166,14 @@ async def create_doc_requirement(
                 """INSERT INTO workflow_step_document_requirements
                        (workflow_id, node_id, enterprise_id, department_id, doc_class,
                         name_vi, description, is_required, allowed_formats,
-                        template_file_id, sort_order)
+                        template_file_id, sort_order, doc_template_id)
                    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,
                            COALESCE($9, ARRAY['pdf','docx','xlsx','csv','jpg','png']),
-                           $10,$11)
+                           $10,$11,$12)
                    RETURNING requirement_id""",
                 workflow_id, node_id, x_enterprise_id, dept, body.doc_class,
                 body.name_vi, body.description, body.is_required, body.allowed_formats,
-                body.template_file_id, body.sort_order,
+                body.template_file_id, body.sort_order, body.doc_template_id,
             )
         except Exception as exc:  # noqa: BLE001 — unique (node,class,name) clash → 409
             if "uq_wsdr" in str(exc):
@@ -184,16 +191,20 @@ async def list_doc_requirements(
 ):
     async with acquire_for_tenant(x_enterprise_id) as conn:
         rows = await conn.fetch(
-            """SELECT requirement_id, doc_class, name_vi, description, is_required,
-                      allowed_formats, template_file_id, sort_order
-               FROM workflow_step_document_requirements
-               WHERE node_id = $1
-               ORDER BY doc_class, sort_order""",
+            """SELECT r.requirement_id, r.doc_class, r.name_vi, r.description,
+                      r.is_required, r.allowed_formats, r.template_file_id,
+                      r.sort_order, r.doc_template_id,
+                      t.name_vi AS doc_template_name, t.icon AS doc_template_icon
+               FROM workflow_step_document_requirements r
+               LEFT JOIN document_type_template t ON t.template_id = r.doc_template_id
+               WHERE r.node_id = $1
+               ORDER BY r.doc_class, r.sort_order""",
             node_id,
         )
     return {"requirements": [
         {**dict(r), "requirement_id": str(r["requirement_id"]),
-         "template_file_id": str(r["template_file_id"]) if r["template_file_id"] else None}
+         "template_file_id": str(r["template_file_id"]) if r["template_file_id"] else None,
+         "doc_template_id": str(r["doc_template_id"]) if r["doc_template_id"] else None}
         for r in rows
     ]}
 
@@ -211,11 +222,13 @@ async def update_doc_requirement(
             """UPDATE workflow_step_document_requirements
                SET doc_class=$2, name_vi=$3, description=$4, is_required=$5,
                    allowed_formats=COALESCE($6, allowed_formats),
-                   template_file_id=$7, sort_order=$8, updated_at=NOW()
+                   template_file_id=$7, sort_order=$8, doc_template_id=$9,
+                   updated_at=NOW()
                WHERE requirement_id=$1
                RETURNING requirement_id""",
             requirement_id, body.doc_class, body.name_vi, body.description,
             body.is_required, body.allowed_formats, body.template_file_id, body.sort_order,
+            body.doc_template_id,
         )
     if row is None:
         raise HTTPException(status_code=404, detail="requirement not found")
@@ -589,9 +602,13 @@ async def get_document_tree(
                ORDER BY sequence_order, created_at""",
             workflow_id)
         reqs = await conn.fetch(
-            """SELECT requirement_id, node_id, doc_class, name_vi, description,
-                      is_required, sort_order
-               FROM workflow_step_document_requirements WHERE workflow_id = $1""",
+            """SELECT r.requirement_id, r.node_id, r.doc_class, r.name_vi,
+                      r.description, r.is_required, r.sort_order,
+                      r.doc_template_id,
+                      t.name_vi AS doc_template_name, t.icon AS doc_template_icon
+               FROM workflow_step_document_requirements r
+               LEFT JOIN document_type_template t ON t.template_id = r.doc_template_id
+               WHERE r.workflow_id = $1""",
             workflow_id)
         docs = await conn.fetch(
             """SELECT sd.attachment_id, sd.node_id, sd.requirement_id, sd.doc_class,

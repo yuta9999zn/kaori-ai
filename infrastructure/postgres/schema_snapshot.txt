@@ -180,7 +180,7 @@ workspace_audit_log|TABLE|False|False
 workspace_keys|TABLE|False|False
 workspaces|TABLE|False|False
 
-## COLUMNS (2195 rows)
+## COLUMNS (2196 rows)
 admin_sessions|admin_id|2|uuid||||NO|
 admin_sessions|created_at|6|timestamp with time zone||||NO|now()
 admin_sessions|device_label|5|character varying|120|||YES|
@@ -2247,6 +2247,7 @@ workflow_step_document_requirements|created_at|13|timestamp with time zone||||NO
 workflow_step_document_requirements|department_id|5|uuid||||NO|
 workflow_step_document_requirements|description|8|text||||YES|
 workflow_step_document_requirements|doc_class|6|character varying|16|||NO|
+workflow_step_document_requirements|doc_template_id|15|uuid||||YES|
 workflow_step_document_requirements|enterprise_id|4|uuid||||NO|
 workflow_step_document_requirements|is_required|9|boolean||||NO|true
 workflow_step_document_requirements|name_vi|7|character varying|200|||NO|
@@ -2964,7 +2965,7 @@ workspace_keys|workspace_keys_key_hash_key|CREATE UNIQUE INDEX workspace_keys_ke
 workspace_keys|workspace_keys_pkey|CREATE UNIQUE INDEX workspace_keys_pkey ON public.workspace_keys USING btree (key_id)
 workspaces|workspaces_pkey|CREATE UNIQUE INDEX workspaces_pkey ON public.workspaces USING btree (workspace_id)
 
-## CONSTRAINTS (759 rows)
+## CONSTRAINTS (760 rows)
 admin_sessions_admin_id_fkey|admin_sessions|f|FOREIGN KEY (admin_id) REFERENCES platform_admins(admin_id) ON DELETE CASCADE
 admin_sessions_pkey|admin_sessions|p|PRIMARY KEY (session_id)
 adoption_health_snapshots_classification_check|adoption_health_snapshots|c|CHECK (((classification)::text = ANY ((ARRAY['healthy'::character varying, 'stable'::character varying, 'stretched'::character varying, 'at_risk'::character varying, 'churn_imminent'::character varying, 'unknown'::character varying])::text[])))
@@ -3683,6 +3684,7 @@ workflow_runs_pkey|workflow_runs|p|PRIMARY KEY (run_id)
 workflow_runs_status_check|workflow_runs|c|CHECK (((status)::text = ANY ((ARRAY['pending'::character varying, 'running'::character varying, 'awaiting_approval'::character varying, 'completed'::character varying, 'failed'::character varying, 'cancelled'::character varying])::text[])))
 workflow_runs_trigger_source_check|workflow_runs|c|CHECK (((trigger_source)::text = ANY ((ARRAY['manual'::character varying, 'schedule'::character varying, 'webhook'::character varying, 'event'::character varying, 'api'::character varying])::text[])))
 workflow_runs_workflow_id_fkey|workflow_runs|f|FOREIGN KEY (workflow_id) REFERENCES workflows(workflow_id) ON DELETE CASCADE
+workflow_step_document_requirements_doc_template_id_fkey|workflow_step_document_requirements|f|FOREIGN KEY (doc_template_id) REFERENCES document_type_template(template_id) ON DELETE SET NULL
 workflow_step_document_requirements_node_id_fkey|workflow_step_document_requirements|f|FOREIGN KEY (node_id) REFERENCES workflow_nodes(node_id) ON DELETE CASCADE
 workflow_step_document_requirements_pkey|workflow_step_document_requirements|p|PRIMARY KEY (requirement_id)
 workflow_step_document_requirements_template_file_id_fkey|workflow_step_document_requirements|f|FOREIGN KEY (template_file_id) REFERENCES bronze_files(file_id) ON DELETE SET NULL
