@@ -430,8 +430,8 @@ export interface paths {
         };
         /**
          * Get Run
-         * @description Single tier run including overview / templates / config. RLS
-         *     ensures cross-tenant requests get 404.
+         * @description Single tier run including overview / templates / config + per-template
+         *     results (analysis_results). RLS ensures cross-tenant requests get 404.
          */
         get: operations["get_run_analysis_runs__run_id__get"];
         put?: never;
@@ -9132,6 +9132,11 @@ export interface components {
              * @default false
              */
             requires_approval: boolean;
+            /**
+             * Results
+             * @default []
+             */
+            results: unknown[];
             /** Scope */
             scope: string;
             /** Source Ids */

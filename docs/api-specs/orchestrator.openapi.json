@@ -10798,6 +10798,12 @@
             "title": "Requires Approval",
             "type": "boolean"
           },
+          "results": {
+            "default": [],
+            "items": {},
+            "title": "Results",
+            "type": "array"
+          },
           "scope": {
             "title": "Scope",
             "type": "string"
@@ -16294,7 +16300,7 @@
     },
     "/analysis/runs/{run_id}": {
       "get": {
-        "description": "Single tier run including overview / templates / config. RLS\nensures cross-tenant requests get 404.",
+        "description": "Single tier run including overview / templates / config + per-template\nresults (analysis_results). RLS ensures cross-tenant requests get 404.",
         "operationId": "get_run_analysis_runs__run_id__get",
         "parameters": [
           {

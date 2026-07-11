@@ -129,6 +129,9 @@ class RunDetail(RunListItem):
     approved_at:     Optional[datetime] = None
     overview:        Optional[dict] = None
     output_schema_repaired: Optional[bool] = None
+    # Số liệu per-template (analysis_results) — FE render được cả khi
+    # overview degraded (AI không viết được nhận xét ≠ mất kết quả tính).
+    results:         list = []
 
 
 class RunListResponse(BaseModel):
@@ -489,10 +492,28 @@ async def get_run(
     run_id: UUID,
     x_enterprise_id: Annotated[str, Header()],
 ):
-    """Single tier run including overview / templates / config. RLS
-    ensures cross-tenant requests get 404."""
+    """Single tier run including overview / templates / config + per-template
+    results (analysis_results). RLS ensures cross-tenant requests get 404."""
+    import json as _json
     async with acquire_for_tenant(x_enterprise_id) as conn:
         row = await repository.fetch_run(conn, run_id)
+        results: list = []
+        if row is not None:
+            rrows = await conn.fetch(
+                """SELECT template_id, results_payload
+                   FROM analysis_results                 -- tenant-filter-lint: allow (RLS via acquire_for_tenant)
+                   WHERE analysis_run_id = $1
+                   ORDER BY template_id""",
+                run_id)
+            for r in rrows:
+                p = r["results_payload"]
+                if isinstance(p, str):
+                    try:
+                        p = _json.loads(p)
+                    except (ValueError, TypeError):
+                        p = {}
+                results.append({"template_id": r["template_id"],
+                                "results_payload": p or {}})
     if row is None:
         raise HTTPException(status_code=404, detail="analysis run not found")
-    return RunDetail(**row)
+    return RunDetail(**row, results=results)

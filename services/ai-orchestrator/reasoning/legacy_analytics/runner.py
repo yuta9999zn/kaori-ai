@@ -118,7 +118,20 @@ async def run_analysis_for_run(
                 reason = (str(exc) or type(exc).__name__)[:500]
                 log.warning("orchestrator.overview.degraded",
                             analysis_run_id=analysis_run_id, error=reason)
-                overview = {"degraded": True, "reason": reason}
+                # Decline tử tế (tinh thần |OR|): nói RÕ bằng tiếng người cái
+                # gì thiếu và vì sao — số liệu per-template vẫn nguyên vẹn.
+                _vi = ("AI chưa kịp viết nhận xét trong thời gian chờ — model "
+                       "đang bận hoặc mới khởi động."
+                       if "Timeout" in reason else
+                       f"AI không tạo được nhận xét ({reason}).")
+                overview = {
+                    "degraded": True, "reason": reason,
+                    "message": ("Số liệu của từng phân tích đã tính xong và "
+                                f"hiển thị bình thường. {_vi} Anh/chị có thể "
+                                "chạy lại để lấy nhận xét, hoặc dùng số liệu "
+                                "trực tiếp — kết quả tính toán không bị ảnh "
+                                "hưởng."),
+                }
         elif errors:
             overview = {"error": errors[0][:500]}
 

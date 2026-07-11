@@ -54,6 +54,8 @@ interface RunDetail {
   approved_at:      string | null;
   overview:         any;
   output_schema_repaired: boolean | null;
+  // Số liệu per-template — hiển thị được cả khi nhận xét AI degraded
+  results?:         Array<{ template_id: string; results_payload: any }>;
   started_at:       string | null;
   completed_at:     string | null;
   created_at:       string;
@@ -285,8 +287,31 @@ export default function AnalysisRunDetailPage() {
               </div>
             )}
 
+            {/* Decline tử tế (|OR|): nhận xét AI không tạo được ≠ mất kết quả.
+                Nói rõ bằng tiếng người + vẫn hiển thị số liệu bên dưới. */}
+            {run.status === 'done' && run.overview?.degraded && (
+              <div className="bg-amber-50/70 rounded-lg-custom border border-amber-300 p-4 flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-amber-900">Chưa có nhận xét AI cho lần chạy này</p>
+                  <p className="text-xs text-amber-800/90 mt-0.5 leading-relaxed">
+                    {run.overview.message
+                      || 'AI không tạo được nhận xét trong thời gian chờ — số liệu bên dưới vẫn tính xong và chính xác. Anh/chị có thể chạy lại phân tích để lấy nhận xét.'}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Số liệu per-template — luôn hiển thị khi có, kể cả overview degraded */}
+            {run.status === 'done' && run.overview?.degraded && (run.results ?? []).some((r) => Array.isArray(r.results_payload?.blocks) && r.results_payload.blocks.length > 0) && (
+              <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm">
+                <h3 className="font-serif text-base text-[var(--text-primary)] mb-3">{t('templatesFnewAnalysisRunDetail.overviewDefaultTitle')}</h3>
+                <BlocksView blocks={(run.results ?? []).flatMap((r) => r.results_payload?.blocks ?? [])} summary={undefined} />
+              </div>
+            )}
+
             {/* Overview */}
-            {run.status === 'done' && run.overview && (
+            {run.status === 'done' && run.overview && !run.overview.degraded && (
               <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm">
                 <h3 className="font-serif text-base text-[var(--text-primary)] mb-3">
                   {run.framework ? t('templatesFnewAnalysisRunDetail.overviewFrameworkResult', { framework: run.framework.toUpperCase() }) : t('templatesFnewAnalysisRunDetail.overviewDefaultTitle')}
