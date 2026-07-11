@@ -3090,6 +3090,24 @@ function RequirementConfigModal({ workflowId, nodeId, title, onClose, onMutated 
   }
   async function del(id: string) { await api(`/api/v1/doc-requirements/${id}`, { method: 'DELETE' }); load(); onMutated?.(); }
 
+  // Mig 144 follow-up — gắn/đổi/gỡ mẫu cho slot ĐÃ TỒN TẠI ngay trên dòng
+  // (trước đây chỉ chọn được lúc tạo mới). PUT giữ nguyên các field khác.
+  async function setTemplate(r: any, templateId: string) {
+    await api(`/api/v1/doc-requirements/${r.requirement_id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        doc_class: r.doc_class,
+        name_vi: r.name_vi,
+        description: r.description ?? null,
+        is_required: r.is_required ?? true,
+        sort_order: r.sort_order ?? 0,
+        template_file_id: r.template_file_id ?? null,
+        doc_template_id: templateId || null,
+      }),
+    });
+    load(); onMutated?.();
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/40" onClick={onClose}>
       <div className="w-full max-w-lg bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] shadow-2xl p-5 space-y-4" onClick={(e) => e.stopPropagation()}>
@@ -3103,13 +3121,13 @@ function RequirementConfigModal({ workflowId, nodeId, title, onClose, onMutated 
             {reqs.map((r) => (
               <div key={r.requirement_id} className="flex items-center gap-2 rounded-md-custom bg-[var(--bg-app)]/40 border border-[var(--border-color)] px-3 py-2">
                 <span className="text-xs">{CLASS_OPT.find((o) => o[0] === r.doc_class)?.[1]?.split(' ')[0]}</span>
-                <span className="text-sm text-[var(--text-primary)] flex-1 truncate">{r.name_vi}{r.is_required && <span className="text-[var(--state-error)]"> *</span>}</span>
-                {r.doc_template_name && (
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[var(--primary-gold)]/10 border border-[var(--primary-gold)]/30 text-[var(--primary-gold-dark)] shrink-0 truncate max-w-[150px]"
-                    title="Mẫu tài liệu slot này tham chiếu — file lưu Kho sẽ ưu tiên folder gắn mẫu">
-                    {r.doc_template_icon ? `${r.doc_template_icon} ` : '📄 '}{r.doc_template_name}
-                  </span>
-                )}
+                <span className="text-sm text-[var(--text-primary)] flex-1 min-w-0 truncate">{r.name_vi}{r.is_required && <span className="text-[var(--state-error)]"> *</span>}</span>
+                {/* Mẫu tham chiếu — chọn/đổi/gỡ tại chỗ cho slot đã có (mig 144) */}
+                <SearchableSelect value={r.doc_template_id ?? ''}
+                  onChange={(v) => setTemplate(r, v)}
+                  placeholder="＋ Gắn mẫu"
+                  className="w-44 shrink-0"
+                  options={[{ value: '', label: '— Không gắn mẫu —' }, ...docTemplates]} />
                 <button onClick={() => del(r.requirement_id)} className="text-[var(--text-secondary)] hover:text-[var(--state-error)]"><Trash2 className="w-3.5 h-3.5" /></button>
               </div>
             ))}
