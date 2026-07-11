@@ -106,6 +106,12 @@ async def _run_inner(*, enterprise_id: str, run_id: UUID) -> None:
             log.warning("frameworks.run.row_missing", run_id=str(run_id))
             return
         await repository.mark_running(conn, run_id)
+        # Nguồn = pipeline đã xong Gold: nạp SỐ LIỆU thật của lần chạy đó để
+        # AI phân tích có căn cứ, thay vì chỉ đọc câu hỏi. source_ref dạng
+        # 'pipeline:<run_id>' → thay bằng bối cảnh dữ liệu; chuỗi thường giữ nguyên.
+        grounding = await _resolve_source_grounding(conn, enterprise_id, run["source_ref"])
+    if grounding:
+        run = {**run, "source_ref": grounding}
 
     template = templates.get_template(run["framework_code"])
     if template is None:
@@ -168,6 +174,54 @@ async def _run_inner(*, enterprise_id: str, run_id: UUID) -> None:
 
 
 # ─── Helpers ─────────────────────────────────────────────────────
+
+async def _resolve_source_grounding(conn, enterprise_id: str, source_ref) -> Optional[str]:
+    """source_ref 'pipeline:<uuid>' → bối cảnh dữ liệu thật của lần chạy đã
+    xong Gold: tên file, số dòng, và thống kê tóm tắt (nếu đã phân tích).
+    Trả None nếu không phải pipeline-ref → caller giữ nguyên chuỗi gốc."""
+    if not source_ref or not str(source_ref).startswith("pipeline:"):
+        return None
+    import json as _json
+    raw = str(source_ref).split(":", 1)[1].strip()
+    try:
+        run_uuid = UUID(raw)
+    except ValueError:
+        return None
+    pr = await conn.fetchrow(
+        """SELECT filename, row_count_silver, status
+           FROM pipeline_runs
+           WHERE run_id = $1 AND enterprise_id = $2""",
+        run_uuid, UUID(enterprise_id))
+    if pr is None:
+        return None
+    parts = [f"Nguồn dữ liệu: '{pr['filename'] or 'không tên'}' — "
+             f"{pr['row_count_silver'] or 0} dòng đã làm sạch tới lớp Gold."]
+    # Thống kê tóm tắt từ lần phân tích gần nhất của chính pipeline này (nếu có)
+    stat = await conn.fetchrow(
+        """SELECT ar.results_payload
+           FROM analysis_results ar
+           JOIN analysis_runs a ON a.id = ar.analysis_run_id
+           WHERE a.run_id = $1 AND a.enterprise_id = $2
+             AND ar.template_id = 'summary_stats'
+           ORDER BY ar.created_at DESC LIMIT 1""",
+        run_uuid, UUID(enterprise_id))
+    if stat and stat["results_payload"]:
+        payload = stat["results_payload"]
+        if isinstance(payload, str):
+            try:
+                payload = _json.loads(payload)
+            except (ValueError, TypeError):
+                payload = {}
+        blocks = (payload or {}).get("blocks", [])
+        rows = next((b.get("data") for b in blocks if b.get("id") == "stats_table"), None)
+        if rows:
+            cols = ", ".join(str(r.get("column") or r.get("col") or "?") for r in rows[:8] if isinstance(r, dict))
+            if cols:
+                parts.append(f"Các trường số liệu sẵn có: {cols}.")
+    parts.append("Hãy phân tích dựa trên số liệu thực tế này, không suy đoán "
+                 "ngoài dữ liệu — thiếu căn cứ thì nói rõ.")
+    return " ".join(parts)
+
 
 def _render_prompt(system_prompt: str, run: dict) -> str:
     """Substitute the run's ``question`` + ``source_ref`` into the

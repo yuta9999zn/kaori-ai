@@ -7,6 +7,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronDown, Search, Check } from 'lucide-react';
 import { cn } from '@/components/p2/foundation';
+import { useT } from '@/lib/i18n/provider';
 
 export interface SelectOption {
   value: string;
@@ -32,6 +33,7 @@ export function SearchableSelect({
   className?: string;
   disabled?: boolean;
 }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
   const rootRef = useRef<HTMLDivElement>(null);
@@ -85,7 +87,7 @@ export function SearchableSelect({
           <div className="relative border-b border-[var(--border-color)]/70">
             <Search className="w-3.5 h-3.5 text-[var(--text-secondary)] absolute left-2.5 top-1/2 -translate-y-1/2" />
             <input ref={inputRef} value={q} onChange={(e) => setQ(e.target.value)}
-              placeholder="Tìm theo tên hoặc số thứ tự…"
+              placeholder={t('searchableSelect.searchPlaceholder')}
               className="w-full pl-8 pr-2 py-2 text-sm focus:outline-none"
               onKeyDown={(e) => {
                 if (e.key === 'Escape') setOpen(false);
@@ -96,7 +98,7 @@ export function SearchableSelect({
           </div>
           <div className="max-h-64 overflow-y-auto">
             {filtered.length === 0 && (
-              <p className="px-3 py-2.5 text-xs text-[var(--text-secondary)]">Không có mục khớp.</p>
+              <p className="px-3 py-2.5 text-xs text-[var(--text-secondary)]">{t('searchableSelect.noMatch')}</p>
             )}
             {filtered.map((o) => (
               <button key={o.value || `__empty_${o.idx}`} type="button"

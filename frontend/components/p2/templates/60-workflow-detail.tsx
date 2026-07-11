@@ -864,6 +864,7 @@ function FloatingToast({
 
 // Mig 143 — thước timeline chu kỳ quy trình (lớp theo dõi phụ trợ).
 function WorkflowTimelineBar({ wf, onSaved }: { wf: any; onSaved: () => void }) {
+  const t = useT();
   const [editing, setEditing] = useState(false);
   const [days, setDays] = useState<string>(wf.duration_days ? String(wf.duration_days) : '30');
   const [start, setStart] = useState<string>(wf.timeline_start ?? new Date().toISOString().slice(0, 10));
@@ -900,10 +901,10 @@ function WorkflowTimelineBar({ wf, onSaved }: { wf: any; onSaved: () => void }) 
           <>
             <span className="text-sm font-medium text-[var(--text-primary)] shrink-0">
               {over
-                ? <>Chu kỳ đã QUÁ hạn — ngày {dayIdx}/{wf.duration_days}</>
+                ? t('templates60WorkflowDetail.timelineOverdue', { d: dayIdx, n: wf.duration_days })
                 : dayIdx < 1
-                  ? <>Chu kỳ bắt đầu {new Date(wf.timeline_start + 'T00:00:00').toLocaleDateString('vi-VN')}</>
-                  : <>Ngày <b>{dayIdx}</b>/{wf.duration_days} của chu kỳ</>}
+                  ? t('templates60WorkflowDetail.timelineStartsOn', { date: new Date(wf.timeline_start + 'T00:00:00').toLocaleDateString('vi-VN') })
+                  : t('templates60WorkflowDetail.timelineDayOfCycle', { d: dayIdx, n: wf.duration_days })}
             </span>
             <div className="flex-1 min-w-[160px] h-2.5 rounded-full bg-[var(--bg-app)] overflow-hidden border border-[var(--border-color)]/60">
               <div className={'h-full rounded-full transition-all ' + (over ? 'bg-rose-500' : pct > 80 ? 'bg-amber-500' : 'bg-emerald-500')}
@@ -919,28 +920,28 @@ function WorkflowTimelineBar({ wf, onSaved }: { wf: any; onSaved: () => void }) 
           </>
         ) : (
           <span className="text-sm text-[var(--text-secondary)] flex-1">
-            Chưa đặt thời gian thực hiện — khai báo số ngày của chu kỳ để theo dõi quy trình theo thời gian thực.
+            {t('templates60WorkflowDetail.timelineUnset')}
           </span>
         )}
         <button onClick={() => setEditing(!editing)}
           className="text-[11px] text-[var(--primary-gold-dark)] hover:underline shrink-0">
-          {editing ? 'Đóng' : has ? 'Chỉnh thời gian' : 'Đặt thời gian thực hiện'}
+          {editing ? t('templates60WorkflowDetail.timelineClose') : has ? t('templates60WorkflowDetail.timelineEdit') : t('templates60WorkflowDetail.timelineSet')}
         </button>
       </div>
       {editing && (
         <div className="mt-2 pt-2 border-t border-dashed border-[var(--border-color)] flex items-end gap-3 flex-wrap">
           <label className="text-[11px] text-[var(--text-secondary)]">
-            Số ngày thực hiện quy trình
+            {t('templates60WorkflowDetail.timelineDaysLabel')}
             <input type="number" min={1} max={730} value={days} onChange={(e) => setDays(e.target.value)}
               className="block mt-0.5 w-28 rounded border border-[var(--border-color)] px-2 py-1 text-sm bg-white" />
           </label>
           <label className="text-[11px] text-[var(--text-secondary)]">
-            Ngày bắt đầu chu kỳ
+            {t('templates60WorkflowDetail.timelineStartLabel')}
             <input type="date" value={start} onChange={(e) => setStart(e.target.value)}
               className="block mt-0.5 rounded border border-[var(--border-color)] px-2 py-1 text-sm bg-white" />
           </label>
           <Button size="sm" onClick={save} disabled={saving || !days || !start}>
-            {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Lưu thước thời gian'}
+            {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t('templates60WorkflowDetail.timelineSaveBtn')}
           </Button>
         </div>
       )}
@@ -3127,7 +3128,7 @@ function RequirementConfigModal({ workflowId, nodeId, title, onClose, onMutated 
                   onChange={(v) => setTemplate(r, v)}
                   placeholder="＋ Gắn mẫu"
                   className="w-44 shrink-0"
-                  options={[{ value: '', label: '— Không gắn mẫu —' }, ...docTemplates]} />
+                  options={[{ value: '', label: t('templates60WorkflowDetail.reqTemplateNone') }, ...docTemplates]} />
                 <button onClick={() => del(r.requirement_id)} className="text-[var(--text-secondary)] hover:text-[var(--state-error)]"><Trash2 className="w-3.5 h-3.5" /></button>
               </div>
             ))}
@@ -3149,11 +3150,11 @@ function RequirementConfigModal({ workflowId, nodeId, title, onClose, onMutated 
         {/* Mig 144 — tham chiếu mẫu tài liệu của Kho (tùy chọn) */}
         <div>
           <label className="text-[11px] text-[var(--text-secondary)] block mb-1">
-            Mẫu tài liệu tham chiếu (tùy chọn) — file lưu Kho sẽ ưu tiên folder gắn mẫu này
+            {t('templates60WorkflowDetail.reqTemplateFieldLabel')}
           </label>
           <SearchableSelect value={tplChoice} onChange={setTplChoice}
-            placeholder="— Không gắn mẫu —"
-            options={[{ value: '', label: '— Không gắn mẫu —' }, ...docTemplates]} />
+            placeholder={t('templates60WorkflowDetail.reqTemplateNone')}
+            options={[{ value: '', label: t('templates60WorkflowDetail.reqTemplateNone') }, ...docTemplates]} />
         </div>
       </div>
     </div>
@@ -3314,7 +3315,7 @@ function DocSlotRow({ slot, workflowId, nodeId, onMutated }: {
           {slot.is_required && slot.status === 'cho_nop' && <span className="text-[var(--state-error)] ml-1">*</span>}
           {slot.doc_template_name && (
             <span className="ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full bg-[var(--primary-gold)]/10 border border-[var(--primary-gold)]/30 text-[var(--primary-gold-dark)] align-middle"
-              title="Slot tham chiếu mẫu tài liệu này — nộp file chọn Lưu vào Kho sẽ tự xếp vào folder đang gắn mẫu">
+              title={t('templates60WorkflowDetail.slotTemplateTitle')}>
               {slot.doc_template_icon ? `${slot.doc_template_icon} ` : '📄 '}{slot.doc_template_name}
             </span>
           )}
@@ -3341,9 +3342,9 @@ function DocSlotRow({ slot, workflowId, nodeId, onMutated }: {
         {slot.document?.attachment_id && isTabular && (
           <button onClick={checkClean} disabled={checkingClean}
             className="text-[11px] text-emerald-700 hover:underline shrink-0 inline-flex items-center gap-1 disabled:opacity-50"
-            title="Qwen chấm dữ liệu bảng này đã sạch chưa">
+            title={t('templates60WorkflowDetail.cleanCheckTitle')}>
             {checkingClean ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />}
-            Kiểm tra sạch
+            {t('templates60WorkflowDetail.cleanCheckBtn')}
           </button>
         )}
         {canUpload && (
@@ -3365,14 +3366,14 @@ function DocSlotRow({ slot, workflowId, nodeId, onMutated }: {
       {pendingFile && (
         <div className="mt-1.5 ml-2 rounded-md-custom border border-[var(--primary-gold)]/40 bg-[var(--primary-gold)]/5 p-2.5 space-y-2">
           <p className="text-xs font-medium text-[var(--text-primary)]">
-            Nộp <span className="font-mono">{pendingFile.name}</span> — lưu vào Kho tài liệu?
+            {t('templates60WorkflowDetail.uploadSaveDialogTitle', { name: pendingFile.name })}
           </p>
           <div className="flex items-center gap-2 flex-wrap">
             <SearchableSelect value={folderChoice} onChange={setFolderChoice}
               className="w-[340px]"
-              placeholder="Hồ sơ quy trình / (quy trình này) — tự xếp"
+              placeholder={t('templates60WorkflowDetail.uploadSaveDialogAuto')}
               options={[
-                { value: '', label: 'Hồ sơ quy trình / (quy trình này) — tự xếp' },
+                { value: '', label: t('templates60WorkflowDetail.uploadSaveDialogAuto') },
                 ...(repoFolders ?? []).map((o) => ({ value: o.id, label: o.label })),
               ]} />
             {repoFolders === null && <Loader2 className="w-3 h-3 animate-spin text-[var(--text-secondary)]" />}
@@ -3381,15 +3382,15 @@ function DocSlotRow({ slot, workflowId, nodeId, onMutated }: {
             <button onClick={() => doUpload(pendingFile, folderChoice ? 'folder' : 'auto')} disabled={uploading}
               className="text-[11px] font-medium px-2.5 py-1 rounded-md-custom bg-[var(--primary-gold)] text-white hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-1">
               {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />}
-              Nộp &amp; lưu vào Kho
+              {t('templates60WorkflowDetail.uploadSaveBtn')}
             </button>
             <button onClick={() => doUpload(pendingFile, 'skip')} disabled={uploading}
               className="text-[11px] px-2.5 py-1 rounded-md-custom border border-[var(--border-color)] text-[var(--text-primary)] hover:bg-[var(--bg-app)]/60 disabled:opacity-50">
-              Chỉ nộp vào bước (không lưu Kho)
+              {t('templates60WorkflowDetail.uploadStepOnlyBtn')}
             </button>
             <button onClick={() => setPendingFile(null)} disabled={uploading}
               className="text-[11px] text-[var(--text-secondary)] hover:underline">
-              Hủy
+              {t('templates60WorkflowDetail.uploadCancelBtn')}
             </button>
           </div>
         </div>

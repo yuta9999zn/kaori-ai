@@ -257,13 +257,13 @@ export default function AnalysisRunDetailPage() {
                   </span>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-[var(--text-primary)]">
-                      {run.status === 'queued' ? 'Đang xếp hàng phân tích…' : 'AI đang phân tích dữ liệu…'}
+                      {run.status === 'queued' ? t('templatesFnewAnalysisRunDetail.loadingQueued') : t('templatesFnewAnalysisRunDetail.loadingRunning')}
                     </p>
                     <p className="text-xs text-[var(--text-secondary)] mt-0.5">
                       {run.consent_external
-                        ? 'Nguồn AI: bên ngoài (Claude/GPT) — dữ liệu đã che thông tin cá nhân trước khi gửi.'
-                        : 'Nguồn AI: Qwen nội bộ — thường mất 1–2 phút.'}{' '}
-                      Trang tự cập nhật mỗi 5 giây, anh/chị không cần tải lại.
+                        ? t('templatesFnewAnalysisRunDetail.loadingExternalHint')
+                        : t('templatesFnewAnalysisRunDetail.loadingLocalHint')}{' '}
+                      {t('templatesFnewAnalysisRunDetail.loadingAutoRefresh')}
                     </p>
                     <div className="mt-2.5 h-1.5 rounded-full bg-[var(--bg-app)] overflow-hidden">
                       <div className="h-full w-1/3 rounded-full bg-[var(--primary-gold)] animate-[loading-slide_1.6s_ease-in-out_infinite]" />
@@ -293,10 +293,10 @@ export default function AnalysisRunDetailPage() {
               <div className="bg-amber-50/70 rounded-lg-custom border border-amber-300 p-4 flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-medium text-amber-900">Chưa có nhận xét AI cho lần chạy này</p>
+                  <p className="text-sm font-medium text-amber-900">{t('templatesFnewAnalysisRunDetail.degradedTitle')}</p>
                   <p className="text-xs text-amber-800/90 mt-0.5 leading-relaxed">
                     {run.overview.message
-                      || 'AI không tạo được nhận xét trong thời gian chờ — số liệu bên dưới vẫn tính xong và chính xác. Anh/chị có thể chạy lại phân tích để lấy nhận xét.'}
+                      || t('templatesFnewAnalysisRunDetail.degradedFallback')}
                   </p>
                 </div>
               </div>

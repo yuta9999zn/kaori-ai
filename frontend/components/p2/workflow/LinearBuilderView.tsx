@@ -399,7 +399,7 @@ export default function LinearBuilderView({
             <>{t('workflowLinearbuilderview.actionLabelPrefix')} {actionVi
               ? <><b className="text-[var(--text-primary)]">{actionVi}</b>{' '}
                   <span className="text-[9px] font-bold px-1 py-px rounded bg-violet-100 text-violet-700 border border-violet-200 align-middle"
-                    title="Bước do AI thực hiện — kết quả vẫn qua người xác nhận (cổng duyệt)">AI</span></>
+                    title={t('workflowLinearbuilderview.aiChipTitle')}>AI</span></>
               : <b className="text-amber-700">{t('workflowLinearbuilderview.actionUnassigned')}</b>}</>
           )}
           {(() => {
@@ -407,8 +407,8 @@ export default function LinearBuilderView({
             return dl ? (
               <span className={'ml-1.5 text-[10px] font-semibold px-1.5 py-px rounded-full border align-middle '
                 + (dl.overdue ? 'bg-rose-50 text-rose-700 border-rose-200' : 'bg-sky-50 text-sky-700 border-sky-200')}
-                title={dl.overdue ? 'Bước này đã QUÁ hạn cuối' : 'Hạn cuối của bước trong chu kỳ'}>
-                ⏰ {dl.overdue ? 'Quá hạn ' : 'Hạn '}{dl.label}
+                title={dl.overdue ? t('workflowLinearbuilderview.deadlineOverdueTitle') : t('workflowLinearbuilderview.deadlineDueTitle')}>
+                ⏰ {dl.overdue ? t('workflowLinearbuilderview.deadlineOverdue', { date: dl.label }) : t('workflowLinearbuilderview.deadlineDue', { date: dl.label })}
               </span>
             ) : null;
           })()}
@@ -463,7 +463,7 @@ export default function LinearBuilderView({
             </Field>
 
             {/* Mig 143 — hạn cuối của bước (deadline, lớp theo dõi) */}
-            <Field label="Hạn cuối (deadline) của bước">
+            <Field label={t('workflowLinearbuilderview.deadlineFieldLabel')}>
               <div className="flex items-center gap-2">
                 <input type="date" defaultValue={c.deadline_date ?? ''}
                   onBlur={(e) => {
@@ -476,7 +476,7 @@ export default function LinearBuilderView({
                 {c.deadline_date && (
                   <button type="button" onClick={() => upd(c.node_id, { clear_deadline: true })}
                     className="text-[11px] text-[var(--text-secondary)] hover:text-rose-600 underline shrink-0">
-                    Bỏ hạn
+                    {t('workflowLinearbuilderview.deadlineClear')}
                   </button>
                 )}
               </div>

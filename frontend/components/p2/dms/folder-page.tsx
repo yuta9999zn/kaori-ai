@@ -370,7 +370,7 @@ function DocItem({ d, schema, statusField, onChanged, onOpenAuthored }: {
         <CompletenessBadge value={d.completeness} />
         {(d.first_uploaded_at || d.uploaded_at) && (
           <span className="text-[10px] text-[var(--text-secondary)] shrink-0"
-            title="Ngày thêm vào Kho · lần sửa (phiên bản) mới nhất">
+            title={t('dmsFolderPage.datesTitle')}>
             {fmtDay(d.first_uploaded_at ?? d.uploaded_at)}
             {d.uploaded_at && d.first_uploaded_at
               && d.first_uploaded_at.slice(0, 10) !== d.uploaded_at.slice(0, 10)
@@ -385,16 +385,16 @@ function DocItem({ d, schema, statusField, onChanged, onOpenAuthored }: {
         {isTabular && (
           <button onClick={checkClean} disabled={checkingClean}
             className="text-[11px] text-emerald-700 hover:underline shrink-0 inline-flex items-center gap-1 disabled:opacity-50"
-            title="Qwen chấm dữ liệu bảng này đã sạch chưa">
+            title={t('templates60WorkflowDetail.cleanCheckTitle')}>
             {checkingClean ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />}
-            Kiểm tra sạch
+            {t('dmsFolderPage.cleanCheckBtn')}
           </button>
         )}
         {runHref && (
           <a href={runHref}
             className="text-[11px] text-[var(--primary-gold-dark)] hover:underline shrink-0 inline-flex items-center gap-1"
-            title="Mở lần chạy dữ liệu đã tạo từ file này (Bronze → 5 bước làm sạch)">
-            <PlayCircle className="w-3 h-3" /> Lần chạy dữ liệu
+            title={t('dmsFolderPage.datesTitle')}>
+            <PlayCircle className="w-3 h-3" /> {t('dmsFolderPage.pipelineRunLink')}
           </a>
         )}
         <a href={`${API_BASE}/api/v1/document-repository/${d.doc_id}/download`}

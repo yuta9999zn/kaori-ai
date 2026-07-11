@@ -144,7 +144,7 @@ export default function AnalystBasicPage() {
             </div>
             <Badge variant={aiSource === 'external' ? 'warning' : 'success'}>
               <Lock className="w-3 h-3 mr-1 inline" />
-              {aiSource === 'external' ? 'AI bên ngoài (Claude/GPT)' : t('templates36AnalystBasic.qwenInternal')}
+              {aiSource === 'external' ? t('templates36AnalystBasic.aiExternalBadge') : t('templates36AnalystBasic.qwenInternal')}
             </Badge>
           </div>
           {/* Chọn nguồn AI — 1: Qwen nội bộ · 2: API bên ngoài (K-4) */}
@@ -154,9 +154,9 @@ export default function AnalystBasicPage() {
                 aiSource === 'local'
                   ? 'border-[var(--primary-gold)] bg-[var(--primary-gold)]/5 ring-1 ring-[var(--primary-gold)]/30'
                   : 'border-[var(--border-color)] hover:border-[var(--primary-gold)]/40')}>
-              <p className="text-sm font-medium text-[var(--text-primary)]">1 · Qwen nội bộ</p>
+              <p className="text-sm font-medium text-[var(--text-primary)]">{t('templates36AnalystBasic.aiLocalTitle')}</p>
               <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
-                Dữ liệu không rời hạ tầng — riêng tư, miễn phí. Nhận xét ~1–2 phút.
+                {t('templates36AnalystBasic.aiLocalDesc')}
               </p>
             </button>
             <button type="button" onClick={() => setAiSource('external')}
@@ -164,9 +164,9 @@ export default function AnalystBasicPage() {
                 aiSource === 'external'
                   ? 'border-amber-500 bg-amber-50/60 ring-1 ring-amber-300'
                   : 'border-[var(--border-color)] hover:border-amber-400/60')}>
-              <p className="text-sm font-medium text-[var(--text-primary)]">2 · API bên ngoài (Claude / GPT)</p>
+              <p className="text-sm font-medium text-[var(--text-primary)]">{t('templates36AnalystBasic.aiExternalTitle')}</p>
               <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
-                Phân tích sâu hơn — dữ liệu được che PII (thông tin định danh cá nhân) trước khi gửi ra ngoài.
+                {t('templates36AnalystBasic.aiExternalDesc')}
               </p>
             </button>
           </div>

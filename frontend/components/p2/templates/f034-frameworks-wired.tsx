@@ -293,6 +293,20 @@ export function FrameworkRunPage({ code, routeSegment }: FrameworkPageProps) {
   const [question, setQuestion] = useState('');
   const [sourceRef, setSourceRef] = useState('');
   const [consentExternal, setConsentExternal] = useState(false);
+  // Nguồn = pipeline đã xong Gold (row_count_silver > 0) — AI phân tích trên
+  // số liệu thật của lần chạy đó. '' = phân tích theo câu hỏi thuần.
+  const [goldPipelines, setGoldPipelines] = useState<{ id: string; label: string }[]>([]);
+  useEffect(() => {
+    api<any>('/api/v1/pipelines?limit=50')
+      .then((r) => setGoldPipelines(
+        (r.data || r.items || [])
+          .filter((p: any) => (p.row_count_silver ?? 0) > 0)
+          .map((p: any) => ({
+            id: p.run_id || p.id,
+            label: `${p.filename || p.run_id} · ${p.row_count_silver} dòng (Gold)`,
+          }))))
+      .catch(() => {});
+  }, []);
 
   const [runId, setRunId] = useState<string | null>(null);
   const [run, setRun] = useState<RunDetail | null>(null);
@@ -440,16 +454,21 @@ export function FrameworkRunPage({ code, routeSegment }: FrameworkPageProps) {
                 {t('templatesF034FrameworksWired.sourceRefLabel')}
               </span>
               <div className="relative">
-                <Database className="w-4 h-4 text-[var(--text-secondary)] absolute left-3 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
+                <Database className="w-4 h-4 text-[var(--text-secondary)] absolute left-3 top-1/2 -translate-y-1/2 z-10" />
+                <select
                   value={sourceRef}
                   onChange={(e) => setSourceRef(e.target.value)}
-                  maxLength={200}
-                  placeholder={t('templatesF034FrameworksWired.sourceRefPlaceholder')}
-                  className="w-full pl-9 pr-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm placeholder:text-[var(--text-secondary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 transition-all"
-                />
+                  className="w-full pl-9 pr-3 py-2 bg-[var(--bg-app)] border border-[var(--border-color)] rounded-md-custom text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-gold)]/30 transition-all"
+                >
+                  <option value="">{t('templatesF034FrameworksWired.sourcePipelineNone')}</option>
+                  {goldPipelines.map((p) => (
+                    <option key={p.id} value={`pipeline:${p.id}`}>{p.label}</option>
+                  ))}
+                </select>
               </div>
+              <p className="text-[10px] text-[var(--text-secondary)] mt-1">
+                {t('templatesF034FrameworksWired.sourcePipelineHint')}
+              </p>
             </label>
 
             <label className="block">
