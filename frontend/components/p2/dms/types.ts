@@ -151,6 +151,9 @@ export interface DocRow {
   completeness?: number | null;
   metadata?: Record<string, unknown>;
   doc_kind?: 'file' | 'authored';
+  // Cầu Kho ↔ kho dữ liệu: run resolve qua K-8 sha256 (BE lateral join)
+  pipeline_run_id?: string | null;
+  pipeline_run_status?: string | null;
 }
 
 export interface IndexRow extends DocRow {

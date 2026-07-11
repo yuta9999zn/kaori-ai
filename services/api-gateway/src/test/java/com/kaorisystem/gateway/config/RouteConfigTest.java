@@ -257,6 +257,9 @@ class RouteConfigTest {
                          "11111111-1111-1111-1111-111111111111/page",           ORCH_URL);
         assertResolvesTo("/api/v1/document-repository/index?limit=10",         ORCH_URL);
         assertResolvesTo("/api/v1/document-repository/insights",                ORCH_URL);
+        // Kho ↔ pipeline bridge — cleanliness check on repository files
+        assertResolvesTo("/api/v1/document-repository/" +
+                         "99999999-9999-9999-9999-999999999999/cleanliness",    ORCH_URL);
     }
 
     @Test

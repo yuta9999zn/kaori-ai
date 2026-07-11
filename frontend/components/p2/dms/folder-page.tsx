@@ -8,7 +8,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   FileText, Upload, Loader2, Pencil, History, Download, Sparkles, X,
   ChevronDown, ChevronRight, Table2, List, Paperclip, RotateCcw, Tag,
-  FilePlus2, NotebookPen,
+  FilePlus2, NotebookPen, CheckCircle2, ArrowRight, PlayCircle,
 } from 'lucide-react';
 import {
   Button, Badge, ErrorBanner, cn, api, API_BASE, type ProblemDetails,
@@ -303,6 +303,25 @@ function DocItem({ d, schema, statusField, onChanged, onOpenAuthored }: {
   const [open, setOpen] = useState(false);
   const statusVal = statusField ? (d.metadata as any)?.[statusField.key] : null;
 
+  // Cầu Kho ↔ pipeline (demo AABW): file BẢNG trong Kho được chấm sạch/bẩn
+  // như ở Cây tài liệu workflow — bẩn thì đi tiếp 5 bước làm sạch từ run
+  // đã tự tạo lúc upload, sạch thì phân tích thẳng.
+  const isTabular = /\.(csv|tsv|xlsx|xls)$/i.test(d.name_vi);
+  const [checkingClean, setCheckingClean] = useState(false);
+  const [cleanVerdict, setCleanVerdict] = useState<any | null>(null);
+  async function checkClean() {
+    setCheckingClean(true);
+    try {
+      const r: any = await api(`/api/v1/document-repository/${d.doc_id}/cleanliness`, { method: 'POST' });
+      setCleanVerdict(r);
+    } catch (err: any) {
+      setCleanVerdict({ error: err?.detail || err?.title || err?.message || 'Không kiểm tra được' });
+    } finally {
+      setCheckingClean(false);
+    }
+  }
+  const runHref = d.pipeline_run_id ? `/p2/pipelines/${d.pipeline_run_id}` : null;
+
   if (d.doc_kind === 'authored') {
     // tài liệu soạn trong Kaori → mở như một trang, không phải drawer/file
     return (
@@ -345,6 +364,21 @@ function DocItem({ d, schema, statusField, onChanged, onOpenAuthored }: {
             className="text-[10px] font-mono text-[var(--text-secondary)]">v{d.version}</span>
         )}
         {d.doc_type && <Badge variant="default" className="text-[10px]">.{d.doc_type}</Badge>}
+        {isTabular && (
+          <button onClick={checkClean} disabled={checkingClean}
+            className="text-[11px] text-emerald-700 hover:underline shrink-0 inline-flex items-center gap-1 disabled:opacity-50"
+            title="Qwen chấm dữ liệu bảng này đã sạch chưa">
+            {checkingClean ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />}
+            Kiểm tra sạch
+          </button>
+        )}
+        {runHref && (
+          <a href={runHref}
+            className="text-[11px] text-[var(--primary-gold-dark)] hover:underline shrink-0 inline-flex items-center gap-1"
+            title="Mở lần chạy dữ liệu đã tạo từ file này (Bronze → 5 bước làm sạch)">
+            <PlayCircle className="w-3 h-3" /> Lần chạy dữ liệu
+          </a>
+        )}
         <a href={`${API_BASE}/api/v1/document-repository/${d.doc_id}/download`}
           target="_blank" rel="noreferrer" title={t('dmsFolderPage.download')}
           onClick={(e) => {
@@ -365,6 +399,36 @@ function DocItem({ d, schema, statusField, onChanged, onOpenAuthored }: {
           <Download className="w-3.5 h-3.5" />
         </a>
       </div>
+      {cleanVerdict && (
+        <div className={cn('mx-10 mb-2.5 rounded-md-custom border p-2.5 space-y-1.5',
+          cleanVerdict.error ? 'border-rose-200 bg-rose-50/50'
+            : cleanVerdict.is_clean ? 'border-emerald-200 bg-emerald-50/50'
+              : 'border-amber-200 bg-amber-50/50')}>
+          {cleanVerdict.error ? (
+            <p className="text-xs text-rose-700">{String(cleanVerdict.error)}</p>
+          ) : (
+            <>
+              <p className="text-xs font-medium text-[var(--text-primary)]">
+                {cleanVerdict.is_clean
+                  ? `✓ Dữ liệu SẠCH (điểm ${Number(cleanVerdict.score).toFixed(2)}/1) — dùng phân tích được ngay`
+                  : `⚠ Dữ liệu CHƯA SẠCH (điểm ${Number(cleanVerdict.score).toFixed(2)}/1) — nên chạy 5 bước làm sạch`}
+              </p>
+              {Array.isArray(cleanVerdict.issues) && cleanVerdict.issues.length > 0 && (
+                <ul className="text-[11px] text-[var(--text-secondary)] list-disc ml-4 space-y-0.5">
+                  {cleanVerdict.issues.slice(0, 5).map((i: any, k: number) => <li key={k}>{i.label}</li>)}
+                </ul>
+              )}
+              {cleanVerdict.narrative && (
+                <p className="text-[11px] text-[var(--text-secondary)] italic">{cleanVerdict.narrative}</p>
+              )}
+              <a href={cleanVerdict.is_clean ? '/p2/analysis/basic' : (runHref ?? '/p2/pipelines/new')}
+                 className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--primary-gold-dark)] hover:underline">
+                {cleanVerdict.is_clean ? 'Phân tích ngay' : 'Chạy 5 bước làm sạch'} <ArrowRight className="w-3 h-3" />
+              </a>
+            </>
+          )}
+        </div>
+      )}
       {open && (
         <div className="px-10 pb-3 space-y-3">
           <MetadataForm doc={d} schema={schema} onSaved={() => onChanged()} />

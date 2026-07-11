@@ -486,6 +486,32 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/analysis/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Analysis Templates
+         * @description Catalogue the tier picker offers. Sourced from the canonical
+         *     TEMPLATE_REGISTRY (statistical + LLM-narrative templates) so the FE lists
+         *     real, runnable templates instead of the retired MSW-only
+         *     `/api/v2/enterprise/analysis/templates` mock (503 → empty picker on the
+         *     demo). Tenant-agnostic static catalogue — the gateway JWT still gates it at
+         *     the edge, so no X-Enterprise-ID is required here. `tier` is accepted for
+         *     forward-compat; the registry is currently shared across tiers.
+         */
+        get: operations["list_analysis_templates_analysis_templates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/analytics/runs": {
         parameters: {
             query?: never;
@@ -541,6 +567,12 @@ export interface paths {
         /**
          * List Templates
          * @description Return all templates with eligibility flag for the given data profile.
+         *
+         *     Two modes:
+         *       * explicit — caller passes detected_types/detected_purpose/row_count;
+         *       * run-aware — caller passes run_id (+ X-Enterprise-ID) and the profile
+         *         is derived from the run's Silver rows. Explicit params, when
+         *         non-empty, override the derived values.
          */
         get: operations["list_templates_analytics_templates_get"];
         put?: never;
@@ -1212,8 +1244,14 @@ export interface paths {
         };
         /**
          * Dashboard State
-         * @description Returns one of 5 states so the frontend can render the correct view:
-         *       no_data → first_upload → pending_review → analysis_ready → results_ready
+         * @description Returns the 5-state machine plus the FE view vocabulary:
+         *       state ∈ no_data → first_upload → pending_review → analysis_ready → results_ready
+         *       view  ∈ empty | uploading | processing | completed   (what the FE renders)
+         *
+         *     State derives from the tenant's OVERALL pipeline history, not just the
+         *     latest run — one failed .md upload must not flip a data-rich tenant back
+         *     to the "upload your first file" empty state (Đồng Xanh pilot bug: latest
+         *     run failed → every earlier silver_complete run was masked as no_data).
          */
         get: operations["dashboard_state_dashboard_state_get"];
         put?: never;
@@ -1767,6 +1805,28 @@ export interface paths {
          * @description Set the business date / reporting period of a filed document (mig 138).
          */
         patch: operations["patch_file_metadata_document_repository__doc_id__patch"];
+        trace?: never;
+    };
+    "/document-repository/{doc_id}/cleanliness": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check Repo Document Cleanliness
+         * @description Chấm độ sạch một file BẢNG trong Kho — cùng verdict engine với Cây
+         *     tài liệu workflow (1 file 2 mặt nhìn, ADR-0039). Bẩn → 'run_pipeline'
+         *     (đi 5 bước làm sạch); sạch → 'analyze'.
+         */
+        post: operations["check_repo_document_cleanliness_document_repository__doc_id__cleanliness_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/document-repository/{doc_id}/content": {
@@ -4113,6 +4173,26 @@ export interface paths {
          *     path created the row; this gives it meaning in the tree).
          */
         patch: operations["classify_document_workflow_documents__attachment_id__classify_patch"];
+        trace?: never;
+    };
+    "/workflow-documents/{attachment_id}/cleanliness": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check Document Cleanliness
+         * @description Chấm độ sạch một tài liệu BẢNG trong Cây tài liệu (demo AABW).
+         */
+        post: operations["check_document_cleanliness_workflow_documents__attachment_id__cleanliness_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/workflow-documents/{attachment_id}/download": {
@@ -9303,6 +9383,11 @@ export interface components {
         SourcesResponse: {
             /** Items */
             items: components["schemas"]["SourceItem"][];
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
         };
         /** StartResponse */
         StartResponse: {
@@ -9418,6 +9503,15 @@ export interface components {
             /** Type Key */
             type_key?: string | null;
         };
+        /** TemplateItem */
+        TemplateItem: {
+            /** Description */
+            description: string;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+        };
         /** TemplatePatch */
         TemplatePatch: {
             /** Approval Chain Id */
@@ -9438,6 +9532,11 @@ export interface components {
             requires_approval?: boolean | null;
             /** Section Outline */
             section_outline?: unknown[] | null;
+        };
+        /** TemplatesResponse */
+        TemplatesResponse: {
+            /** Items */
+            items: components["schemas"]["TemplateItem"][];
         };
         /** TenantKeyCreate */
         TenantKeyCreate: {
@@ -11297,6 +11396,37 @@ export interface operations {
             };
         };
     };
+    list_analysis_templates_analysis_templates_get: {
+        parameters: {
+            query?: {
+                tier?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplatesResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_runs_analytics_runs_get: {
         parameters: {
             query?: {
@@ -11406,8 +11536,11 @@ export interface operations {
                 detected_types?: string;
                 detected_purpose?: string | null;
                 row_count?: number;
+                run_id?: string | null;
             };
-            header?: never;
+            header?: {
+                "x-enterprise-id"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -13896,6 +14029,39 @@ export interface operations {
                 "application/json": components["schemas"]["FilePatch"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    check_repo_document_cleanliness_document_repository__doc_id__cleanliness_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                doc_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
@@ -17958,6 +18124,39 @@ export interface operations {
                 "application/json": components["schemas"]["DocClassifyIn"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    check_document_cleanliness_workflow_documents__attachment_id__cleanliness_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Enterprise-ID": string;
+            };
+            path: {
+                attachment_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
