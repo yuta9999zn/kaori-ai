@@ -127,11 +127,10 @@ export const NAV_TREE: NavGroup[] = [
     icon:  Shield,
     section: 'Quy trình',
     children: [
+      // Only RBAC is wired on the pilot; the ABAC/custom-role/audit screens are
+      // Phase-2 (no BE yet) — hidden until their endpoints ship so the menu
+      // doesn't link to a 404.
       { title: 'RBAC',           path: '/p2/authz/rbac',          phase: 1 },
-      { title: 'Vai trò tuỳ chỉnh', path: '/p2/authz/custom-roles',  phase: 2 },
-      { title: 'ABAC builder',    path: '/p2/authz/abac/builder',  phase: 2 },
-      { title: 'Mô phỏng',        path: '/p2/authz/abac/simulate', phase: 2 },
-      { title: 'Audit',           path: '/p2/authz/audit',         phase: 2 },
     ],
   },
 
@@ -153,13 +152,11 @@ export const NAV_TREE: NavGroup[] = [
     icon:  Layers,
     section: 'Phân tích & Rủi ro',
     children: [
-      { title: 'Tổng quan',  path: '/p2/frameworks',          phase: 2 },
-      { title: 'SWOT',        path: '/p2/frameworks/swot',     phase: 2 },
-      { title: '6W',          path: '/p2/frameworks/6w',       phase: 2 },
-      { title: '2H',          path: '/p2/frameworks/2h',       phase: 2 },
-      { title: 'Fishbone',    path: '/p2/frameworks/fishbone', phase: 2 },
-      { title: 'MoM/YoY',     path: '/p2/frameworks/mom-yoy',  phase: 2 },
-      { title: 'Tuỳ chỉnh',   path: '/p2/frameworks/custom',   phase: 2 },
+      { title: 'Tổng quan',  path: '/p2/frameworks',                   phase: 2 },
+      { title: 'SWOT',        path: '/p2/frameworks/swot',              phase: 2 },
+      { title: '6W',          path: '/p2/frameworks/6w',                phase: 2 },
+      { title: '2H',          path: '/p2/frameworks/2h',                phase: 2 },
+      { title: 'Fishbone',    path: '/p2/frameworks/fishbone-ishikawa', phase: 2 },
     ],
   },
   {

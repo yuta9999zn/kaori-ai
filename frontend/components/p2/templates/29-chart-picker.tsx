@@ -138,7 +138,10 @@ export default function ChartPickerPage() {
         setSources(r.items);
         if (r.items[0]) setSourceId(r.items[0].id);
       })
-      .catch((err) => setProblem(err))
+      // No Gold layer yet (tenant hasn't promoted a pipeline to Gold) → show the
+      // empty picker with the "— Chưa có Gold feature —" hint instead of an
+      // error banner. The dropdown + preview already handle the empty state.
+      .catch(() => setSources([]))
       .finally(() => setLoading(false));
   }, []);
 

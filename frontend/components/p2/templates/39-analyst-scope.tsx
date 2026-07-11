@@ -39,6 +39,15 @@ const SCOPE_ICON: Record<Scope, any> = {
   cross:  Globe,
 };
 
+// Scope-policy service is Phase-2 (not wired on the pilot). When the endpoint
+// isn't available we render these documented per-tier defaults so the page
+// shows the config instead of an error banner (Basic=single, Advanced=cross).
+const DEFAULT_SCOPE_POLICY: ScopePolicy = {
+  default_scope_per_tier: { basic: 'single', intermediate: 'multi', advanced: 'cross' },
+  require_manager_for_cross:  true,
+  allow_external_ai_in_cross: false,
+};
+
 export default function AnalystScopePage() {
   const t = useT();
   const SCOPE_LABEL: Record<Scope, string> = {
@@ -62,8 +71,9 @@ export default function AnalystScopePage() {
     try {
       const data = await api<ScopePolicy>('/api/v2/enterprise/analysis/scope-policy');
       setPolicy(data);
-    } catch (err: any) {
-      setProblem(err);
+    } catch {
+      // Endpoint not wired on the pilot → show documented defaults, not an error.
+      setPolicy(DEFAULT_SCOPE_POLICY);
     } finally {
       setLoading(false);
     }
