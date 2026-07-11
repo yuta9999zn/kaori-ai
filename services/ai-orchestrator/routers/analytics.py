@@ -134,7 +134,7 @@ async def get_run(
     """Get analysis run status + per-template results."""
     async with acquire_for_tenant(x_enterprise_id) as conn:
         run = await conn.fetchrow("""
-            SELECT id, run_id, templates, status, overview, created_at, completed_at
+            SELECT id, run_id, templates, status, overview, config, created_at, completed_at
             FROM analysis_runs
             WHERE id = $1 AND enterprise_id = $2
         """, analysis_run_id, x_enterprise_id)
@@ -148,7 +148,18 @@ async def get_run(
             ORDER BY created_at ASC
         """, analysis_run_id, x_enterprise_id)
 
+    payload = dict(run)
+    # FE Bước 5 hiển thị nguồn AI theo consent của CHÍNH run này (K-24 —
+    # minh bạch model nào viết nhận xét). config là JSONB (str khi asyncpg
+    # không decode) — chỉ cần cờ consent_external, không lộ nguyên config.
+    cfg = payload.pop("config", None)
+    if isinstance(cfg, str):
+        try:
+            cfg = json.loads(cfg)
+        except ValueError:
+            cfg = None
+    payload["consent_external"] = bool((cfg or {}).get("consent_external"))
     return {
-        **dict(run),
+        **payload,
         "template_results": [dict(r) for r in results],
     }

@@ -69,6 +69,11 @@ async def run_analysis_for_run(
             await _fail_run(analysis_run_id, enterprise_id, "Silver data empty or unavailable", pool)
             return
 
+        # K-4: consent bật ở Bước 4 (config.consent_external) phải đi tới tận
+        # các call narrative — trước đây bị nuốt tại đây nên narrative luôn
+        # chạy local dù user đã opt-in external.
+        consent_external = bool(config.get("consent_external"))
+
         # Run each template concurrently
         tasks = [
             _run_single_template(
@@ -79,6 +84,7 @@ async def run_analysis_for_run(
                 silver_df=silver_df,
                 config=config.get(t, {}),
                 pool=pool,
+                consent_external=consent_external,
             )
             for t in templates
         ]
@@ -94,7 +100,8 @@ async def run_analysis_for_run(
         if final_status == "done":
             try:
                 overview = await asyncio.wait_for(
-                    _generate_overview(templates, silver_df, enterprise_id),
+                    _generate_overview(templates, silver_df, enterprise_id,
+                                       consent_external=consent_external),
                     timeout=_NARRATIVE_TIMEOUT_S,
                 )
             except Exception as exc:  # noqa: BLE001 — narrative is non-critical
@@ -162,10 +169,12 @@ async def _run_single_template(
     silver_df: pd.DataFrame,
     config: dict,
     pool,
+    consent_external: bool = False,
 ) -> None:
     start = time.monotonic()
     try:
-        result = await _execute_template(template_id, silver_df, config, enterprise_id)
+        result = await _execute_template(template_id, silver_df, config, enterprise_id,
+                                         consent_external=consent_external)
         elapsed = round(time.monotonic() - start, 2)
         async with acquire_for_tenant(enterprise_id) as conn:
             await conn.execute("""
@@ -214,6 +223,7 @@ async def _execute_template(
     df: pd.DataFrame,
     config: dict,
     enterprise_id: str,
+    consent_external: bool = False,
 ) -> dict:
     """Route template_id to correct engine and return blocks payload."""
     from .template_registry import TEMPLATE_REGISTRY
@@ -235,10 +245,11 @@ async def _execute_template(
     degraded_reason = None
     try:
         narrative = await asyncio.wait_for(
-            _generate_template_narrative(template_id, blocks, enterprise_id),
+            _generate_template_narrative(template_id, blocks, enterprise_id,
+                                         consent_external=consent_external),
             timeout=_NARRATIVE_TIMEOUT_S,
         )
-        provider, degraded = "qwen", False
+        provider, degraded = ("external" if consent_external else "qwen"), False
     except Exception as exc:  # noqa: BLE001 — narrative is non-critical
         # str(TimeoutError()) == "" → fallback class name (xem overview path).
         degraded_reason = (str(exc) or type(exc).__name__)[:300]
@@ -261,6 +272,7 @@ async def _generate_overview(
     templates: list[str],
     df: pd.DataFrame,
     enterprise_id: str,
+    consent_external: bool = False,
 ) -> dict:
     row_count = len(df)
     col_count = len(df.columns)
@@ -280,6 +292,7 @@ async def _generate_overview(
         "nêu điểm nổi bật nhất từ dữ liệu."
     )
     text = await llm_router.complete(prompt, task="overview_narrative",
+                                     consent_external=consent_external,
                                      enterprise_id=enterprise_id,
                                      max_tokens=NARRATIVE_MAX_TOKENS)
     if grounding["cited_ids"]:
@@ -297,6 +310,7 @@ async def _generate_template_narrative(
     template_id: str,
     blocks: list[dict],
     enterprise_id: str,
+    consent_external: bool = False,
 ) -> str:
     summary = " | ".join(
         f"{b.get('title', b['id'])}: {_block_summary(b)}"
@@ -313,6 +327,7 @@ async def _generate_template_narrative(
         "Viết 1-2 câu nhận xét ngắn gọn bằng tiếng Việt."
     )
     text = await llm_router.complete(prompt, task="template_narrative",
+                                     consent_external=consent_external,
                                      enterprise_id=enterprise_id,
                                      max_tokens=NARRATIVE_MAX_TOKENS)
     if grounding["cited_ids"]:
