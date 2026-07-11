@@ -86,6 +86,17 @@ async def _ensure_workflow_repo_folder(
 
     Race trên uq_docfolder_sibling → đọc lại (thua race là ổn, folder đã có).
     """
+    # Ưu tiên folder TRÙNG TÊN workflow ở bất kỳ đâu trong Kho — user có thể
+    # đã tự tổ chức folder theo nghiệp vụ (vd 'Kinh doanh/Thu mua nông sản
+    # từ HTX'); có rồi thì lưu thẳng vào đó, không đẻ folder trùng.
+    existing = await conn.fetchrow(
+        """SELECT folder_id, path FROM document_folder
+           WHERE enterprise_id = $1 AND name_vi = $2 AND deleted_at IS NULL
+           ORDER BY length(path) LIMIT 1""",
+        uuid.UUID(enterprise_id), workflow_name)
+    if existing is not None:
+        return str(existing["folder_id"])
+
     async def _get_or_create(parent_id, parent_path, name, dept):
         sel = ("SELECT folder_id, path FROM document_folder "
                "WHERE enterprise_id = $1 AND parent_id IS NOT DISTINCT FROM $2 "

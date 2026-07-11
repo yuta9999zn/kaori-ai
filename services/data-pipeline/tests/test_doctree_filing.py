@@ -325,12 +325,14 @@ WF_NAME = "Quy trình mua hàng"
 
 class WorkflowFakeConn(FakeConn):
     """Extends FakeConn with the workflow-branch reads: the workflow_nodes
-    join, and the folder get-or-create pair used by the auto-filing bridge."""
+    join, the enterprise-wide name match, and the folder get-or-create pair
+    used by the auto-filing bridge."""
 
-    def __init__(self, **kw):
+    def __init__(self, name_match=None, **kw):
         super().__init__(**kw)
         self.folders: dict = {}          # (parent_id, name_vi) -> row
         self.folder_inserts: list = []   # document_folder INSERTs seen
+        self.name_match = name_match     # folder trùng tên workflow (toàn Kho)
 
     async def fetchrow(self, sql, *args):
         if "FROM workflow_nodes n" in sql:
@@ -343,6 +345,8 @@ class WorkflowFakeConn(FakeConn):
                 "required_document_types": [],
                 "wf_name": WF_NAME,
             }
+        if "FROM document_folder" in sql and "name_vi = $2" in sql:
+            return self.name_match  # match trùng tên toàn enterprise
         if "FROM document_folder" in sql and "name_vi = $3" in sql:
             return self.folders.get((args[1], args[2]))
         if "INSERT INTO document_folder" in sql:
@@ -448,6 +452,25 @@ class TestWorkflowAutoFiling:
 
         assert seen.get("folder_id") == FOLDER
         assert conn.folder_inserts == []
+
+    @pytest.mark.asyncio
+    async def test_existing_folder_named_after_workflow_is_reused(self, monkeypatch):
+        """Kho đã có folder TRÙNG TÊN workflow (user tạo tay theo nghiệp vụ,
+        ở bất kỳ đâu trong cây) → lưu thẳng vào đó, KHÔNG tạo folder mới."""
+        existing = uuid.uuid4()
+        conn = WorkflowFakeConn(name_match={"folder_id": existing, "path": "kinh_doanh/thu_mua"})
+        _patch_conn(monkeypatch, conn)
+        _patch_org(monkeypatch)
+        seen = _patch_land(monkeypatch)
+
+        await ing.ingest_file(
+            run_id=str(uuid.uuid4()), enterprise_id=ENT, uploaded_by=USR,
+            db_pool=None, kafka_producer=FakeKafka(),
+            workflow_step_id=NODE, content=CSV, filename="bao_cao_t6.csv")
+        await asyncio.sleep(0)
+
+        assert seen.get("folder_id") == str(existing)
+        assert conn.folder_inserts == [], "folder trùng tên đã có — không được tạo mới"
 
     @pytest.mark.asyncio
     async def test_repo_filing_skip_suppresses_autofiling(self, monkeypatch):
