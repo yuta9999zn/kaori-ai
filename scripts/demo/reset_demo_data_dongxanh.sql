@@ -50,15 +50,43 @@ BEGIN
   DELETE FROM analysis_runs_v1             WHERE enterprise_id = ent;
 
   -- ── Pipeline + Medallion (reset môi trường demo) ──────────────────
+  -- bronze/silver_rows xóa theo CẢ khóa cha (file/run của tenant): một số
+  -- dòng cũ thiếu enterprise_id → FK chặn nếu chỉ lọc theo enterprise.
   DELETE FROM bronze_file_embeddings       WHERE enterprise_id = ent;
-  DELETE FROM silver_rows                  WHERE enterprise_id = ent;
+  DELETE FROM silver_rows                  WHERE enterprise_id = ent
+     OR run_id IN (SELECT run_id FROM pipeline_runs WHERE enterprise_id = ent);
   DELETE FROM silver_orders                WHERE enterprise_id = ent;
   DELETE FROM silver_customers             WHERE enterprise_id = ent;
   DELETE FROM silver_inventory             WHERE enterprise_id = ent;
   DELETE FROM silver_tickets               WHERE enterprise_id = ent;
   DELETE FROM silver_employees             WHERE enterprise_id = ent;
   DELETE FROM silver_finance_periods       WHERE enterprise_id = ent;
-  DELETE FROM bronze_rows                  WHERE enterprise_id = ent;
+  -- K-2 exception (CHỈ cho demo reset): bronze_rows append-only bằng RULE
+  -- 'DO INSTEAD NOTHING' → DELETE bị no-op lặng lẽ. Gỡ rule trong cùng
+  -- transaction, xóa, rồi DỰNG LẠI NGUYÊN TRẠNG — K-2 giữ nguyên sau reset.
+  DROP RULE bronze_rows_no_delete ON bronze_rows;
+  DELETE FROM bronze_rows                  WHERE enterprise_id = ent
+     OR file_id IN (SELECT file_id FROM bronze_files WHERE enterprise_id = ent);
+  CREATE RULE bronze_rows_no_delete AS ON DELETE TO bronze_rows DO INSTEAD NOTHING;
+
+  -- Các bảng phụ thuộc FK còn lại của bronze_files / pipeline_runs
+  DELETE FROM canonical_schemas
+   WHERE file_id IN (SELECT file_id FROM bronze_files WHERE enterprise_id = ent);
+  DELETE FROM cleaning_rules_applied
+   WHERE file_id IN (SELECT file_id FROM bronze_files WHERE enterprise_id = ent);
+  -- requirements là CẤU HÌNH (giữ) — chỉ gỡ tham chiếu file mẫu sắp xóa
+  UPDATE workflow_step_document_requirements SET template_file_id = NULL
+   WHERE template_file_id IN (SELECT file_id FROM bronze_files WHERE enterprise_id = ent);
+  DELETE FROM etl_run_log
+   WHERE run_id IN (SELECT run_id FROM pipeline_runs WHERE enterprise_id = ent);
+  -- audit của các run demo bị xóa (K-6 giữ cho vận hành thật; đây là reset
+  -- môi trường tập demo nên dọn theo run). Bảng cũng append-only bằng RULE
+  -- như bronze_rows → gỡ trong transaction rồi dựng lại nguyên trạng.
+  DROP RULE decision_audit_no_delete ON decision_audit_log;
+  DELETE FROM decision_audit_log
+   WHERE run_id IN (SELECT run_id FROM pipeline_runs WHERE enterprise_id = ent);
+  CREATE RULE decision_audit_no_delete AS ON DELETE TO decision_audit_log DO INSTEAD NOTHING;
+
   DELETE FROM bronze_files                 WHERE enterprise_id = ent;
   DELETE FROM pipeline_runs                WHERE enterprise_id = ent;
 END $$;
