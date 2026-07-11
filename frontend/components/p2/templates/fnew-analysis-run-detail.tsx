@@ -242,6 +242,36 @@ export default function AnalysisRunDetailPage() {
               </div>
             )}
 
+            {/* Loading — người dùng phải THẤY là hệ đang chạy, không phải treo.
+                Poll 5s/lần; Qwen nội bộ ~1-2 phút, AI ngoài thường nhanh hơn. */}
+            {(run.status === 'queued' || run.status === 'running') && !isPendingApproval && (
+              <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--primary-gold)]/40 p-6 shadow-soft-sm">
+                <div className="flex items-center gap-4">
+                  <span className="relative flex h-10 w-10 shrink-0">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--primary-gold)]/30" />
+                    <span className="relative inline-flex rounded-full h-10 w-10 bg-[var(--primary-gold)]/15 items-center justify-center">
+                      <Activity className="w-5 h-5 text-[var(--primary-gold-dark)] animate-pulse" />
+                    </span>
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-[var(--text-primary)]">
+                      {run.status === 'queued' ? 'Đang xếp hàng phân tích…' : 'AI đang phân tích dữ liệu…'}
+                    </p>
+                    <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                      {run.consent_external
+                        ? 'Nguồn AI: bên ngoài (Claude/GPT) — dữ liệu đã che thông tin cá nhân trước khi gửi.'
+                        : 'Nguồn AI: Qwen nội bộ — thường mất 1–2 phút.'}{' '}
+                      Trang tự cập nhật mỗi 5 giây, anh/chị không cần tải lại.
+                    </p>
+                    <div className="mt-2.5 h-1.5 rounded-full bg-[var(--bg-app)] overflow-hidden">
+                      <div className="h-full w-1/3 rounded-full bg-[var(--primary-gold)] animate-[loading-slide_1.6s_ease-in-out_infinite]" />
+                    </div>
+                    <style>{`@keyframes loading-slide { 0% { margin-left: 0; } 50% { margin-left: 66%; } 100% { margin-left: 0; } }`}</style>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Narrative */}
             {run.narrative && (
               <div className="bg-[var(--bg-card)] rounded-lg-custom border border-[var(--border-color)] p-5 shadow-soft-sm">

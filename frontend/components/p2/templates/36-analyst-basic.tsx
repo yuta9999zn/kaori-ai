@@ -42,6 +42,9 @@ export default function AnalystBasicPage() {
   const [question,   setQuestion]   = useState('');
   const [problem,    setProblem]    = useState<ProblemDetails | null>(null);
   const [creating,   setCreating]   = useState(false);
+  // Nguồn AI (K-4): mặc định Qwen nội bộ; 'external' = gửi dữ liệu đã che
+  // PII (thông tin định danh cá nhân) tới Claude/GPT — cần chọn tường minh.
+  const [aiSource,   setAiSource]   = useState<'local' | 'external'>('local');
 
   useEffect(() => {
     Promise.all([
@@ -90,7 +93,7 @@ export default function AnalystBasicPage() {
           pipeline_run_id:  pipelineId,
           templates:        Array.from(picked),
           question:         question.trim() || null,
-          consent_external: false,
+          consent_external: aiSource === 'external',
         }),
       });
       window.location.href = `/p2/analysis/runs/${res.run_id}`;
@@ -139,10 +142,33 @@ export default function AnalystBasicPage() {
                 <p className="text-xs text-[var(--text-secondary)]">{t('templates36AnalystBasic.scopeText', { scope: scopeLabel })}</p>
               </div>
             </div>
-            <Badge variant="success">
+            <Badge variant={aiSource === 'external' ? 'warning' : 'success'}>
               <Lock className="w-3 h-3 mr-1 inline" />
-              {t('templates36AnalystBasic.qwenInternal')}
+              {aiSource === 'external' ? 'AI bên ngoài (Claude/GPT)' : t('templates36AnalystBasic.qwenInternal')}
             </Badge>
+          </div>
+          {/* Chọn nguồn AI — 1: Qwen nội bộ · 2: API bên ngoài (K-4) */}
+          <div className="mt-3 pt-3 border-t border-dashed border-[var(--border-color)] grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button type="button" onClick={() => setAiSource('local')}
+              className={cn('text-left p-3 rounded-md-custom border transition-all',
+                aiSource === 'local'
+                  ? 'border-[var(--primary-gold)] bg-[var(--primary-gold)]/5 ring-1 ring-[var(--primary-gold)]/30'
+                  : 'border-[var(--border-color)] hover:border-[var(--primary-gold)]/40')}>
+              <p className="text-sm font-medium text-[var(--text-primary)]">1 · Qwen nội bộ</p>
+              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
+                Dữ liệu không rời hạ tầng — riêng tư, miễn phí. Nhận xét ~1–2 phút.
+              </p>
+            </button>
+            <button type="button" onClick={() => setAiSource('external')}
+              className={cn('text-left p-3 rounded-md-custom border transition-all',
+                aiSource === 'external'
+                  ? 'border-amber-500 bg-amber-50/60 ring-1 ring-amber-300'
+                  : 'border-[var(--border-color)] hover:border-amber-400/60')}>
+              <p className="text-sm font-medium text-[var(--text-primary)]">2 · API bên ngoài (Claude / GPT)</p>
+              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
+                Phân tích sâu hơn — dữ liệu được che PII (thông tin định danh cá nhân) trước khi gửi ra ngoài.
+              </p>
+            </button>
           </div>
         </div>
 
