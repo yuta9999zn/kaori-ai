@@ -50,11 +50,17 @@ export default function AnalystBasicPage() {
       api<{ items: Template[] }>('/api/v1/analysis/templates?tier=basic'),
     ])
       .then(([p, t]) => {
-        const rows = (p.data || p.items || []).map((r: any) => ({
-          id:    r.run_id || r.id,
-          title: r.filename || r.title || r.run_id,
-          finished_at: r.created_at || r.finished_at,
-        }));
+        // Chỉ liệt kê nguồn CÓ dòng bảng Silver — run của tài liệu văn bản
+        // (docx/pdf, DocSage bóc chữ) vẫn silver_complete nhưng 0 dòng bảng,
+        // và run csv mới dừng ở Bronze (chưa qua 5 bước làm sạch) cũng chưa
+        // phân tích được; chọn vào là lỗi "không có dữ liệu Silver".
+        const rows = (p.data || p.items || [])
+          .filter((r: any) => (r.row_count_silver ?? 0) > 0)
+          .map((r: any) => ({
+            id:    r.run_id || r.id,
+            title: r.filename || r.title || r.run_id,
+            finished_at: r.created_at || r.finished_at,
+          }));
         const completed = rows.filter((r: any) =>
           !r.status || r.status === 'analysis_complete' || r.id);
         setPipelines(completed);

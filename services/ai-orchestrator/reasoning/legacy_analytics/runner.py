@@ -66,7 +66,15 @@ async def run_analysis_for_run(
         # Load Silver data once — shared across all templates (K-8)
         silver_df = await _load_silver(run_id, enterprise_id, pool)
         if silver_df is None or silver_df.empty:
-            await _fail_run(analysis_run_id, enterprise_id, "Silver data empty or unavailable", pool)
+            # Nguồn hay gặp nhất: user chọn run của TÀI LIỆU văn bản (docx/pdf —
+            # DocSage bóc chữ nên run vẫn silver_complete nhưng không có dòng
+            # bảng nào). Message phải nói được điều đó thay vì cụt lủn.
+            await _fail_run(
+                analysis_run_id, enterprise_id,
+                "Nguồn được chọn không có dữ liệu BẢNG ở tầng Silver — nếu đây là "
+                "tài liệu văn bản (docx/pdf) thì không phân tích số liệu được; hãy "
+                "chọn nguồn CSV/Excel đã qua 5 bước làm sạch.",
+                pool)
             return
 
         # K-4: consent bật ở Bước 4 (config.consent_external) phải đi tới tận

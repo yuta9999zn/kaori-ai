@@ -273,7 +273,11 @@ export default function AnalysisRunDetailPage() {
             {run.status === 'error' && (
               <div className="bg-[var(--state-error)]/10 rounded-lg-custom border border-[var(--state-error)]/30 p-5 text-sm text-[#9B5050]">
                 <p className="font-medium mb-1">{t('templatesFnewAnalysisRunDetail.analysisFailedTitle')}</p>
-                <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(run.overview, null, 2)}</pre>
+                {typeof run.overview?.error === 'string' ? (
+                  <p className="text-xs leading-relaxed">{run.overview.error}</p>
+                ) : (
+                  <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(run.overview, null, 2)}</pre>
+                )}
               </div>
             )}
 
