@@ -32,7 +32,7 @@ ABAC: when X-Department-ID supplied, RLS narrows visibility to that dept.
 """
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any, Literal, Optional
 from uuid import UUID, uuid4
 
@@ -70,6 +70,10 @@ class WorkflowUpdate(BaseModel):
         pattern=r"^(DRAFT|TESTING|ACTIVE_BASELINE|ARCHIVED|BROKEN)$",
     )
     category:           Optional[str] = Field(default=None, max_length=50)
+    # Mig 143 — thước timeline (lớp theo dõi, không ảnh hưởng nghiệp vụ):
+    # quy trình dự kiến chạy N ngày, chu kỳ hiện tại bắt đầu từ ngày nào.
+    duration_days:      Optional[int] = Field(default=None, ge=1, le=730)
+    timeline_start:     Optional[date] = None
 
 
 class WorkflowOut(BaseModel):
@@ -92,6 +96,9 @@ class WorkflowOut(BaseModel):
     source:             str
     created_at:         datetime
     last_modified_at:   datetime
+    # Mig 143 — thước timeline
+    duration_days:      Optional[int] = None
+    timeline_start:     Optional[date] = None
 
 
 class NodeCreate(BaseModel):
@@ -128,6 +135,8 @@ class NodeCreate(BaseModel):
     node_type_catalog_key: Optional[str] = Field(default=None, max_length=60)
     # #9 — role/lane responsible (BPMN swimlane); also settable later via PUT.
     lane_name:          Optional[str] = Field(default=None, max_length=120)
+    # Mig 143 — hạn cuối của bước (lớp theo dõi)
+    deadline_date:      Optional[date] = None
 
 
 class NodeUpdate(BaseModel):
@@ -158,6 +167,9 @@ class NodeUpdate(BaseModel):
     node_type_catalog_key: Optional[str] = Field(default=None, max_length=60)
     # #9 — the role/lane responsible for this step (BPMN swimlane). '' clears it.
     lane_name:          Optional[str] = Field(default=None, max_length=120)
+    # Mig 143 — hạn cuối của bước; chuỗi rỗng từ FE được create/update coi là xóa hạn
+    deadline_date:      Optional[date] = None
+    clear_deadline:     Optional[bool] = None
 
 
 class NodeOut(BaseModel):
@@ -185,6 +197,8 @@ class NodeOut(BaseModel):
     lane_name:              Optional[str] = None
     event_definition:       Optional[str] = None
     attached_to_ref:        Optional[str] = None
+    # Mig 143 — hạn cuối của bước (lớp theo dõi)
+    deadline_date:          Optional[date] = None
 
 
 class EdgeCreate(BaseModel):
@@ -294,6 +308,8 @@ def _row_to_workflow(row) -> WorkflowOut:
         source=row["source"],
         created_at=row["created_at"],
         last_modified_at=row["last_modified_at"],
+        duration_days=row.get("duration_days") if hasattr(row, "get") else None,
+        timeline_start=row.get("timeline_start") if hasattr(row, "get") else None,
     )
 
 
@@ -354,6 +370,7 @@ def _row_to_node(row) -> NodeOut:
         lane_name=_opt("lane_name"),
         event_definition=_opt("event_definition"),
         attached_to_ref=_opt("attached_to_ref"),
+        deadline_date=_opt("deadline_date"),
     )
 
 
@@ -763,6 +780,8 @@ async def update_workflow(
         ("name", body.name), ("name_vi", body.name_vi),
         ("description", body.description), ("state", body.state),
         ("category", body.category),
+        ("duration_days", body.duration_days),
+        ("timeline_start", body.timeline_start),
     ):
         if val is not None:
             params.append(val)
@@ -906,9 +925,9 @@ async def create_node(
                    title, title_vi, note, hashtags,
                    required_document_types, expected_mapping_template_id,
                    config, sequence_order, decision_config, node_type_catalog_key,
-                   lane_name)
+                   lane_name, deadline_date)
                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
-                       $14::jsonb, $15, $16::jsonb, $17, $18::jsonb, $19, $20)
+                       $14::jsonb, $15, $16::jsonb, $17, $18::jsonb, $19, $20, $21)
                RETURNING *""",
             workflow_id, wf["enterprise_id"], wf["workspace_id"], wf["department_id"],
             body.node_type, resolved_category, resolved_side_effect,
@@ -917,6 +936,7 @@ async def create_node(
             _json(body.required_document_types), body.expected_mapping_template_id,
             _json(body.config), body.sequence_order, _json(body.decision_config),
             body.node_type_catalog_key, body.lane_name or None,
+            body.deadline_date,
         )
     return _row_to_node(row)
 
@@ -962,6 +982,11 @@ async def update_node(
         # '' clears the lane (→ default "Chung" lane in the BPMN swimlane).
         params.append(body.lane_name or None)
         sets.append(f"lane_name = ${len(params)}")
+    if body.deadline_date is not None:
+        params.append(body.deadline_date)
+        sets.append(f"deadline_date = ${len(params)}")
+    elif body.clear_deadline:
+        sets.append("deadline_date = NULL")
     if not sets:
         # No-op update — fetch + return.
         async with acquire_for_tenant(x_enterprise_id) as conn:

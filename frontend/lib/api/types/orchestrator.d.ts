@@ -7780,6 +7780,8 @@ export interface components {
             config?: {
                 [key: string]: unknown;
             };
+            /** Deadline Date */
+            deadline_date?: string | null;
             /** Decision Config */
             decision_config?: {
                 [key: string]: unknown;
@@ -7838,6 +7840,8 @@ export interface components {
             bpmn_type?: string | null;
             /** Category */
             category: string;
+            /** Deadline Date */
+            deadline_date?: string | null;
             /** Decision Config */
             decision_config?: {
                 [key: string]: unknown;
@@ -7942,10 +7946,14 @@ export interface components {
         };
         /** NodeUpdate */
         NodeUpdate: {
+            /** Clear Deadline */
+            clear_deadline?: boolean | null;
             /** Config */
             config?: {
                 [key: string]: unknown;
             } | null;
+            /** Deadline Date */
+            deadline_date?: string | null;
             /** Decision Config */
             decision_config?: {
                 [key: string]: unknown;
@@ -10038,6 +10046,8 @@ export interface components {
             dept_type?: string | null;
             /** Description */
             description: string | null;
+            /** Duration Days */
+            duration_days?: number | null;
             /**
              * Enterprise Id
              * Format: uuid
@@ -10056,6 +10066,8 @@ export interface components {
             source: string;
             /** State */
             state: string;
+            /** Timeline Start */
+            timeline_start?: string | null;
             /** Version */
             version: number;
             /**
@@ -10228,12 +10240,16 @@ export interface components {
             category?: string | null;
             /** Description */
             description?: string | null;
+            /** Duration Days */
+            duration_days?: number | null;
             /** Name */
             name?: string | null;
             /** Name Vi */
             name_vi?: string | null;
             /** State */
             state?: string | null;
+            /** Timeline Start */
+            timeline_start?: string | null;
         };
         /** WorkflowVersionOut */
         WorkflowVersionOut: {

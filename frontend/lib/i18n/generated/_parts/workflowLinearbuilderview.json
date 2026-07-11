@@ -1,107 +1,737 @@
 {
-  "workflowLinearbuilderview.typeStep": { "vi": "Bước nghiệp vụ", "en": "Business step", "ja": "業務ステップ", "ko": "업무 단계", "zh": "业务步骤" },
-  "workflowLinearbuilderview.typeIfElse": { "vi": "Điểm kiểm tra điều kiện", "en": "Condition check point", "ja": "条件チェックポイント", "ko": "조건 확인 지점", "zh": "条件检查点" },
-  "workflowLinearbuilderview.typeSwitch": { "vi": "Điểm rẽ nhiều trường hợp", "en": "Multi-case branch point", "ja": "多分岐ポイント", "ko": "다중 분기 지점", "zh": "多分支节点" },
-  "workflowLinearbuilderview.typeApproval": { "vi": "Phê duyệt", "en": "Approval", "ja": "承認", "ko": "승인", "zh": "审批" },
-  "workflowLinearbuilderview.typeNotification": { "vi": "Thông báo", "en": "Notification", "ja": "通知", "ko": "알림", "zh": "通知" },
-  "workflowLinearbuilderview.typeWaitEvent": { "vi": "Chờ sự kiện", "en": "Wait for event", "ja": "イベント待機", "ko": "이벤트 대기", "zh": "等待事件" },
-  "workflowLinearbuilderview.typeSlaTimer": { "vi": "Hạn xử lý", "en": "SLA deadline", "ja": "処理期限", "ko": "처리 기한", "zh": "处理时限" },
-  "workflowLinearbuilderview.typeParallelSplit": { "vi": "Chạy song song", "en": "Run in parallel", "ja": "並行実行", "ko": "병렬 실행", "zh": "并行运行" },
-  "workflowLinearbuilderview.typeParallelJoin": { "vi": "Hợp nhánh", "en": "Merge branches", "ja": "分岐を結合", "ko": "분기 합류", "zh": "合并分支" },
-  "workflowLinearbuilderview.typeSubworkflow": { "vi": "Quy trình con", "en": "Sub-workflow", "ja": "サブワークフロー", "ko": "하위 워크플로우", "zh": "子工作流" },
-  "workflowLinearbuilderview.typeLoopForeach": { "vi": "Vòng lặp (với mỗi)", "en": "Loop (for each)", "ja": "ループ（各要素）", "ko": "반복 (각 항목마다)", "zh": "循环（对每一项）" },
-  "workflowLinearbuilderview.typeLoopEnd": { "vi": "Kết thúc vòng lặp", "en": "End loop", "ja": "ループ終了", "ko": "반복 종료", "zh": "循环结束" },
-  "workflowLinearbuilderview.statusNeedTwoBranches": { "vi": "Cần 2 nhánh", "en": "Needs 2 branches", "ja": "2つの分岐が必要", "ko": "2개 분기 필요", "zh": "需要2个分支" },
-  "workflowLinearbuilderview.statusNeedBranchDefault": { "vi": "Cần nhánh + mặc định", "en": "Needs a branch + default", "ja": "分岐＋デフォルトが必要", "ko": "분기 + 기본값 필요", "zh": "需要分支+默认项" },
-  "workflowLinearbuilderview.statusNeedAtLeastTwoBranches": { "vi": "Cần ≥2 nhánh", "en": "Needs ≥2 branches", "ja": "2つ以上の分岐が必要", "ko": "2개 이상 분기 필요", "zh": "需要≥2个分支" },
-  "workflowLinearbuilderview.statusNoAction": { "vi": "Chưa gán hành động", "en": "No action assigned", "ja": "アクション未割り当て", "ko": "동작 미지정", "zh": "尚未指定操作" },
-  "workflowLinearbuilderview.statusNoApprover": { "vi": "Chưa gắn người duyệt", "en": "No approver bound", "ja": "承認者未設定", "ko": "승인자 미지정", "zh": "尚未绑定审批人" },
-  "workflowLinearbuilderview.statusNoLoopList": { "vi": "Chưa chọn danh sách để lặp", "en": "No list selected to loop over", "ja": "ループ対象リスト未選択", "ko": "반복할 목록 미선택", "zh": "尚未选择循环列表" },
-  "workflowLinearbuilderview.statusReady": { "vi": "✓ Sẵn sàng", "en": "✓ Ready", "ja": "✓ 準備完了", "ko": "✓ 준비 완료", "zh": "✓ 就绪" },
-  "workflowLinearbuilderview.mergedInto": { "vi": "⊕ Gộp về “{title}”", "en": "⊕ Merges back into “{title}”", "ja": "⊕「{title}」に合流", "ko": "⊕ “{title}”로 병합", "zh": "⊕ 汇合到“{title}”" },
-  "workflowLinearbuilderview.terminalEnd": { "vi": "■ Kết thúc", "en": "■ End", "ja": "■ 終了", "ko": "■ 종료", "zh": "■ 结束" },
-  "workflowLinearbuilderview.branchFallback": { "vi": "Nhánh", "en": "Branch", "ja": "分岐", "ko": "분기", "zh": "分支" },
-  "workflowLinearbuilderview.typePrefix": { "vi": "Loại:", "en": "Type:", "ja": "種別:", "ko": "유형:", "zh": "类型：" },
-  "workflowLinearbuilderview.deptPrefix": { "vi": "· Người:", "en": "· Assignee:", "ja": "・担当:", "ko": "· 담당자:", "zh": "· 负责人：" },
-  "workflowLinearbuilderview.actionLabelPrefix": { "vi": "Hành động Kaori:", "en": "Kaori action:", "ja": "Kaoriアクション:", "ko": "Kaori 동작:", "zh": "Kaori 操作：" },
-  "workflowLinearbuilderview.actionUnassigned": { "vi": "⚠ chưa gán", "en": "⚠ not assigned", "ja": "⚠ 未割り当て", "ko": "⚠ 미지정", "zh": "⚠ 未指定" },
-  "workflowLinearbuilderview.collapseLabel": { "vi": "Thu gọn", "en": "Collapse", "ja": "折りたたむ", "ko": "접기", "zh": "收起" },
-  "workflowLinearbuilderview.editLabel": { "vi": "Sửa ▾", "en": "Edit ▾", "ja": "編集 ▾", "ko": "편집 ▾", "zh": "编辑 ▾" },
-  "workflowLinearbuilderview.deleteLabel": { "vi": "Xoá", "en": "Delete", "ja": "削除", "ko": "삭제", "zh": "删除" },
-  "workflowLinearbuilderview.fieldTitleLabel": { "vi": "Tên bước", "en": "Step name", "ja": "ステップ名", "ko": "단계 이름", "zh": "步骤名称" },
-  "workflowLinearbuilderview.fieldActionLabel": { "vi": "Hành động Kaori", "en": "Kaori action", "ja": "Kaoriアクション", "ko": "Kaori 동작", "zh": "Kaori 操作" },
-  "workflowLinearbuilderview.optionUnassignedDesignOnly": { "vi": "— Chưa gán (chỉ thiết kế) —", "en": "— Not assigned (design only) —", "ja": "— 未割り当て（設計のみ）—", "ko": "— 미지정 (설계만) —", "zh": "— 未指定（仅设计）—" },
-  "workflowLinearbuilderview.fieldLaneLabel": { "vi": "Vai trò phụ trách (lane)", "en": "Responsible role (lane)", "ja": "担当ロール（レーン）", "ko": "담당 역할 (레인)", "zh": "负责角色（泳道）" },
-  "workflowLinearbuilderview.placeholderLaneExample": { "vi": "vd: Kế toán, Trưởng phòng…", "en": "e.g. Accounting, Department Head…", "ja": "例：経理、部門長…", "ko": "예: 회계, 부서장…", "zh": "例如：会计、部门主管…" },
-  "workflowLinearbuilderview.fieldNextStepLabel": { "vi": "Đi tới bước tiếp theo", "en": "Go to next step", "ja": "次のステップへ", "ko": "다음 단계로 이동", "zh": "跳转到下一步" },
-  "workflowLinearbuilderview.optionEndNoNext": { "vi": "— Kết thúc (không đi tiếp) —", "en": "— End (no next step) —", "ja": "— 終了（次へ進まない）—", "ko": "— 종료 (다음 단계 없음) —", "zh": "— 结束（不继续）—" },
-  "workflowLinearbuilderview.branchCountHint": { "vi": "Bước này có {n} nhánh ra — ô này chỉnh nhánh đầu.", "en": "This step has {n} outgoing branches — this field edits the first one.", "ja": "このステップには{n}個の出力分岐があります — このフィールドは最初の分岐を編集します。", "ko": "이 단계에는 {n}개의 출력 분기가 있습니다 — 이 필드는 첫 번째 분기를 수정합니다.", "zh": "此步骤有{n}个输出分支——此项仅编辑第一个分支。" },
-  "workflowLinearbuilderview.fieldBranchesLabel": { "vi": "Các nhánh (đi tới bước nào)", "en": "Branches (go to which step)", "ja": "分岐（どのステップへ）", "ko": "분기 (어느 단계로 이동)", "zh": "分支（跳转到哪个步骤）" },
-  "workflowLinearbuilderview.placeholderLabelCondition": { "vi": "nhãn / điều kiện", "en": "label / condition", "ja": "ラベル／条件", "ko": "라벨 / 조건", "zh": "标签／条件" },
-  "workflowLinearbuilderview.labelFlow": { "vi": "Luồng", "en": "Flow", "ja": "フロー", "ko": "흐름", "zh": "流程" },
-  "workflowLinearbuilderview.chipStart": { "vi": "▶ Bắt đầu", "en": "▶ Start", "ja": "▶ 開始", "ko": "▶ 시작", "zh": "▶ 开始" },
-  "workflowLinearbuilderview.chipStepsCount": { "vi": "{n} bước", "en": "{n} steps", "ja": "{n}ステップ", "ko": "{n}단계", "zh": "{n}个步骤" },
-  "workflowLinearbuilderview.btnDryRun": { "vi": "▶ Chạy thử", "en": "▶ Dry run", "ja": "▶ 試験実行", "ko": "▶ 시험 실행", "zh": "▶ 试运行" },
-  "workflowLinearbuilderview.btnAddStep": { "vi": "+ Thêm bước", "en": "+ Add step", "ja": "＋ステップを追加", "ko": "+ 단계 추가", "zh": "+ 添加步骤" },
-  "workflowLinearbuilderview.labelDryRunSample": { "vi": "Chạy thử với hồ sơ mẫu:", "en": "Dry run with a sample record:", "ja": "サンプルレコードで試験実行:", "ko": "샘플 레코드로 시험 실행:", "zh": "使用示例记录试运行：" },
-  "workflowLinearbuilderview.msgNoBranchToTest": { "vi": "Workflow chưa có điều kiện rẽ nhánh nào để thử.", "en": "This workflow has no branching condition to test yet.", "ja": "このワークフローにはまだテストする分岐条件がありません。", "ko": "이 워크플로우에는 아직 테스트할 분기 조건이 없습니다.", "zh": "该工作流还没有可测试的分支条件。" },
-  "workflowLinearbuilderview.suffixElementCount": { "vi": " (số phần tử)", "en": " (item count)", "ja": "（要素数）", "ko": " (항목 수)", "zh": "（元素数量）" },
-  "workflowLinearbuilderview.placeholderExample3": { "vi": "vd: 3", "en": "e.g. 3", "ja": "例：3", "ko": "예: 3", "zh": "例如：3" },
-  "workflowLinearbuilderview.placeholderValue": { "vi": "giá trị", "en": "value", "ja": "値", "ko": "값", "zh": "值" },
-  "workflowLinearbuilderview.btnRunning": { "vi": "Đang chạy…", "en": "Running…", "ja": "実行中…", "ko": "실행 중…", "zh": "运行中…" },
-  "workflowLinearbuilderview.btnRun": { "vi": "Chạy", "en": "Run", "ja": "実行", "ko": "실행", "zh": "运行" },
-  "workflowLinearbuilderview.btnClearHighlight": { "vi": "Xoá tô sáng", "en": "Clear highlight", "ja": "ハイライトを解除", "ko": "강조 표시 지우기", "zh": "清除高亮" },
-  "workflowLinearbuilderview.labelRecordPath": { "vi": "Đường đi của hồ sơ:", "en": "Record's path:", "ja": "レコードの経路:", "ko": "레코드 경로:", "zh": "记录的路径：" },
-  "workflowLinearbuilderview.msgNoBranchPoints": { "vi": "Không có điểm rẽ nào — luồng đi thẳng.", "en": "No branch points — the flow goes straight through.", "ja": "分岐点がありません — フローは直進します。", "ko": "분기점이 없습니다 — 흐름이 직진합니다.", "zh": "没有分支点——流程直接通过。" },
-  "workflowLinearbuilderview.msgLegendPath": { "vi": "Bước xanh = hồ sơ đi qua · bước mờ = không chạm tới.", "en": "Green step = record passed through · dim step = not reached.", "ja": "緑のステップ＝レコードが通過・薄いステップ＝未到達。", "ko": "녹색 단계 = 레코드가 통과함 · 흐린 단계 = 도달하지 않음.", "zh": "绿色步骤=记录经过 · 暗淡步骤=未触及。" },
-  "workflowLinearbuilderview.terminalStart": { "vi": "▶ BẮT ĐẦU", "en": "▶ START", "ja": "▶ 開始", "ko": "▶ 시작", "zh": "▶ 开始" },
-  "workflowLinearbuilderview.msgEmptyWorkflow": { "vi": "Workflow trống — bấm \"Thêm bước\" ở trên.", "en": "Workflow is empty — click \"Add step\" above.", "ja": "ワークフローが空です — 上の「ステップを追加」をクリックしてください。", "ko": "워크플로우가 비어 있습니다 — 위의 \"단계 추가\"를 클릭하세요.", "zh": "工作流为空——点击上方的\"添加步骤\"。" },
-  "workflowLinearbuilderview.toastSaved": { "vi": "✓ Đã lưu", "en": "✓ Saved", "ja": "✓ 保存しました", "ko": "✓ 저장됨", "zh": "✓ 已保存" },
-  "workflowLinearbuilderview.laneAccounting": { "vi": "Kế toán", "en": "Accounting", "ja": "経理", "ko": "회계", "zh": "会计" },
-  "workflowLinearbuilderview.laneDeptHead": { "vi": "Trưởng phòng", "en": "Department Head", "ja": "部門長", "ko": "부서장", "zh": "部门主管" },
-  "workflowLinearbuilderview.laneDirector": { "vi": "Giám đốc", "en": "Director", "ja": "取締役", "ko": "이사", "zh": "总监" },
-  "workflowLinearbuilderview.laneSales": { "vi": "Kinh doanh", "en": "Sales", "ja": "営業", "ko": "영업", "zh": "销售" },
-  "workflowLinearbuilderview.laneCustomerCare": { "vi": "Chăm sóc khách hàng", "en": "Customer Care", "ja": "カスタマーケア", "ko": "고객 관리", "zh": "客户服务" },
-  "workflowLinearbuilderview.optionAddBranchGoto": { "vi": "+ thêm nhánh → đi tới…", "en": "+ add branch → go to…", "ja": "＋分岐を追加 → 移動先…", "ko": "+ 분기 추가 → 이동할 곳…", "zh": "+ 添加分支 → 跳转到…" },
-  "workflowLinearbuilderview.btnAdd": { "vi": "Thêm", "en": "Add", "ja": "追加", "ko": "추가", "zh": "添加" },
-  "workflowLinearbuilderview.msgApprovalNote": { "vi": "Người duyệt gắn TẠI ĐÂY (chuỗi duyệt hoặc vai trò). Ô “Vai trò phụ trách (lane)” ở trên chỉ là nhãn hiển thị trên sơ đồ — không quyết định ai duyệt.", "en": "The approver is bound HERE (chain or role). The “Responsible role (lane)” field above is just a display label on the diagram — it does not decide who approves.", "ja": "承認者はここで設定します（承認チェーンまたはロール）。上の「担当ロール（レーン）」欄は図に表示するラベルのみで、承認者を決定するものではありません。", "ko": "승인자는 여기서 지정합니다 (승인 체인 또는 역할). 위의 \"담당 역할 (레인)\" 필드는 다이어그램에 표시되는 라벨일 뿐이며 승인자를 결정하지 않습니다.", "zh": "审批人在此处绑定（审批链或角色）。上方的\"负责角色（泳道）\"仅是图上显示的标签——不决定谁来审批。" },
-  "workflowLinearbuilderview.fieldChainLabel": { "vi": "Chuỗi duyệt (đa cấp)", "en": "Approval chain (multi-level)", "ja": "承認チェーン（複数階層）", "ko": "승인 체인 (다단계)", "zh": "审批链（多级）" },
-  "workflowLinearbuilderview.optionNoChain": { "vi": "— Không dùng chuỗi (chọn vai trò bên dưới) —", "en": "— Don't use a chain (choose a role below) —", "ja": "— チェーンを使用しない（下でロールを選択）—", "ko": "— 체인 사용 안 함 (아래에서 역할 선택) —", "zh": "— 不使用审批链（在下方选择角色）—" },
-  "workflowLinearbuilderview.msgNoChainsYet": { "vi": "Chưa có chuỗi duyệt nào. Tạo ở “Duyệt & Phân quyền → Chuỗi duyệt”, hoặc chọn vai trò.", "en": "No approval chain yet. Create one at “Approvals & Permissions → Approval Chain”, or choose a role.", "ja": "承認チェーンがまだありません。「承認と権限 → 承認チェーン」で作成するか、ロールを選択してください。", "ko": "아직 승인 체인이 없습니다. \"승인 및 권한 → 승인 체인\"에서 생성하거나 역할을 선택하세요.", "zh": "尚无审批链。请在\"审批与权限 → 审批链\"中创建，或选择角色。" },
-  "workflowLinearbuilderview.msgChainBoundPrefix": { "vi": "✓ Gắn chuỗi:", "en": "✓ Chain bound:", "ja": "✓ チェーン設定済み:", "ko": "✓ 체인 연결됨:", "zh": "✓ 已绑定审批链：" },
-  "workflowLinearbuilderview.msgChainBoundSuffix": { "vi": "— mở ở cấp 1.", "en": "— opens at level 1.", "ja": "— レベル1で開始します。", "ko": "— 1단계에서 시작됩니다.", "zh": "——从第1级开始。" },
-  "workflowLinearbuilderview.fieldRoleFallbackLabel": { "vi": "Vai trò duyệt (fallback)", "en": "Approver role (fallback)", "ja": "承認ロール（フォールバック）", "ko": "승인 역할 (대체)", "zh": "审批角色（备用）" },
-  "workflowLinearbuilderview.optionChooseRole": { "vi": "— Chọn vai trò —", "en": "— Choose a role —", "ja": "— ロールを選択 —", "ko": "— 역할 선택 —", "zh": "— 选择角色 —" },
-  "workflowLinearbuilderview.roleManager": { "vi": "MANAGER (Quản lý)", "en": "MANAGER (Manager)", "ja": "MANAGER（マネージャー）", "ko": "MANAGER (매니저)", "zh": "MANAGER（经理）" },
-  "workflowLinearbuilderview.roleAnalyst": { "vi": "ANALYST (Phân tích)", "en": "ANALYST (Analyst)", "ja": "ANALYST（アナリスト）", "ko": "ANALYST (분석가)", "zh": "ANALYST（分析师）" },
-  "workflowLinearbuilderview.roleOperator": { "vi": "OPERATOR (Vận hành)", "en": "OPERATOR (Operator)", "ja": "OPERATOR（オペレーター）", "ko": "OPERATOR (운영자)", "zh": "OPERATOR（操作员）" },
-  "workflowLinearbuilderview.roleAdmin": { "vi": "ADMIN (Quản trị)", "en": "ADMIN (Admin)", "ja": "ADMIN（管理者）", "ko": "ADMIN (관리자)", "zh": "ADMIN（管理员）" },
-  "workflowLinearbuilderview.fieldTimeoutLabel": { "vi": "Khi quá hạn duyệt", "en": "When approval times out", "ja": "承認期限切れ時", "ko": "승인 기한 초과 시", "zh": "审批超时时" },
-  "workflowLinearbuilderview.optionEscalate": { "vi": "Báo cấp trên (escalate)", "en": "Escalate to manager (escalate)", "ja": "上位者に報告 (escalate)", "ko": "상급자에게 보고 (escalate)", "zh": "上报上级 (escalate)" },
-  "workflowLinearbuilderview.optionAutoApprove": { "vi": "Tự duyệt", "en": "Auto-approve", "ja": "自動承認", "ko": "자동 승인", "zh": "自动通过" },
-  "workflowLinearbuilderview.optionAutoReject": { "vi": "Tự từ chối", "en": "Auto-reject", "ja": "自動却下", "ko": "자동 거부", "zh": "自动拒绝" },
-  "workflowLinearbuilderview.msgGateUnbound": { "vi": "⚠ Cổng rỗng quyền — chưa gắn chuỗi/vai trò. Sẽ bị chặn khi Chạy thử/Kích hoạt.", "en": "⚠ Empty approval gate — no chain/role bound. Will be blocked at Dry run/Activation.", "ja": "⚠ 承認ゲートが未設定です — チェーン／ロールが未割り当てです。試験実行／有効化時にブロックされます。", "ko": "⚠ 승인 게이트가 비어 있습니다 — 체인/역할이 연결되지 않았습니다. 시험 실행/활성화 시 차단됩니다.", "zh": "⚠ 审批网关为空——未绑定审批链/角色。将在试运行/启用时被阻止。" },
-  "workflowLinearbuilderview.fieldConditionLabel": { "vi": "Điều kiện rẽ nhánh", "en": "Branch condition", "ja": "分岐条件", "ko": "분기 조건", "zh": "分支条件" },
-  "workflowLinearbuilderview.placeholderFieldExample": { "vi": "trường (vd: so_tien)", "en": "field (e.g. so_tien)", "ja": "項目（例：so_tien）", "ko": "필드 (예: so_tien)", "zh": "字段（例如：so_tien）" },
-  "workflowLinearbuilderview.placeholderValueExample": { "vi": "giá trị (vd: 10000000)", "en": "value (e.g. 10000000)", "ja": "値（例：10000000）", "ko": "값 (예: 10000000)", "zh": "值（例如：10000000）" },
-  "workflowLinearbuilderview.msgConditionHintPrefix": { "vi": "Trường đọc từ dữ liệu hồ sơ đi vào. Vd:", "en": "The field is read from the incoming record's data. E.g.:", "ja": "項目は入力レコードのデータから読み取られます。例：", "ko": "필드는 들어오는 레코드 데이터에서 읽어옵니다. 예:", "zh": "该字段从传入记录的数据中读取。例如：" },
-  "workflowLinearbuilderview.msgConditionHintSuffix": { "vi": ". Nhiều mức → nối nhiều bước “Quyết định” (nhánh Sai → bước kiểm tra tiếp).", "en": ". Multiple tiers → chain several “Decision” steps (False branch → next check step).", "ja": "。複数段階の場合は「判定」ステップを複数連結します（「いいえ」分岐 → 次のチェックステップへ）。", "ko": ". 여러 단계가 필요하면 \"결정\" 단계를 여러 개 연결하세요 (거짓 분기 → 다음 확인 단계).", "zh": "。多级判断请串联多个\"决策\"步骤（假分支 → 下一个检查步骤）。" },
-  "workflowLinearbuilderview.fieldWhenTrueLabel": { "vi": "Khi ĐÚNG → đi tới bước", "en": "When TRUE → go to step", "ja": "「はい」の場合 → 移動先ステップ", "ko": "참(TRUE)일 때 → 이동할 단계", "zh": "为真时 → 跳转到步骤" },
-  "workflowLinearbuilderview.optionChooseStep": { "vi": "— chọn bước —", "en": "— choose a step —", "ja": "— ステップを選択 —", "ko": "— 단계 선택 —", "zh": "— 选择步骤 —" },
-  "workflowLinearbuilderview.fieldWhenFalseLabel": { "vi": "Khi SAI → đi tới bước", "en": "When FALSE → go to step", "ja": "「いいえ」の場合 → 移動先ステップ", "ko": "거짓(FALSE)일 때 → 이동할 단계", "zh": "为假时 → 跳转到步骤" },
-  "workflowLinearbuilderview.fieldClassifyByLabel": { "vi": "Phân loại theo trường", "en": "Classify by field", "ja": "項目で分類", "ko": "필드 기준 분류", "zh": "按字段分类" },
-  "workflowLinearbuilderview.labelLevelsRange": { "vi": "Các mức (từ ≤ giá trị < đến) → bước", "en": "Levels (from ≤ value < to) → step", "ja": "レベル（下限 ≤ 値 < 上限）→ ステップ", "ko": "레벨 (하한 ≤ 값 < 상한) → 단계", "zh": "档位（下限 ≤ 值 < 上限）→ 步骤" },
-  "workflowLinearbuilderview.placeholderLevelNameExample": { "vi": "tên mức (vd: 100-500tr)", "en": "level name (e.g. 100-500M)", "ja": "レベル名（例：1億～5億）", "ko": "레벨 이름 (예: 1-5억)", "zh": "档位名称（例如：100-500万）" },
-  "workflowLinearbuilderview.textFromGte": { "vi": "từ ≥", "en": "from ≥", "ja": "下限 ≥", "ko": "시작 ≥", "zh": "从 ≥" },
-  "workflowLinearbuilderview.placeholderEmptyMinusInfinity": { "vi": "trống = −∞", "en": "empty = −∞", "ja": "空欄＝−∞", "ko": "빈 값 = −∞", "zh": "留空 = −∞" },
-  "workflowLinearbuilderview.textToLt": { "vi": "đến <", "en": "to <", "ja": "上限 <", "ko": "끝 <", "zh": "到 <" },
-  "workflowLinearbuilderview.placeholderEmptyPlusInfinity": { "vi": "trống = +∞", "en": "empty = +∞", "ja": "空欄＝+∞", "ko": "빈 값 = +∞", "zh": "留空 = +∞" },
-  "workflowLinearbuilderview.optionGotoStep": { "vi": "— đi tới bước —", "en": "— go to step —", "ja": "— 移動先ステップ —", "ko": "— 이동할 단계 —", "zh": "— 跳转到步骤 —" },
-  "workflowLinearbuilderview.btnAddLevel": { "vi": "+ Thêm mức", "en": "+ Add level", "ja": "＋レベルを追加", "ko": "+ 레벨 추가", "zh": "+ 添加档位" },
-  "workflowLinearbuilderview.fieldDefaultLabel": { "vi": "Mặc định (không khớp mức nào) → bước", "en": "Default (no level matched) → step", "ja": "デフォルト（該当レベルなし）→ ステップ", "ko": "기본값 (일치하는 레벨 없음) → 단계", "zh": "默认（无匹配档位）→ 步骤" },
-  "workflowLinearbuilderview.msgLevelsHint": { "vi": "Để trống “từ/đến” = không giới hạn đầu đó. Mức khớp đầu tiên thắng — xếp hẹp→rộng.", "en": "Leave “from/to” empty = no limit on that end. The first matching level wins — order narrow→wide.", "ja": "「下限／上限」を空欄にするとその端に制限なしとなります。最初に一致したレベルが優先されます — 狭い→広い順に並べてください。", "ko": "\"시작/끝\"을 비워두면 해당 쪽에 제한이 없습니다. 처음 일치하는 레벨이 우선 적용됩니다 — 좁은 범위→넓은 범위 순으로 정렬하세요.", "zh": "\"从/到\"留空表示该端不设限。第一个匹配的档位优先——请按窄到宽排列。" },
-  "workflowLinearbuilderview.fieldLoopOverLabel": { "vi": "Lặp qua danh sách (trường)", "en": "Loop over list (field)", "ja": "リストをループ（項目）", "ko": "목록 반복 (필드)", "zh": "遍历列表（字段）" },
-  "workflowLinearbuilderview.placeholderLoopFieldExample": { "vi": "vd: hoa_don_qua_han", "en": "e.g. hoa_don_qua_han", "ja": "例：hoa_don_qua_han", "ko": "예: hoa_don_qua_han", "zh": "例如：hoa_don_qua_han" },
-  "workflowLinearbuilderview.fieldItemVarLabel": { "vi": "Tên biến mỗi phần tử", "en": "Per-item variable name", "ja": "各要素の変数名", "ko": "항목별 변수 이름", "zh": "每项元素的变量名" },
-  "workflowLinearbuilderview.msgLoopBodyHintPrefix": { "vi": "Các bước SAU node này (đến “Kết thúc vòng lặp”) chạy 1 lần cho mỗi phần tử. Trong thân, đọc phần tử qua", "en": "Steps AFTER this node (up to “End loop”) run once per item. Inside the loop body, read the item via", "ja": "このノードの後続ステップ（「ループ終了」まで）は各要素につき1回実行されます。ループ本体内では、次の方法で要素を読み取ります：", "ko": "이 노드 이후의 단계(\"반복 종료\"까지)는 항목마다 1회씩 실행됩니다. 반복 본문에서는 다음을 통해 항목을 읽습니다:", "zh": "此节点之后的步骤（直到\"循环结束\"）会对每一项运行一次。在循环体内，通过以下方式读取当前项：" }
+  "workflowLinearbuilderview.typeStep": {
+    "vi": "Bước nghiệp vụ",
+    "en": "Business step",
+    "ja": "業務ステップ",
+    "ko": "업무 단계",
+    "zh": "业务步骤"
+  },
+  "workflowLinearbuilderview.typeIfElse": {
+    "vi": "Điểm kiểm tra điều kiện",
+    "en": "Condition check point",
+    "ja": "条件チェックポイント",
+    "ko": "조건 확인 지점",
+    "zh": "条件检查点"
+  },
+  "workflowLinearbuilderview.typeSwitch": {
+    "vi": "Điểm rẽ nhiều trường hợp",
+    "en": "Multi-case branch point",
+    "ja": "多分岐ポイント",
+    "ko": "다중 분기 지점",
+    "zh": "多分支节点"
+  },
+  "workflowLinearbuilderview.typeApproval": {
+    "vi": "Phê duyệt",
+    "en": "Approval",
+    "ja": "承認",
+    "ko": "승인",
+    "zh": "审批"
+  },
+  "workflowLinearbuilderview.typeNotification": {
+    "vi": "Thông báo",
+    "en": "Notification",
+    "ja": "通知",
+    "ko": "알림",
+    "zh": "通知"
+  },
+  "workflowLinearbuilderview.typeWaitEvent": {
+    "vi": "Chờ sự kiện",
+    "en": "Wait for event",
+    "ja": "イベント待機",
+    "ko": "이벤트 대기",
+    "zh": "等待事件"
+  },
+  "workflowLinearbuilderview.typeSlaTimer": {
+    "vi": "Hạn xử lý",
+    "en": "SLA deadline",
+    "ja": "処理期限",
+    "ko": "처리 기한",
+    "zh": "处理时限"
+  },
+  "workflowLinearbuilderview.typeParallelSplit": {
+    "vi": "Chạy song song",
+    "en": "Run in parallel",
+    "ja": "並行実行",
+    "ko": "병렬 실행",
+    "zh": "并行运行"
+  },
+  "workflowLinearbuilderview.typeParallelJoin": {
+    "vi": "Hợp nhánh",
+    "en": "Merge branches",
+    "ja": "分岐を結合",
+    "ko": "분기 합류",
+    "zh": "合并分支"
+  },
+  "workflowLinearbuilderview.typeSubworkflow": {
+    "vi": "Quy trình con",
+    "en": "Sub-workflow",
+    "ja": "サブワークフロー",
+    "ko": "하위 워크플로우",
+    "zh": "子工作流"
+  },
+  "workflowLinearbuilderview.typeLoopForeach": {
+    "vi": "Vòng lặp (với mỗi)",
+    "en": "Loop (for each)",
+    "ja": "ループ（各要素）",
+    "ko": "반복 (각 항목마다)",
+    "zh": "循环（对每一项）"
+  },
+  "workflowLinearbuilderview.typeLoopEnd": {
+    "vi": "Kết thúc vòng lặp",
+    "en": "End loop",
+    "ja": "ループ終了",
+    "ko": "반복 종료",
+    "zh": "循环结束"
+  },
+  "workflowLinearbuilderview.statusNeedTwoBranches": {
+    "vi": "Cần 2 nhánh",
+    "en": "Needs 2 branches",
+    "ja": "2つの分岐が必要",
+    "ko": "2개 분기 필요",
+    "zh": "需要2个分支"
+  },
+  "workflowLinearbuilderview.statusNeedBranchDefault": {
+    "vi": "Cần nhánh + mặc định",
+    "en": "Needs a branch + default",
+    "ja": "分岐＋デフォルトが必要",
+    "ko": "분기 + 기본값 필요",
+    "zh": "需要分支+默认项"
+  },
+  "workflowLinearbuilderview.statusNeedAtLeastTwoBranches": {
+    "vi": "Cần ≥2 nhánh",
+    "en": "Needs ≥2 branches",
+    "ja": "2つ以上の分岐が必要",
+    "ko": "2개 이상 분기 필요",
+    "zh": "需要≥2个分支"
+  },
+  "workflowLinearbuilderview.statusNoAction": {
+    "vi": "Chưa gán hành động",
+    "en": "No action assigned",
+    "ja": "アクション未割り当て",
+    "ko": "동작 미지정",
+    "zh": "尚未指定操作"
+  },
+  "workflowLinearbuilderview.statusNoApprover": {
+    "vi": "Chưa gắn người duyệt",
+    "en": "No approver bound",
+    "ja": "承認者未設定",
+    "ko": "승인자 미지정",
+    "zh": "尚未绑定审批人"
+  },
+  "workflowLinearbuilderview.statusNoLoopList": {
+    "vi": "Chưa chọn danh sách để lặp",
+    "en": "No list selected to loop over",
+    "ja": "ループ対象リスト未選択",
+    "ko": "반복할 목록 미선택",
+    "zh": "尚未选择循环列表"
+  },
+  "workflowLinearbuilderview.statusReady": {
+    "vi": "✓ Sẵn sàng",
+    "en": "✓ Ready",
+    "ja": "✓ 準備完了",
+    "ko": "✓ 준비 완료",
+    "zh": "✓ 就绪"
+  },
+  "workflowLinearbuilderview.mergedInto": {
+    "vi": "⊕ Gộp về “{title}”",
+    "en": "⊕ Merges back into “{title}”",
+    "ja": "⊕「{title}」に合流",
+    "ko": "⊕ “{title}”로 병합",
+    "zh": "⊕ 汇合到“{title}”"
+  },
+  "workflowLinearbuilderview.terminalEnd": {
+    "vi": "■ Kết thúc",
+    "en": "■ End",
+    "ja": "■ 終了",
+    "ko": "■ 종료",
+    "zh": "■ 结束"
+  },
+  "workflowLinearbuilderview.branchFallback": {
+    "vi": "Nhánh",
+    "en": "Branch",
+    "ja": "分岐",
+    "ko": "분기",
+    "zh": "分支"
+  },
+  "workflowLinearbuilderview.typePrefix": {
+    "vi": "Loại:",
+    "en": "Type:",
+    "ja": "種別:",
+    "ko": "유형:",
+    "zh": "类型："
+  },
+  "workflowLinearbuilderview.deptPrefix": {
+    "vi": "· Người:",
+    "en": "· Assignee:",
+    "ja": "・担当:",
+    "ko": "· 담당자:",
+    "zh": "· 负责人："
+  },
+  "workflowLinearbuilderview.actionLabelPrefix": {
+    "vi": "Hành động Kaori (AI):",
+    "en": "Kaori action:",
+    "ja": "Kaoriアクション:",
+    "ko": "Kaori 동작:",
+    "zh": "Kaori 操作："
+  },
+  "workflowLinearbuilderview.actionUnassigned": {
+    "vi": "⚠ chưa gán",
+    "en": "⚠ not assigned",
+    "ja": "⚠ 未割り当て",
+    "ko": "⚠ 미지정",
+    "zh": "⚠ 未指定"
+  },
+  "workflowLinearbuilderview.collapseLabel": {
+    "vi": "Thu gọn",
+    "en": "Collapse",
+    "ja": "折りたたむ",
+    "ko": "접기",
+    "zh": "收起"
+  },
+  "workflowLinearbuilderview.editLabel": {
+    "vi": "Sửa ▾",
+    "en": "Edit ▾",
+    "ja": "編集 ▾",
+    "ko": "편집 ▾",
+    "zh": "编辑 ▾"
+  },
+  "workflowLinearbuilderview.deleteLabel": {
+    "vi": "Xoá",
+    "en": "Delete",
+    "ja": "削除",
+    "ko": "삭제",
+    "zh": "删除"
+  },
+  "workflowLinearbuilderview.fieldTitleLabel": {
+    "vi": "Tên bước",
+    "en": "Step name",
+    "ja": "ステップ名",
+    "ko": "단계 이름",
+    "zh": "步骤名称"
+  },
+  "workflowLinearbuilderview.fieldActionLabel": {
+    "vi": "Hành động Kaori (AI — máy làm, người xác nhận)",
+    "en": "Kaori action",
+    "ja": "Kaoriアクション",
+    "ko": "Kaori 동작",
+    "zh": "Kaori 操作"
+  },
+  "workflowLinearbuilderview.optionUnassignedDesignOnly": {
+    "vi": "— Chưa gán (chỉ thiết kế) —",
+    "en": "— Not assigned (design only) —",
+    "ja": "— 未割り当て（設計のみ）—",
+    "ko": "— 미지정 (설계만) —",
+    "zh": "— 未指定（仅设计）—"
+  },
+  "workflowLinearbuilderview.fieldLaneLabel": {
+    "vi": "Vai trò phụ trách (lane)",
+    "en": "Responsible role (lane)",
+    "ja": "担当ロール（レーン）",
+    "ko": "담당 역할 (레인)",
+    "zh": "负责角色（泳道）"
+  },
+  "workflowLinearbuilderview.placeholderLaneExample": {
+    "vi": "vd: Kế toán, Trưởng phòng…",
+    "en": "e.g. Accounting, Department Head…",
+    "ja": "例：経理、部門長…",
+    "ko": "예: 회계, 부서장…",
+    "zh": "例如：会计、部门主管…"
+  },
+  "workflowLinearbuilderview.fieldNextStepLabel": {
+    "vi": "Đi tới bước tiếp theo",
+    "en": "Go to next step",
+    "ja": "次のステップへ",
+    "ko": "다음 단계로 이동",
+    "zh": "跳转到下一步"
+  },
+  "workflowLinearbuilderview.optionEndNoNext": {
+    "vi": "— Kết thúc (không đi tiếp) —",
+    "en": "— End (no next step) —",
+    "ja": "— 終了（次へ進まない）—",
+    "ko": "— 종료 (다음 단계 없음) —",
+    "zh": "— 结束（不继续）—"
+  },
+  "workflowLinearbuilderview.branchCountHint": {
+    "vi": "Bước này có {n} nhánh ra — ô này chỉnh nhánh đầu.",
+    "en": "This step has {n} outgoing branches — this field edits the first one.",
+    "ja": "このステップには{n}個の出力分岐があります — このフィールドは最初の分岐を編集します。",
+    "ko": "이 단계에는 {n}개의 출력 분기가 있습니다 — 이 필드는 첫 번째 분기를 수정합니다.",
+    "zh": "此步骤有{n}个输出分支——此项仅编辑第一个分支。"
+  },
+  "workflowLinearbuilderview.fieldBranchesLabel": {
+    "vi": "Các nhánh (đi tới bước nào)",
+    "en": "Branches (go to which step)",
+    "ja": "分岐（どのステップへ）",
+    "ko": "분기 (어느 단계로 이동)",
+    "zh": "分支（跳转到哪个步骤）"
+  },
+  "workflowLinearbuilderview.placeholderLabelCondition": {
+    "vi": "nhãn / điều kiện",
+    "en": "label / condition",
+    "ja": "ラベル／条件",
+    "ko": "라벨 / 조건",
+    "zh": "标签／条件"
+  },
+  "workflowLinearbuilderview.labelFlow": {
+    "vi": "Luồng",
+    "en": "Flow",
+    "ja": "フロー",
+    "ko": "흐름",
+    "zh": "流程"
+  },
+  "workflowLinearbuilderview.chipStart": {
+    "vi": "▶ Bắt đầu",
+    "en": "▶ Start",
+    "ja": "▶ 開始",
+    "ko": "▶ 시작",
+    "zh": "▶ 开始"
+  },
+  "workflowLinearbuilderview.chipStepsCount": {
+    "vi": "{n} bước",
+    "en": "{n} steps",
+    "ja": "{n}ステップ",
+    "ko": "{n}단계",
+    "zh": "{n}个步骤"
+  },
+  "workflowLinearbuilderview.btnDryRun": {
+    "vi": "▶ Chạy thử",
+    "en": "▶ Dry run",
+    "ja": "▶ 試験実行",
+    "ko": "▶ 시험 실행",
+    "zh": "▶ 试运行"
+  },
+  "workflowLinearbuilderview.btnAddStep": {
+    "vi": "+ Thêm bước",
+    "en": "+ Add step",
+    "ja": "＋ステップを追加",
+    "ko": "+ 단계 추가",
+    "zh": "+ 添加步骤"
+  },
+  "workflowLinearbuilderview.labelDryRunSample": {
+    "vi": "Chạy thử với hồ sơ mẫu:",
+    "en": "Dry run with a sample record:",
+    "ja": "サンプルレコードで試験実行:",
+    "ko": "샘플 레코드로 시험 실행:",
+    "zh": "使用示例记录试运行："
+  },
+  "workflowLinearbuilderview.msgNoBranchToTest": {
+    "vi": "Workflow chưa có điều kiện rẽ nhánh nào để thử.",
+    "en": "This workflow has no branching condition to test yet.",
+    "ja": "このワークフローにはまだテストする分岐条件がありません。",
+    "ko": "이 워크플로우에는 아직 테스트할 분기 조건이 없습니다.",
+    "zh": "该工作流还没有可测试的分支条件。"
+  },
+  "workflowLinearbuilderview.suffixElementCount": {
+    "vi": " (số phần tử)",
+    "en": " (item count)",
+    "ja": "（要素数）",
+    "ko": " (항목 수)",
+    "zh": "（元素数量）"
+  },
+  "workflowLinearbuilderview.placeholderExample3": {
+    "vi": "vd: 3",
+    "en": "e.g. 3",
+    "ja": "例：3",
+    "ko": "예: 3",
+    "zh": "例如：3"
+  },
+  "workflowLinearbuilderview.placeholderValue": {
+    "vi": "giá trị",
+    "en": "value",
+    "ja": "値",
+    "ko": "값",
+    "zh": "值"
+  },
+  "workflowLinearbuilderview.btnRunning": {
+    "vi": "Đang chạy…",
+    "en": "Running…",
+    "ja": "実行中…",
+    "ko": "실행 중…",
+    "zh": "运行中…"
+  },
+  "workflowLinearbuilderview.btnRun": {
+    "vi": "Chạy",
+    "en": "Run",
+    "ja": "実行",
+    "ko": "실행",
+    "zh": "运行"
+  },
+  "workflowLinearbuilderview.btnClearHighlight": {
+    "vi": "Xoá tô sáng",
+    "en": "Clear highlight",
+    "ja": "ハイライトを解除",
+    "ko": "강조 표시 지우기",
+    "zh": "清除高亮"
+  },
+  "workflowLinearbuilderview.labelRecordPath": {
+    "vi": "Đường đi của hồ sơ:",
+    "en": "Record's path:",
+    "ja": "レコードの経路:",
+    "ko": "레코드 경로:",
+    "zh": "记录的路径："
+  },
+  "workflowLinearbuilderview.msgNoBranchPoints": {
+    "vi": "Không có điểm rẽ nào — luồng đi thẳng.",
+    "en": "No branch points — the flow goes straight through.",
+    "ja": "分岐点がありません — フローは直進します。",
+    "ko": "분기점이 없습니다 — 흐름이 직진합니다.",
+    "zh": "没有分支点——流程直接通过。"
+  },
+  "workflowLinearbuilderview.msgLegendPath": {
+    "vi": "Bước xanh = hồ sơ đi qua · bước mờ = không chạm tới.",
+    "en": "Green step = record passed through · dim step = not reached.",
+    "ja": "緑のステップ＝レコードが通過・薄いステップ＝未到達。",
+    "ko": "녹색 단계 = 레코드가 통과함 · 흐린 단계 = 도달하지 않음.",
+    "zh": "绿色步骤=记录经过 · 暗淡步骤=未触及。"
+  },
+  "workflowLinearbuilderview.terminalStart": {
+    "vi": "▶ BẮT ĐẦU",
+    "en": "▶ START",
+    "ja": "▶ 開始",
+    "ko": "▶ 시작",
+    "zh": "▶ 开始"
+  },
+  "workflowLinearbuilderview.msgEmptyWorkflow": {
+    "vi": "Workflow trống — bấm \"Thêm bước\" ở trên.",
+    "en": "Workflow is empty — click \"Add step\" above.",
+    "ja": "ワークフローが空です — 上の「ステップを追加」をクリックしてください。",
+    "ko": "워크플로우가 비어 있습니다 — 위의 \"단계 추가\"를 클릭하세요.",
+    "zh": "工作流为空——点击上方的\"添加步骤\"。"
+  },
+  "workflowLinearbuilderview.toastSaved": {
+    "vi": "✓ Đã lưu",
+    "en": "✓ Saved",
+    "ja": "✓ 保存しました",
+    "ko": "✓ 저장됨",
+    "zh": "✓ 已保存"
+  },
+  "workflowLinearbuilderview.laneAccounting": {
+    "vi": "Kế toán",
+    "en": "Accounting",
+    "ja": "経理",
+    "ko": "회계",
+    "zh": "会计"
+  },
+  "workflowLinearbuilderview.laneDeptHead": {
+    "vi": "Trưởng phòng",
+    "en": "Department Head",
+    "ja": "部門長",
+    "ko": "부서장",
+    "zh": "部门主管"
+  },
+  "workflowLinearbuilderview.laneDirector": {
+    "vi": "Giám đốc",
+    "en": "Director",
+    "ja": "取締役",
+    "ko": "이사",
+    "zh": "总监"
+  },
+  "workflowLinearbuilderview.laneSales": {
+    "vi": "Kinh doanh",
+    "en": "Sales",
+    "ja": "営業",
+    "ko": "영업",
+    "zh": "销售"
+  },
+  "workflowLinearbuilderview.laneCustomerCare": {
+    "vi": "Chăm sóc khách hàng",
+    "en": "Customer Care",
+    "ja": "カスタマーケア",
+    "ko": "고객 관리",
+    "zh": "客户服务"
+  },
+  "workflowLinearbuilderview.optionAddBranchGoto": {
+    "vi": "+ thêm nhánh → đi tới…",
+    "en": "+ add branch → go to…",
+    "ja": "＋分岐を追加 → 移動先…",
+    "ko": "+ 분기 추가 → 이동할 곳…",
+    "zh": "+ 添加分支 → 跳转到…"
+  },
+  "workflowLinearbuilderview.btnAdd": {
+    "vi": "Thêm",
+    "en": "Add",
+    "ja": "追加",
+    "ko": "추가",
+    "zh": "添加"
+  },
+  "workflowLinearbuilderview.msgApprovalNote": {
+    "vi": "Người duyệt gắn TẠI ĐÂY (chuỗi duyệt hoặc vai trò). Ô “Vai trò phụ trách (lane)” ở trên chỉ là nhãn hiển thị trên sơ đồ — không quyết định ai duyệt.",
+    "en": "The approver is bound HERE (chain or role). The “Responsible role (lane)” field above is just a display label on the diagram — it does not decide who approves.",
+    "ja": "承認者はここで設定します（承認チェーンまたはロール）。上の「担当ロール（レーン）」欄は図に表示するラベルのみで、承認者を決定するものではありません。",
+    "ko": "승인자는 여기서 지정합니다 (승인 체인 또는 역할). 위의 \"담당 역할 (레인)\" 필드는 다이어그램에 표시되는 라벨일 뿐이며 승인자를 결정하지 않습니다.",
+    "zh": "审批人在此处绑定（审批链或角色）。上方的\"负责角色（泳道）\"仅是图上显示的标签——不决定谁来审批。"
+  },
+  "workflowLinearbuilderview.fieldChainLabel": {
+    "vi": "Chuỗi duyệt (đa cấp)",
+    "en": "Approval chain (multi-level)",
+    "ja": "承認チェーン（複数階層）",
+    "ko": "승인 체인 (다단계)",
+    "zh": "审批链（多级）"
+  },
+  "workflowLinearbuilderview.optionNoChain": {
+    "vi": "— Không dùng chuỗi (chọn vai trò bên dưới) —",
+    "en": "— Don't use a chain (choose a role below) —",
+    "ja": "— チェーンを使用しない（下でロールを選択）—",
+    "ko": "— 체인 사용 안 함 (아래에서 역할 선택) —",
+    "zh": "— 不使用审批链（在下方选择角色）—"
+  },
+  "workflowLinearbuilderview.msgNoChainsYet": {
+    "vi": "Chưa có chuỗi duyệt nào. Tạo ở “Duyệt & Phân quyền → Chuỗi duyệt”, hoặc chọn vai trò.",
+    "en": "No approval chain yet. Create one at “Approvals & Permissions → Approval Chain”, or choose a role.",
+    "ja": "承認チェーンがまだありません。「承認と権限 → 承認チェーン」で作成するか、ロールを選択してください。",
+    "ko": "아직 승인 체인이 없습니다. \"승인 및 권한 → 승인 체인\"에서 생성하거나 역할을 선택하세요.",
+    "zh": "尚无审批链。请在\"审批与权限 → 审批链\"中创建，或选择角色。"
+  },
+  "workflowLinearbuilderview.msgChainBoundPrefix": {
+    "vi": "✓ Gắn chuỗi:",
+    "en": "✓ Chain bound:",
+    "ja": "✓ チェーン設定済み:",
+    "ko": "✓ 체인 연결됨:",
+    "zh": "✓ 已绑定审批链："
+  },
+  "workflowLinearbuilderview.msgChainBoundSuffix": {
+    "vi": "— mở ở cấp 1.",
+    "en": "— opens at level 1.",
+    "ja": "— レベル1で開始します。",
+    "ko": "— 1단계에서 시작됩니다.",
+    "zh": "——从第1级开始。"
+  },
+  "workflowLinearbuilderview.fieldRoleFallbackLabel": {
+    "vi": "Vai trò duyệt (fallback)",
+    "en": "Approver role (fallback)",
+    "ja": "承認ロール（フォールバック）",
+    "ko": "승인 역할 (대체)",
+    "zh": "审批角色（备用）"
+  },
+  "workflowLinearbuilderview.optionChooseRole": {
+    "vi": "— Chọn vai trò —",
+    "en": "— Choose a role —",
+    "ja": "— ロールを選択 —",
+    "ko": "— 역할 선택 —",
+    "zh": "— 选择角色 —"
+  },
+  "workflowLinearbuilderview.roleManager": {
+    "vi": "MANAGER (Quản lý)",
+    "en": "MANAGER (Manager)",
+    "ja": "MANAGER（マネージャー）",
+    "ko": "MANAGER (매니저)",
+    "zh": "MANAGER（经理）"
+  },
+  "workflowLinearbuilderview.roleAnalyst": {
+    "vi": "ANALYST (Phân tích)",
+    "en": "ANALYST (Analyst)",
+    "ja": "ANALYST（アナリスト）",
+    "ko": "ANALYST (분석가)",
+    "zh": "ANALYST（分析师）"
+  },
+  "workflowLinearbuilderview.roleOperator": {
+    "vi": "OPERATOR (Vận hành)",
+    "en": "OPERATOR (Operator)",
+    "ja": "OPERATOR（オペレーター）",
+    "ko": "OPERATOR (운영자)",
+    "zh": "OPERATOR（操作员）"
+  },
+  "workflowLinearbuilderview.roleAdmin": {
+    "vi": "ADMIN (Quản trị)",
+    "en": "ADMIN (Admin)",
+    "ja": "ADMIN（管理者）",
+    "ko": "ADMIN (관리자)",
+    "zh": "ADMIN（管理员）"
+  },
+  "workflowLinearbuilderview.fieldTimeoutLabel": {
+    "vi": "Khi quá hạn duyệt",
+    "en": "When approval times out",
+    "ja": "承認期限切れ時",
+    "ko": "승인 기한 초과 시",
+    "zh": "审批超时时"
+  },
+  "workflowLinearbuilderview.optionEscalate": {
+    "vi": "Báo cấp trên (escalate)",
+    "en": "Escalate to manager (escalate)",
+    "ja": "上位者に報告 (escalate)",
+    "ko": "상급자에게 보고 (escalate)",
+    "zh": "上报上级 (escalate)"
+  },
+  "workflowLinearbuilderview.optionAutoApprove": {
+    "vi": "Tự duyệt",
+    "en": "Auto-approve",
+    "ja": "自動承認",
+    "ko": "자동 승인",
+    "zh": "自动通过"
+  },
+  "workflowLinearbuilderview.optionAutoReject": {
+    "vi": "Tự từ chối",
+    "en": "Auto-reject",
+    "ja": "自動却下",
+    "ko": "자동 거부",
+    "zh": "自动拒绝"
+  },
+  "workflowLinearbuilderview.msgGateUnbound": {
+    "vi": "⚠ Cổng rỗng quyền — chưa gắn chuỗi/vai trò. Sẽ bị chặn khi Chạy thử/Kích hoạt.",
+    "en": "⚠ Empty approval gate — no chain/role bound. Will be blocked at Dry run/Activation.",
+    "ja": "⚠ 承認ゲートが未設定です — チェーン／ロールが未割り当てです。試験実行／有効化時にブロックされます。",
+    "ko": "⚠ 승인 게이트가 비어 있습니다 — 체인/역할이 연결되지 않았습니다. 시험 실행/활성화 시 차단됩니다.",
+    "zh": "⚠ 审批网关为空——未绑定审批链/角色。将在试运行/启用时被阻止。"
+  },
+  "workflowLinearbuilderview.fieldConditionLabel": {
+    "vi": "Điều kiện rẽ nhánh",
+    "en": "Branch condition",
+    "ja": "分岐条件",
+    "ko": "분기 조건",
+    "zh": "分支条件"
+  },
+  "workflowLinearbuilderview.placeholderFieldExample": {
+    "vi": "trường (vd: so_tien)",
+    "en": "field (e.g. so_tien)",
+    "ja": "項目（例：so_tien）",
+    "ko": "필드 (예: so_tien)",
+    "zh": "字段（例如：so_tien）"
+  },
+  "workflowLinearbuilderview.placeholderValueExample": {
+    "vi": "giá trị (vd: 10000000)",
+    "en": "value (e.g. 10000000)",
+    "ja": "値（例：10000000）",
+    "ko": "값 (예: 10000000)",
+    "zh": "值（例如：10000000）"
+  },
+  "workflowLinearbuilderview.msgConditionHintPrefix": {
+    "vi": "Trường đọc từ dữ liệu hồ sơ đi vào. Vd:",
+    "en": "The field is read from the incoming record's data. E.g.:",
+    "ja": "項目は入力レコードのデータから読み取られます。例：",
+    "ko": "필드는 들어오는 레코드 데이터에서 읽어옵니다. 예:",
+    "zh": "该字段从传入记录的数据中读取。例如："
+  },
+  "workflowLinearbuilderview.msgConditionHintSuffix": {
+    "vi": ". Nhiều mức → nối nhiều bước “Quyết định” (nhánh Sai → bước kiểm tra tiếp).",
+    "en": ". Multiple tiers → chain several “Decision” steps (False branch → next check step).",
+    "ja": "。複数段階の場合は「判定」ステップを複数連結します（「いいえ」分岐 → 次のチェックステップへ）。",
+    "ko": ". 여러 단계가 필요하면 \"결정\" 단계를 여러 개 연결하세요 (거짓 분기 → 다음 확인 단계).",
+    "zh": "。多级判断请串联多个\"决策\"步骤（假分支 → 下一个检查步骤）。"
+  },
+  "workflowLinearbuilderview.fieldWhenTrueLabel": {
+    "vi": "Khi ĐÚNG → đi tới bước",
+    "en": "When TRUE → go to step",
+    "ja": "「はい」の場合 → 移動先ステップ",
+    "ko": "참(TRUE)일 때 → 이동할 단계",
+    "zh": "为真时 → 跳转到步骤"
+  },
+  "workflowLinearbuilderview.optionChooseStep": {
+    "vi": "— chọn bước —",
+    "en": "— choose a step —",
+    "ja": "— ステップを選択 —",
+    "ko": "— 단계 선택 —",
+    "zh": "— 选择步骤 —"
+  },
+  "workflowLinearbuilderview.fieldWhenFalseLabel": {
+    "vi": "Khi SAI → đi tới bước",
+    "en": "When FALSE → go to step",
+    "ja": "「いいえ」の場合 → 移動先ステップ",
+    "ko": "거짓(FALSE)일 때 → 이동할 단계",
+    "zh": "为假时 → 跳转到步骤"
+  },
+  "workflowLinearbuilderview.fieldClassifyByLabel": {
+    "vi": "Phân loại theo trường",
+    "en": "Classify by field",
+    "ja": "項目で分類",
+    "ko": "필드 기준 분류",
+    "zh": "按字段分类"
+  },
+  "workflowLinearbuilderview.labelLevelsRange": {
+    "vi": "Các mức (từ ≤ giá trị < đến) → bước",
+    "en": "Levels (from ≤ value < to) → step",
+    "ja": "レベル（下限 ≤ 値 < 上限）→ ステップ",
+    "ko": "레벨 (하한 ≤ 값 < 상한) → 단계",
+    "zh": "档位（下限 ≤ 值 < 上限）→ 步骤"
+  },
+  "workflowLinearbuilderview.placeholderLevelNameExample": {
+    "vi": "tên mức (vd: 100-500tr)",
+    "en": "level name (e.g. 100-500M)",
+    "ja": "レベル名（例：1億～5億）",
+    "ko": "레벨 이름 (예: 1-5억)",
+    "zh": "档位名称（例如：100-500万）"
+  },
+  "workflowLinearbuilderview.textFromGte": {
+    "vi": "từ ≥",
+    "en": "from ≥",
+    "ja": "下限 ≥",
+    "ko": "시작 ≥",
+    "zh": "从 ≥"
+  },
+  "workflowLinearbuilderview.placeholderEmptyMinusInfinity": {
+    "vi": "trống = −∞",
+    "en": "empty = −∞",
+    "ja": "空欄＝−∞",
+    "ko": "빈 값 = −∞",
+    "zh": "留空 = −∞"
+  },
+  "workflowLinearbuilderview.textToLt": {
+    "vi": "đến <",
+    "en": "to <",
+    "ja": "上限 <",
+    "ko": "끝 <",
+    "zh": "到 <"
+  },
+  "workflowLinearbuilderview.placeholderEmptyPlusInfinity": {
+    "vi": "trống = +∞",
+    "en": "empty = +∞",
+    "ja": "空欄＝+∞",
+    "ko": "빈 값 = +∞",
+    "zh": "留空 = +∞"
+  },
+  "workflowLinearbuilderview.optionGotoStep": {
+    "vi": "— đi tới bước —",
+    "en": "— go to step —",
+    "ja": "— 移動先ステップ —",
+    "ko": "— 이동할 단계 —",
+    "zh": "— 跳转到步骤 —"
+  },
+  "workflowLinearbuilderview.btnAddLevel": {
+    "vi": "+ Thêm mức",
+    "en": "+ Add level",
+    "ja": "＋レベルを追加",
+    "ko": "+ 레벨 추가",
+    "zh": "+ 添加档位"
+  },
+  "workflowLinearbuilderview.fieldDefaultLabel": {
+    "vi": "Mặc định (không khớp mức nào) → bước",
+    "en": "Default (no level matched) → step",
+    "ja": "デフォルト（該当レベルなし）→ ステップ",
+    "ko": "기본값 (일치하는 레벨 없음) → 단계",
+    "zh": "默认（无匹配档位）→ 步骤"
+  },
+  "workflowLinearbuilderview.msgLevelsHint": {
+    "vi": "Để trống “từ/đến” = không giới hạn đầu đó. Mức khớp đầu tiên thắng — xếp hẹp→rộng.",
+    "en": "Leave “from/to” empty = no limit on that end. The first matching level wins — order narrow→wide.",
+    "ja": "「下限／上限」を空欄にするとその端に制限なしとなります。最初に一致したレベルが優先されます — 狭い→広い順に並べてください。",
+    "ko": "\"시작/끝\"을 비워두면 해당 쪽에 제한이 없습니다. 처음 일치하는 레벨이 우선 적용됩니다 — 좁은 범위→넓은 범위 순으로 정렬하세요.",
+    "zh": "\"从/到\"留空表示该端不设限。第一个匹配的档位优先——请按窄到宽排列。"
+  },
+  "workflowLinearbuilderview.fieldLoopOverLabel": {
+    "vi": "Lặp qua danh sách (trường)",
+    "en": "Loop over list (field)",
+    "ja": "リストをループ（項目）",
+    "ko": "목록 반복 (필드)",
+    "zh": "遍历列表（字段）"
+  },
+  "workflowLinearbuilderview.placeholderLoopFieldExample": {
+    "vi": "vd: hoa_don_qua_han",
+    "en": "e.g. hoa_don_qua_han",
+    "ja": "例：hoa_don_qua_han",
+    "ko": "예: hoa_don_qua_han",
+    "zh": "例如：hoa_don_qua_han"
+  },
+  "workflowLinearbuilderview.fieldItemVarLabel": {
+    "vi": "Tên biến mỗi phần tử",
+    "en": "Per-item variable name",
+    "ja": "各要素の変数名",
+    "ko": "항목별 변수 이름",
+    "zh": "每项元素的变量名"
+  },
+  "workflowLinearbuilderview.msgLoopBodyHintPrefix": {
+    "vi": "Các bước SAU node này (đến “Kết thúc vòng lặp”) chạy 1 lần cho mỗi phần tử. Trong thân, đọc phần tử qua",
+    "en": "Steps AFTER this node (up to “End loop”) run once per item. Inside the loop body, read the item via",
+    "ja": "このノードの後続ステップ（「ループ終了」まで）は各要素につき1回実行されます。ループ本体内では、次の方法で要素を読み取ります：",
+    "ko": "이 노드 이후의 단계(\"반복 종료\"까지)는 항목마다 1회씩 실행됩니다. 반복 본문에서는 다음을 통해 항목을 읽습니다:",
+    "zh": "此节点之后的步骤（直到\"循环结束\"）会对每一项运行一次。在循环体内，通过以下方式读取当前项："
+  }
 }

@@ -7330,6 +7330,18 @@
             "title": "Config",
             "type": "object"
           },
+          "deadline_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deadline Date"
+          },
           "decision_config": {
             "additionalProperties": true,
             "title": "Decision Config",
@@ -7489,6 +7501,18 @@
           "category": {
             "title": "Category",
             "type": "string"
+          },
+          "deadline_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deadline Date"
           },
           "decision_config": {
             "additionalProperties": true,
@@ -7758,6 +7782,17 @@
       },
       "NodeUpdate": {
         "properties": {
+          "clear_deadline": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clear Deadline"
+          },
           "config": {
             "anyOf": [
               {
@@ -7769,6 +7804,18 @@
               }
             ],
             "title": "Config"
+          },
+          "deadline_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deadline Date"
           },
           "decision_config": {
             "anyOf": [
@@ -13358,6 +13405,17 @@
             ],
             "title": "Description"
           },
+          "duration_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Days"
+          },
           "enterprise_id": {
             "format": "uuid",
             "title": "Enterprise Id",
@@ -13390,6 +13448,18 @@
           "state": {
             "title": "State",
             "type": "string"
+          },
+          "timeline_start": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timeline Start"
           },
           "version": {
             "title": "Version",
@@ -13842,6 +13912,19 @@
             ],
             "title": "Description"
           },
+          "duration_days": {
+            "anyOf": [
+              {
+                "maximum": 730.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Days"
+          },
           "name": {
             "anyOf": [
               {
@@ -13878,6 +13961,18 @@
               }
             ],
             "title": "State"
+          },
+          "timeline_start": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timeline Start"
           }
         },
         "title": "WorkflowUpdate",

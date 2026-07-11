@@ -180,7 +180,7 @@ workspace_audit_log|TABLE|False|False
 workspace_keys|TABLE|False|False
 workspaces|TABLE|False|False
 
-## COLUMNS (2192 rows)
+## COLUMNS (2195 rows)
 admin_sessions|admin_id|2|uuid||||NO|
 admin_sessions|created_at|6|timestamp with time zone||||NO|now()
 admin_sessions|device_label|5|character varying|120|||YES|
@@ -2167,6 +2167,7 @@ workflow_nodes|category|6|character varying|30|||NO|'data_input'::character vary
 workflow_nodes|compensation|19|jsonb||||YES|
 workflow_nodes|config|16|jsonb||||NO|'{}'::jsonb
 workflow_nodes|created_at|22|timestamp with time zone||||NO|now()
+workflow_nodes|deadline_date|38|date||||YES|
 workflow_nodes|decision_config|24|jsonb||||NO|'{}'::jsonb
 workflow_nodes|department_id|4|uuid||||NO|
 workflow_nodes|enterprise_id|3|uuid||||NO|
@@ -2339,6 +2340,7 @@ workflows|created_at|16|timestamp with time zone||||NO|now()
 workflows|created_by|17|uuid||||YES|
 workflows|department_id|4|uuid||||NO|
 workflows|description|7|text||||YES|
+workflows|duration_days|22|integer||32|0|YES|
 workflows|enterprise_id|2|uuid||||NO|
 workflows|fidelity_to_discovered|15|numeric||5|4|YES|
 workflows|last_modified_at|18|timestamp with time zone||||NO|now()
@@ -2348,6 +2350,7 @@ workflows|name_vi|6|character varying|200|||YES|
 workflows|name|5|character varying|200|||NO|
 workflows|source|12|character varying|50|||NO|'user_built'::character varying
 workflows|state|10|character varying|30|||NO|'DRAFT'::character varying
+workflows|timeline_start|23|date||||YES|
 workflows|version|11|integer||32|0|NO|1
 workflows|workflow_id|1|uuid||||NO|gen_random_uuid()
 workflows|workspace_id|20|uuid||||NO|

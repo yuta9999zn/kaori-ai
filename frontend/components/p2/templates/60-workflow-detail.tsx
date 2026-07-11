@@ -721,6 +721,11 @@ export default function WorkflowDetailPage({ workflowId }: { workflowId: string 
           </div>
         )}
 
+        {/* Mig 143 — thước timeline: lớp THEO DÕI phủ lên quy trình, không
+            ảnh hưởng nghiệp vụ/tài liệu/BPMN. Khai báo N ngày + ngày bắt đầu
+            chu kỳ → mở workflow biết đang ở ngày thứ mấy. */}
+        <WorkflowTimelineBar wf={wf} onSaved={loadTree} />
+
         <Tabs tab={tab} onChange={setTab} />
 
         {tab === 'builder' && (
@@ -856,6 +861,92 @@ function FloatingToast({
 }
 
 // ─── Tabs ────────────────────────────────────────────────────────
+
+// Mig 143 — thước timeline chu kỳ quy trình (lớp theo dõi phụ trợ).
+function WorkflowTimelineBar({ wf, onSaved }: { wf: any; onSaved: () => void }) {
+  const [editing, setEditing] = useState(false);
+  const [days, setDays] = useState<string>(wf.duration_days ? String(wf.duration_days) : '30');
+  const [start, setStart] = useState<string>(wf.timeline_start ?? new Date().toISOString().slice(0, 10));
+  const [saving, setSaving] = useState(false);
+
+  async function save() {
+    if (!days || !start) return;
+    setSaving(true);
+    try {
+      await api(`/api/v1/workflows/${wf.workflow_id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ duration_days: Number(days), timeline_start: start }),
+      });
+      setEditing(false);
+      onSaved();
+    } catch { /* giữ form mở để sửa lại */ } finally { setSaving(false); }
+  }
+
+  const has = !!(wf.duration_days && wf.timeline_start);
+  let dayIdx = 0, pct = 0, over = false;
+  if (has) {
+    const s = new Date(wf.timeline_start + 'T00:00:00');
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    dayIdx = Math.floor((today.getTime() - s.getTime()) / 86400000) + 1;
+    over = dayIdx > wf.duration_days;
+    pct = Math.min(100, Math.max(0, (dayIdx / wf.duration_days) * 100));
+  }
+
+  return (
+    <div className="rounded-md-custom border border-[var(--border-color)] bg-[var(--bg-card)] px-4 py-2.5">
+      <div className="flex items-center gap-3 flex-wrap">
+        <Clock className="w-4 h-4 text-[var(--primary-gold-dark)] shrink-0" />
+        {has ? (
+          <>
+            <span className="text-sm font-medium text-[var(--text-primary)] shrink-0">
+              {over
+                ? <>Chu kỳ đã QUÁ hạn — ngày {dayIdx}/{wf.duration_days}</>
+                : dayIdx < 1
+                  ? <>Chu kỳ bắt đầu {new Date(wf.timeline_start + 'T00:00:00').toLocaleDateString('vi-VN')}</>
+                  : <>Ngày <b>{dayIdx}</b>/{wf.duration_days} của chu kỳ</>}
+            </span>
+            <div className="flex-1 min-w-[160px] h-2.5 rounded-full bg-[var(--bg-app)] overflow-hidden border border-[var(--border-color)]/60">
+              <div className={'h-full rounded-full transition-all ' + (over ? 'bg-rose-500' : pct > 80 ? 'bg-amber-500' : 'bg-emerald-500')}
+                style={{ width: `${pct}%` }} />
+            </div>
+            <span className="text-[11px] text-[var(--text-secondary)] shrink-0 tabular-nums">
+              {new Date(wf.timeline_start + 'T00:00:00').toLocaleDateString('vi-VN')} → {(() => {
+                const e = new Date(wf.timeline_start + 'T00:00:00');
+                e.setDate(e.getDate() + wf.duration_days - 1);
+                return e.toLocaleDateString('vi-VN');
+              })()}
+            </span>
+          </>
+        ) : (
+          <span className="text-sm text-[var(--text-secondary)] flex-1">
+            Chưa đặt thời gian thực hiện — khai báo số ngày của chu kỳ để theo dõi quy trình theo thời gian thực.
+          </span>
+        )}
+        <button onClick={() => setEditing(!editing)}
+          className="text-[11px] text-[var(--primary-gold-dark)] hover:underline shrink-0">
+          {editing ? 'Đóng' : has ? 'Chỉnh thời gian' : 'Đặt thời gian thực hiện'}
+        </button>
+      </div>
+      {editing && (
+        <div className="mt-2 pt-2 border-t border-dashed border-[var(--border-color)] flex items-end gap-3 flex-wrap">
+          <label className="text-[11px] text-[var(--text-secondary)]">
+            Số ngày thực hiện quy trình
+            <input type="number" min={1} max={730} value={days} onChange={(e) => setDays(e.target.value)}
+              className="block mt-0.5 w-28 rounded border border-[var(--border-color)] px-2 py-1 text-sm bg-white" />
+          </label>
+          <label className="text-[11px] text-[var(--text-secondary)]">
+            Ngày bắt đầu chu kỳ
+            <input type="date" value={start} onChange={(e) => setStart(e.target.value)}
+              className="block mt-0.5 rounded border border-[var(--border-color)] px-2 py-1 text-sm bg-white" />
+          </label>
+          <Button size="sm" onClick={save} disabled={saving || !days || !start}>
+            {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Lưu thước thời gian'}
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function Tabs({ tab, onChange }: { tab: 'builder' | 'bpmn' | 'tree' | 'reports'; onChange: (t: any) => void }) {
   const t = useT();

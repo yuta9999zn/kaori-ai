@@ -38,6 +38,20 @@ interface Card {
   decision_config?: Record<string, any>;
   sequence_order?: number;
   lane_name?: string | null;
+  // Mig 143 — hạn cuối của bước (lớp theo dõi, ISO date)
+  deadline_date?: string | null;
+}
+
+// Hạn cuối: '2026-07-20' → 'dd/mm' + cờ quá hạn so với hôm nay (local).
+function deadlineInfo(iso?: string | null): { label: string; overdue: boolean } | null {
+  if (!iso) return null;
+  const d = new Date(iso + 'T00:00:00');
+  if (isNaN(d.getTime())) return null;
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  return {
+    label: d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }),
+    overdue: d < today,
+  };
 }
 interface Edge {
   edge_id: string;
@@ -383,9 +397,21 @@ export default function LinearBuilderView({
           <br />
           {!isDecision && (
             <>{t('workflowLinearbuilderview.actionLabelPrefix')} {actionVi
-              ? <b className="text-[var(--text-primary)]">{actionVi}</b>
+              ? <><b className="text-[var(--text-primary)]">{actionVi}</b>{' '}
+                  <span className="text-[9px] font-bold px-1 py-px rounded bg-violet-100 text-violet-700 border border-violet-200 align-middle"
+                    title="Bước do AI thực hiện — kết quả vẫn qua người xác nhận (cổng duyệt)">AI</span></>
               : <b className="text-amber-700">{t('workflowLinearbuilderview.actionUnassigned')}</b>}</>
           )}
+          {(() => {
+            const dl = deadlineInfo(c.deadline_date);
+            return dl ? (
+              <span className={'ml-1.5 text-[10px] font-semibold px-1.5 py-px rounded-full border align-middle '
+                + (dl.overdue ? 'bg-rose-50 text-rose-700 border-rose-200' : 'bg-sky-50 text-sky-700 border-sky-200')}
+                title={dl.overdue ? 'Bước này đã QUÁ hạn cuối' : 'Hạn cuối của bước trong chu kỳ'}>
+                ⏰ {dl.overdue ? 'Quá hạn ' : 'Hạn '}{dl.label}
+              </span>
+            ) : null;
+          })()}
         </div>
         <div className="flex items-center justify-between px-3 py-1.5 border-t border-[#f1eee7] bg-[#fcfbf8]">
           <span className={'text-[11px] font-semibold px-2 py-0.5 rounded-full '
@@ -434,6 +460,26 @@ export default function LinearBuilderView({
                 list="kaori-lanes"
                 onBlur={(e) => { const v = e.target.value.trim(); if (v !== (c.lane_name ?? '')) upd(c.node_id, { lane_name: v }); }}
                 className="w-full rounded border border-[var(--border-color)] px-2 py-1 text-sm" />
+            </Field>
+
+            {/* Mig 143 — hạn cuối của bước (deadline, lớp theo dõi) */}
+            <Field label="Hạn cuối (deadline) của bước">
+              <div className="flex items-center gap-2">
+                <input type="date" defaultValue={c.deadline_date ?? ''}
+                  onBlur={(e) => {
+                    const v = e.target.value;
+                    if (v !== (c.deadline_date ?? '')) {
+                      upd(c.node_id, v ? { deadline_date: v } : { clear_deadline: true });
+                    }
+                  }}
+                  className="flex-1 rounded border border-[var(--border-color)] px-2 py-1 text-sm bg-white" />
+                {c.deadline_date && (
+                  <button type="button" onClick={() => upd(c.node_id, { clear_deadline: true })}
+                    className="text-[11px] text-[var(--text-secondary)] hover:text-rose-600 underline shrink-0">
+                    Bỏ hạn
+                  </button>
+                )}
+              </div>
             </Field>
 
             {/* Flow control for a NON-branching step: pick the next step (or end).
