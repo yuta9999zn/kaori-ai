@@ -35,7 +35,7 @@
     "zh": "外部 AI（Claude / GPT-4o）"
   },
   "settingsPage.externalAiDesc": {
-    "vi": "Cho phép gửi dữ liệu (đã ẩn PII) đến AI bên ngoài để phân tích sâu hơn. Mặc định Kaori dùng Qwen2.5 chạy nội bộ — riêng tư và miễn phí.",
+    "vi": "Cho phép gửi dữ liệu (đã ẩn PII — thông tin định danh cá nhân) đến AI bên ngoài để phân tích sâu hơn. Mặc định Kaori dùng Qwen2.5 chạy nội bộ — riêng tư và miễn phí.",
     "en": "Allow sending data (with PII redacted) to external AI for deeper analysis. By default Kaori uses Qwen2.5 running locally — private and free.",
     "ja": "データ（PIIをマスキング済み）を外部AIに送信し、より深い分析を可能にします。Kaoriはデフォルトでローカル実行のQwen2.5を使用します — プライベートかつ無料です。",
     "ko": "데이터(PII 마스킹 처리됨)를 외부 AI로 전송하여 더 심층적인 분석을 허용합니다. Kaori는 기본적으로 로컬에서 실행되는 Qwen2.5를 사용합니다 — 비공개이며 무료입니다.",
@@ -49,7 +49,7 @@
     "zh": "注意："
   },
   "settingsPage.externalAiWarning": {
-    "vi": "Dữ liệu của bạn sẽ được ẩn PII trước khi gửi, nhưng vẫn rời khỏi hạ tầng nội bộ. Đảm bảo tuân thủ chính sách dữ liệu của tổ chức bạn.",
+    "vi": "Dữ liệu của bạn sẽ được ẩn PII (thông tin định danh cá nhân) trước khi gửi, nhưng vẫn rời khỏi hạ tầng nội bộ. Đảm bảo tuân thủ chính sách dữ liệu của tổ chức bạn.",
     "en": "Your data will have PII redacted before being sent, but it still leaves internal infrastructure. Make sure this complies with your organization's data policy.",
     "ja": "データは送信前にPIIがマスキングされますが、社内インフラの外部に送られることに変わりはありません。組織のデータポリシーに準拠していることを確認してください。",
     "ko": "귀하의 데이터는 전송 전에 PII가 마스킹되지만, 여전히 내부 인프라를 벗어납니다. 조직의 데이터 정책을 준수하는지 확인하세요.",

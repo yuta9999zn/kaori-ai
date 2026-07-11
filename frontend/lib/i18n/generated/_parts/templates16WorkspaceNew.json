@@ -791,7 +791,7 @@
     "zh": "无限成员数"
   },
   "templates16WorkspaceNew.featureEntPrioritySupport": {
-    "vi": "Hỗ trợ ưu tiên & SLA",
+    "vi": "Hỗ trợ ưu tiên & SLA (cam kết chất lượng dịch vụ)",
     "en": "Priority Support & SLAs",
     "ja": "優先サポート＆SLA",
     "ko": "우선 지원 및 SLA",
@@ -1771,7 +1771,7 @@
     "zh": "用量"
   },
   "templates16WorkspaceNew.tierEnterpriseDesc": {
-    "vi": "Không giới hạn yêu cầu, 500GB lưu trữ, SLA ưu tiên 24/7.",
+    "vi": "Không giới hạn yêu cầu, 500GB lưu trữ, SLA (cam kết chất lượng dịch vụ) ưu tiên 24/7.",
     "en": "Unlimited reqs, 500GB storage, 24/7 priority SLA.",
     "ja": "リクエスト無制限、500GBストレージ、24時間365日優先SLA。",
     "ko": "무제한 요청, 500GB 저장 공간, 24/7 우선 SLA.",

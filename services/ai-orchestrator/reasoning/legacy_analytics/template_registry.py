@@ -63,7 +63,7 @@ TEMPLATE_REGISTRY: list[AnalysisTemplate] = [
     AnalysisTemplate(
         template_id="distribution",
         display_name="Phân phối dữ liệu",
-        description="Histogram, outlier detection, skewness, kurtosis",
+        description="Histogram (biểu đồ phân bố), ngoại lệ, độ lệch/độ nhọn",
         required_types=["integer", "decimal", "currency"],
         required_purposes=[],
         min_rows=30,
@@ -81,7 +81,7 @@ TEMPLATE_REGISTRY: list[AnalysisTemplate] = [
     AnalysisTemplate(
         template_id="clustering",
         display_name="Phân nhóm (Clustering)",
-        description="K-means segmentation, silhouette score — cần ≥3 cột số",
+        description="K-means (phân cụm tự động), silhouette (độ tách cụm) — cần ≥3 cột số",
         required_types=["integer", "decimal", "currency"],
         required_purposes=[],
         min_rows=50,
@@ -99,7 +99,7 @@ TEMPLATE_REGISTRY: list[AnalysisTemplate] = [
     AnalysisTemplate(
         template_id="churn",
         display_name="Nguy cơ rời bỏ (Churn)",
-        description="RFM + dự đoán churn — cần customer_id + date + value",
+        description="RFM (Gần đây–Tần suất–Chi tiêu) + dự đoán churn (khách rời bỏ) — cần mã khách hàng + ngày + giá trị",
         required_types=["date"],
         required_purposes=["customer_master", "transaction_list"],
         min_rows=100,
@@ -108,7 +108,7 @@ TEMPLATE_REGISTRY: list[AnalysisTemplate] = [
     AnalysisTemplate(
         template_id="anomaly",
         display_name="Phát hiện bất thường",
-        description="IQR + Z-score outliers, time-series anomaly detection",
+        description="Ngoại lệ theo IQR (khoảng tứ phân vị) + Z-score (độ lệch chuẩn), bất thường theo chuỗi thời gian",
         required_types=["integer", "decimal", "currency", "date"],
         required_purposes=[],
         min_rows=30,
@@ -117,7 +117,7 @@ TEMPLATE_REGISTRY: list[AnalysisTemplate] = [
     AnalysisTemplate(
         template_id="regression",
         display_name="Hồi quy dự đoán",
-        description="Linear/gradient boosting regression — cần target column + features",
+        description="Hồi quy tuyến tính/gradient boosting — cần cột mục tiêu + các biến đầu vào",
         required_types=["integer", "decimal", "currency"],
         required_purposes=[],
         min_rows=50,

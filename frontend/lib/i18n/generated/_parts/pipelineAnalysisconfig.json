@@ -105,7 +105,7 @@
     "zh": "流失风险"
   },
   "pipelineAnalysisconfig.tplChurnDesc": {
-    "vi": "RFM + dự đoán churn — cần customer_id + date",
+    "vi": "RFM (Gần đây–Tần suất–Chi tiêu) + dự đoán churn (khách rời bỏ) — cần mã khách hàng + ngày",
     "en": "RFM + churn prediction — requires customer_id + date",
     "ja": "RFM + 解約予測 — customer_id と日付が必要",
     "ko": "RFM + 이탈 예측 — customer_id + 날짜 필요",

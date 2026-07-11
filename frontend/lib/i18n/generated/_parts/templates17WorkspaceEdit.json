@@ -1,282 +1,1962 @@
 {
-  "templates17WorkspaceEdit.selectDefaultPlaceholder": { "vi": "Chọn một tùy chọn", "en": "Select an option", "ja": "オプションを選択", "ko": "옵션 선택", "zh": "选择一个选项" },
-  "templates17WorkspaceEdit.datePickerDefaultPlaceholder": { "vi": "Chọn một ngày", "en": "Pick a date", "ja": "日付を選択", "ko": "날짜 선택", "zh": "选择日期" },
-  "templates17WorkspaceEdit.calendarMonthLabel": { "vi": "Tháng 10, 2026", "en": "October 2026", "ja": "2026年10月", "ko": "2026년 10월", "zh": "2026年10月" },
-  "templates17WorkspaceEdit.weekdaySu": { "vi": "CN", "en": "Su", "ja": "日", "ko": "일", "zh": "日" },
-  "templates17WorkspaceEdit.weekdayMo": { "vi": "T2", "en": "Mo", "ja": "月", "ko": "월", "zh": "一" },
-  "templates17WorkspaceEdit.weekdayTu": { "vi": "T3", "en": "Tu", "ja": "火", "ko": "화", "zh": "二" },
-  "templates17WorkspaceEdit.weekdayWe": { "vi": "T4", "en": "We", "ja": "水", "ko": "수", "zh": "三" },
-  "templates17WorkspaceEdit.weekdayTh": { "vi": "T5", "en": "Th", "ja": "木", "ko": "목", "zh": "四" },
-  "templates17WorkspaceEdit.weekdayFr": { "vi": "T6", "en": "Fr", "ja": "金", "ko": "금", "zh": "五" },
-  "templates17WorkspaceEdit.weekdaySa": { "vi": "T7", "en": "Sa", "ja": "土", "ko": "토", "zh": "六" },
-  "templates17WorkspaceEdit.noResultsFound": { "vi": "Không tìm thấy kết quả", "en": "No results found", "ja": "結果が見つかりません", "ko": "결과를 찾을 수 없습니다", "zh": "未找到结果" },
-  "templates17WorkspaceEdit.tryAdjustingFilters": { "vi": "Hãy thử điều chỉnh bộ lọc", "en": "Try adjusting your filters", "ja": "フィルターを調整してみてください", "ko": "필터를 조정해 보세요", "zh": "请尝试调整筛选条件" },
-  "templates17WorkspaceEdit.showingResults": { "vi": "Hiển thị 1 đến {count} trong {count} kết quả", "en": "Showing 1 to {count} of {count} results", "ja": "{count} 件中 1〜{count} 件を表示", "ko": "{count}개 중 1~{count}개 표시", "zh": "显示第 1 到 {count} 条，共 {count} 条结果" },
-  "templates17WorkspaceEdit.previous": { "vi": "Trước", "en": "Previous", "ja": "前へ", "ko": "이전", "zh": "上一页" },
-  "templates17WorkspaceEdit.next": { "vi": "Sau", "en": "Next", "ja": "次へ", "ko": "다음", "zh": "下一页" },
-  "templates17WorkspaceEdit.notifications": { "vi": "Thông báo", "en": "Notifications", "ja": "通知", "ko": "알림", "zh": "通知" },
-  "templates17WorkspaceEdit.securitySessions": { "vi": "Bảo mật & Phiên đăng nhập", "en": "Security & Sessions", "ja": "セキュリティとセッション", "ko": "보안 및 세션", "zh": "安全与会话" },
-  "templates17WorkspaceEdit.signOut": { "vi": "Đăng xuất", "en": "Sign out", "ja": "サインアウト", "ko": "로그아웃", "zh": "退出登录" },
-  "templates17WorkspaceEdit.breadcrumbPlatform": { "vi": "Nền tảng", "en": "Platform", "ja": "プラットフォーム", "ko": "플랫폼", "zh": "平台" },
-  "templates17WorkspaceEdit.searchPlaceholder": { "vi": "Tìm kiếm...", "en": "Search...", "ja": "検索...", "ko": "검색...", "zh": "搜索..." },
-  "templates17WorkspaceEdit.newWorkspaceButton": { "vi": "Không gian làm việc", "en": "Workspace", "ja": "ワークスペース", "ko": "워크스페이스", "zh": "工作空间" },
-  "templates17WorkspaceEdit.mainNavigationAriaLabel": { "vi": "Điều hướng chính", "en": "Main Navigation", "ja": "メインナビゲーション", "ko": "메인 내비게이션", "zh": "主导航" },
-  "templates17WorkspaceEdit.collapseSidebar": { "vi": "Thu gọn thanh bên", "en": "Collapse sidebar", "ja": "サイドバーを折りたたむ", "ko": "사이드바 접기", "zh": "收起侧边栏" },
-  "templates17WorkspaceEdit.navGroupMain": { "vi": "Chính", "en": "Main", "ja": "メイン", "ko": "메인", "zh": "主要" },
-  "templates17WorkspaceEdit.navGroupManagement": { "vi": "Quản lý", "en": "Management", "ja": "管理", "ko": "관리", "zh": "管理" },
-  "templates17WorkspaceEdit.navGroupSystem": { "vi": "Hệ thống", "en": "System", "ja": "システム", "ko": "시스템", "zh": "系统" },
-  "templates17WorkspaceEdit.navPlatformHealth": { "vi": "Tình trạng nền tảng", "en": "Platform Health", "ja": "プラットフォームの状態", "ko": "플랫폼 상태", "zh": "平台健康状况" },
-  "templates17WorkspaceEdit.navWorkspaces": { "vi": "Không gian làm việc", "en": "Workspaces", "ja": "ワークスペース", "ko": "워크스페이스", "zh": "工作空间" },
-  "templates17WorkspaceEdit.navApiKeys": { "vi": "Khóa API", "en": "API Keys", "ja": "APIキー", "ko": "API 키", "zh": "API 密钥" },
-  "templates17WorkspaceEdit.navBilling": { "vi": "Thanh toán", "en": "Billing", "ja": "請求", "ko": "청구", "zh": "账单" },
-  "templates17WorkspaceEdit.navAdmins": { "vi": "Quản trị viên", "en": "Admins", "ja": "管理者", "ko": "관리자", "zh": "管理员" },
-  "templates17WorkspaceEdit.navComponentLibrary": { "vi": "Thư viện thành phần", "en": "Component Library", "ja": "コンポーネントライブラリ", "ko": "컴포넌트 라이브러리", "zh": "组件库" },
-  "templates17WorkspaceEdit.breadcrumbWorkspaceOverview": { "vi": "Không gian làm việc / Tổng quan", "en": "Workspaces / Overview", "ja": "ワークスペース / 概要", "ko": "워크스페이스 / 개요", "zh": "工作空间 / 概览" },
-  "templates17WorkspaceEdit.breadcrumbWorkspaceMembers": { "vi": "Không gian làm việc / Thành viên", "en": "Workspaces / Members", "ja": "ワークスペース / メンバー", "ko": "워크스페이스 / 멤버", "zh": "工作空间 / 成员" },
-  "templates17WorkspaceEdit.breadcrumbWorkspaceBilling": { "vi": "Không gian làm việc / Thanh toán", "en": "Workspaces / Billing", "ja": "ワークスペース / 請求", "ko": "워크스페이스 / 청구", "zh": "工作空间 / 账单" },
-  "templates17WorkspaceEdit.breadcrumbWorkspaceAuditLogs": { "vi": "Không gian làm việc / Nhật ký kiểm tra", "en": "Workspaces / Audit Logs", "ja": "ワークスペース / 監査ログ", "ko": "워크스페이스 / 감사 로그", "zh": "工作空间 / 审计日志" },
-  "templates17WorkspaceEdit.breadcrumbWorkspaceNew": { "vi": "Không gian làm việc / Không gian làm việc mới", "en": "Workspaces / New Workspace", "ja": "ワークスペース / 新規ワークスペース", "ko": "워크스페이스 / 새 워크스페이스", "zh": "工作空间 / 新建工作空间" },
-  "templates17WorkspaceEdit.breadcrumbWorkspaceSettings": { "vi": "Không gian làm việc / Cài đặt", "en": "Workspaces / Settings", "ja": "ワークスペース / 設定", "ko": "워크스페이스 / 설정", "zh": "工作空间 / 设置" },
-  "templates17WorkspaceEdit.changesSavedToast": { "vi": "Đã lưu thay đổi thành công", "en": "Changes saved successfully", "ja": "変更が正常に保存されました", "ko": "변경 사항이 저장되었습니다", "zh": "更改已成功保存" },
-  "templates17WorkspaceEdit.workspaceSettingsTitle": { "vi": "Cài đặt không gian làm việc", "en": "Workspace Settings", "ja": "ワークスペース設定", "ko": "워크스페이스 설정", "zh": "工作空间设置" },
-  "templates17WorkspaceEdit.workspaceSettingsSubtitle": { "vi": "Cập nhật cấu hình và tùy chọn cho môi trường này.", "en": "Update configuration and preferences for this environment.", "ja": "この環境の構成と設定を更新します。", "ko": "이 환경의 구성 및 환경설정을 업데이트합니다.", "zh": "更新此环境的配置和偏好设置。" },
-  "templates17WorkspaceEdit.cancel": { "vi": "Huỷ", "en": "Cancel", "ja": "キャンセル", "ko": "취소", "zh": "取消" },
-  "templates17WorkspaceEdit.saveChanges": { "vi": "Lưu thay đổi", "en": "Save changes", "ja": "変更を保存", "ko": "변경 사항 저장", "zh": "保存更改" },
-  "templates17WorkspaceEdit.tabGeneral": { "vi": "Chung", "en": "General", "ja": "一般", "ko": "일반", "zh": "常规" },
-  "templates17WorkspaceEdit.basicInformation": { "vi": "Thông tin cơ bản", "en": "Basic Information", "ja": "基本情報", "ko": "기본 정보", "zh": "基本信息" },
-  "templates17WorkspaceEdit.workspaceNameLabel": { "vi": "Tên không gian làm việc", "en": "Workspace Name", "ja": "ワークスペース名", "ko": "워크스페이스 이름", "zh": "工作空间名称" },
-  "templates17WorkspaceEdit.descriptionLabel": { "vi": "Mô tả", "en": "Description", "ja": "説明", "ko": "설명", "zh": "描述" },
-  "templates17WorkspaceEdit.deploymentRegionLabel": { "vi": "Khu vực triển khai", "en": "Deployment Region", "ja": "デプロイリージョン", "ko": "배포 리전", "zh": "部署区域" },
-  "templates17WorkspaceEdit.regionUsEast": { "vi": "Miền Đông Hoa Kỳ (Bắc Virginia)", "en": "US East (N. Virginia)", "ja": "米国東部（バージニア北部）", "ko": "미국 동부(버지니아 북부)", "zh": "美国东部（弗吉尼亚北部）" },
-  "templates17WorkspaceEdit.regionEuCentral": { "vi": "Trung Âu (Frankfurt)", "en": "EU Central (Frankfurt)", "ja": "EU中部（フランクフルト）", "ko": "EU 중부(프랑크푸르트)", "zh": "欧盟中部（法兰克福）" },
-  "templates17WorkspaceEdit.regionApSoutheast": { "vi": "Châu Á Thái Bình Dương (Singapore)", "en": "Asia Pacific (Singapore)", "ja": "アジアパシフィック（シンガポール）", "ko": "아시아 태평양(싱가포르)", "zh": "亚太地区（新加坡）" },
-  "templates17WorkspaceEdit.regionChangeHelper": { "vi": "Không thể thay đổi khu vực sau khi tạo không gian làm việc vì lý do tuân thủ dữ liệu.", "en": "Region cannot be changed after workspace creation for data compliance reasons.", "ja": "データコンプライアンス上の理由により、ワークスペース作成後はリージョンを変更できません。", "ko": "데이터 규정 준수를 위해 워크스페이스 생성 후에는 리전을 변경할 수 없습니다.", "zh": "出于数据合规原因，工作空间创建后无法更改区域。" },
-  "templates17WorkspaceEdit.displaySettings": { "vi": "Cài đặt hiển thị", "en": "Display Settings", "ja": "表示設定", "ko": "표시 설정", "zh": "显示设置" },
-  "templates17WorkspaceEdit.defaultTimezoneLabel": { "vi": "Múi giờ mặc định", "en": "Default Timezone", "ja": "デフォルトタイムゾーン", "ko": "기본 표준 시간대", "zh": "默认时区" },
-  "templates17WorkspaceEdit.tzUtc": { "vi": "UTC (Giờ Phối hợp Quốc tế)", "en": "UTC (Coordinated Universal Time)", "ja": "UTC（協定世界時）", "ko": "UTC(협정 세계시)", "zh": "UTC（协调世界时）" },
-  "templates17WorkspaceEdit.tzPst": { "vi": "PST (Giờ chuẩn Thái Bình Dương)", "en": "PST (Pacific Standard Time)", "ja": "PST（太平洋標準時）", "ko": "PST(태평양 표준시)", "zh": "PST（太平洋标准时间）" },
-  "templates17WorkspaceEdit.tzEst": { "vi": "EST (Giờ chuẩn miền Đông)", "en": "EST (Eastern Standard Time)", "ja": "EST（東部標準時）", "ko": "EST(동부 표준시)", "zh": "EST（东部标准时间）" },
-  "templates17WorkspaceEdit.tzCet": { "vi": "CET (Giờ Trung Âu)", "en": "CET (Central European Time)", "ja": "CET（中央ヨーロッパ時間）", "ko": "CET(중앙유럽 표준시)", "zh": "CET（中欧时间）" },
-  "templates17WorkspaceEdit.tabAdvanced": { "vi": "Nâng cao", "en": "Advanced", "ja": "詳細設定", "ko": "고급", "zh": "高级" },
-  "templates17WorkspaceEdit.resourceLimits": { "vi": "Giới hạn tài nguyên", "en": "Resource Limits", "ja": "リソース制限", "ko": "리소스 제한", "zh": "资源限制" },
-  "templates17WorkspaceEdit.resourceLimitsDesc": { "vi": "Ghi đè giới hạn mặc định của không gian làm việc. Yêu cầu gói Enterprise.", "en": "Override default workspace limits. Requires Enterprise plan.", "ja": "デフォルトのワークスペース制限を上書きします。Enterpriseプランが必要です。", "ko": "기본 워크스페이스 제한을 재정의합니다. Enterprise 요금제가 필요합니다.", "zh": "覆盖默认工作空间限制。需要 Enterprise 套餐。" },
-  "templates17WorkspaceEdit.apiRateLimitLabel": { "vi": "Giới hạn tần suất API (req/giây)", "en": "API Rate Limit (req/sec)", "ja": "APIレート制限（リクエスト/秒）", "ko": "API 속도 제한(요청/초)", "zh": "API 速率限制（请求/秒）" },
-  "templates17WorkspaceEdit.storageQuotaLabel": { "vi": "Hạn mức lưu trữ (GB)", "en": "Storage Quota (GB)", "ja": "ストレージクォータ（GB）", "ko": "스토리지 할당량(GB)", "zh": "存储配额（GB）" },
-  "templates17WorkspaceEdit.integrations": { "vi": "Tích hợp", "en": "Integrations", "ja": "連携機能", "ko": "통합", "zh": "集成" },
-  "templates17WorkspaceEdit.comingSoon": { "vi": "Sắp ra mắt", "en": "Coming Soon", "ja": "近日公開", "ko": "출시 예정", "zh": "即将推出" },
-  "templates17WorkspaceEdit.integrationsDesc": { "vi": "Các kết nối bên ngoài (Slack, Datadog) sẽ được cấu hình tại đây.", "en": "External connections (Slack, Datadog) will be configured here.", "ja": "外部連携（Slack、Datadog）はここで設定します。", "ko": "외부 연결(Slack, Datadog)은 여기에서 구성됩니다.", "zh": "外部连接（Slack、Datadog）将在此处配置。" },
-  "templates17WorkspaceEdit.tabDangerZone": { "vi": "Khu vực nguy hiểm", "en": "Danger Zone", "ja": "危険ゾーン", "ko": "위험 구역", "zh": "危险区域" },
-  "templates17WorkspaceEdit.suspendWorkspaceHeading": { "vi": "Tạm ngừng không gian làm việc", "en": "Suspend Workspace", "ja": "ワークスペースを一時停止", "ko": "워크스페이스 일시 중지", "zh": "暂停工作空间" },
-  "templates17WorkspaceEdit.suspendWorkspaceDesc": { "vi": "Tạm thời vô hiệu hoá toàn bộ quyền truy cập API và đăng nhập cho không gian làm việc này.", "en": "Temporarily disable all API access and logins for this workspace.", "ja": "このワークスペースのすべてのAPIアクセスとログインを一時的に無効にします。", "ko": "이 워크스페이스의 모든 API 액세스와 로그인을 일시적으로 비활성화합니다.", "zh": "暂时禁用此工作空间的所有 API 访问和登录。" },
-  "templates17WorkspaceEdit.suspend": { "vi": "Tạm ngừng", "en": "Suspend", "ja": "一時停止", "ko": "일시 중지", "zh": "暂停" },
-  "templates17WorkspaceEdit.deleteWorkspace": { "vi": "Xoá không gian làm việc", "en": "Delete Workspace", "ja": "ワークスペースを削除", "ko": "워크스페이스 삭제", "zh": "删除工作空间" },
-  "templates17WorkspaceEdit.deleteWorkspaceDesc": { "vi": "Xoá vĩnh viễn không gian làm việc này và toàn bộ dữ liệu. Hành động này không thể hoàn tác.", "en": "Permanently remove this workspace and all its data. This action is irreversible.", "ja": "このワークスペースとすべてのデータを完全に削除します。この操作は取り消せません。", "ko": "이 워크스페이스와 모든 데이터를 영구적으로 제거합니다. 이 작업은 되돌릴 수 없습니다.", "zh": "永久删除此工作空间及其所有数据。此操作不可撤销。" },
-  "templates17WorkspaceEdit.deleteWorkspaceModalDesc": { "vi": "Hành động này không thể hoàn tác. Thao tác sẽ xoá vĩnh viễn không gian làm việc và toàn bộ dữ liệu liên quan.", "en": "This action cannot be undone. This will permanently delete the workspace and remove all associated data.", "ja": "この操作は元に戻せません。ワークスペースと関連するすべてのデータが完全に削除されます。", "ko": "이 작업은 되돌릴 수 없습니다. 워크스페이스와 관련된 모든 데이터가 영구적으로 삭제됩니다.", "zh": "此操作无法撤销。这将永久删除该工作空间及其所有相关数据。" },
-  "templates17WorkspaceEdit.deleteWorkspaceConfirmButton": { "vi": "Tôi hiểu, xoá không gian làm việc này", "en": "I understand, delete this workspace", "ja": "理解しました、このワークスペースを削除します", "ko": "이해했습니다. 이 워크스페이스를 삭제합니다", "zh": "我已了解，删除此工作空间" },
-  "templates17WorkspaceEdit.warning": { "vi": "Cảnh báo", "en": "Warning", "ja": "警告", "ko": "경고", "zh": "警告" },
-  "templates17WorkspaceEdit.deleteWorkspaceAlertMsg": { "vi": "Tất cả khóa API sẽ bị thu hồi ngay lập tức và các phiên đăng nhập đang hoạt động sẽ bị chấm dứt.", "en": "All API keys will be revoked immediately and active sessions will be terminated.", "ja": "すべてのAPIキーは即座に失効し、アクティブなセッションは終了します。", "ko": "모든 API 키가 즉시 취소되며 활성 세션이 종료됩니다.", "zh": "所有 API 密钥将立即被吊销，活动会话将被终止。" },
-  "templates17WorkspaceEdit.deleteConfirmPrefix": { "vi": "Vui lòng nhập", "en": "Please type", "ja": "入力してください：", "ko": "입력해 주세요", "zh": "请输入" },
-  "templates17WorkspaceEdit.deleteConfirmSuffix": { "vi": "để xác nhận.", "en": "to confirm.", "ja": "を入力して確認してください。", "ko": "를 입력하여 확인하세요.", "zh": "以确认。" },
-  "templates17WorkspaceEdit.workspaceNamePlaceholder": { "vi": "Tên không gian làm việc", "en": "Workspace name", "ja": "ワークスペース名", "ko": "워크스페이스 이름", "zh": "工作空间名称" },
-  "templates17WorkspaceEdit.componentLibraryTitle": { "vi": "Thư viện thành phần", "en": "Component Library", "ja": "コンポーネントライブラリ", "ko": "컴포넌트 라이브러리", "zh": "组件库" },
-  "templates17WorkspaceEdit.componentLibrarySubtitle": { "vi": "Hệ thống UI nền tảng cho Kaori Platform, tuân thủ nghiêm ngặt các design token.", "en": "Foundational UI system for Kaori Platform following strict design tokens.", "ja": "厳格なデザイントークンに従うKaori Platformの基盤UIシステムです。", "ko": "엄격한 디자인 토큰을 따르는 Kaori Platform의 기본 UI 시스템입니다.", "zh": "遵循严格设计令牌的 Kaori Platform 基础 UI 系统。" },
-  "templates17WorkspaceEdit.deploySystem": { "vi": "Triển khai hệ thống", "en": "Deploy System", "ja": "システムをデプロイ", "ko": "시스템 배포", "zh": "部署系统" },
-  "templates17WorkspaceEdit.tabFormsInputs": { "vi": "Biểu mẫu & Trường nhập liệu", "en": "Forms & Inputs", "ja": "フォームと入力", "ko": "폼 및 입력", "zh": "表单与输入" },
-  "templates17WorkspaceEdit.sectionButtons": { "vi": "Nút bấm", "en": "Buttons", "ja": "ボタン", "ko": "버튼", "zh": "按钮" },
-  "templates17WorkspaceEdit.primaryButton": { "vi": "Nút chính", "en": "Primary Button", "ja": "プライマリボタン", "ko": "기본 버튼", "zh": "主按钮" },
-  "templates17WorkspaceEdit.secondaryButton": { "vi": "Nút phụ", "en": "Secondary Button", "ja": "セカンダリボタン", "ko": "보조 버튼", "zh": "次按钮" },
-  "templates17WorkspaceEdit.tertiaryGhost": { "vi": "Nút mờ cấp ba", "en": "Tertiary Ghost", "ja": "ターシャリゴースト", "ko": "3차 고스트 버튼", "zh": "三级幽灵按钮" },
-  "templates17WorkspaceEdit.loading": { "vi": "Đang tải", "en": "Loading", "ja": "読み込み中", "ko": "로드 중", "zh": "加载中" },
-  "templates17WorkspaceEdit.destructiveAction": { "vi": "Hành động phá huỷ", "en": "Destructive Action", "ja": "破壊的な操作", "ko": "위험한 작업", "zh": "破坏性操作" },
-  "templates17WorkspaceEdit.sectionInputsSelects": { "vi": "Trường nhập liệu & Lựa chọn", "en": "Inputs & Selects", "ja": "入力とセレクト", "ko": "입력 및 선택", "zh": "输入与选择" },
-  "templates17WorkspaceEdit.emailAddressLabel": { "vi": "Địa chỉ email", "en": "Email Address", "ja": "メールアドレス", "ko": "이메일 주소", "zh": "电子邮件地址" },
-  "templates17WorkspaceEdit.emailHelperText": { "vi": "Chúng tôi sẽ không bao giờ chia sẻ email của bạn.", "en": "We will never share your email.", "ja": "お客様のメールアドレスを第三者と共有することはありません。", "ko": "귀하의 이메일을 절대 공유하지 않습니다.", "zh": "我们绝不会分享您的电子邮件。" },
-  "templates17WorkspaceEdit.workspaceNamePlaceholderExample": { "vi": "vd. Production AI", "en": "e.g. Production AI", "ja": "例：Production AI", "ko": "예: Production AI", "zh": "例如：Production AI" },
-  "templates17WorkspaceEdit.workspaceNameTakenError": { "vi": "Tên không gian làm việc này đã được sử dụng.", "en": "This workspace name is already taken.", "ja": "このワークスペース名は既に使用されています。", "ko": "이 워크스페이스 이름은 이미 사용 중입니다.", "zh": "该工作空间名称已被使用。" },
-  "templates17WorkspaceEdit.environmentLabel": { "vi": "Môi trường", "en": "Environment", "ja": "環境", "ko": "환경", "zh": "环境" },
-  "templates17WorkspaceEdit.selectEnvironmentPlaceholder": { "vi": "Chọn môi trường...", "en": "Select environment...", "ja": "環境を選択...", "ko": "환경 선택...", "zh": "选择环境..." },
-  "templates17WorkspaceEdit.production": { "vi": "Production", "en": "Production", "ja": "本番環境", "ko": "프로덕션", "zh": "生产环境" },
-  "templates17WorkspaceEdit.staging": { "vi": "Staging", "en": "Staging", "ja": "ステージング", "ko": "스테이징", "zh": "预发布环境" },
-  "templates17WorkspaceEdit.billingCycleStartLabel": { "vi": "Ngày bắt đầu chu kỳ thanh toán", "en": "Billing Cycle Start", "ja": "請求サイクル開始日", "ko": "청구 주기 시작일", "zh": "账单周期开始日" },
-  "templates17WorkspaceEdit.tabDataDisplay": { "vi": "Hiển thị dữ liệu", "en": "Data Display", "ja": "データ表示", "ko": "데이터 표시", "zh": "数据展示" },
-  "templates17WorkspaceEdit.sectionMetricCards": { "vi": "Thẻ chỉ số", "en": "Metric Cards", "ja": "メトリックカード", "ko": "지표 카드", "zh": "指标卡片" },
-  "templates17WorkspaceEdit.totalRevenue": { "vi": "Tổng doanh thu", "en": "Total Revenue", "ja": "総売上", "ko": "총 매출", "zh": "总营收" },
-  "templates17WorkspaceEdit.activeWorkspaces": { "vi": "Không gian làm việc đang hoạt động", "en": "Active Workspaces", "ja": "アクティブなワークスペース", "ko": "활성 워크스페이스", "zh": "活跃工作空间" },
-  "templates17WorkspaceEdit.errorRate": { "vi": "Tỷ lệ lỗi", "en": "Error Rate", "ja": "エラー率", "ko": "오류율", "zh": "错误率" },
-  "templates17WorkspaceEdit.sectionDataTable": { "vi": "Bảng dữ liệu", "en": "Data Table", "ja": "データテーブル", "ko": "데이터 테이블", "zh": "数据表格" },
-  "templates17WorkspaceEdit.colWorkspace": { "vi": "Không gian làm việc", "en": "Workspace", "ja": "ワークスペース", "ko": "워크스페이스", "zh": "工作空间" },
-  "templates17WorkspaceEdit.colEnvironment": { "vi": "Môi trường", "en": "Environment", "ja": "環境", "ko": "환경", "zh": "环境" },
-  "templates17WorkspaceEdit.colStatus": { "vi": "Trạng thái", "en": "Status", "ja": "ステータス", "ko": "상태", "zh": "状态" },
-  "templates17WorkspaceEdit.colCreated": { "vi": "Ngày tạo", "en": "Created", "ja": "作成日", "ko": "생성일", "zh": "创建时间" },
-  "templates17WorkspaceEdit.healthy": { "vi": "Bình thường", "en": "Healthy", "ja": "正常", "ko": "정상", "zh": "健康" },
-  "templates17WorkspaceEdit.degraded": { "vi": "Suy giảm", "en": "Degraded", "ja": "低下", "ko": "저하됨", "zh": "性能下降" },
-  "templates17WorkspaceEdit.tabFeedbackOverlays": { "vi": "Phản hồi & Lớp phủ", "en": "Feedback & Overlays", "ja": "フィードバックとオーバーレイ", "ko": "피드백 및 오버레이", "zh": "反馈与浮层" },
-  "templates17WorkspaceEdit.sectionAlerts": { "vi": "Cảnh báo", "en": "Alerts", "ja": "アラート", "ko": "알림", "zh": "警报" },
-  "templates17WorkspaceEdit.alertSystemUpdateTitle": { "vi": "Cập nhật hệ thống", "en": "System Update", "ja": "システムアップデート", "ko": "시스템 업데이트", "zh": "系统更新" },
-  "templates17WorkspaceEdit.alertSystemUpdateMsg": { "vi": "Đã có phiên bản mới của khung nền tảng.", "en": "A new version of the platform shell is available.", "ja": "プラットフォームシェルの新しいバージョンが利用可能です。", "ko": "플랫폼 셸의 새 버전을 사용할 수 있습니다.", "zh": "平台外壳有新版本可用。" },
-  "templates17WorkspaceEdit.alertBackupCompleteTitle": { "vi": "Sao lưu hoàn tất", "en": "Backup Complete", "ja": "バックアップ完了", "ko": "백업 완료", "zh": "备份完成" },
-  "templates17WorkspaceEdit.alertBackupCompleteMsg": { "vi": "Toàn bộ dữ liệu không gian làm việc đã được sao lưu thành công.", "en": "All workspace data has been successfully backed up.", "ja": "すべてのワークスペースデータが正常にバックアップされました。", "ko": "모든 워크스페이스 데이터가 성공적으로 백업되었습니다.", "zh": "所有工作空间数据已成功备份。" },
-  "templates17WorkspaceEdit.alertHighLatencyTitle": { "vi": "Độ trễ cao", "en": "High Latency", "ja": "高レイテンシー", "ko": "높은 지연 시간", "zh": "高延迟" },
-  "templates17WorkspaceEdit.alertHighLatencyMsg": { "vi": "Chúng tôi đang phát hiện độ trễ cao ở khu vực EU-Central.", "en": "We are detecting high latency in the EU-Central region.", "ja": "EU-Centralリージョンで高いレイテンシーを検出しています。", "ko": "EU-Central 리전에서 높은 지연 시간이 감지되고 있습니다.", "zh": "我们检测到 EU-Central 区域延迟较高。" },
-  "templates17WorkspaceEdit.alertPaymentFailedTitle": { "vi": "Thanh toán thất bại", "en": "Payment Failed", "ja": "支払い失敗", "ko": "결제 실패", "zh": "付款失败" },
-  "templates17WorkspaceEdit.alertPaymentFailedMsg": { "vi": "Không thể xử lý hoá đơn gần nhất của bạn.", "en": "Your last invoice could not be processed.", "ja": "直近の請求書を処理できませんでした。", "ko": "최근 청구서를 처리할 수 없습니다.", "zh": "您最近的账单无法处理。" },
-  "templates17WorkspaceEdit.sectionModalsDrawers": { "vi": "Hộp thoại & Ngăn kéo", "en": "Modals & Drawers", "ja": "モーダルとドロワー", "ko": "모달 및 드로어", "zh": "弹窗与抽屉" },
-  "templates17WorkspaceEdit.openModal": { "vi": "Mở hộp thoại", "en": "Open Modal", "ja": "モーダルを開く", "ko": "모달 열기", "zh": "打开弹窗" },
-  "templates17WorkspaceEdit.openDrawer": { "vi": "Mở ngăn kéo", "en": "Open Drawer", "ja": "ドロワーを開く", "ko": "드로어 열기", "zh": "打开抽屉" },
-  "templates17WorkspaceEdit.deleteWorkspaceConfirmDesc": { "vi": "Bạn có chắc chắn muốn xoá không gian làm việc này? Hành động này không thể hoàn tác.", "en": "Are you sure you want to delete this workspace? This action cannot be undone.", "ja": "このワークスペースを削除してもよろしいですか？この操作は元に戻せません。", "ko": "이 워크스페이스를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.", "zh": "确定要删除此工作空间吗？此操作无法撤销。" },
-  "templates17WorkspaceEdit.confirmDelete": { "vi": "Xác nhận xoá", "en": "Confirm Delete", "ja": "削除を確認", "ko": "삭제 확인", "zh": "确认删除" },
-  "templates17WorkspaceEdit.typeWorkspaceNameConfirmLabel": { "vi": "Nhập tên không gian làm việc để xác nhận", "en": "Type workspace name to confirm", "ja": "確認のためワークスペース名を入力", "ko": "확인을 위해 워크스페이스 이름을 입력하세요", "zh": "输入工作空间名称以确认" },
-  "templates17WorkspaceEdit.editProfile": { "vi": "Chỉnh sửa hồ sơ", "en": "Edit Profile", "ja": "プロフィールを編集", "ko": "프로필 편집", "zh": "编辑资料" },
-  "templates17WorkspaceEdit.saveChangesCapital": { "vi": "Lưu thay đổi", "en": "Save Changes", "ja": "変更を保存", "ko": "변경 사항 저장", "zh": "保存更改" },
-  "templates17WorkspaceEdit.fullNameLabel": { "vi": "Họ và tên", "en": "Full Name", "ja": "氏名", "ko": "전체 이름", "zh": "全名" },
-  "templates17WorkspaceEdit.emailLabel": { "vi": "Email", "en": "Email", "ja": "メール", "ko": "이메일", "zh": "电子邮件" },
-  "templates17WorkspaceEdit.roleLabel": { "vi": "Vai trò", "en": "Role", "ja": "役割", "ko": "역할", "zh": "角色" },
-  "templates17WorkspaceEdit.admin": { "vi": "Quản trị viên", "en": "Admin", "ja": "管理者", "ko": "관리자", "zh": "管理员" },
-  "templates17WorkspaceEdit.member": { "vi": "Thành viên", "en": "Member", "ja": "メンバー", "ko": "멤버", "zh": "成员" },
-  "templates17WorkspaceEdit.platformOverviewTitle": { "vi": "Tổng quan nền tảng", "en": "Platform Overview", "ja": "プラットフォーム概要", "ko": "플랫폼 개요", "zh": "平台概览" },
-  "templates17WorkspaceEdit.platformOverviewSubtitle": { "vi": "Theo dõi tình trạng hệ thống, mức sử dụng và hoạt động gần đây.", "en": "Monitor system health, usage, and recent activity.", "ja": "システムの状態、使用状況、最近のアクティビティを監視します。", "ko": "시스템 상태, 사용량 및 최근 활동을 모니터링합니다.", "zh": "监控系统健康状况、使用情况和最近活动。" },
-  "templates17WorkspaceEdit.refreshData": { "vi": "Làm mới dữ liệu", "en": "Refresh Data", "ja": "データを更新", "ko": "데이터 새로고침", "zh": "刷新数据" },
-  "templates17WorkspaceEdit.totalWorkspaces": { "vi": "Tổng số không gian làm việc", "en": "Total Workspaces", "ja": "総ワークスペース数", "ko": "총 워크스페이스", "zh": "工作空间总数" },
-  "templates17WorkspaceEdit.activeUsers": { "vi": "Người dùng đang hoạt động", "en": "Active Users", "ja": "アクティブユーザー", "ko": "활성 사용자", "zh": "活跃用户" },
-  "templates17WorkspaceEdit.apiRequests": { "vi": "Yêu cầu API", "en": "API Requests", "ja": "APIリクエスト", "ko": "API 요청", "zh": "API 请求" },
-  "templates17WorkspaceEdit.failedRequests": { "vi": "Yêu cầu thất bại", "en": "Failed Requests", "ja": "失敗したリクエスト", "ko": "실패한 요청", "zh": "失败请求" },
-  "templates17WorkspaceEdit.recentActivity": { "vi": "Hoạt động gần đây", "en": "Recent Activity", "ja": "最近のアクティビティ", "ko": "최근 활동", "zh": "最近活动" },
-  "templates17WorkspaceEdit.colEvent": { "vi": "Sự kiện", "en": "Event", "ja": "イベント", "ko": "이벤트", "zh": "事件" },
-  "templates17WorkspaceEdit.colTime": { "vi": "Thời gian", "en": "Time", "ja": "時間", "ko": "시간", "zh": "时间" },
-  "templates17WorkspaceEdit.activeSessionsTitle": { "vi": "Phiên đăng nhập đang hoạt động", "en": "Active Sessions", "ja": "アクティブセッション", "ko": "활성 세션", "zh": "活跃会话" },
-  "templates17WorkspaceEdit.activeSessionsSubtitle": { "vi": "Quản lý các thiết bị đang đăng nhập vào tài khoản của bạn.", "en": "Manage devices where your account is currently signed in.", "ja": "現在アカウントにサインインしているデバイスを管理します。", "ko": "현재 계정이 로그인된 기기를 관리합니다.", "zh": "管理当前登录您账户的设备。" },
-  "templates17WorkspaceEdit.signOutAll": { "vi": "Đăng xuất tất cả", "en": "Sign out all", "ja": "すべてサインアウト", "ko": "모두 로그아웃", "zh": "全部退出登录" },
-  "templates17WorkspaceEdit.manageActiveLoginsText": { "vi": "Quản lý các phiên đăng nhập đang hoạt động tại đây.", "en": "Manage active logins here.", "ja": "ここでアクティブなログインを管理します。", "ko": "여기에서 활성 로그인을 관리하세요.", "zh": "在此处管理活跃登录。" },
-  "templates17WorkspaceEdit.stepWorkspaceInfo": { "vi": "Thông tin không gian làm việc", "en": "Workspace Info", "ja": "ワークスペース情報", "ko": "워크스페이스 정보", "zh": "工作空间信息" },
-  "templates17WorkspaceEdit.stepPlanSelection": { "vi": "Chọn gói dịch vụ", "en": "Plan Selection", "ja": "プラン選択", "ko": "요금제 선택", "zh": "选择套餐" },
-  "templates17WorkspaceEdit.stepReviewCreate": { "vi": "Xem lại & Tạo", "en": "Review & Create", "ja": "確認と作成", "ko": "검토 및 생성", "zh": "审核并创建" },
-  "templates17WorkspaceEdit.errWorkspaceNameRequired": { "vi": "Tên không gian làm việc là bắt buộc", "en": "Workspace name is required", "ja": "ワークスペース名は必須です", "ko": "워크스페이스 이름은 필수입니다", "zh": "工作空间名称为必填项" },
-  "templates17WorkspaceEdit.errWorkspaceNameMinLength": { "vi": "Tên phải có ít nhất 3 ký tự", "en": "Name must be at least 3 characters", "ja": "名前は3文字以上で入力してください", "ko": "이름은 최소 3자 이상이어야 합니다", "zh": "名称至少需要 3 个字符" },
-  "templates17WorkspaceEdit.errRegionRequired": { "vi": "Vui lòng chọn khu vực triển khai", "en": "Please select a deployment region", "ja": "デプロイリージョンを選択してください", "ko": "배포 리전을 선택해 주세요", "zh": "请选择部署区域" },
-  "templates17WorkspaceEdit.createWorkspaceTitle": { "vi": "Tạo không gian làm việc", "en": "Create a Workspace", "ja": "ワークスペースを作成", "ko": "워크스페이스 생성", "zh": "创建工作空间" },
-  "templates17WorkspaceEdit.createWorkspaceSubtitle": { "vi": "Thiết lập môi trường riêng biệt mới cho nhóm của bạn chỉ trong vài phút.", "en": "Set up a new isolated environment for your team in minutes.", "ja": "数分でチーム用の新しい独立環境をセットアップできます。", "ko": "몇 분 안에 팀을 위한 새로운 격리 환경을 설정하세요.", "zh": "几分钟内为您的团队搭建全新的独立环境。" },
-  "templates17WorkspaceEdit.workspaceDetailsHeading": { "vi": "Chi tiết không gian làm việc", "en": "Workspace Details", "ja": "ワークスペースの詳細", "ko": "워크스페이스 세부 정보", "zh": "工作空间详情" },
-  "templates17WorkspaceEdit.workspaceDetailsDesc": { "vi": "Cung cấp thông tin cơ bản cho môi trường tenant mới của bạn.", "en": "Provide the basic information for your new tenant environment.", "ja": "新しいテナント環境の基本情報を入力してください。", "ko": "새 테넌트 환경의 기본 정보를 입력하세요.", "zh": "为您的新租户环境提供基本信息。" },
-  "templates17WorkspaceEdit.workspaceNamePlaceholderAcme": { "vi": "vd. Acme Corp Production", "en": "e.g. Acme Corp Production", "ja": "例：Acme Corp Production", "ko": "예: Acme Corp Production", "zh": "例如：Acme Corp Production" },
-  "templates17WorkspaceEdit.descriptionOptionalLabel": { "vi": "Mô tả (Tùy chọn)", "en": "Description (Optional)", "ja": "説明（任意）", "ko": "설명(선택 사항)", "zh": "描述（可选）" },
-  "templates17WorkspaceEdit.descriptionPlaceholder": { "vi": "Mô tả ngắn gọn mục đích của không gian làm việc này...", "en": "Briefly describe the purpose of this workspace...", "ja": "このワークスペースの目的を簡潔に説明してください...", "ko": "이 워크스페이스의 용도를 간략히 설명해 주세요...", "zh": "简要描述此工作空间的用途..." },
-  "templates17WorkspaceEdit.dataRegionLabel": { "vi": "Khu vực dữ liệu", "en": "Data Region", "ja": "データリージョン", "ko": "데이터 리전", "zh": "数据区域" },
-  "templates17WorkspaceEdit.selectRegionPlaceholder": { "vi": "Chọn khu vực triển khai...", "en": "Select deployment region...", "ja": "デプロイリージョンを選択...", "ko": "배포 리전 선택...", "zh": "选择部署区域..." },
-  "templates17WorkspaceEdit.selectPlanHeading": { "vi": "Chọn gói dịch vụ", "en": "Select a Plan", "ja": "プランを選択", "ko": "요금제 선택", "zh": "选择套餐" },
-  "templates17WorkspaceEdit.selectPlanDesc": { "vi": "Chọn gói phù hợp với nhu cầu của không gian làm việc.", "en": "Choose the right tier for your workspace requirements.", "ja": "ワークスペースの要件に合ったプランを選択してください。", "ko": "워크스페이스 요구 사항에 맞는 요금제를 선택하세요.", "zh": "根据工作空间需求选择合适的套餐。" },
-  "templates17WorkspaceEdit.freeTier": { "vi": "Gói miễn phí", "en": "Free Tier", "ja": "無料プラン", "ko": "무료 요금제", "zh": "免费套餐" },
-  "templates17WorkspaceEdit.freeTierDesc": { "vi": "10.000 yêu cầu API/tháng, 5GB lưu trữ. Phù hợp để thử nghiệm.", "en": "10,000 API reqs/mo, 5GB storage. Best for testing.", "ja": "月間10,000 APIリクエスト、5GBストレージ。テストに最適です。", "ko": "월 10,000 API 요청, 5GB 스토리지. 테스트에 적합합니다.", "zh": "每月 10,000 次 API 请求，5GB 存储。适合测试。" },
-  "templates17WorkspaceEdit.proTierName": { "vi": "Pro", "en": "Pro", "ja": "Pro", "ko": "Pro", "zh": "Pro" },
-  "templates17WorkspaceEdit.proTierDesc": { "vi": "50.000 yêu cầu API/tháng, 50GB lưu trữ, hỗ trợ qua email.", "en": "50,000 API reqs/mo, 50GB storage, email support.", "ja": "月間50,000 APIリクエスト、50GBストレージ、メールサポート。", "ko": "월 50,000 API 요청, 50GB 스토리지, 이메일 지원.", "zh": "每月 50,000 次 API 请求，50GB 存储，邮件支持。" },
-  "templates17WorkspaceEdit.enterpriseTierName": { "vi": "Enterprise", "en": "Enterprise", "ja": "Enterprise", "ko": "Enterprise", "zh": "Enterprise" },
-  "templates17WorkspaceEdit.enterpriseTierDesc": { "vi": "Không giới hạn yêu cầu, 500GB lưu trữ, SLA ưu tiên 24/7.", "en": "Unlimited reqs, 500GB storage, 24/7 priority SLA.", "ja": "無制限リクエスト、500GBストレージ、24時間優先SLA。", "ko": "무제한 요청, 500GB 스토리지, 24/7 우선 SLA.", "zh": "无限请求，500GB 存储，24/7 优先 SLA。" },
-  "templates17WorkspaceEdit.recommended": { "vi": "Đề xuất", "en": "Recommended", "ja": "おすすめ", "ko": "추천", "zh": "推荐" },
-  "templates17WorkspaceEdit.reviewCreateHeading": { "vi": "Xem lại & Tạo", "en": "Review & Create", "ja": "確認と作成", "ko": "검토 및 생성", "zh": "审核并创建" },
-  "templates17WorkspaceEdit.reviewCreateDesc": { "vi": "Vui lòng xác nhận cấu hình không gian làm việc trước khi cấp phát.", "en": "Please confirm your workspace configuration before provisioning.", "ja": "プロビジョニング前にワークスペースの構成をご確認ください。", "ko": "프로비저닝 전에 워크스페이스 구성을 확인해 주세요.", "zh": "请在配置资源前确认您的工作空间设置。" },
-  "templates17WorkspaceEdit.noneProvided": { "vi": "Không có", "en": "None provided", "ja": "未入力", "ko": "제공되지 않음", "zh": "未提供" },
-  "templates17WorkspaceEdit.regionLabel": { "vi": "Khu vực", "en": "Region", "ja": "リージョン", "ko": "리전", "zh": "区域" },
-  "templates17WorkspaceEdit.none": { "vi": "Không có", "en": "None", "ja": "なし", "ko": "없음", "zh": "无" },
-  "templates17WorkspaceEdit.selectedPlanLabel": { "vi": "Gói đã chọn", "en": "Selected Plan", "ja": "選択したプラン", "ko": "선택한 요금제", "zh": "已选套餐" },
-  "templates17WorkspaceEdit.tierSuffix": { "vi": "gói", "en": "Tier", "ja": "プラン", "ko": "요금제", "zh": "套餐" },
-  "templates17WorkspaceEdit.readyToProvisionTitle": { "vi": "Sẵn sàng cấp phát", "en": "Ready to provision", "ja": "プロビジョニング準備完了", "ko": "프로비저닝 준비 완료", "zh": "已准备好进行配置" },
-  "templates17WorkspaceEdit.readyToProvisionMsg": { "vi": "Việc tạo không gian làm việc sẽ ngay lập tức cấp phát hạ tầng riêng biệt tại khu vực bạn đã chọn.", "en": "Creating a workspace will instantly provision isolated infrastructure in your selected region.", "ja": "ワークスペースを作成すると、選択したリージョンに分離されたインフラストラクチャが即座にプロビジョニングされます。", "ko": "워크스페이스를 생성하면 선택한 리전에 격리된 인프라가 즉시 프로비저닝됩니다.", "zh": "创建工作空间将立即在您选择的区域配置独立的基础设施。" },
-  "templates17WorkspaceEdit.back": { "vi": "Quay lại", "en": "Back", "ja": "戻る", "ko": "뒤로", "zh": "返回" },
-  "templates17WorkspaceEdit.continueBtn": { "vi": "Tiếp tục", "en": "Continue", "ja": "続ける", "ko": "계속", "zh": "继续" },
-  "templates17WorkspaceEdit.createWorkspaceBtn": { "vi": "Tạo không gian làm việc", "en": "Create Workspace", "ja": "ワークスペースを作成", "ko": "워크스페이스 생성", "zh": "创建工作空间" },
-  "templates17WorkspaceEdit.editDetails": { "vi": "Chỉnh sửa chi tiết", "en": "Edit details", "ja": "詳細を編集", "ko": "세부 정보 편집", "zh": "编辑详情" },
-  "templates17WorkspaceEdit.manageMembers": { "vi": "Quản lý thành viên", "en": "Manage members", "ja": "メンバーを管理", "ko": "멤버 관리", "zh": "管理成员" },
-  "templates17WorkspaceEdit.auditLogs": { "vi": "Nhật ký kiểm tra", "en": "Audit logs", "ja": "監査ログ", "ko": "감사 로그", "zh": "审计日志" },
-  "templates17WorkspaceEdit.statusLabel": { "vi": "Trạng thái", "en": "Status", "ja": "ステータス", "ko": "상태", "zh": "状态" },
-  "templates17WorkspaceEdit.active": { "vi": "Đang hoạt động", "en": "Active", "ja": "アクティブ", "ko": "활성", "zh": "活跃" },
-  "templates17WorkspaceEdit.planLabel": { "vi": "Gói dịch vụ", "en": "Plan", "ja": "プラン", "ko": "요금제", "zh": "套餐" },
-  "templates17WorkspaceEdit.createdLabel": { "vi": "Ngày tạo", "en": "Created", "ja": "作成日", "ko": "생성일", "zh": "创建时间" },
-  "templates17WorkspaceEdit.ownerLabel": { "vi": "Chủ sở hữu", "en": "Owner", "ja": "オーナー", "ko": "소유자", "zh": "所有者" },
-  "templates17WorkspaceEdit.apiRequestsToday": { "vi": "Yêu cầu API (Hôm nay)", "en": "API Requests (Today)", "ja": "APIリクエスト（本日）", "ko": "API 요청(오늘)", "zh": "API 请求（今日）" },
-  "templates17WorkspaceEdit.storageUsed": { "vi": "Dung lượng đã dùng", "en": "Storage Used", "ja": "使用済みストレージ", "ko": "사용된 스토리지", "zh": "已用存储" },
-  "templates17WorkspaceEdit.tabOverview": { "vi": "Tổng quan", "en": "Overview", "ja": "概要", "ko": "개요", "zh": "概览" },
-  "templates17WorkspaceEdit.viewAllLogs": { "vi": "Xem tất cả nhật ký", "en": "View all logs", "ja": "すべてのログを表示", "ko": "모든 로그 보기", "zh": "查看所有日志" },
-  "templates17WorkspaceEdit.colActor": { "vi": "Người thực hiện", "en": "Actor", "ja": "実行者", "ko": "작업자", "zh": "操作人" },
-  "templates17WorkspaceEdit.alertsHeading": { "vi": "Cảnh báo", "en": "Alerts", "ja": "アラート", "ko": "알림", "zh": "警报" },
-  "templates17WorkspaceEdit.noIssuesMsg": { "vi": "Không phát hiện sự cố nào cho không gian làm việc này.", "en": "No issues detected for this workspace.", "ja": "このワークスペースで問題は検出されていません。", "ko": "이 워크스페이스에서 문제가 감지되지 않았습니다.", "zh": "未在此工作空间检测到问题。" },
-  "templates17WorkspaceEdit.quickActionsHeading": { "vi": "Thao tác nhanh", "en": "Quick Actions", "ja": "クイックアクション", "ko": "빠른 작업", "zh": "快捷操作" },
-  "templates17WorkspaceEdit.generateApiKey": { "vi": "Tạo khoá API", "en": "Generate API Key", "ja": "APIキーを生成", "ko": "API 키 생성", "zh": "生成 API 密钥" },
-  "templates17WorkspaceEdit.inviteUser": { "vi": "Mời người dùng", "en": "Invite User", "ja": "ユーザーを招待", "ko": "사용자 초대", "zh": "邀请用户" },
-  "templates17WorkspaceEdit.manageBilling": { "vi": "Quản lý thanh toán", "en": "Manage Billing", "ja": "請求を管理", "ko": "청구 관리", "zh": "管理账单" },
-  "templates17WorkspaceEdit.tabActivity": { "vi": "Hoạt động", "en": "Activity", "ja": "アクティビティ", "ko": "활동", "zh": "活动" },
-  "templates17WorkspaceEdit.colResource": { "vi": "Tài nguyên", "en": "Resource", "ja": "リソース", "ko": "리소스", "zh": "资源" },
-  "templates17WorkspaceEdit.tabUsage": { "vi": "Mức sử dụng", "en": "Usage", "ja": "使用状況", "ko": "사용량", "zh": "使用情况" },
-  "templates17WorkspaceEdit.apiCallsHeading": { "vi": "Lượt gọi API", "en": "API Calls", "ja": "API呼び出し", "ko": "API 호출", "zh": "API 调用" },
-  "templates17WorkspaceEdit.last30Days": { "vi": "30 ngày qua", "en": "Last 30 days", "ja": "過去30日間", "ko": "지난 30일", "zh": "过去 30 天" },
-  "templates17WorkspaceEdit.enterpriseLimit20m": { "vi": "12% giới hạn gói Enterprise (20M)", "en": "12% of Enterprise Limit (20M)", "ja": "Enterprise制限の12%（2,000万）", "ko": "Enterprise 한도의 12%(2,000만)", "zh": "占 Enterprise 限额的 12%（2000万）" },
-  "templates17WorkspaceEdit.storageHeading": { "vi": "Lưu trữ", "en": "Storage", "ja": "ストレージ", "ko": "스토리지", "zh": "存储" },
-  "templates17WorkspaceEdit.currentUsage": { "vi": "Mức sử dụng hiện tại", "en": "Current usage", "ja": "現在の使用状況", "ko": "현재 사용량", "zh": "当前使用量" },
-  "templates17WorkspaceEdit.enterpriseLimit500gb": { "vi": "16% giới hạn gói Enterprise (500 GB)", "en": "16% of Enterprise Limit (500 GB)", "ja": "Enterprise制限の16%（500GB）", "ko": "Enterprise 한도의 16%(500GB)", "zh": "占 Enterprise 限额的 16%（500GB）" },
-  "templates17WorkspaceEdit.keysAlertTitle": { "vi": "Khoá", "en": "Keys", "ja": "キー", "ko": "키", "zh": "密钥" },
-  "templates17WorkspaceEdit.manageApiKeysHereMsg": { "vi": "Quản lý khoá API tại đây.", "en": "Manage API keys here.", "ja": "ここでAPIキーを管理します。", "ko": "여기에서 API 키를 관리하세요.", "zh": "在此处管理 API 密钥。" },
-  "templates17WorkspaceEdit.tabMembers": { "vi": "Thành viên", "en": "Members", "ja": "メンバー", "ko": "멤버", "zh": "成员" },
-  "templates17WorkspaceEdit.workspaceMembersHeading": { "vi": "Thành viên không gian làm việc", "en": "Workspace Members", "ja": "ワークスペースメンバー", "ko": "워크스페이스 멤버", "zh": "工作空间成员" },
-  "templates17WorkspaceEdit.manageActiveMembersDesc": { "vi": "Quản lý thành viên đang hoạt động và vai trò.", "en": "Manage active members and roles.", "ja": "アクティブなメンバーと役割を管理します。", "ko": "활성 멤버와 역할을 관리합니다.", "zh": "管理活跃成员和角色。" },
-  "templates17WorkspaceEdit.openMembersManagement": { "vi": "Mở trang quản lý thành viên", "en": "Open Members Management", "ja": "メンバー管理を開く", "ko": "멤버 관리 열기", "zh": "打开成员管理" },
-  "templates17WorkspaceEdit.viewDetails": { "vi": "Xem chi tiết", "en": "View details", "ja": "詳細を表示", "ko": "세부 정보 보기", "zh": "查看详情" },
-  "templates17WorkspaceEdit.editWorkspace": { "vi": "Chỉnh sửa không gian làm việc", "en": "Edit workspace", "ja": "ワークスペースを編集", "ko": "워크스페이스 편집", "zh": "编辑工作空间" },
-  "templates17WorkspaceEdit.delete": { "vi": "Xoá", "en": "Delete", "ja": "削除", "ko": "삭제", "zh": "删除" },
-  "templates17WorkspaceEdit.workspacesSubtitle": { "vi": "Quản lý toàn bộ môi trường tenant và quyền truy cập.", "en": "Manage all tenant environments and access.", "ja": "すべてのテナント環境とアクセスを管理します。", "ko": "모든 테넌트 환경과 액세스를 관리합니다.", "zh": "管理所有租户环境和访问权限。" },
-  "templates17WorkspaceEdit.import": { "vi": "Nhập", "en": "Import", "ja": "インポート", "ko": "가져오기", "zh": "导入" },
-  "templates17WorkspaceEdit.createWorkspaceAction": { "vi": "Tạo không gian làm việc", "en": "Create workspace", "ja": "ワークスペースを作成", "ko": "워크스페이스 생성", "zh": "创建工作空间" },
-  "templates17WorkspaceEdit.searchWorkspacesPlaceholder": { "vi": "Tìm kiếm không gian làm việc...", "en": "Search workspaces...", "ja": "ワークスペースを検索...", "ko": "워크스페이스 검색...", "zh": "搜索工作空间..." },
-  "templates17WorkspaceEdit.allStatuses": { "vi": "Tất cả trạng thái", "en": "All Statuses", "ja": "すべてのステータス", "ko": "모든 상태", "zh": "所有状态" },
-  "templates17WorkspaceEdit.suspended": { "vi": "Đã tạm ngừng", "en": "Suspended", "ja": "一時停止中", "ko": "일시 중지됨", "zh": "已暂停" },
-  "templates17WorkspaceEdit.statusPlaceholder": { "vi": "Trạng thái", "en": "Status", "ja": "ステータス", "ko": "상태", "zh": "状态" },
-  "templates17WorkspaceEdit.allPlans": { "vi": "Tất cả gói", "en": "All Plans", "ja": "すべてのプラン", "ko": "모든 요금제", "zh": "所有套餐" },
-  "templates17WorkspaceEdit.free": { "vi": "Miễn phí", "en": "Free", "ja": "無料", "ko": "무료", "zh": "免费" },
-  "templates17WorkspaceEdit.pro": { "vi": "Pro", "en": "Pro", "ja": "Pro", "ko": "Pro", "zh": "Pro" },
-  "templates17WorkspaceEdit.planPlaceholder": { "vi": "Gói dịch vụ", "en": "Plan", "ja": "プラン", "ko": "요금제", "zh": "套餐" },
-  "templates17WorkspaceEdit.clearFilters": { "vi": "Xoá bộ lọc", "en": "Clear filters", "ja": "フィルターをクリア", "ko": "필터 지우기", "zh": "清除筛选" },
-  "templates17WorkspaceEdit.colOwner": { "vi": "Chủ sở hữu", "en": "Owner", "ja": "オーナー", "ko": "소유자", "zh": "所有者" },
-  "templates17WorkspaceEdit.colMembers": { "vi": "Thành viên", "en": "Members", "ja": "メンバー", "ko": "멤버", "zh": "成员" },
-  "templates17WorkspaceEdit.colUsage": { "vi": "Mức sử dụng", "en": "Usage", "ja": "使用状況", "ko": "사용량", "zh": "使用情况" },
-  "templates17WorkspaceEdit.percentUsedSuffix": { "vi": "đã dùng", "en": "used", "ja": "使用済み", "ko": "사용됨", "zh": "已用" },
-  "templates17WorkspaceEdit.approachingLimit": { "vi": "Sắp đạt giới hạn", "en": "Approaching limit", "ja": "上限に近づいています", "ko": "한도에 근접함", "zh": "接近限额" },
-  "templates17WorkspaceEdit.billingUsageTitle": { "vi": "Thanh toán & Mức sử dụng", "en": "Billing & Usage", "ja": "請求と使用状況", "ko": "청구 및 사용량", "zh": "账单与使用情况" },
-  "templates17WorkspaceEdit.billingUsageSubtitle": { "vi": "Quản lý gói đăng ký, theo dõi mức sử dụng và xem hoá đơn.", "en": "Manage your subscription, monitor usage, and view invoices.", "ja": "サブスクリプションの管理、使用状況の監視、請求書の確認ができます。", "ko": "구독 관리, 사용량 모니터링, 청구서 확인을 할 수 있습니다.", "zh": "管理您的订阅、监控使用情况并查看账单。" },
-  "templates17WorkspaceEdit.downloadAll": { "vi": "Tải xuống tất cả", "en": "Download all", "ja": "すべてダウンロード", "ko": "모두 다운로드", "zh": "全部下载" },
-  "templates17WorkspaceEdit.upgradePlan": { "vi": "Nâng cấp gói", "en": "Upgrade plan", "ja": "プランをアップグレード", "ko": "요금제 업그레이드", "zh": "升级套餐" },
-  "templates17WorkspaceEdit.currentPlanSection": { "vi": "Gói hiện tại", "en": "Current Plan", "ja": "現在のプラン", "ko": "현재 요금제", "zh": "当前套餐" },
-  "templates17WorkspaceEdit.proTierHeading": { "vi": "Gói Pro", "en": "Pro Tier", "ja": "Proプラン", "ko": "Pro 요금제", "zh": "Pro 套餐" },
-  "templates17WorkspaceEdit.nextBillingDatePrefix": { "vi": "Ngày thanh toán tiếp theo là", "en": "Next billing date is", "ja": "次回請求日：", "ko": "다음 청구일은", "zh": "下次账单日期为" },
-  "templates17WorkspaceEdit.cancelPlan": { "vi": "Huỷ gói", "en": "Cancel Plan", "ja": "プランをキャンセル", "ko": "요금제 취소", "zh": "取消套餐" },
-  "templates17WorkspaceEdit.changePlan": { "vi": "Đổi gói", "en": "Change Plan", "ja": "プランを変更", "ko": "요금제 변경", "zh": "更改套餐" },
-  "templates17WorkspaceEdit.currentUsageSection": { "vi": "Mức sử dụng hiện tại", "en": "Current Usage", "ja": "現在の使用状況", "ko": "현재 사용량", "zh": "当前使用情况" },
-  "templates17WorkspaceEdit.invoicesSection": { "vi": "Hoá đơn", "en": "Invoices", "ja": "請求書", "ko": "청구서", "zh": "账单" },
-  "templates17WorkspaceEdit.yearPlaceholder": { "vi": "Năm", "en": "Year", "ja": "年", "ko": "연도", "zh": "年份" },
-  "templates17WorkspaceEdit.colInvoiceId": { "vi": "Mã hoá đơn", "en": "Invoice ID", "ja": "請求書ID", "ko": "청구서 ID", "zh": "账单编号" },
-  "templates17WorkspaceEdit.colDate": { "vi": "Ngày", "en": "Date", "ja": "日付", "ko": "날짜", "zh": "日期" },
-  "templates17WorkspaceEdit.colAmount": { "vi": "Số tiền", "en": "Amount", "ja": "金額", "ko": "금액", "zh": "金额" },
-  "templates17WorkspaceEdit.upgradePlanModalTitle": { "vi": "Nâng cấp gói", "en": "Upgrade Plan", "ja": "プランをアップグレード", "ko": "요금제 업그레이드", "zh": "升级套餐" },
-  "templates17WorkspaceEdit.upgradePlanModalDesc": { "vi": "Chọn gói phù hợp nhất với nhu cầu của nhóm bạn.", "en": "Select a tier that best suits your team's needs.", "ja": "チームのニーズに最適なプランを選択してください。", "ko": "팀에 가장 적합한 요금제를 선택하세요.", "zh": "选择最适合您团队需求的套餐。" },
-  "templates17WorkspaceEdit.featureApiReqs10k": { "vi": "10.000 yêu cầu API/tháng", "en": "10,000 API reqs/mo", "ja": "月間10,000 APIリクエスト", "ko": "월 10,000 API 요청", "zh": "每月 10,000 次 API 请求" },
-  "templates17WorkspaceEdit.feature5gbStorage": { "vi": "5 GB lưu trữ", "en": "5 GB Storage", "ja": "5GBストレージ", "ko": "5GB 스토리지", "zh": "5GB 存储" },
-  "templates17WorkspaceEdit.feature3TeamMembers": { "vi": "3 thành viên nhóm", "en": "3 Team Members", "ja": "3名のチームメンバー", "ko": "팀원 3명", "zh": "3 名团队成员" },
-  "templates17WorkspaceEdit.downgrade": { "vi": "Hạ cấp", "en": "Downgrade", "ja": "ダウングレード", "ko": "다운그레이드", "zh": "降级" },
-  "templates17WorkspaceEdit.current": { "vi": "Hiện tại", "en": "Current", "ja": "現在", "ko": "현재", "zh": "当前" },
-  "templates17WorkspaceEdit.featureApiReqs50k": { "vi": "50.000 yêu cầu API/tháng", "en": "50,000 API reqs/mo", "ja": "月間50,000 APIリクエスト", "ko": "월 50,000 API 요청", "zh": "每月 50,000 次 API 请求" },
-  "templates17WorkspaceEdit.feature50gbStorage": { "vi": "50 GB lưu trữ", "en": "50 GB Storage", "ja": "50GBストレージ", "ko": "50GB 스토리지", "zh": "50GB 存储" },
-  "templates17WorkspaceEdit.feature10TeamMembers": { "vi": "10 thành viên nhóm", "en": "10 Team Members", "ja": "10名のチームメンバー", "ko": "팀원 10명", "zh": "10 名团队成员" },
-  "templates17WorkspaceEdit.featureEmailSupport": { "vi": "Hỗ trợ qua email", "en": "Email Support", "ja": "メールサポート", "ko": "이메일 지원", "zh": "邮件支持" },
-  "templates17WorkspaceEdit.currentPlanBtn": { "vi": "Gói hiện tại", "en": "Current Plan", "ja": "現在のプラン", "ko": "현재 요금제", "zh": "当前套餐" },
-  "templates17WorkspaceEdit.featureUnlimitedApiReqs": { "vi": "Không giới hạn yêu cầu API", "en": "Unlimited API reqs", "ja": "無制限APIリクエスト", "ko": "무제한 API 요청", "zh": "无限 API 请求" },
-  "templates17WorkspaceEdit.feature500gbStorage": { "vi": "500 GB lưu trữ", "en": "500 GB Storage", "ja": "500GBストレージ", "ko": "500GB 스토리지", "zh": "500GB 存储" },
-  "templates17WorkspaceEdit.featureUnlimitedMembers": { "vi": "Không giới hạn thành viên", "en": "Unlimited Members", "ja": "無制限メンバー", "ko": "무제한 멤버", "zh": "无限成员" },
-  "templates17WorkspaceEdit.featurePrioritySupport": { "vi": "Hỗ trợ ưu tiên & SLA", "en": "Priority Support & SLAs", "ja": "優先サポートとSLA", "ko": "우선 지원 및 SLA", "zh": "优先支持与 SLA" },
-  "templates17WorkspaceEdit.upgrade": { "vi": "Nâng cấp", "en": "Upgrade", "ja": "アップグレード", "ko": "업그레이드", "zh": "升级" },
-  "templates17WorkspaceEdit.cancelSubscriptionTitle": { "vi": "Huỷ gói đăng ký", "en": "Cancel Subscription", "ja": "サブスクリプションをキャンセル", "ko": "구독 취소", "zh": "取消订阅" },
-  "templates17WorkspaceEdit.cancelSubscriptionDesc": { "vi": "Bạn có chắc chắn muốn huỷ gói Pro? Không gian làm việc của bạn sẽ bị hạ xuống gói miễn phí vào cuối chu kỳ thanh toán hiện tại.", "en": "Are you sure you want to cancel your Pro plan? Your workspace will be downgraded to the Free tier at the end of the current billing cycle.", "ja": "Proプランをキャンセルしてもよろしいですか？現在の請求サイクル終了時に、ワークスペースは無料プランにダウングレードされます。", "ko": "Pro 요금제를 취소하시겠습니까? 현재 청구 주기가 끝나면 워크스페이스가 무료 요금제로 다운그레이드됩니다.", "zh": "确定要取消 Pro 套餐吗？您的工作空间将在当前账单周期结束时降级为免费套餐。" },
-  "templates17WorkspaceEdit.keepPlan": { "vi": "Giữ gói hiện tại", "en": "Keep Plan", "ja": "プランを維持", "ko": "요금제 유지", "zh": "保留套餐" },
-  "templates17WorkspaceEdit.confirmCancellation": { "vi": "Xác nhận huỷ", "en": "Confirm Cancellation", "ja": "キャンセルを確認", "ko": "취소 확인", "zh": "确认取消" },
-  "templates17WorkspaceEdit.downgradeWarningMsg": { "vi": "Việc hạ cấp sẽ giảm giới hạn của bạn xuống còn 10.000 yêu cầu API và 5 GB lưu trữ. Các tài nguyên vượt quá giới hạn này có thể không còn khả dụng.", "en": "Downgrading will reduce your limits to 10,000 API requests and 5 GB storage. Any resources exceeding these limits may become unavailable.", "ja": "ダウングレードすると、制限が10,000 APIリクエストと5GBストレージに減少します。これらの制限を超えるリソースは利用できなくなる場合があります。", "ko": "다운그레이드하면 한도가 10,000 API 요청과 5GB 스토리지로 줄어듭니다. 이 한도를 초과하는 리소스는 사용할 수 없게 될 수 있습니다.", "zh": "降级后，您的限额将减少至 10,000 次 API 请求和 5GB 存储。超出限额的资源可能无法使用。" },
-  "templates17WorkspaceEdit.moduleSuffix": { "vi": "mô-đun", "en": "module", "ja": "モジュール", "ko": "모듈", "zh": "模块" },
-  "templates17WorkspaceEdit.moduleDesignSubtitle": { "vi": "Phần này của nền tảng hiện đang được thiết kế.", "en": "This section of the platform is currently being designed.", "ja": "プラットフォームのこのセクションは現在設計中です。", "ko": "플랫폼의 이 섹션은 현재 설계 중입니다.", "zh": "平台的这一部分正在设计中。" },
-  "templates17WorkspaceEdit.workInProgress": { "vi": "Đang xây dựng", "en": "Work in Progress", "ja": "作業中", "ko": "작업 진행 중", "zh": "建设中" },
-  "templates17WorkspaceEdit.contentForRoutePrefix": { "vi": "Nội dung cho", "en": "Content for", "ja": "コンテンツ：", "ko": "다음에 대한 콘텐츠:", "zh": "内容：" },
-  "templates17WorkspaceEdit.contentForRouteSuffix": { "vi": "sẽ được hiển thị tại đây bên trong Shell Wrapper.", "en": "will populate here inside the Shell Wrapper.", "ja": "がShell Wrapper内にここに表示されます。", "ko": "이(가) Shell Wrapper 내부에 여기에 표시됩니다.", "zh": "将在 Shell Wrapper 内的此处填充。" }
+  "templates17WorkspaceEdit.selectDefaultPlaceholder": {
+    "vi": "Chọn một tùy chọn",
+    "en": "Select an option",
+    "ja": "オプションを選択",
+    "ko": "옵션 선택",
+    "zh": "选择一个选项"
+  },
+  "templates17WorkspaceEdit.datePickerDefaultPlaceholder": {
+    "vi": "Chọn một ngày",
+    "en": "Pick a date",
+    "ja": "日付を選択",
+    "ko": "날짜 선택",
+    "zh": "选择日期"
+  },
+  "templates17WorkspaceEdit.calendarMonthLabel": {
+    "vi": "Tháng 10, 2026",
+    "en": "October 2026",
+    "ja": "2026年10月",
+    "ko": "2026년 10월",
+    "zh": "2026年10月"
+  },
+  "templates17WorkspaceEdit.weekdaySu": {
+    "vi": "CN",
+    "en": "Su",
+    "ja": "日",
+    "ko": "일",
+    "zh": "日"
+  },
+  "templates17WorkspaceEdit.weekdayMo": {
+    "vi": "T2",
+    "en": "Mo",
+    "ja": "月",
+    "ko": "월",
+    "zh": "一"
+  },
+  "templates17WorkspaceEdit.weekdayTu": {
+    "vi": "T3",
+    "en": "Tu",
+    "ja": "火",
+    "ko": "화",
+    "zh": "二"
+  },
+  "templates17WorkspaceEdit.weekdayWe": {
+    "vi": "T4",
+    "en": "We",
+    "ja": "水",
+    "ko": "수",
+    "zh": "三"
+  },
+  "templates17WorkspaceEdit.weekdayTh": {
+    "vi": "T5",
+    "en": "Th",
+    "ja": "木",
+    "ko": "목",
+    "zh": "四"
+  },
+  "templates17WorkspaceEdit.weekdayFr": {
+    "vi": "T6",
+    "en": "Fr",
+    "ja": "金",
+    "ko": "금",
+    "zh": "五"
+  },
+  "templates17WorkspaceEdit.weekdaySa": {
+    "vi": "T7",
+    "en": "Sa",
+    "ja": "土",
+    "ko": "토",
+    "zh": "六"
+  },
+  "templates17WorkspaceEdit.noResultsFound": {
+    "vi": "Không tìm thấy kết quả",
+    "en": "No results found",
+    "ja": "結果が見つかりません",
+    "ko": "결과를 찾을 수 없습니다",
+    "zh": "未找到结果"
+  },
+  "templates17WorkspaceEdit.tryAdjustingFilters": {
+    "vi": "Hãy thử điều chỉnh bộ lọc",
+    "en": "Try adjusting your filters",
+    "ja": "フィルターを調整してみてください",
+    "ko": "필터를 조정해 보세요",
+    "zh": "请尝试调整筛选条件"
+  },
+  "templates17WorkspaceEdit.showingResults": {
+    "vi": "Hiển thị 1 đến {count} trong {count} kết quả",
+    "en": "Showing 1 to {count} of {count} results",
+    "ja": "{count} 件中 1〜{count} 件を表示",
+    "ko": "{count}개 중 1~{count}개 표시",
+    "zh": "显示第 1 到 {count} 条，共 {count} 条结果"
+  },
+  "templates17WorkspaceEdit.previous": {
+    "vi": "Trước",
+    "en": "Previous",
+    "ja": "前へ",
+    "ko": "이전",
+    "zh": "上一页"
+  },
+  "templates17WorkspaceEdit.next": {
+    "vi": "Sau",
+    "en": "Next",
+    "ja": "次へ",
+    "ko": "다음",
+    "zh": "下一页"
+  },
+  "templates17WorkspaceEdit.notifications": {
+    "vi": "Thông báo",
+    "en": "Notifications",
+    "ja": "通知",
+    "ko": "알림",
+    "zh": "通知"
+  },
+  "templates17WorkspaceEdit.securitySessions": {
+    "vi": "Bảo mật & Phiên đăng nhập",
+    "en": "Security & Sessions",
+    "ja": "セキュリティとセッション",
+    "ko": "보안 및 세션",
+    "zh": "安全与会话"
+  },
+  "templates17WorkspaceEdit.signOut": {
+    "vi": "Đăng xuất",
+    "en": "Sign out",
+    "ja": "サインアウト",
+    "ko": "로그아웃",
+    "zh": "退出登录"
+  },
+  "templates17WorkspaceEdit.breadcrumbPlatform": {
+    "vi": "Nền tảng",
+    "en": "Platform",
+    "ja": "プラットフォーム",
+    "ko": "플랫폼",
+    "zh": "平台"
+  },
+  "templates17WorkspaceEdit.searchPlaceholder": {
+    "vi": "Tìm kiếm...",
+    "en": "Search...",
+    "ja": "検索...",
+    "ko": "검색...",
+    "zh": "搜索..."
+  },
+  "templates17WorkspaceEdit.newWorkspaceButton": {
+    "vi": "Không gian làm việc",
+    "en": "Workspace",
+    "ja": "ワークスペース",
+    "ko": "워크스페이스",
+    "zh": "工作空间"
+  },
+  "templates17WorkspaceEdit.mainNavigationAriaLabel": {
+    "vi": "Điều hướng chính",
+    "en": "Main Navigation",
+    "ja": "メインナビゲーション",
+    "ko": "메인 내비게이션",
+    "zh": "主导航"
+  },
+  "templates17WorkspaceEdit.collapseSidebar": {
+    "vi": "Thu gọn thanh bên",
+    "en": "Collapse sidebar",
+    "ja": "サイドバーを折りたたむ",
+    "ko": "사이드바 접기",
+    "zh": "收起侧边栏"
+  },
+  "templates17WorkspaceEdit.navGroupMain": {
+    "vi": "Chính",
+    "en": "Main",
+    "ja": "メイン",
+    "ko": "메인",
+    "zh": "主要"
+  },
+  "templates17WorkspaceEdit.navGroupManagement": {
+    "vi": "Quản lý",
+    "en": "Management",
+    "ja": "管理",
+    "ko": "관리",
+    "zh": "管理"
+  },
+  "templates17WorkspaceEdit.navGroupSystem": {
+    "vi": "Hệ thống",
+    "en": "System",
+    "ja": "システム",
+    "ko": "시스템",
+    "zh": "系统"
+  },
+  "templates17WorkspaceEdit.navPlatformHealth": {
+    "vi": "Tình trạng nền tảng",
+    "en": "Platform Health",
+    "ja": "プラットフォームの状態",
+    "ko": "플랫폼 상태",
+    "zh": "平台健康状况"
+  },
+  "templates17WorkspaceEdit.navWorkspaces": {
+    "vi": "Không gian làm việc",
+    "en": "Workspaces",
+    "ja": "ワークスペース",
+    "ko": "워크스페이스",
+    "zh": "工作空间"
+  },
+  "templates17WorkspaceEdit.navApiKeys": {
+    "vi": "Khóa API",
+    "en": "API Keys",
+    "ja": "APIキー",
+    "ko": "API 키",
+    "zh": "API 密钥"
+  },
+  "templates17WorkspaceEdit.navBilling": {
+    "vi": "Thanh toán",
+    "en": "Billing",
+    "ja": "請求",
+    "ko": "청구",
+    "zh": "账单"
+  },
+  "templates17WorkspaceEdit.navAdmins": {
+    "vi": "Quản trị viên",
+    "en": "Admins",
+    "ja": "管理者",
+    "ko": "관리자",
+    "zh": "管理员"
+  },
+  "templates17WorkspaceEdit.navComponentLibrary": {
+    "vi": "Thư viện thành phần",
+    "en": "Component Library",
+    "ja": "コンポーネントライブラリ",
+    "ko": "컴포넌트 라이브러리",
+    "zh": "组件库"
+  },
+  "templates17WorkspaceEdit.breadcrumbWorkspaceOverview": {
+    "vi": "Không gian làm việc / Tổng quan",
+    "en": "Workspaces / Overview",
+    "ja": "ワークスペース / 概要",
+    "ko": "워크스페이스 / 개요",
+    "zh": "工作空间 / 概览"
+  },
+  "templates17WorkspaceEdit.breadcrumbWorkspaceMembers": {
+    "vi": "Không gian làm việc / Thành viên",
+    "en": "Workspaces / Members",
+    "ja": "ワークスペース / メンバー",
+    "ko": "워크스페이스 / 멤버",
+    "zh": "工作空间 / 成员"
+  },
+  "templates17WorkspaceEdit.breadcrumbWorkspaceBilling": {
+    "vi": "Không gian làm việc / Thanh toán",
+    "en": "Workspaces / Billing",
+    "ja": "ワークスペース / 請求",
+    "ko": "워크스페이스 / 청구",
+    "zh": "工作空间 / 账单"
+  },
+  "templates17WorkspaceEdit.breadcrumbWorkspaceAuditLogs": {
+    "vi": "Không gian làm việc / Nhật ký kiểm tra",
+    "en": "Workspaces / Audit Logs",
+    "ja": "ワークスペース / 監査ログ",
+    "ko": "워크스페이스 / 감사 로그",
+    "zh": "工作空间 / 审计日志"
+  },
+  "templates17WorkspaceEdit.breadcrumbWorkspaceNew": {
+    "vi": "Không gian làm việc / Không gian làm việc mới",
+    "en": "Workspaces / New Workspace",
+    "ja": "ワークスペース / 新規ワークスペース",
+    "ko": "워크스페이스 / 새 워크스페이스",
+    "zh": "工作空间 / 新建工作空间"
+  },
+  "templates17WorkspaceEdit.breadcrumbWorkspaceSettings": {
+    "vi": "Không gian làm việc / Cài đặt",
+    "en": "Workspaces / Settings",
+    "ja": "ワークスペース / 設定",
+    "ko": "워크스페이스 / 설정",
+    "zh": "工作空间 / 设置"
+  },
+  "templates17WorkspaceEdit.changesSavedToast": {
+    "vi": "Đã lưu thay đổi thành công",
+    "en": "Changes saved successfully",
+    "ja": "変更が正常に保存されました",
+    "ko": "변경 사항이 저장되었습니다",
+    "zh": "更改已成功保存"
+  },
+  "templates17WorkspaceEdit.workspaceSettingsTitle": {
+    "vi": "Cài đặt không gian làm việc",
+    "en": "Workspace Settings",
+    "ja": "ワークスペース設定",
+    "ko": "워크스페이스 설정",
+    "zh": "工作空间设置"
+  },
+  "templates17WorkspaceEdit.workspaceSettingsSubtitle": {
+    "vi": "Cập nhật cấu hình và tùy chọn cho môi trường này.",
+    "en": "Update configuration and preferences for this environment.",
+    "ja": "この環境の構成と設定を更新します。",
+    "ko": "이 환경의 구성 및 환경설정을 업데이트합니다.",
+    "zh": "更新此环境的配置和偏好设置。"
+  },
+  "templates17WorkspaceEdit.cancel": {
+    "vi": "Huỷ",
+    "en": "Cancel",
+    "ja": "キャンセル",
+    "ko": "취소",
+    "zh": "取消"
+  },
+  "templates17WorkspaceEdit.saveChanges": {
+    "vi": "Lưu thay đổi",
+    "en": "Save changes",
+    "ja": "変更を保存",
+    "ko": "변경 사항 저장",
+    "zh": "保存更改"
+  },
+  "templates17WorkspaceEdit.tabGeneral": {
+    "vi": "Chung",
+    "en": "General",
+    "ja": "一般",
+    "ko": "일반",
+    "zh": "常规"
+  },
+  "templates17WorkspaceEdit.basicInformation": {
+    "vi": "Thông tin cơ bản",
+    "en": "Basic Information",
+    "ja": "基本情報",
+    "ko": "기본 정보",
+    "zh": "基本信息"
+  },
+  "templates17WorkspaceEdit.workspaceNameLabel": {
+    "vi": "Tên không gian làm việc",
+    "en": "Workspace Name",
+    "ja": "ワークスペース名",
+    "ko": "워크스페이스 이름",
+    "zh": "工作空间名称"
+  },
+  "templates17WorkspaceEdit.descriptionLabel": {
+    "vi": "Mô tả",
+    "en": "Description",
+    "ja": "説明",
+    "ko": "설명",
+    "zh": "描述"
+  },
+  "templates17WorkspaceEdit.deploymentRegionLabel": {
+    "vi": "Khu vực triển khai",
+    "en": "Deployment Region",
+    "ja": "デプロイリージョン",
+    "ko": "배포 리전",
+    "zh": "部署区域"
+  },
+  "templates17WorkspaceEdit.regionUsEast": {
+    "vi": "Miền Đông Hoa Kỳ (Bắc Virginia)",
+    "en": "US East (N. Virginia)",
+    "ja": "米国東部（バージニア北部）",
+    "ko": "미국 동부(버지니아 북부)",
+    "zh": "美国东部（弗吉尼亚北部）"
+  },
+  "templates17WorkspaceEdit.regionEuCentral": {
+    "vi": "Trung Âu (Frankfurt)",
+    "en": "EU Central (Frankfurt)",
+    "ja": "EU中部（フランクフルト）",
+    "ko": "EU 중부(프랑크푸르트)",
+    "zh": "欧盟中部（法兰克福）"
+  },
+  "templates17WorkspaceEdit.regionApSoutheast": {
+    "vi": "Châu Á Thái Bình Dương (Singapore)",
+    "en": "Asia Pacific (Singapore)",
+    "ja": "アジアパシフィック（シンガポール）",
+    "ko": "아시아 태평양(싱가포르)",
+    "zh": "亚太地区（新加坡）"
+  },
+  "templates17WorkspaceEdit.regionChangeHelper": {
+    "vi": "Không thể thay đổi khu vực sau khi tạo không gian làm việc vì lý do tuân thủ dữ liệu.",
+    "en": "Region cannot be changed after workspace creation for data compliance reasons.",
+    "ja": "データコンプライアンス上の理由により、ワークスペース作成後はリージョンを変更できません。",
+    "ko": "데이터 규정 준수를 위해 워크스페이스 생성 후에는 리전을 변경할 수 없습니다.",
+    "zh": "出于数据合规原因，工作空间创建后无法更改区域。"
+  },
+  "templates17WorkspaceEdit.displaySettings": {
+    "vi": "Cài đặt hiển thị",
+    "en": "Display Settings",
+    "ja": "表示設定",
+    "ko": "표시 설정",
+    "zh": "显示设置"
+  },
+  "templates17WorkspaceEdit.defaultTimezoneLabel": {
+    "vi": "Múi giờ mặc định",
+    "en": "Default Timezone",
+    "ja": "デフォルトタイムゾーン",
+    "ko": "기본 표준 시간대",
+    "zh": "默认时区"
+  },
+  "templates17WorkspaceEdit.tzUtc": {
+    "vi": "UTC (Giờ Phối hợp Quốc tế)",
+    "en": "UTC (Coordinated Universal Time)",
+    "ja": "UTC（協定世界時）",
+    "ko": "UTC(협정 세계시)",
+    "zh": "UTC（协调世界时）"
+  },
+  "templates17WorkspaceEdit.tzPst": {
+    "vi": "PST (Giờ chuẩn Thái Bình Dương)",
+    "en": "PST (Pacific Standard Time)",
+    "ja": "PST（太平洋標準時）",
+    "ko": "PST(태평양 표준시)",
+    "zh": "PST（太平洋标准时间）"
+  },
+  "templates17WorkspaceEdit.tzEst": {
+    "vi": "EST (Giờ chuẩn miền Đông)",
+    "en": "EST (Eastern Standard Time)",
+    "ja": "EST（東部標準時）",
+    "ko": "EST(동부 표준시)",
+    "zh": "EST（东部标准时间）"
+  },
+  "templates17WorkspaceEdit.tzCet": {
+    "vi": "CET (Giờ Trung Âu)",
+    "en": "CET (Central European Time)",
+    "ja": "CET（中央ヨーロッパ時間）",
+    "ko": "CET(중앙유럽 표준시)",
+    "zh": "CET（中欧时间）"
+  },
+  "templates17WorkspaceEdit.tabAdvanced": {
+    "vi": "Nâng cao",
+    "en": "Advanced",
+    "ja": "詳細設定",
+    "ko": "고급",
+    "zh": "高级"
+  },
+  "templates17WorkspaceEdit.resourceLimits": {
+    "vi": "Giới hạn tài nguyên",
+    "en": "Resource Limits",
+    "ja": "リソース制限",
+    "ko": "리소스 제한",
+    "zh": "资源限制"
+  },
+  "templates17WorkspaceEdit.resourceLimitsDesc": {
+    "vi": "Ghi đè giới hạn mặc định của không gian làm việc. Yêu cầu gói Enterprise.",
+    "en": "Override default workspace limits. Requires Enterprise plan.",
+    "ja": "デフォルトのワークスペース制限を上書きします。Enterpriseプランが必要です。",
+    "ko": "기본 워크스페이스 제한을 재정의합니다. Enterprise 요금제가 필요합니다.",
+    "zh": "覆盖默认工作空间限制。需要 Enterprise 套餐。"
+  },
+  "templates17WorkspaceEdit.apiRateLimitLabel": {
+    "vi": "Giới hạn tần suất API (req/giây)",
+    "en": "API Rate Limit (req/sec)",
+    "ja": "APIレート制限（リクエスト/秒）",
+    "ko": "API 속도 제한(요청/초)",
+    "zh": "API 速率限制（请求/秒）"
+  },
+  "templates17WorkspaceEdit.storageQuotaLabel": {
+    "vi": "Hạn mức lưu trữ (GB)",
+    "en": "Storage Quota (GB)",
+    "ja": "ストレージクォータ（GB）",
+    "ko": "스토리지 할당량(GB)",
+    "zh": "存储配额（GB）"
+  },
+  "templates17WorkspaceEdit.integrations": {
+    "vi": "Tích hợp",
+    "en": "Integrations",
+    "ja": "連携機能",
+    "ko": "통합",
+    "zh": "集成"
+  },
+  "templates17WorkspaceEdit.comingSoon": {
+    "vi": "Sắp ra mắt",
+    "en": "Coming Soon",
+    "ja": "近日公開",
+    "ko": "출시 예정",
+    "zh": "即将推出"
+  },
+  "templates17WorkspaceEdit.integrationsDesc": {
+    "vi": "Các kết nối bên ngoài (Slack, Datadog) sẽ được cấu hình tại đây.",
+    "en": "External connections (Slack, Datadog) will be configured here.",
+    "ja": "外部連携（Slack、Datadog）はここで設定します。",
+    "ko": "외부 연결(Slack, Datadog)은 여기에서 구성됩니다.",
+    "zh": "外部连接（Slack、Datadog）将在此处配置。"
+  },
+  "templates17WorkspaceEdit.tabDangerZone": {
+    "vi": "Khu vực nguy hiểm",
+    "en": "Danger Zone",
+    "ja": "危険ゾーン",
+    "ko": "위험 구역",
+    "zh": "危险区域"
+  },
+  "templates17WorkspaceEdit.suspendWorkspaceHeading": {
+    "vi": "Tạm ngừng không gian làm việc",
+    "en": "Suspend Workspace",
+    "ja": "ワークスペースを一時停止",
+    "ko": "워크스페이스 일시 중지",
+    "zh": "暂停工作空间"
+  },
+  "templates17WorkspaceEdit.suspendWorkspaceDesc": {
+    "vi": "Tạm thời vô hiệu hoá toàn bộ quyền truy cập API và đăng nhập cho không gian làm việc này.",
+    "en": "Temporarily disable all API access and logins for this workspace.",
+    "ja": "このワークスペースのすべてのAPIアクセスとログインを一時的に無効にします。",
+    "ko": "이 워크스페이스의 모든 API 액세스와 로그인을 일시적으로 비활성화합니다.",
+    "zh": "暂时禁用此工作空间的所有 API 访问和登录。"
+  },
+  "templates17WorkspaceEdit.suspend": {
+    "vi": "Tạm ngừng",
+    "en": "Suspend",
+    "ja": "一時停止",
+    "ko": "일시 중지",
+    "zh": "暂停"
+  },
+  "templates17WorkspaceEdit.deleteWorkspace": {
+    "vi": "Xoá không gian làm việc",
+    "en": "Delete Workspace",
+    "ja": "ワークスペースを削除",
+    "ko": "워크스페이스 삭제",
+    "zh": "删除工作空间"
+  },
+  "templates17WorkspaceEdit.deleteWorkspaceDesc": {
+    "vi": "Xoá vĩnh viễn không gian làm việc này và toàn bộ dữ liệu. Hành động này không thể hoàn tác.",
+    "en": "Permanently remove this workspace and all its data. This action is irreversible.",
+    "ja": "このワークスペースとすべてのデータを完全に削除します。この操作は取り消せません。",
+    "ko": "이 워크스페이스와 모든 데이터를 영구적으로 제거합니다. 이 작업은 되돌릴 수 없습니다.",
+    "zh": "永久删除此工作空间及其所有数据。此操作不可撤销。"
+  },
+  "templates17WorkspaceEdit.deleteWorkspaceModalDesc": {
+    "vi": "Hành động này không thể hoàn tác. Thao tác sẽ xoá vĩnh viễn không gian làm việc và toàn bộ dữ liệu liên quan.",
+    "en": "This action cannot be undone. This will permanently delete the workspace and remove all associated data.",
+    "ja": "この操作は元に戻せません。ワークスペースと関連するすべてのデータが完全に削除されます。",
+    "ko": "이 작업은 되돌릴 수 없습니다. 워크스페이스와 관련된 모든 데이터가 영구적으로 삭제됩니다.",
+    "zh": "此操作无法撤销。这将永久删除该工作空间及其所有相关数据。"
+  },
+  "templates17WorkspaceEdit.deleteWorkspaceConfirmButton": {
+    "vi": "Tôi hiểu, xoá không gian làm việc này",
+    "en": "I understand, delete this workspace",
+    "ja": "理解しました、このワークスペースを削除します",
+    "ko": "이해했습니다. 이 워크스페이스를 삭제합니다",
+    "zh": "我已了解，删除此工作空间"
+  },
+  "templates17WorkspaceEdit.warning": {
+    "vi": "Cảnh báo",
+    "en": "Warning",
+    "ja": "警告",
+    "ko": "경고",
+    "zh": "警告"
+  },
+  "templates17WorkspaceEdit.deleteWorkspaceAlertMsg": {
+    "vi": "Tất cả khóa API sẽ bị thu hồi ngay lập tức và các phiên đăng nhập đang hoạt động sẽ bị chấm dứt.",
+    "en": "All API keys will be revoked immediately and active sessions will be terminated.",
+    "ja": "すべてのAPIキーは即座に失効し、アクティブなセッションは終了します。",
+    "ko": "모든 API 키가 즉시 취소되며 활성 세션이 종료됩니다.",
+    "zh": "所有 API 密钥将立即被吊销，活动会话将被终止。"
+  },
+  "templates17WorkspaceEdit.deleteConfirmPrefix": {
+    "vi": "Vui lòng nhập",
+    "en": "Please type",
+    "ja": "入力してください：",
+    "ko": "입력해 주세요",
+    "zh": "请输入"
+  },
+  "templates17WorkspaceEdit.deleteConfirmSuffix": {
+    "vi": "để xác nhận.",
+    "en": "to confirm.",
+    "ja": "を入力して確認してください。",
+    "ko": "를 입력하여 확인하세요.",
+    "zh": "以确认。"
+  },
+  "templates17WorkspaceEdit.workspaceNamePlaceholder": {
+    "vi": "Tên không gian làm việc",
+    "en": "Workspace name",
+    "ja": "ワークスペース名",
+    "ko": "워크스페이스 이름",
+    "zh": "工作空间名称"
+  },
+  "templates17WorkspaceEdit.componentLibraryTitle": {
+    "vi": "Thư viện thành phần",
+    "en": "Component Library",
+    "ja": "コンポーネントライブラリ",
+    "ko": "컴포넌트 라이브러리",
+    "zh": "组件库"
+  },
+  "templates17WorkspaceEdit.componentLibrarySubtitle": {
+    "vi": "Hệ thống UI nền tảng cho Kaori Platform, tuân thủ nghiêm ngặt các design token.",
+    "en": "Foundational UI system for Kaori Platform following strict design tokens.",
+    "ja": "厳格なデザイントークンに従うKaori Platformの基盤UIシステムです。",
+    "ko": "엄격한 디자인 토큰을 따르는 Kaori Platform의 기본 UI 시스템입니다.",
+    "zh": "遵循严格设计令牌的 Kaori Platform 基础 UI 系统。"
+  },
+  "templates17WorkspaceEdit.deploySystem": {
+    "vi": "Triển khai hệ thống",
+    "en": "Deploy System",
+    "ja": "システムをデプロイ",
+    "ko": "시스템 배포",
+    "zh": "部署系统"
+  },
+  "templates17WorkspaceEdit.tabFormsInputs": {
+    "vi": "Biểu mẫu & Trường nhập liệu",
+    "en": "Forms & Inputs",
+    "ja": "フォームと入力",
+    "ko": "폼 및 입력",
+    "zh": "表单与输入"
+  },
+  "templates17WorkspaceEdit.sectionButtons": {
+    "vi": "Nút bấm",
+    "en": "Buttons",
+    "ja": "ボタン",
+    "ko": "버튼",
+    "zh": "按钮"
+  },
+  "templates17WorkspaceEdit.primaryButton": {
+    "vi": "Nút chính",
+    "en": "Primary Button",
+    "ja": "プライマリボタン",
+    "ko": "기본 버튼",
+    "zh": "主按钮"
+  },
+  "templates17WorkspaceEdit.secondaryButton": {
+    "vi": "Nút phụ",
+    "en": "Secondary Button",
+    "ja": "セカンダリボタン",
+    "ko": "보조 버튼",
+    "zh": "次按钮"
+  },
+  "templates17WorkspaceEdit.tertiaryGhost": {
+    "vi": "Nút mờ cấp ba",
+    "en": "Tertiary Ghost",
+    "ja": "ターシャリゴースト",
+    "ko": "3차 고스트 버튼",
+    "zh": "三级幽灵按钮"
+  },
+  "templates17WorkspaceEdit.loading": {
+    "vi": "Đang tải",
+    "en": "Loading",
+    "ja": "読み込み中",
+    "ko": "로드 중",
+    "zh": "加载中"
+  },
+  "templates17WorkspaceEdit.destructiveAction": {
+    "vi": "Hành động phá huỷ",
+    "en": "Destructive Action",
+    "ja": "破壊的な操作",
+    "ko": "위험한 작업",
+    "zh": "破坏性操作"
+  },
+  "templates17WorkspaceEdit.sectionInputsSelects": {
+    "vi": "Trường nhập liệu & Lựa chọn",
+    "en": "Inputs & Selects",
+    "ja": "入力とセレクト",
+    "ko": "입력 및 선택",
+    "zh": "输入与选择"
+  },
+  "templates17WorkspaceEdit.emailAddressLabel": {
+    "vi": "Địa chỉ email",
+    "en": "Email Address",
+    "ja": "メールアドレス",
+    "ko": "이메일 주소",
+    "zh": "电子邮件地址"
+  },
+  "templates17WorkspaceEdit.emailHelperText": {
+    "vi": "Chúng tôi sẽ không bao giờ chia sẻ email của bạn.",
+    "en": "We will never share your email.",
+    "ja": "お客様のメールアドレスを第三者と共有することはありません。",
+    "ko": "귀하의 이메일을 절대 공유하지 않습니다.",
+    "zh": "我们绝不会分享您的电子邮件。"
+  },
+  "templates17WorkspaceEdit.workspaceNamePlaceholderExample": {
+    "vi": "vd. Production AI",
+    "en": "e.g. Production AI",
+    "ja": "例：Production AI",
+    "ko": "예: Production AI",
+    "zh": "例如：Production AI"
+  },
+  "templates17WorkspaceEdit.workspaceNameTakenError": {
+    "vi": "Tên không gian làm việc này đã được sử dụng.",
+    "en": "This workspace name is already taken.",
+    "ja": "このワークスペース名は既に使用されています。",
+    "ko": "이 워크스페이스 이름은 이미 사용 중입니다.",
+    "zh": "该工作空间名称已被使用。"
+  },
+  "templates17WorkspaceEdit.environmentLabel": {
+    "vi": "Môi trường",
+    "en": "Environment",
+    "ja": "環境",
+    "ko": "환경",
+    "zh": "环境"
+  },
+  "templates17WorkspaceEdit.selectEnvironmentPlaceholder": {
+    "vi": "Chọn môi trường...",
+    "en": "Select environment...",
+    "ja": "環境を選択...",
+    "ko": "환경 선택...",
+    "zh": "选择环境..."
+  },
+  "templates17WorkspaceEdit.production": {
+    "vi": "Production",
+    "en": "Production",
+    "ja": "本番環境",
+    "ko": "프로덕션",
+    "zh": "生产环境"
+  },
+  "templates17WorkspaceEdit.staging": {
+    "vi": "Staging",
+    "en": "Staging",
+    "ja": "ステージング",
+    "ko": "스테이징",
+    "zh": "预发布环境"
+  },
+  "templates17WorkspaceEdit.billingCycleStartLabel": {
+    "vi": "Ngày bắt đầu chu kỳ thanh toán",
+    "en": "Billing Cycle Start",
+    "ja": "請求サイクル開始日",
+    "ko": "청구 주기 시작일",
+    "zh": "账单周期开始日"
+  },
+  "templates17WorkspaceEdit.tabDataDisplay": {
+    "vi": "Hiển thị dữ liệu",
+    "en": "Data Display",
+    "ja": "データ表示",
+    "ko": "데이터 표시",
+    "zh": "数据展示"
+  },
+  "templates17WorkspaceEdit.sectionMetricCards": {
+    "vi": "Thẻ chỉ số",
+    "en": "Metric Cards",
+    "ja": "メトリックカード",
+    "ko": "지표 카드",
+    "zh": "指标卡片"
+  },
+  "templates17WorkspaceEdit.totalRevenue": {
+    "vi": "Tổng doanh thu",
+    "en": "Total Revenue",
+    "ja": "総売上",
+    "ko": "총 매출",
+    "zh": "总营收"
+  },
+  "templates17WorkspaceEdit.activeWorkspaces": {
+    "vi": "Không gian làm việc đang hoạt động",
+    "en": "Active Workspaces",
+    "ja": "アクティブなワークスペース",
+    "ko": "활성 워크스페이스",
+    "zh": "活跃工作空间"
+  },
+  "templates17WorkspaceEdit.errorRate": {
+    "vi": "Tỷ lệ lỗi",
+    "en": "Error Rate",
+    "ja": "エラー率",
+    "ko": "오류율",
+    "zh": "错误率"
+  },
+  "templates17WorkspaceEdit.sectionDataTable": {
+    "vi": "Bảng dữ liệu",
+    "en": "Data Table",
+    "ja": "データテーブル",
+    "ko": "데이터 테이블",
+    "zh": "数据表格"
+  },
+  "templates17WorkspaceEdit.colWorkspace": {
+    "vi": "Không gian làm việc",
+    "en": "Workspace",
+    "ja": "ワークスペース",
+    "ko": "워크스페이스",
+    "zh": "工作空间"
+  },
+  "templates17WorkspaceEdit.colEnvironment": {
+    "vi": "Môi trường",
+    "en": "Environment",
+    "ja": "環境",
+    "ko": "환경",
+    "zh": "环境"
+  },
+  "templates17WorkspaceEdit.colStatus": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "templates17WorkspaceEdit.colCreated": {
+    "vi": "Ngày tạo",
+    "en": "Created",
+    "ja": "作成日",
+    "ko": "생성일",
+    "zh": "创建时间"
+  },
+  "templates17WorkspaceEdit.healthy": {
+    "vi": "Bình thường",
+    "en": "Healthy",
+    "ja": "正常",
+    "ko": "정상",
+    "zh": "健康"
+  },
+  "templates17WorkspaceEdit.degraded": {
+    "vi": "Suy giảm",
+    "en": "Degraded",
+    "ja": "低下",
+    "ko": "저하됨",
+    "zh": "性能下降"
+  },
+  "templates17WorkspaceEdit.tabFeedbackOverlays": {
+    "vi": "Phản hồi & Lớp phủ",
+    "en": "Feedback & Overlays",
+    "ja": "フィードバックとオーバーレイ",
+    "ko": "피드백 및 오버레이",
+    "zh": "反馈与浮层"
+  },
+  "templates17WorkspaceEdit.sectionAlerts": {
+    "vi": "Cảnh báo",
+    "en": "Alerts",
+    "ja": "アラート",
+    "ko": "알림",
+    "zh": "警报"
+  },
+  "templates17WorkspaceEdit.alertSystemUpdateTitle": {
+    "vi": "Cập nhật hệ thống",
+    "en": "System Update",
+    "ja": "システムアップデート",
+    "ko": "시스템 업데이트",
+    "zh": "系统更新"
+  },
+  "templates17WorkspaceEdit.alertSystemUpdateMsg": {
+    "vi": "Đã có phiên bản mới của khung nền tảng.",
+    "en": "A new version of the platform shell is available.",
+    "ja": "プラットフォームシェルの新しいバージョンが利用可能です。",
+    "ko": "플랫폼 셸의 새 버전을 사용할 수 있습니다.",
+    "zh": "平台外壳有新版本可用。"
+  },
+  "templates17WorkspaceEdit.alertBackupCompleteTitle": {
+    "vi": "Sao lưu hoàn tất",
+    "en": "Backup Complete",
+    "ja": "バックアップ完了",
+    "ko": "백업 완료",
+    "zh": "备份完成"
+  },
+  "templates17WorkspaceEdit.alertBackupCompleteMsg": {
+    "vi": "Toàn bộ dữ liệu không gian làm việc đã được sao lưu thành công.",
+    "en": "All workspace data has been successfully backed up.",
+    "ja": "すべてのワークスペースデータが正常にバックアップされました。",
+    "ko": "모든 워크스페이스 데이터가 성공적으로 백업되었습니다.",
+    "zh": "所有工作空间数据已成功备份。"
+  },
+  "templates17WorkspaceEdit.alertHighLatencyTitle": {
+    "vi": "Độ trễ cao",
+    "en": "High Latency",
+    "ja": "高レイテンシー",
+    "ko": "높은 지연 시간",
+    "zh": "高延迟"
+  },
+  "templates17WorkspaceEdit.alertHighLatencyMsg": {
+    "vi": "Chúng tôi đang phát hiện độ trễ cao ở khu vực EU-Central.",
+    "en": "We are detecting high latency in the EU-Central region.",
+    "ja": "EU-Centralリージョンで高いレイテンシーを検出しています。",
+    "ko": "EU-Central 리전에서 높은 지연 시간이 감지되고 있습니다.",
+    "zh": "我们检测到 EU-Central 区域延迟较高。"
+  },
+  "templates17WorkspaceEdit.alertPaymentFailedTitle": {
+    "vi": "Thanh toán thất bại",
+    "en": "Payment Failed",
+    "ja": "支払い失敗",
+    "ko": "결제 실패",
+    "zh": "付款失败"
+  },
+  "templates17WorkspaceEdit.alertPaymentFailedMsg": {
+    "vi": "Không thể xử lý hoá đơn gần nhất của bạn.",
+    "en": "Your last invoice could not be processed.",
+    "ja": "直近の請求書を処理できませんでした。",
+    "ko": "최근 청구서를 처리할 수 없습니다.",
+    "zh": "您最近的账单无法处理。"
+  },
+  "templates17WorkspaceEdit.sectionModalsDrawers": {
+    "vi": "Hộp thoại & Ngăn kéo",
+    "en": "Modals & Drawers",
+    "ja": "モーダルとドロワー",
+    "ko": "모달 및 드로어",
+    "zh": "弹窗与抽屉"
+  },
+  "templates17WorkspaceEdit.openModal": {
+    "vi": "Mở hộp thoại",
+    "en": "Open Modal",
+    "ja": "モーダルを開く",
+    "ko": "모달 열기",
+    "zh": "打开弹窗"
+  },
+  "templates17WorkspaceEdit.openDrawer": {
+    "vi": "Mở ngăn kéo",
+    "en": "Open Drawer",
+    "ja": "ドロワーを開く",
+    "ko": "드로어 열기",
+    "zh": "打开抽屉"
+  },
+  "templates17WorkspaceEdit.deleteWorkspaceConfirmDesc": {
+    "vi": "Bạn có chắc chắn muốn xoá không gian làm việc này? Hành động này không thể hoàn tác.",
+    "en": "Are you sure you want to delete this workspace? This action cannot be undone.",
+    "ja": "このワークスペースを削除してもよろしいですか？この操作は元に戻せません。",
+    "ko": "이 워크스페이스를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+    "zh": "确定要删除此工作空间吗？此操作无法撤销。"
+  },
+  "templates17WorkspaceEdit.confirmDelete": {
+    "vi": "Xác nhận xoá",
+    "en": "Confirm Delete",
+    "ja": "削除を確認",
+    "ko": "삭제 확인",
+    "zh": "确认删除"
+  },
+  "templates17WorkspaceEdit.typeWorkspaceNameConfirmLabel": {
+    "vi": "Nhập tên không gian làm việc để xác nhận",
+    "en": "Type workspace name to confirm",
+    "ja": "確認のためワークスペース名を入力",
+    "ko": "확인을 위해 워크스페이스 이름을 입력하세요",
+    "zh": "输入工作空间名称以确认"
+  },
+  "templates17WorkspaceEdit.editProfile": {
+    "vi": "Chỉnh sửa hồ sơ",
+    "en": "Edit Profile",
+    "ja": "プロフィールを編集",
+    "ko": "프로필 편집",
+    "zh": "编辑资料"
+  },
+  "templates17WorkspaceEdit.saveChangesCapital": {
+    "vi": "Lưu thay đổi",
+    "en": "Save Changes",
+    "ja": "変更を保存",
+    "ko": "변경 사항 저장",
+    "zh": "保存更改"
+  },
+  "templates17WorkspaceEdit.fullNameLabel": {
+    "vi": "Họ và tên",
+    "en": "Full Name",
+    "ja": "氏名",
+    "ko": "전체 이름",
+    "zh": "全名"
+  },
+  "templates17WorkspaceEdit.emailLabel": {
+    "vi": "Email",
+    "en": "Email",
+    "ja": "メール",
+    "ko": "이메일",
+    "zh": "电子邮件"
+  },
+  "templates17WorkspaceEdit.roleLabel": {
+    "vi": "Vai trò",
+    "en": "Role",
+    "ja": "役割",
+    "ko": "역할",
+    "zh": "角色"
+  },
+  "templates17WorkspaceEdit.admin": {
+    "vi": "Quản trị viên",
+    "en": "Admin",
+    "ja": "管理者",
+    "ko": "관리자",
+    "zh": "管理员"
+  },
+  "templates17WorkspaceEdit.member": {
+    "vi": "Thành viên",
+    "en": "Member",
+    "ja": "メンバー",
+    "ko": "멤버",
+    "zh": "成员"
+  },
+  "templates17WorkspaceEdit.platformOverviewTitle": {
+    "vi": "Tổng quan nền tảng",
+    "en": "Platform Overview",
+    "ja": "プラットフォーム概要",
+    "ko": "플랫폼 개요",
+    "zh": "平台概览"
+  },
+  "templates17WorkspaceEdit.platformOverviewSubtitle": {
+    "vi": "Theo dõi tình trạng hệ thống, mức sử dụng và hoạt động gần đây.",
+    "en": "Monitor system health, usage, and recent activity.",
+    "ja": "システムの状態、使用状況、最近のアクティビティを監視します。",
+    "ko": "시스템 상태, 사용량 및 최근 활동을 모니터링합니다.",
+    "zh": "监控系统健康状况、使用情况和最近活动。"
+  },
+  "templates17WorkspaceEdit.refreshData": {
+    "vi": "Làm mới dữ liệu",
+    "en": "Refresh Data",
+    "ja": "データを更新",
+    "ko": "데이터 새로고침",
+    "zh": "刷新数据"
+  },
+  "templates17WorkspaceEdit.totalWorkspaces": {
+    "vi": "Tổng số không gian làm việc",
+    "en": "Total Workspaces",
+    "ja": "総ワークスペース数",
+    "ko": "총 워크스페이스",
+    "zh": "工作空间总数"
+  },
+  "templates17WorkspaceEdit.activeUsers": {
+    "vi": "Người dùng đang hoạt động",
+    "en": "Active Users",
+    "ja": "アクティブユーザー",
+    "ko": "활성 사용자",
+    "zh": "活跃用户"
+  },
+  "templates17WorkspaceEdit.apiRequests": {
+    "vi": "Yêu cầu API",
+    "en": "API Requests",
+    "ja": "APIリクエスト",
+    "ko": "API 요청",
+    "zh": "API 请求"
+  },
+  "templates17WorkspaceEdit.failedRequests": {
+    "vi": "Yêu cầu thất bại",
+    "en": "Failed Requests",
+    "ja": "失敗したリクエスト",
+    "ko": "실패한 요청",
+    "zh": "失败请求"
+  },
+  "templates17WorkspaceEdit.recentActivity": {
+    "vi": "Hoạt động gần đây",
+    "en": "Recent Activity",
+    "ja": "最近のアクティビティ",
+    "ko": "최근 활동",
+    "zh": "最近活动"
+  },
+  "templates17WorkspaceEdit.colEvent": {
+    "vi": "Sự kiện",
+    "en": "Event",
+    "ja": "イベント",
+    "ko": "이벤트",
+    "zh": "事件"
+  },
+  "templates17WorkspaceEdit.colTime": {
+    "vi": "Thời gian",
+    "en": "Time",
+    "ja": "時間",
+    "ko": "시간",
+    "zh": "时间"
+  },
+  "templates17WorkspaceEdit.activeSessionsTitle": {
+    "vi": "Phiên đăng nhập đang hoạt động",
+    "en": "Active Sessions",
+    "ja": "アクティブセッション",
+    "ko": "활성 세션",
+    "zh": "活跃会话"
+  },
+  "templates17WorkspaceEdit.activeSessionsSubtitle": {
+    "vi": "Quản lý các thiết bị đang đăng nhập vào tài khoản của bạn.",
+    "en": "Manage devices where your account is currently signed in.",
+    "ja": "現在アカウントにサインインしているデバイスを管理します。",
+    "ko": "현재 계정이 로그인된 기기를 관리합니다.",
+    "zh": "管理当前登录您账户的设备。"
+  },
+  "templates17WorkspaceEdit.signOutAll": {
+    "vi": "Đăng xuất tất cả",
+    "en": "Sign out all",
+    "ja": "すべてサインアウト",
+    "ko": "모두 로그아웃",
+    "zh": "全部退出登录"
+  },
+  "templates17WorkspaceEdit.manageActiveLoginsText": {
+    "vi": "Quản lý các phiên đăng nhập đang hoạt động tại đây.",
+    "en": "Manage active logins here.",
+    "ja": "ここでアクティブなログインを管理します。",
+    "ko": "여기에서 활성 로그인을 관리하세요.",
+    "zh": "在此处管理活跃登录。"
+  },
+  "templates17WorkspaceEdit.stepWorkspaceInfo": {
+    "vi": "Thông tin không gian làm việc",
+    "en": "Workspace Info",
+    "ja": "ワークスペース情報",
+    "ko": "워크스페이스 정보",
+    "zh": "工作空间信息"
+  },
+  "templates17WorkspaceEdit.stepPlanSelection": {
+    "vi": "Chọn gói dịch vụ",
+    "en": "Plan Selection",
+    "ja": "プラン選択",
+    "ko": "요금제 선택",
+    "zh": "选择套餐"
+  },
+  "templates17WorkspaceEdit.stepReviewCreate": {
+    "vi": "Xem lại & Tạo",
+    "en": "Review & Create",
+    "ja": "確認と作成",
+    "ko": "검토 및 생성",
+    "zh": "审核并创建"
+  },
+  "templates17WorkspaceEdit.errWorkspaceNameRequired": {
+    "vi": "Tên không gian làm việc là bắt buộc",
+    "en": "Workspace name is required",
+    "ja": "ワークスペース名は必須です",
+    "ko": "워크스페이스 이름은 필수입니다",
+    "zh": "工作空间名称为必填项"
+  },
+  "templates17WorkspaceEdit.errWorkspaceNameMinLength": {
+    "vi": "Tên phải có ít nhất 3 ký tự",
+    "en": "Name must be at least 3 characters",
+    "ja": "名前は3文字以上で入力してください",
+    "ko": "이름은 최소 3자 이상이어야 합니다",
+    "zh": "名称至少需要 3 个字符"
+  },
+  "templates17WorkspaceEdit.errRegionRequired": {
+    "vi": "Vui lòng chọn khu vực triển khai",
+    "en": "Please select a deployment region",
+    "ja": "デプロイリージョンを選択してください",
+    "ko": "배포 리전을 선택해 주세요",
+    "zh": "请选择部署区域"
+  },
+  "templates17WorkspaceEdit.createWorkspaceTitle": {
+    "vi": "Tạo không gian làm việc",
+    "en": "Create a Workspace",
+    "ja": "ワークスペースを作成",
+    "ko": "워크스페이스 생성",
+    "zh": "创建工作空间"
+  },
+  "templates17WorkspaceEdit.createWorkspaceSubtitle": {
+    "vi": "Thiết lập môi trường riêng biệt mới cho nhóm của bạn chỉ trong vài phút.",
+    "en": "Set up a new isolated environment for your team in minutes.",
+    "ja": "数分でチーム用の新しい独立環境をセットアップできます。",
+    "ko": "몇 분 안에 팀을 위한 새로운 격리 환경을 설정하세요.",
+    "zh": "几分钟内为您的团队搭建全新的独立环境。"
+  },
+  "templates17WorkspaceEdit.workspaceDetailsHeading": {
+    "vi": "Chi tiết không gian làm việc",
+    "en": "Workspace Details",
+    "ja": "ワークスペースの詳細",
+    "ko": "워크스페이스 세부 정보",
+    "zh": "工作空间详情"
+  },
+  "templates17WorkspaceEdit.workspaceDetailsDesc": {
+    "vi": "Cung cấp thông tin cơ bản cho môi trường tenant mới của bạn.",
+    "en": "Provide the basic information for your new tenant environment.",
+    "ja": "新しいテナント環境の基本情報を入力してください。",
+    "ko": "새 테넌트 환경의 기본 정보를 입력하세요.",
+    "zh": "为您的新租户环境提供基本信息。"
+  },
+  "templates17WorkspaceEdit.workspaceNamePlaceholderAcme": {
+    "vi": "vd. Acme Corp Production",
+    "en": "e.g. Acme Corp Production",
+    "ja": "例：Acme Corp Production",
+    "ko": "예: Acme Corp Production",
+    "zh": "例如：Acme Corp Production"
+  },
+  "templates17WorkspaceEdit.descriptionOptionalLabel": {
+    "vi": "Mô tả (Tùy chọn)",
+    "en": "Description (Optional)",
+    "ja": "説明（任意）",
+    "ko": "설명(선택 사항)",
+    "zh": "描述（可选）"
+  },
+  "templates17WorkspaceEdit.descriptionPlaceholder": {
+    "vi": "Mô tả ngắn gọn mục đích của không gian làm việc này...",
+    "en": "Briefly describe the purpose of this workspace...",
+    "ja": "このワークスペースの目的を簡潔に説明してください...",
+    "ko": "이 워크스페이스의 용도를 간략히 설명해 주세요...",
+    "zh": "简要描述此工作空间的用途..."
+  },
+  "templates17WorkspaceEdit.dataRegionLabel": {
+    "vi": "Khu vực dữ liệu",
+    "en": "Data Region",
+    "ja": "データリージョン",
+    "ko": "데이터 리전",
+    "zh": "数据区域"
+  },
+  "templates17WorkspaceEdit.selectRegionPlaceholder": {
+    "vi": "Chọn khu vực triển khai...",
+    "en": "Select deployment region...",
+    "ja": "デプロイリージョンを選択...",
+    "ko": "배포 리전 선택...",
+    "zh": "选择部署区域..."
+  },
+  "templates17WorkspaceEdit.selectPlanHeading": {
+    "vi": "Chọn gói dịch vụ",
+    "en": "Select a Plan",
+    "ja": "プランを選択",
+    "ko": "요금제 선택",
+    "zh": "选择套餐"
+  },
+  "templates17WorkspaceEdit.selectPlanDesc": {
+    "vi": "Chọn gói phù hợp với nhu cầu của không gian làm việc.",
+    "en": "Choose the right tier for your workspace requirements.",
+    "ja": "ワークスペースの要件に合ったプランを選択してください。",
+    "ko": "워크스페이스 요구 사항에 맞는 요금제를 선택하세요.",
+    "zh": "根据工作空间需求选择合适的套餐。"
+  },
+  "templates17WorkspaceEdit.freeTier": {
+    "vi": "Gói miễn phí",
+    "en": "Free Tier",
+    "ja": "無料プラン",
+    "ko": "무료 요금제",
+    "zh": "免费套餐"
+  },
+  "templates17WorkspaceEdit.freeTierDesc": {
+    "vi": "10.000 yêu cầu API/tháng, 5GB lưu trữ. Phù hợp để thử nghiệm.",
+    "en": "10,000 API reqs/mo, 5GB storage. Best for testing.",
+    "ja": "月間10,000 APIリクエスト、5GBストレージ。テストに最適です。",
+    "ko": "월 10,000 API 요청, 5GB 스토리지. 테스트에 적합합니다.",
+    "zh": "每月 10,000 次 API 请求，5GB 存储。适合测试。"
+  },
+  "templates17WorkspaceEdit.proTierName": {
+    "vi": "Pro",
+    "en": "Pro",
+    "ja": "Pro",
+    "ko": "Pro",
+    "zh": "Pro"
+  },
+  "templates17WorkspaceEdit.proTierDesc": {
+    "vi": "50.000 yêu cầu API/tháng, 50GB lưu trữ, hỗ trợ qua email.",
+    "en": "50,000 API reqs/mo, 50GB storage, email support.",
+    "ja": "月間50,000 APIリクエスト、50GBストレージ、メールサポート。",
+    "ko": "월 50,000 API 요청, 50GB 스토리지, 이메일 지원.",
+    "zh": "每月 50,000 次 API 请求，50GB 存储，邮件支持。"
+  },
+  "templates17WorkspaceEdit.enterpriseTierName": {
+    "vi": "Enterprise",
+    "en": "Enterprise",
+    "ja": "Enterprise",
+    "ko": "Enterprise",
+    "zh": "Enterprise"
+  },
+  "templates17WorkspaceEdit.enterpriseTierDesc": {
+    "vi": "Không giới hạn yêu cầu, 500GB lưu trữ, SLA (cam kết chất lượng dịch vụ) ưu tiên 24/7.",
+    "en": "Unlimited reqs, 500GB storage, 24/7 priority SLA.",
+    "ja": "無制限リクエスト、500GBストレージ、24時間優先SLA。",
+    "ko": "무제한 요청, 500GB 스토리지, 24/7 우선 SLA.",
+    "zh": "无限请求，500GB 存储，24/7 优先 SLA。"
+  },
+  "templates17WorkspaceEdit.recommended": {
+    "vi": "Đề xuất",
+    "en": "Recommended",
+    "ja": "おすすめ",
+    "ko": "추천",
+    "zh": "推荐"
+  },
+  "templates17WorkspaceEdit.reviewCreateHeading": {
+    "vi": "Xem lại & Tạo",
+    "en": "Review & Create",
+    "ja": "確認と作成",
+    "ko": "검토 및 생성",
+    "zh": "审核并创建"
+  },
+  "templates17WorkspaceEdit.reviewCreateDesc": {
+    "vi": "Vui lòng xác nhận cấu hình không gian làm việc trước khi cấp phát.",
+    "en": "Please confirm your workspace configuration before provisioning.",
+    "ja": "プロビジョニング前にワークスペースの構成をご確認ください。",
+    "ko": "프로비저닝 전에 워크스페이스 구성을 확인해 주세요.",
+    "zh": "请在配置资源前确认您的工作空间设置。"
+  },
+  "templates17WorkspaceEdit.noneProvided": {
+    "vi": "Không có",
+    "en": "None provided",
+    "ja": "未入力",
+    "ko": "제공되지 않음",
+    "zh": "未提供"
+  },
+  "templates17WorkspaceEdit.regionLabel": {
+    "vi": "Khu vực",
+    "en": "Region",
+    "ja": "リージョン",
+    "ko": "리전",
+    "zh": "区域"
+  },
+  "templates17WorkspaceEdit.none": {
+    "vi": "Không có",
+    "en": "None",
+    "ja": "なし",
+    "ko": "없음",
+    "zh": "无"
+  },
+  "templates17WorkspaceEdit.selectedPlanLabel": {
+    "vi": "Gói đã chọn",
+    "en": "Selected Plan",
+    "ja": "選択したプラン",
+    "ko": "선택한 요금제",
+    "zh": "已选套餐"
+  },
+  "templates17WorkspaceEdit.tierSuffix": {
+    "vi": "gói",
+    "en": "Tier",
+    "ja": "プラン",
+    "ko": "요금제",
+    "zh": "套餐"
+  },
+  "templates17WorkspaceEdit.readyToProvisionTitle": {
+    "vi": "Sẵn sàng cấp phát",
+    "en": "Ready to provision",
+    "ja": "プロビジョニング準備完了",
+    "ko": "프로비저닝 준비 완료",
+    "zh": "已准备好进行配置"
+  },
+  "templates17WorkspaceEdit.readyToProvisionMsg": {
+    "vi": "Việc tạo không gian làm việc sẽ ngay lập tức cấp phát hạ tầng riêng biệt tại khu vực bạn đã chọn.",
+    "en": "Creating a workspace will instantly provision isolated infrastructure in your selected region.",
+    "ja": "ワークスペースを作成すると、選択したリージョンに分離されたインフラストラクチャが即座にプロビジョニングされます。",
+    "ko": "워크스페이스를 생성하면 선택한 리전에 격리된 인프라가 즉시 프로비저닝됩니다.",
+    "zh": "创建工作空间将立即在您选择的区域配置独立的基础设施。"
+  },
+  "templates17WorkspaceEdit.back": {
+    "vi": "Quay lại",
+    "en": "Back",
+    "ja": "戻る",
+    "ko": "뒤로",
+    "zh": "返回"
+  },
+  "templates17WorkspaceEdit.continueBtn": {
+    "vi": "Tiếp tục",
+    "en": "Continue",
+    "ja": "続ける",
+    "ko": "계속",
+    "zh": "继续"
+  },
+  "templates17WorkspaceEdit.createWorkspaceBtn": {
+    "vi": "Tạo không gian làm việc",
+    "en": "Create Workspace",
+    "ja": "ワークスペースを作成",
+    "ko": "워크스페이스 생성",
+    "zh": "创建工作空间"
+  },
+  "templates17WorkspaceEdit.editDetails": {
+    "vi": "Chỉnh sửa chi tiết",
+    "en": "Edit details",
+    "ja": "詳細を編集",
+    "ko": "세부 정보 편집",
+    "zh": "编辑详情"
+  },
+  "templates17WorkspaceEdit.manageMembers": {
+    "vi": "Quản lý thành viên",
+    "en": "Manage members",
+    "ja": "メンバーを管理",
+    "ko": "멤버 관리",
+    "zh": "管理成员"
+  },
+  "templates17WorkspaceEdit.auditLogs": {
+    "vi": "Nhật ký kiểm tra",
+    "en": "Audit logs",
+    "ja": "監査ログ",
+    "ko": "감사 로그",
+    "zh": "审计日志"
+  },
+  "templates17WorkspaceEdit.statusLabel": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "templates17WorkspaceEdit.active": {
+    "vi": "Đang hoạt động",
+    "en": "Active",
+    "ja": "アクティブ",
+    "ko": "활성",
+    "zh": "活跃"
+  },
+  "templates17WorkspaceEdit.planLabel": {
+    "vi": "Gói dịch vụ",
+    "en": "Plan",
+    "ja": "プラン",
+    "ko": "요금제",
+    "zh": "套餐"
+  },
+  "templates17WorkspaceEdit.createdLabel": {
+    "vi": "Ngày tạo",
+    "en": "Created",
+    "ja": "作成日",
+    "ko": "생성일",
+    "zh": "创建时间"
+  },
+  "templates17WorkspaceEdit.ownerLabel": {
+    "vi": "Chủ sở hữu",
+    "en": "Owner",
+    "ja": "オーナー",
+    "ko": "소유자",
+    "zh": "所有者"
+  },
+  "templates17WorkspaceEdit.apiRequestsToday": {
+    "vi": "Yêu cầu API (Hôm nay)",
+    "en": "API Requests (Today)",
+    "ja": "APIリクエスト（本日）",
+    "ko": "API 요청(오늘)",
+    "zh": "API 请求（今日）"
+  },
+  "templates17WorkspaceEdit.storageUsed": {
+    "vi": "Dung lượng đã dùng",
+    "en": "Storage Used",
+    "ja": "使用済みストレージ",
+    "ko": "사용된 스토리지",
+    "zh": "已用存储"
+  },
+  "templates17WorkspaceEdit.tabOverview": {
+    "vi": "Tổng quan",
+    "en": "Overview",
+    "ja": "概要",
+    "ko": "개요",
+    "zh": "概览"
+  },
+  "templates17WorkspaceEdit.viewAllLogs": {
+    "vi": "Xem tất cả nhật ký",
+    "en": "View all logs",
+    "ja": "すべてのログを表示",
+    "ko": "모든 로그 보기",
+    "zh": "查看所有日志"
+  },
+  "templates17WorkspaceEdit.colActor": {
+    "vi": "Người thực hiện",
+    "en": "Actor",
+    "ja": "実行者",
+    "ko": "작업자",
+    "zh": "操作人"
+  },
+  "templates17WorkspaceEdit.alertsHeading": {
+    "vi": "Cảnh báo",
+    "en": "Alerts",
+    "ja": "アラート",
+    "ko": "알림",
+    "zh": "警报"
+  },
+  "templates17WorkspaceEdit.noIssuesMsg": {
+    "vi": "Không phát hiện sự cố nào cho không gian làm việc này.",
+    "en": "No issues detected for this workspace.",
+    "ja": "このワークスペースで問題は検出されていません。",
+    "ko": "이 워크스페이스에서 문제가 감지되지 않았습니다.",
+    "zh": "未在此工作空间检测到问题。"
+  },
+  "templates17WorkspaceEdit.quickActionsHeading": {
+    "vi": "Thao tác nhanh",
+    "en": "Quick Actions",
+    "ja": "クイックアクション",
+    "ko": "빠른 작업",
+    "zh": "快捷操作"
+  },
+  "templates17WorkspaceEdit.generateApiKey": {
+    "vi": "Tạo khoá API",
+    "en": "Generate API Key",
+    "ja": "APIキーを生成",
+    "ko": "API 키 생성",
+    "zh": "生成 API 密钥"
+  },
+  "templates17WorkspaceEdit.inviteUser": {
+    "vi": "Mời người dùng",
+    "en": "Invite User",
+    "ja": "ユーザーを招待",
+    "ko": "사용자 초대",
+    "zh": "邀请用户"
+  },
+  "templates17WorkspaceEdit.manageBilling": {
+    "vi": "Quản lý thanh toán",
+    "en": "Manage Billing",
+    "ja": "請求を管理",
+    "ko": "청구 관리",
+    "zh": "管理账单"
+  },
+  "templates17WorkspaceEdit.tabActivity": {
+    "vi": "Hoạt động",
+    "en": "Activity",
+    "ja": "アクティビティ",
+    "ko": "활동",
+    "zh": "活动"
+  },
+  "templates17WorkspaceEdit.colResource": {
+    "vi": "Tài nguyên",
+    "en": "Resource",
+    "ja": "リソース",
+    "ko": "리소스",
+    "zh": "资源"
+  },
+  "templates17WorkspaceEdit.tabUsage": {
+    "vi": "Mức sử dụng",
+    "en": "Usage",
+    "ja": "使用状況",
+    "ko": "사용량",
+    "zh": "使用情况"
+  },
+  "templates17WorkspaceEdit.apiCallsHeading": {
+    "vi": "Lượt gọi API",
+    "en": "API Calls",
+    "ja": "API呼び出し",
+    "ko": "API 호출",
+    "zh": "API 调用"
+  },
+  "templates17WorkspaceEdit.last30Days": {
+    "vi": "30 ngày qua",
+    "en": "Last 30 days",
+    "ja": "過去30日間",
+    "ko": "지난 30일",
+    "zh": "过去 30 天"
+  },
+  "templates17WorkspaceEdit.enterpriseLimit20m": {
+    "vi": "12% giới hạn gói Enterprise (20M)",
+    "en": "12% of Enterprise Limit (20M)",
+    "ja": "Enterprise制限の12%（2,000万）",
+    "ko": "Enterprise 한도의 12%(2,000만)",
+    "zh": "占 Enterprise 限额的 12%（2000万）"
+  },
+  "templates17WorkspaceEdit.storageHeading": {
+    "vi": "Lưu trữ",
+    "en": "Storage",
+    "ja": "ストレージ",
+    "ko": "스토리지",
+    "zh": "存储"
+  },
+  "templates17WorkspaceEdit.currentUsage": {
+    "vi": "Mức sử dụng hiện tại",
+    "en": "Current usage",
+    "ja": "現在の使用状況",
+    "ko": "현재 사용량",
+    "zh": "当前使用量"
+  },
+  "templates17WorkspaceEdit.enterpriseLimit500gb": {
+    "vi": "16% giới hạn gói Enterprise (500 GB)",
+    "en": "16% of Enterprise Limit (500 GB)",
+    "ja": "Enterprise制限の16%（500GB）",
+    "ko": "Enterprise 한도의 16%(500GB)",
+    "zh": "占 Enterprise 限额的 16%（500GB）"
+  },
+  "templates17WorkspaceEdit.keysAlertTitle": {
+    "vi": "Khoá",
+    "en": "Keys",
+    "ja": "キー",
+    "ko": "키",
+    "zh": "密钥"
+  },
+  "templates17WorkspaceEdit.manageApiKeysHereMsg": {
+    "vi": "Quản lý khoá API tại đây.",
+    "en": "Manage API keys here.",
+    "ja": "ここでAPIキーを管理します。",
+    "ko": "여기에서 API 키를 관리하세요.",
+    "zh": "在此处管理 API 密钥。"
+  },
+  "templates17WorkspaceEdit.tabMembers": {
+    "vi": "Thành viên",
+    "en": "Members",
+    "ja": "メンバー",
+    "ko": "멤버",
+    "zh": "成员"
+  },
+  "templates17WorkspaceEdit.workspaceMembersHeading": {
+    "vi": "Thành viên không gian làm việc",
+    "en": "Workspace Members",
+    "ja": "ワークスペースメンバー",
+    "ko": "워크스페이스 멤버",
+    "zh": "工作空间成员"
+  },
+  "templates17WorkspaceEdit.manageActiveMembersDesc": {
+    "vi": "Quản lý thành viên đang hoạt động và vai trò.",
+    "en": "Manage active members and roles.",
+    "ja": "アクティブなメンバーと役割を管理します。",
+    "ko": "활성 멤버와 역할을 관리합니다.",
+    "zh": "管理活跃成员和角色。"
+  },
+  "templates17WorkspaceEdit.openMembersManagement": {
+    "vi": "Mở trang quản lý thành viên",
+    "en": "Open Members Management",
+    "ja": "メンバー管理を開く",
+    "ko": "멤버 관리 열기",
+    "zh": "打开成员管理"
+  },
+  "templates17WorkspaceEdit.viewDetails": {
+    "vi": "Xem chi tiết",
+    "en": "View details",
+    "ja": "詳細を表示",
+    "ko": "세부 정보 보기",
+    "zh": "查看详情"
+  },
+  "templates17WorkspaceEdit.editWorkspace": {
+    "vi": "Chỉnh sửa không gian làm việc",
+    "en": "Edit workspace",
+    "ja": "ワークスペースを編集",
+    "ko": "워크스페이스 편집",
+    "zh": "编辑工作空间"
+  },
+  "templates17WorkspaceEdit.delete": {
+    "vi": "Xoá",
+    "en": "Delete",
+    "ja": "削除",
+    "ko": "삭제",
+    "zh": "删除"
+  },
+  "templates17WorkspaceEdit.workspacesSubtitle": {
+    "vi": "Quản lý toàn bộ môi trường tenant và quyền truy cập.",
+    "en": "Manage all tenant environments and access.",
+    "ja": "すべてのテナント環境とアクセスを管理します。",
+    "ko": "모든 테넌트 환경과 액세스를 관리합니다.",
+    "zh": "管理所有租户环境和访问权限。"
+  },
+  "templates17WorkspaceEdit.import": {
+    "vi": "Nhập",
+    "en": "Import",
+    "ja": "インポート",
+    "ko": "가져오기",
+    "zh": "导入"
+  },
+  "templates17WorkspaceEdit.createWorkspaceAction": {
+    "vi": "Tạo không gian làm việc",
+    "en": "Create workspace",
+    "ja": "ワークスペースを作成",
+    "ko": "워크스페이스 생성",
+    "zh": "创建工作空间"
+  },
+  "templates17WorkspaceEdit.searchWorkspacesPlaceholder": {
+    "vi": "Tìm kiếm không gian làm việc...",
+    "en": "Search workspaces...",
+    "ja": "ワークスペースを検索...",
+    "ko": "워크스페이스 검색...",
+    "zh": "搜索工作空间..."
+  },
+  "templates17WorkspaceEdit.allStatuses": {
+    "vi": "Tất cả trạng thái",
+    "en": "All Statuses",
+    "ja": "すべてのステータス",
+    "ko": "모든 상태",
+    "zh": "所有状态"
+  },
+  "templates17WorkspaceEdit.suspended": {
+    "vi": "Đã tạm ngừng",
+    "en": "Suspended",
+    "ja": "一時停止中",
+    "ko": "일시 중지됨",
+    "zh": "已暂停"
+  },
+  "templates17WorkspaceEdit.statusPlaceholder": {
+    "vi": "Trạng thái",
+    "en": "Status",
+    "ja": "ステータス",
+    "ko": "상태",
+    "zh": "状态"
+  },
+  "templates17WorkspaceEdit.allPlans": {
+    "vi": "Tất cả gói",
+    "en": "All Plans",
+    "ja": "すべてのプラン",
+    "ko": "모든 요금제",
+    "zh": "所有套餐"
+  },
+  "templates17WorkspaceEdit.free": {
+    "vi": "Miễn phí",
+    "en": "Free",
+    "ja": "無料",
+    "ko": "무료",
+    "zh": "免费"
+  },
+  "templates17WorkspaceEdit.pro": {
+    "vi": "Pro",
+    "en": "Pro",
+    "ja": "Pro",
+    "ko": "Pro",
+    "zh": "Pro"
+  },
+  "templates17WorkspaceEdit.planPlaceholder": {
+    "vi": "Gói dịch vụ",
+    "en": "Plan",
+    "ja": "プラン",
+    "ko": "요금제",
+    "zh": "套餐"
+  },
+  "templates17WorkspaceEdit.clearFilters": {
+    "vi": "Xoá bộ lọc",
+    "en": "Clear filters",
+    "ja": "フィルターをクリア",
+    "ko": "필터 지우기",
+    "zh": "清除筛选"
+  },
+  "templates17WorkspaceEdit.colOwner": {
+    "vi": "Chủ sở hữu",
+    "en": "Owner",
+    "ja": "オーナー",
+    "ko": "소유자",
+    "zh": "所有者"
+  },
+  "templates17WorkspaceEdit.colMembers": {
+    "vi": "Thành viên",
+    "en": "Members",
+    "ja": "メンバー",
+    "ko": "멤버",
+    "zh": "成员"
+  },
+  "templates17WorkspaceEdit.colUsage": {
+    "vi": "Mức sử dụng",
+    "en": "Usage",
+    "ja": "使用状況",
+    "ko": "사용량",
+    "zh": "使用情况"
+  },
+  "templates17WorkspaceEdit.percentUsedSuffix": {
+    "vi": "đã dùng",
+    "en": "used",
+    "ja": "使用済み",
+    "ko": "사용됨",
+    "zh": "已用"
+  },
+  "templates17WorkspaceEdit.approachingLimit": {
+    "vi": "Sắp đạt giới hạn",
+    "en": "Approaching limit",
+    "ja": "上限に近づいています",
+    "ko": "한도에 근접함",
+    "zh": "接近限额"
+  },
+  "templates17WorkspaceEdit.billingUsageTitle": {
+    "vi": "Thanh toán & Mức sử dụng",
+    "en": "Billing & Usage",
+    "ja": "請求と使用状況",
+    "ko": "청구 및 사용량",
+    "zh": "账单与使用情况"
+  },
+  "templates17WorkspaceEdit.billingUsageSubtitle": {
+    "vi": "Quản lý gói đăng ký, theo dõi mức sử dụng và xem hoá đơn.",
+    "en": "Manage your subscription, monitor usage, and view invoices.",
+    "ja": "サブスクリプションの管理、使用状況の監視、請求書の確認ができます。",
+    "ko": "구독 관리, 사용량 모니터링, 청구서 확인을 할 수 있습니다.",
+    "zh": "管理您的订阅、监控使用情况并查看账单。"
+  },
+  "templates17WorkspaceEdit.downloadAll": {
+    "vi": "Tải xuống tất cả",
+    "en": "Download all",
+    "ja": "すべてダウンロード",
+    "ko": "모두 다운로드",
+    "zh": "全部下载"
+  },
+  "templates17WorkspaceEdit.upgradePlan": {
+    "vi": "Nâng cấp gói",
+    "en": "Upgrade plan",
+    "ja": "プランをアップグレード",
+    "ko": "요금제 업그레이드",
+    "zh": "升级套餐"
+  },
+  "templates17WorkspaceEdit.currentPlanSection": {
+    "vi": "Gói hiện tại",
+    "en": "Current Plan",
+    "ja": "現在のプラン",
+    "ko": "현재 요금제",
+    "zh": "当前套餐"
+  },
+  "templates17WorkspaceEdit.proTierHeading": {
+    "vi": "Gói Pro",
+    "en": "Pro Tier",
+    "ja": "Proプラン",
+    "ko": "Pro 요금제",
+    "zh": "Pro 套餐"
+  },
+  "templates17WorkspaceEdit.nextBillingDatePrefix": {
+    "vi": "Ngày thanh toán tiếp theo là",
+    "en": "Next billing date is",
+    "ja": "次回請求日：",
+    "ko": "다음 청구일은",
+    "zh": "下次账单日期为"
+  },
+  "templates17WorkspaceEdit.cancelPlan": {
+    "vi": "Huỷ gói",
+    "en": "Cancel Plan",
+    "ja": "プランをキャンセル",
+    "ko": "요금제 취소",
+    "zh": "取消套餐"
+  },
+  "templates17WorkspaceEdit.changePlan": {
+    "vi": "Đổi gói",
+    "en": "Change Plan",
+    "ja": "プランを変更",
+    "ko": "요금제 변경",
+    "zh": "更改套餐"
+  },
+  "templates17WorkspaceEdit.currentUsageSection": {
+    "vi": "Mức sử dụng hiện tại",
+    "en": "Current Usage",
+    "ja": "現在の使用状況",
+    "ko": "현재 사용량",
+    "zh": "当前使用情况"
+  },
+  "templates17WorkspaceEdit.invoicesSection": {
+    "vi": "Hoá đơn",
+    "en": "Invoices",
+    "ja": "請求書",
+    "ko": "청구서",
+    "zh": "账单"
+  },
+  "templates17WorkspaceEdit.yearPlaceholder": {
+    "vi": "Năm",
+    "en": "Year",
+    "ja": "年",
+    "ko": "연도",
+    "zh": "年份"
+  },
+  "templates17WorkspaceEdit.colInvoiceId": {
+    "vi": "Mã hoá đơn",
+    "en": "Invoice ID",
+    "ja": "請求書ID",
+    "ko": "청구서 ID",
+    "zh": "账单编号"
+  },
+  "templates17WorkspaceEdit.colDate": {
+    "vi": "Ngày",
+    "en": "Date",
+    "ja": "日付",
+    "ko": "날짜",
+    "zh": "日期"
+  },
+  "templates17WorkspaceEdit.colAmount": {
+    "vi": "Số tiền",
+    "en": "Amount",
+    "ja": "金額",
+    "ko": "금액",
+    "zh": "金额"
+  },
+  "templates17WorkspaceEdit.upgradePlanModalTitle": {
+    "vi": "Nâng cấp gói",
+    "en": "Upgrade Plan",
+    "ja": "プランをアップグレード",
+    "ko": "요금제 업그레이드",
+    "zh": "升级套餐"
+  },
+  "templates17WorkspaceEdit.upgradePlanModalDesc": {
+    "vi": "Chọn gói phù hợp nhất với nhu cầu của nhóm bạn.",
+    "en": "Select a tier that best suits your team's needs.",
+    "ja": "チームのニーズに最適なプランを選択してください。",
+    "ko": "팀에 가장 적합한 요금제를 선택하세요.",
+    "zh": "选择最适合您团队需求的套餐。"
+  },
+  "templates17WorkspaceEdit.featureApiReqs10k": {
+    "vi": "10.000 yêu cầu API/tháng",
+    "en": "10,000 API reqs/mo",
+    "ja": "月間10,000 APIリクエスト",
+    "ko": "월 10,000 API 요청",
+    "zh": "每月 10,000 次 API 请求"
+  },
+  "templates17WorkspaceEdit.feature5gbStorage": {
+    "vi": "5 GB lưu trữ",
+    "en": "5 GB Storage",
+    "ja": "5GBストレージ",
+    "ko": "5GB 스토리지",
+    "zh": "5GB 存储"
+  },
+  "templates17WorkspaceEdit.feature3TeamMembers": {
+    "vi": "3 thành viên nhóm",
+    "en": "3 Team Members",
+    "ja": "3名のチームメンバー",
+    "ko": "팀원 3명",
+    "zh": "3 名团队成员"
+  },
+  "templates17WorkspaceEdit.downgrade": {
+    "vi": "Hạ cấp",
+    "en": "Downgrade",
+    "ja": "ダウングレード",
+    "ko": "다운그레이드",
+    "zh": "降级"
+  },
+  "templates17WorkspaceEdit.current": {
+    "vi": "Hiện tại",
+    "en": "Current",
+    "ja": "現在",
+    "ko": "현재",
+    "zh": "当前"
+  },
+  "templates17WorkspaceEdit.featureApiReqs50k": {
+    "vi": "50.000 yêu cầu API/tháng",
+    "en": "50,000 API reqs/mo",
+    "ja": "月間50,000 APIリクエスト",
+    "ko": "월 50,000 API 요청",
+    "zh": "每月 50,000 次 API 请求"
+  },
+  "templates17WorkspaceEdit.feature50gbStorage": {
+    "vi": "50 GB lưu trữ",
+    "en": "50 GB Storage",
+    "ja": "50GBストレージ",
+    "ko": "50GB 스토리지",
+    "zh": "50GB 存储"
+  },
+  "templates17WorkspaceEdit.feature10TeamMembers": {
+    "vi": "10 thành viên nhóm",
+    "en": "10 Team Members",
+    "ja": "10名のチームメンバー",
+    "ko": "팀원 10명",
+    "zh": "10 名团队成员"
+  },
+  "templates17WorkspaceEdit.featureEmailSupport": {
+    "vi": "Hỗ trợ qua email",
+    "en": "Email Support",
+    "ja": "メールサポート",
+    "ko": "이메일 지원",
+    "zh": "邮件支持"
+  },
+  "templates17WorkspaceEdit.currentPlanBtn": {
+    "vi": "Gói hiện tại",
+    "en": "Current Plan",
+    "ja": "現在のプラン",
+    "ko": "현재 요금제",
+    "zh": "当前套餐"
+  },
+  "templates17WorkspaceEdit.featureUnlimitedApiReqs": {
+    "vi": "Không giới hạn yêu cầu API",
+    "en": "Unlimited API reqs",
+    "ja": "無制限APIリクエスト",
+    "ko": "무제한 API 요청",
+    "zh": "无限 API 请求"
+  },
+  "templates17WorkspaceEdit.feature500gbStorage": {
+    "vi": "500 GB lưu trữ",
+    "en": "500 GB Storage",
+    "ja": "500GBストレージ",
+    "ko": "500GB 스토리지",
+    "zh": "500GB 存储"
+  },
+  "templates17WorkspaceEdit.featureUnlimitedMembers": {
+    "vi": "Không giới hạn thành viên",
+    "en": "Unlimited Members",
+    "ja": "無制限メンバー",
+    "ko": "무제한 멤버",
+    "zh": "无限成员"
+  },
+  "templates17WorkspaceEdit.featurePrioritySupport": {
+    "vi": "Hỗ trợ ưu tiên & SLA (cam kết chất lượng dịch vụ)",
+    "en": "Priority Support & SLAs",
+    "ja": "優先サポートとSLA",
+    "ko": "우선 지원 및 SLA",
+    "zh": "优先支持与 SLA"
+  },
+  "templates17WorkspaceEdit.upgrade": {
+    "vi": "Nâng cấp",
+    "en": "Upgrade",
+    "ja": "アップグレード",
+    "ko": "업그레이드",
+    "zh": "升级"
+  },
+  "templates17WorkspaceEdit.cancelSubscriptionTitle": {
+    "vi": "Huỷ gói đăng ký",
+    "en": "Cancel Subscription",
+    "ja": "サブスクリプションをキャンセル",
+    "ko": "구독 취소",
+    "zh": "取消订阅"
+  },
+  "templates17WorkspaceEdit.cancelSubscriptionDesc": {
+    "vi": "Bạn có chắc chắn muốn huỷ gói Pro? Không gian làm việc của bạn sẽ bị hạ xuống gói miễn phí vào cuối chu kỳ thanh toán hiện tại.",
+    "en": "Are you sure you want to cancel your Pro plan? Your workspace will be downgraded to the Free tier at the end of the current billing cycle.",
+    "ja": "Proプランをキャンセルしてもよろしいですか？現在の請求サイクル終了時に、ワークスペースは無料プランにダウングレードされます。",
+    "ko": "Pro 요금제를 취소하시겠습니까? 현재 청구 주기가 끝나면 워크스페이스가 무료 요금제로 다운그레이드됩니다.",
+    "zh": "确定要取消 Pro 套餐吗？您的工作空间将在当前账单周期结束时降级为免费套餐。"
+  },
+  "templates17WorkspaceEdit.keepPlan": {
+    "vi": "Giữ gói hiện tại",
+    "en": "Keep Plan",
+    "ja": "プランを維持",
+    "ko": "요금제 유지",
+    "zh": "保留套餐"
+  },
+  "templates17WorkspaceEdit.confirmCancellation": {
+    "vi": "Xác nhận huỷ",
+    "en": "Confirm Cancellation",
+    "ja": "キャンセルを確認",
+    "ko": "취소 확인",
+    "zh": "确认取消"
+  },
+  "templates17WorkspaceEdit.downgradeWarningMsg": {
+    "vi": "Việc hạ cấp sẽ giảm giới hạn của bạn xuống còn 10.000 yêu cầu API và 5 GB lưu trữ. Các tài nguyên vượt quá giới hạn này có thể không còn khả dụng.",
+    "en": "Downgrading will reduce your limits to 10,000 API requests and 5 GB storage. Any resources exceeding these limits may become unavailable.",
+    "ja": "ダウングレードすると、制限が10,000 APIリクエストと5GBストレージに減少します。これらの制限を超えるリソースは利用できなくなる場合があります。",
+    "ko": "다운그레이드하면 한도가 10,000 API 요청과 5GB 스토리지로 줄어듭니다. 이 한도를 초과하는 리소스는 사용할 수 없게 될 수 있습니다.",
+    "zh": "降级后，您的限额将减少至 10,000 次 API 请求和 5GB 存储。超出限额的资源可能无法使用。"
+  },
+  "templates17WorkspaceEdit.moduleSuffix": {
+    "vi": "mô-đun",
+    "en": "module",
+    "ja": "モジュール",
+    "ko": "모듈",
+    "zh": "模块"
+  },
+  "templates17WorkspaceEdit.moduleDesignSubtitle": {
+    "vi": "Phần này của nền tảng hiện đang được thiết kế.",
+    "en": "This section of the platform is currently being designed.",
+    "ja": "プラットフォームのこのセクションは現在設計中です。",
+    "ko": "플랫폼의 이 섹션은 현재 설계 중입니다.",
+    "zh": "平台的这一部分正在设计中。"
+  },
+  "templates17WorkspaceEdit.workInProgress": {
+    "vi": "Đang xây dựng",
+    "en": "Work in Progress",
+    "ja": "作業中",
+    "ko": "작업 진행 중",
+    "zh": "建设中"
+  },
+  "templates17WorkspaceEdit.contentForRoutePrefix": {
+    "vi": "Nội dung cho",
+    "en": "Content for",
+    "ja": "コンテンツ：",
+    "ko": "다음에 대한 콘텐츠:",
+    "zh": "内容："
+  },
+  "templates17WorkspaceEdit.contentForRouteSuffix": {
+    "vi": "sẽ được hiển thị tại đây bên trong Shell Wrapper.",
+    "en": "will populate here inside the Shell Wrapper.",
+    "ja": "がShell Wrapper内にここに表示されます。",
+    "ko": "이(가) Shell Wrapper 내부에 여기에 표시됩니다.",
+    "zh": "将在 Shell Wrapper 内的此处填充。"
+  }
 }

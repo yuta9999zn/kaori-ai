@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Quy trình demo Kaori — v2 (AABW)</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  body { font-family: "Segoe UI", sans-serif; margin: 24px; background: #fafaf7; }
+  h1 { font-size: 20px; } p.note { color: #666; font-size: 13px; max-width: 900px; }
+  .mermaid { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 16px; }
+</style>
+</head>
+<body>
+<h1>Quy trình demo Kaori — v2 (đã khớp hệ thống, 11/07/2026)</h1>
+<p class="note">Bản sửa từ "quy trình demo.png": khối RAG đổi thành thước đo quy chuẩn &amp; tri thức (đối chiếu QĐ-01/SOP + hỏi đáp trích dẫn — thiếu căn cứ thì AI từ chối); lưu Kho theo folder <b>trùng tên workflow</b>; 5 bước wizard ghi đúng hành vi; kết bằng phân tích khung 6W2H/SWOT/Xương cá = trạng thái doanh nghiệp + gợi hướng đi.</p>
+<pre class="mermaid">
+flowchart TD
+  ORG["Cơ cấu tổ chức"] --> DEPT["Phòng ban<br/>(8 phòng + mô tả nghiệp vụ)"]
+  DEPT --> BIZ["Nghiệp vụ phòng ban"]
+  DEPT --> TMPL["Gắn MẪU TÀI LIỆU vào folder<br/>nghiệp vụ trong Kho (folder-as-page)<br/>→ file tải vào thừa hưởng form thuộc tính"]
+
+  ORG --> RAG["RAG — thước đo quy chuẩn &amp;<br/>tri thức doanh nghiệp<br/>(nạp QĐ-01, SOP-02…)"]
+  RAG --> RAGD["Đối chiếu quy định/SOP tự động<br/>+ hỏi đáp có trích dẫn<br/>— thiếu căn cứ → AI TỪ CHỐI (không bịa)"]
+
+  BIZ --> TREE["Cây tài liệu<br/>theo quy trình nghiệp vụ"]
+  BIZ --> BPMN["BPMN<br/>(chuẩn công nghiệp, tải .bpmn)"]
+  BIZ --> WF["Workflow quy trình nghiệp vụ<br/>(15 bước · cổng duyệt &gt; 50 triệu)"]
+  RAGD -.node Đối chiếu QĐ-01.-> WF
+
+  TREE --> UP["Upload tài liệu theo bước"]
+  UP --> DLG{"Dialog: Lưu vào<br/>Kho tài liệu?"}
+  DLG -->|Lưu| SAVE["Folder TRÙNG TÊN workflow<br/>— có sẵn thì dùng, chưa có tự tạo<br/>(ngày thêm/sửa · lọc · tìm kiếm)"]
+  DLG -->|Không lưu| NOSAVE["Chỉ nộp vào bước"]
+
+  SAVE --> CLEANQ["Kiểm tra sạch<br/>(AI chấm sạch/bẩn, có lý do)"]
+  NOSAVE --> CLEANQ
+  CLEANQ -->|SẠCH| OKGO["Phân tích ngay"]
+  CLEANQ -->|CHƯA SẠCH| BAD["Hệ đề nghị đi<br/>5 bước làm sạch"]
+
+  BAD --> S1["Bước 1 Upload — hệ TỰ hoàn tất<br/>(file đã có, chống trùng SHA-256)"]
+  S1 --> S2["Bước 2 Cột — người dùng<br/>xác nhận dự đoán của AI"]
+  S2 --> S3["Bước 3 Làm sạch dữ liệu<br/>(6 quy tắc, có nhật ký quyết định)"]
+  S3 --> S4["Bước 4 Chọn AI:<br/>Qwen nội bộ / API ngoài (Claude·GPT)<br/>— cần đồng ý gửi dữ liệu ra ngoài"]
+  S4 --> S5["Bước 5 Kết quả:<br/>chỉ số + biểu đồ + nhận xét AI"]
+
+  S5 --> TIERS["Phân tích<br/>Cơ bản · Trung cấp · Nâng cao"]
+  OKGO --> TIERS
+  S5 --> FW["Phân tích khung: 6W2H · SWOT · Xương cá<br/>= TRẠNG THÁI doanh nghiệp + GỢI HƯỚNG ĐI"]
+  TIERS --> FW
+  RAGD -.trạng thái + hướng đi.-> FW
+
+  style RAG fill:#fff3d6,stroke:#c9a227
+  style RAGD fill:#fff3d6,stroke:#c9a227
+  style SAVE fill:#e8f5e9,stroke:#2e7d32
+  style S4 fill:#ede7f6,stroke:#5e35b1
+  style FW fill:#e3f2fd,stroke:#1565c0
+</pre>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'neutral', flowchart: { useMaxWidth: false } });</script>
+</body>
+</html>

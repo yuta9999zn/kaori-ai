@@ -86,7 +86,7 @@ export const NAV_TREE: NavGroup[] = [
     children: [
       { title: 'Tất cả Insight', path: '/p2/insights',                phase: 1 },
       { title: 'Tạo Insight',     path: '/p2/insights/generate',       phase: 1 },
-      { title: 'Knowledge Base',   path: '/p2/insights/knowledge-base', phase: 2 },
+      { title: 'Knowledge Base (kho tri thức)',   path: '/p2/insights/knowledge-base', phase: 2 },
     ],
   },
   {

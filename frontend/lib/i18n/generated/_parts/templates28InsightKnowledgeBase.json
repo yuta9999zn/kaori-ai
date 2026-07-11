@@ -63,7 +63,7 @@
     "zh": "已将知识添加到工作区——现在即可搜索。"
   },
   "templates28InsightKnowledgeBase.title": {
-    "vi": "Knowledge Base",
+    "vi": "Knowledge Base (KB — kho tri thức doanh nghiệp)",
     "en": "Knowledge Base",
     "ja": "Knowledge Base",
     "ko": "Knowledge Base",
@@ -126,7 +126,7 @@
     "zh": "内容"
   },
   "templates28InsightKnowledgeBase.contentPlaceholder": {
-    "vi": "Mô tả nguyên tắc / SOP / mục tiêu nội bộ…",
+    "vi": "Mô tả nguyên tắc / SOP (quy trình chuẩn) / mục tiêu nội bộ…",
     "en": "Describe internal principles / SOP / goals…",
     "ja": "内部の原則・SOP・目標などを記述してください…",
     "ko": "내부 원칙 / SOP / 목표 등을 설명하세요…",
