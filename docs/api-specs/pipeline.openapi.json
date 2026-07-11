@@ -1944,6 +1944,22 @@
           },
           {
             "in": "header",
+            "name": "X-Repo-Filing",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Repo-Filing"
+            }
+          },
+          {
+            "in": "header",
             "name": "X-Template-Analysis",
             "required": false,
             "schema": {

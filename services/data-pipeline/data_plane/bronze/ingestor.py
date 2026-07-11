@@ -240,6 +240,10 @@ async def ingest_file(
     # Repository, the FE passes the target folder; the ingested bronze file is
     # also registered as a document_repository_file row (reuse byte store + K-8).
     folder_id: Optional[str] = None,
+    # X-Repo-Filing — user's choice on the nộp-file dialog: 'skip' = chỉ tải
+    # lên (không lưu Kho); None/'auto' = bridge tự filing vào
+    # 'Hồ sơ quy trình/<workflow>' khi không có folder_id tường minh.
+    repo_filing: Optional[str] = None,
     # Async-upload support: the handler reads the file then runs this in a
     # BackgroundTask, where the UploadFile stream is already closed. Passing
     # the pre-read bytes + filename lets ingest run without a live stream.
@@ -384,8 +388,9 @@ async def ingest_file(
 
             # ADR-0039/0042 bridge — file nộp ở bước workflow tự filing vào
             # Kho ('Hồ sơ quy trình/<tên quy trình>') trừ khi caller đã chỉ
-            # định X-Folder-ID. Fail-soft: lỗi ở đây không được chặn upload.
-            if folder_id is None:
+            # định X-Folder-ID hoặc user chọn 'Chỉ tải lên' (X-Repo-Filing:
+            # skip). Fail-soft: lỗi ở đây không được chặn upload.
+            if folder_id is None and (repo_filing or "auto") != "skip":
                 try:
                     folder_id = await _ensure_workflow_repo_folder(
                         conn, enterprise_id=enterprise_id,

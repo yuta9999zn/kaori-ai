@@ -450,6 +450,25 @@ class TestWorkflowAutoFiling:
         assert conn.folder_inserts == []
 
     @pytest.mark.asyncio
+    async def test_repo_filing_skip_suppresses_autofiling(self, monkeypatch):
+        """User chọn 'Chỉ tải lên' trên dialog nộp file → header
+        X-Repo-Filing: skip → không auto-resolve folder Kho."""
+        conn = WorkflowFakeConn()
+        _patch_conn(monkeypatch, conn)
+        _patch_org(monkeypatch)
+        seen = _patch_land(monkeypatch)
+
+        await ing.ingest_file(
+            run_id=str(uuid.uuid4()), enterprise_id=ENT, uploaded_by=USR,
+            db_pool=None, kafka_producer=FakeKafka(),
+            workflow_step_id=NODE, repo_filing="skip",
+            content=CSV, filename="bao_cao_t6.csv")
+        await asyncio.sleep(0)
+
+        assert seen.get("folder_id") is None
+        assert conn.folder_inserts == []
+
+    @pytest.mark.asyncio
     async def test_folder_failure_does_not_block_upload(self, monkeypatch):
         """Lỗi khi ensure folder → upload vẫn thành công, folder_id None
         (fail-soft: auto-filing là phụ, ingest là chính)."""
