@@ -42,6 +42,7 @@ import {
   type ProblemDetails,
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
+import { SearchableSelect } from '@/components/p2/dms/searchable-select';
 import { SkeletonWorkflowDetail, SkeletonTreeTab, SkeletonReportsTab } from '@/components/p2/skeleton';
 import { safeRandomUUID } from '@/lib/uuid';
 import { formatProblem, SUCCESS } from '@/lib/i18n/messages';
@@ -3223,11 +3224,13 @@ function DocSlotRow({ slot, workflowId, nodeId, onMutated }: {
             Nộp <span className="font-mono">{pendingFile.name}</span> — lưu vào Kho tài liệu?
           </p>
           <div className="flex items-center gap-2 flex-wrap">
-            <select value={folderChoice} onChange={(e) => setFolderChoice(e.target.value)}
-              className="h-8 rounded-md-custom border border-[var(--border-color)] bg-white px-2 text-xs max-w-[320px]">
-              <option value="">Hồ sơ quy trình / (quy trình này) — tự xếp</option>
-              {(repoFolders ?? []).map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
-            </select>
+            <SearchableSelect value={folderChoice} onChange={setFolderChoice}
+              className="w-[340px]"
+              placeholder="Hồ sơ quy trình / (quy trình này) — tự xếp"
+              options={[
+                { value: '', label: 'Hồ sơ quy trình / (quy trình này) — tự xếp' },
+                ...(repoFolders ?? []).map((o) => ({ value: o.id, label: o.label })),
+              ]} />
             {repoFolders === null && <Loader2 className="w-3 h-3 animate-spin text-[var(--text-secondary)]" />}
           </div>
           <div className="flex items-center gap-2">

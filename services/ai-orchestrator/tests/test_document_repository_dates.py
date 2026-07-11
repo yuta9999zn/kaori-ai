@@ -103,6 +103,7 @@ def test_search_returns_doc_date_fields(app_client, conn):
         status="active", folder_id=UUID(FOLDER_ID), path="2026/quy_2",
         doc_date=datetime.date(2026, 6, 30), period_kind="day",
         uploaded_at=datetime.datetime(2026, 7, 2, 10, 0),
+        first_uploaded_at=datetime.datetime(2026, 7, 2, 10, 0),
     )]
     resp = app_client.get("/document-repository/search", headers=HEADERS)
     item = resp.json()["items"][0]

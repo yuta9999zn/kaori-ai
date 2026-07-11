@@ -18,6 +18,7 @@ import { safeRandomUUID } from '@/lib/uuid';
 import { Markdown } from './md';
 import { MdToolbar } from './md-toolbar';
 import { MetadataForm, CompletenessBadge, StatusLozenge } from './metadata-form';
+import { SearchableSelect } from './searchable-select';
 import { IndexView } from './index-view';
 import { InsightPanel } from './insight-panel';
 import { AuthoredDocPage } from './authored-doc';
@@ -33,6 +34,13 @@ function fmtTime(iso: string | null): string {
   try {
     return new Date(iso).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   } catch { return iso; }
+}
+
+function fmtDay(iso: string | null | undefined): string {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  } catch { return iso.slice(0, 10); }
 }
 
 // ─── page editor (chế độ Sửa trang — bố cục editor Confluence) ─────────
@@ -121,15 +129,16 @@ function PageEditor({ page, docs, onClose, onSaved }: {
         <div className="space-y-3">
           <div>
             <label className="text-xs font-semibold text-[var(--text-secondary)]">{t('dmsFolderPage.folderTemplateLabel')}</label>
-            <select value={templateId} onChange={(e) => setTemplateId(e.target.value)}
-              className="mt-1 w-full px-2 py-2 bg-white border border-[var(--border-color)] rounded text-sm">
-              <option value="">{t('dmsFolderPage.inheritFromParent')}</option>
-              {templates.map((tmpl) => (
-                <option key={tmpl.template_id} value={tmpl.template_id}>
-                  {tmpl.icon ? `${tmpl.icon} ` : ''}{tmpl.name_vi}{tmpl.is_global ? t('dmsFolderPage.systemTemplateSuffix') : ''}
-                </option>
-              ))}
-            </select>
+            <SearchableSelect value={templateId} onChange={setTemplateId}
+              className="mt-1"
+              placeholder={t('dmsFolderPage.inheritFromParent')}
+              options={[
+                { value: '', label: t('dmsFolderPage.inheritFromParent') },
+                ...templates.map((tmpl) => ({
+                  value: tmpl.template_id,
+                  label: `${tmpl.icon ? `${tmpl.icon} ` : ''}${tmpl.name_vi}${tmpl.is_global ? t('dmsFolderPage.systemTemplateSuffix') : ''}`,
+                })),
+              ]} />
             <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
               {t('dmsFolderPage.folderTemplateHint')}
             </p>
@@ -137,13 +146,13 @@ function PageEditor({ page, docs, onClose, onSaved }: {
 
           <div>
             <label className="text-xs font-semibold text-[var(--text-secondary)]">{t('dmsFolderPage.sampleFileLabel')}</label>
-            <select value={sampleFileId} onChange={(e) => setSampleFileId(e.target.value)}
-              className="mt-1 w-full px-2 py-2 bg-white border border-[var(--border-color)] rounded text-sm">
-              <option value="">{t('dmsFolderPage.noneOption')}</option>
-              {sampleCandidates.map((d) => (
-                <option key={d.doc_id} value={d.file_id!}>{d.name_vi}</option>
-              ))}
-            </select>
+            <SearchableSelect value={sampleFileId} onChange={setSampleFileId}
+              className="mt-1"
+              placeholder={t('dmsFolderPage.noneOption')}
+              options={[
+                { value: '', label: t('dmsFolderPage.noneOption') },
+                ...sampleCandidates.map((d) => ({ value: d.file_id!, label: d.name_vi })),
+              ]} />
             <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
               {t('dmsFolderPage.sampleFileHint')}
             </p>
@@ -359,6 +368,15 @@ function DocItem({ d, schema, statusField, onChanged, onOpenAuthored }: {
         </button>
         {statusVal && statusField && <StatusLozenge value={String(statusVal)} options={statusField.options || []} />}
         <CompletenessBadge value={d.completeness} />
+        {(d.first_uploaded_at || d.uploaded_at) && (
+          <span className="text-[10px] text-[var(--text-secondary)] shrink-0"
+            title="Ngày thêm vào Kho · lần sửa (phiên bản) mới nhất">
+            {fmtDay(d.first_uploaded_at ?? d.uploaded_at)}
+            {d.uploaded_at && d.first_uploaded_at
+              && d.first_uploaded_at.slice(0, 10) !== d.uploaded_at.slice(0, 10)
+              && ` · sửa ${fmtDay(d.uploaded_at)}`}
+          </span>
+        )}
         {d.version > 1 && (
           <span title={t('dmsFolderPage.versionTitle', { version: d.version })}
             className="text-[10px] font-mono text-[var(--text-secondary)]">v{d.version}</span>

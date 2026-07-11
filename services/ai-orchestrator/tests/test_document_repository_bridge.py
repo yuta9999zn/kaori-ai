@@ -94,6 +94,7 @@ def _file_row(**over):
         "template_id": None, "labels": [], "metadata_completeness": None,
         "metadata": {}, "doc_kind": "file",
         "pipeline_run_id": RUN, "pipeline_run_status": "silver_complete",
+        "first_uploaded_at": datetime(2026, 7, 1, 9, 0),
     }
     row.update(over)
     return row
@@ -120,6 +121,47 @@ def test_list_files_carries_pipeline_run(client):
     assert "pipeline_runs" in captured["sql"]
     assert "file_sha256" in captured["sql"]
     assert "enterprise_id" in captured["sql"]
+
+
+def test_list_files_carries_created_and_updated_dates(client):
+    """Ngày THÊM (v1 chuỗi version) + ngày SỬA cuối (uploaded_at bản current)
+    — yêu cầu UX Kho 11/07."""
+    conn = AsyncMock()
+    captured: dict = {}
+
+    async def _fetch(sql, *args):
+        captured["sql"] = sql
+        return [_file_row()]
+
+    conn.fetch = _fetch
+    with patch.object(dr, "acquire_for_tenant", _tenant_with(conn)):
+        r = client.get(f"/document-folders/{FOLDER}/files",
+                       headers={"X-Enterprise-ID": ENTERPRISE})
+    item = r.json()["items"][0]
+    assert item["first_uploaded_at"].startswith("2026-07-01")
+    assert item["uploaded_at"].startswith("2026-07-11")
+    assert "MIN(uploaded_at)" in captured["sql"]
+
+
+def test_search_returns_first_uploaded_at(client):
+    conn = AsyncMock()
+
+    async def _fetch(sql, *args):
+        return [{
+            "doc_id": uuid4(), "name_vi": "bang_gia.csv", "doc_type": "csv",
+            "status": "active", "folder_id": uuid4(), "path": "kinh_doanh",
+            "doc_date": None, "period_kind": None,
+            "uploaded_at": datetime(2026, 7, 11, 8, 0),
+            "first_uploaded_at": datetime(2026, 7, 1, 9, 0),
+        }]
+
+    conn.fetch = _fetch
+    with patch.object(dr, "acquire_for_tenant", _tenant_with(conn)):
+        r = client.get("/document-repository/search?q=bang",
+                       headers={"X-Enterprise-ID": ENTERPRISE})
+    item = r.json()["items"][0]
+    assert item["first_uploaded_at"].startswith("2026-07-01")
+    assert item["uploaded_at"].startswith("2026-07-11")
 
 
 def test_list_files_no_run_is_null(client):

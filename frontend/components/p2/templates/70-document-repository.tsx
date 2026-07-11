@@ -16,7 +16,15 @@ import {
 import { PageHeader } from '@/components/p2/shell';
 import { FolderTree } from '@/components/p2/dms/tree';
 import { FolderPage } from '@/components/p2/dms/folder-page';
+import { SearchableSelect } from '@/components/p2/dms/searchable-select';
 import { useT } from '@/lib/i18n/provider';
+
+// Catalogue loại file hệ thống nhận (khớp ALL_ACCEPTED_EXTENSIONS của
+// data-pipeline) — đây là enum kỹ thuật của platform, không phải business data.
+const FILE_TYPES = [
+  'csv', 'xlsx', 'xls', 'tsv', 'ods', 'zip', 'txt', 'sql',
+  'pdf', 'docx', 'doc', 'pptx', 'md', 'png', 'jpg', 'jpeg', 'tiff', 'webp',
+];
 
 function periodLabel(t: (key: string, params?: Record<string, string | number>) => string, kind: string): string {
   const map: Record<string, string> = {
@@ -27,6 +35,13 @@ function periodLabel(t: (key: string, params?: Record<string, string | number>) 
     year: t('templates70DocumentRepository.periodLabelYear'),
   };
   return map[kind] ?? kind;
+}
+
+function fmtD(iso?: string | null): string {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  } catch { return iso.slice(0, 10); }
 }
 
 function dateQS(dateFrom: string, dateTo: string, periodKind: string): string {
@@ -49,6 +64,7 @@ export default function DocumentRepositoryPage() {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [periodKind, setPeriodKind] = useState('');
+  const [docType, setDocType] = useState('');
   const [view, setView] = useState<'page' | 'time'>('page');
 
   const select = useCallback(async (id: string | null) => {
@@ -66,10 +82,11 @@ export default function DocumentRepositoryPage() {
   }, []);
 
   async function runSearch() {
-    if (!search.trim() && !dateFrom && !dateTo && !periodKind) { setResults(null); return; }
+    if (!search.trim() && !dateFrom && !dateTo && !periodKind && !docType) { setResults(null); return; }
     try {
+      const typeQS = docType ? `&doc_type=${encodeURIComponent(docType)}` : '';
       const r = await api<{ items: any[] }>(
-        `/api/v1/document-repository/search?q=${encodeURIComponent(search.trim())}${dateQS(dateFrom, dateTo, periodKind)}`);
+        `/api/v1/document-repository/search?q=${encodeURIComponent(search.trim())}${dateQS(dateFrom, dateTo, periodKind)}${typeQS}`);
       setResults(r.items || []);
     } catch (err: any) { setProblem(err); }
   }
@@ -106,19 +123,24 @@ export default function DocumentRepositoryPage() {
         <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)}
           title={t('templates70DocumentRepository.dateToTitle')}
           className="px-2 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm text-[var(--text-secondary)]" />
-        <select value={periodKind} onChange={(e) => setPeriodKind(e.target.value)}
-          title={t('templates70DocumentRepository.periodKindTitle')}
-          className="px-2 py-2 bg-white border border-[var(--border-color)] rounded-md-custom text-sm text-[var(--text-secondary)]">
-          <option value="">{t('templates70DocumentRepository.periodAll')}</option>
-          <option value="day">{t('templates70DocumentRepository.periodReportDay')}</option>
-          <option value="week">{t('templates70DocumentRepository.periodReportWeek')}</option>
-          <option value="month">{t('templates70DocumentRepository.periodReportMonth')}</option>
-          <option value="quarter">{t('templates70DocumentRepository.periodReportQuarter')}</option>
-          <option value="year">{t('templates70DocumentRepository.periodReportYear')}</option>
-        </select>
+        <SearchableSelect value={periodKind} onChange={setPeriodKind}
+          placeholder={t('templates70DocumentRepository.periodAll')}
+          className="w-40"
+          options={[
+            { value: '', label: t('templates70DocumentRepository.periodAll') },
+            { value: 'day', label: t('templates70DocumentRepository.periodReportDay') },
+            { value: 'week', label: t('templates70DocumentRepository.periodReportWeek') },
+            { value: 'month', label: t('templates70DocumentRepository.periodReportMonth') },
+            { value: 'quarter', label: t('templates70DocumentRepository.periodReportQuarter') },
+            { value: 'year', label: t('templates70DocumentRepository.periodReportYear') },
+          ]} />
+        <SearchableSelect value={docType} onChange={setDocType}
+          placeholder="Mọi loại file" className="w-40"
+          options={[{ value: '', label: 'Mọi loại file' },
+                    ...FILE_TYPES.map((x) => ({ value: x, label: `.${x}` }))]} />
         <Button variant="secondary" onClick={runSearch}>{t('templates70DocumentRepository.searchButton')}</Button>
-        {(dateFrom || dateTo || periodKind) && (
-          <button onClick={() => { setDateFrom(''); setDateTo(''); setPeriodKind(''); setResults(null); }}
+        {(dateFrom || dateTo || periodKind || docType) && (
+          <button onClick={() => { setDateFrom(''); setDateTo(''); setPeriodKind(''); setDocType(''); setResults(null); }}
             className="text-xs text-[var(--text-secondary)] hover:text-[var(--state-error)] underline">
             {t('templates70DocumentRepository.clearFilter')}
           </button>
@@ -152,13 +174,18 @@ export default function DocumentRepositoryPage() {
               className="w-full flex items-center gap-2 px-2 py-2 rounded hover:bg-[var(--bg-app)]/50 text-left">
               <FileText className="w-4 h-4 text-emerald-700 shrink-0" />
               <span className="text-sm flex-1 truncate">{r.name_vi}</span>
+              {r.doc_type && <Badge variant="default" className="text-[10px] shrink-0">.{r.doc_type}</Badge>}
               {r.doc_date && (
                 <span className="text-[10px] text-[var(--text-secondary)] shrink-0 inline-flex items-center gap-1">
                   <CalendarDays className="w-3 h-3" />{r.doc_date}
                 </span>
               )}
               {r.period_kind && <Badge variant="default" className="text-[10px] shrink-0">{periodLabel(t, r.period_kind)}</Badge>}
-              <span className="text-[10px] text-[var(--text-secondary)] font-mono truncate">{r.path}</span>
+              <span className="text-[10px] text-[var(--text-secondary)] shrink-0" title="Ngày thêm · lần sửa cuối">
+                {fmtD(r.first_uploaded_at)}{r.uploaded_at && r.first_uploaded_at?.slice(0, 10) !== r.uploaded_at?.slice(0, 10)
+                  ? ` · sửa ${fmtD(r.uploaded_at)}` : ''}
+              </span>
+              <span className="text-[10px] text-[var(--text-secondary)] font-mono truncate max-w-[180px]">{r.path}</span>
             </button>
           ))}
         </div>

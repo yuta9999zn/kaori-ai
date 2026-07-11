@@ -208,6 +208,8 @@ async def list_files(
     async with acquire_for_tenant(x_enterprise_id) as conn:
         # pr = cầu nối Kho ↔ kho dữ liệu: run resolve qua K-8 sha256 (chạy cả
         # khi file_id NULL — prose runs không có bronze_files row).
+        # v = ngày THÊM đầu (v1 của chuỗi version cùng tên trong folder,
+        # same-name-stacks); uploaded_at của bản current = ngày SỬA cuối.
         rows = await conn.fetch(
             """SELECT d.doc_id, d.external_ref, d.name_vi, d.doc_type, d.status,
                       d.version, d.storage_tier, d.valid_until, d.sha256,
@@ -215,7 +217,8 @@ async def list_files(
                       d.template_id, d.labels, d.metadata_completeness,
                       d.metadata, d.doc_kind,
                       pr.run_id AS pipeline_run_id,
-                      pr.status AS pipeline_run_status
+                      pr.status AS pipeline_run_status,
+                      v.first_uploaded_at
                FROM document_repository_file d
                LEFT JOIN LATERAL (
                    SELECT run_id, status FROM pipeline_runs
@@ -223,6 +226,12 @@ async def list_files(
                      AND status NOT IN ('failed', 'cancelled')
                    ORDER BY created_at DESC LIMIT 1
                ) pr ON TRUE
+               LEFT JOIN LATERAL (
+                   SELECT MIN(uploaded_at) AS first_uploaded_at
+                   FROM document_repository_file
+                   WHERE enterprise_id = $6 AND folder_id = d.folder_id
+                     AND name_vi = d.name_vi AND deleted_at IS NULL
+               ) v ON TRUE
                WHERE d.folder_id = $1 AND d.is_current AND d.deleted_at IS NULL
                  AND ($2::uuid IS NULL OR
                       (d.name_vi, d.doc_id) > (SELECT name_vi, doc_id FROM document_repository_file WHERE doc_id = $2))
@@ -272,6 +281,9 @@ def _file_out(r) -> dict:
     if "pipeline_run_id" in keys:
         out["pipeline_run_id"] = str(r["pipeline_run_id"]) if r["pipeline_run_id"] else None
         out["pipeline_run_status"] = r["pipeline_run_status"]
+    if "first_uploaded_at" in keys:
+        out["first_uploaded_at"] = (r["first_uploaded_at"].isoformat()
+                                    if r["first_uploaded_at"] else None)
     return out
 
 
@@ -428,9 +440,16 @@ async def search_repository(
     async with acquire_for_tenant(x_enterprise_id) as conn:
         rows = await conn.fetch(
             """SELECT d.doc_id, d.name_vi, d.doc_type, d.status, d.folder_id, f.path,
-                      d.doc_date, d.period_kind, d.uploaded_at
+                      d.doc_date, d.period_kind, d.uploaded_at,
+                      v.first_uploaded_at
                FROM document_repository_file d
                JOIN document_folder f ON f.folder_id = d.folder_id
+               LEFT JOIN LATERAL (
+                   SELECT MIN(uploaded_at) AS first_uploaded_at
+                   FROM document_repository_file
+                   WHERE enterprise_id = $8 AND folder_id = d.folder_id
+                     AND name_vi = d.name_vi AND deleted_at IS NULL
+               ) v ON TRUE
                WHERE d.is_current AND d.deleted_at IS NULL
                  AND ($1 = '' OR d.name_vi ILIKE '%' || $1 || '%')
                  AND ($2::text IS NULL OR d.doc_type = $2)
@@ -440,11 +459,14 @@ async def search_repository(
                  AND ($6::text IS NULL OR d.period_kind = $6)
                ORDER BY d.name_vi
                LIMIT $7""",
-            q, doc_type, status, date_from, date_to, period_kind, limit)
+            q, doc_type, status, date_from, date_to, period_kind, limit,
+            x_enterprise_id)
     return {"items": [{
         "doc_id": str(r["doc_id"]), "name_vi": r["name_vi"], "doc_type": r["doc_type"],
         "status": r["status"], "folder_id": str(r["folder_id"]), "path": r["path"],
         "doc_date": r["doc_date"].isoformat() if r["doc_date"] else None,
         "period_kind": r["period_kind"],
         "uploaded_at": r["uploaded_at"].isoformat() if r["uploaded_at"] else None,
+        "first_uploaded_at": (r["first_uploaded_at"].isoformat()
+                              if r["first_uploaded_at"] else None),
     } for r in rows]}

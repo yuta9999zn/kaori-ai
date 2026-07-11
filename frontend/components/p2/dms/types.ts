@@ -154,6 +154,8 @@ export interface DocRow {
   // Cầu Kho ↔ kho dữ liệu: run resolve qua K-8 sha256 (BE lateral join)
   pipeline_run_id?: string | null;
   pipeline_run_status?: string | null;
+  // Ngày THÊM đầu tiên (v1 của chuỗi version); uploaded_at = lần sửa cuối
+  first_uploaded_at?: string | null;
 }
 
 export interface IndexRow extends DocRow {
