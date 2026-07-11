@@ -14,6 +14,7 @@ import {
   Button, Badge, ErrorBanner, cn, api, API_BASE, type ProblemDetails,
 } from '@/components/p2/foundation';
 import { useT } from '@/lib/i18n/provider';
+import { safeRandomUUID } from '@/lib/uuid';
 import { Markdown } from './md';
 import { MdToolbar } from './md-toolbar';
 import { MetadataForm, CompletenessBadge, StatusLozenge } from './metadata-form';
@@ -430,7 +431,7 @@ export function FolderPage({ folderId, onUploaded }: {
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem(TOKEN_KEY) ?? ''}`,
           'X-Folder-ID': folderId,
-          'Idempotency-Key': `repo-${hint || crypto.randomUUID()}`,
+          'Idempotency-Key': `repo-${hint || safeRandomUUID()}`,
         },
         body: fd,
       });

@@ -43,6 +43,7 @@ import {
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
 import { SkeletonWorkflowDetail, SkeletonTreeTab, SkeletonReportsTab } from '@/components/p2/skeleton';
+import { safeRandomUUID } from '@/lib/uuid';
 import { formatProblem, SUCCESS } from '@/lib/i18n/messages';
 import { useT } from '@/lib/i18n/provider';
 import BpmnPanel from '@/components/bpmn/BpmnPanel';
@@ -3075,7 +3076,7 @@ function DocSlotRow({ slot, workflowId, nodeId, onMutated }: {
       const headers: Record<string, string> = {
         Authorization: `Bearer ${window.localStorage.getItem('kaori.access_token') ?? ''}`,
         'X-Workflow-Step-ID': nodeId,
-        'Idempotency-Key': `wsdoc-${hint || crypto.randomUUID()}`,
+        'Idempotency-Key': `wsdoc-${hint || safeRandomUUID()}`,
       };
       if (slot.requirement_id) headers['X-Requirement-ID'] = slot.requirement_id;
       const res = await fetch(`${API_BASE}/api/v1/upload`, { method: 'POST', headers, body: fd });

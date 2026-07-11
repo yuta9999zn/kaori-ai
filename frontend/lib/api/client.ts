@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
 import axiosRetry from "axios-retry";
+import { safeRandomUUID } from "../uuid";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
@@ -80,7 +81,7 @@ api.interceptors.request.use((config) => {
   const isMutation = ["post", "put", "patch", "delete"].includes(method);
   const isApiV1    = url.includes("/api/v1/");
   if (isMutation && isApiV1 && !config.headers["Idempotency-Key"]) {
-    config.headers["Idempotency-Key"] = crypto.randomUUID();
+    config.headers["Idempotency-Key"] = safeRandomUUID();
   }
   return config;
 });

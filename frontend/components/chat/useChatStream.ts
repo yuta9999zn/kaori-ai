@@ -20,6 +20,7 @@
  * "Stateless"); the session lives until the panel unmounts.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
+import { safeRandomUUID } from "@/lib/uuid";
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
@@ -79,9 +80,9 @@ export function useChatStream(scope: ChatScope) {
       abortRef.current = ac;
 
       const userMsg: ChatMessage = {
-        id: crypto.randomUUID(), role: "user", content: trimmed,
+        id: safeRandomUUID(), role: "user", content: trimmed,
       };
-      const assistantId = crypto.randomUUID();
+      const assistantId = safeRandomUUID();
 
       // Snapshot history BEFORE appending the new user turn so the BE
       // gets the visible history (matches CLAUDE.md §10 Q3 stateless model).

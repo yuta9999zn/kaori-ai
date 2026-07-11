@@ -7,6 +7,8 @@
  * lib/api/client.ts (axios-based with auto-refresh).
  */
 
+import { safeRandomUUID } from './uuid';
+
 export interface ApiError {
   status: number;
   error: string;
@@ -87,7 +89,7 @@ async function _apiOnce<T>(
     path.startsWith('/api/v1/') &&
     !headers.has('Idempotency-Key')
   ) {
-    headers.set('Idempotency-Key', crypto.randomUUID());
+    headers.set('Idempotency-Key', safeRandomUUID());
   }
 
   const res = await fetch(`${BASE}${path}`, { ...init, headers });

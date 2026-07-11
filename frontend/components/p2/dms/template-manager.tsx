@@ -12,6 +12,7 @@ import {
 } from '@/components/p2/foundation';
 import { PageHeader } from '@/components/p2/shell';
 import { FieldDef, FieldKind, SectionDef, TemplateDef, WIDTH_PRESETS, statusLabel } from './types';
+import { safeRandomUUID } from '@/lib/uuid';
 import { useT } from '@/lib/i18n/provider';
 
 function kindLabels(t: (key: string, params?: Record<string, string | number>) => string): Record<FieldKind, string> {
@@ -301,7 +302,7 @@ export default function TemplateManagerPage() {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem(TOKEN_KEY) ?? ''}`,
-          'Idempotency-Key': crypto.randomUUID(),
+          'Idempotency-Key': safeRandomUUID(),
           'X-Template-Analysis': 'true',
         },
         body: fd,
