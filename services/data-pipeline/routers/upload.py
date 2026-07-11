@@ -72,6 +72,9 @@ async def upload_file(
     x_workflow_step_id: Optional[UUID] = Header(None, alias="X-Workflow-Step-ID"),
     x_requirement_id: Optional[UUID] = Header(None, alias="X-Requirement-ID"),
     x_folder_id: Optional[UUID] = Header(None, alias="X-Folder-ID"),  # ADR-0039 DMS
+    # Lựa chọn của user trên dialog nộp file: 'skip' = chỉ tải lên, không lưu
+    # Kho; bỏ trống = bridge tự filing vào 'Hồ sơ quy trình/<workflow>'.
+    x_repo_filing: Optional[str] = Header(None, alias="X-Repo-Filing"),
     # ADR-0042 P3 — upload một FILE MẪU chỉ để AI phân tích cấu trúc thành
     # template: đi đường sync (nhận unstructured + DocSage extract inline)
     # nhưng KHÔNG đính vào workflow/folder nào.
@@ -112,6 +115,7 @@ async def upload_file(
                 workflow_step_id=str(x_workflow_step_id) if x_workflow_step_id else None,
                 requirement_id=str(x_requirement_id) if x_requirement_id else None,
                 folder_id=str(x_folder_id) if x_folder_id else None,
+                repo_filing=x_repo_filing,
             )
         except ValueError as e:
             # MinerU wire-in 2026-05-18 — surface workflow whitelist rejections

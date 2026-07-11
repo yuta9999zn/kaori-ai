@@ -3058,10 +3058,40 @@ function DocSlotRow({ slot, workflowId, nodeId, onMutated }: {
   // (status 'da_nop') linked to bronze + sha256-deduped (K-8) — NOT through the
   // analytics column-mapping wizard (wrong tool for a PDF/đơn). The gateway
   // injects enterprise/user from the JWT (K-12); we never send those.
-  async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
+  // Dialog lưu-Kho: chọn file xong KHÔNG upload ngay — hỏi user muốn xếp tài
+  // liệu vào đâu trong Kho (mặc định: Hồ sơ quy trình/<quy trình>, BE tự tạo)
+  // hay chỉ nộp vào bước (X-Repo-Filing: skip).
+  const [pendingFile, setPendingFile] = React.useState<File | null>(null);
+  const [repoFolders, setRepoFolders] = React.useState<{ id: string; label: string }[] | null>(null);
+  const [folderChoice, setFolderChoice] = React.useState<string>('');  // '' = tự xếp
+
+  function onPick(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
     e.target.value = '';  // allow re-picking the same filename
     if (!f) return;
+    setUpErr(null);
+    setPendingFile(f);
+    if (repoFolders === null) {
+      (async () => {
+        try {
+          const roots: any = await api('/api/v1/document-folders?limit=50');
+          const opts: { id: string; label: string }[] = [];
+          for (const r of roots.items ?? []) {
+            opts.push({ id: r.folder_id, label: r.name_vi });
+            if (r.child_count > 0) {
+              try {
+                const kids: any = await api(`/api/v1/document-folders?parent_id=${r.folder_id}&limit=50`);
+                for (const c of kids.items ?? []) opts.push({ id: c.folder_id, label: `${r.name_vi} / ${c.name_vi}` });
+              } catch { /* nhánh lỗi thì bỏ qua — combobox vẫn dùng được */ }
+            }
+          }
+          setRepoFolders(opts);
+        } catch { setRepoFolders([]); }
+      })();
+    }
+  }
+
+  async function doUpload(f: File, filing: 'auto' | 'skip' | 'folder') {
     setUploading(true);
     setUpErr(null);
     try {
@@ -3079,6 +3109,8 @@ function DocSlotRow({ slot, workflowId, nodeId, onMutated }: {
         'Idempotency-Key': `wsdoc-${hint || safeRandomUUID()}`,
       };
       if (slot.requirement_id) headers['X-Requirement-ID'] = slot.requirement_id;
+      if (filing === 'skip') headers['X-Repo-Filing'] = 'skip';
+      if (filing === 'folder' && folderChoice) headers['X-Folder-ID'] = folderChoice;
       const res = await fetch(`${API_BASE}/api/v1/upload`, { method: 'POST', headers, body: fd });
       if (!res.ok) {
         let detail = `HTTP ${res.status}`;
@@ -3088,6 +3120,7 @@ function DocSlotRow({ slot, workflowId, nodeId, onMutated }: {
         } catch { /* non-JSON error body */ }
         throw new Error(detail);
       }
+      setPendingFile(null);
       onMutated();  // refetch the tree → slot flips to "Đã nộp" + file appears, no reload
     } catch (err: any) {
       setUpErr(err?.message || t('templates60WorkflowDetail.uploadFailedDefault'));
@@ -3183,6 +3216,37 @@ function DocSlotRow({ slot, workflowId, nodeId, onMutated }: {
         <Badge variant={sm.variant} className="text-[10px] shrink-0">{t(sm.labelKey)}</Badge>
         {upErr && <span className="text-[10px] text-[var(--state-error)] shrink-0 truncate max-w-[120px]" title={upErr}>{upErr}</span>}
       </div>
+
+      {pendingFile && (
+        <div className="mt-1.5 ml-2 rounded-md-custom border border-[var(--primary-gold)]/40 bg-[var(--primary-gold)]/5 p-2.5 space-y-2">
+          <p className="text-xs font-medium text-[var(--text-primary)]">
+            Nộp <span className="font-mono">{pendingFile.name}</span> — lưu vào Kho tài liệu?
+          </p>
+          <div className="flex items-center gap-2 flex-wrap">
+            <select value={folderChoice} onChange={(e) => setFolderChoice(e.target.value)}
+              className="h-8 rounded-md-custom border border-[var(--border-color)] bg-white px-2 text-xs max-w-[320px]">
+              <option value="">Hồ sơ quy trình / (quy trình này) — tự xếp</option>
+              {(repoFolders ?? []).map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
+            </select>
+            {repoFolders === null && <Loader2 className="w-3 h-3 animate-spin text-[var(--text-secondary)]" />}
+          </div>
+          <div className="flex items-center gap-2">
+            <button onClick={() => doUpload(pendingFile, folderChoice ? 'folder' : 'auto')} disabled={uploading}
+              className="text-[11px] font-medium px-2.5 py-1 rounded-md-custom bg-[var(--primary-gold)] text-white hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-1">
+              {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />}
+              Nộp &amp; lưu vào Kho
+            </button>
+            <button onClick={() => doUpload(pendingFile, 'skip')} disabled={uploading}
+              className="text-[11px] px-2.5 py-1 rounded-md-custom border border-[var(--border-color)] text-[var(--text-primary)] hover:bg-[var(--bg-app)]/60 disabled:opacity-50">
+              Chỉ nộp vào bước (không lưu Kho)
+            </button>
+            <button onClick={() => setPendingFile(null)} disabled={uploading}
+              className="text-[11px] text-[var(--text-secondary)] hover:underline">
+              Hủy
+            </button>
+          </div>
+        </div>
+      )}
 
       {cleanVerdict && (
         <div className={cn('mt-1.5 ml-2 rounded-md-custom border p-2.5 space-y-1.5',
