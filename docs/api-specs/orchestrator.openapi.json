@@ -11338,6 +11338,14 @@
             },
             "title": "Items",
             "type": "array"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
           }
         },
         "required": [
@@ -11704,6 +11712,29 @@
         "title": "TemplateFromFile",
         "type": "object"
       },
+      "TemplateItem": {
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description"
+        ],
+        "title": "TemplateItem",
+        "type": "object"
+      },
       "TemplatePatch": {
         "properties": {
           "approval_chain_id": {
@@ -11816,6 +11847,22 @@
           }
         },
         "title": "TemplatePatch",
+        "type": "object"
+      },
+      "TemplatesResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TemplateItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "TemplatesResponse",
         "type": "object"
       },
       "TenantKeyCreate": {
@@ -16324,6 +16371,51 @@
         ]
       }
     },
+    "/analysis/templates": {
+      "get": {
+        "description": "Catalogue the tier picker offers. Sourced from the canonical\nTEMPLATE_REGISTRY (statistical + LLM-narrative templates) so the FE lists\nreal, runnable templates instead of the retired MSW-only\n`/api/v2/enterprise/analysis/templates` mock (503 → empty picker on the\ndemo). Tenant-agnostic static catalogue — the gateway JWT still gates it at\nthe edge, so no X-Enterprise-ID is required here. `tier` is accepted for\nforward-compat; the registry is currently shared across tiers.",
+        "operationId": "list_analysis_templates_analysis_templates_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "tier",
+            "required": false,
+            "schema": {
+              "default": "basic",
+              "pattern": "^(basic|intermediate|advanced)$",
+              "title": "Tier",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplatesResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Analysis Templates",
+        "tags": [
+          "Multi-tier Analysis"
+        ]
+      }
+    },
     "/analytics/runs": {
       "get": {
         "description": "List recent analysis runs for this enterprise (K-1: enterprise filter).",
@@ -16495,7 +16587,7 @@
     },
     "/analytics/templates": {
       "get": {
-        "description": "Return all templates with eligibility flag for the given data profile.",
+        "description": "Return all templates with eligibility flag for the given data profile.\n\nTwo modes:\n  * explicit — caller passes detected_types/detected_purpose/row_count;\n  * run-aware — caller passes run_id (+ X-Enterprise-ID) and the profile\n    is derived from the run's Silver rows. Explicit params, when\n    non-empty, override the derived values.",
         "operationId": "list_templates_analytics_templates_get",
         "parameters": [
           {
@@ -16532,6 +16624,38 @@
               "default": 0,
               "title": "Row Count",
               "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "run_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-enterprise-id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Enterprise-Id"
             }
           }
         ],
@@ -19016,7 +19140,7 @@
     },
     "/dashboard/state": {
       "get": {
-        "description": "Returns one of 5 states so the frontend can render the correct view:\n  no_data → first_upload → pending_review → analysis_ready → results_ready",
+        "description": "Returns the 5-state machine plus the FE view vocabulary:\n  state ∈ no_data → first_upload → pending_review → analysis_ready → results_ready\n  view  ∈ empty | uploading | processing | completed   (what the FE renders)\n\nState derives from the tenant's OVERALL pipeline history, not just the\nlatest run — one failed .md upload must not flip a data-rich tenant back\nto the \"upload your first file\" empty state (Đồng Xanh pilot bug: latest\nrun failed → every earlier silver_complete run was masked as no_data).",
         "operationId": "dashboard_state_dashboard_state_get",
         "parameters": [
           {
@@ -21454,6 +21578,58 @@
           }
         },
         "summary": "Patch File Metadata",
+        "tags": [
+          "Document Repository / DMS (ADR-0039)"
+        ]
+      }
+    },
+    "/document-repository/{doc_id}/cleanliness": {
+      "post": {
+        "description": "Chấm độ sạch một file BẢNG trong Kho — cùng verdict engine với Cây\ntài liệu workflow (1 file 2 mặt nhìn, ADR-0039). Bẩn → 'run_pipeline'\n(đi 5 bước làm sạch); sạch → 'analyze'.",
+        "operationId": "check_repo_document_cleanliness_document_repository__doc_id__cleanliness_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "doc_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Doc Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Check Repo Document Cleanliness",
         "tags": [
           "Document Repository / DMS (ADR-0039)"
         ]
@@ -28862,6 +29038,58 @@
           }
         },
         "summary": "Classify Document",
+        "tags": [
+          "Workflow Documents (Tier-3)"
+        ]
+      }
+    },
+    "/workflow-documents/{attachment_id}/cleanliness": {
+      "post": {
+        "description": "Chấm độ sạch một tài liệu BẢNG trong Cây tài liệu (demo AABW).",
+        "operationId": "check_document_cleanliness_workflow_documents__attachment_id__cleanliness_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attachment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attachment Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Enterprise-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Enterprise-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Check Document Cleanliness",
         "tags": [
           "Workflow Documents (Tier-3)"
         ]

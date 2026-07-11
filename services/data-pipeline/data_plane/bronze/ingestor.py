@@ -9,6 +9,8 @@ import hashlib
 import io
 import json
 import os
+import re
+import unicodedata
 import uuid
 from pathlib import Path
 from typing import Optional
@@ -58,6 +60,58 @@ UNSTRUCTURED_EXTENSIONS = {".pdf", ".docx", ".doc", ".png", ".jpg",
                            ".jpeg", ".tiff", ".webp", ".pptx", ".md"}
 ALL_ACCEPTED_EXTENSIONS = SUPPORTED_EXTENSIONS | UNSTRUCTURED_EXTENSIONS
 MAX_FILE_SIZE_BYTES = int(os.getenv("UPLOAD_MAX_SIZE_MB", 100)) * 1024 * 1024
+
+
+# ADR-0039/0042 bridge — root folder Kho cho chứng từ nộp ở bước workflow.
+# Env-configurable (không hardcode tùy tiện); nil-dept để mọi phòng thấy root.
+_WF_REPO_ROOT = os.getenv("KAORI_WF_REPO_ROOT", "Hồ sơ quy trình")
+_NIL_DEPT = "00000000-0000-0000-0000-000000000000"
+
+
+def _slug(name: str) -> str:
+    """VN-aware slug cho path segment — mirror của
+    ai-orchestrator/routers/document_repository._slug (giữ 2 bản đồng bộ)."""
+    s = (name or "").replace("đ", "d").replace("Đ", "D")
+    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
+    s = re.sub(r"[^a-zA-Z0-9]+", "_", s).strip("_").lower()
+    return s or "muc"
+
+
+async def _ensure_workflow_repo_folder(
+    conn, *, enterprise_id: str, workflow_name: str, department_id,
+) -> str:
+    """1 file 2 mặt nhìn — file nộp ở bước workflow cũng là tài liệu doanh
+    nghiệp: resolve (tạo nếu thiếu) folder Kho '<root>/<tên quy trình>' để
+    ``_file_into_repository`` filing luôn, không bắt user upload 2 lần.
+
+    Race trên uq_docfolder_sibling → đọc lại (thua race là ổn, folder đã có).
+    """
+    async def _get_or_create(parent_id, parent_path, name, dept):
+        sel = ("SELECT folder_id, path FROM document_folder "
+               "WHERE enterprise_id = $1 AND parent_id IS NOT DISTINCT FROM $2 "
+               "AND name_vi = $3 AND deleted_at IS NULL")
+        row = await conn.fetchrow(sel, uuid.UUID(enterprise_id), parent_id, name)
+        if row is None:
+            path = (parent_path + "/" if parent_path else "") + _slug(name)
+            try:
+                row = await conn.fetchrow(
+                    """INSERT INTO document_folder
+                           (enterprise_id, department_id, parent_id, path, name_vi)
+                       VALUES ($1, $2, $3, $4, $5)
+                       RETURNING folder_id, path""",
+                    uuid.UUID(enterprise_id), dept, parent_id, path, name)
+            except Exception:
+                row = await conn.fetchrow(
+                    sel, uuid.UUID(enterprise_id), parent_id, name)
+                if row is None:
+                    raise
+        return row["folder_id"], row["path"]
+
+    root_id, root_path = await _get_or_create(
+        None, "", _WF_REPO_ROOT, uuid.UUID(_NIL_DEPT))
+    wf_id, _ = await _get_or_create(
+        root_id, root_path, workflow_name, department_id)
+    return str(wf_id)
 
 
 async def _file_into_repository(
@@ -290,7 +344,8 @@ async def ingest_file(
                 """SELECT n.node_id, n.workflow_id, n.department_id,
                           w.branch_id, w.workspace_id,
                           n.expected_mapping_template_id, n.title,
-                          n.required_document_types
+                          n.required_document_types,
+                          COALESCE(w.name_vi, w.name) AS wf_name
                    FROM workflow_nodes n
                    JOIN workflows w ON w.workflow_id = n.workflow_id
                    WHERE n.node_id = $1 AND n.enterprise_id = $2""",
@@ -326,6 +381,18 @@ async def ingest_file(
                         "ingest.requirement_not_on_node",
                         node_id=str(workflow_step_row["node_id"]),
                     )
+
+            # ADR-0039/0042 bridge — file nộp ở bước workflow tự filing vào
+            # Kho ('Hồ sơ quy trình/<tên quy trình>') trừ khi caller đã chỉ
+            # định X-Folder-ID. Fail-soft: lỗi ở đây không được chặn upload.
+            if folder_id is None:
+                try:
+                    folder_id = await _ensure_workflow_repo_folder(
+                        conn, enterprise_id=enterprise_id,
+                        workflow_name=workflow_step_row["wf_name"] or "Quy trình",
+                        department_id=workflow_step_row["department_id"])
+                except Exception as exc:  # noqa: BLE001 — filing là phụ
+                    log.warning("ingest.autofile_folder_failed", error=str(exc))
 
             # Stage 1.5 — workflow card declares which document kinds it
             # accepts via required_document_types[]. We enforce a whitelist

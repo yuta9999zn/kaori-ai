@@ -460,41 +460,27 @@ async def _cleanliness_narrative(verdict: dict, filename: str, enterprise_id: st
     )
 
 
-@router.post("/workflow-documents/{attachment_id}/cleanliness")
-async def check_document_cleanliness(
-    attachment_id: UUID = Path(...),
-    x_enterprise_id: UUID = Header(..., alias="X-Enterprise-ID"),
-):
-    """Chấm độ sạch một tài liệu BẢNG trong Cây tài liệu (demo AABW).
-
-    Heuristics tất định (mirror quy tắc Bước 3) quyết định verdict;
-    Qwen chỉ viết nhận xét (best-effort, bounded). Bẩn → recommendation
-    'run_pipeline' (đi 5 bước làm sạch); sạch → 'analyze'."""
+async def cleanliness_payload(
+    enterprise_id: UUID, sha256: str, filename: Optional[str],
+) -> dict:
+    """Verdict engine dùng chung — Cây tài liệu workflow VÀ Kho (ADR-0039,
+    1 file 2 mặt nhìn). Heuristics tất định quyết định verdict; Qwen chỉ
+    viết nhận xét (best-effort, bounded). Bẩn → 'run_pipeline'; sạch →
+    'analyze'. Raise HTTPException 400/409 như endpoint gốc."""
     import io
 
     import pandas as pd
 
     from ..reasoning.doc_cleanliness import assess_cleanliness
 
-    async with acquire_for_tenant(x_enterprise_id) as conn:
-        row = await conn.fetchrow(
-            """SELECT pr.file_sha256, pr.mime_type, pr.filename
-               FROM workflow_step_documents sd
-               JOIN bronze_files bf ON bf.file_id = sd.file_id  -- tenant-filter-lint: allow
-               JOIN pipeline_runs pr ON pr.run_id = bf.run_id   -- tenant-filter-lint: allow
-               WHERE sd.attachment_id = $1""",
-            attachment_id)
-    if row is None or not row["file_sha256"]:
-        raise HTTPException(status_code=404, detail="document not found")
-
-    fname = (row["filename"] or "").lower()
+    fname = (filename or "").lower()
     ext = next((e for e in _TABULAR_EXTS if fname.endswith(e)), None)
     if ext is None:
         raise HTTPException(
             status_code=400,
             detail="Kiểm tra sạch chỉ áp dụng cho file bảng (csv/tsv/xlsx/xls)")
 
-    content = await get_blob_store().get(blob_key(str(x_enterprise_id), row["file_sha256"]))
+    content = await get_blob_store().get(blob_key(str(enterprise_id), sha256))
     if content is None:
         raise HTTPException(status_code=409,
                             detail="file bytes chưa được lưu trữ cho tài liệu này")
@@ -510,26 +496,46 @@ async def check_document_cleanliness(
                 df = pd.read_csv(io.BytesIO(content), sep=sep, encoding="cp1258", dtype=str)
     except Exception as exc:  # noqa: BLE001 — parse failure = not clean, not a 500
         log.warning("doc_cleanliness.parse_failed",
-                    attachment_id=str(attachment_id), error=str(exc))
+                    filename=filename, error=str(exc))
         return {
             "is_clean": False, "score": 0.0, "recommendation": "run_pipeline",
             "issues": [{"code": "parse_failed",
                         "label": "Không đọc được bảng — cần chuẩn hóa qua 5 bước",
                         "count": 0}],
-            "narrative": None, "filename": row["filename"], "row_count": 0,
+            "narrative": None, "filename": filename, "row_count": 0,
         }
 
     verdict = assess_cleanliness(df)
 
     narrative: Optional[str] = None
     try:
-        narrative = await _cleanliness_narrative(verdict, row["filename"] or "file",
-                                                 str(x_enterprise_id))
+        narrative = await _cleanliness_narrative(verdict, filename or "file",
+                                                 str(enterprise_id))
     except Exception as exc:  # noqa: BLE001 — nhận xét là phụ, verdict là chính
         log.warning("doc_cleanliness.narrative_failed", error=str(exc))
 
     return {**verdict, "narrative": narrative,
-            "filename": row["filename"], "row_count": int(len(df))}
+            "filename": filename, "row_count": int(len(df))}
+
+
+@router.post("/workflow-documents/{attachment_id}/cleanliness")
+async def check_document_cleanliness(
+    attachment_id: UUID = Path(...),
+    x_enterprise_id: UUID = Header(..., alias="X-Enterprise-ID"),
+):
+    """Chấm độ sạch một tài liệu BẢNG trong Cây tài liệu (demo AABW)."""
+    async with acquire_for_tenant(x_enterprise_id) as conn:
+        row = await conn.fetchrow(
+            """SELECT pr.file_sha256, pr.mime_type, pr.filename
+               FROM workflow_step_documents sd
+               JOIN bronze_files bf ON bf.file_id = sd.file_id  -- tenant-filter-lint: allow
+               JOIN pipeline_runs pr ON pr.run_id = bf.run_id   -- tenant-filter-lint: allow
+               WHERE sd.attachment_id = $1""",
+            attachment_id)
+    if row is None or not row["file_sha256"]:
+        raise HTTPException(status_code=404, detail="document not found")
+    return await cleanliness_payload(
+        x_enterprise_id, row["file_sha256"], row["filename"])
 
 
 @router.get("/workflow-documents/{attachment_id}/download")

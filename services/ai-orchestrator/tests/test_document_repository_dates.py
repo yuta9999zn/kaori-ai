@@ -127,7 +127,7 @@ def test_list_files_passes_date_range(app_client, conn):
     assert resp.status_code == 200, resp.text
     sql = conn.fetch.await_args.args[0]
     args = conn.fetch.await_args.args[1:]
-    assert "COALESCE(doc_date, uploaded_at::date)" in sql
+    assert "COALESCE(d.doc_date, d.uploaded_at::date)" in sql
     assert datetime.date(2026, 6, 1) in args and datetime.date(2026, 6, 30) in args
 
 

@@ -206,20 +206,31 @@ async def list_files(
     date_to: Optional[date] = Query(None, description="effective doc date <="),
 ):
     async with acquire_for_tenant(x_enterprise_id) as conn:
+        # pr = cầu nối Kho ↔ kho dữ liệu: run resolve qua K-8 sha256 (chạy cả
+        # khi file_id NULL — prose runs không có bronze_files row).
         rows = await conn.fetch(
-            """SELECT doc_id, external_ref, name_vi, doc_type, status, version,
-                      storage_tier, valid_until, sha256, uploaded_at,
-                      doc_date, period_kind, file_id, template_id, labels,
-                      metadata_completeness, metadata, doc_kind
-               FROM document_repository_file
-               WHERE folder_id = $1 AND is_current AND deleted_at IS NULL
+            """SELECT d.doc_id, d.external_ref, d.name_vi, d.doc_type, d.status,
+                      d.version, d.storage_tier, d.valid_until, d.sha256,
+                      d.uploaded_at, d.doc_date, d.period_kind, d.file_id,
+                      d.template_id, d.labels, d.metadata_completeness,
+                      d.metadata, d.doc_kind,
+                      pr.run_id AS pipeline_run_id,
+                      pr.status AS pipeline_run_status
+               FROM document_repository_file d
+               LEFT JOIN LATERAL (
+                   SELECT run_id, status FROM pipeline_runs
+                   WHERE enterprise_id = $6 AND file_sha256 = d.sha256
+                     AND status NOT IN ('failed', 'cancelled')
+                   ORDER BY created_at DESC LIMIT 1
+               ) pr ON TRUE
+               WHERE d.folder_id = $1 AND d.is_current AND d.deleted_at IS NULL
                  AND ($2::uuid IS NULL OR
-                      (name_vi, doc_id) > (SELECT name_vi, doc_id FROM document_repository_file WHERE doc_id = $2))
-                 AND ($4::date IS NULL OR COALESCE(doc_date, uploaded_at::date) >= $4)
-                 AND ($5::date IS NULL OR COALESCE(doc_date, uploaded_at::date) <= $5)
-               ORDER BY name_vi, doc_id
+                      (d.name_vi, d.doc_id) > (SELECT name_vi, doc_id FROM document_repository_file WHERE doc_id = $2))
+                 AND ($4::date IS NULL OR COALESCE(d.doc_date, d.uploaded_at::date) >= $4)
+                 AND ($5::date IS NULL OR COALESCE(d.doc_date, d.uploaded_at::date) <= $5)
+               ORDER BY d.name_vi, d.doc_id
                LIMIT $3""",
-            folder_id, cursor, limit + 1, date_from, date_to)
+            folder_id, cursor, limit + 1, date_from, date_to, x_enterprise_id)
     items = rows[:limit]
     next_cursor = str(items[-1]["doc_id"]) if len(rows) > limit else None
     return {"items": [_file_out(r) for r in items], "next_cursor": next_cursor}
@@ -258,7 +269,28 @@ def _file_out(r) -> dict:
         out["metadata"] = m or {}
     if "doc_kind" in keys:
         out["doc_kind"] = r["doc_kind"]
+    if "pipeline_run_id" in keys:
+        out["pipeline_run_id"] = str(r["pipeline_run_id"]) if r["pipeline_run_id"] else None
+        out["pipeline_run_status"] = r["pipeline_run_status"]
     return out
+
+
+@router.post("/document-repository/{doc_id}/cleanliness")
+async def check_repo_document_cleanliness(
+    doc_id: UUID = Path(...),
+    x_enterprise_id: UUID = Header(..., alias="X-Enterprise-ID"),
+):
+    """Chấm độ sạch một file BẢNG trong Kho — cùng verdict engine với Cây
+    tài liệu workflow (1 file 2 mặt nhìn, ADR-0039). Bẩn → 'run_pipeline'
+    (đi 5 bước làm sạch); sạch → 'analyze'."""
+    async with acquire_for_tenant(x_enterprise_id) as conn:
+        row = await conn.fetchrow(
+            """SELECT sha256, name_vi FROM document_repository_file
+               WHERE doc_id = $1 AND deleted_at IS NULL""", doc_id)
+    if row is None or not row["sha256"]:
+        raise HTTPException(status_code=404, detail="document not found")
+    from .workflow_documents import cleanliness_payload
+    return await cleanliness_payload(x_enterprise_id, row["sha256"], row["name_vi"])
 
 
 @router.patch("/document-repository/{doc_id}")

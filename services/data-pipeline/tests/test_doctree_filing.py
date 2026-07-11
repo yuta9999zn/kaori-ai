@@ -310,3 +310,159 @@ class TestConfluenceSemantics:
         labels = next(a for a in args if isinstance(a, list))
         assert set(labels) == {"quy-trinh:mua-hang", "phong-ban:mua-hang", "loai:hop-dong"}
         assert 7 in args, "validated_page_version = provider folder's page_version"
+
+
+# ═════════════════════════════════════════════════════════════════════
+# 7. ADR-0039/0042 bridge — workflow-step uploads auto-file into Kho
+#    (1 file 2 mặt nhìn: chứng từ theo bước + tài liệu doanh nghiệp)
+# ═════════════════════════════════════════════════════════════════════
+
+NODE = "019f2a10-0000-7000-8000-000000000001"
+WF = "019f2a10-0000-7000-8000-000000000002"
+WS = "019f2a10-0000-7000-8000-000000000003"
+WF_NAME = "Quy trình mua hàng"
+
+
+class WorkflowFakeConn(FakeConn):
+    """Extends FakeConn with the workflow-branch reads: the workflow_nodes
+    join, and the folder get-or-create pair used by the auto-filing bridge."""
+
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.folders: dict = {}          # (parent_id, name_vi) -> row
+        self.folder_inserts: list = []   # document_folder INSERTs seen
+
+    async def fetchrow(self, sql, *args):
+        if "FROM workflow_nodes n" in sql:
+            return {
+                "node_id": uuid.UUID(NODE), "workflow_id": uuid.UUID(WF),
+                "department_id": uuid.UUID(DEPT), "branch_id": uuid.UUID(BR),
+                "workspace_id": uuid.UUID(WS),
+                "expected_mapping_template_id": None,
+                "title": "Bước 9 — Nộp báo cáo",
+                "required_document_types": [],
+                "wf_name": WF_NAME,
+            }
+        if "FROM document_folder" in sql and "name_vi = $3" in sql:
+            return self.folders.get((args[1], args[2]))
+        if "INSERT INTO document_folder" in sql:
+            self.folder_inserts.append((sql, args))
+            row = {"folder_id": uuid.uuid4(), "path": args[3]}
+            self.folders[(args[2], args[4])] = row
+            return row
+        return await super().fetchrow(sql, *args)
+
+
+class BrokenFolderConn(WorkflowFakeConn):
+    """Folder get-or-create blows up — auto-filing must fail-soft."""
+
+    async def fetchrow(self, sql, *args):
+        if "FROM document_folder" in sql and "name_vi = $3" in sql:
+            raise RuntimeError("db hiccup")
+        return await super().fetchrow(sql, *args)
+
+
+def _patch_org(monkeypatch) -> None:
+    import data_pipeline.shared.org_resolver as org_resolver
+
+    async def _org(conn, enterprise_id, **kw):
+        return {"branch_id": BR, "department_id": DEPT, "source_id": SRC}
+
+    async def _tpl(conn, enterprise_id, source_id, fname):
+        return None
+
+    monkeypatch.setattr(org_resolver, "resolve_org_attribution", _org)
+    monkeypatch.setattr(org_resolver, "match_mapping_template", _tpl)
+
+
+def _patch_land(monkeypatch) -> dict:
+    seen: dict = {}
+
+    async def _fake_land(*args, **kwargs):
+        seen.update(kwargs)
+
+    monkeypatch.setattr(ing, "_parse_and_land", _fake_land)
+    return seen
+
+
+class TestWorkflowAutoFiling:
+
+    @pytest.mark.asyncio
+    async def test_workflow_upload_autofiles_into_kho(self, monkeypatch):
+        """Nộp file ở bước workflow (không X-Folder-ID) → tự resolve folder
+        Kho 'Hồ sơ quy trình/<tên quy trình>' và forward folder_id xuống
+        nhánh landing để _file_into_repository ghi row DMS."""
+        conn = WorkflowFakeConn()
+        _patch_conn(monkeypatch, conn)
+        _patch_org(monkeypatch)
+        seen = _patch_land(monkeypatch)
+
+        await ing.ingest_file(
+            run_id=str(uuid.uuid4()), enterprise_id=ENT, uploaded_by=USR,
+            db_pool=None, kafka_producer=FakeKafka(),
+            workflow_step_id=NODE, content=CSV, filename="bao_cao_t6.csv")
+        await asyncio.sleep(0)
+
+        assert seen.get("folder_id"), (
+            "workflow upload must auto-resolve a Kho folder and forward it")
+        assert len(conn.folder_inserts) == 2, "root + workflow folder created"
+        _, root_args = conn.folder_inserts[0]
+        assert "Hồ sơ quy trình" in root_args
+        _, wf_args = conn.folder_inserts[1]
+        assert WF_NAME in wf_args
+        assert uuid.UUID(DEPT) in wf_args, "workflow folder carries the card's dept"
+
+    @pytest.mark.asyncio
+    async def test_second_upload_reuses_folders(self, monkeypatch):
+        """Folder đã tồn tại → không INSERT thêm, vẫn resolve được id."""
+        conn = WorkflowFakeConn()
+        _patch_conn(monkeypatch, conn)
+        _patch_org(monkeypatch)
+        seen = _patch_land(monkeypatch)
+
+        for fname in ("bao_cao_t6.csv", "bao_cao_t7.csv"):
+            await ing.ingest_file(
+                run_id=str(uuid.uuid4()), enterprise_id=ENT, uploaded_by=USR,
+                db_pool=None, kafka_producer=FakeKafka(),
+                workflow_step_id=NODE, content=CSV + fname.encode(),
+                filename=fname)
+            await asyncio.sleep(0)
+
+        assert len(conn.folder_inserts) == 2, "folders created once, then reused"
+        assert seen.get("folder_id")
+
+    @pytest.mark.asyncio
+    async def test_explicit_folder_id_wins(self, monkeypatch):
+        """Caller đã chỉ định X-Folder-ID → bridge không ghi đè."""
+        conn = WorkflowFakeConn()
+        _patch_conn(monkeypatch, conn)
+        _patch_org(monkeypatch)
+        seen = _patch_land(monkeypatch)
+
+        await ing.ingest_file(
+            run_id=str(uuid.uuid4()), enterprise_id=ENT, uploaded_by=USR,
+            db_pool=None, kafka_producer=FakeKafka(),
+            workflow_step_id=NODE, folder_id=FOLDER,
+            content=CSV, filename="bao_cao_t6.csv")
+        await asyncio.sleep(0)
+
+        assert seen.get("folder_id") == FOLDER
+        assert conn.folder_inserts == []
+
+    @pytest.mark.asyncio
+    async def test_folder_failure_does_not_block_upload(self, monkeypatch):
+        """Lỗi khi ensure folder → upload vẫn thành công, folder_id None
+        (fail-soft: auto-filing là phụ, ingest là chính)."""
+        conn = BrokenFolderConn()
+        _patch_conn(monkeypatch, conn)
+        _patch_org(monkeypatch)
+        seen = _patch_land(monkeypatch)
+
+        out = await ing.ingest_file(
+            run_id=str(uuid.uuid4()), enterprise_id=ENT, uploaded_by=USR,
+            db_pool=None, kafka_producer=FakeKafka(),
+            workflow_step_id=NODE, content=CSV, filename="bao_cao_t6.csv")
+        await asyncio.sleep(0)
+
+        assert out["status"] == "uploading"
+        assert seen.get("folder_id") is None
