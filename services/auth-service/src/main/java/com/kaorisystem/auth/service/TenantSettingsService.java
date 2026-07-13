@@ -5,6 +5,7 @@ import com.kaorisystem.auth.repository.TenantSettingsRepository;
 import com.kaorisystem.auth.repository.TenantSettingsRepository.EnterpriseDescriptor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +28,11 @@ import java.util.UUID;
 public class TenantSettingsService {
 
     private final TenantSettingsRepository repository;
+    private final JdbcTemplate jdbc;
 
     @Transactional
     public SettingsView get(UUID enterpriseId) {
+        bindTenantGuc(enterpriseId);
         TenantSettings entity = repository.findById(enterpriseId)
                 .orElseGet(() -> lazyCreate(enterpriseId));
         return toView(entity, descriptor(enterpriseId));
@@ -37,6 +40,7 @@ public class TenantSettingsService {
 
     @Transactional
     public SettingsView patch(UUID enterpriseId, PatchRequest req) {
+        bindTenantGuc(enterpriseId);
         TenantSettings entity = repository.findById(enterpriseId)
                 .orElseGet(() -> lazyCreate(enterpriseId));
 
@@ -71,6 +75,26 @@ public class TenantSettingsService {
     // =========================================================================
     // Helpers
     // =========================================================================
+
+    /**
+     * Bind the tenant RLS GUC for the current transaction. The
+     * {@code isolation_enterprises} policy (and the tenant_settings policy)
+     * gate rows on {@code app.current_enterprise_id}; under the NOBYPASSRLS
+     * cutover the {@code kaori_app} role sees nothing without it. The id is
+     * gateway-trusted (X-Enterprise-ID from the JWT, K-12), so binding it as
+     * the tenant scope is exactly the per-tenant visibility RLS wants —
+     * unlike {@link RlsBypassHelper} this never widens beyond one tenant.
+     * SET LOCAL semantics (is_local=true) expire at commit/rollback.
+     */
+    private void bindTenantGuc(UUID enterpriseId) {
+        // Two GUC generations are live: enterprises' isolation policy reads
+        // app.current_enterprise_id (mig 059) while tenant_settings' reads
+        // app.enterprise_id (mig 025 era). Bind both for the tx.
+        jdbc.queryForObject(
+                "SELECT set_config('app.current_enterprise_id', ?, true)"
+                        + " || set_config('app.enterprise_id', ?, true)",
+                String.class, enterpriseId.toString(), enterpriseId.toString());
+    }
 
     private TenantSettings lazyCreate(UUID enterpriseId) {
         // Verify enterprise exists before creating settings — FK would catch it
