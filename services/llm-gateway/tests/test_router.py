@@ -98,6 +98,8 @@ def _patch_router_internals(*, model="qwen2.5:14b", method="internal",
     audit_mock = AsyncMock(return_value=None)
     governance_mock = AsyncMock(return_value=None)
     quota_mock = AsyncMock(return_value=None)
+    budget_mock = AsyncMock(return_value=False)  # headroom — no downgrade
+    cost_mock = AsyncMock(return_value=0.0)
 
     return {
         "pool": pool,
@@ -115,6 +117,8 @@ def _patch_router_internals(*, model="qwen2.5:14b", method="internal",
             patch("llm_gateway.router.audit.log_decision", audit_mock),
             patch("llm_gateway.router.ai_governance.record_ai_call", governance_mock),
             patch("llm_gateway.router.tenant_quotas.check_and_consume", quota_mock),
+            patch("llm_gateway.router.external_budget.is_exhausted", budget_mock),
+            patch("llm_gateway.router.external_budget.estimate_cost_cents", cost_mock),
         ],
     }
 

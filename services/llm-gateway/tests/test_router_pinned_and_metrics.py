@@ -72,6 +72,10 @@ def _setup_mocks(*, model="qwen2.5:14b", method="internal", completion="OK"):
               new=AsyncMock(return_value=None)),
         patch("llm_gateway.router.tenant_quotas.check_and_consume",
               new=AsyncMock(return_value=None)),
+        patch("llm_gateway.router.external_budget.is_exhausted",
+              new=AsyncMock(return_value=False)),
+        patch("llm_gateway.router.external_budget.estimate_cost_cents",
+              new=AsyncMock(return_value=0.0)),
     ]
     return {
         "routing": routing_mock,
@@ -315,6 +319,10 @@ def test_obs008_call_counter_on_provider_failure_marks_status_upstream_error(cli
               new=AsyncMock(return_value=None)),
         patch("llm_gateway.router.tenant_quotas.check_and_consume",
               new=AsyncMock(return_value=None)),
+        patch("llm_gateway.router.external_budget.is_exhausted",
+              new=AsyncMock(return_value=False)),
+        patch("llm_gateway.router.external_budget.estimate_cost_cents",
+              new=AsyncMock(return_value=0.0)),
     ]
     for p in patches:
         p.start()

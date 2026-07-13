@@ -6,6 +6,8 @@
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { LOCALES, translate, type Locale } from './dictionary';
+import { useAuth } from '../auth-store';
+import { api } from '../api';
 
 interface Ctx {
   locale: Locale;
@@ -31,12 +33,34 @@ function detectInitialLocale(): Locale {
 
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>('vi');
+  const accessToken = useAuth((s) => s.accessToken);
+  const tokenKind = useAuth((s) => s.tokenKind);
 
   useEffect(() => {
     const detected = detectInitialLocale();
     if (detected !== locale) setLocaleState(detected);
     document.documentElement.lang = detected;
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Tenant-driven locale: enterprises.locale is the workspace default
+  // (e.g. a Japanese workspace should open in Japanese). It applies only
+  // until the user picks a language themselves — an explicit choice is
+  // persisted in localStorage and always wins on later visits.
+  useEffect(() => {
+    if (!accessToken || tokenKind === 'platform') return;
+    if (typeof window !== 'undefined' && window.localStorage.getItem(STORAGE_KEY)) return;
+    let cancelled = false;
+    api<{ data?: { locale?: string } }>('/api/v1/enterprises/me/settings')
+      .then((res) => {
+        const server = res?.data?.locale;
+        if (!cancelled && server && (LOCALES as readonly string[]).includes(server)) {
+          setLocaleState(server as Locale);
+          document.documentElement.lang = server;
+        }
+      })
+      .catch(() => { /* best-effort — fall back to detected locale */ });
+    return () => { cancelled = true; };
+  }, [accessToken, tokenKind]);
 
   const setLocale = useCallback((l: Locale) => {
     setLocaleState(l);

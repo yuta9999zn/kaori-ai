@@ -36,7 +36,7 @@ import structlog
 from fastapi import APIRouter, HTTPException
 from prometheus_client import Counter
 
-from . import ai_governance, audit, pii, providers, routing, tenant_quotas
+from . import ai_governance, audit, external_budget, pii, providers, routing, tenant_quotas
 from .db import get_pool
 from .models import (
     EmbedRequest,
@@ -172,6 +172,31 @@ async def infer(req: InferRequest) -> InferResponse:
         except Exception as exc:
             log.error("llm_gateway.routing_failed", task=req.task, error=str(exc))
             raise HTTPException(status_code=500, detail="routing failed") from exc
+
+    # Per-tenant USD budget for external calls — a tenant carrying a
+    # 'llm_budget_cents_external' tenant_quotas row gets silently
+    # downgraded to local Qwen once lifetime external spend reaches the
+    # cap (never a 429 — budget exhaustion behaves like the vendor
+    # being unavailable, ADR-0015 Rule 5 spirit). Fail-open inside
+    # is_exhausted: no row / infra error → no downgrade.
+    if method == "external" and await external_budget.is_exhausted(
+        pool, str(req.enterprise_id)
+    ):
+        budget_fallback = os.getenv("OLLAMA_MODEL", "qwen2.5:14b")
+        log.warning(
+            "llm_gateway.external_budget_downgrade",
+            requested=model_id,
+            fallback=budget_fallback,
+            enterprise_id=str(req.enterprise_id),
+        )
+        _emit_call_metric(
+            provider="ollama",
+            model=budget_fallback,
+            tenant_id=str(req.enterprise_id),
+            status="budget_downgrade",
+        )
+        model_id = budget_fallback
+        method = "internal"
 
     # K-5: PII never crosses the public-internet boundary.
     if has_messages:
@@ -508,6 +533,17 @@ async def infer(req: InferRequest) -> InferResponse:
             if m.get("role") in {"system", "user"}
         )
     )
+    # Real per-call cost (cents) for external calls — the budget gate
+    # sums this column, so a $-capped tenant's spend actually accrues.
+    # Internal Ollama is free → 0.
+    cost_cents = 0.0
+    if method == "external":
+        try:
+            cost_cents = await external_budget.estimate_cost_cents(
+                pool, model_used, input_chars, len(completion)
+            )
+        except Exception:  # noqa: BLE001 — cost is best-effort metadata
+            log.exception("llm_gateway.cost_estimate_failed", model=model_used)
     try:
         await ai_governance.record_ai_call(
             pool,
@@ -525,6 +561,7 @@ async def infer(req: InferRequest) -> InferResponse:
             latency_ms=latency_ms,
             token_input_count=input_chars,
             token_output_count=len(completion),
+            cost_cents=cost_cents,
         )
     except Exception:  # noqa: BLE001
         log.exception(
