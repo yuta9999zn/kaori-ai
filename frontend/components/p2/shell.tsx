@@ -25,6 +25,7 @@ import { NAV_TREE, SECTION_ORDER, type NavGroup, type NavChild } from './navigat
 import { LocalePicker } from '@/components/i18n/locale-picker';
 import { useChromeT } from '@/lib/i18n/chrome-i18n';
 import { useT } from '@/lib/i18n/provider';
+import { useAuth } from '@/lib/auth-store';
 
 // ============================================================================
 // 1. Workspace context (replaces hard-coded "Acme Corp")
@@ -201,10 +202,18 @@ function Header({ onMenuToggle }: { onMenuToggle: () => void }) {
   const [openMenu, setOpenMenu] = useState(false);
 
   function logout() {
+    // clear() removes the canonical keys (kaori.access_token /
+    // kaori.refresh_token / kaori.token_kind) + the persisted zustand
+    // store. The legacy kaori_jwt trio must go too — foundation.tsx
+    // mirrors the access token into it, and older templates fall back
+    // to it, so leaving it behind keeps a usable token after logout.
+    useAuth.getState().clear();
     window.localStorage.removeItem('kaori_jwt');
     window.localStorage.removeItem('kaori_refresh');
     window.localStorage.removeItem('kaori_user');
-    window.location.href = '/p2/auth/login';
+    // /p2 has no login route of its own; the shared (auth)/login screen
+    // serves enterprise users.
+    window.location.href = '/login';
   }
 
   return (
